@@ -1,0 +1,2462 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="ControlAssuranceModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="APILog">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="AuditFeedback">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="500" />
+          <Property Name="Details" Type="nvarchar(max)" />
+          <Property Name="UserId" Type="int" />
+          <Property Name="TeamId" Type="int" />
+          <Property Name="PeriodId" Type="int" />
+          <Property Name="DateUpdated" Type="datetime" />
+        </EntityType>
+        <EntityType Name="DefElement">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DefElementGroupId" Type="int" />
+          <Property Name="Title" Type="nvarchar" MaxLength="100" />
+          <Property Name="ElementObjective" Type="nvarchar(max)" />
+          <Property Name="SectionATitle" Type="nvarchar" MaxLength="500" />
+          <Property Name="SectionAHelp" Type="nvarchar(max)" />
+          <Property Name="SectionANumQuestions" Type="int" />
+          <Property Name="SectionAQuestion1" Type="nvarchar" MaxLength="1000" />
+          <Property Name="SectionAQuestion2" Type="nvarchar" MaxLength="1000" />
+          <Property Name="SectionAQuestion3" Type="nvarchar" MaxLength="1000" />
+          <Property Name="SectionAQuestion4" Type="nvarchar" MaxLength="1000" />
+          <Property Name="SectionAQuestion5" Type="nvarchar" MaxLength="1000" />
+          <Property Name="SectionAQuestion6" Type="nvarchar" MaxLength="1000" />
+          <Property Name="SectionAQuestion7" Type="nvarchar" MaxLength="1000" />
+          <Property Name="SectionAQuestion8" Type="nvarchar" MaxLength="1000" />
+          <Property Name="SectionAQuestion9" Type="nvarchar" MaxLength="1000" />
+          <Property Name="SectionAQuestion10" Type="nvarchar" MaxLength="1000" />
+          <Property Name="SectionAOtherQuestion" Type="nvarchar" MaxLength="1000" />
+          <Property Name="SectionAOtherBoxText" Type="nvarchar" MaxLength="500" />
+          <Property Name="SectionAEffectQuestion" Type="nvarchar" MaxLength="1000" />
+          <Property Name="SectionAEffectNote" Type="nvarchar" MaxLength="500" />
+          <Property Name="SectionAEffectBoxText" Type="nvarchar" MaxLength="500" />
+          <Property Name="SectionBTitle" Type="nvarchar" MaxLength="500" />
+          <Property Name="SectionBHelp" Type="nvarchar(max)" />
+          <Property Name="SectionBNumQuestions" Type="int" />
+          <Property Name="SectionBQuestion1" Type="nvarchar" MaxLength="1000" />
+          <Property Name="SectionBBoxText1" Type="nvarchar" MaxLength="500" />
+          <Property Name="SectionBEffect1" Type="nvarchar" MaxLength="1000" />
+          <Property Name="SectionBNote1" Type="nvarchar" MaxLength="500" />
+          <Property Name="SectionBQuestion2" Type="nvarchar" MaxLength="1000" />
+          <Property Name="SectionBBoxText2" Type="nvarchar" MaxLength="500" />
+          <Property Name="SectionBEffect2" Type="nvarchar" MaxLength="1000" />
+          <Property Name="SectionBNote2" Type="nvarchar" MaxLength="500" />
+          <Property Name="SectionBQuestion3" Type="nvarchar" MaxLength="1000" />
+          <Property Name="SectionBBoxText3" Type="nvarchar" MaxLength="500" />
+          <Property Name="SectionBEffect3" Type="nvarchar" MaxLength="1000" />
+          <Property Name="SectionBNote3" Type="nvarchar" MaxLength="500" />
+          <Property Name="SectionBQuestion4" Type="nvarchar" MaxLength="1000" />
+          <Property Name="SectionBBoxText4" Type="nvarchar" MaxLength="500" />
+          <Property Name="SectionBEffect4" Type="nvarchar" MaxLength="1000" />
+          <Property Name="SectionBNote4" Type="nvarchar" MaxLength="500" />
+          <Property Name="SectionATitleHelpId" Type="int" />
+          <Property Name="SectionAQuestion1HelpId" Type="int" />
+          <Property Name="SectionAQuestion2HelpId" Type="int" />
+          <Property Name="SectionAQuestion3HelpId" Type="int" />
+          <Property Name="SectionAQuestion4HelpId" Type="int" />
+          <Property Name="SectionAQuestion5HelpId" Type="int" />
+          <Property Name="SectionAQuestion6HelpId" Type="int" />
+          <Property Name="SectionAQuestion7HelpId" Type="int" />
+          <Property Name="SectionAQuestion8HelpId" Type="int" />
+          <Property Name="SectionAQuestion9HelpId" Type="int" />
+          <Property Name="SectionAQuestion10HelpId" Type="int" />
+          <Property Name="SectionAOtherQuestionHelpId" Type="int" />
+          <Property Name="SectionAEffectQuestionHelpId" Type="int" />
+          <Property Name="SectionBTitleHelpId" Type="int" />
+          <Property Name="SectionBQuestion1HelpId" Type="int" />
+          <Property Name="SectionBQuestion2HelpId" Type="int" />
+          <Property Name="SectionBQuestion3HelpId" Type="int" />
+          <Property Name="SectionBQuestion4HelpId" Type="int" />
+          <Property Name="PeriodId" Type="int" />
+        </EntityType>
+        <EntityType Name="DefElementGroup">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="100" />
+          <Property Name="Sequence" Type="int" />
+          <Property Name="DefFormId" Type="int" />
+          <Property Name="PeriodId" Type="int" />
+        </EntityType>
+        <EntityType Name="DefForm">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="100" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="Details" Type="nvarchar(max)" />
+          <Property Name="SignOffSectionTitle" Type="nvarchar" MaxLength="200" />
+          <Property Name="DDSignOffTitle" Type="nvarchar" MaxLength="200" />
+          <Property Name="DDSignOffText" Type="nvarchar(max)" />
+          <Property Name="DirSignOffTitle" Type="nvarchar" MaxLength="200" />
+          <Property Name="DirSignOffText" Type="nvarchar(max)" />
+          <Property Name="PeriodId" Type="int" />
+        </EntityType>
+        <EntityType Name="Directorate">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="DirectorateGroupID" Type="int" Nullable="false" />
+          <Property Name="DirectorUserID" Type="int" />
+          <Property Name="Objectives" Type="nvarchar(max)" />
+          <Property Name="EntityStatusID" Type="int" />
+          <Property Name="EntityStatusDate" Type="datetime2" Precision="7" />
+          <Property Name="SysStartTime" Type="datetime2" Precision="0" />
+          <Property Name="SysEndTime" Type="datetime2" Precision="0" />
+          <Property Name="ModifiedByUserID" Type="int" />
+          <Property Name="ReportApproverUserID" Type="int" />
+        </EntityType>
+        <EntityType Name="DirectorateGroup">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" />
+          <Property Name="DirectorGeneralUserID" Type="int" />
+          <Property Name="RiskChampionDeputyDirectorUserID" Type="int" />
+          <Property Name="BusinessPartnerUserID" Type="int" />
+          <Property Name="SysStartTime" Type="datetime2" Precision="0" />
+          <Property Name="SysEndTime" Type="datetime2" Precision="0" />
+          <Property Name="ModifiedByUserID" Type="int" />
+          <Property Name="EntityStatusID" Type="int" />
+          <Property Name="EntityStatusDate" Type="datetime2" Precision="7" />
+        </EntityType>
+        <EntityType Name="DirectorateGroupMember">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" />
+          <Property Name="UserID" Type="int" Nullable="false" />
+          <Property Name="DirectorateGroupID" Type="int" Nullable="false" />
+          <Property Name="SysStartTime" Type="datetime2" Precision="0" />
+          <Property Name="SysEndTime" Type="datetime2" Precision="0" />
+          <Property Name="ModifiedByUserID" Type="int" />
+          <Property Name="IsAdmin" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="DirectorateMember">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" />
+          <Property Name="UserID" Type="int" Nullable="false" />
+          <Property Name="DirectorateID" Type="int" Nullable="false" />
+          <Property Name="IsAdmin" Type="bit" Nullable="false" />
+          <Property Name="SysStartTime" Type="datetime2" Precision="0" />
+          <Property Name="SysEndTime" Type="datetime2" Precision="0" />
+          <Property Name="ModifiedByUserID" Type="int" />
+          <Property Name="CanSignOff" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Element">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FormId" Type="int" Nullable="false" />
+          <Property Name="DefElementId" Type="int" />
+          <Property Name="Title" Type="nvarchar" MaxLength="100" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="CompletedOn" Type="datetime" />
+          <Property Name="AssignedTo" Type="int" />
+          <Property Name="GeneralNote" Type="nvarchar(max)" />
+          <Property Name="ResponseA1" Type="nvarchar" MaxLength="50" />
+          <Property Name="ResponseA2" Type="nvarchar" MaxLength="50" />
+          <Property Name="ResponseA3" Type="nvarchar" MaxLength="50" />
+          <Property Name="ResponseA4" Type="nvarchar" MaxLength="50" />
+          <Property Name="ResponseA5" Type="nvarchar" MaxLength="50" />
+          <Property Name="ResponseA6" Type="nvarchar" MaxLength="50" />
+          <Property Name="ResponseA7" Type="nvarchar" MaxLength="50" />
+          <Property Name="ResponseA8" Type="nvarchar" MaxLength="50" />
+          <Property Name="ResponseA9" Type="nvarchar" MaxLength="50" />
+          <Property Name="ResponseA10" Type="nvarchar" MaxLength="50" />
+          <Property Name="ResponseAOther" Type="nvarchar" MaxLength="50" />
+          <Property Name="ResponseAOtherText" Type="nvarchar(max)" />
+          <Property Name="ResponseAEffect" Type="nvarchar" MaxLength="50" />
+          <Property Name="ResponseAEffectText" Type="nvarchar(max)" />
+          <Property Name="ResponseB1" Type="nvarchar" MaxLength="50" />
+          <Property Name="ResponseB1Text" Type="nvarchar(max)" />
+          <Property Name="ResponseB1Effect" Type="nvarchar" MaxLength="50" />
+          <Property Name="ResponseB2" Type="nvarchar" MaxLength="50" />
+          <Property Name="ResponseB2Text" Type="nvarchar(max)" />
+          <Property Name="ResponseB2Effect" Type="nvarchar" MaxLength="50" />
+          <Property Name="ResponseB3" Type="nvarchar" MaxLength="50" />
+          <Property Name="ResponseB3Text" Type="nvarchar(max)" />
+          <Property Name="ResponseB3Effect" Type="nvarchar" MaxLength="50" />
+          <Property Name="ResponseB4" Type="nvarchar" MaxLength="50" />
+          <Property Name="ResponseB4Text" Type="nvarchar(max)" />
+          <Property Name="ResponseB4Effect" Type="nvarchar" MaxLength="50" />
+          <Property Name="NotApplicable" Type="bit" />
+          <Property Name="ResponseAEffectUnsatisfactory" Type="bit" />
+          <Property Name="ResponseAEffectLimited" Type="bit" />
+          <Property Name="ResponseAEffectModerate" Type="bit" />
+          <Property Name="ResponseAEffectSubstantial" Type="bit" />
+          <Property Name="ResponseAEffectNotApplicable" Type="bit" />
+          <Property Name="ResponseB1EffectUnsatisfactory" Type="bit" />
+          <Property Name="ResponseB1EffectLimited" Type="bit" />
+          <Property Name="ResponseB1EffectModerate" Type="bit" />
+          <Property Name="ResponseB1EffectSubstantial" Type="bit" />
+          <Property Name="ResponseB1EffectNotApplicable" Type="bit" />
+          <Property Name="ResponseB2EffectUnsatisfactory" Type="bit" />
+          <Property Name="ResponseB2EffectLimited" Type="bit" />
+          <Property Name="ResponseB2EffectModerate" Type="bit" />
+          <Property Name="ResponseB2EffectSubstantial" Type="bit" />
+          <Property Name="ResponseB2EffectNotApplicable" Type="bit" />
+          <Property Name="ResponseB3EffectUnsatisfactory" Type="bit" />
+          <Property Name="ResponseB3EffectLimited" Type="bit" />
+          <Property Name="ResponseB3EffectModerate" Type="bit" />
+          <Property Name="ResponseB3EffectSubstantial" Type="bit" />
+          <Property Name="ResponseB3EffectNotApplicable" Type="bit" />
+        </EntityType>
+        <EntityType Name="EntityStatusType">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="Form">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PeriodId" Type="int" />
+          <Property Name="TeamId" Type="int" />
+          <Property Name="DefFormId" Type="int" />
+          <Property Name="Title" Type="nvarchar" MaxLength="100" />
+          <Property Name="DDSignOffStatus" Type="bit" />
+          <Property Name="DDSignOffUserId" Type="int" />
+          <Property Name="DDSignOffDate" Type="datetime" />
+          <Property Name="DirSignOffStatus" Type="bit" />
+          <Property Name="DirSignOffUserId" Type="int" />
+          <Property Name="DirSignOffDate" Type="datetime" />
+          <Property Name="LastSignOffFor" Type="nvarchar" MaxLength="50" />
+          <Property Name="FirstSignedOff" Type="bit" />
+        </EntityType>
+        <EntityType Name="Log">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="500" />
+          <Property Name="Module" Type="nvarchar" MaxLength="200" />
+          <Property Name="Details" Type="nvarchar(max)" />
+          <Property Name="UserId" Type="int" />
+          <Property Name="LogDate" Type="datetime" />
+          <Property Name="PeriodId" Type="int" />
+          <Property Name="TeamId" Type="int" />
+        </EntityType>
+        <EntityType Name="Period">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="PeriodStatus" Type="nvarchar" MaxLength="50" />
+          <Property Name="PeriodStartDate" Type="date" />
+          <Property Name="PeriodEndDate" Type="date" />
+        </EntityType>
+        <EntityType Name="PermissionType">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <EntityType Name="Team">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="200" />
+          <Property Name="DirectorateId" Type="int" />
+          <Property Name="DeputyDirectorUserId" Type="int" />
+          <Property Name="EntityStatusId" Type="int" />
+        </EntityType>
+        <EntityType Name="TeamMember">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" />
+          <Property Name="UserId" Type="int" />
+          <Property Name="TeamId" Type="int" />
+          <Property Name="IsAdmin" Type="bit" Nullable="false" />
+          <Property Name="CanSignOff" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Username" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="255" />
+          <Property Name="SysStartTime" Type="datetime2" Precision="0" />
+          <Property Name="SysEndTime" Type="datetime2" Precision="0" />
+          <Property Name="ModifiedByUserID" Type="int" />
+        </EntityType>
+        <EntityType Name="UserHelp">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="500" />
+          <Property Name="HelpText" Type="ntext" />
+        </EntityType>
+        <EntityType Name="UserPermission">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" />
+          <Property Name="UserId" Type="int" />
+          <Property Name="PermissionTypeId" Type="int" />
+        </EntityType>
+        <Association Name="FK_AuditFeedback_Period">
+          <End Role="Period" Type="Self.Period" Multiplicity="0..1" />
+          <End Role="AuditFeedback" Type="Self.AuditFeedback" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Period">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="AuditFeedback">
+              <PropertyRef Name="PeriodId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AuditFeedback_Team">
+          <End Role="Team" Type="Self.Team" Multiplicity="0..1" />
+          <End Role="AuditFeedback" Type="Self.AuditFeedback" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Team">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="AuditFeedback">
+              <PropertyRef Name="TeamId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AuditFeedback_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="AuditFeedback" Type="Self.AuditFeedback" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="AuditFeedback">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DefElement_DefElementGroup">
+          <End Role="DefElementGroup" Type="Self.DefElementGroup" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="DefElement" Type="Self.DefElement" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DefElementGroup">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="DefElement">
+              <PropertyRef Name="DefElementGroupId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DefElement_Period">
+          <End Role="Period" Type="Self.Period" Multiplicity="0..1" />
+          <End Role="DefElement" Type="Self.DefElement" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Period">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="DefElement">
+              <PropertyRef Name="PeriodId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DefElementGroup_DefForm">
+          <End Role="DefForm" Type="Self.DefForm" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="DefElementGroup" Type="Self.DefElementGroup" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DefForm">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="DefElementGroup">
+              <PropertyRef Name="DefFormId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DefElementGroup_Period">
+          <End Role="Period" Type="Self.Period" Multiplicity="0..1" />
+          <End Role="DefElementGroup" Type="Self.DefElementGroup" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Period">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="DefElementGroup">
+              <PropertyRef Name="PeriodId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DefForm_Period">
+          <End Role="Period" Type="Self.Period" Multiplicity="0..1" />
+          <End Role="DefForm" Type="Self.DefForm" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Period">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="DefForm">
+              <PropertyRef Name="PeriodId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Directorate_DirectorateGroup">
+          <End Role="DirectorateGroup" Type="Self.DirectorateGroup" Multiplicity="1" />
+          <End Role="Directorate" Type="Self.Directorate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DirectorateGroup">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Directorate">
+              <PropertyRef Name="DirectorateGroupID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Directorate_EntityStatusType">
+          <End Role="EntityStatusType" Type="Self.EntityStatusType" Multiplicity="0..1" />
+          <End Role="Directorate" Type="Self.Directorate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntityStatusType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Directorate">
+              <PropertyRef Name="EntityStatusID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Directorate_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="Directorate" Type="Self.Directorate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Directorate">
+              <PropertyRef Name="DirectorUserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DirectorateGroup_EntityStatusType">
+          <End Role="EntityStatusType" Type="Self.EntityStatusType" Multiplicity="0..1" />
+          <End Role="DirectorateGroup" Type="Self.DirectorateGroup" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntityStatusType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="DirectorateGroup">
+              <PropertyRef Name="EntityStatusID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DirectorateGroup_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="DirectorateGroup" Type="Self.DirectorateGroup" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="DirectorateGroup">
+              <PropertyRef Name="DirectorGeneralUserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DirectorateGroupMember_DirectorateGroup">
+          <End Role="DirectorateGroup" Type="Self.DirectorateGroup" Multiplicity="1" />
+          <End Role="DirectorateGroupMember" Type="Self.DirectorateGroupMember" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DirectorateGroup">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="DirectorateGroupMember">
+              <PropertyRef Name="DirectorateGroupID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DirectorateGroupMember_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="DirectorateGroupMember" Type="Self.DirectorateGroupMember" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="DirectorateGroupMember">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DirectorateMember_Directorate">
+          <End Role="Directorate" Type="Self.Directorate" Multiplicity="1" />
+          <End Role="DirectorateMember" Type="Self.DirectorateMember" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Directorate">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="DirectorateMember">
+              <PropertyRef Name="DirectorateID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DirectorateMember_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="DirectorateMember" Type="Self.DirectorateMember" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="DirectorateMember">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Element_DefElement">
+          <End Role="DefElement" Type="Self.DefElement" Multiplicity="0..1" />
+          <End Role="Element" Type="Self.Element" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DefElement">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Element">
+              <PropertyRef Name="DefElementId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Element_Form">
+          <End Role="Form" Type="Self.Form" Multiplicity="1" />
+          <End Role="Element" Type="Self.Element" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Form">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Element">
+              <PropertyRef Name="FormId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Form_Period">
+          <End Role="Period" Type="Self.Period" Multiplicity="0..1" />
+          <End Role="Form" Type="Self.Form" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Period">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Form">
+              <PropertyRef Name="PeriodId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Form_TeamSet">
+          <End Role="Team" Type="Self.Team" Multiplicity="0..1" />
+          <End Role="Form" Type="Self.Form" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Team">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Form">
+              <PropertyRef Name="TeamId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Log_Period">
+          <End Role="Period" Type="Self.Period" Multiplicity="0..1" />
+          <End Role="Log" Type="Self.Log" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Period">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Log">
+              <PropertyRef Name="PeriodId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Log_Team">
+          <End Role="Team" Type="Self.Team" Multiplicity="0..1" />
+          <End Role="Log" Type="Self.Log" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Team">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Log">
+              <PropertyRef Name="TeamId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Log_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="Log" Type="Self.Log" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Log">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Team_Directorate">
+          <End Role="Directorate" Type="Self.Directorate" Multiplicity="0..1" />
+          <End Role="Team" Type="Self.Team" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Directorate">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Team">
+              <PropertyRef Name="DirectorateId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Team_EntityStatusType">
+          <End Role="EntityStatusType" Type="Self.EntityStatusType" Multiplicity="0..1" />
+          <End Role="Team" Type="Self.Team" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntityStatusType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Team">
+              <PropertyRef Name="EntityStatusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Team_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="Team" Type="Self.Team" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Team">
+              <PropertyRef Name="DeputyDirectorUserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TeamMember_Team">
+          <End Role="Team" Type="Self.Team" Multiplicity="0..1" />
+          <End Role="TeamMember" Type="Self.TeamMember" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Team">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TeamMember">
+              <PropertyRef Name="TeamId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TeamMember_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="TeamMember" Type="Self.TeamMember" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TeamMember">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserPermission_PermissionType">
+          <End Role="PermissionType" Type="Self.PermissionType" Multiplicity="0..1" />
+          <End Role="UserPermission" Type="Self.UserPermission" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PermissionType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UserPermission">
+              <PropertyRef Name="PermissionTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserPermission_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="UserPermission" Type="Self.UserPermission" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UserPermission">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="SPDGAreaStat" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="PeriodId" Type="int" Mode="In" />
+        </Function>
+        <Function Name="SPDirectorateStat" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="PeriodId" Type="int" Mode="In" />
+        </Function>
+        <Function Name="SPDivisionStat" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="PeriodId" Type="int" Mode="In" />
+        </Function>
+        <EntityContainer Name="ControlAssuranceModelStoreContainer">
+          <EntitySet Name="APILog" EntityType="Self.APILog" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AuditFeedback" EntityType="Self.AuditFeedback" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DefElement" EntityType="Self.DefElement" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DefElementGroup" EntityType="Self.DefElementGroup" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DefForm" EntityType="Self.DefForm" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Directorate" EntityType="Self.Directorate" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DirectorateGroup" EntityType="Self.DirectorateGroup" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DirectorateGroupMember" EntityType="Self.DirectorateGroupMember" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DirectorateMember" EntityType="Self.DirectorateMember" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Element" EntityType="Self.Element" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EntityStatusType" EntityType="Self.EntityStatusType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Form" EntityType="Self.Form" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Log" EntityType="Self.Log" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Period" EntityType="Self.Period" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PermissionType" EntityType="Self.PermissionType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Team" EntityType="Self.Team" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TeamMember" EntityType="Self.TeamMember" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserHelp" EntityType="Self.UserHelp" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserPermission" EntityType="Self.UserPermission" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_AuditFeedback_Period" Association="Self.FK_AuditFeedback_Period">
+            <End Role="Period" EntitySet="Period" />
+            <End Role="AuditFeedback" EntitySet="AuditFeedback" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AuditFeedback_Team" Association="Self.FK_AuditFeedback_Team">
+            <End Role="Team" EntitySet="Team" />
+            <End Role="AuditFeedback" EntitySet="AuditFeedback" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AuditFeedback_User" Association="Self.FK_AuditFeedback_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="AuditFeedback" EntitySet="AuditFeedback" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DefElement_DefElementGroup" Association="Self.FK_DefElement_DefElementGroup">
+            <End Role="DefElementGroup" EntitySet="DefElementGroup" />
+            <End Role="DefElement" EntitySet="DefElement" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DefElement_Period" Association="Self.FK_DefElement_Period">
+            <End Role="Period" EntitySet="Period" />
+            <End Role="DefElement" EntitySet="DefElement" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DefElementGroup_DefForm" Association="Self.FK_DefElementGroup_DefForm">
+            <End Role="DefForm" EntitySet="DefForm" />
+            <End Role="DefElementGroup" EntitySet="DefElementGroup" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DefElementGroup_Period" Association="Self.FK_DefElementGroup_Period">
+            <End Role="Period" EntitySet="Period" />
+            <End Role="DefElementGroup" EntitySet="DefElementGroup" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DefForm_Period" Association="Self.FK_DefForm_Period">
+            <End Role="Period" EntitySet="Period" />
+            <End Role="DefForm" EntitySet="DefForm" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Directorate_DirectorateGroup" Association="Self.FK_Directorate_DirectorateGroup">
+            <End Role="DirectorateGroup" EntitySet="DirectorateGroup" />
+            <End Role="Directorate" EntitySet="Directorate" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Directorate_EntityStatusType" Association="Self.FK_Directorate_EntityStatusType">
+            <End Role="EntityStatusType" EntitySet="EntityStatusType" />
+            <End Role="Directorate" EntitySet="Directorate" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Directorate_User" Association="Self.FK_Directorate_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="Directorate" EntitySet="Directorate" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DirectorateGroup_EntityStatusType" Association="Self.FK_DirectorateGroup_EntityStatusType">
+            <End Role="EntityStatusType" EntitySet="EntityStatusType" />
+            <End Role="DirectorateGroup" EntitySet="DirectorateGroup" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DirectorateGroup_User" Association="Self.FK_DirectorateGroup_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="DirectorateGroup" EntitySet="DirectorateGroup" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DirectorateGroupMember_DirectorateGroup" Association="Self.FK_DirectorateGroupMember_DirectorateGroup">
+            <End Role="DirectorateGroup" EntitySet="DirectorateGroup" />
+            <End Role="DirectorateGroupMember" EntitySet="DirectorateGroupMember" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DirectorateGroupMember_User" Association="Self.FK_DirectorateGroupMember_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="DirectorateGroupMember" EntitySet="DirectorateGroupMember" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DirectorateMember_Directorate" Association="Self.FK_DirectorateMember_Directorate">
+            <End Role="Directorate" EntitySet="Directorate" />
+            <End Role="DirectorateMember" EntitySet="DirectorateMember" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DirectorateMember_User" Association="Self.FK_DirectorateMember_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="DirectorateMember" EntitySet="DirectorateMember" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Element_DefElement" Association="Self.FK_Element_DefElement">
+            <End Role="DefElement" EntitySet="DefElement" />
+            <End Role="Element" EntitySet="Element" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Element_Form" Association="Self.FK_Element_Form">
+            <End Role="Form" EntitySet="Form" />
+            <End Role="Element" EntitySet="Element" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Form_Period" Association="Self.FK_Form_Period">
+            <End Role="Period" EntitySet="Period" />
+            <End Role="Form" EntitySet="Form" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Form_TeamSet" Association="Self.FK_Form_TeamSet">
+            <End Role="Team" EntitySet="Team" />
+            <End Role="Form" EntitySet="Form" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Log_Period" Association="Self.FK_Log_Period">
+            <End Role="Period" EntitySet="Period" />
+            <End Role="Log" EntitySet="Log" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Log_Team" Association="Self.FK_Log_Team">
+            <End Role="Team" EntitySet="Team" />
+            <End Role="Log" EntitySet="Log" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Log_User" Association="Self.FK_Log_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="Log" EntitySet="Log" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Team_Directorate" Association="Self.FK_Team_Directorate">
+            <End Role="Directorate" EntitySet="Directorate" />
+            <End Role="Team" EntitySet="Team" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Team_EntityStatusType" Association="Self.FK_Team_EntityStatusType">
+            <End Role="EntityStatusType" EntitySet="EntityStatusType" />
+            <End Role="Team" EntitySet="Team" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Team_User" Association="Self.FK_Team_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="Team" EntitySet="Team" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TeamMember_Team" Association="Self.FK_TeamMember_Team">
+            <End Role="Team" EntitySet="Team" />
+            <End Role="TeamMember" EntitySet="TeamMember" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TeamMember_User" Association="Self.FK_TeamMember_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="TeamMember" EntitySet="TeamMember" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserPermission_PermissionType" Association="Self.FK_UserPermission_PermissionType">
+            <End Role="PermissionType" EntitySet="PermissionType" />
+            <End Role="UserPermission" EntitySet="UserPermission" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserPermission_User" Association="Self.FK_UserPermission_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="UserPermission" EntitySet="UserPermission" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="ControlAssuranceModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="APILog">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="AuditFeedback">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Details" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="UserId" Type="Int32" />
+          <Property Name="TeamId" Type="Int32" />
+          <Property Name="PeriodId" Type="Int32" />
+          <Property Name="DateUpdated" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Period" Relationship="Self.FK_AuditFeedback_Period" FromRole="AuditFeedback" ToRole="Period" />
+          <NavigationProperty Name="Team" Relationship="Self.FK_AuditFeedback_Team" FromRole="AuditFeedback" ToRole="Team" />
+          <NavigationProperty Name="User" Relationship="Self.FK_AuditFeedback_User" FromRole="AuditFeedback" ToRole="User" />
+        </EntityType>
+        <EntityType Name="DefElement">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DefElementGroupId" Type="Int32" />
+          <Property Name="Title" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ElementObjective" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SectionATitle" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="SectionAHelp" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SectionANumQuestions" Type="Int32" />
+          <Property Name="SectionAQuestion1" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="SectionAQuestion2" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="SectionAQuestion3" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="SectionAQuestion4" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="SectionAQuestion5" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="SectionAQuestion6" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="SectionAQuestion7" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="SectionAQuestion8" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="SectionAQuestion9" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="SectionAQuestion10" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="SectionAOtherQuestion" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="SectionAOtherBoxText" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="SectionAEffectQuestion" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="SectionAEffectNote" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="SectionAEffectBoxText" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="SectionBTitle" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="SectionBHelp" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SectionBNumQuestions" Type="Int32" />
+          <Property Name="SectionBQuestion1" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="SectionBBoxText1" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="SectionBEffect1" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="SectionBNote1" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="SectionBQuestion2" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="SectionBBoxText2" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="SectionBEffect2" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="SectionBNote2" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="SectionBQuestion3" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="SectionBBoxText3" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="SectionBEffect3" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="SectionBNote3" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="SectionBQuestion4" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="SectionBBoxText4" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="SectionBEffect4" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="SectionBNote4" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="SectionATitleHelpId" Type="Int32" />
+          <Property Name="SectionAQuestion1HelpId" Type="Int32" />
+          <Property Name="SectionAQuestion2HelpId" Type="Int32" />
+          <Property Name="SectionAQuestion3HelpId" Type="Int32" />
+          <Property Name="SectionAQuestion4HelpId" Type="Int32" />
+          <Property Name="SectionAQuestion5HelpId" Type="Int32" />
+          <Property Name="SectionAQuestion6HelpId" Type="Int32" />
+          <Property Name="SectionAQuestion7HelpId" Type="Int32" />
+          <Property Name="SectionAQuestion8HelpId" Type="Int32" />
+          <Property Name="SectionAQuestion9HelpId" Type="Int32" />
+          <Property Name="SectionAQuestion10HelpId" Type="Int32" />
+          <Property Name="SectionAOtherQuestionHelpId" Type="Int32" />
+          <Property Name="SectionAEffectQuestionHelpId" Type="Int32" />
+          <Property Name="SectionBTitleHelpId" Type="Int32" />
+          <Property Name="SectionBQuestion1HelpId" Type="Int32" />
+          <Property Name="SectionBQuestion2HelpId" Type="Int32" />
+          <Property Name="SectionBQuestion3HelpId" Type="Int32" />
+          <Property Name="SectionBQuestion4HelpId" Type="Int32" />
+          <Property Name="PeriodId" Type="Int32" />
+          <NavigationProperty Name="DefElementGroup" Relationship="Self.FK_DefElement_DefElementGroup" FromRole="DefElement" ToRole="DefElementGroup" />
+          <NavigationProperty Name="Period" Relationship="Self.FK_DefElement_Period" FromRole="DefElement" ToRole="Period" />
+          <NavigationProperty Name="Elements" Relationship="Self.FK_Element_DefElement" FromRole="DefElement" ToRole="Element" />
+        </EntityType>
+        <EntityType Name="DefElementGroup">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Sequence" Type="Int32" />
+          <Property Name="DefFormId" Type="Int32" />
+          <Property Name="PeriodId" Type="Int32" />
+          <NavigationProperty Name="DefElements" Relationship="Self.FK_DefElement_DefElementGroup" FromRole="DefElementGroup" ToRole="DefElement" />
+          <NavigationProperty Name="DefForm" Relationship="Self.FK_DefElementGroup_DefForm" FromRole="DefElementGroup" ToRole="DefForm" />
+          <NavigationProperty Name="Period" Relationship="Self.FK_DefElementGroup_Period" FromRole="DefElementGroup" ToRole="Period" />
+        </EntityType>
+        <EntityType Name="DefForm">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Details" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SignOffSectionTitle" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="DDSignOffTitle" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="DDSignOffText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DirSignOffTitle" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="DirSignOffText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PeriodId" Type="Int32" />
+          <NavigationProperty Name="DefElementGroups" Relationship="Self.FK_DefElementGroup_DefForm" FromRole="DefForm" ToRole="DefElementGroup" />
+          <NavigationProperty Name="Period" Relationship="Self.FK_DefForm_Period" FromRole="DefForm" ToRole="Period" />
+        </EntityType>
+        <EntityType Name="Directorate">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="DirectorateGroupID" Type="Int32" Nullable="false" />
+          <Property Name="DirectorUserID" Type="Int32" />
+          <Property Name="Objectives" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="EntityStatusID" Type="Int32" />
+          <Property Name="EntityStatusDate" Type="DateTime" Precision="7" />
+          <Property Name="SysStartTime" Type="DateTime" Precision="0" />
+          <Property Name="SysEndTime" Type="DateTime" Precision="0" />
+          <Property Name="ModifiedByUserID" Type="Int32" />
+          <Property Name="ReportApproverUserID" Type="Int32" />
+          <NavigationProperty Name="DirectorateGroup" Relationship="Self.FK_Directorate_DirectorateGroup" FromRole="Directorate" ToRole="DirectorateGroup" />
+          <NavigationProperty Name="EntityStatusType" Relationship="Self.FK_Directorate_EntityStatusType" FromRole="Directorate" ToRole="EntityStatusType" />
+          <NavigationProperty Name="User" Relationship="Self.FK_Directorate_User" FromRole="Directorate" ToRole="User" />
+          <NavigationProperty Name="DirectorateMembers" Relationship="Self.FK_DirectorateMember_Directorate" FromRole="Directorate" ToRole="DirectorateMember" />
+          <NavigationProperty Name="Teams" Relationship="Self.FK_Team_Directorate" FromRole="Directorate" ToRole="Team" />
+        </EntityType>
+        <EntityType Name="DirectorateGroup">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DirectorGeneralUserID" Type="Int32" />
+          <Property Name="RiskChampionDeputyDirectorUserID" Type="Int32" />
+          <Property Name="BusinessPartnerUserID" Type="Int32" />
+          <Property Name="SysStartTime" Type="DateTime" Precision="0" />
+          <Property Name="SysEndTime" Type="DateTime" Precision="0" />
+          <Property Name="ModifiedByUserID" Type="Int32" />
+          <Property Name="EntityStatusID" Type="Int32" />
+          <Property Name="EntityStatusDate" Type="DateTime" Precision="7" />
+          <NavigationProperty Name="Directorates" Relationship="Self.FK_Directorate_DirectorateGroup" FromRole="DirectorateGroup" ToRole="Directorate" />
+          <NavigationProperty Name="EntityStatusType" Relationship="Self.FK_DirectorateGroup_EntityStatusType" FromRole="DirectorateGroup" ToRole="EntityStatusType" />
+          <NavigationProperty Name="User" Relationship="Self.FK_DirectorateGroup_User" FromRole="DirectorateGroup" ToRole="User" />
+          <NavigationProperty Name="DirectorateGroupMembers" Relationship="Self.FK_DirectorateGroupMember_DirectorateGroup" FromRole="DirectorateGroup" ToRole="DirectorateGroupMember" />
+        </EntityType>
+        <EntityType Name="DirectorateGroupMember">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UserID" Type="Int32" Nullable="false" />
+          <Property Name="DirectorateGroupID" Type="Int32" Nullable="false" />
+          <Property Name="SysStartTime" Type="DateTime" Precision="0" />
+          <Property Name="SysEndTime" Type="DateTime" Precision="0" />
+          <Property Name="ModifiedByUserID" Type="Int32" />
+          <Property Name="IsAdmin" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="DirectorateGroup" Relationship="Self.FK_DirectorateGroupMember_DirectorateGroup" FromRole="DirectorateGroupMember" ToRole="DirectorateGroup" />
+          <NavigationProperty Name="User" Relationship="Self.FK_DirectorateGroupMember_User" FromRole="DirectorateGroupMember" ToRole="User" />
+        </EntityType>
+        <EntityType Name="DirectorateMember">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UserID" Type="Int32" Nullable="false" />
+          <Property Name="DirectorateID" Type="Int32" Nullable="false" />
+          <Property Name="IsAdmin" Type="Boolean" Nullable="false" />
+          <Property Name="SysStartTime" Type="DateTime" Precision="0" />
+          <Property Name="SysEndTime" Type="DateTime" Precision="0" />
+          <Property Name="ModifiedByUserID" Type="Int32" />
+          <Property Name="CanSignOff" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Directorate" Relationship="Self.FK_DirectorateMember_Directorate" FromRole="DirectorateMember" ToRole="Directorate" />
+          <NavigationProperty Name="User" Relationship="Self.FK_DirectorateMember_User" FromRole="DirectorateMember" ToRole="User" />
+        </EntityType>
+        <EntityType Name="Element">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FormId" Type="Int32" Nullable="false" />
+          <Property Name="DefElementId" Type="Int32" />
+          <Property Name="Title" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CompletedOn" Type="DateTime" Precision="3" />
+          <Property Name="AssignedTo" Type="Int32" />
+          <Property Name="GeneralNote" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ResponseA1" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ResponseA2" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ResponseA3" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ResponseA4" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ResponseA5" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ResponseA6" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ResponseA7" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ResponseA8" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ResponseA9" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ResponseA10" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ResponseAOther" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ResponseAOtherText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ResponseAEffect" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ResponseAEffectText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ResponseB1" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ResponseB1Text" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ResponseB1Effect" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ResponseB2" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ResponseB2Text" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ResponseB2Effect" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ResponseB3" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ResponseB3Text" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ResponseB3Effect" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ResponseB4" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ResponseB4Text" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ResponseB4Effect" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="NotApplicable" Type="Boolean" />
+          <Property Name="ResponseAEffectUnsatisfactory" Type="Boolean" />
+          <Property Name="ResponseAEffectLimited" Type="Boolean" />
+          <Property Name="ResponseAEffectModerate" Type="Boolean" />
+          <Property Name="ResponseAEffectSubstantial" Type="Boolean" />
+          <Property Name="ResponseAEffectNotApplicable" Type="Boolean" />
+          <Property Name="ResponseB1EffectUnsatisfactory" Type="Boolean" />
+          <Property Name="ResponseB1EffectLimited" Type="Boolean" />
+          <Property Name="ResponseB1EffectModerate" Type="Boolean" />
+          <Property Name="ResponseB1EffectSubstantial" Type="Boolean" />
+          <Property Name="ResponseB1EffectNotApplicable" Type="Boolean" />
+          <Property Name="ResponseB2EffectUnsatisfactory" Type="Boolean" />
+          <Property Name="ResponseB2EffectLimited" Type="Boolean" />
+          <Property Name="ResponseB2EffectModerate" Type="Boolean" />
+          <Property Name="ResponseB2EffectSubstantial" Type="Boolean" />
+          <Property Name="ResponseB2EffectNotApplicable" Type="Boolean" />
+          <Property Name="ResponseB3EffectUnsatisfactory" Type="Boolean" />
+          <Property Name="ResponseB3EffectLimited" Type="Boolean" />
+          <Property Name="ResponseB3EffectModerate" Type="Boolean" />
+          <Property Name="ResponseB3EffectSubstantial" Type="Boolean" />
+          <Property Name="ResponseB3EffectNotApplicable" Type="Boolean" />
+          <NavigationProperty Name="DefElement" Relationship="Self.FK_Element_DefElement" FromRole="Element" ToRole="DefElement" />
+          <NavigationProperty Name="Form" Relationship="Self.FK_Element_Form" FromRole="Element" ToRole="Form" />
+        </EntityType>
+        <EntityType Name="EntityStatusType">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Directorates" Relationship="Self.FK_Directorate_EntityStatusType" FromRole="EntityStatusType" ToRole="Directorate" />
+          <NavigationProperty Name="DirectorateGroups" Relationship="Self.FK_DirectorateGroup_EntityStatusType" FromRole="EntityStatusType" ToRole="DirectorateGroup" />
+          <NavigationProperty Name="Teams" Relationship="Self.FK_Team_EntityStatusType" FromRole="EntityStatusType" ToRole="Team" />
+        </EntityType>
+        <EntityType Name="Form">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PeriodId" Type="Int32" />
+          <Property Name="TeamId" Type="Int32" />
+          <Property Name="DefFormId" Type="Int32" />
+          <Property Name="Title" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="DDSignOffStatus" Type="Boolean" />
+          <Property Name="DDSignOffUserId" Type="Int32" />
+          <Property Name="DDSignOffDate" Type="DateTime" Precision="3" />
+          <Property Name="DirSignOffStatus" Type="Boolean" />
+          <Property Name="DirSignOffUserId" Type="Int32" />
+          <Property Name="DirSignOffDate" Type="DateTime" Precision="3" />
+          <Property Name="LastSignOffFor" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="FirstSignedOff" Type="Boolean" />
+          <NavigationProperty Name="Elements" Relationship="Self.FK_Element_Form" FromRole="Form" ToRole="Element" />
+          <NavigationProperty Name="Period" Relationship="Self.FK_Form_Period" FromRole="Form" ToRole="Period" />
+          <NavigationProperty Name="Team" Relationship="Self.FK_Form_TeamSet" FromRole="Form" ToRole="Team" />
+        </EntityType>
+        <EntityType Name="Log">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Module" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Details" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="UserId" Type="Int32" />
+          <Property Name="LogDate" Type="DateTime" Precision="3" />
+          <Property Name="PeriodId" Type="Int32" />
+          <Property Name="TeamId" Type="Int32" />
+          <NavigationProperty Name="Period" Relationship="Self.FK_Log_Period" FromRole="Log" ToRole="Period" />
+          <NavigationProperty Name="Team" Relationship="Self.FK_Log_Team" FromRole="Log" ToRole="Team" />
+          <NavigationProperty Name="User" Relationship="Self.FK_Log_User" FromRole="Log" ToRole="User" />
+        </EntityType>
+        <EntityType Name="Period">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PeriodStatus" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PeriodStartDate" Type="DateTime" Precision="0" />
+          <Property Name="PeriodEndDate" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="AuditFeedbacks" Relationship="Self.FK_AuditFeedback_Period" FromRole="Period" ToRole="AuditFeedback" />
+          <NavigationProperty Name="DefElements" Relationship="Self.FK_DefElement_Period" FromRole="Period" ToRole="DefElement" />
+          <NavigationProperty Name="DefElementGroups" Relationship="Self.FK_DefElementGroup_Period" FromRole="Period" ToRole="DefElementGroup" />
+          <NavigationProperty Name="DefForms" Relationship="Self.FK_DefForm_Period" FromRole="Period" ToRole="DefForm" />
+          <NavigationProperty Name="Forms" Relationship="Self.FK_Form_Period" FromRole="Period" ToRole="Form" />
+          <NavigationProperty Name="Logs" Relationship="Self.FK_Log_Period" FromRole="Period" ToRole="Log" />
+        </EntityType>
+        <EntityType Name="PermissionType">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="UserPermissions" Relationship="Self.FK_UserPermission_PermissionType" FromRole="PermissionType" ToRole="UserPermission" />
+        </EntityType>
+        <EntityType Name="sysdiagram">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="Team">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="DirectorateId" Type="Int32" />
+          <Property Name="DeputyDirectorUserId" Type="Int32" />
+          <Property Name="EntityStatusId" Type="Int32" />
+          <NavigationProperty Name="AuditFeedbacks" Relationship="Self.FK_AuditFeedback_Team" FromRole="Team" ToRole="AuditFeedback" />
+          <NavigationProperty Name="Directorate" Relationship="Self.FK_Team_Directorate" FromRole="Team" ToRole="Directorate" />
+          <NavigationProperty Name="EntityStatusType" Relationship="Self.FK_Team_EntityStatusType" FromRole="Team" ToRole="EntityStatusType" />
+          <NavigationProperty Name="Forms" Relationship="Self.FK_Form_TeamSet" FromRole="Team" ToRole="Form" />
+          <NavigationProperty Name="Logs" Relationship="Self.FK_Log_Team" FromRole="Team" ToRole="Log" />
+          <NavigationProperty Name="User" Relationship="Self.FK_Team_User" FromRole="Team" ToRole="User" />
+          <NavigationProperty Name="TeamMembers" Relationship="Self.FK_TeamMember_Team" FromRole="Team" ToRole="TeamMember" />
+        </EntityType>
+        <EntityType Name="TeamMember">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UserId" Type="Int32" />
+          <Property Name="TeamId" Type="Int32" />
+          <Property Name="IsAdmin" Type="Boolean" Nullable="false" />
+          <Property Name="CanSignOff" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Team" Relationship="Self.FK_TeamMember_Team" FromRole="TeamMember" ToRole="Team" />
+          <NavigationProperty Name="User" Relationship="Self.FK_TeamMember_User" FromRole="TeamMember" ToRole="User" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Username" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SysStartTime" Type="DateTime" Precision="0" />
+          <Property Name="SysEndTime" Type="DateTime" Precision="0" />
+          <Property Name="ModifiedByUserID" Type="Int32" />
+          <NavigationProperty Name="AuditFeedbacks" Relationship="Self.FK_AuditFeedback_User" FromRole="User" ToRole="AuditFeedback" />
+          <NavigationProperty Name="Directorates" Relationship="Self.FK_Directorate_User" FromRole="User" ToRole="Directorate" />
+          <NavigationProperty Name="DirectorateGroups" Relationship="Self.FK_DirectorateGroup_User" FromRole="User" ToRole="DirectorateGroup" />
+          <NavigationProperty Name="DirectorateGroupMembers" Relationship="Self.FK_DirectorateGroupMember_User" FromRole="User" ToRole="DirectorateGroupMember" />
+          <NavigationProperty Name="DirectorateMembers" Relationship="Self.FK_DirectorateMember_User" FromRole="User" ToRole="DirectorateMember" />
+          <NavigationProperty Name="Logs" Relationship="Self.FK_Log_User" FromRole="User" ToRole="Log" />
+          <NavigationProperty Name="Teams" Relationship="Self.FK_Team_User" FromRole="User" ToRole="Team" />
+          <NavigationProperty Name="TeamMembers" Relationship="Self.FK_TeamMember_User" FromRole="User" ToRole="TeamMember" />
+          <NavigationProperty Name="UserPermissions" Relationship="Self.FK_UserPermission_User" FromRole="User" ToRole="UserPermission" />
+        </EntityType>
+        <EntityType Name="UserHelp">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="HelpText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="UserPermission">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UserId" Type="Int32" />
+          <Property Name="PermissionTypeId" Type="Int32" />
+          <NavigationProperty Name="PermissionType" Relationship="Self.FK_UserPermission_PermissionType" FromRole="UserPermission" ToRole="PermissionType" />
+          <NavigationProperty Name="User" Relationship="Self.FK_UserPermission_User" FromRole="UserPermission" ToRole="User" />
+        </EntityType>
+        <Association Name="FK_AuditFeedback_Period">
+          <End Role="Period" Type="Self.Period" Multiplicity="0..1" />
+          <End Role="AuditFeedback" Type="Self.AuditFeedback" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Period">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="AuditFeedback">
+              <PropertyRef Name="PeriodId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AuditFeedback_Team">
+          <End Role="Team" Type="Self.Team" Multiplicity="0..1" />
+          <End Role="AuditFeedback" Type="Self.AuditFeedback" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Team">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="AuditFeedback">
+              <PropertyRef Name="TeamId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AuditFeedback_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="AuditFeedback" Type="Self.AuditFeedback" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="AuditFeedback">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DefElement_DefElementGroup">
+          <End Role="DefElementGroup" Type="Self.DefElementGroup" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="DefElement" Type="Self.DefElement" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DefElementGroup">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="DefElement">
+              <PropertyRef Name="DefElementGroupId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DefElement_Period">
+          <End Role="Period" Type="Self.Period" Multiplicity="0..1" />
+          <End Role="DefElement" Type="Self.DefElement" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Period">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="DefElement">
+              <PropertyRef Name="PeriodId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Element_DefElement">
+          <End Role="DefElement" Type="Self.DefElement" Multiplicity="0..1" />
+          <End Role="Element" Type="Self.Element" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DefElement">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Element">
+              <PropertyRef Name="DefElementId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DefElementGroup_DefForm">
+          <End Role="DefForm" Type="Self.DefForm" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="DefElementGroup" Type="Self.DefElementGroup" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DefForm">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="DefElementGroup">
+              <PropertyRef Name="DefFormId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DefElementGroup_Period">
+          <End Role="Period" Type="Self.Period" Multiplicity="0..1" />
+          <End Role="DefElementGroup" Type="Self.DefElementGroup" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Period">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="DefElementGroup">
+              <PropertyRef Name="PeriodId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DefForm_Period">
+          <End Role="Period" Type="Self.Period" Multiplicity="0..1" />
+          <End Role="DefForm" Type="Self.DefForm" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Period">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="DefForm">
+              <PropertyRef Name="PeriodId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Directorate_DirectorateGroup">
+          <End Role="DirectorateGroup" Type="Self.DirectorateGroup" Multiplicity="1" />
+          <End Role="Directorate" Type="Self.Directorate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DirectorateGroup">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Directorate">
+              <PropertyRef Name="DirectorateGroupID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Directorate_EntityStatusType">
+          <End Role="EntityStatusType" Type="Self.EntityStatusType" Multiplicity="0..1" />
+          <End Role="Directorate" Type="Self.Directorate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntityStatusType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Directorate">
+              <PropertyRef Name="EntityStatusID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Directorate_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="Directorate" Type="Self.Directorate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Directorate">
+              <PropertyRef Name="DirectorUserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DirectorateMember_Directorate">
+          <End Role="Directorate" Type="Self.Directorate" Multiplicity="1" />
+          <End Role="DirectorateMember" Type="Self.DirectorateMember" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Directorate">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="DirectorateMember">
+              <PropertyRef Name="DirectorateID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Team_Directorate">
+          <End Role="Directorate" Type="Self.Directorate" Multiplicity="0..1" />
+          <End Role="Team" Type="Self.Team" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Directorate">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Team">
+              <PropertyRef Name="DirectorateId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DirectorateGroup_EntityStatusType">
+          <End Role="EntityStatusType" Type="Self.EntityStatusType" Multiplicity="0..1" />
+          <End Role="DirectorateGroup" Type="Self.DirectorateGroup" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntityStatusType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="DirectorateGroup">
+              <PropertyRef Name="EntityStatusID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DirectorateGroup_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="DirectorateGroup" Type="Self.DirectorateGroup" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="DirectorateGroup">
+              <PropertyRef Name="DirectorGeneralUserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DirectorateGroupMember_DirectorateGroup">
+          <End Role="DirectorateGroup" Type="Self.DirectorateGroup" Multiplicity="1" />
+          <End Role="DirectorateGroupMember" Type="Self.DirectorateGroupMember" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DirectorateGroup">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="DirectorateGroupMember">
+              <PropertyRef Name="DirectorateGroupID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DirectorateGroupMember_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="DirectorateGroupMember" Type="Self.DirectorateGroupMember" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="DirectorateGroupMember">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DirectorateMember_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="DirectorateMember" Type="Self.DirectorateMember" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="DirectorateMember">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Element_Form">
+          <End Role="Form" Type="Self.Form" Multiplicity="1" />
+          <End Role="Element" Type="Self.Element" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Form">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Element">
+              <PropertyRef Name="FormId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Team_EntityStatusType">
+          <End Role="EntityStatusType" Type="Self.EntityStatusType" Multiplicity="0..1" />
+          <End Role="Team" Type="Self.Team" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntityStatusType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Team">
+              <PropertyRef Name="EntityStatusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Form_Period">
+          <End Role="Period" Type="Self.Period" Multiplicity="0..1" />
+          <End Role="Form" Type="Self.Form" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Period">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Form">
+              <PropertyRef Name="PeriodId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Form_TeamSet">
+          <End Role="Team" Type="Self.Team" Multiplicity="0..1" />
+          <End Role="Form" Type="Self.Form" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Team">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Form">
+              <PropertyRef Name="TeamId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Log_Period">
+          <End Role="Period" Type="Self.Period" Multiplicity="0..1" />
+          <End Role="Log" Type="Self.Log" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Period">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Log">
+              <PropertyRef Name="PeriodId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Log_Team">
+          <End Role="Team" Type="Self.Team" Multiplicity="0..1" />
+          <End Role="Log" Type="Self.Log" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Team">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Log">
+              <PropertyRef Name="TeamId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Log_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="Log" Type="Self.Log" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Log">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserPermission_PermissionType">
+          <End Role="PermissionType" Type="Self.PermissionType" Multiplicity="0..1" />
+          <End Role="UserPermission" Type="Self.UserPermission" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PermissionType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UserPermission">
+              <PropertyRef Name="PermissionTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Team_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="Team" Type="Self.Team" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Team">
+              <PropertyRef Name="DeputyDirectorUserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TeamMember_Team">
+          <End Role="Team" Type="Self.Team" Multiplicity="0..1" />
+          <End Role="TeamMember" Type="Self.TeamMember" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Team">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TeamMember">
+              <PropertyRef Name="TeamId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TeamMember_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="TeamMember" Type="Self.TeamMember" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TeamMember">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserPermission_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="UserPermission" Type="Self.UserPermission" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UserPermission">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ControlAssuranceEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="APILogs" EntityType="Self.APILog" />
+          <EntitySet Name="AuditFeedbacks" EntityType="Self.AuditFeedback" />
+          <EntitySet Name="DefElements" EntityType="Self.DefElement" />
+          <EntitySet Name="DefElementGroups" EntityType="Self.DefElementGroup" />
+          <EntitySet Name="DefForms" EntityType="Self.DefForm" />
+          <EntitySet Name="Directorates" EntityType="Self.Directorate" />
+          <EntitySet Name="DirectorateGroups" EntityType="Self.DirectorateGroup" />
+          <EntitySet Name="DirectorateGroupMembers" EntityType="Self.DirectorateGroupMember" />
+          <EntitySet Name="DirectorateMembers" EntityType="Self.DirectorateMember" />
+          <EntitySet Name="Elements" EntityType="Self.Element" />
+          <EntitySet Name="EntityStatusTypes" EntityType="Self.EntityStatusType" />
+          <EntitySet Name="Forms" EntityType="Self.Form" />
+          <EntitySet Name="Logs" EntityType="Self.Log" />
+          <EntitySet Name="Periods" EntityType="Self.Period" />
+          <EntitySet Name="PermissionTypes" EntityType="Self.PermissionType" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+          <EntitySet Name="Teams" EntityType="Self.Team" />
+          <EntitySet Name="TeamMembers" EntityType="Self.TeamMember" />
+          <EntitySet Name="Users" EntityType="Self.User" />
+          <EntitySet Name="UserHelps" EntityType="Self.UserHelp" />
+          <EntitySet Name="UserPermissions" EntityType="Self.UserPermission" />
+          <AssociationSet Name="FK_AuditFeedback_Period" Association="Self.FK_AuditFeedback_Period">
+            <End Role="Period" EntitySet="Periods" />
+            <End Role="AuditFeedback" EntitySet="AuditFeedbacks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AuditFeedback_Team" Association="Self.FK_AuditFeedback_Team">
+            <End Role="Team" EntitySet="Teams" />
+            <End Role="AuditFeedback" EntitySet="AuditFeedbacks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AuditFeedback_User" Association="Self.FK_AuditFeedback_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="AuditFeedback" EntitySet="AuditFeedbacks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DefElement_DefElementGroup" Association="Self.FK_DefElement_DefElementGroup">
+            <End Role="DefElementGroup" EntitySet="DefElementGroups" />
+            <End Role="DefElement" EntitySet="DefElements" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DefElement_Period" Association="Self.FK_DefElement_Period">
+            <End Role="Period" EntitySet="Periods" />
+            <End Role="DefElement" EntitySet="DefElements" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Element_DefElement" Association="Self.FK_Element_DefElement">
+            <End Role="DefElement" EntitySet="DefElements" />
+            <End Role="Element" EntitySet="Elements" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DefElementGroup_DefForm" Association="Self.FK_DefElementGroup_DefForm">
+            <End Role="DefForm" EntitySet="DefForms" />
+            <End Role="DefElementGroup" EntitySet="DefElementGroups" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DefElementGroup_Period" Association="Self.FK_DefElementGroup_Period">
+            <End Role="Period" EntitySet="Periods" />
+            <End Role="DefElementGroup" EntitySet="DefElementGroups" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DefForm_Period" Association="Self.FK_DefForm_Period">
+            <End Role="Period" EntitySet="Periods" />
+            <End Role="DefForm" EntitySet="DefForms" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Directorate_DirectorateGroup" Association="Self.FK_Directorate_DirectorateGroup">
+            <End Role="DirectorateGroup" EntitySet="DirectorateGroups" />
+            <End Role="Directorate" EntitySet="Directorates" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Directorate_EntityStatusType" Association="Self.FK_Directorate_EntityStatusType">
+            <End Role="EntityStatusType" EntitySet="EntityStatusTypes" />
+            <End Role="Directorate" EntitySet="Directorates" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Directorate_User" Association="Self.FK_Directorate_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Directorate" EntitySet="Directorates" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DirectorateMember_Directorate" Association="Self.FK_DirectorateMember_Directorate">
+            <End Role="Directorate" EntitySet="Directorates" />
+            <End Role="DirectorateMember" EntitySet="DirectorateMembers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Team_Directorate" Association="Self.FK_Team_Directorate">
+            <End Role="Directorate" EntitySet="Directorates" />
+            <End Role="Team" EntitySet="Teams" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DirectorateGroup_EntityStatusType" Association="Self.FK_DirectorateGroup_EntityStatusType">
+            <End Role="EntityStatusType" EntitySet="EntityStatusTypes" />
+            <End Role="DirectorateGroup" EntitySet="DirectorateGroups" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DirectorateGroup_User" Association="Self.FK_DirectorateGroup_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="DirectorateGroup" EntitySet="DirectorateGroups" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DirectorateGroupMember_DirectorateGroup" Association="Self.FK_DirectorateGroupMember_DirectorateGroup">
+            <End Role="DirectorateGroup" EntitySet="DirectorateGroups" />
+            <End Role="DirectorateGroupMember" EntitySet="DirectorateGroupMembers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DirectorateGroupMember_User" Association="Self.FK_DirectorateGroupMember_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="DirectorateGroupMember" EntitySet="DirectorateGroupMembers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DirectorateMember_User" Association="Self.FK_DirectorateMember_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="DirectorateMember" EntitySet="DirectorateMembers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Element_Form" Association="Self.FK_Element_Form">
+            <End Role="Form" EntitySet="Forms" />
+            <End Role="Element" EntitySet="Elements" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Team_EntityStatusType" Association="Self.FK_Team_EntityStatusType">
+            <End Role="EntityStatusType" EntitySet="EntityStatusTypes" />
+            <End Role="Team" EntitySet="Teams" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Form_Period" Association="Self.FK_Form_Period">
+            <End Role="Period" EntitySet="Periods" />
+            <End Role="Form" EntitySet="Forms" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Form_TeamSet" Association="Self.FK_Form_TeamSet">
+            <End Role="Team" EntitySet="Teams" />
+            <End Role="Form" EntitySet="Forms" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Log_Period" Association="Self.FK_Log_Period">
+            <End Role="Period" EntitySet="Periods" />
+            <End Role="Log" EntitySet="Logs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Log_Team" Association="Self.FK_Log_Team">
+            <End Role="Team" EntitySet="Teams" />
+            <End Role="Log" EntitySet="Logs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Log_User" Association="Self.FK_Log_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Log" EntitySet="Logs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserPermission_PermissionType" Association="Self.FK_UserPermission_PermissionType">
+            <End Role="PermissionType" EntitySet="PermissionTypes" />
+            <End Role="UserPermission" EntitySet="UserPermissions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Team_User" Association="Self.FK_Team_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Team" EntitySet="Teams" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TeamMember_Team" Association="Self.FK_TeamMember_Team">
+            <End Role="Team" EntitySet="Teams" />
+            <End Role="TeamMember" EntitySet="TeamMembers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TeamMember_User" Association="Self.FK_TeamMember_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="TeamMember" EntitySet="TeamMembers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserPermission_User" Association="Self.FK_UserPermission_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="UserPermission" EntitySet="UserPermissions" />
+          </AssociationSet>
+          <FunctionImport Name="SPDGAreaStat" ReturnType="Collection(ControlAssuranceModel.SPDGAreaStat_Result)">
+            <Parameter Name="PeriodId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="SPDirectorateStat" ReturnType="Collection(ControlAssuranceModel.SPDirectorateStat_Result)">
+            <Parameter Name="PeriodId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="SPDivisionStat" ReturnType="Collection(ControlAssuranceModel.SPDivisionStat_Result)">
+            <Parameter Name="PeriodId" Mode="In" Type="Int32" />
+          </FunctionImport>
+        </EntityContainer>
+        <ComplexType Name="SPDGAreaStat_Result">
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="String" Name="Title" Nullable="true" MaxLength="50" />
+          <Property Type="Int32" Name="TotalAUnsatisfactory" Nullable="false" />
+          <Property Type="Int32" Name="TotalALimited" Nullable="false" />
+          <Property Type="Int32" Name="TotalAModerate" Nullable="false" />
+          <Property Type="Int32" Name="TotalASubstantial" Nullable="false" />
+          <Property Type="Int32" Name="TotalANotApplicable" Nullable="false" />
+          <Property Type="Int32" Name="TotalB1Unsatisfactory" Nullable="false" />
+          <Property Type="Int32" Name="TotalB1Limited" Nullable="false" />
+          <Property Type="Int32" Name="TotalB1Moderate" Nullable="false" />
+          <Property Type="Int32" Name="TotalB1Substantial" Nullable="false" />
+          <Property Type="Int32" Name="TotalB1NotApplicable" Nullable="false" />
+          <Property Type="Int32" Name="TotalB2Unsatisfactory" Nullable="false" />
+          <Property Type="Int32" Name="TotalB2Limited" Nullable="false" />
+          <Property Type="Int32" Name="TotalB2Moderate" Nullable="false" />
+          <Property Type="Int32" Name="TotalB2Substantial" Nullable="false" />
+          <Property Type="Int32" Name="TotalB2NotApplicable" Nullable="false" />
+          <Property Type="Int32" Name="TotalB3Unsatisfactory" Nullable="false" />
+          <Property Type="Int32" Name="TotalB3Limited" Nullable="false" />
+          <Property Type="Int32" Name="TotalB3Moderate" Nullable="false" />
+          <Property Type="Int32" Name="TotalB3Substantial" Nullable="false" />
+          <Property Type="Int32" Name="TotalB3NotApplicable" Nullable="false" />
+          <Property Type="Int32" Name="TotalUnsatisfactory" Nullable="false" />
+          <Property Type="Int32" Name="TotalLimited" Nullable="false" />
+          <Property Type="Int32" Name="TotalModerate" Nullable="false" />
+          <Property Type="Int32" Name="TotalSubstantial" Nullable="false" />
+          <Property Type="Int32" Name="TotalNotApplicable" Nullable="false" />
+          <Property Type="Int32" Name="TotalElements" Nullable="true" />
+          <Property Type="Int32" Name="TotalIncomplete" Nullable="false" />
+          <Property Type="Int32" Name="TotalEffective" Nullable="false" />
+          <Property Type="String" Name="Aggregate" Nullable="false" MaxLength="1" />
+          <Property Type="String" Name="AggregateControls" Nullable="false" MaxLength="1" />
+          <Property Type="String" Name="AggregateAssurances" Nullable="false" MaxLength="1" />
+          <Property Type="String" Name="AggregateAssurance1" Nullable="false" MaxLength="1" />
+          <Property Type="String" Name="AggregateAssurance2" Nullable="false" MaxLength="1" />
+          <Property Type="String" Name="AggregateAssurance3" Nullable="false" MaxLength="1" />
+        </ComplexType>
+        <ComplexType Name="SPDirectorateStat_Result">
+          <Property Type="String" Name="DGTitle" Nullable="true" MaxLength="50" />
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="String" Name="Title" Nullable="false" MaxLength="255" />
+          <Property Type="Int32" Name="DirectorateGroupID" Nullable="false" />
+          <Property Type="Int32" Name="TotalAUnsatisfactory" Nullable="false" />
+          <Property Type="Int32" Name="TotalALimited" Nullable="false" />
+          <Property Type="Int32" Name="TotalAModerate" Nullable="false" />
+          <Property Type="Int32" Name="TotalASubstantial" Nullable="false" />
+          <Property Type="Int32" Name="TotalANotApplicable" Nullable="false" />
+          <Property Type="Int32" Name="TotalB1Unsatisfactory" Nullable="false" />
+          <Property Type="Int32" Name="TotalB1Limited" Nullable="false" />
+          <Property Type="Int32" Name="TotalB1Moderate" Nullable="false" />
+          <Property Type="Int32" Name="TotalB1Substantial" Nullable="false" />
+          <Property Type="Int32" Name="TotalB1NotApplicable" Nullable="false" />
+          <Property Type="Int32" Name="TotalB2Unsatisfactory" Nullable="false" />
+          <Property Type="Int32" Name="TotalB2Limited" Nullable="false" />
+          <Property Type="Int32" Name="TotalB2Moderate" Nullable="false" />
+          <Property Type="Int32" Name="TotalB2Substantial" Nullable="false" />
+          <Property Type="Int32" Name="TotalB2NotApplicable" Nullable="false" />
+          <Property Type="Int32" Name="TotalB3Unsatisfactory" Nullable="false" />
+          <Property Type="Int32" Name="TotalB3Limited" Nullable="false" />
+          <Property Type="Int32" Name="TotalB3Moderate" Nullable="false" />
+          <Property Type="Int32" Name="TotalB3Substantial" Nullable="false" />
+          <Property Type="Int32" Name="TotalB3NotApplicable" Nullable="false" />
+          <Property Type="Int32" Name="TotalUnsatisfactory" Nullable="false" />
+          <Property Type="Int32" Name="TotalLimited" Nullable="false" />
+          <Property Type="Int32" Name="TotalModerate" Nullable="false" />
+          <Property Type="Int32" Name="TotalSubstantial" Nullable="false" />
+          <Property Type="Int32" Name="TotalNotApplicable" Nullable="false" />
+          <Property Type="Int32" Name="TotalElements" Nullable="true" />
+          <Property Type="Int32" Name="TotalIncomplete" Nullable="false" />
+          <Property Type="Int32" Name="TotalEffective" Nullable="false" />
+          <Property Type="String" Name="Aggregate" Nullable="false" MaxLength="1" />
+          <Property Type="String" Name="AggregateControls" Nullable="false" MaxLength="1" />
+          <Property Type="String" Name="AggregateAssurances" Nullable="false" MaxLength="1" />
+          <Property Type="String" Name="AggregateAssurance1" Nullable="false" MaxLength="1" />
+          <Property Type="String" Name="AggregateAssurance2" Nullable="false" MaxLength="1" />
+          <Property Type="String" Name="AggregateAssurance3" Nullable="false" MaxLength="1" />
+        </ComplexType>
+        <ComplexType Name="SPDivisionStat_Result">
+          <Property Type="String" Name="DGTitle" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="DirTitle" Nullable="false" MaxLength="255" />
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="String" Name="Title" Nullable="true" MaxLength="200" />
+          <Property Type="Int32" Name="DirectorateID" Nullable="true" />
+          <Property Type="Int32" Name="TotalAUnsatisfactory" Nullable="false" />
+          <Property Type="Int32" Name="TotalALimited" Nullable="false" />
+          <Property Type="Int32" Name="TotalAModerate" Nullable="false" />
+          <Property Type="Int32" Name="TotalASubstantial" Nullable="false" />
+          <Property Type="Int32" Name="TotalANotApplicable" Nullable="false" />
+          <Property Type="Int32" Name="TotalB1Unsatisfactory" Nullable="false" />
+          <Property Type="Int32" Name="TotalB1Limited" Nullable="false" />
+          <Property Type="Int32" Name="TotalB1Moderate" Nullable="false" />
+          <Property Type="Int32" Name="TotalB1Substantial" Nullable="false" />
+          <Property Type="Int32" Name="TotalB1NotApplicable" Nullable="false" />
+          <Property Type="Int32" Name="TotalB2Unsatisfactory" Nullable="false" />
+          <Property Type="Int32" Name="TotalB2Limited" Nullable="false" />
+          <Property Type="Int32" Name="TotalB2Moderate" Nullable="false" />
+          <Property Type="Int32" Name="TotalB2Substantial" Nullable="false" />
+          <Property Type="Int32" Name="TotalB2NotApplicable" Nullable="false" />
+          <Property Type="Int32" Name="TotalB3Unsatisfactory" Nullable="false" />
+          <Property Type="Int32" Name="TotalB3Limited" Nullable="false" />
+          <Property Type="Int32" Name="TotalB3Moderate" Nullable="false" />
+          <Property Type="Int32" Name="TotalB3Substantial" Nullable="false" />
+          <Property Type="Int32" Name="TotalB3NotApplicable" Nullable="false" />
+          <Property Type="Int32" Name="TotalUnsatisfactory" Nullable="false" />
+          <Property Type="Int32" Name="TotalLimited" Nullable="false" />
+          <Property Type="Int32" Name="TotalModerate" Nullable="false" />
+          <Property Type="Int32" Name="TotalSubstantial" Nullable="false" />
+          <Property Type="Int32" Name="TotalNotApplicable" Nullable="false" />
+          <Property Type="Int32" Name="TotalElements" Nullable="true" />
+          <Property Type="Int32" Name="TotalIncomplete" Nullable="false" />
+          <Property Type="Int32" Name="TotalEffective" Nullable="false" />
+          <Property Type="String" Name="Aggregate" Nullable="false" MaxLength="1" />
+          <Property Type="String" Name="AggregateControls" Nullable="false" MaxLength="1" />
+          <Property Type="String" Name="AggregateAssurances" Nullable="false" MaxLength="1" />
+          <Property Type="String" Name="AggregateAssurance1" Nullable="false" MaxLength="1" />
+          <Property Type="String" Name="AggregateAssurance2" Nullable="false" MaxLength="1" />
+          <Property Type="String" Name="AggregateAssurance3" Nullable="false" MaxLength="1" />
+        </ComplexType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ControlAssuranceModelStoreContainer" CdmEntityContainer="ControlAssuranceEntities">
+          <EntitySetMapping Name="APILogs">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.APILog">
+              <MappingFragment StoreEntitySet="APILog">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AuditFeedbacks">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.AuditFeedback">
+              <MappingFragment StoreEntitySet="AuditFeedback">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Details" ColumnName="Details" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="TeamId" ColumnName="TeamId" />
+                <ScalarProperty Name="PeriodId" ColumnName="PeriodId" />
+                <ScalarProperty Name="DateUpdated" ColumnName="DateUpdated" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DefElements">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.DefElement">
+              <MappingFragment StoreEntitySet="DefElement">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="DefElementGroupId" ColumnName="DefElementGroupId" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="ElementObjective" ColumnName="ElementObjective" />
+                <ScalarProperty Name="SectionATitle" ColumnName="SectionATitle" />
+                <ScalarProperty Name="SectionAHelp" ColumnName="SectionAHelp" />
+                <ScalarProperty Name="SectionANumQuestions" ColumnName="SectionANumQuestions" />
+                <ScalarProperty Name="SectionAQuestion1" ColumnName="SectionAQuestion1" />
+                <ScalarProperty Name="SectionAQuestion2" ColumnName="SectionAQuestion2" />
+                <ScalarProperty Name="SectionAQuestion3" ColumnName="SectionAQuestion3" />
+                <ScalarProperty Name="SectionAQuestion4" ColumnName="SectionAQuestion4" />
+                <ScalarProperty Name="SectionAQuestion5" ColumnName="SectionAQuestion5" />
+                <ScalarProperty Name="SectionAQuestion6" ColumnName="SectionAQuestion6" />
+                <ScalarProperty Name="SectionAQuestion7" ColumnName="SectionAQuestion7" />
+                <ScalarProperty Name="SectionAQuestion8" ColumnName="SectionAQuestion8" />
+                <ScalarProperty Name="SectionAQuestion9" ColumnName="SectionAQuestion9" />
+                <ScalarProperty Name="SectionAQuestion10" ColumnName="SectionAQuestion10" />
+                <ScalarProperty Name="SectionAOtherQuestion" ColumnName="SectionAOtherQuestion" />
+                <ScalarProperty Name="SectionAOtherBoxText" ColumnName="SectionAOtherBoxText" />
+                <ScalarProperty Name="SectionAEffectQuestion" ColumnName="SectionAEffectQuestion" />
+                <ScalarProperty Name="SectionAEffectNote" ColumnName="SectionAEffectNote" />
+                <ScalarProperty Name="SectionAEffectBoxText" ColumnName="SectionAEffectBoxText" />
+                <ScalarProperty Name="SectionBTitle" ColumnName="SectionBTitle" />
+                <ScalarProperty Name="SectionBHelp" ColumnName="SectionBHelp" />
+                <ScalarProperty Name="SectionBNumQuestions" ColumnName="SectionBNumQuestions" />
+                <ScalarProperty Name="SectionBQuestion1" ColumnName="SectionBQuestion1" />
+                <ScalarProperty Name="SectionBBoxText1" ColumnName="SectionBBoxText1" />
+                <ScalarProperty Name="SectionBEffect1" ColumnName="SectionBEffect1" />
+                <ScalarProperty Name="SectionBNote1" ColumnName="SectionBNote1" />
+                <ScalarProperty Name="SectionBQuestion2" ColumnName="SectionBQuestion2" />
+                <ScalarProperty Name="SectionBBoxText2" ColumnName="SectionBBoxText2" />
+                <ScalarProperty Name="SectionBEffect2" ColumnName="SectionBEffect2" />
+                <ScalarProperty Name="SectionBNote2" ColumnName="SectionBNote2" />
+                <ScalarProperty Name="SectionBQuestion3" ColumnName="SectionBQuestion3" />
+                <ScalarProperty Name="SectionBBoxText3" ColumnName="SectionBBoxText3" />
+                <ScalarProperty Name="SectionBEffect3" ColumnName="SectionBEffect3" />
+                <ScalarProperty Name="SectionBNote3" ColumnName="SectionBNote3" />
+                <ScalarProperty Name="SectionBQuestion4" ColumnName="SectionBQuestion4" />
+                <ScalarProperty Name="SectionBBoxText4" ColumnName="SectionBBoxText4" />
+                <ScalarProperty Name="SectionBEffect4" ColumnName="SectionBEffect4" />
+                <ScalarProperty Name="SectionBNote4" ColumnName="SectionBNote4" />
+                <ScalarProperty Name="SectionATitleHelpId" ColumnName="SectionATitleHelpId" />
+                <ScalarProperty Name="SectionAQuestion1HelpId" ColumnName="SectionAQuestion1HelpId" />
+                <ScalarProperty Name="SectionAQuestion2HelpId" ColumnName="SectionAQuestion2HelpId" />
+                <ScalarProperty Name="SectionAQuestion3HelpId" ColumnName="SectionAQuestion3HelpId" />
+                <ScalarProperty Name="SectionAQuestion4HelpId" ColumnName="SectionAQuestion4HelpId" />
+                <ScalarProperty Name="SectionAQuestion5HelpId" ColumnName="SectionAQuestion5HelpId" />
+                <ScalarProperty Name="SectionAQuestion6HelpId" ColumnName="SectionAQuestion6HelpId" />
+                <ScalarProperty Name="SectionAQuestion7HelpId" ColumnName="SectionAQuestion7HelpId" />
+                <ScalarProperty Name="SectionAQuestion8HelpId" ColumnName="SectionAQuestion8HelpId" />
+                <ScalarProperty Name="SectionAQuestion9HelpId" ColumnName="SectionAQuestion9HelpId" />
+                <ScalarProperty Name="SectionAQuestion10HelpId" ColumnName="SectionAQuestion10HelpId" />
+                <ScalarProperty Name="SectionAOtherQuestionHelpId" ColumnName="SectionAOtherQuestionHelpId" />
+                <ScalarProperty Name="SectionAEffectQuestionHelpId" ColumnName="SectionAEffectQuestionHelpId" />
+                <ScalarProperty Name="SectionBTitleHelpId" ColumnName="SectionBTitleHelpId" />
+                <ScalarProperty Name="SectionBQuestion1HelpId" ColumnName="SectionBQuestion1HelpId" />
+                <ScalarProperty Name="SectionBQuestion2HelpId" ColumnName="SectionBQuestion2HelpId" />
+                <ScalarProperty Name="SectionBQuestion3HelpId" ColumnName="SectionBQuestion3HelpId" />
+                <ScalarProperty Name="SectionBQuestion4HelpId" ColumnName="SectionBQuestion4HelpId" />
+                <ScalarProperty Name="PeriodId" ColumnName="PeriodId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DefElementGroups">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.DefElementGroup">
+              <MappingFragment StoreEntitySet="DefElementGroup">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+                <ScalarProperty Name="DefFormId" ColumnName="DefFormId" />
+                <ScalarProperty Name="PeriodId" ColumnName="PeriodId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DefForms">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.DefForm">
+              <MappingFragment StoreEntitySet="DefForm">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Details" ColumnName="Details" />
+                <ScalarProperty Name="SignOffSectionTitle" ColumnName="SignOffSectionTitle" />
+                <ScalarProperty Name="DDSignOffTitle" ColumnName="DDSignOffTitle" />
+                <ScalarProperty Name="DDSignOffText" ColumnName="DDSignOffText" />
+                <ScalarProperty Name="DirSignOffTitle" ColumnName="DirSignOffTitle" />
+                <ScalarProperty Name="DirSignOffText" ColumnName="DirSignOffText" />
+                <ScalarProperty Name="PeriodId" ColumnName="PeriodId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Directorates">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.Directorate">
+              <MappingFragment StoreEntitySet="Directorate">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="DirectorateGroupID" ColumnName="DirectorateGroupID" />
+                <ScalarProperty Name="DirectorUserID" ColumnName="DirectorUserID" />
+                <ScalarProperty Name="Objectives" ColumnName="Objectives" />
+                <ScalarProperty Name="EntityStatusID" ColumnName="EntityStatusID" />
+                <ScalarProperty Name="EntityStatusDate" ColumnName="EntityStatusDate" />
+                <ScalarProperty Name="SysStartTime" ColumnName="SysStartTime" />
+                <ScalarProperty Name="SysEndTime" ColumnName="SysEndTime" />
+                <ScalarProperty Name="ModifiedByUserID" ColumnName="ModifiedByUserID" />
+                <ScalarProperty Name="ReportApproverUserID" ColumnName="ReportApproverUserID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DirectorateGroups">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.DirectorateGroup">
+              <MappingFragment StoreEntitySet="DirectorateGroup">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="DirectorGeneralUserID" ColumnName="DirectorGeneralUserID" />
+                <ScalarProperty Name="RiskChampionDeputyDirectorUserID" ColumnName="RiskChampionDeputyDirectorUserID" />
+                <ScalarProperty Name="BusinessPartnerUserID" ColumnName="BusinessPartnerUserID" />
+                <ScalarProperty Name="SysStartTime" ColumnName="SysStartTime" />
+                <ScalarProperty Name="SysEndTime" ColumnName="SysEndTime" />
+                <ScalarProperty Name="ModifiedByUserID" ColumnName="ModifiedByUserID" />
+                <ScalarProperty Name="EntityStatusID" ColumnName="EntityStatusID" />
+                <ScalarProperty Name="EntityStatusDate" ColumnName="EntityStatusDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DirectorateGroupMembers">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.DirectorateGroupMember">
+              <MappingFragment StoreEntitySet="DirectorateGroupMember">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="DirectorateGroupID" ColumnName="DirectorateGroupID" />
+                <ScalarProperty Name="SysStartTime" ColumnName="SysStartTime" />
+                <ScalarProperty Name="SysEndTime" ColumnName="SysEndTime" />
+                <ScalarProperty Name="ModifiedByUserID" ColumnName="ModifiedByUserID" />
+                <ScalarProperty Name="IsAdmin" ColumnName="IsAdmin" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DirectorateMembers">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.DirectorateMember">
+              <MappingFragment StoreEntitySet="DirectorateMember">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="DirectorateID" ColumnName="DirectorateID" />
+                <ScalarProperty Name="IsAdmin" ColumnName="IsAdmin" />
+                <ScalarProperty Name="SysStartTime" ColumnName="SysStartTime" />
+                <ScalarProperty Name="SysEndTime" ColumnName="SysEndTime" />
+                <ScalarProperty Name="ModifiedByUserID" ColumnName="ModifiedByUserID" />
+                <ScalarProperty Name="CanSignOff" ColumnName="CanSignOff" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Elements">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.Element">
+              <MappingFragment StoreEntitySet="Element">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="FormId" ColumnName="FormId" />
+                <ScalarProperty Name="DefElementId" ColumnName="DefElementId" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CompletedOn" ColumnName="CompletedOn" />
+                <ScalarProperty Name="AssignedTo" ColumnName="AssignedTo" />
+                <ScalarProperty Name="GeneralNote" ColumnName="GeneralNote" />
+                <ScalarProperty Name="ResponseA1" ColumnName="ResponseA1" />
+                <ScalarProperty Name="ResponseA2" ColumnName="ResponseA2" />
+                <ScalarProperty Name="ResponseA3" ColumnName="ResponseA3" />
+                <ScalarProperty Name="ResponseA4" ColumnName="ResponseA4" />
+                <ScalarProperty Name="ResponseA5" ColumnName="ResponseA5" />
+                <ScalarProperty Name="ResponseA6" ColumnName="ResponseA6" />
+                <ScalarProperty Name="ResponseA7" ColumnName="ResponseA7" />
+                <ScalarProperty Name="ResponseA8" ColumnName="ResponseA8" />
+                <ScalarProperty Name="ResponseA9" ColumnName="ResponseA9" />
+                <ScalarProperty Name="ResponseA10" ColumnName="ResponseA10" />
+                <ScalarProperty Name="ResponseAOther" ColumnName="ResponseAOther" />
+                <ScalarProperty Name="ResponseAOtherText" ColumnName="ResponseAOtherText" />
+                <ScalarProperty Name="ResponseAEffect" ColumnName="ResponseAEffect" />
+                <ScalarProperty Name="ResponseAEffectText" ColumnName="ResponseAEffectText" />
+                <ScalarProperty Name="ResponseB1" ColumnName="ResponseB1" />
+                <ScalarProperty Name="ResponseB1Text" ColumnName="ResponseB1Text" />
+                <ScalarProperty Name="ResponseB1Effect" ColumnName="ResponseB1Effect" />
+                <ScalarProperty Name="ResponseB2" ColumnName="ResponseB2" />
+                <ScalarProperty Name="ResponseB2Text" ColumnName="ResponseB2Text" />
+                <ScalarProperty Name="ResponseB2Effect" ColumnName="ResponseB2Effect" />
+                <ScalarProperty Name="ResponseB3" ColumnName="ResponseB3" />
+                <ScalarProperty Name="ResponseB3Text" ColumnName="ResponseB3Text" />
+                <ScalarProperty Name="ResponseB3Effect" ColumnName="ResponseB3Effect" />
+                <ScalarProperty Name="ResponseB4" ColumnName="ResponseB4" />
+                <ScalarProperty Name="ResponseB4Text" ColumnName="ResponseB4Text" />
+                <ScalarProperty Name="ResponseB4Effect" ColumnName="ResponseB4Effect" />
+                <ScalarProperty Name="NotApplicable" ColumnName="NotApplicable" />
+                <ScalarProperty Name="ResponseAEffectUnsatisfactory" ColumnName="ResponseAEffectUnsatisfactory" />
+                <ScalarProperty Name="ResponseAEffectLimited" ColumnName="ResponseAEffectLimited" />
+                <ScalarProperty Name="ResponseAEffectModerate" ColumnName="ResponseAEffectModerate" />
+                <ScalarProperty Name="ResponseAEffectSubstantial" ColumnName="ResponseAEffectSubstantial" />
+                <ScalarProperty Name="ResponseAEffectNotApplicable" ColumnName="ResponseAEffectNotApplicable" />
+                <ScalarProperty Name="ResponseB1EffectUnsatisfactory" ColumnName="ResponseB1EffectUnsatisfactory" />
+                <ScalarProperty Name="ResponseB1EffectLimited" ColumnName="ResponseB1EffectLimited" />
+                <ScalarProperty Name="ResponseB1EffectModerate" ColumnName="ResponseB1EffectModerate" />
+                <ScalarProperty Name="ResponseB1EffectSubstantial" ColumnName="ResponseB1EffectSubstantial" />
+                <ScalarProperty Name="ResponseB1EffectNotApplicable" ColumnName="ResponseB1EffectNotApplicable" />
+                <ScalarProperty Name="ResponseB2EffectUnsatisfactory" ColumnName="ResponseB2EffectUnsatisfactory" />
+                <ScalarProperty Name="ResponseB2EffectLimited" ColumnName="ResponseB2EffectLimited" />
+                <ScalarProperty Name="ResponseB2EffectModerate" ColumnName="ResponseB2EffectModerate" />
+                <ScalarProperty Name="ResponseB2EffectSubstantial" ColumnName="ResponseB2EffectSubstantial" />
+                <ScalarProperty Name="ResponseB2EffectNotApplicable" ColumnName="ResponseB2EffectNotApplicable" />
+                <ScalarProperty Name="ResponseB3EffectUnsatisfactory" ColumnName="ResponseB3EffectUnsatisfactory" />
+                <ScalarProperty Name="ResponseB3EffectLimited" ColumnName="ResponseB3EffectLimited" />
+                <ScalarProperty Name="ResponseB3EffectModerate" ColumnName="ResponseB3EffectModerate" />
+                <ScalarProperty Name="ResponseB3EffectSubstantial" ColumnName="ResponseB3EffectSubstantial" />
+                <ScalarProperty Name="ResponseB3EffectNotApplicable" ColumnName="ResponseB3EffectNotApplicable" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EntityStatusTypes">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.EntityStatusType">
+              <MappingFragment StoreEntitySet="EntityStatusType">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Forms">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.Form">
+              <MappingFragment StoreEntitySet="Form">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="PeriodId" ColumnName="PeriodId" />
+                <ScalarProperty Name="TeamId" ColumnName="TeamId" />
+                <ScalarProperty Name="DefFormId" ColumnName="DefFormId" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="DDSignOffStatus" ColumnName="DDSignOffStatus" />
+                <ScalarProperty Name="DDSignOffUserId" ColumnName="DDSignOffUserId" />
+                <ScalarProperty Name="DDSignOffDate" ColumnName="DDSignOffDate" />
+                <ScalarProperty Name="DirSignOffStatus" ColumnName="DirSignOffStatus" />
+                <ScalarProperty Name="DirSignOffUserId" ColumnName="DirSignOffUserId" />
+                <ScalarProperty Name="DirSignOffDate" ColumnName="DirSignOffDate" />
+                <ScalarProperty Name="LastSignOffFor" ColumnName="LastSignOffFor" />
+                <ScalarProperty Name="FirstSignedOff" ColumnName="FirstSignedOff" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Logs">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.Log">
+              <MappingFragment StoreEntitySet="Log">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Module" ColumnName="Module" />
+                <ScalarProperty Name="Details" ColumnName="Details" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="LogDate" ColumnName="LogDate" />
+                <ScalarProperty Name="PeriodId" ColumnName="PeriodId" />
+                <ScalarProperty Name="TeamId" ColumnName="TeamId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Periods">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.Period">
+              <MappingFragment StoreEntitySet="Period">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="PeriodStatus" ColumnName="PeriodStatus" />
+                <ScalarProperty Name="PeriodStartDate" ColumnName="PeriodStartDate" />
+                <ScalarProperty Name="PeriodEndDate" ColumnName="PeriodEndDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PermissionTypes">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.PermissionType">
+              <MappingFragment StoreEntitySet="PermissionType">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.sysdiagram">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Teams">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.Team">
+              <MappingFragment StoreEntitySet="Team">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="DirectorateId" ColumnName="DirectorateId" />
+                <ScalarProperty Name="DeputyDirectorUserId" ColumnName="DeputyDirectorUserId" />
+                <ScalarProperty Name="EntityStatusId" ColumnName="EntityStatusId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TeamMembers">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.TeamMember">
+              <MappingFragment StoreEntitySet="TeamMember">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="TeamId" ColumnName="TeamId" />
+                <ScalarProperty Name="IsAdmin" ColumnName="IsAdmin" />
+                <ScalarProperty Name="CanSignOff" ColumnName="CanSignOff" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.User">
+              <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="SysStartTime" ColumnName="SysStartTime" />
+                <ScalarProperty Name="SysEndTime" ColumnName="SysEndTime" />
+                <ScalarProperty Name="ModifiedByUserID" ColumnName="ModifiedByUserID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserHelps">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.UserHelp">
+              <MappingFragment StoreEntitySet="UserHelp">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="HelpText" ColumnName="HelpText" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserPermissions">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.UserPermission">
+              <MappingFragment StoreEntitySet="UserPermission">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="PermissionTypeId" ColumnName="PermissionTypeId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="SPDGAreaStat" FunctionName="ControlAssuranceModel.Store.SPDGAreaStat">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ControlAssuranceModel.SPDGAreaStat_Result">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="TotalAUnsatisfactory" ColumnName="TotalAUnsatisfactory" />
+                <ScalarProperty Name="TotalALimited" ColumnName="TotalALimited" />
+                <ScalarProperty Name="TotalAModerate" ColumnName="TotalAModerate" />
+                <ScalarProperty Name="TotalASubstantial" ColumnName="TotalASubstantial" />
+                <ScalarProperty Name="TotalANotApplicable" ColumnName="TotalANotApplicable" />
+                <ScalarProperty Name="TotalB1Unsatisfactory" ColumnName="TotalB1Unsatisfactory" />
+                <ScalarProperty Name="TotalB1Limited" ColumnName="TotalB1Limited" />
+                <ScalarProperty Name="TotalB1Moderate" ColumnName="TotalB1Moderate" />
+                <ScalarProperty Name="TotalB1Substantial" ColumnName="TotalB1Substantial" />
+                <ScalarProperty Name="TotalB1NotApplicable" ColumnName="TotalB1NotApplicable" />
+                <ScalarProperty Name="TotalB2Unsatisfactory" ColumnName="TotalB2Unsatisfactory" />
+                <ScalarProperty Name="TotalB2Limited" ColumnName="TotalB2Limited" />
+                <ScalarProperty Name="TotalB2Moderate" ColumnName="TotalB2Moderate" />
+                <ScalarProperty Name="TotalB2Substantial" ColumnName="TotalB2Substantial" />
+                <ScalarProperty Name="TotalB2NotApplicable" ColumnName="TotalB2NotApplicable" />
+                <ScalarProperty Name="TotalB3Unsatisfactory" ColumnName="TotalB3Unsatisfactory" />
+                <ScalarProperty Name="TotalB3Limited" ColumnName="TotalB3Limited" />
+                <ScalarProperty Name="TotalB3Moderate" ColumnName="TotalB3Moderate" />
+                <ScalarProperty Name="TotalB3Substantial" ColumnName="TotalB3Substantial" />
+                <ScalarProperty Name="TotalB3NotApplicable" ColumnName="TotalB3NotApplicable" />
+                <ScalarProperty Name="TotalUnsatisfactory" ColumnName="TotalUnsatisfactory" />
+                <ScalarProperty Name="TotalLimited" ColumnName="TotalLimited" />
+                <ScalarProperty Name="TotalModerate" ColumnName="TotalModerate" />
+                <ScalarProperty Name="TotalSubstantial" ColumnName="TotalSubstantial" />
+                <ScalarProperty Name="TotalNotApplicable" ColumnName="TotalNotApplicable" />
+                <ScalarProperty Name="TotalElements" ColumnName="TotalElements" />
+                <ScalarProperty Name="TotalIncomplete" ColumnName="TotalIncomplete" />
+                <ScalarProperty Name="TotalEffective" ColumnName="TotalEffective" />
+                <ScalarProperty Name="Aggregate" ColumnName="Aggregate" />
+                <ScalarProperty Name="AggregateControls" ColumnName="AggregateControls" />
+                <ScalarProperty Name="AggregateAssurances" ColumnName="AggregateAssurances" />
+                <ScalarProperty Name="AggregateAssurance1" ColumnName="AggregateAssurance1" />
+                <ScalarProperty Name="AggregateAssurance2" ColumnName="AggregateAssurance2" />
+                <ScalarProperty Name="AggregateAssurance3" ColumnName="AggregateAssurance3" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SPDirectorateStat" FunctionName="ControlAssuranceModel.Store.SPDirectorateStat">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ControlAssuranceModel.SPDirectorateStat_Result">
+                <ScalarProperty Name="DGTitle" ColumnName="DGTitle" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="DirectorateGroupID" ColumnName="DirectorateGroupID" />
+                <ScalarProperty Name="TotalAUnsatisfactory" ColumnName="TotalAUnsatisfactory" />
+                <ScalarProperty Name="TotalALimited" ColumnName="TotalALimited" />
+                <ScalarProperty Name="TotalAModerate" ColumnName="TotalAModerate" />
+                <ScalarProperty Name="TotalASubstantial" ColumnName="TotalASubstantial" />
+                <ScalarProperty Name="TotalANotApplicable" ColumnName="TotalANotApplicable" />
+                <ScalarProperty Name="TotalB1Unsatisfactory" ColumnName="TotalB1Unsatisfactory" />
+                <ScalarProperty Name="TotalB1Limited" ColumnName="TotalB1Limited" />
+                <ScalarProperty Name="TotalB1Moderate" ColumnName="TotalB1Moderate" />
+                <ScalarProperty Name="TotalB1Substantial" ColumnName="TotalB1Substantial" />
+                <ScalarProperty Name="TotalB1NotApplicable" ColumnName="TotalB1NotApplicable" />
+                <ScalarProperty Name="TotalB2Unsatisfactory" ColumnName="TotalB2Unsatisfactory" />
+                <ScalarProperty Name="TotalB2Limited" ColumnName="TotalB2Limited" />
+                <ScalarProperty Name="TotalB2Moderate" ColumnName="TotalB2Moderate" />
+                <ScalarProperty Name="TotalB2Substantial" ColumnName="TotalB2Substantial" />
+                <ScalarProperty Name="TotalB2NotApplicable" ColumnName="TotalB2NotApplicable" />
+                <ScalarProperty Name="TotalB3Unsatisfactory" ColumnName="TotalB3Unsatisfactory" />
+                <ScalarProperty Name="TotalB3Limited" ColumnName="TotalB3Limited" />
+                <ScalarProperty Name="TotalB3Moderate" ColumnName="TotalB3Moderate" />
+                <ScalarProperty Name="TotalB3Substantial" ColumnName="TotalB3Substantial" />
+                <ScalarProperty Name="TotalB3NotApplicable" ColumnName="TotalB3NotApplicable" />
+                <ScalarProperty Name="TotalUnsatisfactory" ColumnName="TotalUnsatisfactory" />
+                <ScalarProperty Name="TotalLimited" ColumnName="TotalLimited" />
+                <ScalarProperty Name="TotalModerate" ColumnName="TotalModerate" />
+                <ScalarProperty Name="TotalSubstantial" ColumnName="TotalSubstantial" />
+                <ScalarProperty Name="TotalNotApplicable" ColumnName="TotalNotApplicable" />
+                <ScalarProperty Name="TotalElements" ColumnName="TotalElements" />
+                <ScalarProperty Name="TotalIncomplete" ColumnName="TotalIncomplete" />
+                <ScalarProperty Name="TotalEffective" ColumnName="TotalEffective" />
+                <ScalarProperty Name="Aggregate" ColumnName="Aggregate" />
+                <ScalarProperty Name="AggregateControls" ColumnName="AggregateControls" />
+                <ScalarProperty Name="AggregateAssurances" ColumnName="AggregateAssurances" />
+                <ScalarProperty Name="AggregateAssurance1" ColumnName="AggregateAssurance1" />
+                <ScalarProperty Name="AggregateAssurance2" ColumnName="AggregateAssurance2" />
+                <ScalarProperty Name="AggregateAssurance3" ColumnName="AggregateAssurance3" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SPDivisionStat" FunctionName="ControlAssuranceModel.Store.SPDivisionStat">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ControlAssuranceModel.SPDivisionStat_Result">
+                <ScalarProperty Name="DGTitle" ColumnName="DGTitle" />
+                <ScalarProperty Name="DirTitle" ColumnName="DirTitle" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="DirectorateID" ColumnName="DirectorateID" />
+                <ScalarProperty Name="TotalAUnsatisfactory" ColumnName="TotalAUnsatisfactory" />
+                <ScalarProperty Name="TotalALimited" ColumnName="TotalALimited" />
+                <ScalarProperty Name="TotalAModerate" ColumnName="TotalAModerate" />
+                <ScalarProperty Name="TotalASubstantial" ColumnName="TotalASubstantial" />
+                <ScalarProperty Name="TotalANotApplicable" ColumnName="TotalANotApplicable" />
+                <ScalarProperty Name="TotalB1Unsatisfactory" ColumnName="TotalB1Unsatisfactory" />
+                <ScalarProperty Name="TotalB1Limited" ColumnName="TotalB1Limited" />
+                <ScalarProperty Name="TotalB1Moderate" ColumnName="TotalB1Moderate" />
+                <ScalarProperty Name="TotalB1Substantial" ColumnName="TotalB1Substantial" />
+                <ScalarProperty Name="TotalB1NotApplicable" ColumnName="TotalB1NotApplicable" />
+                <ScalarProperty Name="TotalB2Unsatisfactory" ColumnName="TotalB2Unsatisfactory" />
+                <ScalarProperty Name="TotalB2Limited" ColumnName="TotalB2Limited" />
+                <ScalarProperty Name="TotalB2Moderate" ColumnName="TotalB2Moderate" />
+                <ScalarProperty Name="TotalB2Substantial" ColumnName="TotalB2Substantial" />
+                <ScalarProperty Name="TotalB2NotApplicable" ColumnName="TotalB2NotApplicable" />
+                <ScalarProperty Name="TotalB3Unsatisfactory" ColumnName="TotalB3Unsatisfactory" />
+                <ScalarProperty Name="TotalB3Limited" ColumnName="TotalB3Limited" />
+                <ScalarProperty Name="TotalB3Moderate" ColumnName="TotalB3Moderate" />
+                <ScalarProperty Name="TotalB3Substantial" ColumnName="TotalB3Substantial" />
+                <ScalarProperty Name="TotalB3NotApplicable" ColumnName="TotalB3NotApplicable" />
+                <ScalarProperty Name="TotalUnsatisfactory" ColumnName="TotalUnsatisfactory" />
+                <ScalarProperty Name="TotalLimited" ColumnName="TotalLimited" />
+                <ScalarProperty Name="TotalModerate" ColumnName="TotalModerate" />
+                <ScalarProperty Name="TotalSubstantial" ColumnName="TotalSubstantial" />
+                <ScalarProperty Name="TotalNotApplicable" ColumnName="TotalNotApplicable" />
+                <ScalarProperty Name="TotalElements" ColumnName="TotalElements" />
+                <ScalarProperty Name="TotalIncomplete" ColumnName="TotalIncomplete" />
+                <ScalarProperty Name="TotalEffective" ColumnName="TotalEffective" />
+                <ScalarProperty Name="Aggregate" ColumnName="Aggregate" />
+                <ScalarProperty Name="AggregateControls" ColumnName="AggregateControls" />
+                <ScalarProperty Name="AggregateAssurances" ColumnName="AggregateAssurances" />
+                <ScalarProperty Name="AggregateAssurance1" ColumnName="AggregateAssurance1" />
+                <ScalarProperty Name="AggregateAssurance2" ColumnName="AggregateAssurance2" />
+                <ScalarProperty Name="AggregateAssurance3" ColumnName="AggregateAssurance3" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

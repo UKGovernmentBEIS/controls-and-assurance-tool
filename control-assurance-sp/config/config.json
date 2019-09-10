@@ -1,0 +1,63 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "car-updates-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/carUpdates/CarUpdatesWebPart.js",
+          "manifest": "./src/webparts/carUpdates/CarUpdatesWebPart.manifest.json"
+        }
+      ]
+    },
+    "user-management-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/userManagement/UserManagementWebPart.js",
+          "manifest": "./src/webparts/userManagement/UserManagementWebPart.manifest.json"
+        }
+      ]
+    },
+    "org-management-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/orgManagement/OrgManagementWebPart.js",
+          "manifest": "./src/webparts/orgManagement/OrgManagementWebPart.manifest.json"
+        }
+      ]
+    },
+    "properties-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/properties/PropertiesWebPart.js",
+          "manifest": "./src/webparts/properties/PropertiesWebPart.manifest.json"
+        }
+      ]
+    },
+    "org-report-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/orgReport/OrgReportWebPart.js",
+          "manifest": "./src/webparts/orgReport/OrgReportWebPart.manifest.json"
+        }
+      ]
+    },
+    "welcome-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/welcome/WelcomeWebPart.js",
+          "manifest": "./src/webparts/welcome/WelcomeWebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "CarUpdatesWebPartStrings": "lib/webparts/carUpdates/loc/{locale}.js",
+    "UserManagementWebPartStrings": "lib/webparts/userManagement/loc/{locale}.js",
+    "OrgManagementWebPartStrings": "lib/webparts/orgManagement/loc/{locale}.js",
+    "PropertiesWebPartStrings": "lib/webparts/properties/loc/{locale}.js",
+    "OrgReportWebPartStrings": "lib/webparts/orgReport/loc/{locale}.js",
+    "WelcomeWebPartStrings": "lib/webparts/welcome/loc/{locale}.js"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "control-assurance-client-side-solution",
+    "id": "391ff4f6-60d0-4e79-8f23-4e1c0e0e9435",
+    "version": "1.5.20.0",
+    "includeClientSideAssets": true,
+    "webApiPermissionRequests": [
+      {
+        "resource": "ControlAssuranceADReg-Test",
+        "scope": "full"
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/control-assurance.sppkg"
+  }
+}
