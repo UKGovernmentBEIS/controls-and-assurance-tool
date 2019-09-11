@@ -26,3 +26,35 @@ steps:
     command: 'install'
     workingDir: 'control-assurance-sp'
     verbose: false
+
+- task: Gulp@0
+  displayName: 'Run gulp set-web-api-permission-request'
+  inputs:
+    gulpFile: 'control-assurance-sp/gulpfile.js'
+    targets: 'set-web-api-permission-request'
+    arguments: '--resource $(Resource) --scope $(Scope)'
+  condition: and(succeeded(), eq(variables['IncludeWebAPIPermissionRequest'], 'True'))
+
+- task: Gulp@0
+  displayName: 'Run gulp bundle'
+  inputs:
+    gulpFile: 'control-assurance-sp/gulpfile.js'
+    targets: bundle
+    arguments: '--ship'
+    workingDirectory: 'control-assurance-sp'
+
+- task: Gulp@0
+  displayName: 'Run gulp package-solution'
+  inputs:
+    gulpFile: 'control-assurance-sp/gulpfile.js'
+    targets: 'package-solution'
+    arguments: '--ship'
+    workingDirectory: 'control-assurance-sp'
+
+- task: CopyFiles@2
+  displayName: 'Copy Files to: $(build.artifactstagingdirectory)/$(EnvironmentName)'
+  inputs:
+    SourceFolder: 'control-assurance-sp/sharepoint/solution/'
+    Contents: 'control-assurance-sp.sppkg'
+    TargetFolder: '$(build.artifactstagingdirectory)/$(EnvironmentName)'
+
