@@ -9,6 +9,7 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
+
 steps:
 - task: NodeTool@0
   displayName: 'Use Node 8.9.4'
@@ -55,7 +56,7 @@ steps:
   displayName: 'Copy Files to: $(build.artifactstagingdirectory)/$(EnvironmentName)'
   inputs:
     SourceFolder: 'control-assurance-sp/sharepoint/solution/'
-    Contents: 'control-assurance-sp.sppkg'
+    Contents: 'control-assurance.sppkg'
     TargetFolder: '$(build.artifactstagingdirectory)/$(EnvironmentName)'
 
 - task: PublishBuildArtifacts@1
