@@ -1,0 +1,31 @@
+#!/bin/bash
+
+######################################################################################################
+# Script: uninstall-appreg
+#
+# This script removes the following resources in Azure to support the removal
+# of a BEIS Digital application:
+#
+#     * App Registration
+#
+# Parameters: None but see note
+#
+# Note: env, appShortname, appDisplayName and adDomain should be set as environment vars
+# First 3 are req by set-resource-names and adDomain is like beisdigitaldev.onmicrosoft.com
+#
+######################################################################################################
+
+
+. set-resource-names 
+
+echo "Started - Uninstall App Registration - $appRegistrationDisplayName "
+
+appRegistrationIdentifierUri=https://$adDomain/${appShortname}api${env^}
+
+if az ad app show --id $appRegistrationIdentifierUri
+then
+    # Delete the App Registration
+    az ad app delete --id $appRegistrationIdentifierUri
+fi
+
+echo "Completed - Uninstall App Registration - $appRegistrationDisplayName"
