@@ -7,12 +7,12 @@
     "includeClientSideAssets": true,
     "webApiPermissionRequests": [
       {
-        "resource": "ControlAssuranceADReg-Test",
+        "resource": "ControlAssuranceADReg-Dev",
         "scope": "full"
       }
     ]
   },
   "paths": {
-    "zippedPackage": "solution/control-assurance.sppkg"
+    "zippedPackage": "solution/controls-and-assurance-tool.sppkg"
   }
 }
