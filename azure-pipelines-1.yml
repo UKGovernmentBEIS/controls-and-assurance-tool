@@ -57,7 +57,7 @@ steps:
   inputs:
     SourceFolder: 'control-assurance-sp/sharepoint/solution/'
     Contents: 'controls-and-assurance-tool.sppkg'
-    TargetFolder: '$(build.artifactstagingdirectory)/$(EnvironmentName)'
+    TargetFolder: '$(build.artifactstagingdirectory)'
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish artifacts: drop'
