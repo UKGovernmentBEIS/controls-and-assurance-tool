@@ -56,7 +56,7 @@ steps:
   displayName: 'Copy Files to: $(build.artifactstagingdirectory)/$(EnvironmentName)'
   inputs:
     SourceFolder: 'control-assurance-sp/sharepoint/solution/'
-    Contents: 'control-assurance.sppkg'
+    Contents: 'controls-and-assurance-tool.sppkg'
     TargetFolder: '$(build.artifactstagingdirectory)/$(EnvironmentName)'
 
 - task: PublishBuildArtifacts@1
