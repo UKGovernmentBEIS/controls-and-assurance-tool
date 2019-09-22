@@ -9,6 +9,12 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
+variables:
+  EnvironmentName: dev
+  Resource: dev-caat-api
+  Scope: user_impersonation
+
+
 
 steps:
 - task: NodeTool@0
