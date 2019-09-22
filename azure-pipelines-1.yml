@@ -10,9 +10,10 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  EnvironmentName: dev
-  Resource: dev-caat-api
-  Scope: user_impersonation
+  EnvironmentName: 'dev'
+  Resource: 'dev-caat-api'
+  Scope: 'user_impersonation'
+  IncludeWebAPIPermissionRequest: True
 
 
 
