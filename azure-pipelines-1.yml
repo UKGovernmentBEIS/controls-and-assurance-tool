@@ -11,7 +11,7 @@ pool:
 
 variables:
   EnvironmentName: 'dev'
-  Resource: 'dev-caat-api'
+  Resource: 'Controls and Assurance Tool API Dev'
   Scope: 'user_impersonation'
   IncludeWebAPIPermissionRequest: True
 
