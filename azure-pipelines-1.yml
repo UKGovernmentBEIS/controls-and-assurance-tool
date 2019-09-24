@@ -11,7 +11,7 @@ pool:
 
 variables:
   EnvironmentName: 'dev'
-  Resource: 'dev-caat-api'
+  Resource: '"Controls and Assurance Tool API Dev"'
   Scope: 'user_impersonation'
   IncludeWebAPIPermissionRequest: True
 
@@ -63,7 +63,7 @@ steps:
   displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
   inputs:
     SourceFolder: 'control-assurance-sp/sharepoint/solution/'
-    Contents: 'controls-and-assurance-tool.sppkg'
+    Contents: 'caat-webparts.sppkg'
     TargetFolder: '$(build.artifactstagingdirectory)'
 
 - task: PublishBuildArtifacts@1
