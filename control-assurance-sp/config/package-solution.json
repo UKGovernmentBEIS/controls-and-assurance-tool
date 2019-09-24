@@ -1,7 +1,7 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
   "solution": {
-    "name": "control-assurance-client-side-solution",
+    "name": "Controls and Assurance Tool Web Parts",
     "id": "391ff4f6-60d0-4e79-8f23-4e1c0e0e9435",
     "version": "1.5.20.0",
     "includeClientSideAssets": true,
@@ -13,6 +13,6 @@
     ]
   },
   "paths": {
-    "zippedPackage": "solution/controls-and-assurance-tool.sppkg"
+    "zippedPackage": "solution/caat-webparts.sppkg"
   }
 }
