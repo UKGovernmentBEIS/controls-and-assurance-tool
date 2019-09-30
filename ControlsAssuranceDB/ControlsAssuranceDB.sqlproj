@@ -98,4 +98,7 @@
     <Build Include="dbo\Stored Procedures\SPDirectorateStat.sql" />
     <Build Include="dbo\Stored Procedures\SPDivisionStat.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="ControlsAssuranceDB.publish.xml" />
+  </ItemGroup>
 </Project>
