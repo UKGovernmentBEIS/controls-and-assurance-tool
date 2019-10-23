@@ -10,6 +10,7 @@ build.initialize(gulp);
 
 // Custom Gulp task to configure the Web Api Permission Request for the package
 // Uses modifyFile plugin from https://www.npmjs.com/package/gulp-modify-file
+// Npm i gulp-modify-file
 gulp.task('set-web-api-permission-request', () => {
     const modifyFile = require('gulp-modify-file')
  
