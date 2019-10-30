@@ -80,11 +80,14 @@ export class ReportList extends React.Component<IReportListProps, IReportListSta
         this.state = {
             Columns: props.columns,
             FilteredItems: props.items,
-        };
+        };        
     }
 
     public render(): JSX.Element {
+
+        
         const { props, state } = this;
+        
         return (
             <Fabric>
                 
@@ -170,20 +173,20 @@ export class ReportList extends React.Component<IReportListProps, IReportListSta
     //#region Form initialisation
 
     public componentDidMount(): void {
-        this.setState({ FilteredItems: SearchObjectService.filterEntities(this.props.items, this.props.filterText) });
+        this.setState({ FilteredItems: SearchObjectService.filterEntities(this.props.items, this.props.filterText) }, this._onLoadTrySort);
+        
     }
 
     public componentDidUpdate(prevProps: IReportListProps): void {
 
         if(prevProps.columns !== this.props.columns){
             this.props.columns.forEach((c) => { c.onColumnClick = this._onColumnClick; });
-            this.setState({ Columns: this.props.columns, FilteredItems: SearchObjectService.filterEntities(this.props.items, this.props.filterText) });
+            this.setState({ Columns: this.props.columns, FilteredItems: SearchObjectService.filterEntities(this.props.items, this.props.filterText) }, this._onLoadTrySort);
         }
         else if (prevProps.items !== this.props.items || prevProps.filterText !== this.props.filterText){
 
-            this.setState({ FilteredItems: SearchObjectService.filterEntities(this.props.items, this.props.filterText) });
-        }
-            
+            this.setState({ FilteredItems: SearchObjectService.filterEntities(this.props.items, this.props.filterText) }, this._onLoadTrySort);
+        }            
     }
 
     //#endregion
@@ -225,6 +228,7 @@ export class ReportList extends React.Component<IReportListProps, IReportListSta
 
         //console.log("in renderItemColumn: ", column.key, item);      
         let fieldContent = item[column.fieldName as keyof IEntity] as string;
+        
 
         if(column.key === "Aggregate" || column.key === "AggregateControls" || column.key === "AggregateAssurances" || column.key === "AggregateAssurance1" || column.key === "AggregateAssurance2" || column.key === "AggregateAssurance3"){
             let txtColor:string = "white";
@@ -250,7 +254,7 @@ export class ReportList extends React.Component<IReportListProps, IReportListSta
             );
         }
         else if(column.key === "Title"){
-
+            
             if(this.props.entityNamePlural === "Themes"){
                 return <span>{fieldContent}</span>;
             }
@@ -265,6 +269,35 @@ export class ReportList extends React.Component<IReportListProps, IReportListSta
         }
 
     }
+
+    //29Oct2019 - Start - Add
+    private _onLoadTrySort = (): void => {
+        const { Columns, FilteredItems } = this.state;
+        let newItems: any[] = FilteredItems.slice();
+        const newColumns: IColumn[] = Columns.slice();
+        const currColumn: IColumn = newColumns.filter((currCol: IColumn, idx: number) => {
+            //return Columns[0].key === currCol.key;
+            return 'Title';
+        })[0];
+
+        newColumns.forEach((newCol: IColumn) => {
+            if (newCol === currColumn) {
+                //currColumn.isSortedDescending = !currColumn.isSortedDescending;
+                currColumn.isSortedDescending = false;
+                currColumn.isSorted = true;
+            } else {
+                newCol.isSorted = false;
+                newCol.isSortedDescending = true;
+            }
+        });
+
+        newItems = this._sortItems(newItems, currColumn.fieldName || '', currColumn.isSortedDescending);
+        this.setState({
+            Columns: newColumns,
+            FilteredItems: newItems
+        });
+    }
+    //29Oct2019 - End - Add
 
     private _onColumnClick = (ev: React.MouseEvent<HTMLElement>, column: IColumn): void => {
         const { Columns, FilteredItems } = this.state;

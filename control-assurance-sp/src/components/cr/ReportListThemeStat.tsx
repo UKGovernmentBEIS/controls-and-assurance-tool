@@ -228,18 +228,18 @@ export class ReportListThemeStat extends React.Component<IReportListThemeStatPro
     //#region Form initialisation
 
     public componentDidMount(): void {
-        this.setState({ FilteredItems: SearchObjectService.filterEntities(this.props.items, this.props.filterText) });
+        this.setState({ FilteredItems: SearchObjectService.filterEntities(this.props.items, this.props.filterText) }, this._onLoadTrySort);
     }
 
     public componentDidUpdate(prevProps: IReportListThemeStatProps): void {
 
         if(prevProps.columns !== this.props.columns){
             this.props.columns.forEach((c) => { c.onColumnClick = this._onColumnClick; });
-            this.setState({ Columns: this.props.columns, FilteredItems: SearchObjectService.filterEntities(this.props.items, this.props.filterText) });
+            this.setState({ Columns: this.props.columns, FilteredItems: SearchObjectService.filterEntities(this.props.items, this.props.filterText) }, this._onLoadTrySort);
         }
         else if (prevProps.items !== this.props.items || prevProps.filterText !== this.props.filterText){
 
-            this.setState({ FilteredItems: SearchObjectService.filterEntities(this.props.items, this.props.filterText) });
+            this.setState({ FilteredItems: SearchObjectService.filterEntities(this.props.items, this.props.filterText) }, this._onLoadTrySort);
         }
             
     }
@@ -323,6 +323,35 @@ export class ReportListThemeStat extends React.Component<IReportListThemeStatPro
         }
 
     }
+
+        //30Oct2019 - Start - Add
+        private _onLoadTrySort = (): void => {
+            const { Columns, FilteredItems } = this.state;
+            let newItems: any[] = FilteredItems.slice();
+            const newColumns: IColumn[] = Columns.slice();
+            const currColumn: IColumn = newColumns.filter((currCol: IColumn, idx: number) => {
+                //return Columns[0].key === currCol.key;
+                return 'Title';
+            })[0];
+    
+            newColumns.forEach((newCol: IColumn) => {
+                if (newCol === currColumn) {
+                    //currColumn.isSortedDescending = !currColumn.isSortedDescending;
+                    currColumn.isSortedDescending = false;
+                    currColumn.isSorted = true;
+                } else {
+                    newCol.isSorted = false;
+                    newCol.isSortedDescending = true;
+                }
+            });
+    
+            newItems = this._sortItems(newItems, currColumn.fieldName || '', currColumn.isSortedDescending);
+            this.setState({
+                Columns: newColumns,
+                FilteredItems: newItems
+            });
+        }
+        //30Oct2019 - End - Add
 
     private _onColumnClick = (ev: React.MouseEvent<HTMLElement>, column: IColumn): void => {
         const { Columns, FilteredItems } = this.state;

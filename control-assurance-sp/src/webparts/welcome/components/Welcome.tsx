@@ -51,7 +51,7 @@ export default class Welcome extends BaseUserContextWebPartComponent<types.IWebP
     return(
   
       <Pivot onLinkClick={this.clearErrors}>
-        <PivotItem headerText="Welcome">
+        <PivotItem headerText="Welcome3">
           {this.renderWelcome()}
         </PivotItem> 
 

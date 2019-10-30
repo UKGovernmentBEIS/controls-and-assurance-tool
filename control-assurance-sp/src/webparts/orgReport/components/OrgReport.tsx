@@ -177,7 +177,10 @@ export default class OrgReport extends BaseUserContextWebPartComponent<types.IWe
         minWidth: 250,
         maxWidth: 300,
         isResizable: true,
-        headerClassName: "bold",
+        headerClassName: "bold"
+        //isSortedDescending: false,
+        //isSorted: true
+
       },
       {
         key: 'TotalUnsatisfactory',
