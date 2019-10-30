@@ -3,12 +3,12 @@
   "solution": {
     "name": "Controls and Assurance Tool Web Parts",
     "id": "391ff4f6-60d0-4e79-8f23-4e1c0e0e9435",
-    "version": "1.5.20.2",
+    "version": "1.5.20.3",
     "includeClientSideAssets": true,
     "webApiPermissionRequests": [
       {
-        "resource": "ControlAssuranceADReg-Dev",
-        "scope": "full"
+        "resource": "Controls and Assurance Tool API Dev",
+        "scope": "user_impersonation"
       }
     ]
   },
