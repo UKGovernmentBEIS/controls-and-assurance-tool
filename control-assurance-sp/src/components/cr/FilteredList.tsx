@@ -35,12 +35,14 @@ export class FilteredList extends React.Component<IFilteredListProps, IFilteredL
     //#region Form initialisation
 
     public componentDidMount(): void {
-        this.setState({ FilteredItems: SearchObjectService.filterEntities(this.props.items, this.props.filterText) }, this._onLoadTrySort);
+        //this.setState({ FilteredItems: SearchObjectService.filterEntities(this.props.items, this.props.filterText) }, this._onLoadTrySort);
+        this.setState({ FilteredItems: SearchObjectService.filterEntities(this.props.items, this.props.filterText) });
     }
 
     public componentDidUpdate(prevProps: IFilteredListProps): void {
         if (prevProps.items !== this.props.items || prevProps.filterText !== this.props.filterText)
-            this.setState({ FilteredItems: SearchObjectService.filterEntities(this.props.items, this.props.filterText) }, this._onLoadTrySort);
+            //this.setState({ FilteredItems: SearchObjectService.filterEntities(this.props.items, this.props.filterText) }, this._onLoadTrySort);
+            this.setState({ FilteredItems: SearchObjectService.filterEntities(this.props.items, this.props.filterText) });
     }
 
     //#endregion
@@ -52,10 +54,12 @@ export class FilteredList extends React.Component<IFilteredListProps, IFilteredL
         const { Columns, FilteredItems } = this.state;
         let newItems: any[] = FilteredItems.slice();
         const newColumns: IColumn[] = Columns.slice();
-        const currColumn: IColumn = newColumns.filter((currCol: IColumn, idx: number) => {
-            //return Columns[0].key === currCol.key;
-            return 'Title';
-        })[0];
+
+        const currColumn: IColumn = newColumns[0];
+        //const currColumn: IColumn = newColumns.filter((currCol: IColumn, idx: number) => {
+        //    return Columns[0].key === currCol.key;
+            //return 'Title';
+        //})[0];
 
         newColumns.forEach((newCol: IColumn) => {
             if (newCol === currColumn) {
