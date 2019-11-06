@@ -19,4 +19,12 @@ export class UserService extends EntityService<IUser> {
                 return users[0];
         });
     }
+
+    //6Nov19 Start - Add
+    public firstRequestToAPI(): Promise<string> {
+        return super.readString(`?firstRequest=&checkDb=&checkCurrentUser`).then((result:string): string => {
+            return result;
+        });
+    }
+    //6Nov19 End
 }

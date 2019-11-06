@@ -33,6 +33,10 @@ namespace ControlAssuranceAPI.Models
         ObjectResult<SPDirectorateStat_Result> SPDirectorateStat(Nullable<int> periodId);
         ObjectResult<SPDivisionStat_Result> SPDivisionStat(Nullable<int> periodId);
 
+        //6Nov19 Start-Add - did this in ispm, but here we already have it
+        //Database Database { get; }
+        //6Nov19 End
+
         int SaveChanges();
     }
 }

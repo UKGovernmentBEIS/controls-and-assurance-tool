@@ -8,6 +8,9 @@ import { ITeamMember } from "./TeamMember";
 
 export interface IWebPartComponentState {
 	Error: string;
+	//6Nov19 Start - Add var
+	FirstAPICallError: string;
+	//6Nov19 End
 	Loading: boolean;
 }
 
@@ -28,6 +31,9 @@ export interface IUserContextWebPartState extends IWebPartComponentState {
 
 export class WebPartComponentState implements IWebPartComponentState {
 	public Error = null;
+	//6Nov19 Start
+	public FirstAPICallError = null;
+	//6Nov19 End
 	public Loading = false;
 }
 

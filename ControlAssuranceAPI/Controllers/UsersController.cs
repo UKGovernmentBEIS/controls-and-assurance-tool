@@ -28,6 +28,16 @@ namespace ControlAssuranceAPI.Controllers
             return db.UserRepository.Users;
         }
 
+        //6Nov19 Start - Add
+        //GET: odata/users?firstRequest=&checkDB=&checkCurrentUser
+        [EnableQuery]
+        public string Get(string firstRequest, RemoteStreamInfo checkDb, string checkCurrentUser)
+        {
+            return db.UserRepository.FirstRequest();
+        }
+        //6Nov19 End
+
+
         // GET: odata/Users(1)
         [EnableQuery]
         public SingleResult<User> Get([FromODataUri] int key)
