@@ -76,7 +76,7 @@ export default class Welcome extends BaseUserContextWebPartComponent<types.IWebP
         <div dangerouslySetInnerHTML={{ __html: lookups.DefForm && lookups.DefForm.Details }}></div>
         <br />
         <PrimaryButton
-          text="Start / View Updates"
+          text="Start / View Updates Now"
           onClick={this.handleUpdatesClick}
         />
         <br /><br />
