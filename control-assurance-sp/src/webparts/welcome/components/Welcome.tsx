@@ -79,6 +79,11 @@ export default class Welcome extends BaseUserContextWebPartComponent<types.IWebP
           text="Start / View Updates"
           onClick={this.handleUpdatesClick}
         />
+        <PrimaryButton
+          text="Upload a File"
+          onClick={this.handleUploadFileClick}
+        />
+
         <br /><br />
         <div>
           Current period ends on the {periodEndDate}
@@ -132,6 +137,11 @@ export default class Welcome extends BaseUserContextWebPartComponent<types.IWebP
     window.location.href = pageUrl;
   }
 
+  
+  private handleUploadFileClick = (): void => {
+    //const pageUrl = this.props.spfxContext.pageContext.web.absoluteUrl + "/SitePages/updates.aspx";
+    //window.location.href = pageUrl;
+  }
   //#endregion event handlers
 
 }
