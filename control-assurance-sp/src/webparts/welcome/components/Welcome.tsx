@@ -9,6 +9,8 @@ import { IUserPermission, IDefForm, IPeriod } from '../../../types';
 import { CrLoadingOverlayWelcome } from '../../../components/cr/CrLoadingOverlayWelcome';
 import styles from '../../../styles/cr.module.scss';
 import { PrimaryButton } from 'office-ui-fabric-react/lib/Button';
+import { sp, SPHttpClient } from "@pnp/sp";
+import { ISPHttpClientOptions, SPHttpClientResponse } from '@microsoft/sp-http';
 
 //#region types defination
 
@@ -38,6 +40,7 @@ export default class Welcome extends BaseUserContextWebPartComponent<types.IWebP
 
   protected defFormService: services.DefFormService = new services.DefFormService(this.props.spfxContext, this.props.api);
   protected periodService: services.PeriodService = new services.PeriodService(this.props.spfxContext, this.props.api);
+  domElement: any;
 
   constructor(props: types.IWebPartComponentProps) {
 		super(props);
@@ -62,6 +65,7 @@ export default class Welcome extends BaseUserContextWebPartComponent<types.IWebP
   private renderWelcome(): React.ReactElement<types.IWebPartComponentProps> {
     const { LookupData:lookups } = this.state;
     let periodEndDate:string="";
+    this.setButtonsEventHandlers();
     if(lookups.CurrentPeriod){
       const endDate = lookups.CurrentPeriod.PeriodEndDate;
       periodEndDate = services.DateService.dateToUkDate(endDate);
@@ -79,10 +83,17 @@ export default class Welcome extends BaseUserContextWebPartComponent<types.IWebP
           text="Start / View Updates"
           onClick={this.handleUpdatesClick}
         />
+
+        <input type="file" id="uploadFile" value="Upload File" />  
+
         <PrimaryButton
-          text="Upload a File"
-          onClick={this.handleUploadFileClick}
+          text="Upload Now"
+          onClick={this.UploadFiles}
         />
+
+       
+
+      
 
         <br /><br />
         <div>
@@ -100,6 +111,7 @@ export default class Welcome extends BaseUserContextWebPartComponent<types.IWebP
 
   
   //#region Data Load
+
 
   protected loadDefForm = (): Promise<IDefForm> => {
     return this.defFormService.read(1).then((df: IDefForm): IDefForm => {
@@ -138,7 +150,46 @@ export default class Welcome extends BaseUserContextWebPartComponent<types.IWebP
   }
 
   
-  private handleUploadFileClick = (): void => {
+  private UploadFiles = (): void => {
+console.log('In Uploadfiles');
+//in case of multiple files,iterate or else upload the first file.
+var file = this.domElement.getElementsByID('uploadFile').text;
+console.log(`Status code: ${file}`);
+
+if (file != undefined || file != null) {
+  let spOpts : ISPHttpClientOptions  = {
+    headers: {
+      "Accept": "application/json",
+      "Content-Type": "application/json"
+    },
+    body: file        
+  };
+
+  var url = `https://<your-site-url>/_api/Web/Lists/getByTitle('Documents')/RootFolder/Files/Add(url='${file}', overwrite=true)`
+  console.log(`url: ${url}`);
+
+  this.context.spHttpClient.post(url, this.context.spHttpClient.configurations.v1, spOpts).then((response: SPHttpClientResponse) => {
+
+    console.log(`Status code: ${response.status}`);
+    console.log(`Status text: ${response.statusText}`);
+
+    response.json().then((responseJSON: JSON) => {
+      console.log(responseJSON);
+    });
+  });
+
+}
+    
+    
+  }
+
+
+
+
+
+
+
+
     //const pageUrl = this.props.spfxContext.pageContext.web.absoluteUrl + "/SitePages/updates.aspx";
     //window.location.href = pageUrl;
   }
