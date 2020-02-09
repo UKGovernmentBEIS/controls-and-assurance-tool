@@ -49,6 +49,30 @@
           "manifest": "./src/webparts/welcome/WelcomeWebPart.manifest.json"
         }
       ]
+    },
+    "app-home-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/appHome/AppHomeWebPart.js",
+          "manifest": "./src/webparts/appHome/AppHomeWebPart.manifest.json"
+        }
+      ]
+    },
+    "go-welcome-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/goWelcome/GoWelcomeWebPart.js",
+          "manifest": "./src/webparts/goWelcome/GoWelcomeWebPart.manifest.json"
+        }
+      ]
+    },
+    "go-updates-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/goUpdates/GoUpdatesWebPart.js",
+          "manifest": "./src/webparts/goUpdates/GoUpdatesWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {},
@@ -58,6 +82,9 @@
     "OrgManagementWebPartStrings": "lib/webparts/orgManagement/loc/{locale}.js",
     "PropertiesWebPartStrings": "lib/webparts/properties/loc/{locale}.js",
     "OrgReportWebPartStrings": "lib/webparts/orgReport/loc/{locale}.js",
-    "WelcomeWebPartStrings": "lib/webparts/welcome/loc/{locale}.js"
+    "WelcomeWebPartStrings": "lib/webparts/welcome/loc/{locale}.js",
+    "AppHomeWebPartStrings": "lib/webparts/appHome/loc/{locale}.js",
+    "GoWelcomeWebPartStrings": "lib/webparts/goWelcome/loc/{locale}.js",
+    "GoUpdatesWebPartStrings": "lib/webparts/goUpdates/loc/{locale}.js"
   }
 }
