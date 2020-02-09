@@ -5,7 +5,7 @@ import BaseUserContextWebPartComponent from '../../../components/BaseUserContext
 import * as services from '../../../services';
 import EntityList from '../../../components/entity/EntityList';
 import { IGenColumn, ColumnType, ColumnDisplayType } from '../../../types/GenColumn';
-import { IUserPermission, IDefForm, IPeriod } from '../../../types';
+import { IUserPermission, IGoDefForm, IPeriod } from '../../../types';
 import { CrLoadingOverlayWelcome } from '../../../components/cr/CrLoadingOverlayWelcome';
 import styles from '../../../styles/cr.module.scss';
 import { PrimaryButton } from 'office-ui-fabric-react/lib/Button';
@@ -13,19 +13,19 @@ import { PrimaryButton } from 'office-ui-fabric-react/lib/Button';
 //#region types defination
 
 export interface ILookupData{
-  DefForm: IDefForm;
+  GoDefForm: IGoDefForm;
   CurrentPeriod: IPeriod;
 }
 
 export class LookupData implements ILookupData{
-  public DefForm: IDefForm;
+  public GoDefForm: IGoDefForm;
   public CurrentPeriod: IPeriod;
 }
 
-export interface IWelcomeState extends types.IUserContextWebPartState {
+export interface IGoWelcomeState extends types.IUserContextWebPartState {
   LookupData : ILookupData;
 }
-export class WelcomeState extends types.UserContextWebPartState {
+export class GoWelcomeState extends types.UserContextWebPartState {
   public LookupData = new LookupData();
 	constructor() {
     super();
@@ -34,14 +34,14 @@ export class WelcomeState extends types.UserContextWebPartState {
 
 //#endregion types defination
 
-export default class Welcome extends BaseUserContextWebPartComponent<types.IWebPartComponentProps, WelcomeState> {
+export default class GoWelcome extends BaseUserContextWebPartComponent<types.IWebPartComponentProps, GoWelcomeState> {
 
-  protected defFormService: services.DefFormService = new services.DefFormService(this.props.spfxContext, this.props.api);
+  protected goDefFormService: services.GoDefFormService = new services.GoDefFormService(this.props.spfxContext, this.props.api);
   protected periodService: services.PeriodService = new services.PeriodService(this.props.spfxContext, this.props.api);
 
   constructor(props: types.IWebPartComponentProps) {
 		super(props);
-    this.state = new WelcomeState();
+    this.state = new GoWelcomeState();
   }
 
   //#region Render
@@ -72,8 +72,8 @@ export default class Welcome extends BaseUserContextWebPartComponent<types.IWebP
     return (
       <div>
         <CrLoadingOverlayWelcome isLoading={this.state.Loading} />
-        <h1 className='ms-font-xl'>{lookups.DefForm && lookups.DefForm.Title}</h1>        
-        <div dangerouslySetInnerHTML={{ __html: lookups.DefForm && lookups.DefForm.Details }}></div>
+        <h1 className='ms-font-xl'>{lookups.GoDefForm && lookups.GoDefForm.Title}</h1>        
+        <div dangerouslySetInnerHTML={{ __html: lookups.GoDefForm && lookups.GoDefForm.Details }}></div>
         <br />
         <PrimaryButton
           text="Start / View Updates"
@@ -96,9 +96,9 @@ export default class Welcome extends BaseUserContextWebPartComponent<types.IWebP
   
   //#region Data Load
 
-  protected loadDefForm = (): Promise<IDefForm> => {
-    return this.defFormService.read(1).then((df: IDefForm): IDefForm => {
-        this.setState({ LookupData: this.cloneObject(this.state.LookupData, 'DefForm', df) });
+  protected loadDefForm = (): Promise<IGoDefForm> => {
+    return this.goDefFormService.read(1).then((df: IGoDefForm): IGoDefForm => {
+        this.setState({ LookupData: this.cloneObject(this.state.LookupData, 'GoDefForm', df) });
         return df;
     }, (err) => { if (this.onError) this.onError(`Error loading DefForm lookup data`, err.message); });
   }

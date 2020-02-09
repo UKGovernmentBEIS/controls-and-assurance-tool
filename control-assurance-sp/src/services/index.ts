@@ -7,6 +7,7 @@ export { EntityUpdateService } from './EntityUpdateService';
 export { LookupService } from './LookupService';
 
 export { DefFormService } from './DefFormService';
+export { GoDefFormService } from './GoDefFormService';
 export { DefElementGroupService } from './DefElementGroupService';
 export { DefElementService } from './DefElementService';
 export { PeriodService } from './PeriodService';

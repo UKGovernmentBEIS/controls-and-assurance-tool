@@ -285,6 +285,10 @@ namespace ControlAssuranceAPI.Repositories
 
             //check status of all elements inside the same form
             int formId = retElement.FormId;
+
+            //to lazy load Form after saving the element
+            db.Entry(retElement).Reference(e => e.Form).Load();
+
             int periodId = retElement.Form.PeriodId.Value;
             int totalElements = db.Elements.Count(e => e.FormId == formId);
 

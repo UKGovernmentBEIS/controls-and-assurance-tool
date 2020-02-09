@@ -1,6 +1,7 @@
 using System;
 using System.Data.Entity;
 using System.Data.Entity.Core.Objects;
+using System.Data.Entity.Infrastructure;
 
 namespace ControlAssuranceAPI.Models
 {
@@ -27,15 +28,16 @@ namespace ControlAssuranceAPI.Models
         DbSet<Log> Logs { get; set; }
         DbSet<UserHelp> UserHelps { get; set; }
         DbSet<AuditFeedback> AuditFeedbacks { get; set; }
+        DbSet<GoDefForm> GoDefForms { get; set; }
 
 
         ObjectResult<SPDGAreaStat_Result> SPDGAreaStat(Nullable<int> periodId);
         ObjectResult<SPDirectorateStat_Result> SPDirectorateStat(Nullable<int> periodId);
         ObjectResult<SPDivisionStat_Result> SPDivisionStat(Nullable<int> periodId);
 
-        //6Nov19 Start-Add - did this in ispm, but here we already have it
-        //Database Database { get; }
-        //6Nov19 End
+        DbEntityEntry Entry(object entity);
+        DbEntityEntry<TEntity> Entry<TEntity>(TEntity entity) where TEntity : class;
+
 
         int SaveChanges();
     }

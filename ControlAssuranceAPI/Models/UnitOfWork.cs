@@ -34,7 +34,7 @@ namespace ControlAssuranceAPI.Models
         private LogRepository logRepository;
         private AuditFeedbackRepository auditFeedbackRepository;
 
-        
+        private GoDefFormRepository goDefFormRepository;
 
         private SPDGAreaStatRepository spDGAreaStatRepository;
         private SPDirectorateStatRepository spDirectorateStatRepository;
@@ -296,6 +296,17 @@ namespace ControlAssuranceAPI.Models
             }
         }
 
+        public GoDefFormRepository GoDefFormRepository
+        {
+            get
+            {
+                if (goDefFormRepository == null)
+                {
+                    goDefFormRepository = new GoDefFormRepository(user, context);
+                }
+                return goDefFormRepository;
+            }
+        }
 
 
         public SPDGAreaStatRepository SPDGAreaStatRepository

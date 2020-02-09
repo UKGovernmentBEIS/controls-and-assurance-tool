@@ -115,9 +115,6 @@
     <Reference Include="Microsoft.Spatial, Version=7.5.0.20627, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Spatial.7.5.0\lib\portable-net45+win8+wpa81\Microsoft.Spatial.dll</HintPath>
     </Reference>
-    <Reference Include="Notify, Version=2.5.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Notify.2.5.1\lib\netstandard2.0\Notify.dll</HintPath>
-    </Reference>
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
     </Reference>
@@ -191,6 +188,7 @@
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\DefElementGroupsController.cs" />
     <Compile Include="Controllers\DefElementsController.cs" />
+    <Compile Include="Controllers\GoDefFormsController.cs" />
     <Compile Include="Controllers\DefFormsController.cs" />
     <Compile Include="Controllers\DirectoratesController.cs" />
     <Compile Include="Controllers\DirectorateGroupsController.cs" />
@@ -267,6 +265,9 @@
     <Compile Include="Models\Form.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\GoDefForm.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\IControlAssuranceContext.cs" />
     <Compile Include="Models\Log.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
@@ -310,6 +311,7 @@
     <Compile Include="Repositories\BaseRepository.cs" />
     <Compile Include="Repositories\DefElementGroupRespository.cs" />
     <Compile Include="Repositories\DefElementRepository.cs" />
+    <Compile Include="Repositories\GoDefFormRepository.cs" />
     <Compile Include="Repositories\DefFormRepository.cs" />
     <Compile Include="Repositories\DirectorateRepository.cs" />
     <Compile Include="Repositories\DirectorateGroupRepository.cs" />

@@ -14,6 +14,7 @@ export { IEntityFormProps } from './EntityFormProps';
 export { IFormDataChildEntities } from './FormDataRelationships';
 
 export { IDefForm } from './DefForm';
+export { IGoDefForm } from './GoDefForm';
 export { IDefElementGroup } from './DefElementGroup';
 export { IDefElement } from './DefElement';
 export { IPermissionType } from './PermissionType';

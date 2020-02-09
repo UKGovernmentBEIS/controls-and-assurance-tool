@@ -257,6 +257,17 @@
           <Property Name="LastSignOffFor" Type="nvarchar" MaxLength="50" />
           <Property Name="FirstSignedOff" Type="bit" />
         </EntityType>
+        <EntityType Name="GoDefForm">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="500" />
+          <Property Name="Details" Type="nvarchar(max)" />
+          <Property Name="SignOffSectionTitle" Type="nvarchar" MaxLength="200" />
+          <Property Name="DGSignOffTitle" Type="nvarchar" MaxLength="200" />
+          <Property Name="DGSignOffText" Type="nvarchar(max)" />
+        </EntityType>
         <EntityType Name="Log">
           <Key>
             <PropertyRef Name="ID" />
@@ -744,6 +755,7 @@
           <EntitySet Name="Element" EntityType="Self.Element" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntityStatusType" EntityType="Self.EntityStatusType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Form" EntityType="Self.Form" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GoDefForm" EntityType="Self.GoDefForm" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Log" EntityType="Self.Log" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Period" EntityType="Self.Period" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PermissionType" EntityType="Self.PermissionType" Schema="dbo" store:Type="Tables" />
@@ -1166,6 +1178,17 @@
           <NavigationProperty Name="Elements" Relationship="Self.FK_Element_Form" FromRole="Form" ToRole="Element" />
           <NavigationProperty Name="Period" Relationship="Self.FK_Form_Period" FromRole="Form" ToRole="Period" />
           <NavigationProperty Name="Team" Relationship="Self.FK_Form_TeamSet" FromRole="Form" ToRole="Team" />
+        </EntityType>
+        <EntityType Name="GoDefForm">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Details" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SignOffSectionTitle" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="DGSignOffTitle" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="DGSignOffText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Log">
           <Key>
@@ -1675,6 +1698,7 @@
           <EntitySet Name="Elements" EntityType="Self.Element" />
           <EntitySet Name="EntityStatusTypes" EntityType="Self.EntityStatusType" />
           <EntitySet Name="Forms" EntityType="Self.Form" />
+          <EntitySet Name="GoDefForms" EntityType="Self.GoDefForm" />
           <EntitySet Name="Logs" EntityType="Self.Log" />
           <EntitySet Name="Periods" EntityType="Self.Period" />
           <EntitySet Name="PermissionTypes" EntityType="Self.PermissionType" />
@@ -2204,6 +2228,18 @@
                 <ScalarProperty Name="DirSignOffDate" ColumnName="DirSignOffDate" />
                 <ScalarProperty Name="LastSignOffFor" ColumnName="LastSignOffFor" />
                 <ScalarProperty Name="FirstSignedOff" ColumnName="FirstSignedOff" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GoDefForms">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.GoDefForm">
+              <MappingFragment StoreEntitySet="GoDefForm">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Details" ColumnName="Details" />
+                <ScalarProperty Name="SignOffSectionTitle" ColumnName="SignOffSectionTitle" />
+                <ScalarProperty Name="DGSignOffTitle" ColumnName="DGSignOffTitle" />
+                <ScalarProperty Name="DGSignOffText" ColumnName="DGSignOffText" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

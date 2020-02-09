@@ -52,7 +52,9 @@ namespace ControlAssuranceAPI
             builder.EntitySet<Models.EntityStatusType>("EntityStatusTypes");            
             builder.EntitySet<Models.UserHelp>("UserHelps");
             builder.EntitySet<Models.Log>("Logs");
-            builder.EntitySet<Models.AuditFeedback>("AuditFeedbacks");            
+            builder.EntitySet<Models.AuditFeedback>("AuditFeedbacks");
+
+            builder.EntitySet<GoDefForm>("GoDefForms");
 
             builder.EntitySet<Models.SPDGAreaStat_Result>("DGAreaStats");
             builder.EntitySet<Models.SPDirectorateStat_Result>("DirectorateStats");
