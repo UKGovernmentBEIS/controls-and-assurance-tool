@@ -128,7 +128,7 @@ export default class GoWelcome extends BaseUserContextWebPartComponent<types.IWe
   //#region event handlers
 
   private handleUpdatesClick = (): void => {
-    const pageUrl = this.props.spfxContext.pageContext.web.absoluteUrl + "/SitePages/updates.aspx";
+    const pageUrl = this.props.spfxContext.pageContext.web.absoluteUrl + "/SitePages/GovernanceUpdates.aspx";
     window.location.href = pageUrl;
   }
 

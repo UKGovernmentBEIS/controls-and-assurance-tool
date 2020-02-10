@@ -49,7 +49,7 @@ export default class AppHome extends BaseUserContextWebPartComponent<types.IWebP
               <div>Controls &amp; Assurance</div>                
             </div>
             <div style={{backgroundColor: 'rgb(122,116,117)', textAlign: 'center', padding: '10px' }}>
-              <a style={{color: 'white', fontSize: '25px', textDecoration: 'none' }} href="#">Start</a>
+              <a style={{color: 'white', fontSize: '25px', textDecoration: 'none', cursor: 'pointer' }} onClick={this.handleControlsAssuranceClick} href="#">Start</a>
             </div>
           </div>
 
@@ -60,7 +60,7 @@ export default class AppHome extends BaseUserContextWebPartComponent<types.IWebP
               <div>Governance</div>                
             </div>
             <div style={{backgroundColor: 'rgb(122,116,117)', textAlign: 'center', padding: '10px' }}>
-              <a style={{color: 'white', fontSize: '25px', textDecoration: 'none' }} href="#">Start</a>
+              <a style={{color: 'white', fontSize: '25px', textDecoration: 'none', cursor: 'pointer' }} onClick={this.handleGovernanceClick}>Start</a>
             </div>
           </div>
           
@@ -84,8 +84,13 @@ export default class AppHome extends BaseUserContextWebPartComponent<types.IWebP
 
   //#region event handlers
 
-  private handleUpdatesClick = (): void => {
-    const pageUrl = this.props.spfxContext.pageContext.web.absoluteUrl + "/SitePages/updates.aspx";
+  private handleControlsAssuranceClick = (): void => {
+    const pageUrl = this.props.spfxContext.pageContext.web.absoluteUrl + "/SitePages/ControlsAssuranceWelcome.aspx";
+    window.location.href = pageUrl;
+  }
+
+  private handleGovernanceClick = (): void => {
+    const pageUrl = this.props.spfxContext.pageContext.web.absoluteUrl + "/SitePages/GovernanceWelcome.aspx";
     window.location.href = pageUrl;
   }
 

@@ -128,7 +128,7 @@ export default class Welcome extends BaseUserContextWebPartComponent<types.IWebP
   //#region event handlers
 
   private handleUpdatesClick = (): void => {
-    const pageUrl = this.props.spfxContext.pageContext.web.absoluteUrl + "/SitePages/updates.aspx";
+    const pageUrl = this.props.spfxContext.pageContext.web.absoluteUrl + "/SitePages/ControlsAssuranceUpdates.aspx";
     window.location.href = pageUrl;
   }
 
