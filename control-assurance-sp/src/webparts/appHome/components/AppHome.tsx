@@ -59,8 +59,9 @@ export default class AppHome extends BaseUserContextWebPartComponent<types.IWebP
               <img src={this.governanceApphomeImg}></img>
               <div>Governance</div>                
             </div>
-            <div style={{backgroundColor: 'rgb(122,116,117)', textAlign: 'center', padding: '10px' }}>
-              <a style={{color: 'white', fontSize: '25px', textDecoration: 'none', cursor: 'pointer' }} onClick={this.handleGovernanceClick}>Start</a>
+            <div style={{backgroundColor: 'rgb(122,116,117)', textAlign: 'center', padding: '10px' }} onClick={this.handleGovernanceClick} >
+              <a style={{color: 'white', fontSize: '25px', textDecoration: 'none', cursor: 'pointer' }} >Start</a>
+              
             </div>
           </div>
           
