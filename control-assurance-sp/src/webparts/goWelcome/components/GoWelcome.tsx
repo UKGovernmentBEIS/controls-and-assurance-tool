@@ -51,7 +51,7 @@ export default class GoWelcome extends BaseUserContextWebPartComponent<types.IWe
     return(
   
       <Pivot onLinkClick={this.clearErrors}>
-        <PivotItem headerText="Welcome">
+        <PivotItem headerText="Governance - Welcome">
           {this.renderWelcome()}
         </PivotItem> 
 

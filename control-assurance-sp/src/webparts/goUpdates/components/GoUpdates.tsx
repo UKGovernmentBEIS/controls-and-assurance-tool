@@ -61,7 +61,7 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
     return(
   
       <Pivot onLinkClick={this.clearErrors}>
-        <PivotItem headerText="Updates">
+        <PivotItem headerText="Governance - Updates">
           {this.renderMyUpdates()}
         </PivotItem>  
 

@@ -72,7 +72,7 @@ export default class CarUpdates extends BaseUserContextWebPartComponent<types.IW
     return(
 
       <Pivot onLinkClick={this.clearErrors}>
-        <PivotItem headerText="Updates">
+        <PivotItem headerText="Controls Assurance - Updates">
           {this.renderMyUpdates()}
         </PivotItem>  
         <PivotItem headerText="GIAA Feedback">
