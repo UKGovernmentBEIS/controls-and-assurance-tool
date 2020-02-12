@@ -40,10 +40,11 @@ GO
 --------------------------------------------------------------------------------------
 */
 
+----------------------------------
 -- Need one record in GoDefForm
 ---------------------------------
-SET IDENTITY_INSERT GoDefForm ON
-GO
+--SET IDENTITY_INSERT GoDefForm ON
+--GO
 
 MERGE INTO GoDefForm AS Target
 USING (VALUES
@@ -77,5 +78,5 @@ VALUES (ID, Title, Details)
 
 WHEN NOT MATCHED BY SOURCE THEN DELETE;
 GO
-SET IDENTITY_INSERT GodefForm OFF
-GO
+--SET IDENTITY_INSERT GodefForm OFF
+--GO
