@@ -39,6 +39,7 @@ public partial class ControlAssuranceEntities : DbContext, IControlAssuranceCont
     public virtual DbSet<EntityStatusType> EntityStatusTypes { get; set; }
     public virtual DbSet<Form> Forms { get; set; }
     public virtual DbSet<GoDefForm> GoDefForms { get; set; }
+    public virtual DbSet<GoMiscFile> GoMiscFiles { get; set; }
     public virtual DbSet<Log> Logs { get; set; }
     public virtual DbSet<Period> Periods { get; set; }
     public virtual DbSet<PermissionType> PermissionTypes { get; set; }

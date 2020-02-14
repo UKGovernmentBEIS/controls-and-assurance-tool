@@ -15,6 +15,7 @@ export { IFormDataChildEntities } from './FormDataRelationships';
 
 export { IDefForm } from './DefForm';
 export { IGoDefForm } from './GoDefForm';
+export { IGoMiscFile, GoMiscFile } from './GoMiscFile';
 export { IDefElementGroup } from './DefElementGroup';
 export { IDefElement } from './DefElement';
 export { IPermissionType } from './PermissionType';

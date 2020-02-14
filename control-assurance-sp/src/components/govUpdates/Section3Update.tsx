@@ -43,7 +43,7 @@ export default class Section3Update extends React.Component<ISection3UpdateProps
         
         return (
             <div className={styles.cr}>
-                <UpdateHeader title="Section 1: Signature" isOpen={false}
+                <UpdateHeader title="Section 3: Signature" isOpen={false}
                     leadUser=""                    
                     rag={this.getRag()}
                     ragLabel={this.getRagLabel()}

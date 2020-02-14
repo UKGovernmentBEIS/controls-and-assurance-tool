@@ -4,6 +4,7 @@ import { CrDropdown, IDropdownOption} from '../../../components/cr/CrDropdown';
 import Section1Update from '../../../components/govUpdates/Section1Update';
 import Section2Update from '../../../components/govUpdates/Section2Update';
 import Section3Update from '../../../components/govUpdates/Section3Update';
+import Section4Update from '../../../components/govUpdates/Section4Update';
 import * as types from '../../../types';
 import BaseUserContextWebPartComponent from '../../../components/BaseUserContextWebPartComponent';
 import * as services from '../../../services';
@@ -99,6 +100,7 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
               <Section1Update {...this.props} />
               <Section2Update {...this.props} />
               <Section3Update {...this.props} />
+              <Section4Update {...this.props} />
             </div>
           }
 

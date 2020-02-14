@@ -51,6 +51,10 @@ export class DateService {
 		return moment(d).format(this.ukTimeFormat);
 	}
 
+	public static dateToUkDateTime(d: Date): string {
+		return moment(d).format(this.ukDateTimeFormat);
+	}
+
 	public static dateToMonthNameFormat(d: Date): string {
 		return moment(d).format(this.monthNameFormat);
 	}

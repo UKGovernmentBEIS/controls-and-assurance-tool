@@ -29,6 +29,7 @@ namespace ControlAssuranceAPI.Models
         DbSet<UserHelp> UserHelps { get; set; }
         DbSet<AuditFeedback> AuditFeedbacks { get; set; }
         DbSet<GoDefForm> GoDefForms { get; set; }
+        DbSet<GoMiscFile> GoMiscFiles { get; set; }
 
 
         ObjectResult<SPDGAreaStat_Result> SPDGAreaStat(Nullable<int> periodId);

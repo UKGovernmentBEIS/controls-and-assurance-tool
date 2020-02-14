@@ -8,6 +8,7 @@ export { LookupService } from './LookupService';
 
 export { DefFormService } from './DefFormService';
 export { GoDefFormService } from './GoDefFormService';
+export { GoMiscFileService } from './GoMiscFileService';
 export { DefElementGroupService } from './DefElementGroupService';
 export { DefElementService } from './DefElementService';
 export { PeriodService } from './PeriodService';

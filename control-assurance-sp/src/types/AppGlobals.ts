@@ -1,0 +1,1 @@
+export const UploadFolder_MiscFiles:string = "/sites/ControlsAndAssuranceToolDev/documents/MiscFiles";

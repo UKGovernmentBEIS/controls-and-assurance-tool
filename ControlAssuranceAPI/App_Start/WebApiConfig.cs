@@ -55,6 +55,7 @@ namespace ControlAssuranceAPI
             builder.EntitySet<Models.AuditFeedback>("AuditFeedbacks");
 
             builder.EntitySet<GoDefForm>("GoDefForms");
+            builder.EntitySet<GoMiscFile>("GoMiscFiles");
 
             builder.EntitySet<Models.SPDGAreaStat_Result>("DGAreaStats");
             builder.EntitySet<Models.SPDirectorateStat_Result>("DirectorateStats");
