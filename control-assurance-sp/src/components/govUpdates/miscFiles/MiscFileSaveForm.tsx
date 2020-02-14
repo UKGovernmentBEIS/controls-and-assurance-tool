@@ -144,7 +144,9 @@ export default class MiscFileSaveForm extends React.Component<IMiscFileSaveFormP
 
         let myfile = (document.querySelector("#fileUpload") as HTMLInputElement).files[0];
         let fileName: string = `${miscFileID}_${myfile.name}`;
-        //console.log(fileName);
+        console.log("File: "+myfile.name);
+        console.log("Root: "+sp.web.rootFolder);
+        console.log("Upload folder: " + UploadFolder_MiscFiles);
         //const chunkSize:number = 10485760; //10mb
         const chunkSize: number = 1048576; //1mb
         if (myfile.size <= chunkSize) {
