@@ -1,1 +1,1 @@
-export const UploadFolder_MiscFiles:string = "/sites/ControlsAndAssuranceToolDev/Shared%20Documents";
+export const UploadFolder_MiscFiles:string = "/sites/ControlsAndAssuranceToolDev/Shared%20Documents/MiscFiles";
