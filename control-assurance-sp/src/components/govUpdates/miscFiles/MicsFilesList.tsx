@@ -293,7 +293,7 @@ export default class MiscFilesList extends React.Component<IMiscFilesListProps, 
           document.body.appendChild(a);
           a.href = serverRelativeUrl;
           a.target = "_blank";
-          a.download
+          
           //a.download = filename;
           //a.click();
           setTimeout(() => {
