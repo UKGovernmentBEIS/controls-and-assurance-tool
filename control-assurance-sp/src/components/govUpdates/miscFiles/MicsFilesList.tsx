@@ -265,13 +265,14 @@ export default class MiscFilesList extends React.Component<IMiscFilesListProps, 
           const a = document.createElement('a');
           //document.body.appendChild(a);
           a.href = serverRelativeUrl;
-          //a.target = "_blank";
+          a.target = "_blank";
           a.download = fileName;
           
           document.body.appendChild(a);
+          console.log(a);
           a.click();
           document.body.removeChild(a);
-
+          
           /*
           setTimeout(() => {
             //window.URL.revokeObjectURL(serverRelativeUrl);
