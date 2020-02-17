@@ -270,16 +270,16 @@ export default class MiscFilesList extends React.Component<IMiscFilesListProps, 
           
           document.body.appendChild(a);
           console.log(a);
-          a.click();
-          document.body.removeChild(a);
+          //a.click();
+          //document.body.removeChild(a);
           
-          /*
+          
           setTimeout(() => {
             //window.URL.revokeObjectURL(serverRelativeUrl);
             window.open(serverRelativeUrl, '_blank');
             document.body.removeChild(a);
-          }, 0);
-          */
+          }, 10);
+          
     
         });
 
