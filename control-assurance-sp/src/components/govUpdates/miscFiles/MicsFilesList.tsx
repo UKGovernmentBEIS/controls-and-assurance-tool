@@ -252,7 +252,7 @@ export default class MiscFilesList extends React.Component<IMiscFilesListProps, 
 
 
     private viewFile = (): void => {
-        console.log('in view.');
+        console.log('in view2.');
         const fileName:string = this.state.SelectedEntityTitle;
 
         const f = sp.web.getFolderByServerRelativeUrl(UploadFolder_MiscFiles).files.getByName(fileName);
@@ -267,14 +267,16 @@ export default class MiscFilesList extends React.Component<IMiscFilesListProps, 
           a.href = serverRelativeUrl;
           a.target = "_blank";
           
-          a.download = fileName;
+          //a.download = fileName;
           a.click();
 
+          
           setTimeout(() => {
-            window.URL.revokeObjectURL(serverRelativeUrl);
+            //window.URL.revokeObjectURL(serverRelativeUrl);
             window.open(serverRelativeUrl, '_blank');
             document.body.removeChild(a);
-          }, 10);
+          }, 0);
+          
     
         });
 
