@@ -2,32 +2,36 @@ import * as React from 'react';
 import * as types from '../../../types';
 import * as services from '../../../services';
 import { sp } from '@pnp/sp';
-import MiscFileSaveForm from './MiscFileSaveForm';
-import { FilteredMiscFilesList, IObjectWithKey } from './FilteredMiscFilesList';
+//import MiscFileSaveForm from './MiscFileSaveForm';
+import { FilteredSpecificAreasList, IObjectWithKey } from './FilteredSpecificAreasList';
 import { IEntity } from '../../../types';
 import { IUpdatesListColumn, ColumnDisplayTypes } from '../../../types/UpdatesListColumn';
 import { CrLoadingOverlay } from '../../cr/CrLoadingOverlay';
 import { Selection } from '../../cr/FilteredList';
 import { ConfirmDialog } from '../../cr/ConfirmDialog';
 import styles from '../../../styles/cr.module.scss';
-import { DateService } from '../../../services';
-import { UploadFolder_MiscFiles } from '../../../types/AppGlobals';
 
 
-export interface IMiscFilesListProps extends types.IBaseComponentProps {
+export interface ISpecificAreasListProps extends types.IBaseComponentProps {
 
     //onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
+    goFormId: number | string;
+    incompleteOnly: boolean;
+    onChangeIncompleteOnly: (value: boolean) => void;
+    justMine: boolean;
+    onChangeJustMine: (value: boolean) => void;
+
     filterText?: string;
     onChangeFilterText: (value: string) => void;
 
 }
 
-export interface IMiscFilesListState<T> {
+export interface ISpecificAreasListState<T> {
     SelectedEntity: number;
     SelectedEntityTitle: string;
     SelectedEntityChildren: number;
     ShowForm: boolean;
-    EnableEdit?: boolean;
+    EnableAssign?: boolean;
     EnableDelete?: boolean;
     HideDeleteDialog: boolean;
     ShowChildForm: boolean;
@@ -38,13 +42,13 @@ export interface IMiscFilesListState<T> {
     ListFilterText?: string;
     InitDataLoaded: boolean;
 }
-export class MiscFilesListState<T> implements IMiscFilesListState<T>{
+export class SpecificAreasListState<T> implements ISpecificAreasListState<T>{
     public SelectedEntity = null;
     public SelectedEntityTitle: string = null;
     public SelectedEntityChildren = null;
     public ShowForm = false;
     public HideDeleteDialog = true;
-    public EnableEdit = false;
+    public EnableAssign = false;
     public EnableDelete = false;
     public ShowChildForm = false;
     public CurrentPage = 1;
@@ -55,9 +59,9 @@ export class MiscFilesListState<T> implements IMiscFilesListState<T>{
     public InitDataLoaded = false;
 }
 
-export default class MiscFilesList extends React.Component<IMiscFilesListProps, IMiscFilesListState<IEntity>> {
+export default class SpecificAreasList extends React.Component<ISpecificAreasListProps, ISpecificAreasListState<IEntity>> {
     private _selection: Selection;
-    private goMiscFileService: services.GoMiscFileService = new services.GoMiscFileService(this.props.spfxContext, this.props.api);
+    private goDefElementService: services.GoDefElementService = new services.GoDefElementService(this.props.spfxContext, this.props.api);
 
     private listColumns: IUpdatesListColumn[] = [
         //use fieldName as key
@@ -71,50 +75,48 @@ export default class MiscFilesList extends React.Component<IMiscFilesListProps, 
         },
         {
             key: 'Title',
-            name: 'File Name',
+            name: 'Specific Evidence Area',
             fieldName: 'Title',
-            minWidth: 200,
-            maxWidth: 300,
+            minWidth: 350,
+            maxWidth: 400,
             isResizable: true,
             headerClassName: styles.bold,
         },
         {
-            key: 'Details',
-            name: 'Details',
-            fieldName: 'Details',
-            minWidth: 200,
-            maxWidth: 300,
+            key: 'Users',
+            name: 'Assigned To',
+            fieldName: 'Users',
+            minWidth: 250,
+            maxWidth: 250,
             isResizable: true,
             isMultiline: true,
             headerClassName: styles.bold,
-
         },
         {
-            key: 'UploadedByUser',
-            name: 'Uploaded By',
-            fieldName: 'UploadedByUser',
-            minWidth: 100,
-            maxWidth: 200,
+            key: 'CompletionStatus',
+            name: 'Status',
+            fieldName: 'CompletionStatus',
+            minWidth: 120,
+            maxWidth: 120,
             isResizable: true,
             headerClassName: styles.bold,
         },
         {
-            key: 'DateUploaded',
-            name: 'Upload Date',
-            fieldName: 'DateUploaded',
-            minWidth: 100,
-            maxWidth: 150,
+            key: 'Rating',
+            name: 'Rating',
+            fieldName: 'Rating',
+            minWidth: 120,
+            maxWidth: 120,
             isResizable: true,
             headerClassName: styles.bold,
-
         },
 
 
     ];
 
-    constructor(props: IMiscFilesListProps, state: IMiscFilesListState<IEntity>) {
+    constructor(props: ISpecificAreasListProps, state: ISpecificAreasListState<IEntity>) {
         super(props);
-        this.state = new MiscFilesListState<IEntity>();
+        this.state = new SpecificAreasListState<IEntity>();
 
         this._selection = new Selection({
             onSelectionChanged: () => {
@@ -124,10 +126,10 @@ export default class MiscFilesList extends React.Component<IMiscFilesListProps, 
                     const key = Number(sel.key);
                     const title: string = sel["Title"];
 
-                    this.setState({ SelectedEntity: key, SelectedEntityTitle: title, EnableEdit: true, EnableDelete: true });
+                    this.setState({ SelectedEntity: key, SelectedEntityTitle: title, EnableAssign: true, EnableDelete: true });
                 }
                 else {
-                    this.setState({ SelectedEntity: null, SelectedEntityTitle: null, EnableEdit: false, EnableDelete: false });
+                    this.setState({ SelectedEntity: null, SelectedEntityTitle: null, EnableAssign: false, EnableDelete: false });
                 }
             }
         });
@@ -135,7 +137,7 @@ export default class MiscFilesList extends React.Component<IMiscFilesListProps, 
 
     //#region Render
 
-    public render(): React.ReactElement<IMiscFilesListProps> {
+    public render(): React.ReactElement<ISpecificAreasListProps> {
 
         return (
             <div className={`${styles.cr}`}>
@@ -144,7 +146,7 @@ export default class MiscFilesList extends React.Component<IMiscFilesListProps, 
                     {this.renderList()}
                     {this.state.ShowForm && this.renderForm()}
 
-                    <ConfirmDialog hidden={this.state.HideDeleteDialog} title={`Are you sure you want to delete ${this.getSelectedEntityName()}?`} content={`A deleted file cannot be un-deleted.`} confirmButtonText="Delete" handleConfirm={this.deleteFile} handleCancel={this.toggleDeleteConfirm} />
+                    <ConfirmDialog hidden={this.state.HideDeleteDialog} title={`Are you sure you want to delete ${this.getSelectedEntityName()}?`} content={`A deleted record cannot be un-deleted.`} confirmButtonText="Delete" handleConfirm={this.deleteRecord} handleCancel={this.toggleDeleteConfirm} />
                 </div>
             </div>
         );
@@ -160,19 +162,24 @@ export default class MiscFilesList extends React.Component<IMiscFilesListProps, 
 
 
         return (
-            <FilteredMiscFilesList
+            <FilteredSpecificAreasList
                 //onItemTitleClick={this.props.onItemTitleClick}
                 columns={listColumns}
                 items={items}
+                
+                incompleteOnly={this.props.incompleteOnly}
+                onChangeIncompleteOnly={this.props.onChangeIncompleteOnly}
+                justMine={this.props.justMine}
+                onChangeJustMine={this.props.onChangeJustMine}
+
                 filterText={this.props.filterText}
                 onFilterChange={this.props.onChangeFilterText}
                 selection={this._selection}
-                onAdd={this.addFile}
-                onEdit={this.editFile}
-                onDelete={this.toggleDeleteConfirm}
-                onView={this.viewFile}
-                editDisabled={!this.state.EnableEdit}
-                deleteDisabled={!this.state.EnableDelete}
+
+                onAssign={this.handleAssign}
+
+                assignDisabled={!this.state.EnableAssign}
+
                 
             />
         );
@@ -181,14 +188,15 @@ export default class MiscFilesList extends React.Component<IMiscFilesListProps, 
     private renderForm() {
 
         return (
+            null
 
-            <MiscFileSaveForm
-                showForm={this.state.ShowForm}
-                miscFileID={this.state.SelectedEntity}
-                onSaved={this.fileSaved}
-                onCancelled={this.closePanel}
-                {...this.props}
-            />
+            // <MiscFileSaveForm
+            //     showForm={this.state.ShowForm}
+            //     miscFileID={this.state.SelectedEntity}
+            //     onSaved={this.fileSaved}
+            //     onCancelled={this.closePanel}
+            //     {...this.props}
+            // />
         );
 
     }
@@ -203,25 +211,10 @@ export default class MiscFilesList extends React.Component<IMiscFilesListProps, 
 
         listColumns.map((c) => {
             let fieldContent: string = String(e[c.fieldName]);
-            if (c.fieldName === "UploadedByUser") {
-                item = {
-                    [c.fieldName]: e["User"]["Title"],
-                    ...item
-                };
-            }
-            else if (c.fieldName === "DateUploaded") {
-                item = {
-                    [c.fieldName]: DateService.dateToUkDateTime(e[c.fieldName]),
-                    ...item
-                };
-            }
-            else {
-                item = {
-                    [c.fieldName]: fieldContent,
-                    ...item
-                };
-            }
-
+            item = {
+                [c.fieldName]: fieldContent,
+                ...item
+            };
         });
         return item;
     }
@@ -245,51 +238,18 @@ export default class MiscFilesList extends React.Component<IMiscFilesListProps, 
         this.setState({ SelectedEntity: null, ShowForm: true });
     }
 
-    private editFile = (): void => {
+    private handleAssign = (): void => {
         this.setState({ ShowForm: true });
     }
 
-    private viewFile = (): void => {
-        console.log('in view.');
-        const fileName:string = this.state.SelectedEntityTitle;
 
-        const f = sp.web.getFolderByServerRelativeUrl(UploadFolder_MiscFiles).files.getByName(fileName);
-    
-        f.get().then(t => {
-            console.log(t);
-            const serverRelativeUrl = t["ServerRelativeUrl"];
-            console.log(serverRelativeUrl);
-      
-            const a = document.createElement('a');
-            //document.body.appendChild(a);
-            a.href = serverRelativeUrl;
-            a.target = "_blank";
-            a.download = fileName;
-            
-            document.body.appendChild(a);
-            console.log(a);
-            //a.click();
-            //document.body.removeChild(a);
-            
-            
-            setTimeout(() => {
-              window.URL.revokeObjectURL(serverRelativeUrl);
-              window.open(serverRelativeUrl, '_blank');
-              document.body.removeChild(a);
-            }, 1);
-            
-      
-          });
-  
-
-    }
 
     private closePanel = (): void => {
         this.setState({ ShowForm: false });
     }
 
     private fileSaved = (): void => {
-        this.loadMiscFiles();
+        //this.loadMiscFiles();
         this.closePanel();
     }
 
@@ -302,24 +262,8 @@ export default class MiscFilesList extends React.Component<IMiscFilesListProps, 
         this.setState({ HideDeleteDialog: !this.state.HideDeleteDialog });
     }
 
-    private deleteFile = (): void => {
-        if (this.props.onError) this.props.onError(null);
-        this.setState({ HideDeleteDialog: true });
-        if (this.state.SelectedEntity) {
+    private deleteRecord = (): void => {
 
-            const fileName: string = this.state.SelectedEntityTitle;
-            //console.log(fileName);
-
-            sp.web.getFolderByServerRelativeUrl(UploadFolder_MiscFiles).files.getByName(fileName).delete().then(df => {
-                //console.log('file deleted', df);
-
-                this.goMiscFileService.delete(this.state.SelectedEntity).then(this.loadMiscFiles, (err) => {
-                    if (this.props.onError) this.props.onError(`Cannot delete this file. `, err.message);
-                });
-            });
-
-
-        }
     }
 
     //#endregion Class Methods
@@ -327,29 +271,30 @@ export default class MiscFilesList extends React.Component<IMiscFilesListProps, 
     //#region Data Load
 
 
-    private loadMiscFiles = (): void => {
+    private loadData = (): void => {
         this.setState({ Loading: true });
-        const read: Promise<IEntity[]> = this.goMiscFileService.readAllExpandAll();
+        const read: Promise<IEntity[]> = this.goDefElementService.readAllWithFilters(this.props.goFormId, this.props.incompleteOnly, this.props.justMine);
         read.then((entities: any): void => {
-            console.log(entities);
             this.setState({
                 Loading: false, Entities: entities,
-                //ListFilterText: this.props.filterText
             });
 
-        }, (err) => this.errorLoadingMiscFiles(err));
+        }, (err) => this.errorLoadingData(err));
     }
-    private errorLoadingMiscFiles = (err: any, entityName?: string): void => {
+    private errorLoadingData = (err: any, entityName?: string): void => {
         this.setState({ Loading: false });
         if (this.props.onError) this.props.onError(`Error loading ${entityName || 'items'}`, err.message);
     }
     public componentDidMount(): void {
-        this.loadMiscFiles();
+        this.loadData();
         //console.log('web title: ', this.props.spfxContext.pageContext.web.title);
 
     }
-    public componentDidUpdate(prevProps: IMiscFilesListProps): void {
-
+    public componentDidUpdate(prevProps: ISpecificAreasListProps): void {
+        if (prevProps.goFormId !== this.props.goFormId || prevProps.justMine !== this.props.justMine || prevProps.incompleteOnly !== this.props.incompleteOnly) {
+            //console.log('props changed, load data again');
+            this.loadData();
+        }
     }
 
 

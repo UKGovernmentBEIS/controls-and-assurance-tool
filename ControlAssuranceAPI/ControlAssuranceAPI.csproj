@@ -188,6 +188,7 @@
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\DefElementGroupsController.cs" />
     <Compile Include="Controllers\DefElementsController.cs" />
+    <Compile Include="Controllers\GoDefElementsController.cs" />
     <Compile Include="Controllers\GoDefFormsController.cs" />
     <Compile Include="Controllers\DefFormsController.cs" />
     <Compile Include="Controllers\DirectoratesController.cs" />
@@ -197,6 +198,7 @@
     <Compile Include="Controllers\ElementsController.cs" />
     <Compile Include="Controllers\EntityStatusTypesController.cs" />
     <Compile Include="Controllers\FormsController.cs" />
+    <Compile Include="Controllers\GoFormsController.cs" />
     <Compile Include="Controllers\GoMiscFilesController.cs" />
     <Compile Include="Controllers\LogsController.cs" />
     <Compile Include="Controllers\PeriodsController.cs" />
@@ -266,7 +268,19 @@
     <Compile Include="Models\Form.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\GoAssignment.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\GoDefElement.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\GoDefForm.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\GoElement.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\GoForm.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\GoMiscFile.cs">
@@ -291,6 +305,7 @@
     <Compile Include="Models\SPDivisionStat_Result.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\SpecificAreaView_Result.cs" />
     <Compile Include="Models\sysdiagram.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
@@ -315,6 +330,7 @@
     <Compile Include="Repositories\BaseRepository.cs" />
     <Compile Include="Repositories\DefElementGroupRespository.cs" />
     <Compile Include="Repositories\DefElementRepository.cs" />
+    <Compile Include="Repositories\GoDefElementRepository.cs" />
     <Compile Include="Repositories\GoDefFormRepository.cs" />
     <Compile Include="Repositories\DefFormRepository.cs" />
     <Compile Include="Repositories\DirectorateRepository.cs" />
@@ -325,6 +341,7 @@
     <Compile Include="Repositories\EmailRepository.cs" />
     <Compile Include="Repositories\EntityStatusTypeRespository.cs" />
     <Compile Include="Repositories\FormRespository.cs" />
+    <Compile Include="Repositories\GoFormRepository.cs" />
     <Compile Include="Repositories\GoMiscFilesRepository.cs" />
     <Compile Include="Repositories\LogRepository.cs" />
     <Compile Include="Repositories\AuditFeedbackRepository.cs" />

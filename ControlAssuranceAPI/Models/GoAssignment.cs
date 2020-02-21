@@ -12,17 +12,14 @@ namespace ControlAssuranceAPI.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class GoDefForm
+    public partial class GoAssignment
     {
         public int ID { get; set; }
         public string Title { get; set; }
-        public string Details { get; set; }
-        public string Section1Title { get; set; }
-        public string Section2Title { get; set; }
-        public string Section3Title { get; set; }
-        public string SummaryShortInstructions { get; set; }
-        public string SummaryFullInstructions { get; set; }
-        public string SummaryFormRatingText { get; set; }
-        public string DGSignOffText { get; set; }
+        public Nullable<int> GoElementId { get; set; }
+        public Nullable<int> UserId { get; set; }
+    
+        public virtual GoElement GoElement { get; set; }
+        public virtual User User { get; set; }
     }
 }

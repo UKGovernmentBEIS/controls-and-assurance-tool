@@ -22,6 +22,8 @@ namespace ControlAssuranceAPI.Models
             this.DirectorateGroups = new HashSet<DirectorateGroup>();
             this.DirectorateGroupMembers = new HashSet<DirectorateGroupMember>();
             this.DirectorateMembers = new HashSet<DirectorateMember>();
+            this.GoAssignments = new HashSet<GoAssignment>();
+            this.GoForms = new HashSet<GoForm>();
             this.GoMiscFiles = new HashSet<GoMiscFile>();
             this.Logs = new HashSet<Log>();
             this.Teams = new HashSet<Team>();
@@ -46,6 +48,10 @@ namespace ControlAssuranceAPI.Models
         public virtual ICollection<DirectorateGroupMember> DirectorateGroupMembers { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DirectorateMember> DirectorateMembers { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<GoAssignment> GoAssignments { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<GoForm> GoForms { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<GoMiscFile> GoMiscFiles { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

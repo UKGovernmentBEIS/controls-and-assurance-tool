@@ -20,12 +20,6 @@ namespace ControlAssuranceAPI.Controllers
         [EnableQuery]
         public IQueryable<GoDefForm> Get()
         {
-            //can do things like
-            //http://localhost:2861/odata/defforms
-            //http://localhost:2861/odata/defforms?$filter=status eq 'ok'
-            //http://localhost:2861/odata/defforms?$filter=Price lt 11
-            //http://localhost:2861/odata/defforms?$orderby=DefFormId desc
-
             return db.GoDefFormRepository.GoDefForms;
         }
 

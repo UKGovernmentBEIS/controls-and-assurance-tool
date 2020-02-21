@@ -56,11 +56,16 @@ namespace ControlAssuranceAPI
 
             builder.EntitySet<GoDefForm>("GoDefForms");
             builder.EntitySet<GoMiscFile>("GoMiscFiles");
+            builder.EntitySet<GoForm>("GoForms");
+            builder.EntitySet<GoDefElement>("GoDefElements");
 
             builder.EntitySet<Models.SPDGAreaStat_Result>("DGAreaStats");
             builder.EntitySet<Models.SPDirectorateStat_Result>("DirectorateStats");
             builder.EntitySet<Models.SPDivisionStat_Result>("DivisionStats");
             builder.EntitySet<Models.ThemeStat_Result>("ThemeStats");
+
+            //register PolicyView_Result for custom display of policies
+            builder.EntitySet<SpecificAreaView_Result>("SpecificAreaViewResult");
 
             config.MapODataServiceRoute(
                 routeName: "ODataRoute",

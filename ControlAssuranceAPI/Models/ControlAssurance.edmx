@@ -257,6 +257,23 @@
           <Property Name="LastSignOffFor" Type="nvarchar" MaxLength="50" />
           <Property Name="FirstSignedOff" Type="bit" />
         </EntityType>
+        <EntityType Name="GoAssignment">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" />
+          <Property Name="GoElementId" Type="int" />
+          <Property Name="UserId" Type="int" />
+        </EntityType>
+        <EntityType Name="GoDefElement">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="1000" />
+          <Property Name="Instructions" Type="nvarchar(max)" />
+        </EntityType>
         <EntityType Name="GoDefForm">
           <Key>
             <PropertyRef Name="ID" />
@@ -264,9 +281,42 @@
           <Property Name="ID" Type="int" Nullable="false" />
           <Property Name="Title" Type="nvarchar" MaxLength="500" />
           <Property Name="Details" Type="nvarchar(max)" />
-          <Property Name="SignOffSectionTitle" Type="nvarchar" MaxLength="200" />
-          <Property Name="DGSignOffTitle" Type="nvarchar" MaxLength="200" />
+          <Property Name="Section1Title" Type="nvarchar" MaxLength="500" />
+          <Property Name="Section2Title" Type="nvarchar" MaxLength="500" />
+          <Property Name="Section3Title" Type="nvarchar" MaxLength="500" />
+          <Property Name="SummaryShortInstructions" Type="nvarchar(max)" />
+          <Property Name="SummaryFullInstructions" Type="nvarchar(max)" />
+          <Property Name="SummaryFormRatingText" Type="nvarchar(max)" />
           <Property Name="DGSignOffText" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="GoElement">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" />
+          <Property Name="GoFormId" Type="int" />
+          <Property Name="GoDefElementId" Type="int" />
+          <Property Name="EvidenceStatement" Type="nvarchar(max)" />
+          <Property Name="Rating" Type="nvarchar" MaxLength="50" />
+          <Property Name="CompletionStatus" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="GoForm">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" />
+          <Property Name="PeriodId" Type="int" />
+          <Property Name="DirectorateGroupId" Type="int" />
+          <Property Name="SummaryRagRating" Type="nvarchar" MaxLength="50" />
+          <Property Name="SummaryEvidenceStatement" Type="nvarchar(max)" />
+          <Property Name="SummaryCompletionStatus" Type="nvarchar" MaxLength="50" />
+          <Property Name="SummaryMarkReadyForApproval" Type="bit" />
+          <Property Name="SpecificAreasCompletionStatus" Type="nvarchar" MaxLength="50" />
+          <Property Name="DGSignOffStatus" Type="nvarchar" MaxLength="50" />
+          <Property Name="DGSignOffUserId" Type="int" />
+          <Property Name="DGSignOffDate" Type="datetime" />
         </EntityType>
         <EntityType Name="GoMiscFiles">
           <Key>
@@ -623,6 +673,90 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_GoAssignment_GoElement">
+          <End Role="GoElement" Type="Self.GoElement" Multiplicity="0..1" />
+          <End Role="GoAssignment" Type="Self.GoAssignment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GoElement">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GoAssignment">
+              <PropertyRef Name="GoElementId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GoAssignment_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="GoAssignment" Type="Self.GoAssignment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GoAssignment">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GoElement_GoDefElement">
+          <End Role="GoDefElement" Type="Self.GoDefElement" Multiplicity="0..1" />
+          <End Role="GoElement" Type="Self.GoElement" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GoDefElement">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GoElement">
+              <PropertyRef Name="GoDefElementId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GoElement_GoForm">
+          <End Role="GoForm" Type="Self.GoForm" Multiplicity="0..1" />
+          <End Role="GoElement" Type="Self.GoElement" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GoForm">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GoElement">
+              <PropertyRef Name="GoFormId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GoForm_DirectorateGroup">
+          <End Role="DirectorateGroup" Type="Self.DirectorateGroup" Multiplicity="0..1" />
+          <End Role="GoForm" Type="Self.GoForm" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DirectorateGroup">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GoForm">
+              <PropertyRef Name="DirectorateGroupId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GoForm_Period">
+          <End Role="Period" Type="Self.Period" Multiplicity="0..1" />
+          <End Role="GoForm" Type="Self.GoForm" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Period">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GoForm">
+              <PropertyRef Name="PeriodId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GoForm_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="GoForm" Type="Self.GoForm" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GoForm">
+              <PropertyRef Name="DGSignOffUserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_GoMiscFiles_User">
           <End Role="User" Type="Self.User" Multiplicity="0..1" />
           <End Role="GoMiscFiles" Type="Self.GoMiscFiles" Multiplicity="*" />
@@ -777,7 +911,11 @@
           <EntitySet Name="Element" EntityType="Self.Element" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntityStatusType" EntityType="Self.EntityStatusType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Form" EntityType="Self.Form" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GoAssignment" EntityType="Self.GoAssignment" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GoDefElement" EntityType="Self.GoDefElement" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GoDefForm" EntityType="Self.GoDefForm" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GoElement" EntityType="Self.GoElement" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GoForm" EntityType="Self.GoForm" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GoMiscFiles" EntityType="Self.GoMiscFiles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Log" EntityType="Self.Log" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Period" EntityType="Self.Period" Schema="dbo" store:Type="Tables" />
@@ -871,6 +1009,34 @@
           <AssociationSet Name="FK_Form_TeamSet" Association="Self.FK_Form_TeamSet">
             <End Role="Team" EntitySet="Team" />
             <End Role="Form" EntitySet="Form" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GoAssignment_GoElement" Association="Self.FK_GoAssignment_GoElement">
+            <End Role="GoElement" EntitySet="GoElement" />
+            <End Role="GoAssignment" EntitySet="GoAssignment" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GoAssignment_User" Association="Self.FK_GoAssignment_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="GoAssignment" EntitySet="GoAssignment" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GoElement_GoDefElement" Association="Self.FK_GoElement_GoDefElement">
+            <End Role="GoDefElement" EntitySet="GoDefElement" />
+            <End Role="GoElement" EntitySet="GoElement" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GoElement_GoForm" Association="Self.FK_GoElement_GoForm">
+            <End Role="GoForm" EntitySet="GoForm" />
+            <End Role="GoElement" EntitySet="GoElement" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GoForm_DirectorateGroup" Association="Self.FK_GoForm_DirectorateGroup">
+            <End Role="DirectorateGroup" EntitySet="DirectorateGroup" />
+            <End Role="GoForm" EntitySet="GoForm" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GoForm_Period" Association="Self.FK_GoForm_Period">
+            <End Role="Period" EntitySet="Period" />
+            <End Role="GoForm" EntitySet="GoForm" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GoForm_User" Association="Self.FK_GoForm_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="GoForm" EntitySet="GoForm" />
           </AssociationSet>
           <AssociationSet Name="FK_GoMiscFiles_User" Association="Self.FK_GoMiscFiles_User">
             <End Role="User" EntitySet="User" />
@@ -1081,6 +1247,7 @@
           <NavigationProperty Name="EntityStatusType" Relationship="Self.FK_DirectorateGroup_EntityStatusType" FromRole="DirectorateGroup" ToRole="EntityStatusType" />
           <NavigationProperty Name="User" Relationship="Self.FK_DirectorateGroup_User" FromRole="DirectorateGroup" ToRole="User" />
           <NavigationProperty Name="DirectorateGroupMembers" Relationship="Self.FK_DirectorateGroupMember_DirectorateGroup" FromRole="DirectorateGroup" ToRole="DirectorateGroupMember" />
+          <NavigationProperty Name="GoForms" Relationship="Self.FK_GoForm_DirectorateGroup" FromRole="DirectorateGroup" ToRole="GoForm" />
         </EntityType>
         <EntityType Name="DirectorateGroupMember">
           <Key>
@@ -1206,6 +1373,26 @@
           <NavigationProperty Name="Period" Relationship="Self.FK_Form_Period" FromRole="Form" ToRole="Period" />
           <NavigationProperty Name="Team" Relationship="Self.FK_Form_TeamSet" FromRole="Form" ToRole="Team" />
         </EntityType>
+        <EntityType Name="GoAssignment">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="GoElementId" Type="Int32" />
+          <Property Name="UserId" Type="Int32" />
+          <NavigationProperty Name="GoElement" Relationship="Self.FK_GoAssignment_GoElement" FromRole="GoAssignment" ToRole="GoElement" />
+          <NavigationProperty Name="User" Relationship="Self.FK_GoAssignment_User" FromRole="GoAssignment" ToRole="User" />
+        </EntityType>
+        <EntityType Name="GoDefElement">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="Instructions" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="GoElements" Relationship="Self.FK_GoElement_GoDefElement" FromRole="GoDefElement" ToRole="GoElement" />
+        </EntityType>
         <EntityType Name="GoDefForm">
           <Key>
             <PropertyRef Name="ID" />
@@ -1213,9 +1400,49 @@
           <Property Name="ID" Type="Int32" Nullable="false" />
           <Property Name="Title" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="Details" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="SignOffSectionTitle" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="DGSignOffTitle" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Section1Title" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Section2Title" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Section3Title" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="SummaryShortInstructions" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SummaryFullInstructions" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SummaryFormRatingText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="DGSignOffText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="GoElement">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="GoFormId" Type="Int32" />
+          <Property Name="GoDefElementId" Type="Int32" />
+          <Property Name="EvidenceStatement" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Rating" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CompletionStatus" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="GoAssignments" Relationship="Self.FK_GoAssignment_GoElement" FromRole="GoElement" ToRole="GoAssignment" />
+          <NavigationProperty Name="GoDefElement" Relationship="Self.FK_GoElement_GoDefElement" FromRole="GoElement" ToRole="GoDefElement" />
+          <NavigationProperty Name="GoForm" Relationship="Self.FK_GoElement_GoForm" FromRole="GoElement" ToRole="GoForm" />
+        </EntityType>
+        <EntityType Name="GoForm">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PeriodId" Type="Int32" />
+          <Property Name="DirectorateGroupId" Type="Int32" />
+          <Property Name="SummaryRagRating" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SummaryEvidenceStatement" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SummaryCompletionStatus" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SummaryMarkReadyForApproval" Type="Boolean" />
+          <Property Name="SpecificAreasCompletionStatus" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DGSignOffStatus" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DGSignOffUserId" Type="Int32" />
+          <Property Name="DGSignOffDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="DirectorateGroup" Relationship="Self.FK_GoForm_DirectorateGroup" FromRole="GoForm" ToRole="DirectorateGroup" />
+          <NavigationProperty Name="GoElements" Relationship="Self.FK_GoElement_GoForm" FromRole="GoForm" ToRole="GoElement" />
+          <NavigationProperty Name="Period" Relationship="Self.FK_GoForm_Period" FromRole="GoForm" ToRole="Period" />
+          <NavigationProperty Name="User" Relationship="Self.FK_GoForm_User" FromRole="GoForm" ToRole="User" />
         </EntityType>
         <EntityType Name="GoMiscFile">
           <Key>
@@ -1258,6 +1485,7 @@
           <NavigationProperty Name="DefElementGroups" Relationship="Self.FK_DefElementGroup_Period" FromRole="Period" ToRole="DefElementGroup" />
           <NavigationProperty Name="DefForms" Relationship="Self.FK_DefForm_Period" FromRole="Period" ToRole="DefForm" />
           <NavigationProperty Name="Forms" Relationship="Self.FK_Form_Period" FromRole="Period" ToRole="Form" />
+          <NavigationProperty Name="GoForms" Relationship="Self.FK_GoForm_Period" FromRole="Period" ToRole="GoForm" />
           <NavigationProperty Name="Logs" Relationship="Self.FK_Log_Period" FromRole="Period" ToRole="Log" />
         </EntityType>
         <EntityType Name="PermissionType">
@@ -1323,6 +1551,8 @@
           <NavigationProperty Name="DirectorateGroups" Relationship="Self.FK_DirectorateGroup_User" FromRole="User" ToRole="DirectorateGroup" />
           <NavigationProperty Name="DirectorateGroupMembers" Relationship="Self.FK_DirectorateGroupMember_User" FromRole="User" ToRole="DirectorateGroupMember" />
           <NavigationProperty Name="DirectorateMembers" Relationship="Self.FK_DirectorateMember_User" FromRole="User" ToRole="DirectorateMember" />
+          <NavigationProperty Name="GoAssignments" Relationship="Self.FK_GoAssignment_User" FromRole="User" ToRole="GoAssignment" />
+          <NavigationProperty Name="GoForms" Relationship="Self.FK_GoForm_User" FromRole="User" ToRole="GoForm" />
           <NavigationProperty Name="GoMiscFiles" Relationship="Self.FK_GoMiscFiles_User" FromRole="User" ToRole="GoMiscFiles" />
           <NavigationProperty Name="Logs" Relationship="Self.FK_Log_User" FromRole="User" ToRole="Log" />
           <NavigationProperty Name="Teams" Relationship="Self.FK_Team_User" FromRole="User" ToRole="Team" />
@@ -1556,6 +1786,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_GoForm_DirectorateGroup">
+          <End Role="DirectorateGroup" Type="Self.DirectorateGroup" Multiplicity="0..1" />
+          <End Role="GoForm" Type="Self.GoForm" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DirectorateGroup">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GoForm">
+              <PropertyRef Name="DirectorateGroupId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_DirectorateGroupMember_User">
           <End Role="User" Type="Self.User" Multiplicity="1" />
           <End Role="DirectorateGroupMember" Type="Self.DirectorateGroupMember" Multiplicity="*" />
@@ -1625,6 +1867,78 @@
             </Principal>
             <Dependent Role="Form">
               <PropertyRef Name="TeamId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GoAssignment_GoElement">
+          <End Role="GoElement" Type="Self.GoElement" Multiplicity="0..1" />
+          <End Role="GoAssignment" Type="Self.GoAssignment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GoElement">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GoAssignment">
+              <PropertyRef Name="GoElementId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GoAssignment_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="GoAssignment" Type="Self.GoAssignment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GoAssignment">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GoElement_GoDefElement">
+          <End Role="GoDefElement" Type="Self.GoDefElement" Multiplicity="0..1" />
+          <End Role="GoElement" Type="Self.GoElement" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GoDefElement">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GoElement">
+              <PropertyRef Name="GoDefElementId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GoElement_GoForm">
+          <End Role="GoForm" Type="Self.GoForm" Multiplicity="0..1" />
+          <End Role="GoElement" Type="Self.GoElement" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GoForm">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GoElement">
+              <PropertyRef Name="GoFormId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GoForm_Period">
+          <End Role="Period" Type="Self.Period" Multiplicity="0..1" />
+          <End Role="GoForm" Type="Self.GoForm" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Period">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GoForm">
+              <PropertyRef Name="PeriodId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GoForm_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="GoForm" Type="Self.GoForm" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GoForm">
+              <PropertyRef Name="DGSignOffUserId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1749,7 +2063,11 @@
           <EntitySet Name="Elements" EntityType="Self.Element" />
           <EntitySet Name="EntityStatusTypes" EntityType="Self.EntityStatusType" />
           <EntitySet Name="Forms" EntityType="Self.Form" />
+          <EntitySet Name="GoAssignments" EntityType="Self.GoAssignment" />
+          <EntitySet Name="GoDefElements" EntityType="Self.GoDefElement" />
           <EntitySet Name="GoDefForms" EntityType="Self.GoDefForm" />
+          <EntitySet Name="GoElements" EntityType="Self.GoElement" />
+          <EntitySet Name="GoForms" EntityType="Self.GoForm" />
           <EntitySet Name="GoMiscFiles" EntityType="Self.GoMiscFile" />
           <EntitySet Name="Logs" EntityType="Self.Log" />
           <EntitySet Name="Periods" EntityType="Self.Period" />
@@ -1828,6 +2146,10 @@
             <End Role="DirectorateGroup" EntitySet="DirectorateGroups" />
             <End Role="DirectorateGroupMember" EntitySet="DirectorateGroupMembers" />
           </AssociationSet>
+          <AssociationSet Name="FK_GoForm_DirectorateGroup" Association="Self.FK_GoForm_DirectorateGroup">
+            <End Role="DirectorateGroup" EntitySet="DirectorateGroups" />
+            <End Role="GoForm" EntitySet="GoForms" />
+          </AssociationSet>
           <AssociationSet Name="FK_DirectorateGroupMember_User" Association="Self.FK_DirectorateGroupMember_User">
             <End Role="User" EntitySet="Users" />
             <End Role="DirectorateGroupMember" EntitySet="DirectorateGroupMembers" />
@@ -1851,6 +2173,30 @@
           <AssociationSet Name="FK_Form_TeamSet" Association="Self.FK_Form_TeamSet">
             <End Role="Team" EntitySet="Teams" />
             <End Role="Form" EntitySet="Forms" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GoAssignment_GoElement" Association="Self.FK_GoAssignment_GoElement">
+            <End Role="GoElement" EntitySet="GoElements" />
+            <End Role="GoAssignment" EntitySet="GoAssignments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GoAssignment_User" Association="Self.FK_GoAssignment_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="GoAssignment" EntitySet="GoAssignments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GoElement_GoDefElement" Association="Self.FK_GoElement_GoDefElement">
+            <End Role="GoDefElement" EntitySet="GoDefElements" />
+            <End Role="GoElement" EntitySet="GoElements" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GoElement_GoForm" Association="Self.FK_GoElement_GoForm">
+            <End Role="GoForm" EntitySet="GoForms" />
+            <End Role="GoElement" EntitySet="GoElements" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GoForm_Period" Association="Self.FK_GoForm_Period">
+            <End Role="Period" EntitySet="Periods" />
+            <End Role="GoForm" EntitySet="GoForms" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GoForm_User" Association="Self.FK_GoForm_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="GoForm" EntitySet="GoForms" />
           </AssociationSet>
           <AssociationSet Name="FK_GoMiscFiles_User" Association="Self.FK_GoMiscFiles_User">
             <End Role="User" EntitySet="Users" />
@@ -2287,15 +2633,69 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="GoAssignments">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.GoAssignment">
+              <MappingFragment StoreEntitySet="GoAssignment">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="GoElementId" ColumnName="GoElementId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GoDefElements">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.GoDefElement">
+              <MappingFragment StoreEntitySet="GoDefElement">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Instructions" ColumnName="Instructions" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="GoDefForms">
             <EntityTypeMapping TypeName="ControlAssuranceModel.GoDefForm">
               <MappingFragment StoreEntitySet="GoDefForm">
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Title" ColumnName="Title" />
                 <ScalarProperty Name="Details" ColumnName="Details" />
-                <ScalarProperty Name="SignOffSectionTitle" ColumnName="SignOffSectionTitle" />
-                <ScalarProperty Name="DGSignOffTitle" ColumnName="DGSignOffTitle" />
+                <ScalarProperty Name="Section1Title" ColumnName="Section1Title" />
+                <ScalarProperty Name="Section2Title" ColumnName="Section2Title" />
+                <ScalarProperty Name="Section3Title" ColumnName="Section3Title" />
+                <ScalarProperty Name="SummaryShortInstructions" ColumnName="SummaryShortInstructions" />
+                <ScalarProperty Name="SummaryFullInstructions" ColumnName="SummaryFullInstructions" />
+                <ScalarProperty Name="SummaryFormRatingText" ColumnName="SummaryFormRatingText" />
                 <ScalarProperty Name="DGSignOffText" ColumnName="DGSignOffText" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GoElements">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.GoElement">
+              <MappingFragment StoreEntitySet="GoElement">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="GoFormId" ColumnName="GoFormId" />
+                <ScalarProperty Name="GoDefElementId" ColumnName="GoDefElementId" />
+                <ScalarProperty Name="EvidenceStatement" ColumnName="EvidenceStatement" />
+                <ScalarProperty Name="Rating" ColumnName="Rating" />
+                <ScalarProperty Name="CompletionStatus" ColumnName="CompletionStatus" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GoForms">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.GoForm">
+              <MappingFragment StoreEntitySet="GoForm">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="PeriodId" ColumnName="PeriodId" />
+                <ScalarProperty Name="DirectorateGroupId" ColumnName="DirectorateGroupId" />
+                <ScalarProperty Name="SummaryRagRating" ColumnName="SummaryRagRating" />
+                <ScalarProperty Name="SummaryEvidenceStatement" ColumnName="SummaryEvidenceStatement" />
+                <ScalarProperty Name="SummaryCompletionStatus" ColumnName="SummaryCompletionStatus" />
+                <ScalarProperty Name="SummaryMarkReadyForApproval" ColumnName="SummaryMarkReadyForApproval" />
+                <ScalarProperty Name="SpecificAreasCompletionStatus" ColumnName="SpecificAreasCompletionStatus" />
+                <ScalarProperty Name="DGSignOffStatus" ColumnName="DGSignOffStatus" />
+                <ScalarProperty Name="DGSignOffUserId" ColumnName="DGSignOffUserId" />
+                <ScalarProperty Name="DGSignOffDate" ColumnName="DGSignOffDate" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

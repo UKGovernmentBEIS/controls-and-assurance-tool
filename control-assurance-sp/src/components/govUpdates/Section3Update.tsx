@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { IEntityFormProps, IFForm, FForm, IUser } from '../../types';
+import { IEntityFormProps, IFForm, FForm, IUser, IGoDefForm } from '../../types';
 import * as services from '../../services';
 import styles from '../../styles/cr.module.scss';
 import { FormButtons } from '.././cr/FormButtons';
@@ -16,6 +16,7 @@ export interface ISection3UpdateProps extends IEntityFormProps {
     //onSignOff: ()=> void;
     //canSignOffDDSection: boolean;
     //canSignOffDirSection: boolean;
+    GoDefForm: IGoDefForm;
 }
 
 export class Section3UpdateState{
@@ -37,13 +38,13 @@ export default class Section3Update extends React.Component<ISection3UpdateProps
 
     public render(): React.ReactElement<ISection3UpdateProps> {
 
-        //const {title, signoffText} = this.props;
+        const { Section3Title } = this.props.GoDefForm;
                
         //const {ShowForm} = this.state;
         
         return (
             <div className={styles.cr}>
-                <UpdateHeader title="Section 3: Signature" isOpen={false}
+                <UpdateHeader title={Section3Title} isOpen={false}
                     leadUser=""                    
                     rag={this.getRag()}
                     ragLabel={this.getRagLabel()}

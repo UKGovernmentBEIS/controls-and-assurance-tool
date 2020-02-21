@@ -137,9 +137,6 @@ export default class MiscFileSaveForm extends React.Component<IMiscFileSaveFormP
     //#region Class Methods
 
     private uploadFile = (miscFileID:number, uploadedByUserId:number) => {
-
-        
-
         this.setState({
             UploadStatus: "Uploading file ...",
             ShowUploadProgress: true
@@ -147,13 +144,11 @@ export default class MiscFileSaveForm extends React.Component<IMiscFileSaveFormP
 
         let myfile = (document.querySelector("#fileUpload") as HTMLInputElement).files[0];
         let fileName: string = `${miscFileID}_${myfile.name}`;
-        console.log("06 File: "+myfile.name);
-        console.log("Upload folder: " + UploadFolder_MiscFiles);
+        //console.log(fileName);
         //const chunkSize:number = 10485760; //10mb
         const chunkSize: number = 1048576; //1mb
         if (myfile.size <= chunkSize) {
             sp.web.getFolderByServerRelativeUrl(UploadFolder_MiscFiles).files.add(fileName, myfile, true).then(f => {
-                
                 console.log("File Uploaded..");
                 this.setState({
                     UploadStatus: "Almost done ...",

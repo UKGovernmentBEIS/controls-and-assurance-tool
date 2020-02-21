@@ -14,6 +14,7 @@ export default class GoUpdatesWebPart extends DataAPIWebPart {
 		return super.onInit().then(_ => {
 	  
 		  // other init code may be present
+		  console.log('on init');
 	  
 		  sp.setup({
 			spfxContext: this.context
