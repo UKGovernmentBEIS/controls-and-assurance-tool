@@ -9,7 +9,9 @@ export class GoDefFormService extends EntityService<IGoDefForm> {
     protected childrenEntities = [];
 
     constructor(spfxContext: WebPartContext, api: IDataAPI) {
+        
         super(spfxContext, api, `/GoDefForms`);
+        console.log("GoDefFormService - Constructor - After super");
     }
 
 }
