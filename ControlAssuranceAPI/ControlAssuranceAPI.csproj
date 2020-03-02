@@ -198,6 +198,9 @@
     <Compile Include="Controllers\ElementsController.cs" />
     <Compile Include="Controllers\EntityStatusTypesController.cs" />
     <Compile Include="Controllers\FormsController.cs" />
+    <Compile Include="Controllers\GoElementActionsController.cs" />
+    <Compile Include="Controllers\GoElementFeedbacksController.cs" />
+    <Compile Include="Controllers\GoElementsController.cs" />
     <Compile Include="Controllers\GoFormsController.cs" />
     <Compile Include="Controllers\GoMiscFilesController.cs" />
     <Compile Include="Controllers\LogsController.cs" />
@@ -280,6 +283,12 @@
     <Compile Include="Models\GoElement.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\GoElementAction.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\GoElementFeedback.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\GoForm.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
@@ -341,6 +350,9 @@
     <Compile Include="Repositories\EmailRepository.cs" />
     <Compile Include="Repositories\EntityStatusTypeRespository.cs" />
     <Compile Include="Repositories\FormRespository.cs" />
+    <Compile Include="Repositories\GoElementActionRepository.cs" />
+    <Compile Include="Repositories\GoElementFeedbackRepository.cs" />
+    <Compile Include="Repositories\GoElementRepository.cs" />
     <Compile Include="Repositories\GoFormRepository.cs" />
     <Compile Include="Repositories\GoMiscFilesRepository.cs" />
     <Compile Include="Repositories\LogRepository.cs" />

@@ -11,6 +11,10 @@ export { GoDefFormService } from './GoDefFormService';
 export { GoMiscFileService } from './GoMiscFileService';
 export { GoFormService } from './GoFormService';
 export { GoDefElementService } from './GoDefElementService';
+export { GoElementService } from './GoElementService';
+export { GoElementFeedbackService } from './GoElementFeedbackService';
+export { GoElementActionService } from './GoElementActionService';
+
 export { DefElementGroupService } from './DefElementGroupService';
 export { DefElementService } from './DefElementService';
 export { PeriodService } from './PeriodService';

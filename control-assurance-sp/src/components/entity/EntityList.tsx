@@ -3,7 +3,7 @@ import * as types from '../../types';
 import { EntityForm } from './EntityForm';
 import { FilteredList, IObjectWithKey } from '../cr/FilteredList';
 import BaseList, { IBaseListProps } from '../BaseList';
-import { EntityService } from '../../services';
+import { EntityService, DateService } from '../../services';
 import { IEntity } from '../../types';
 import { IGenColumn, ColumnType, ColumnDisplayType } from '../../types/GenColumn';
 
@@ -14,7 +14,7 @@ export interface IEntityListProps extends IBaseListProps {
     childEntityNameApi: string;
     childEntityNamePlural: string;
     childEntityNameSingular: string;
-    
+
     entityReadAllExpandAll?: boolean;
     entityReadAllWithArg1?: any;
     columns: IGenColumn[];
@@ -38,7 +38,7 @@ export default class EntityList extends BaseList<IEntityListProps, IEntityListSt
         this.state = new types.CrListState<types.IEntity>();
     }
 
-    public makeItem = (e : IEntity) : any =>{
+    public makeItem = (e: IEntity): any => {
 
         //let item = { key: e["ID"], Name: e["Title"] };
         //let item = { key: e["ID"], ...e };
@@ -50,11 +50,11 @@ export default class EntityList extends BaseList<IEntityListProps, IEntityListSt
 
         let listColumns = this.props.columns.filter(c => c.columnDisplayType != ColumnDisplayType.FormOnly);
         listColumns.map((c) => {
-        //this.props.columns.map((c) => {
-            
-            if (c.isParent===true) {
-                
-                item = { 
+            //this.props.columns.map((c) => {
+
+            if (c.isParent === true) {
+
+                item = {
                     //key: e["ID"],
                     //[c.fieldName]: e[c.fieldName],
                     //[c.fieldName]: e["DefForm"]["Title"],
@@ -62,32 +62,47 @@ export default class EntityList extends BaseList<IEntityListProps, IEntityListSt
                     [c.fieldName]: (e[c.parentEntityName]) ? e[c.parentEntityName][c.parentColumnName] : null,
                     ...item
                     //...e
-                  };
+                };
 
-                  //console.log(item);
+                //console.log(item);
             }
-            else{
-                if(c.columnType === ColumnType.Checkbox){
-                    item = { 
+            else {
+                if (c.columnType === ColumnType.Checkbox) {
+                    item = {
                         [c.fieldName]: (e[c.fieldName] === true) ? "Yes" : "No",
                         ...item
-                      };
+                    };
                 }
-                else
-                {
-                    item = { 
+                else if (c.columnType === ColumnType.DatePicker) {
+                    if (c.showDateAndTimeInList === true) {
+
+                        item = {
+                            [c.fieldName]: DateService.dateToUkDateTime(e[c.fieldName]),
+                            ...item
+                        };
+                    }
+                    else {
+                        item = {
+                            [c.fieldName]: DateService.dateToUkDate(e[c.fieldName]),
+                            ...item
+                        };
+                    }
+
+                }
+                else {
+                    item = {
                         //key: e["ID"],
                         [c.fieldName]: String(e[c.fieldName]),
                         ...item
                         //[c.fieldName]: e["DefForm"]["Title"],
                         //[c.fieldName]: e[c.parentEntityName][c.parentColumnName],
                         //...e
-                      };                        
+                    };
                 }
 
             }
 
-                
+
 
         });
         //console.log(item);
@@ -102,9 +117,9 @@ export default class EntityList extends BaseList<IEntityListProps, IEntityListSt
         let listColumns = this.props.columns.filter(c => c.columnDisplayType != ColumnDisplayType.FormOnly);
 
 
-        if(this.props.displayIDColumn === true)
+        if (this.props.displayIDColumn === true)
             listColumns = [{ key: '-1', columnType: ColumnType.TextBox, name: 'ID', fieldName: 'key', minWidth: this.props.idColumnWidth ? this.props.idColumnWidth : 30, maxWidth: this.props.idColumnWidth ? this.props.idColumnWidth : 30, isResizable: true }, ...this.props.columns];
-        
+
         return (<FilteredList columns={listColumns} items={items} selection={this._selection} filterText={this.state.ListFilterText} />);
     }
 
@@ -118,16 +133,16 @@ export default class EntityList extends BaseList<IEntityListProps, IEntityListSt
         this.setState({ Loading: true });
         let read: any;
 
-        if(this.props.entityReadAllWithArg1)
+        if (this.props.entityReadAllWithArg1)
             read = this.entityService.readAllWithArgs(this.props.entityReadAllWithArg1);
-        else if(this.props.entityReadAllExpandAll === true)
+        else if (this.props.entityReadAllExpandAll === true)
             read = this.entityService.readAllExpandAll();
         else
-            read = this.entityService.readAll();            
+            read = this.entityService.readAll();
 
         read.then((entities: any): void => {
             this.setState({ Loading: false, Entities: entities });
-            
+
         }, (err) => this.errorLoadingEntities(err));
     }
 
@@ -138,12 +153,12 @@ export default class EntityList extends BaseList<IEntityListProps, IEntityListSt
 
         let qryString: string;
 
-        const skip: number = this.props.pageSize * (this.state.CurrentPage-1); //default CurrentPage value is 1, so if page size 10, then 10 * (1-1) = 0
+        const skip: number = this.props.pageSize * (this.state.CurrentPage - 1); //default CurrentPage value is 1, so if page size 10, then 10 * (1-1) = 0
 
         //qryString = `?$orderby=ID&$top=${this.props.pageSize}&$skip=${skip}`;
         qryString = `?$top=${this.props.pageSize}&$skip=${skip}`;
 
-        if(this.props.entityReadAllExpandAll === true)
+        if (this.props.entityReadAllExpandAll === true)
             read = this.entityService.readAllExpandAll(qryString);
         else
             read = this.entityService.readAll(qryString);
@@ -151,28 +166,28 @@ export default class EntityList extends BaseList<IEntityListProps, IEntityListSt
         read.then((entities: any[]): void => {
             const newRecords = entities.length;
             let nextPageAvailable: boolean = true;
-            if(newRecords < this.props.pageSize)
+            if (newRecords < this.props.pageSize)
                 nextPageAvailable = false;
 
 
             const totalEntities = [...this.state.Entities, ...entities];
-            this.setState({ CurrentPage:(this.state.CurrentPage+1), NextPageAvailable: nextPageAvailable, Entities: totalEntities, Loading: false });
-        
+            this.setState({ CurrentPage: (this.state.CurrentPage + 1), NextPageAvailable: nextPageAvailable, Entities: totalEntities, Loading: false });
+
         }, (err) => this.errorLoadingEntities(err));
     }
 
     protected loadEntities = (): void => {
 
-        if(this.props.pageSize){
+        if (this.props.pageSize) {
             this.loadEntities_paged();
         }
-        else{
+        else {
             this.loadEntities_all();
         }
     }
 
     public componentDidUpdate(prevProps: IEntityListProps): void {
-        if (prevProps.entityReadAllWithArg1 !== this.props.entityReadAllWithArg1){
+        if (prevProps.entityReadAllWithArg1 !== this.props.entityReadAllWithArg1) {
             this.loadEntities();
         }
     }

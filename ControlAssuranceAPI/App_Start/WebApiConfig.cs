@@ -58,6 +58,9 @@ namespace ControlAssuranceAPI
             builder.EntitySet<GoMiscFile>("GoMiscFiles");
             builder.EntitySet<GoForm>("GoForms");
             builder.EntitySet<GoDefElement>("GoDefElements");
+            builder.EntitySet<GoElement>("GoElements");
+            builder.EntitySet<GoElementFeedback>("GoElementFeedbacks");
+            builder.EntitySet<GoElementAction>("GoElementActions");
 
             builder.EntitySet<Models.SPDGAreaStat_Result>("DGAreaStats");
             builder.EntitySet<Models.SPDirectorateStat_Result>("DirectorateStats");

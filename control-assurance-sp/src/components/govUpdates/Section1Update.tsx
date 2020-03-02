@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { IEntityFormProps, IUser, IGoDefForm, GoForm, IGoForm, GoFormSummaryStatus } from '../../types';
+import { IEntityFormProps, IUser, IGoDefForm, GoForm, IGoForm, SectionStatus } from '../../types';
 import * as services from '../../services';
 import styles from '../../styles/cr.module.scss';
 import { FormButtons } from '.././cr/FormButtons';
@@ -69,8 +69,8 @@ export default class Section1Update extends React.Component<ISection1UpdateProps
             <div className={styles.cr}>
                 <UpdateHeader title={Section1Title} isOpen={ShowForm}
                     leadUser=""
-                    rag={ this.state.FormData.SummaryCompletionStatus === GoFormSummaryStatus.Completed ? 5 : this.state.FormData.SummaryCompletionStatus === GoFormSummaryStatus.InProgress ? 3 : null }
-                    ragLabel={ this.state.FormData.SummaryCompletionStatus === GoFormSummaryStatus.Completed ? "Completed" : this.state.FormData.SummaryCompletionStatus === GoFormSummaryStatus.InProgress ? "In Progress" : null }
+                    rag={ this.state.FormData.SummaryCompletionStatus === SectionStatus.Completed ? 5 : this.state.FormData.SummaryCompletionStatus === SectionStatus.InProgress ? 3 : null }
+                    ragLabel={ this.state.FormData.SummaryCompletionStatus === SectionStatus.Completed ? "Completed" : this.state.FormData.SummaryCompletionStatus === SectionStatus.InProgress ? "In Progress" : null }
                     onClick={this.toggleProgressUpdateForm} />
 
                 {ShowForm && <div className={`ms-scaleDownIn100`}>
@@ -327,18 +327,18 @@ export default class Section1Update extends React.Component<ISection1UpdateProps
 
     protected onBeforeSave = (): void => { 
         
-        let summaryCompletionStatus: string = GoFormSummaryStatus.InProgress; //taking as default
+        let summaryCompletionStatus: string = SectionStatus.InProgress; //taking as default
         let summaryMarkReadyForApproval: boolean = this.state.FormData.SummaryMarkReadyForApproval;
 
         const completed: boolean = this.validateForStatus(); 
         if(completed === true){
             if(summaryMarkReadyForApproval === true){
-                summaryCompletionStatus = GoFormSummaryStatus.Completed;
+                summaryCompletionStatus = SectionStatus.Completed;
             }
             
         }
         else{
-            summaryCompletionStatus = GoFormSummaryStatus.InProgress;
+            summaryCompletionStatus = SectionStatus.InProgress;
             //also uncheck the mark as ready checkbox
             summaryMarkReadyForApproval = false;
             //this.changeCheckbox(false, "SummaryMarkReadyForApproval");

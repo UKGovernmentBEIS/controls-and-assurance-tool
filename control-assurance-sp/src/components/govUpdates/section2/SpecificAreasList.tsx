@@ -14,7 +14,7 @@ import styles from '../../../styles/cr.module.scss';
 
 export interface ISpecificAreasListProps extends types.IBaseComponentProps {
 
-    //onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
+    onItemTitleClick: (ID: number, goElementId:number, title: string, filteredItems: any[]) => void;
     goFormId: number | string;
     incompleteOnly: boolean;
     onChangeIncompleteOnly: (value: boolean) => void;
@@ -69,6 +69,14 @@ export default class SpecificAreasList extends React.Component<ISpecificAreasLis
             key: 'ID',
             name: 'ID',
             fieldName: 'ID',
+            minWidth: 1,
+            isResizable: true,
+            columnDisplayType: ColumnDisplayTypes.Hidden,
+        },
+        {
+            key: 'GoElementId',
+            name: 'GoElementId',
+            fieldName: 'GoElementId',
             minWidth: 1,
             isResizable: true,
             columnDisplayType: ColumnDisplayTypes.Hidden,
@@ -163,7 +171,7 @@ export default class SpecificAreasList extends React.Component<ISpecificAreasLis
 
         return (
             <FilteredSpecificAreasList
-                //onItemTitleClick={this.props.onItemTitleClick}
+                onItemTitleClick={this.props.onItemTitleClick}
                 columns={listColumns}
                 items={items}
                 

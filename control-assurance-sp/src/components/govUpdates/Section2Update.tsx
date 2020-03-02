@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { IEntityFormProps, IFForm, FForm, IUser, IGoDefForm } from '../../types';
+import { IEntityFormProps, IFForm, FForm, IUser, IGoDefForm, SectionStatus } from '../../types';
 import * as services from '../../services';
 import SpecificAreasList from '../../components/govUpdates/section2/SpecificAreasList';
 import styles from '../../styles/cr.module.scss';
@@ -9,32 +9,28 @@ import { ConfirmDialog } from '.././cr/ConfirmDialog';
 
 
 export interface ISection2UpdateProps extends IEntityFormProps {
-    //signoffFor: string;
-    //formId: number;
-    //form: IFForm;
-    //title?: string;
-    //signoffText?: string;
-    //onSignOff: ()=> void;
-    //canSignOffDDSection: boolean;
-    //canSignOffDirSection: boolean;
-    GoDefForm: IGoDefForm;
-    goFormId:number;
+
+    goDefForm: IGoDefForm;
+    goFormId: number;
+    section2CompletionStatus:string;
+    onItemTitleClick: (ID: number, goElementId:number, title: string, filteredItems: any[]) => void;
+    incompleteOnly:boolean;
+    onChangeIncompleteOnly: (value: boolean) => void;
+    justMine:boolean;
+    onChangeJustMine: (value: boolean) => void;
+    listFilterText:string;
+    onChangeFilterText: (value: string) => void;
+
+    section2_IsOpen: boolean;
+    onSection2_toggleOpen: () => void;
 }
 
 export class Section2UpdateState {
-    public ShowForm = false;
-    public IncompleteOnly = false;
-    public JustMine = false;
-    public ListFilterText: string = null;
-    public FilteredItems: any[] = [];
-    //public ShowConfirmDialog = false;
-    //public DDSignOffName: string = null;
-    //public DirSignOffName: string = null;
+
 }
 
 export default class Section2Update extends React.Component<ISection2UpdateProps, Section2UpdateState> {
-    //private formService: services.FormService = new services.FormService(this.props.spfxContext, this.props.api);
-    //private userService: services.UserService = new services.UserService(this.props.spfxContext, this.props.api);
+    
 
     constructor(props: ISection2UpdateProps, state: Section2UpdateState) {
         super(props);
@@ -44,17 +40,19 @@ export default class Section2Update extends React.Component<ISection2UpdateProps
 
     public render(): React.ReactElement<ISection2UpdateProps> {
 
-        const { Section2Title } = this.props.GoDefForm;
+        const { Section2Title } = this.props.goDefForm;
 
-        const { ShowForm } = this.state;
+        //const { ShowForm } = this.state;
+        const ShowForm = this.props.section2_IsOpen;
 
         return (
             <div className={styles.cr}>
                 <UpdateHeader title={Section2Title} isOpen={ShowForm}
                     leadUser=""
-                    rag={this.getRag()}
-                    ragLabel={this.getRagLabel()}
-                    onClick={this.toggleProgressUpdateForm} />
+                    rag={ this.props.section2CompletionStatus === SectionStatus.Completed ? 5 : this.props.section2CompletionStatus === SectionStatus.InProgress ? 3 : null }
+                    ragLabel={ this.props.section2CompletionStatus === SectionStatus.Completed ? "Completed" : this.props.section2CompletionStatus === SectionStatus.InProgress ? "In Progress" : null }
+                    onClick={this.props.onSection2_toggleOpen}
+                />
 
                 {ShowForm && <div style={{ overflowX: 'hidden' }}
                 >
@@ -62,14 +60,14 @@ export default class Section2Update extends React.Component<ISection2UpdateProps
                         <SpecificAreasList
                             {...this.props}
                             onError={this.props.onError}
-                            
-                            incompleteOnly={this.state.IncompleteOnly}
-                            onChangeIncompleteOnly={this.handleChangeIncompleteOnly}
-                            justMine={this.state.JustMine}
-                            onChangeJustMine={this.handleChangeJustMine}
+                            onItemTitleClick={this.props.onItemTitleClick}
+                            incompleteOnly={this.props.incompleteOnly}
+                            onChangeIncompleteOnly={this.props.onChangeIncompleteOnly}
+                            justMine={this.props.justMine}
+                            onChangeJustMine={this.props.onChangeJustMine}
                             goFormId={this.props.goFormId}
-                            filterText={this.state.ListFilterText}
-                            onChangeFilterText={this.handleChangeFilterText}
+                            filterText={this.props.listFilterText}
+                            onChangeFilterText={this.props.onChangeFilterText}
 
                         />
                     </div>
@@ -131,24 +129,6 @@ export default class Section2Update extends React.Component<ISection2UpdateProps
         if (changeProp)
             return { ...obj, [changeProp]: changeValue };
         return { ...obj };
-    }
-
-
-    private handleChangeFilterText = (value: string): void => {
-        this.setState({ ListFilterText: value });
-    }
-
-    private handleChangeIncompleteOnly = (value: boolean): void => {
-        this.setState({ IncompleteOnly: value });
-    }
-
-    private handleChangeJustMine = (value: boolean): void => {
-        this.setState({ JustMine: value });
-    }
-
-
-    protected toggleProgressUpdateForm = (): void => {
-        this.setState({ ShowForm: !this.state.ShowForm });
     }
 
     //#endregion

@@ -38,6 +38,9 @@ namespace ControlAssuranceAPI.Models
         private GoMiscFilesRepository goMiscFilesRepository;
         private GoFormRepository goFormRepository;
         private GoDefElementRepository goDefElementRepository;
+        private GoElementRepository goElementRepository;
+        private GoElementFeedbackRepository goElementFeedbackRepository;
+        private GoElementActionRepository goElementActionRepository;
 
         private SPDGAreaStatRepository spDGAreaStatRepository;
         private SPDirectorateStatRepository spDirectorateStatRepository;
@@ -344,6 +347,34 @@ namespace ControlAssuranceAPI.Models
                     goDefElementRepository = new GoDefElementRepository(user, context);
                 }
                 return goDefElementRepository;
+            }
+        }
+
+        public GoElementRepository GoElementRepository
+        {
+            get
+            {
+                if(goElementRepository == null)
+                {
+                    goElementRepository = new GoElementRepository(user, context);
+                }
+                return goElementRepository;
+            }
+        }
+
+        public GoElementFeedbackRepository GoElementFeedbackRepository
+        {
+            get
+            {
+                return goElementFeedbackRepository = goElementFeedbackRepository ?? new GoElementFeedbackRepository(user, context);
+            }
+        }
+
+        public GoElementActionRepository GoElementActionRepository
+        {
+            get
+            {
+                return goElementActionRepository = goElementActionRepository ?? new GoElementActionRepository(user, context);
             }
         }
 

@@ -4,7 +4,7 @@ export const UploadFolder_MiscFiles:string = "/sites/ControlsAndAssuranceToolDev
 export enum ElementStatuses {
     ToBeCompleted = "Not Started",
     InProgress = "In Progress",
-    ReqSignOff = "Req Approval",
+    //ReqSignOff = "Req Approval",
     Completed = "Completed"
 }
 

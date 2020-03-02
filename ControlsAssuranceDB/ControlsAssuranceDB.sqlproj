@@ -102,7 +102,4 @@
   <ItemGroup>
     <None Include="ControlsAssuranceDB.publish.xml" />
   </ItemGroup>
-  <ItemGroup>
-    <PostDeploy Include="Script.PostDeployment1.sql" />
-  </ItemGroup>
 </Project>

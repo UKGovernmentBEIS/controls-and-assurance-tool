@@ -15,6 +15,8 @@ export interface IBaseListProps extends types.IBaseComponentProps {
 
     //new props for paging
     pageSize?: number;
+    zeroMarginTop?:boolean;
+    hideTitleBelowCommandBar?:boolean;
 }
 
 export default abstract class BaseList<P extends IBaseListProps, S extends types.ICrListState<types.IEntity>> extends React.Component<P, S> {
@@ -63,8 +65,10 @@ export default abstract class BaseList<P extends IBaseListProps, S extends types
     }
 
     public render(): React.ReactElement<P> {
+        const mainDivCss= this.props.zeroMarginTop ? `` : `${styles.cr} ${styles.crList}`;
+        const entityNameH2 = this.props.hideTitleBelowCommandBar ? <div style={{marginBottom:'5px'}} /> : <h2 className={styles.listTitle}>{this.EntityName.Plural}</h2>;
         return (
-            <div className={`${styles.cr} ${styles.crList}`}>
+            <div className={mainDivCss}>
                 <ListCommandBar
                     allowAdd={this.props.allowAdd}
                     onAdd={this.addEntity}
@@ -76,7 +80,7 @@ export default abstract class BaseList<P extends IBaseListProps, S extends types
                     onAddChild={this.addEntityChild}
                     addChildName={this.AddChild.Name} />
                 <div style={{ position: 'relative' }}>
-                    <h2 className={styles.listTitle}>{this.EntityName.Plural}</h2>
+                    {entityNameH2}
                     <CrLoadingOverlay isLoading={this.state.Loading} />
                     {this.renderList()}
                     { this.props.pageSize && this.state.NextPageAvailable === true &&
@@ -123,7 +127,16 @@ export default abstract class BaseList<P extends IBaseListProps, S extends types
 
     protected getSelectedEntityName = (): string => {
         let entity = this.state.Entities.filter((e) => { return e.ID === this.state.SelectedEntity; });
-        return entity[0] ? entity[0].Title : null;
+        let entityName:string = null;
+        if(entity[0]){
+            if(entity[0].Title !== null)
+                entityName = entity[0].Title;
+            else
+                entityName = this.EntityName.Singular.toLowerCase();                            
+        }
+
+        return entityName;
+        //return entity[0] ? entity[0].Title : null;
     }
 
     protected addEntity = (): void => {

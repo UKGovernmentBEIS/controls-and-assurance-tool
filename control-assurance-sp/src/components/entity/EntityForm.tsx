@@ -69,6 +69,7 @@ export class EntityForm extends BaseForm<types.IEntityFormProps, types.ICrFormSt
             tempMultiline = true;
         }
 
+        if(c.fieldHiddenInForm === true) return null;
         return (
             <div key={`div_TextField_${c.fieldName}`}>
                 <CrTextField key={c.fieldName}
@@ -246,9 +247,18 @@ export class EntityForm extends BaseForm<types.IEntityFormProps, types.ICrFormSt
 
     protected onAfterLoad = (entity: types.IEntity): void => {
         const columns: IGenColumn[] = this.props["columns"];
+        console.log('on after load....');
         columns.map((c) => {
             if (c.fieldDefaultValue) {
-                this.setState({ FormData: this.cloneObject(this.state.FormData, c.idFieldName, c.fieldDefaultValue) });
+                if(c.columnType == ColumnType.TextBox){
+                    this.setState({ FormData: this.cloneObject(this.state.FormData, c.fieldName, c.fieldDefaultValue) });
+                }
+                else
+                {
+                    //mostly used for dropdown
+                    this.setState({ FormData: this.cloneObject(this.state.FormData, c.idFieldName, c.fieldDefaultValue) });
+                }
+                
             }
 
         });

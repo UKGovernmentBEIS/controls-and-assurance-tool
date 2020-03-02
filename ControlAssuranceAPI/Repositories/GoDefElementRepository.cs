@@ -58,10 +58,12 @@ namespace ControlAssuranceAPI.Repositories
                 string completionStatus = "Not Started"; //default value
                 string rating = getRatingLabel(null); //for getting default value
                 string users = "";
+                int goElementId = 0;
 
-                if(goDefElement.GoElements.Count() > 0)
+                if (goDefElement.GoElements.Count() > 0)
                 {
                     GoElement goElement = goDefElement.GoElements.FirstOrDefault();
+                    goElementId = goElement.ID;
                     if (incompleteOnly == true)
                     {
                         
@@ -97,6 +99,7 @@ namespace ControlAssuranceAPI.Repositories
                 {
                     ID = goDefElement.ID,
                     Title = title,
+                    GoElementId = goElementId,
                     CompletionStatus = completionStatus,
                     Rating = rating,
                     Users = users

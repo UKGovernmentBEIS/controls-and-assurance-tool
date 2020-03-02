@@ -53,7 +53,7 @@ export interface IFilteredSpecificAreasListProps {
     justMine: boolean;
     onChangeJustMine: (value: boolean) => void;
     onFilterChange: (value: string) => void;
-    //onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
+    onItemTitleClick: (ID: number, goElementId:number, title: string, filteredItems: any[]) => void;
 
     selection?: ISelection;
     //onAdd: () => void;
@@ -184,15 +184,15 @@ export class FilteredSpecificAreasList extends React.Component<IFilteredSpecific
                 txtColor = "black";
             }
             else if (fieldContent === ElementStatuses.InProgress) {
-                bgColor = "rgb(210,210,210)";
-                txtColor = "black";
-            }
-            else if (fieldContent === ElementStatuses.ReqSignOff) {
-                bgColor = "rgb(185,0,185)";
+                bgColor = "rgb(255,191,0)";
                 txtColor = "white";
             }
+            // else if (fieldContent === ElementStatuses.ReqSignOff) {
+            //     bgColor = "rgb(185,0,185)";
+            //     txtColor = "white";
+            // }
             else if (fieldContent === ElementStatuses.Completed) {
-                bgColor = "rgb(0,98,196)";
+                bgColor = "rgb(0,127,0)";
                 txtColor = "white";
             }
 
@@ -210,19 +210,19 @@ export class FilteredSpecificAreasList extends React.Component<IFilteredSpecific
             const ragLabel = fieldContent;
 
             if (fieldContent === RAGRatings.Unsatisfactory) {
-                bgColor = "rgb(237,30,38)";
+                bgColor = "rgb(237,31,39)";
                 txtColor = "white";
             }
             else if (fieldContent === RAGRatings.Limited) {
-                bgColor = "rgb(242,231,0)";
-                txtColor = "black";
-            }
-            else if (fieldContent === RAGRatings.Moderate) {
-                bgColor = "rgb(255,127,39)";
+                bgColor = "rgb(255,127,40)";
                 txtColor = "white";
             }
+            else if (fieldContent === RAGRatings.Moderate) {
+                bgColor = "rgb(242,231,1)";
+                txtColor = "black";
+            }
             else if (fieldContent === RAGRatings.Substantial) {
-                bgColor = "rgb(29,148,65)";
+                bgColor = "rgb(30,148,66)";
                 txtColor = "white";
             }
             else {
@@ -239,10 +239,11 @@ export class FilteredSpecificAreasList extends React.Component<IFilteredSpecific
         }
         else if (column.key === "Title") {
 
-            //const policyID: number = item["ID"];
+            const id: number = item["ID"];
+            const goElementId: number = item["GoElementId"];
             return (
-                // <span><a className="titleLnk" onClick={(ev) => this.props.onItemTitleClick(policyID, fieldContent, this.state.FilteredItems)} > {fieldContent}</a> </span>
-                <span>{fieldContent}</span>
+                <span><a className="titleLnk" onClick={(ev) => this.props.onItemTitleClick(id, goElementId, fieldContent, this.state.FilteredItems)} > {fieldContent}</a> </span>
+                // <span>{fieldContent}</span>
             );
 
         }

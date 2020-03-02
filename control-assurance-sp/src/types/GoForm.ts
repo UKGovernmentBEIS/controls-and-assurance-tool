@@ -35,7 +35,7 @@ export class GoForm implements IGoForm{
     }
 }
 
-export enum GoFormSummaryStatus {
+export enum SectionStatus {
     InProgress = "InProgress",
     Completed = "Completed",    
 }

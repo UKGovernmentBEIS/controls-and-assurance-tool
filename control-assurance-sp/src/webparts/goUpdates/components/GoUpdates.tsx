@@ -5,6 +5,8 @@ import Section1Update from '../../../components/govUpdates/Section1Update';
 import Section2Update from '../../../components/govUpdates/Section2Update';
 import Section3Update from '../../../components/govUpdates/Section3Update';
 import Section4Update from '../../../components/govUpdates/Section4Update';
+import UpdateForm from '../../../components/govUpdates/UpdateForm';
+
 import * as types from '../../../types';
 import BaseUserContextWebPartComponent from '../../../components/BaseUserContextWebPartComponent';
 import * as services from '../../../services';
@@ -34,13 +36,34 @@ export interface IGoUpdatesState extends types.IUserContextWebPartState {
   LookupData: ILookupData;
   PeriodId: string | number;
   DirectorateGroupId: string | number;
-  GoFormId:number;
+  //GoFormId: number;
+  GoForm: IGoForm;
+  SelectedPivotKey: string;
+
+  Section2_IsOpen: boolean;
+  Section2_IncompleteOnly: boolean;
+  Section2_JustMine: boolean;
+  Section2_ListFilterText: string;
+  Section2_SelectedDefElementId: number;
+  Section2_SelectedElementId: number;
+  Section2_SelectedDefElementTitle: string;
 }
 export class GoUpdatesState extends types.UserContextWebPartState implements IGoUpdatesState {
   public LookupData = new LookupData();
   public PeriodId: string | number = 0;
   public DirectorateGroupId: string | number = 0;
-  public GoFormId:number = 0;
+  //public GoFormId: number = 0;
+  public GoForm: IGoForm = null;
+  public SelectedPivotKey = "Governance-Updates"; //default, 1st tab selected
+
+  public Section2_IsOpen: boolean = false;
+  public Section2_IncompleteOnly = false;
+  public Section2_JustMine = false;
+  public Section2_ListFilterText: string = null;
+  public Section2_SelectedDefElementId: number = 0;
+  public Section2_SelectedElementId: number = 0;
+  public Section2_SelectedDefElementTitle: string = null;
+
   constructor() {
     super();
   }
@@ -55,6 +78,9 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
   protected periodService: services.PeriodService = new services.PeriodService(this.props.spfxContext, this.props.api);
   protected deirectorateGroupService: services.DirectorateGroupService = new services.DirectorateGroupService(this.props.spfxContext, this.props.api);
 
+  private readonly headerTxt_Updates: string = "Governance-Updates";
+  private readonly headerTxt_UpdateForm: string = "Details";
+
   constructor(props: types.IWebPartComponentProps) {
     super(props);
     this.state = new GoUpdatesState();
@@ -66,10 +92,11 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
 
     return (
 
-      <Pivot onLinkClick={this.clearErrors}>
-        <PivotItem headerText="Governance - Updates">
+      <Pivot onLinkClick={this.handlePivotClick} selectedKey={`${this.state.SelectedPivotKey}`}>
+        <PivotItem headerText={this.headerTxt_Updates} itemKey={this.headerTxt_Updates}>
           {this.renderMyUpdates()}
         </PivotItem>
+        {this.renderUpdateFormTab()}
 
       </Pivot>
     );
@@ -102,10 +129,31 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
 
           <br />
 
-          {this.state.PeriodId > 0 && this.state.DirectorateGroupId > 0 && this.state.GoFormId > 0 &&
+          {this.state.PeriodId > 0 && this.state.DirectorateGroupId > 0 && this.state.GoForm &&
             <div>
-              <Section1Update GoDefForm={this.state.LookupData.GoDefForm} PeriodId={periodId} DirectorateGroupId={directorateGroupId} {...this.props} />
-              <Section2Update GoDefForm={this.state.LookupData.GoDefForm} goFormId={this.state.GoFormId} {...this.props} />
+              <Section1Update
+                GoDefForm={this.state.LookupData.GoDefForm}
+                PeriodId={periodId}
+                DirectorateGroupId={directorateGroupId}
+                onSaved={this.createGoFormInDb}
+                {...this.props}
+              />
+              <Section2Update
+                goDefForm={this.state.LookupData.GoDefForm}
+                goFormId={this.state.GoForm.ID}
+                section2CompletionStatus={this.state.GoForm.SpecificAreasCompletionStatus}
+                onItemTitleClick={this.handleSection2_ListItemTitleClick}
+                section2_IsOpen={this.state.Section2_IsOpen}
+                onSection2_toggleOpen={this.handleSection2_toggleOpen}
+                justMine={this.state.Section2_JustMine}
+                incompleteOnly={this.state.Section2_IncompleteOnly}
+                listFilterText={this.state.Section2_ListFilterText}
+                onChangeFilterText={this.handleSection2_ChangeFilterText}
+                onChangeIncompleteOnly={this.handleSection2_ChangeIncompleteOnly}
+                onChangeJustMine={this.handleSection2_ChangeJustMine}
+                
+                {...this.props}
+              />
               <Section3Update GoDefForm={this.state.LookupData.GoDefForm} {...this.props} />
               <Section4Update {...this.props} />
             </div>
@@ -116,6 +164,48 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
         </div>
       </div>
     );
+  }
+
+  private renderUpdateFormTab() {
+    if (this.state.SelectedPivotKey === this.headerTxt_UpdateForm) {
+      return (
+
+        <PivotItem headerText={this.headerTxt_UpdateForm} itemKey={this.headerTxt_UpdateForm}>
+          {this.renderUpdateForm()}
+        </PivotItem>
+
+      );
+    }
+    else
+      return <React.Fragment></React.Fragment>;
+  }
+  private renderUpdateForm(): React.ReactElement<types.IWebPartComponentProps> {
+
+    return (
+
+      <UpdateForm
+        defElementTitle={this.state.Section2_SelectedDefElementTitle}
+        goDefElementId={this.state.Section2_SelectedDefElementId}
+        goElementId={this.state.Section2_SelectedElementId}
+        goFormId={this.state.GoForm.ID}
+        onShowList={this.handleShowListSection2}
+
+        {...this.props}
+      />
+
+      // <UpdateForm
+      //   policyID={this.state.SelectedPolicyID}
+      //   filteredItems={this.state.FilteredItems} //4Oct19
+      //   prevPeriodPolicyID={null}
+      //   onShowList={this.handleShowList}
+      //   currentUserID={this.state.UserID}
+      //   allReadOnly={this.state.IsArchivedPeriod}
+      //   onNextLoadPolicyDetails={this.handleOnNextLoadPolicyDetails}
+      //   {...this.props}
+      // />
+
+    );
+
   }
 
 
@@ -254,7 +344,8 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
 
       //following service only adds form in db if its needed
       this.goFormService.create(goForm).then((newForm: IGoForm): void => {
-        this.setState({ GoFormId: newForm.ID } );
+        //this.setState({ GoFormId: newForm.ID });
+        this.setState({ GoForm: newForm });
         //console.log('goForm created ', newForm);
       }, (err) => { });
 
@@ -262,6 +353,47 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
 
   }
 
+
+  private handlePivotClick = (item: PivotItem): void => {
+    this.clearErrors();
+    this.setState({ SelectedPivotKey: item.props.headerText });
+  }
+
+  private handleSection2_ListItemTitleClick = (ID: number, goElementId, title: string, filteredItems: any[]): void => {
+
+    console.log('on item title click ', ID, goElementId, title, filteredItems);
+    this.setState({
+      SelectedPivotKey: this.headerTxt_UpdateForm,
+      Section2_SelectedDefElementId: ID,
+      Section2_SelectedElementId: goElementId,
+      Section2_SelectedDefElementTitle: title,
+      //SelectedPolicyID: ID,
+      //SelectedPolicyTitle: title,
+      //FilteredItems: filteredItems
+    });
+  }
+
+  private handleSection2_toggleOpen = (): void => {
+    this.setState({ Section2_IsOpen: !this.state.Section2_IsOpen });
+  }
+
+  private handleSection2_ChangeFilterText = (value: string): void => {
+    this.setState({ Section2_ListFilterText: value });
+  }
+
+  private handleSection2_ChangeIncompleteOnly = (value: boolean): void => {
+    this.setState({ Section2_IncompleteOnly: value });
+  }
+
+  private handleSection2_ChangeJustMine = (value: boolean): void => {
+    this.setState({ Section2_JustMine: value });
+  }
+
+  private handleShowListSection2 = (): void => {
+    console.log('in handleShowListSection2');
+    this.clearErrors();
+    this.setState({ SelectedPivotKey: this.headerTxt_Updates }, this.createGoFormInDb);
+  }
 
   //#endregion event handlers
 

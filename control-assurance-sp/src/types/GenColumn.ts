@@ -16,7 +16,9 @@ export interface IGenColumn extends IColumn{
     parentColumnName?: string;
     idFieldName?: string;
     fieldDisabled?: boolean;
+    fieldHiddenInForm?: boolean;
     fieldDefaultValue?: any;
+    showDateAndTimeInList?: boolean;
 }
 
 export enum ColumnType {

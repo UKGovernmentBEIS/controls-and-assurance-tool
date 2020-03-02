@@ -300,6 +300,29 @@
           <Property Name="EvidenceStatement" Type="nvarchar(max)" />
           <Property Name="Rating" Type="nvarchar" MaxLength="50" />
           <Property Name="CompletionStatus" Type="nvarchar" MaxLength="50" />
+          <Property Name="MarkReadyForApproval" Type="bit" />
+        </EntityType>
+        <EntityType Name="GoElementAction">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="2000" />
+          <Property Name="GoElementId" Type="int" />
+          <Property Name="Timescale" Type="nvarchar" MaxLength="1000" />
+          <Property Name="Owner" Type="nvarchar" MaxLength="1000" />
+          <Property Name="Progress" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="GoElementFeedback">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" />
+          <Property Name="GoElementId" Type="int" />
+          <Property Name="Comment" Type="nvarchar(max)" />
+          <Property Name="CommentById" Type="int" />
+          <Property Name="CommentDate" Type="datetime" />
         </EntityType>
         <EntityType Name="GoForm">
           <Key>
@@ -721,6 +744,42 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_GoElementAction_GoElement">
+          <End Role="GoElement" Type="Self.GoElement" Multiplicity="0..1" />
+          <End Role="GoElementAction" Type="Self.GoElementAction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GoElement">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GoElementAction">
+              <PropertyRef Name="GoElementId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GoElementFeedback_GoElement">
+          <End Role="GoElement" Type="Self.GoElement" Multiplicity="0..1" />
+          <End Role="GoElementFeedback" Type="Self.GoElementFeedback" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GoElement">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GoElementFeedback">
+              <PropertyRef Name="GoElementId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GoElementFeedback_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="GoElementFeedback" Type="Self.GoElementFeedback" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GoElementFeedback">
+              <PropertyRef Name="CommentById" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_GoForm_DirectorateGroup">
           <End Role="DirectorateGroup" Type="Self.DirectorateGroup" Multiplicity="0..1" />
           <End Role="GoForm" Type="Self.GoForm" Multiplicity="*" />
@@ -915,6 +974,8 @@
           <EntitySet Name="GoDefElement" EntityType="Self.GoDefElement" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GoDefForm" EntityType="Self.GoDefForm" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GoElement" EntityType="Self.GoElement" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GoElementAction" EntityType="Self.GoElementAction" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GoElementFeedback" EntityType="Self.GoElementFeedback" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GoForm" EntityType="Self.GoForm" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GoMiscFiles" EntityType="Self.GoMiscFiles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Log" EntityType="Self.Log" Schema="dbo" store:Type="Tables" />
@@ -1025,6 +1086,18 @@
           <AssociationSet Name="FK_GoElement_GoForm" Association="Self.FK_GoElement_GoForm">
             <End Role="GoForm" EntitySet="GoForm" />
             <End Role="GoElement" EntitySet="GoElement" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GoElementAction_GoElement" Association="Self.FK_GoElementAction_GoElement">
+            <End Role="GoElement" EntitySet="GoElement" />
+            <End Role="GoElementAction" EntitySet="GoElementAction" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GoElementFeedback_GoElement" Association="Self.FK_GoElementFeedback_GoElement">
+            <End Role="GoElement" EntitySet="GoElement" />
+            <End Role="GoElementFeedback" EntitySet="GoElementFeedback" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GoElementFeedback_User" Association="Self.FK_GoElementFeedback_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="GoElementFeedback" EntitySet="GoElementFeedback" />
           </AssociationSet>
           <AssociationSet Name="FK_GoForm_DirectorateGroup" Association="Self.FK_GoForm_DirectorateGroup">
             <End Role="DirectorateGroup" EntitySet="DirectorateGroup" />
@@ -1419,9 +1492,37 @@
           <Property Name="EvidenceStatement" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Rating" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CompletionStatus" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MarkReadyForApproval" Type="Boolean" />
           <NavigationProperty Name="GoAssignments" Relationship="Self.FK_GoAssignment_GoElement" FromRole="GoElement" ToRole="GoAssignment" />
           <NavigationProperty Name="GoDefElement" Relationship="Self.FK_GoElement_GoDefElement" FromRole="GoElement" ToRole="GoDefElement" />
           <NavigationProperty Name="GoForm" Relationship="Self.FK_GoElement_GoForm" FromRole="GoElement" ToRole="GoForm" />
+          <NavigationProperty Name="GoElementActions" Relationship="Self.FK_GoElementAction_GoElement" FromRole="GoElement" ToRole="GoElementAction" />
+          <NavigationProperty Name="GoElementFeedbacks" Relationship="Self.FK_GoElementFeedback_GoElement" FromRole="GoElement" ToRole="GoElementFeedback" />
+        </EntityType>
+        <EntityType Name="GoElementAction">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
+          <Property Name="GoElementId" Type="Int32" />
+          <Property Name="Timescale" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="Owner" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="Progress" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="GoElement" Relationship="Self.FK_GoElementAction_GoElement" FromRole="GoElementAction" ToRole="GoElement" />
+        </EntityType>
+        <EntityType Name="GoElementFeedback">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="GoElementId" Type="Int32" />
+          <Property Name="Comment" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CommentById" Type="Int32" />
+          <Property Name="CommentDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="GoElement" Relationship="Self.FK_GoElementFeedback_GoElement" FromRole="GoElementFeedback" ToRole="GoElement" />
+          <NavigationProperty Name="User" Relationship="Self.FK_GoElementFeedback_User" FromRole="GoElementFeedback" ToRole="User" />
         </EntityType>
         <EntityType Name="GoForm">
           <Key>
@@ -1552,6 +1653,7 @@
           <NavigationProperty Name="DirectorateGroupMembers" Relationship="Self.FK_DirectorateGroupMember_User" FromRole="User" ToRole="DirectorateGroupMember" />
           <NavigationProperty Name="DirectorateMembers" Relationship="Self.FK_DirectorateMember_User" FromRole="User" ToRole="DirectorateMember" />
           <NavigationProperty Name="GoAssignments" Relationship="Self.FK_GoAssignment_User" FromRole="User" ToRole="GoAssignment" />
+          <NavigationProperty Name="GoElementFeedbacks" Relationship="Self.FK_GoElementFeedback_User" FromRole="User" ToRole="GoElementFeedback" />
           <NavigationProperty Name="GoForms" Relationship="Self.FK_GoForm_User" FromRole="User" ToRole="GoForm" />
           <NavigationProperty Name="GoMiscFiles" Relationship="Self.FK_GoMiscFiles_User" FromRole="User" ToRole="GoMiscFiles" />
           <NavigationProperty Name="Logs" Relationship="Self.FK_Log_User" FromRole="User" ToRole="Log" />
@@ -1918,6 +2020,42 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_GoElementAction_GoElement">
+          <End Role="GoElement" Type="Self.GoElement" Multiplicity="0..1" />
+          <End Role="GoElementAction" Type="Self.GoElementAction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GoElement">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GoElementAction">
+              <PropertyRef Name="GoElementId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GoElementFeedback_GoElement">
+          <End Role="GoElement" Type="Self.GoElement" Multiplicity="0..1" />
+          <End Role="GoElementFeedback" Type="Self.GoElementFeedback" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GoElement">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GoElementFeedback">
+              <PropertyRef Name="GoElementId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GoElementFeedback_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="GoElementFeedback" Type="Self.GoElementFeedback" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GoElementFeedback">
+              <PropertyRef Name="CommentById" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_GoForm_Period">
           <End Role="Period" Type="Self.Period" Multiplicity="0..1" />
           <End Role="GoForm" Type="Self.GoForm" Multiplicity="*" />
@@ -2067,6 +2205,8 @@
           <EntitySet Name="GoDefElements" EntityType="Self.GoDefElement" />
           <EntitySet Name="GoDefForms" EntityType="Self.GoDefForm" />
           <EntitySet Name="GoElements" EntityType="Self.GoElement" />
+          <EntitySet Name="GoElementActions" EntityType="Self.GoElementAction" />
+          <EntitySet Name="GoElementFeedbacks" EntityType="Self.GoElementFeedback" />
           <EntitySet Name="GoForms" EntityType="Self.GoForm" />
           <EntitySet Name="GoMiscFiles" EntityType="Self.GoMiscFile" />
           <EntitySet Name="Logs" EntityType="Self.Log" />
@@ -2189,6 +2329,18 @@
           <AssociationSet Name="FK_GoElement_GoForm" Association="Self.FK_GoElement_GoForm">
             <End Role="GoForm" EntitySet="GoForms" />
             <End Role="GoElement" EntitySet="GoElements" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GoElementAction_GoElement" Association="Self.FK_GoElementAction_GoElement">
+            <End Role="GoElement" EntitySet="GoElements" />
+            <End Role="GoElementAction" EntitySet="GoElementActions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GoElementFeedback_GoElement" Association="Self.FK_GoElementFeedback_GoElement">
+            <End Role="GoElement" EntitySet="GoElements" />
+            <End Role="GoElementFeedback" EntitySet="GoElementFeedbacks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GoElementFeedback_User" Association="Self.FK_GoElementFeedback_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="GoElementFeedback" EntitySet="GoElementFeedbacks" />
           </AssociationSet>
           <AssociationSet Name="FK_GoForm_Period" Association="Self.FK_GoForm_Period">
             <End Role="Period" EntitySet="Periods" />
@@ -2678,6 +2830,31 @@
                 <ScalarProperty Name="EvidenceStatement" ColumnName="EvidenceStatement" />
                 <ScalarProperty Name="Rating" ColumnName="Rating" />
                 <ScalarProperty Name="CompletionStatus" ColumnName="CompletionStatus" />
+                <ScalarProperty Name="MarkReadyForApproval" ColumnName="MarkReadyForApproval" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GoElementActions">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.GoElementAction">
+              <MappingFragment StoreEntitySet="GoElementAction">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="GoElementId" ColumnName="GoElementId" />
+                <ScalarProperty Name="Timescale" ColumnName="Timescale" />
+                <ScalarProperty Name="Owner" ColumnName="Owner" />
+                <ScalarProperty Name="Progress" ColumnName="Progress" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GoElementFeedbacks">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.GoElementFeedback">
+              <MappingFragment StoreEntitySet="GoElementFeedback">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="GoElementId" ColumnName="GoElementId" />
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="CommentById" ColumnName="CommentById" />
+                <ScalarProperty Name="CommentDate" ColumnName="CommentDate" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
