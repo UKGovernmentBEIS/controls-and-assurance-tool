@@ -50,7 +50,7 @@ export default class GoWelcome extends BaseUserContextWebPartComponent<types.IWe
   //#region Render
 
   public renderWebPart(): React.ReactElement<types.IWebPartComponentProps> {
-    let date: Date = new Date()
+    let date: Date = new Date();
     console.log(date + " GoWelcome - renderWebpart - before render return");
     return(
   
