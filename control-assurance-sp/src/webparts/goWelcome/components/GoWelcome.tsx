@@ -42,7 +42,7 @@ export default class GoWelcome extends BaseUserContextWebPartComponent<types.IWe
   
   constructor(props: types.IWebPartComponentProps) {
     super(props);
-    let date: Date = new Date()
+    let date: Date = new Date();
     console.log( date+ " GoWelcome - Constructor - After super");
     this.state = new GoWelcomeState();
   }
