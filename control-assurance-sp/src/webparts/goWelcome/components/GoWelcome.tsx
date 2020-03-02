@@ -42,14 +42,16 @@ export default class GoWelcome extends BaseUserContextWebPartComponent<types.IWe
   
   constructor(props: types.IWebPartComponentProps) {
     super(props);
-    console.log("GoWelcome - Constructor - After super");
+    let date: Date = new Date()
+    console.log( date+ " GoWelcome - Constructor - After super");
     this.state = new GoWelcomeState();
   }
 
   //#region Render
 
   public renderWebPart(): React.ReactElement<types.IWebPartComponentProps> {
-    console.log("GoWelcome - renderWebpart - before render return");
+    let date: Date = new Date()
+    console.log(date + " GoWelcome - renderWebpart - before render return");
     return(
   
       <Pivot onLinkClick={this.clearErrors}>

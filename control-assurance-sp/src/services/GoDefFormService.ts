@@ -11,7 +11,8 @@ export class GoDefFormService extends EntityService<IGoDefForm> {
     constructor(spfxContext: WebPartContext, api: IDataAPI) {
         
         super(spfxContext, api, `/GoDefForms`);
-        console.log("GoDefFormService - Constructor - After super");
+        let date: Date = new Date()
+        console.log(date + " GoDefFormService - Constructor - After super");
     }
 
 }
