@@ -85,8 +85,8 @@ export default class SpecificAreasList extends React.Component<ISpecificAreasLis
             key: 'Title',
             name: 'Specific Evidence Areas',
             fieldName: 'Title',
-            minWidth: 500,
-            maxWidth: 500,
+            minWidth: 520,
+            maxWidth: 520,
             isResizable: true,
             headerClassName: styles.bold,
         },
@@ -101,15 +101,6 @@ export default class SpecificAreasList extends React.Component<ISpecificAreasLis
             headerClassName: styles.bold,
         },
         {
-            key: 'CompletionStatus',
-            name: 'Status',
-            fieldName: 'CompletionStatus',
-            minWidth: 120,
-            maxWidth: 120,
-            isResizable: true,
-            headerClassName: styles.bold,
-        },
-        {
             key: 'Rating',
             name: 'Rating',
             fieldName: 'Rating',
@@ -119,7 +110,15 @@ export default class SpecificAreasList extends React.Component<ISpecificAreasLis
             headerClassName: styles.bold,
         },
 
-
+        {
+            key: 'CompletionStatus',
+            name: 'Status',
+            fieldName: 'CompletionStatus',
+            minWidth: 120,
+            maxWidth: 120,
+            isResizable: true,
+            headerClassName: styles.bold,
+        },
     ];
 
     constructor(props: ISpecificAreasListProps, state: ISpecificAreasListState<IEntity>) {
