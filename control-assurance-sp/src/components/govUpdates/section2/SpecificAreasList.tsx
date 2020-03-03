@@ -137,6 +137,7 @@ export default class SpecificAreasList extends React.Component<ISpecificAreasLis
                     this.setState({ SelectedEntity: key, SelectedEntityTitle: title, EnableAssign: true, EnableDelete: true });
                     console.log("Selected Title: "+title);
                     console.log("Selected Key: "+key);
+                    
                 }
                 else {
                     this.setState({ SelectedEntity: null, SelectedEntityTitle: null, EnableAssign: false, EnableDelete: false });
@@ -246,16 +247,8 @@ export default class SpecificAreasList extends React.Component<ISpecificAreasLis
         this.setState({ SelectedEntity: null, ShowForm: true });
     }
 
-    /*
     private handleAssign = (): void => {
         this.setState({ ShowForm: true });
-    }
-    */
-
-   private handleAssign = (): void => {
-        
-            this._selection.setKeySelected(this.state.SelectedEntity.toString(), false, false);
-            this.setState({ SelectedEntity: null, ShowForm: true });
     }
 
 

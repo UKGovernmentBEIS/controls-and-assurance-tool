@@ -90,7 +90,7 @@ export default class GoElementAssignForm extends React.Component<IGoElementAssig
                 value={this.state.FormData.GoDefElement.Title}
                 disabled={true}
                 //onChanged={(v) => this.changeTextField(v, "Title")}
-            //errorMessage={this.state.ValidationErrors[c.fieldName]} 
+                //errorMessage={this.state.ValidationErrors[c.fieldName]} 
             />
         );
     }
