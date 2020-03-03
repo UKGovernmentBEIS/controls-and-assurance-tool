@@ -10,8 +10,6 @@ export class PeriodService extends EntityService<IEntity> {
 
     constructor(spfxContext: WebPartContext, api: IDataAPI) {
         super(spfxContext, api, `/Periods`);
-        let date: Date = new Date();
-        console.log(date + " PeriodService - Constructor - After super");
     }
 
 

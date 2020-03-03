@@ -35,23 +35,19 @@ export class GoWelcomeState extends types.UserContextWebPartState {
 //#endregion types defination
 
 export default class GoWelcome extends BaseUserContextWebPartComponent<types.IWebPartComponentProps, GoWelcomeState> {
-  
-  
+
   protected goDefFormService: services.GoDefFormService = new services.GoDefFormService(this.props.spfxContext, this.props.api);
   protected periodService: services.PeriodService = new services.PeriodService(this.props.spfxContext, this.props.api);
-  
+
   constructor(props: types.IWebPartComponentProps) {
-    super(props);
-    let date: Date = new Date();
-    console.log( date+ " GoWelcome - Constructor - After super");
+		super(props);
     this.state = new GoWelcomeState();
   }
 
   //#region Render
 
   public renderWebPart(): React.ReactElement<types.IWebPartComponentProps> {
-    let date: Date = new Date();
-    console.log(date + " GoWelcome - renderWebpart - before render return");
+
     return(
   
       <Pivot onLinkClick={this.clearErrors}>

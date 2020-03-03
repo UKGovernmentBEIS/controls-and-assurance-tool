@@ -1,15 +1,18 @@
 import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { EntityService } from './EntityService';
-import { IDataAPI, IGoDefForm } from '../types';
+import { IDataAPI, IEntity } from '../types';
 
 
 
-export class GoDefFormService extends EntityService<IGoDefForm> {
+export class GoAssignmentService extends EntityService<IEntity> {
     public readonly parentEntities = [];
     protected childrenEntities = [];
 
     constructor(spfxContext: WebPartContext, api: IDataAPI) {
-        super(spfxContext, api, `/GoDefForms`);
+        super(spfxContext, api, `/GoAssignments`);
     }
+
+
+
 
 }

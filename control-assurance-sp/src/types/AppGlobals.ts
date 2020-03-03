@@ -13,5 +13,11 @@ export enum RAGRatings {
     Limited = "Limited",
     Moderate = "Moderate",
     Substantial = "Substantial",
+
+    Unsatisfactory2 = "Unsatisfactory2",
+    Limited2 = "Limited2",
+    Moderate2 = "Moderate2",
+    Substantial2 = "Substantial2",
+
     NoData = "No Data"
 }

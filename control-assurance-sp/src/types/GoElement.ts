@@ -1,6 +1,7 @@
 import { IEntity } from "./Entity";
 import { IGoForm } from "./GoForm";
 import { IGoDefElement } from "./GoDefElement";
+import { IGoAssignment } from "./GoAssignment";
 
 export interface IGoElement extends IEntity {
 
@@ -12,6 +13,8 @@ export interface IGoElement extends IEntity {
     MarkReadyForApproval?:boolean;
     GoForm?: IGoForm;
     GoDefElement?: IGoDefElement;
+
+    GoAssignments?: IGoAssignment[];
 
 }
 
@@ -26,6 +29,8 @@ export class GoElement implements IGoElement{
     public MarkReadyForApproval?:boolean = null;
     public GoForm?: IGoForm = null;
     public GoDefElement?: IGoDefElement = null;
+
+    public GoAssignments = [];
 
     constructor(goFormId: number, goDefElementId: number) {
         this.GoFormId = goFormId;

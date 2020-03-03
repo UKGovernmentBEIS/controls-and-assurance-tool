@@ -41,6 +41,7 @@ namespace ControlAssuranceAPI.Models
         private GoElementRepository goElementRepository;
         private GoElementFeedbackRepository goElementFeedbackRepository;
         private GoElementActionRepository goElementActionRepository;
+        private GoAssignmentRepository goAssignmentRepository;
 
         private SPDGAreaStatRepository spDGAreaStatRepository;
         private SPDirectorateStatRepository spDirectorateStatRepository;
@@ -378,6 +379,13 @@ namespace ControlAssuranceAPI.Models
             }
         }
 
+        public GoAssignmentRepository GoAssignmentRepository
+        {
+            get
+            {
+                return goAssignmentRepository = goAssignmentRepository ?? new GoAssignmentRepository(user, context);
+            }
+        }
 
         public SPDGAreaStatRepository SPDGAreaStatRepository
         {

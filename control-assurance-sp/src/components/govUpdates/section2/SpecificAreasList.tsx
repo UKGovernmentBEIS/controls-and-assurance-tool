@@ -3,6 +3,7 @@ import * as types from '../../../types';
 import * as services from '../../../services';
 import { sp } from '@pnp/sp';
 //import MiscFileSaveForm from './MiscFileSaveForm';
+import GoElementAssignForm from './GoElementAssignForm';
 import { FilteredSpecificAreasList, IObjectWithKey } from './FilteredSpecificAreasList';
 import { IEntity } from '../../../types';
 import { IUpdatesListColumn, ColumnDisplayTypes } from '../../../types/UpdatesListColumn';
@@ -195,15 +196,13 @@ export default class SpecificAreasList extends React.Component<ISpecificAreasLis
     private renderForm() {
 
         return (
-            null
-
-            // <MiscFileSaveForm
-            //     showForm={this.state.ShowForm}
-            //     miscFileID={this.state.SelectedEntity}
-            //     onSaved={this.fileSaved}
-            //     onCancelled={this.closePanel}
-            //     {...this.props}
-            // />
+            <GoElementAssignForm
+                showForm={this.state.ShowForm}
+                goElementId={this.state.SelectedEntity}
+                onSaved={this.assignFormSaved}
+                onCancelled={this.closePanel}
+                {...this.props}
+            />
         );
 
     }
@@ -255,8 +254,8 @@ export default class SpecificAreasList extends React.Component<ISpecificAreasLis
         this.setState({ ShowForm: false });
     }
 
-    private fileSaved = (): void => {
-        //this.loadMiscFiles();
+    private assignFormSaved = (): void => {
+        this.loadData();
         this.closePanel();
     }
 

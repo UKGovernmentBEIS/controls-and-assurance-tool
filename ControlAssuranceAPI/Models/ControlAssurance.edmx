@@ -273,6 +273,7 @@
           <Property Name="ID" Type="int" Nullable="false" />
           <Property Name="Title" Type="nvarchar" MaxLength="1000" />
           <Property Name="Instructions" Type="nvarchar(max)" />
+          <Property Name="RagRatingStyle" Type="int" />
         </EntityType>
         <EntityType Name="GoDefForm">
           <Key>
@@ -1464,6 +1465,7 @@
           <Property Name="ID" Type="Int32" Nullable="false" />
           <Property Name="Title" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
           <Property Name="Instructions" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="RagRatingStyle" Type="Int32" />
           <NavigationProperty Name="GoElements" Relationship="Self.FK_GoElement_GoDefElement" FromRole="GoDefElement" ToRole="GoElement" />
         </EntityType>
         <EntityType Name="GoDefForm">
@@ -2801,6 +2803,7 @@
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Title" ColumnName="Title" />
                 <ScalarProperty Name="Instructions" ColumnName="Instructions" />
+                <ScalarProperty Name="RagRatingStyle" ColumnName="RagRatingStyle" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

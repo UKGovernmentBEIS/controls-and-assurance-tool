@@ -118,14 +118,24 @@ namespace ControlAssuranceAPI.Repositories
         {
             if (string.IsNullOrEmpty(ratingNum) == false)
             {
-                if (ratingNum == Ratings.Red)
+
+                if (ratingNum == Ratings.One)
                     return RatingLabels.Unsatisfactory;
-                else if (ratingNum == Ratings.Yellow)
+                else if (ratingNum == Ratings.Two)
                     return RatingLabels.Limited;
-                else if (ratingNum == Ratings.Amber)
+                else if (ratingNum == Ratings.Three)
                     return RatingLabels.Moderate;
-                else if (ratingNum == Ratings.Green)
+                else if (ratingNum == Ratings.Four)
                     return RatingLabels.Substantial;
+
+                else if (ratingNum == Ratings.Five)
+                    return RatingLabels.Unsatisfactory2;
+                else if (ratingNum == Ratings.Six)
+                    return RatingLabels.Limited2;
+                else if (ratingNum == Ratings.Seven)
+                    return RatingLabels.Moderate2;
+                else if (ratingNum == Ratings.Eight)
+                    return RatingLabels.Substantial2;
             }
 
             return RatingLabels.NoData;
@@ -133,10 +143,15 @@ namespace ControlAssuranceAPI.Repositories
 
         public class Ratings
         {
-            public static string Red = "1";
-            public static string Yellow = "2";
-            public static string Amber = "3";
-            public static string Green = "4";
+            public static string One = "1";
+            public static string Two = "2";
+            public static string Three = "3";
+            public static string Four = "4";
+
+            public static string Five = "5";
+            public static string Six = "6";
+            public static string Seven = "7";
+            public static string Eight = "8";
         }
 
         public class RatingLabels
@@ -146,6 +161,12 @@ namespace ControlAssuranceAPI.Repositories
             public static string Moderate = "Moderate";
             public static string Substantial = "Substantial";
             public static string NoData = "No Data";
+
+            public static string Unsatisfactory2 = "Unsatisfactory2";
+            public static string Limited2 = "Limited2";
+            public static string Moderate2 = "Moderate2";
+            public static string Substantial2 = "Substantial2";
+
         }
     }
 }

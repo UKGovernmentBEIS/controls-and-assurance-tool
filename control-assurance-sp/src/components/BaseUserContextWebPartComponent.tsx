@@ -25,8 +25,7 @@ export default abstract class BaseUserContextWebPartComponent<P extends types.IW
     protected loadUserPermissions = (): Promise<any> => {
 
         return this.userService.readMyPermissions().then((user: types.IUser): void => {
-            let date: Date = new Date();
-            console.log(date+" User Permissions", user);
+            console.log("User Permissions", user);
             this.setState({
                 UserPermissions: user.UserPermissions,
                 DirectorateGroups: user.DirectorateGroups,

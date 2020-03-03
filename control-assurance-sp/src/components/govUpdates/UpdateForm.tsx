@@ -130,18 +130,46 @@ export default class UpdateForm extends React.Component<IUpdateFormProps, IUpdat
 
     private renderRatingRadioChoices() {
 
+        const ragRatingStyle: number = this.state.FormData.GoDefElement.RagRatingStyle;
+        console.log('rag rating style ', ragRatingStyle);
+        let options: IChoiceGroupOption[] = [];
+
+        if(ragRatingStyle === 2){
+            options = [
+                { key: '5', imageSrc: this.redIcon, selectedImageSrc: this.redIcon, text: 'Unsatisfactory2', imageSize: { width: 44, height: 40 } },
+                { key: '6', imageSrc: this.yellowIcon, selectedImageSrc: this.yellowIcon, text: 'Limited2', imageSize: { width: 44, height: 40 } },
+                { key: '7', imageSrc: this.amberIcon, selectedImageSrc: this.amberIcon, text: 'Moderate2', imageSize: { width: 44, height: 40 } },
+                { key: '8', imageSrc: this.greenIcon, selectedImageSrc: this.greenIcon, text: 'Substantial2', imageSize: { width: 44, height: 40 } },
+    
+            ];
+
+        }
+        else{
+            //1 or default
+            options = [
+                { key: '1', imageSrc: this.redIcon, selectedImageSrc: this.redIcon, text: 'Unsatisfactory', imageSize: { width: 44, height: 40 } },
+                { key: '2', imageSrc: this.yellowIcon, selectedImageSrc: this.yellowIcon, text: 'Limited', imageSize: { width: 44, height: 40 } },
+                { key: '3', imageSrc: this.amberIcon, selectedImageSrc: this.amberIcon, text: 'Moderate', imageSize: { width: 44, height: 40 } },
+                { key: '4', imageSrc: this.greenIcon, selectedImageSrc: this.greenIcon, text: 'Substantial', imageSize: { width: 44, height: 40 } },
+    
+            ];
+        }
+
+
+
         return (
             <React.Fragment>
 
                 <div style={{ fontWeight: "bold", marginBottom: '10px' }}>Assurance Rating</div>
                 <CrChoiceGroup
-                    options={[
-                        { key: '1', imageSrc: this.redIcon, selectedImageSrc: this.redIcon, text: 'Unsatisfactory', imageSize: { width: 44, height: 40 } },
-                        { key: '2', imageSrc: this.yellowIcon, selectedImageSrc: this.yellowIcon, text: 'Limited', imageSize: { width: 44, height: 40 } },
-                        { key: '3', imageSrc: this.amberIcon, selectedImageSrc: this.amberIcon, text: 'Moderate', imageSize: { width: 44, height: 40 } },
-                        { key: '4', imageSrc: this.greenIcon, selectedImageSrc: this.greenIcon, text: 'Substantial', imageSize: { width: 44, height: 40 } },
+                    options={options}
+                    // options={[
+                    //     { key: '1', imageSrc: this.redIcon, selectedImageSrc: this.redIcon, text: 'Unsatisfactory', imageSize: { width: 44, height: 40 } },
+                    //     { key: '2', imageSrc: this.yellowIcon, selectedImageSrc: this.yellowIcon, text: 'Limited', imageSize: { width: 44, height: 40 } },
+                    //     { key: '3', imageSrc: this.amberIcon, selectedImageSrc: this.amberIcon, text: 'Moderate', imageSize: { width: 44, height: 40 } },
+                    //     { key: '4', imageSrc: this.greenIcon, selectedImageSrc: this.greenIcon, text: 'Substantial', imageSize: { width: 44, height: 40 } },
 
-                    ]}
+                    // ]}
                     selectedKey={this.state.FormData.Rating}
                     onChange={(ev, option) => this.changeChoiceGroup(ev, option, "Rating")}
                 />
@@ -361,11 +389,11 @@ export default class UpdateForm extends React.Component<IUpdateFormProps, IUpdat
                     onClick={() => this.onBeforeSave(false)}
                 />
 
-                {/* <DefaultButton text="Cancel" className={styles.formButton} style={{ marginRight: '40px' }}
-                    onClick={this.handleCancel}
+                <DefaultButton text="Cancel" className={styles.formButton} style={{ marginRight: '40px' }}
+                    onClick={this.props.onShowList}
                 />
 
-                <PrimaryButton text="Save/Next" className={styles.formButton} style={{ marginRight: '5px' }}
+                {/* <PrimaryButton text="Save/Next" className={styles.formButton} style={{ marginRight: '5px' }}
                     onClick={() => this.handleSave(true)}
                 />
 
@@ -404,6 +432,7 @@ export default class UpdateForm extends React.Component<IUpdateFormProps, IUpdat
             delete formData.ID;
             delete formData.GoDefElement;
             delete formData.GoForm;
+            delete formData.GoAssignments;
 
             this.goElementService.create(formData).then((fdAfterSave: IGoElement): void => {
 
@@ -492,6 +521,7 @@ export default class UpdateForm extends React.Component<IUpdateFormProps, IUpdat
 
             delete formData.GoDefElement;
             delete formData.GoForm;
+            delete formData.GoAssignments;
 
             this.goElementService.update(formData.ID, formData).then((): void => {
                 //console.log('saved..');

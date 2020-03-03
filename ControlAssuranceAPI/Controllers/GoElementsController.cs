@@ -83,9 +83,9 @@ namespace ControlAssuranceAPI.Controllers
             }
 
             //checks for the section2 status update
-            //1: count totla records from goDefElement say 8
+            //1: count total records from goDefElement say 8
             //2: check all records in goElement against the goFormId, if less than 8 (count1) and any record has status "In Progress" then make that goForm.Section2 status to "InProgress"
-            //3: in records against goFormId are 8 or equal to count 1 and all records have status "Completed", then make goForm.Section1 status to "Completed"
+            //3: if records against goFormId are 8 or equal to count 1 and all records have status "Completed", then make goForm.Section1 status to "Completed"
 
             int goFormId = goElement.GoFormId.Value;
             db.GoElementRepository.StatusChecksForSection2(goFormId);

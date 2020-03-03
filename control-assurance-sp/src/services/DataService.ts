@@ -10,8 +10,6 @@ export abstract class DataService<T> extends BaseService<T> {
 
     constructor(spfxContext: WebPartContext, api: IDataAPI) {
         super();
-        let date: Date = new Date(); 
-        console.log(date+" DataService - Constructor - After super");
         this.Api = api;
         this.spfxContext = spfxContext;
     }

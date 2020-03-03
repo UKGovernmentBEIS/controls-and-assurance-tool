@@ -4,5 +4,6 @@ import { GoForm } from "./GoForm";
 export interface IGoDefElement extends IEntity {
 
     Instructions?: string;
+    RagRatingStyle?: number;
     
 }

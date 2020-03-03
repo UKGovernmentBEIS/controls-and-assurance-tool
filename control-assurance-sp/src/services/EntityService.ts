@@ -11,8 +11,6 @@ export class EntityService<T> extends DataService<T> {
     constructor(spfxContext: WebPartContext, api: IDataAPI, entityUrl: string) {
         super(spfxContext, api);
         this.entityUrl = `${api.URL}${entityUrl}`;
-        let date: Date = new Date();
-        console.log(date+ " EntityService - Constructor - After super");
     }
 
 

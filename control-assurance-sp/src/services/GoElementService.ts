@@ -23,6 +23,18 @@ export class GoElementService extends EntityService<IGoElement> {
         });
     }
 
+    public readWithExpandDefElementAndAssignments(ID: number): Promise<IGoElement> {
+        //const qry:string = `?$expand=GoDefElement,GoAssignments($expand=User)`;
+
+        let entitiesToExpand: string[] = [];
+        entitiesToExpand.push("GoDefElement");
+        entitiesToExpand.push("GoAssignments($expand=User)");
+
+        return this.read(ID, false, false, entitiesToExpand).then((e: IGoElement): IGoElement => {
+            return e;
+        });
+    }
+
 
 
 }

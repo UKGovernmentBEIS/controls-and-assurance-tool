@@ -225,6 +225,22 @@ export class FilteredSpecificAreasList extends React.Component<IFilteredSpecific
                 bgColor = "rgb(30,148,66)";
                 txtColor = "white";
             }
+            else if (fieldContent === RAGRatings.Unsatisfactory2) {
+                bgColor = "rgb(237,31,39)";
+                txtColor = "white";
+            }
+            else if (fieldContent === RAGRatings.Limited2) {
+                bgColor = "rgb(255,127,40)";
+                txtColor = "white";
+            }
+            else if (fieldContent === RAGRatings.Moderate2) {
+                bgColor = "rgb(242,231,1)";
+                txtColor = "black";
+            }
+            else if (fieldContent === RAGRatings.Substantial2) {
+                bgColor = "rgb(30,148,66)";
+                txtColor = "white";
+            }
             else {
                 //no data
                 bgColor = "rgb(230,230,230)";
