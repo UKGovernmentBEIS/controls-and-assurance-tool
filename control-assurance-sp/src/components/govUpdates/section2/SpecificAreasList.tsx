@@ -253,7 +253,7 @@ export default class SpecificAreasList extends React.Component<ISpecificAreasLis
     */
 
    private handleAssign = (): void => {
-        if (this.state.SelectedEntity)
+        
             this._selection.setKeySelected(this.state.SelectedEntity.toString(), false, false);
             this.setState({ SelectedEntity: null, ShowForm: true });
     }
