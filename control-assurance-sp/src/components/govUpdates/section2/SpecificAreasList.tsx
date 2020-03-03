@@ -135,6 +135,8 @@ export default class SpecificAreasList extends React.Component<ISpecificAreasLis
                     const title: string = sel["Title"];
 
                     this.setState({ SelectedEntity: key, SelectedEntityTitle: title, EnableAssign: true, EnableDelete: true });
+                    console.log("Selected Title: "+title);
+                    console.log("Selected Key: "+key);
                 }
                 else {
                     this.setState({ SelectedEntity: null, SelectedEntityTitle: null, EnableAssign: false, EnableDelete: false });
