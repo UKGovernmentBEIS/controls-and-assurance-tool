@@ -90,7 +90,7 @@ export default class UpdateForm extends React.Component<IUpdateFormProps, IUpdat
     private renderSectionTitle() {
         return (
             <React.Fragment>
-                <h1>{this.props.defElementTitle}</h1>
+                <h1 style={{  fontSize: '48px' }}>{this.props.defElementTitle}</h1>
             </React.Fragment>
         );
     }
