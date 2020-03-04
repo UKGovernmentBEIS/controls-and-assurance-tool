@@ -30,6 +30,8 @@ export interface ISpecificAreasListProps extends types.IBaseComponentProps {
 export interface ISpecificAreasListState<T> {
     SelectedEntity: number;
     SelectedEntityTitle: string;
+    SelectedGoElementId:number;
+
     SelectedEntityChildren: number;
     ShowForm: boolean;
     EnableAssign?: boolean;
@@ -46,6 +48,8 @@ export interface ISpecificAreasListState<T> {
 export class SpecificAreasListState<T> implements ISpecificAreasListState<T>{
     public SelectedEntity = null;
     public SelectedEntityTitle: string = null;
+    public SelectedGoElementId = null;
+
     public SelectedEntityChildren = null;
     public ShowForm = false;
     public HideDeleteDialog = true;
@@ -63,6 +67,7 @@ export class SpecificAreasListState<T> implements ISpecificAreasListState<T>{
 export default class SpecificAreasList extends React.Component<ISpecificAreasListProps, ISpecificAreasListState<IEntity>> {
     private _selection: Selection;
     private goDefElementService: services.GoDefElementService = new services.GoDefElementService(this.props.spfxContext, this.props.api);
+
 
     private listColumns: IUpdatesListColumn[] = [
         //use fieldName as key
@@ -122,25 +127,26 @@ export default class SpecificAreasList extends React.Component<ISpecificAreasLis
         },
     ];
 
+
     constructor(props: ISpecificAreasListProps, state: ISpecificAreasListState<IEntity>) {
         super(props);
         this.state = new SpecificAreasListState<IEntity>();
-
+        
         this._selection = new Selection({
             onSelectionChanged: () => {
                 if (this._selection.getSelectedCount() === 1) {
 
                     const sel = this._selection.getSelection()[0];
+                    console.log(sel);
                     const key = Number(sel.key);
                     const title: string = sel["Title"];
-
-                    this.setState({ SelectedEntity: key, SelectedEntityTitle: title, EnableAssign: true, EnableDelete: true });
-                    console.log("Selected Title: "+title);
-                    console.log("Selected Key: "+key);
+                    const goElementId = Number(sel["GoElementId"]);
                     
+
+                    this.setState({ SelectedEntity: key, SelectedEntityTitle: title, SelectedGoElementId: goElementId, EnableAssign: true, EnableDelete: true });
                 }
                 else {
-                    this.setState({ SelectedEntity: null, SelectedEntityTitle: null, EnableAssign: false, EnableDelete: false });
+                    this.setState({ SelectedEntity: null, SelectedEntityTitle: null, SelectedGoElementId: null, EnableAssign: false, EnableDelete: false });
                 }
             }
         });
@@ -201,7 +207,7 @@ export default class SpecificAreasList extends React.Component<ISpecificAreasLis
         return (
             <GoElementAssignForm
                 showForm={this.state.ShowForm}
-                goElementId={this.state.SelectedEntity}
+                goElementId={this.state.SelectedGoElementId}
                 onSaved={this.assignFormSaved}
                 onCancelled={this.closePanel}
                 {...this.props}
@@ -302,6 +308,7 @@ export default class SpecificAreasList extends React.Component<ISpecificAreasLis
     public componentDidUpdate(prevProps: ISpecificAreasListProps): void {
         if (prevProps.goFormId !== this.props.goFormId || prevProps.justMine !== this.props.justMine || prevProps.incompleteOnly !== this.props.incompleteOnly) {
             //console.log('props changed, load data again');
+            this._selection.setAllSelected(false);
             this.loadData();
         }
     }

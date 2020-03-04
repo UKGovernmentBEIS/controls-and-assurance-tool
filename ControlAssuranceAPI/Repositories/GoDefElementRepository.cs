@@ -52,7 +52,9 @@ namespace ControlAssuranceAPI.Repositories
 
             int qryCount = qry.Count();
 
-            foreach (var goDefElement in qry)
+            var list = qry.ToList();
+
+            foreach (var goDefElement in list)
             {
                 string title = goDefElement.Title;
                 string completionStatus = "Not Started"; //default value
@@ -60,16 +62,28 @@ namespace ControlAssuranceAPI.Repositories
                 string users = "";
                 int goElementId = 0;
 
-                if (goDefElement.GoElements.Count() > 0)
+                if(goDefElement.GoElements.Count() == 0)
                 {
+                    //element not created for that def element, so create new element
+                    var newElement = db.GoElements.Add(new GoElement
+                    {
+                        GoDefElementId = goDefElement.ID,
+                        GoFormId = goFormId
+                    });
+                    db.SaveChanges();
+                    goElementId = newElement.ID;
+                }
+                else
+                {
+                    //element is already created
                     GoElement goElement = goDefElement.GoElements.FirstOrDefault();
                     goElementId = goElement.ID;
                     if (incompleteOnly == true)
                     {
-                        
+
                         //var goElement = goDefElement.GoElements.FirstOrDefault(ge => ge.CompletionStatus != "Completed");
                         //if(goElement == null)
-                        if(goElement.CompletionStatus == "Completed")
+                        if (goElement.CompletionStatus == "Completed")
                         {
                             //its completed, so not add this record
                             continue;
@@ -89,8 +103,9 @@ namespace ControlAssuranceAPI.Repositories
                     }
                     //remove ", " at the end
                     users = (users.Length > 0) ? users.Substring(0, users.Length - 2) : users;
-
                 }
+
+
 
                 
 

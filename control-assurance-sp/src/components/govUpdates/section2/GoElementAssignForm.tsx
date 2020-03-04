@@ -90,7 +90,7 @@ export default class GoElementAssignForm extends React.Component<IGoElementAssig
                 value={this.state.FormData.GoDefElement.Title}
                 disabled={true}
                 //onChanged={(v) => this.changeTextField(v, "Title")}
-                //errorMessage={this.state.ValidationErrors[c.fieldName]} 
+            //errorMessage={this.state.ValidationErrors[c.fieldName]} 
             />
         );
     }
@@ -122,9 +122,10 @@ export default class GoElementAssignForm extends React.Component<IGoElementAssig
     //#region Data Load/Save
 
     private loadGoElement = (): Promise<void> => {
+        console.log('loadGoElement - goElementId: ', this.props.goElementId);
         let x = this.goElementService.readWithExpandDefElementAndAssignments(this.props.goElementId).then((e: IGoElement): void => {
 
-            //console.log('goElement ', e);
+            console.log('goElement ', e);
             this.setState({
                 FormData: e,
                 FormDataBeforeChanges: e,
