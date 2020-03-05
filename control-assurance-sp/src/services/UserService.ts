@@ -21,7 +21,7 @@ export class UserService extends EntityService<IUser> {
             if (users && users.length > 0)
             {
                 let endDate = new Date();
-                console.log(endDate+" After readAll Users to readMyPermissions");
+                console.log(endDate+" After readAll Users to readMyPermissions", users[0]);
                 return users[0];
             }
         });
