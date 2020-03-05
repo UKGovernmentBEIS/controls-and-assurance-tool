@@ -44,11 +44,9 @@ namespace ControlAssuranceAPI.Repositories
         public string FirstRequest()
         {
 
-            var user = db.Users.SingleOrDefault(u => u.Username == Username);
-            return "ok";
-
-/*
-            if (db.Database.Exists())
+            
+           // if (db.Database.Exists())
+            try
             {
                 var user = db.Users.SingleOrDefault(u => u.Username == Username);
                 
@@ -63,13 +61,14 @@ namespace ControlAssuranceAPI.Repositories
                 {
                     return "ok";
                 }
+               
             }
-            else
+            catch
             {
                 return "db_connect_error";
             }
 
-*/
+
         }
         //6Nov19 End
 
