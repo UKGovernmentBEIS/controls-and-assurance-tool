@@ -29,7 +29,11 @@ export class UserService extends EntityService<IUser> {
 
     //6Nov19 Start - Add
     public firstRequestToAPI(): Promise<string> {
+        let startDate = new Date();
+        console.log(startDate+" START firstRequestToAPI");
         return super.readString(`?firstRequest=&checkDb=&checkCurrentUser`).then((result:string): string => {
+            let endDate = new Date();
+            console.log(endDate+" END firstRequestToAPI");
             return result;
         });
     }

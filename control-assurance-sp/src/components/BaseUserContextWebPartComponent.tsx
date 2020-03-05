@@ -26,6 +26,9 @@ export default abstract class BaseUserContextWebPartComponent<P extends types.IW
 
     protected loadUserPermissions = (): Promise<any> => {
 
+        let d1: Date = new Date();
+        console.log(d1+ "Start loadUserPermissions");
+
         return this.userService.readMyPermissions().then((user: types.IUser): void => {
             let date = new Date();
             console.log(date+" User Permissions", user);
@@ -46,11 +49,20 @@ export default abstract class BaseUserContextWebPartComponent<P extends types.IW
     //6Nov19 Start - Add
     private firstRequestToAPI = (): Promise<any> => {
 
+        let d1 = new Date();
+        console.log(d1+" firstRequestToAPI - d1");
+
         return this.userService.firstRequestToAPI().then((res: string): void => {
+
+            let d2 = new Date();
+            console.log(d2+" firstRequestToAPI - d2");
     
             if(res==="ok"){
                 let loadingPromises = [this.loadUserPermissions(), this.loadLookups()];
                 Promise.all(loadingPromises).then(p => this.onAfterLoad()).then(p => this.setState({ Loading: false } )).catch(err => this.setState({ Loading: false}));
+                let d3 = new Date();
+                console.log(d3+" firstRequestToAPI - d3");
+    
             }
             else{
                 // error res can be a) user_not_found b) db_connect_error
