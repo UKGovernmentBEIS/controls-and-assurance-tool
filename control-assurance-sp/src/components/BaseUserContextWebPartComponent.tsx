@@ -10,10 +10,12 @@ export default abstract class BaseUserContextWebPartComponent<P extends types.IW
     //6Nov19 Start - Edit componentDidMount
     public componentDidMount(): void {
         this.setState({ Loading: true });
+        let date : Date = new Date();
+        console.log(date+ " ComponentDidMount - Before firstRequesttoAPI");
         this.firstRequestToAPI();
+        console.log(date+ " ComponentDidMount - After firstRequesttoAPI");
         //let loadingPromises = [this.loadUserPermissions(), this.loadLookups()];
-        //Promise.all(loadingPromises).then(p => this.onAfterLoad()).then(p => this.setState({ Loading: false })).catch(err => this.setState({ Loading: false }));
-            
+        //Promise.all(loadingPromises).then(p => this.onAfterLoad()).then(p => this.setState({ Loading: false })).catch(err => this.setState({ Loading: false }));            
     }
     //6Nov19 End
     
