@@ -43,6 +43,8 @@ namespace ControlAssuranceAPI.Repositories
 
         public string FirstRequest()
         {
+
+            var user = db.Users.SingleOrDefault(u => u.Username == Username);
             return "ok";
 
 /*
