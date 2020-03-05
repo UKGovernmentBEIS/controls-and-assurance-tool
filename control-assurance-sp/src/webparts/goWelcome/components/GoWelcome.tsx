@@ -97,8 +97,13 @@ export default class GoWelcome extends BaseUserContextWebPartComponent<types.IWe
   //#region Data Load
 
   protected loadDefForm = (): Promise<IGoDefForm> => {
+    let d1: Date = new Date();
+    console.log(d1+ "Start goWelcome-loadDefForm")
     return this.goDefFormService.read(1).then((df: IGoDefForm): IGoDefForm => {
         this.setState({ LookupData: this.cloneObject(this.state.LookupData, 'GoDefForm', df) });
+        let d2: Date = new Date();
+        console.log(d2+ "End goWelcome-loadDefForm")
+    
         return df;
     }, (err) => { if (this.onError) this.onError(`Error loading DefForm lookup data`, err.message); });
   }
@@ -117,6 +122,7 @@ export default class GoWelcome extends BaseUserContextWebPartComponent<types.IWe
   protected loadLookups(): Promise<any> {
     
     return Promise.all([
+        
         this.loadDefForm(),
         this.loadCurrentPeriod(),
     ]);
