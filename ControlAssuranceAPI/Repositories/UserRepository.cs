@@ -45,8 +45,8 @@ namespace ControlAssuranceAPI.Repositories
         {
             if (db.Database.Exists())
             {
-                //var user = db.Users.SingleOrDefault(u => u.Username == Username);
-                var user = "test";
+                var user = db.Users.SingleOrDefault(u => u.Username == Username);
+                
                 if (user == null)
                 {
                     //return "user_not_found";
