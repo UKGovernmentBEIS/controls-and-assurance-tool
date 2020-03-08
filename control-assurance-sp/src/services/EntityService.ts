@@ -68,6 +68,7 @@ export class EntityService<T> extends DataService<T> {
 
     public create(entity: T): Promise<T> {
         return this.postEntity(entity, this.entityUrl).then((data: T): T => {
+            console.log("TEMPTRACE CREATE ", entity, this.entityUrl, data);
             return data;
         });
     }

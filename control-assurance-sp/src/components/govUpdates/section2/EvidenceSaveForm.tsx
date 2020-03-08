@@ -73,7 +73,7 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
 
     constructor(props: IEvidenceSaveFormProps, state: IEvidenceSaveFormState) {
         super(props);
-        //console.log('props goElementId ', props.goElementId);
+        console.log('TEMPTRACE EVIDENCE SAVE FORM props goElementId ', props.goElementId);
         //console.log('props goElementEvidenceId ', props.goElementEvidenceId);
         this.state = new EvidenceSaveFormState(props.goElementId);
     }
