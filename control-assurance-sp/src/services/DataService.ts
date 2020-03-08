@@ -28,15 +28,8 @@ export abstract class DataService<T> extends BaseService<T> {
     }
 
     protected getEntities(url: string): Promise<T[]> {
-
-        let d1 = new Date();
-        console.log(d1+" DATASERVICE-getEntities - d1  url= ", url);
-
         let request = this.Api.ApiClient.get(url, this.Api.getConfig());
         return this.makeRequest(request).then((data: T[]): T[] => {
-            let d2 = new Date();
-            console.log(d2+" DATASERVICE-getEntities - d2  data= ", data);
-    
             return data;
         });
     }

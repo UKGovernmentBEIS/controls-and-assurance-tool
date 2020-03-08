@@ -14,26 +14,15 @@ export class UserService extends EntityService<IUser> {
     }
 
     public readMyPermissions(): Promise<IUser> {
-        let startDate = new Date();
-        console.log(startDate+" Before readAll Users to readMyPermissions");
-        
         return this.readAll(`?currentUser=&$expand=DirectorateGroups,Directorates,Teams,DirectorateGroupMembers,DirectorateMembers,TeamMembers,UserPermissions`).then((users: IUser[]): IUser => {
             if (users && users.length > 0)
-            {
-                let endDate = new Date();
-                console.log(endDate+" After readAll Users to readMyPermissions", users[0]);
                 return users[0];
-            }
         });
     }
 
     //6Nov19 Start - Add
     public firstRequestToAPI(): Promise<string> {
-        let startDate = new Date();
-        console.log(startDate+" START firstRequestToAPI");
         return super.readString(`?firstRequest=&checkDb=&checkCurrentUser`).then((result:string): string => {
-            let endDate = new Date();
-            console.log(endDate+" END firstRequestToAPI");
             return result;
         });
     }

@@ -43,6 +43,7 @@ public partial class ControlAssuranceEntities : DbContext, IControlAssuranceCont
     public virtual DbSet<GoDefForm> GoDefForms { get; set; }
     public virtual DbSet<GoElement> GoElements { get; set; }
     public virtual DbSet<GoElementAction> GoElementActions { get; set; }
+    public virtual DbSet<GoElementEvidence> GoElementEvidences { get; set; }
     public virtual DbSet<GoElementFeedback> GoElementFeedbacks { get; set; }
     public virtual DbSet<GoForm> GoForms { get; set; }
     public virtual DbSet<GoMiscFile> GoMiscFiles { get; set; }

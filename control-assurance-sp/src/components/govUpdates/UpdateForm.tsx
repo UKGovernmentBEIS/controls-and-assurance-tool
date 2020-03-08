@@ -12,6 +12,7 @@ import styles from '../../styles/cr.module.scss';
 import { IGoElement, GoElement, IGoDefElement } from '../../types';
 import { IGenColumn, ColumnType, ColumnDisplayType } from '../../types/GenColumn';
 import EntityList from '../entity/EntityList';
+import EvidenceList from './section2/EvidenceList';
 import { ElementStatuses } from '../../types/AppGlobals';
 
 export interface IUpdateFormProps extends types.IBaseComponentProps {
@@ -28,6 +29,8 @@ export interface IUpdateFormProps extends types.IBaseComponentProps {
 export interface IUpdateFormState {
     Loading: boolean;
     FormData: IGoElement;
+
+    Evidence_ListFilterText: string;
     //FormData: IPolicy;
     //LookupData: IPolicyLookupData;
     //FormIsDirty: boolean;
@@ -36,6 +39,8 @@ export interface IUpdateFormState {
 export class UpdateFormState implements IUpdateFormState {
     public Loading = false;
     public FormData: IGoElement;
+
+    public Evidence_ListFilterText: string = null;
 
     constructor(goFormId: number, goDefElementId: number) {
         this.FormData = new GoElement(goFormId, goDefElementId);
@@ -51,10 +56,21 @@ export default class UpdateForm extends React.Component<IUpdateFormProps, IUpdat
     private goElementService: services.GoElementService = new services.GoElementService(this.props.spfxContext, this.props.api);
     private goDefElementService: services.GoDefElementService = new services.GoDefElementService(this.props.spfxContext, this.props.api);
 
-    private redIcon: string = require('../../images/Red4340.png');
-    private amberIcon: string = require('../../images/Amber4340.png');
-    private yellowIcon: string = require('../../images/Yellow4340.png');
-    private greenIcon: string = require('../../images/Green4340.png');
+    // private redIcon: string = require('../../images/Red4340.png');
+    // private amberIcon: string = require('../../images/Amber4340.png');
+    // private yellowIcon: string = require('../../images/Yellow4340.png');
+    // private greenIcon: string = require('../../images/Green4340.png');
+
+    private ratingIcon1: string = require('../../images/goelement/form/1.png');
+    private ratingIcon2: string = require('../../images/goelement/form/2.png');
+    private ratingIcon3: string = require('../../images/goelement/form/3.png');
+    private ratingIcon4: string = require('../../images/goelement/form/4.png');
+    private ratingIcon5: string = require('../../images/goelement/form/5.png');
+    private ratingIcon6: string = require('../../images/goelement/form/6.png');
+    private ratingIcon7: string = require('../../images/goelement/form/7.png');
+    private ratingIcon8: string = require('../../images/goelement/form/8.png');
+    private ratingIcon9: string = require('../../images/goelement/form/9.png');
+
 
     constructor(props: IUpdateFormProps, state: IUpdateFormState) {
         super(props);
@@ -73,6 +89,7 @@ export default class UpdateForm extends React.Component<IUpdateFormProps, IUpdat
                         {this.renderInstructions()}
                         {this.renderEvidenceStatement()}
                         {this.renderRatingRadioChoices()}
+                        {this.renderEvidencesList()}
                         {this.renderActionsList()}
                         {this.renderFeedbacksList()}
                         {this.renderMarkAsReadyCheckbox()}
@@ -90,7 +107,7 @@ export default class UpdateForm extends React.Component<IUpdateFormProps, IUpdat
     private renderSectionTitle() {
         return (
             <React.Fragment>
-                 <h1 style={{ fontFamily: 'Calibri', fontSize: '36px' }}>{this.props.defElementTitle}</h1>
+                <h1 style={{ fontFamily: 'Calibri', fontSize: '36px' }}>{this.props.defElementTitle}</h1>
             </React.Fragment>
         );
     }
@@ -134,24 +151,25 @@ export default class UpdateForm extends React.Component<IUpdateFormProps, IUpdat
         console.log('rag rating style ', ragRatingStyle);
         let options: IChoiceGroupOption[] = [];
 
-        if(ragRatingStyle === 2){
+        if (ragRatingStyle === 2) {
             options = [
-                { key: '5', imageSrc: this.redIcon, selectedImageSrc: this.redIcon, text: 'Unsatisfactory2', imageSize: { width: 44, height: 40 } },
-                { key: '6', imageSrc: this.yellowIcon, selectedImageSrc: this.yellowIcon, text: 'Limited2', imageSize: { width: 44, height: 40 } },
-                { key: '7', imageSrc: this.amberIcon, selectedImageSrc: this.amberIcon, text: 'Moderate2', imageSize: { width: 44, height: 40 } },
-                { key: '8', imageSrc: this.greenIcon, selectedImageSrc: this.greenIcon, text: 'Substantial2', imageSize: { width: 44, height: 40 } },
-    
+                { key: '5', imageSrc: this.ratingIcon5, selectedImageSrc: this.ratingIcon5, text: 'Red', imageSize: { width: 44, height: 40 } },
+                { key: '6', imageSrc: this.ratingIcon6, selectedImageSrc: this.ratingIcon6, text: 'Red/Amber', imageSize: { width: 44, height: 40 } },
+                { key: '7', imageSrc: this.ratingIcon7, selectedImageSrc: this.ratingIcon7, text: 'Amber', imageSize: { width: 44, height: 40 } },
+                { key: '8', imageSrc: this.ratingIcon8, selectedImageSrc: this.ratingIcon8, text: 'Amber/Green', imageSize: { width: 44, height: 40 } },
+                { key: '9', imageSrc: this.ratingIcon9, selectedImageSrc: this.ratingIcon9, text: 'Green', imageSize: { width: 44, height: 40 } },
+
             ];
 
         }
-        else{
+        else {
             //1 or default
             options = [
-                { key: '1', imageSrc: this.redIcon, selectedImageSrc: this.redIcon, text: 'Unsatisfactory', imageSize: { width: 44, height: 40 } },
-                { key: '2', imageSrc: this.yellowIcon, selectedImageSrc: this.yellowIcon, text: 'Limited', imageSize: { width: 44, height: 40 } },
-                { key: '3', imageSrc: this.amberIcon, selectedImageSrc: this.amberIcon, text: 'Moderate', imageSize: { width: 44, height: 40 } },
-                { key: '4', imageSrc: this.greenIcon, selectedImageSrc: this.greenIcon, text: 'Substantial', imageSize: { width: 44, height: 40 } },
-    
+                { key: '1', imageSrc: this.ratingIcon1, selectedImageSrc: this.ratingIcon1, text: 'Unsatisfactory', imageSize: { width: 44, height: 40 } },
+                { key: '2', imageSrc: this.ratingIcon2, selectedImageSrc: this.ratingIcon2, text: 'Limited', imageSize: { width: 44, height: 40 } },
+                { key: '3', imageSrc: this.ratingIcon3, selectedImageSrc: this.ratingIcon3, text: 'Moderate', imageSize: { width: 44, height: 40 } },
+                { key: '4', imageSrc: this.ratingIcon4, selectedImageSrc: this.ratingIcon4, text: 'Substantial', imageSize: { width: 44, height: 40 } },
+
             ];
         }
 
@@ -176,6 +194,28 @@ export default class UpdateForm extends React.Component<IUpdateFormProps, IUpdat
 
             </React.Fragment>
         );
+    }
+
+    private renderEvidencesList() {
+
+        return (
+            <React.Fragment>
+                <div style={{ marginTop: '30px', fontWeight: "bold", marginBottom: '10px' }}>List evidence documents</div>
+                <div style={{ minHeight: '120px', border: '1px solid rgb(166,166,166)' }}>
+                    <EvidenceList
+
+                        goElementId={this.state.FormData.ID}
+                        filterText={this.state.Evidence_ListFilterText}
+                        onChangeFilterText={this.handleEvidence_ChangeFilterText}
+                        {...this.props}
+                        onError={this.props.onError}
+
+                    />
+                </div>
+
+            </React.Fragment>
+        );
+
     }
 
     private renderActionsList() {
@@ -572,6 +612,10 @@ export default class UpdateForm extends React.Component<IUpdateFormProps, IUpdat
         if (changeProp)
             return { ...obj, [changeProp]: changeValue };
         return { ...obj };
+    }
+
+    private handleEvidence_ChangeFilterText = (value: string): void => {
+        this.setState({ Evidence_ListFilterText: value });
     }
 
     //#endregion Event Handlers

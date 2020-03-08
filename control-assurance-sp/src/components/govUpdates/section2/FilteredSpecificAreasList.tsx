@@ -12,6 +12,7 @@ import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox';
 import '../../../styles/CustomFabric2.scss';
 
 
+
 const classNames = mergeStyleSets({
     controlWrapper: {
         display: 'flex',
@@ -53,7 +54,7 @@ export interface IFilteredSpecificAreasListProps {
     justMine: boolean;
     onChangeJustMine: (value: boolean) => void;
     onFilterChange: (value: string) => void;
-    onItemTitleClick: (ID: number, goElementId:number, title: string, filteredItems: any[]) => void;
+    onItemTitleClick: (ID: number, goElementId: number, title: string, filteredItems: any[]) => void;
 
     selection?: ISelection;
     //onAdd: () => void;
@@ -72,7 +73,21 @@ export interface IFilteredSpecificAreasListState {
 
 export class FilteredSpecificAreasList extends React.Component<IFilteredSpecificAreasListProps, IFilteredSpecificAreasListState> {
 
+    private ratingImg1: string = require('../../../images/goelement/list/rating/1.png');
+    private ratingImg2: string = require('../../../images/goelement/list/rating/2.png');
+    private ratingImg3: string = require('../../../images/goelement/list/rating/3.png');
+    private ratingImg4: string = require('../../../images/goelement/list/rating/4.png');
+    private ratingImg5: string = require('../../../images/goelement/list/rating/5.png');
+    private ratingImg6: string = require('../../../images/goelement/list/rating/6.png');
+    private ratingImg7: string = require('../../../images/goelement/list/rating/7.png');
+    private ratingImg8: string = require('../../../images/goelement/list/rating/8.png');
+    private ratingImg9: string = require('../../../images/goelement/list/rating/9.png');
+    private ratingImg0: string = require('../../../images/goelement/list/rating/0.png');
 
+    private statusImgNotStarted: string = require('../../../images/goelement/list/status/notstarted.png');
+    private statusImgInProgress: string = require('../../../images/goelement/list/status/inprogress.png');
+    private statusImgCompleted: string = require('../../../images/goelement/list/status/completed.png');
+    
 
     constructor(props: IFilteredSpecificAreasListProps) {
         super(props);
@@ -93,7 +108,7 @@ export class FilteredSpecificAreasList extends React.Component<IFilteredSpecific
 
                 <div className={classNames.controlWrapper}>
 
-                <Toggle
+                    <Toggle
                         onText="Incomplete Only"
                         offText="Incomplete Only"
                         styles={controlStyles}
@@ -151,7 +166,7 @@ export class FilteredSpecificAreasList extends React.Component<IFilteredSpecific
     public componentDidMount(): void {
         this.setState({ FilteredItems: SearchObjectService.filterEntities(this.props.items, this.props.filterText) });
 
-        
+
     }
 
     public componentDidUpdate(prevProps: IFilteredSpecificAreasListProps): void {
@@ -177,79 +192,105 @@ export class FilteredSpecificAreasList extends React.Component<IFilteredSpecific
 
         if (column.key === "CompletionStatus") {
 
-            let txtColor: string = "white";
-            let bgColor: string = "";
+            //let txtColor: string = "white";
+            //let bgColor: string = "";
+            let statusImg:string = "";
+
             if (fieldContent === ElementStatuses.ToBeCompleted) {
-                bgColor = "rgb(230,230,230)";
-                txtColor = "black";
+                //bgColor = "rgb(230,230,230)";
+                //txtColor = "black";
+                statusImg = this.statusImgNotStarted;
             }
             else if (fieldContent === ElementStatuses.InProgress) {
-                bgColor = "rgb(255,191,0)";
-                txtColor = "white";
+                //bgColor = "rgb(255,191,0)";
+                //txtColor = "white";
+                statusImg = this.statusImgInProgress;
             }
             // else if (fieldContent === ElementStatuses.ReqSignOff) {
             //     bgColor = "rgb(185,0,185)";
             //     txtColor = "white";
             // }
             else if (fieldContent === ElementStatuses.Completed) {
-                bgColor = "rgb(0,127,0)";
-                txtColor = "white";
+                //bgColor = "rgb(0,127,0)";
+                //txtColor = "white";
+                statusImg = this.statusImgCompleted;
             }
 
             return (
-                <span style={{ backgroundColor: bgColor, color: txtColor, width: "140px", display: "block", paddingLeft: "10px", paddingTop: "5px", paddingBottom: "5px" }}>
-                    {fieldContent}
-                </span>
+                // <span style={{ backgroundColor: bgColor, color: txtColor, width: "140px", display: "block", paddingLeft: "10px", paddingTop: "5px", paddingBottom: "5px" }}>
+                //     {fieldContent}
+                // </span>
+                <img src={statusImg} />
 
             );
         }
 
         else if (column.key === "Rating") {
-            let txtColor: string = "white";
-            let bgColor: string = "";
-            const ragLabel = fieldContent;
+            //let txtColor: string = "white";
+            //let bgColor: string = "";
+            //const ragLabel = fieldContent;
+            let ratingImg:string = "";
 
             if (fieldContent === RAGRatings.Unsatisfactory) {
-                bgColor = "rgb(237,31,39)";
-                txtColor = "white";
+                //bgColor = "rgb(237,31,39)";
+                //txtColor = "white";
+                ratingImg = this.ratingImg1;
             }
             else if (fieldContent === RAGRatings.Limited) {
-                bgColor = "rgb(255,127,40)";
-                txtColor = "white";
+                //bgColor = "rgb(255,127,40)";
+                //txtColor = "white";
+                ratingImg = this.ratingImg2;
             }
             else if (fieldContent === RAGRatings.Moderate) {
-                bgColor = "rgb(242,231,1)";
-                txtColor = "black";
+                //bgColor = "rgb(242,231,1)";
+                //txtColor = "black";
+                ratingImg = this.ratingImg3;
             }
             else if (fieldContent === RAGRatings.Substantial) {
-                bgColor = "rgb(30,148,66)";
-                txtColor = "white";
+                //bgColor = "rgb(30,148,66)";
+                //txtColor = "white";
+                ratingImg = this.ratingImg4;
             }
-            else if (fieldContent === RAGRatings.Unsatisfactory2) {
-                bgColor = "rgb(237,31,39)";
-                txtColor = "white";
+            else if (fieldContent === RAGRatings.Red) {
+                //bgColor = "rgb(237,31,39)";
+                //txtColor = "white";
+                ratingImg = this.ratingImg5;
             }
-            else if (fieldContent === RAGRatings.Limited2) {
-                bgColor = "rgb(255,127,40)";
-                txtColor = "white";
+            else if (fieldContent === RAGRatings.RedAmber) {
+                //bgColor = "rgb(255,127,40)";
+                //txtColor = "white";
+                ratingImg = this.ratingImg6;
             }
-            else if (fieldContent === RAGRatings.Moderate2) {
-                bgColor = "rgb(242,231,1)";
-                txtColor = "black";
+            else if (fieldContent === RAGRatings.Amber) {
+                //bgColor = "rgb(242,231,1)";
+                //txtColor = "black";
+                ratingImg = this.ratingImg7;
             }
-            else if (fieldContent === RAGRatings.Substantial2) {
-                bgColor = "rgb(30,148,66)";
-                txtColor = "white";
+            else if (fieldContent === RAGRatings.AmberGreen) {
+                //bgColor = "rgb(30,148,66)";
+                //txtColor = "white";
+                ratingImg = this.ratingImg8;
+            }
+            else if (fieldContent === RAGRatings.Green) {
+                //bgColor = "rgb(30,148,66)";
+                //txtColor = "white";
+                ratingImg = this.ratingImg9;
             }
             else {
                 //no data
-                bgColor = "rgb(230,230,230)";
-                txtColor = "black";
+                //bgColor = "rgb(230,230,230)";
+                //txtColor = "black";
+                ratingImg = this.ratingImg0;
             }
             return (
-                <span style={{ backgroundColor: bgColor, color: txtColor, width: "140px", display: "block", paddingLeft: "10px", paddingTop: "5px", paddingBottom: "5px" }}>
-                    {ragLabel}
-                </span>
+                // <span style={{ backgroundColor: bgColor, color: txtColor, width: "140px", display: "block", paddingLeft: "10px", paddingTop: "5px", paddingBottom: "5px" }}>
+                //     {ragLabel}
+                // </span>
+
+                // <span style={{ backgroundImage: `url('${this.redIcon}')`, backgroundRepeat:'no-repeat', color: txtColor, width: "140px", display: "block", paddingLeft: "10px", paddingTop: "5px", paddingBottom: "5px" }}>
+                //     {ragLabel}
+                // </span>
+                <img src={ratingImg} />
 
             );
         }

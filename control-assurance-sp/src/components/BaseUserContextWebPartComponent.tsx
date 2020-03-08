@@ -10,12 +10,10 @@ export default abstract class BaseUserContextWebPartComponent<P extends types.IW
     //6Nov19 Start - Edit componentDidMount
     public componentDidMount(): void {
         this.setState({ Loading: true });
-        let date : Date = new Date();
-        console.log(date+ " ComponentDidMount - Before firstRequesttoAPI");
         this.firstRequestToAPI();
-        console.log(date+ " ComponentDidMount - After firstRequesttoAPI");
         //let loadingPromises = [this.loadUserPermissions(), this.loadLookups()];
-        //Promise.all(loadingPromises).then(p => this.onAfterLoad()).then(p => this.setState({ Loading: false })).catch(err => this.setState({ Loading: false }));            
+        //Promise.all(loadingPromises).then(p => this.onAfterLoad()).then(p => this.setState({ Loading: false })).catch(err => this.setState({ Loading: false }));
+            
     }
     //6Nov19 End
     
@@ -26,12 +24,8 @@ export default abstract class BaseUserContextWebPartComponent<P extends types.IW
 
     protected loadUserPermissions = (): Promise<any> => {
 
-        let d1: Date = new Date();
-        console.log(d1+ "Start loadUserPermissions");
-
         return this.userService.readMyPermissions().then((user: types.IUser): void => {
-            let date = new Date();
-            console.log(date+" User Permissions", user);
+            console.log("User Permissions", user);
             this.setState({
                 UserPermissions: user.UserPermissions,
                 DirectorateGroups: user.DirectorateGroups,
@@ -49,20 +43,11 @@ export default abstract class BaseUserContextWebPartComponent<P extends types.IW
     //6Nov19 Start - Add
     private firstRequestToAPI = (): Promise<any> => {
 
-        let d1 = new Date();
-        console.log(d1+" firstRequestToAPI - d1");
-
         return this.userService.firstRequestToAPI().then((res: string): void => {
-
-            let d2 = new Date();
-            console.log(d2+" firstRequestToAPI - d2");
     
             if(res==="ok"){
                 let loadingPromises = [this.loadUserPermissions(), this.loadLookups()];
                 Promise.all(loadingPromises).then(p => this.onAfterLoad()).then(p => this.setState({ Loading: false } )).catch(err => this.setState({ Loading: false}));
-                let d3 = new Date();
-                console.log(d3+" firstRequestToAPI - d3");
-    
             }
             else{
                 // error res can be a) user_not_found b) db_connect_error

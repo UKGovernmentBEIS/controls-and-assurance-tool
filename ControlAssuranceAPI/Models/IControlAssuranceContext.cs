@@ -37,6 +37,7 @@ namespace ControlAssuranceAPI.Models
         DbSet<GoElement> GoElements { get; set; }
         DbSet<GoElementFeedback> GoElementFeedbacks { get; set; }
         DbSet<GoElementAction> GoElementActions { get; set; }
+        DbSet<GoElementEvidence> GoElementEvidences { get; set; }
 
 
         ObjectResult<SPDGAreaStat_Result> SPDGAreaStat(Nullable<int> periodId);

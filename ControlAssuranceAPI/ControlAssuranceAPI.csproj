@@ -200,6 +200,7 @@
     <Compile Include="Controllers\EntityStatusTypesController.cs" />
     <Compile Include="Controllers\FormsController.cs" />
     <Compile Include="Controllers\GoElementActionsController.cs" />
+    <Compile Include="Controllers\GoElementEvidencesController.cs" />
     <Compile Include="Controllers\GoElementFeedbacksController.cs" />
     <Compile Include="Controllers\GoElementsController.cs" />
     <Compile Include="Controllers\GoFormsController.cs" />
@@ -287,6 +288,9 @@
     <Compile Include="Models\GoElementAction.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\GoElementEvidence.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\GoElementFeedback.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
@@ -353,6 +357,7 @@
     <Compile Include="Repositories\EntityStatusTypeRespository.cs" />
     <Compile Include="Repositories\FormRespository.cs" />
     <Compile Include="Repositories\GoElementActionRepository.cs" />
+    <Compile Include="Repositories\GoElementEvidenceRepository.cs" />
     <Compile Include="Repositories\GoElementFeedbackRepository.cs" />
     <Compile Include="Repositories\GoElementRepository.cs" />
     <Compile Include="Repositories\GoFormRepository.cs" />

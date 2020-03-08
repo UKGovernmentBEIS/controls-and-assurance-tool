@@ -1,5 +1,8 @@
-//export const UploadFolder_MiscFiles:string = "/sites/site1/documents/MiscFiles";
 export const UploadFolder_MiscFiles:string = "/sites/ControlsAndAssuranceToolDev/Shared%20Documents/MiscFiles"; //online site
+export const UploadFolder_Evidence:string = "/sites/ControlsAndAssuranceToolDev/Shared%20Documents/Evidence"; //online site
+
+//export const UploadFolder_MiscFiles:string = "/sites/site3/Shared%20Documents/MiscFiles";
+//export const UploadFolder_Evidence:string = "/sites/site3/Shared%20Documents/Evidence";
 
 export enum ElementStatuses {
     ToBeCompleted = "Not Started",
@@ -14,10 +17,11 @@ export enum RAGRatings {
     Moderate = "Moderate",
     Substantial = "Substantial",
 
-    Unsatisfactory2 = "Unsatisfactory2",
-    Limited2 = "Limited2",
-    Moderate2 = "Moderate2",
-    Substantial2 = "Substantial2",
+    Red = "Red",
+    RedAmber = "Red/Amber",
+    Amber = "Amber",
+    AmberGreen = "Amber/Green",
+    Green = "Green",
 
     NoData = "No Data"
 }

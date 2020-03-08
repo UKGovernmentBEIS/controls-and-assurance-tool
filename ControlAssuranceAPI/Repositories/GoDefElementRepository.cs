@@ -144,13 +144,15 @@ namespace ControlAssuranceAPI.Repositories
                     return RatingLabels.Substantial;
 
                 else if (ratingNum == Ratings.Five)
-                    return RatingLabels.Unsatisfactory2;
+                    return RatingLabels.Red;
                 else if (ratingNum == Ratings.Six)
-                    return RatingLabels.Limited2;
+                    return RatingLabels.RedAmber;
                 else if (ratingNum == Ratings.Seven)
-                    return RatingLabels.Moderate2;
+                    return RatingLabels.Amber;
                 else if (ratingNum == Ratings.Eight)
-                    return RatingLabels.Substantial2;
+                    return RatingLabels.AmberGreen;
+                else if (ratingNum == Ratings.Nine)
+                    return RatingLabels.Green;
             }
 
             return RatingLabels.NoData;
@@ -167,6 +169,7 @@ namespace ControlAssuranceAPI.Repositories
             public static string Six = "6";
             public static string Seven = "7";
             public static string Eight = "8";
+            public static string Nine = "9";
         }
 
         public class RatingLabels
@@ -177,10 +180,11 @@ namespace ControlAssuranceAPI.Repositories
             public static string Substantial = "Substantial";
             public static string NoData = "No Data";
 
-            public static string Unsatisfactory2 = "Unsatisfactory2";
-            public static string Limited2 = "Limited2";
-            public static string Moderate2 = "Moderate2";
-            public static string Substantial2 = "Substantial2";
+            public static string Red = "Red";
+            public static string RedAmber = "Red/Amber";
+            public static string Amber = "Amber";
+            public static string AmberGreen = "Amber/Green";
+            public static string Green = "Green";
 
         }
     }

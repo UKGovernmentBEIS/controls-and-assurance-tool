@@ -19,6 +19,7 @@ namespace ControlAssuranceAPI.Models
         {
             this.GoAssignments = new HashSet<GoAssignment>();
             this.GoElementActions = new HashSet<GoElementAction>();
+            this.GoElementEvidences = new HashSet<GoElementEvidence>();
             this.GoElementFeedbacks = new HashSet<GoElementFeedback>();
         }
     
@@ -37,6 +38,8 @@ namespace ControlAssuranceAPI.Models
         public virtual GoForm GoForm { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<GoElementAction> GoElementActions { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<GoElementEvidence> GoElementEvidences { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<GoElementFeedback> GoElementFeedbacks { get; set; }
     }

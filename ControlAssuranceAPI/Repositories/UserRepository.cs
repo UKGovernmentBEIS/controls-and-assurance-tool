@@ -41,36 +41,54 @@ namespace ControlAssuranceAPI.Repositories
         //6Nov19 Start-Add
         // Returns 3 diffrent statues, Database not found, found but user not found or all ok
 
+        //public string FirstRequest()
+        //{
+        //    if (db.Database.Exists())
+        //    {
+        //        var user = db.Users.SingleOrDefault(u => u.Username == Username);
+        //        if (user == null)
+        //        {
+        //            //return "user_not_found";
+        //            string user_id = base.Username;
+        //            return user_id;
+
+        //        }
+        //        else
+        //        {
+        //            return "ok";
+        //        }
+        //    }
+        //    else
+        //    {
+        //        return "db_connect_error";
+        //    }
+        //}
+        //6Nov19 End
+
+
         public string FirstRequest()
         {
-
-            
-           // if (db.Database.Exists())
             try
             {
                 var user = db.Users.SingleOrDefault(u => u.Username == Username);
-                
+
                 if (user == null)
                 {
                     //return "user_not_found";
                     string user_id = base.Username;
                     return user_id;
-
                 }
                 else
                 {
                     return "ok";
                 }
-               
             }
             catch
             {
                 return "db_connect_error";
             }
-
-
         }
-        //6Nov19 End
+
 
 
 

@@ -49,17 +49,9 @@ export class EntityService<T> extends DataService<T> {
 
     //6Nov19 Start - Add
     public readString(querystring?: string): Promise<string> {
-
-        let d1 = new Date();
-        console.log(d1+" EntityService.readString - d1");
-
         return this.getEntities(this.entityUrl + querystring).then((data: any): string => 
-            {
-                let d2 = new Date();
-                console.log(d2+" EntityService.readString - d2");
-        
-                return data.value;
-            });
+            {return data.value;
+        });
     }
     //6Nov19 End
 

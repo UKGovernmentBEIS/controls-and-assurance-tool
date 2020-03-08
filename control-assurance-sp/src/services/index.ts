@@ -15,6 +15,8 @@ export { GoElementService } from './GoElementService';
 export { GoElementFeedbackService } from './GoElementFeedbackService';
 export { GoElementActionService } from './GoElementActionService';
 export { GoAssignmentService } from './GoAssignmentService';
+export { GoElementEvidenceService } from './GoElementEvidenceService';
+
 
 export { DefElementGroupService } from './DefElementGroupService';
 export { DefElementService } from './DefElementService';

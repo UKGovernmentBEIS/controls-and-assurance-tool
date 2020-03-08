@@ -19,6 +19,7 @@ export { IGoMiscFile, GoMiscFile } from './GoMiscFile';
 export { IGoForm, GoForm, SectionStatus } from './GoForm';
 export { IGoElement, GoElement } from './GoElement';
 export { IGoAssignment, GoAssignment } from './GoAssignment';
+export { IGoElementEvidence, GoElementEvidence } from './GoElementEvidence';
 export { IGoDefElement } from './GoDefElement';
 export { IDefElementGroup } from './DefElementGroup';
 export { IDefElement } from './DefElement';

@@ -62,6 +62,7 @@ namespace ControlAssuranceAPI
             builder.EntitySet<GoElementFeedback>("GoElementFeedbacks");
             builder.EntitySet<GoElementAction>("GoElementActions");
             builder.EntitySet<GoAssignment>("GoAssignments");
+            builder.EntitySet<GoElementEvidence>("GoElementEvidences");
 
             builder.EntitySet<Models.SPDGAreaStat_Result>("DGAreaStats");
             builder.EntitySet<Models.SPDirectorateStat_Result>("DirectorateStats");
