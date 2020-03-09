@@ -23,6 +23,7 @@ namespace ControlAssuranceAPI.Models
         public int ID { get; set; }
         public string Title { get; set; }
         public string Instructions { get; set; }
+        public string FullInstructions { get; set; }
         public Nullable<int> RagRatingStyle { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

@@ -320,9 +320,6 @@
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\SpecificAreaView_Result.cs" />
-    <Compile Include="Models\sysdiagram.cs">
-      <DependentUpon>ControlAssurance.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\Team.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>

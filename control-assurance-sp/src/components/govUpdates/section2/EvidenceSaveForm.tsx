@@ -73,7 +73,7 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
 
     constructor(props: IEvidenceSaveFormProps, state: IEvidenceSaveFormState) {
         super(props);
-        console.log('TEMPTRACE EVIDENCE SAVE FORM props goElementId ', props.goElementId);
+        //console.log('props goElementId ', props.goElementId);
         //console.log('props goElementEvidenceId ', props.goElementEvidenceId);
         this.state = new EvidenceSaveFormState(props.goElementId);
     }
@@ -341,14 +341,12 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
             //delete f.User; //parent entity
 
             if (f.ID === 0) {
-                console.log("TEMPTRACE - SAVEEVIDENCE - 1");
+
                 //firts create record in the db, so we can get the ID, then use the ID to append in the file name to make file name unique
                 this.goElementEvidenceService.create(f).then(x=> {
                     //console.log(x);
                     if(this.state.ShowFileUpload === true){
-                        console.log("TEMPTRACE - SAVEEVIDENCE - 2");
                         this.uploadFile(x.ID, x.UploadedByUserId);
-                        console.log("TEMPTRACE - SAVEEVIDENCE - 3");
                     }
                     else{
                         //its a link instead of the file, so close the form
@@ -362,7 +360,7 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
             else {
 
                 //console.log('in update');
-                console.log("TEMPTRACE - SAVEEVIDENCE - 4");
+
                 this.goElementEvidenceService.update(f.ID, f).then(this.props.onSaved, (err) => {
                     if (this.props.onError) this.props.onError(`Error updating item`, err.message);
                 });

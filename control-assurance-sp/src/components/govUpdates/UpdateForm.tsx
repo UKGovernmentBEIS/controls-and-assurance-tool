@@ -8,6 +8,7 @@ import { CrCheckbox } from '../cr/CrCheckbox';
 import { FormButtons } from '../cr/FormButtons';
 import { MessageDialog } from '../cr/MessageDialog';
 import { DefaultButton, PrimaryButton } from 'office-ui-fabric-react/lib/Button';
+import { Panel, PanelType } from 'office-ui-fabric-react/lib/Panel';
 import styles from '../../styles/cr.module.scss';
 import { IGoElement, GoElement, IGoDefElement } from '../../types';
 import { IGenColumn, ColumnType, ColumnDisplayType } from '../../types/GenColumn';
@@ -29,8 +30,9 @@ export interface IUpdateFormProps extends types.IBaseComponentProps {
 export interface IUpdateFormState {
     Loading: boolean;
     FormData: IGoElement;
-
     Evidence_ListFilterText: string;
+    UserHelpText: string;
+    ShowHelpPanel: boolean;
     //FormData: IPolicy;
     //LookupData: IPolicyLookupData;
     //FormIsDirty: boolean;
@@ -39,8 +41,9 @@ export interface IUpdateFormState {
 export class UpdateFormState implements IUpdateFormState {
     public Loading = false;
     public FormData: IGoElement;
-
     public Evidence_ListFilterText: string = null;
+    public UserHelpText: string = null;
+    public ShowHelpPanel: boolean = false;
 
     constructor(goFormId: number, goDefElementId: number) {
         this.FormData = new GoElement(goFormId, goDefElementId);
@@ -95,6 +98,10 @@ export default class UpdateForm extends React.Component<IUpdateFormProps, IUpdat
                         {this.renderMarkAsReadyCheckbox()}
                         {this.renderFormButtons()}
 
+                        <Panel isOpen={this.state.ShowHelpPanel} headerText="" type={PanelType.medium} onDismiss={this.hideHelpPanel} >
+                            <div dangerouslySetInnerHTML={{ __html: this.state.UserHelpText }}></div>
+                        </Panel>
+
                     </div>}
 
 
@@ -113,14 +120,14 @@ export default class UpdateForm extends React.Component<IUpdateFormProps, IUpdat
     }
     private renderInstructions() {
 
-        const shortInstructions: string = this.state.FormData.GoDefElement.Instructions;
+        const { Instructions: shortInstructions, FullInstructions: detailedInstructions } = this.state.FormData.GoDefElement;
         return (
             <React.Fragment>
                 <div style={{ marginBottom: '30px' }} className={styles.sectionATitle}>Instructions</div>
                 <div>{shortInstructions}</div>
                 <div>
                     <span style={{ textDecoration: 'underline', color: 'rgb(0,162,232)', cursor: 'pointer' }}
-                    // onClick={() => this.showHelpPanel(detailedInstructions)}
+                        onClick={() => this.showHelpPanel(detailedInstructions)}
                     >Show Detailed Instructions</span>
                 </div>
             </React.Fragment>
@@ -620,4 +627,17 @@ export default class UpdateForm extends React.Component<IUpdateFormProps, IUpdat
 
     //#endregion Event Handlers
 
+    //#region Class Methods
+
+    private showHelpPanel = (helpText: string) => {
+        this.setState({ UserHelpText: helpText, ShowHelpPanel: true });
+    }
+
+    private hideHelpPanel = () => {
+        this.setState({ ShowHelpPanel: false });
+    }
+
+
+
+    //#endregion Class Methods
 }
