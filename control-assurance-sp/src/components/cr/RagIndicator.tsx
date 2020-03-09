@@ -39,7 +39,7 @@ export class RagIndicator extends React.Component<IRagIndicatorProps, {}> {
                     </div>}
                 {this.props.rag === null &&
                     <div className={`ms-font-m ${styles.indicator} ${styles.grey}`}>
-                        <TooltipHost content='To be completed' overflowMode={TooltipOverflowMode.Parent}>{this.props.label || 'To be completed'}</TooltipHost>
+                        <TooltipHost content='Not Started' overflowMode={TooltipOverflowMode.Parent}>{this.props.label || 'Not Started'}</TooltipHost>
                     </div>}
             </div>
         );

@@ -86,7 +86,7 @@ export default class Section2Update extends React.Component<ISection2UpdateProps
 
     private getRagLabel(): string {
 
-        return "To be completed";
+        return "Not Started";
     }
 
     private getRag(): number {
