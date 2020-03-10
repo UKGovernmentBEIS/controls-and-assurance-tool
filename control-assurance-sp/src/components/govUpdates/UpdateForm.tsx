@@ -246,11 +246,11 @@ export default class UpdateForm extends React.Component<IUpdateFormProps, IUpdat
                 isMultiline: true,
                 name: 'Action',
                 fieldName: 'Title',
-                minWidth: 120,
-                maxWidth: 120,
+                minWidth: 320,
+                maxWidth: 320,
                 isResizable: true,
                 isRequired: true,
-                fieldMaxLength: 500,
+                fieldMaxLength: 2000,
                 headerClassName: styles.bold,
             },
 
@@ -290,7 +290,7 @@ export default class UpdateForm extends React.Component<IUpdateFormProps, IUpdat
                 minWidth: 120,
                 isResizable: true,
                 isRequired: true,
-                fieldMaxLength: 2000,
+                fieldMaxLength: 8000,
                 headerClassName: styles.bold,
             },
 
