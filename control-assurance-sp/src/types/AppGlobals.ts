@@ -1,5 +1,5 @@
-export const UploadFolder_MiscFiles:string = "/sites/ControlsAndAssuranceToolTest/Shared%20Documents/MiscFiles"; //online site
-export const UploadFolder_Evidence:string = "/sites/ControlsAndAssuranceToolTest/Shared%20Documents/Evidence"; //online site
+export const UploadFolder_MiscFiles:string = "/sites/ControlsAndAssuranceToolDev/Shared%20Documents/MiscFiles"; //online site
+export const UploadFolder_Evidence:string = "/sites/ControlsAndAssuranceToolDev/Shared%20Documents/Evidence"; //online site
 
 
 //export const UploadFolder_MiscFiles:string = "/sites/site3/Shared%20Documents/MiscFiles";
