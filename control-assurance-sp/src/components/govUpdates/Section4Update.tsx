@@ -4,7 +4,7 @@ import MicsFilesList from '../../components/govUpdates/miscFiles/MicsFilesList';
 import * as services from '../../services';
 import styles from '../../styles/cr.module.scss';
 import { FormButtons } from '.././cr/FormButtons';
-import { UpdateHeader } from '.././cr/UpdateHeader';
+import { UpdateHeader2 } from '.././cr/UpdateHeader2';
 import { ConfirmDialog } from '.././cr/ConfirmDialog';
 import MiscFilesList from '../../components/govUpdates/miscFiles/MicsFilesList';
 
@@ -31,7 +31,7 @@ export default class Section4Update extends React.Component<ISection4UpdateProps
 
         return (
             <div className={styles.cr} style={{overflowX: 'hidden'}}> 
-                <UpdateHeader title="Miscellaneous Files" isOpen={ShowForm}
+                <UpdateHeader2 title="Miscellaneous Files" isOpen={ShowForm}
                     leadUser=""
                     rag={this.getRag()}
                     hideRagIndicator={true}

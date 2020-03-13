@@ -11,7 +11,7 @@ import { Selection } from '../../cr/FilteredList';
 import { ConfirmDialog } from '../../cr/ConfirmDialog';
 import styles from '../../../styles/cr.module.scss';
 import { DateService } from '../../../services';
-import { UploadFolder_MiscFiles } from '../../../types/AppGlobals';
+import { getUploadFolder_MiscFiles } from '../../../types/AppGlobals';
 
 
 export interface IMiscFilesListProps extends types.IBaseComponentProps {
@@ -56,6 +56,7 @@ export class MiscFilesListState<T> implements IMiscFilesListState<T>{
 }
 
 export default class MiscFilesList extends React.Component<IMiscFilesListProps, IMiscFilesListState<IEntity>> {
+    private UploadFolder_MiscFiles = "";
     private _selection: Selection;
     private goMiscFileService: services.GoMiscFileService = new services.GoMiscFileService(this.props.spfxContext, this.props.api);
 
@@ -116,6 +117,8 @@ export default class MiscFilesList extends React.Component<IMiscFilesListProps, 
         super(props);
         this.state = new MiscFilesListState<IEntity>();
 
+        this.UploadFolder_MiscFiles = getUploadFolder_MiscFiles(props.spfxContext);
+        
         this._selection = new Selection({
             onSelectionChanged: () => {
                 if (this._selection.getSelectedCount() === 1) {
@@ -131,6 +134,12 @@ export default class MiscFilesList extends React.Component<IMiscFilesListProps, 
                 }
             }
         });
+
+
+        
+        //const webTitle = getUploadFolder_MiscFiles(props.spfxContext);
+        //console.log("webTitle", `'${webTitle}'`);
+        //console.log("props.spfxContext.pageContext.web.title ", `'${props.spfxContext.pageContext.web.title}'`);
     }
 
     //#region Render
@@ -253,7 +262,7 @@ export default class MiscFilesList extends React.Component<IMiscFilesListProps, 
         console.log('in view.');
         const fileName:string = this.state.SelectedEntityTitle;
 
-        const f = sp.web.getFolderByServerRelativeUrl(UploadFolder_MiscFiles).files.getByName(fileName);
+        const f = sp.web.getFolderByServerRelativeUrl(this.UploadFolder_MiscFiles).files.getByName(fileName);
     
         f.get().then(t => {
             console.log(t);
@@ -310,7 +319,7 @@ export default class MiscFilesList extends React.Component<IMiscFilesListProps, 
             const fileName: string = this.state.SelectedEntityTitle;
             //console.log(fileName);
 
-            sp.web.getFolderByServerRelativeUrl(UploadFolder_MiscFiles).files.getByName(fileName).delete().then(df => {
+            sp.web.getFolderByServerRelativeUrl(this.UploadFolder_MiscFiles).files.getByName(fileName).delete().then(df => {
                 //console.log('file deleted', df);
 
                 this.goMiscFileService.delete(this.state.SelectedEntity).then(this.loadMiscFiles, (err) => {

@@ -29,6 +29,23 @@ namespace ControlAssuranceAPI.Repositories
             return GoDefElements.Where(x => x.ID == keyValue).FirstOrDefault();
         }
 
+        public GoDefElement Add(GoDefElement goDefElement)
+        {
+            int newID = 1;
+            var lastRecord = db.GoDefElements.OrderByDescending(x => x.ID).FirstOrDefault();
+            if (lastRecord != null)
+            {
+                newID = lastRecord.ID + 1;
+            }
+            goDefElement.ID = newID;
+            return db.GoDefElements.Add(goDefElement);
+        }
+
+        public GoDefElement Remove(GoDefElement goDefElement)
+        {
+            return db.GoDefElements.Remove(goDefElement);
+        }
+
         public List<SpecificAreaView_Result> GetEvidenceSpecificAreas(int goFormId, bool incompleteOnly, bool justMine)
         {
             List<SpecificAreaView_Result> retList = new List<SpecificAreaView_Result>();

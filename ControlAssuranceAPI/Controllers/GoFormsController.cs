@@ -29,6 +29,16 @@ namespace ControlAssuranceAPI.Controllers
             return SingleResult.Create(db.GoFormRepository.GoForms.Where(x => x.ID == key));
         }
 
+        //GET: odata/GoForms?key=12&signOffForm=
+        [EnableQuery]
+        public string Get(int key, bool signOffForm)
+        {
+            if (signOffForm == true)
+                return db.GoFormRepository.SignOffForm(key).ToString();
+            else
+                return false.ToString();
+        }
+
         // POST: odata/GoForms
         public IHttpActionResult Post(GoForm goForm)
         {

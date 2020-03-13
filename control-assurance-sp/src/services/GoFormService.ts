@@ -16,5 +16,11 @@ export class GoFormService extends EntityService<IGoForm> {
         return this.readAll(`?$filter=PeriodId eq ${periodId} and DirectorateGroupId eq ${directorateGroupId}`);
     }
 
+    public signOffForm(goFormId: number): Promise<string> {
+        return super.readString(`?key=${goFormId}&signOffForm=true`).then((result:string): string => {
+            return result;
+        });
+    }
+
 
 }

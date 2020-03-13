@@ -31,8 +31,23 @@ namespace ControlAssuranceAPI.Controllers
             return SingleResult.Create(db.GoDefFormRepository.GoDefForms.Where(defForm => defForm.ID == key));
         }
 
+        // POST: odata/GoDefForms
+        public IHttpActionResult Post(GoDefForm goDefForm)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-        // PATCH: odata/DefForms(1)
+            var x = db.GoDefFormRepository.Add(goDefForm);
+            if (x == null) return Unauthorized();
+
+            db.SaveChanges();
+
+            return Created(x);
+        }
+
+        // PATCH: odata/GoDefForms(1)
         [AcceptVerbs("PATCH", "MERGE")]
         public IHttpActionResult Patch([FromODataUri] int key, Delta<GoDefForm> patch)
         {
@@ -71,7 +86,22 @@ namespace ControlAssuranceAPI.Controllers
         }
 
 
+        // DELETE: odata/GoDefForms(1)
+        public IHttpActionResult Delete([FromODataUri] int key)
+        {
+            GoDefForm goDefForm = db.GoDefFormRepository.Find(key);
+            if (goDefForm == null)
+            {
+                return NotFound();
+            }
 
+            var x = db.GoDefFormRepository.Remove(goDefForm);
+            if (x == null) return Unauthorized();
+
+            db.SaveChanges();
+
+            return StatusCode(HttpStatusCode.NoContent);
+        }
 
         private bool GoDefFormExists(int key)
         {

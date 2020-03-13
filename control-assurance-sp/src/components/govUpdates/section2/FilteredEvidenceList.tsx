@@ -58,6 +58,8 @@ export interface IFilteredEvidenceListProps {
 
     editDisabled: boolean;
     deleteDisabled: boolean;
+
+    isViewOnlyGoForm:boolean;
 }
 
 export interface IFilteredEvidenceListState {
@@ -88,21 +90,21 @@ export class FilteredEvidenceList extends React.Component<IFilteredEvidenceListP
 
                 <div className={classNames.controlWrapper}>
 
-                    {props.editDisabled && props.deleteDisabled &&
+                    {(props.isViewOnlyGoForm === false) && props.editDisabled && props.deleteDisabled &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Add' }}
                             text="New"
                             onClick={props.onAdd}
                         />}
 
-                    {(props.editDisabled === false) &&
+                    {(props.isViewOnlyGoForm === false) && (props.editDisabled === false) &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Edit' }}
                             text="Edit"
                             onClick={props.onEdit}
                         />}
 
-                    {(props.deleteDisabled === false) &&
+                    {(props.isViewOnlyGoForm === false) && (props.deleteDisabled === false) &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Delete' }}
                             text="Delete"

@@ -17,14 +17,11 @@ import EvidenceList from './section2/EvidenceList';
 import { ElementStatuses } from '../../types/AppGlobals';
 
 export interface IUpdateFormProps extends types.IBaseComponentProps {
-    //policyID: number;
-    //onShowList: () => void;
-    //filteredItems: any[];
-    goDefElementId: number;
+
+    filteredItems: any[];
     goElementId: number;
-    goFormId: number;
-    defElementTitle: string;
     onShowList: () => void;
+    isViewOnly: boolean;
 }
 
 export interface IUpdateFormState {
@@ -33,7 +30,9 @@ export interface IUpdateFormState {
     Evidence_ListFilterText: string;
     UserHelpText: string;
     ShowHelpPanel: boolean;
-    //FormData: IPolicy;
+    GoElementId: number;
+    HideNoElementsMessage: boolean;
+    HideNextButton:boolean;
     //LookupData: IPolicyLookupData;
     //FormIsDirty: boolean;
 }
@@ -44,6 +43,9 @@ export class UpdateFormState implements IUpdateFormState {
     public Evidence_ListFilterText: string = null;
     public UserHelpText: string = null;
     public ShowHelpPanel: boolean = false;
+    public GoElementId: number = 0;
+    public HideNoElementsMessage: boolean = true;
+    public HideNextButton:boolean = false;
 
     constructor(goFormId: number, goDefElementId: number) {
         this.FormData = new GoElement(goFormId, goDefElementId);
@@ -59,11 +61,6 @@ export default class UpdateForm extends React.Component<IUpdateFormProps, IUpdat
     private goElementService: services.GoElementService = new services.GoElementService(this.props.spfxContext, this.props.api);
     private goDefElementService: services.GoDefElementService = new services.GoDefElementService(this.props.spfxContext, this.props.api);
 
-    // private redIcon: string = require('../../images/Red4340.png');
-    // private amberIcon: string = require('../../images/Amber4340.png');
-    // private yellowIcon: string = require('../../images/Yellow4340.png');
-    // private greenIcon: string = require('../../images/Green4340.png');
-
     private ratingIcon1: string = require('../../images/goelement/form/1.png');
     private ratingIcon2: string = require('../../images/goelement/form/2.png');
     private ratingIcon3: string = require('../../images/goelement/form/3.png');
@@ -77,7 +74,9 @@ export default class UpdateForm extends React.Component<IUpdateFormProps, IUpdat
 
     constructor(props: IUpdateFormProps, state: IUpdateFormState) {
         super(props);
-        this.state = new UpdateFormState(this.props.goFormId, this.props.goDefElementId);
+        //this.state = new UpdateFormState(this.props.goFormId, this.props.goDefElementId);
+        this.state = new UpdateFormState(0, 0);
+
     }
 
     public render(): React.ReactElement<IUpdateFormProps> {
@@ -102,6 +101,8 @@ export default class UpdateForm extends React.Component<IUpdateFormProps, IUpdat
                             <div dangerouslySetInnerHTML={{ __html: this.state.UserHelpText }}></div>
                         </Panel>
 
+                        <MessageDialog hidden={this.state.HideNoElementsMessage} title="Information" content="This is the last specific area in your list." handleOk={() => { this.setState({ HideNoElementsMessage: true }); }} />
+
                     </div>}
 
 
@@ -114,7 +115,7 @@ export default class UpdateForm extends React.Component<IUpdateFormProps, IUpdat
     private renderSectionTitle() {
         return (
             <React.Fragment>
-                <h1 style={{ fontFamily: 'Calibri', fontSize: '36px' }}>{this.props.defElementTitle}</h1>
+                <h1 style={{ fontFamily: 'Calibri', fontSize: '36px' }}>{this.state.FormData.GoDefElement.Title}</h1>
             </React.Fragment>
         );
     }
@@ -188,13 +189,6 @@ export default class UpdateForm extends React.Component<IUpdateFormProps, IUpdat
                 <div style={{ fontWeight: "bold", marginBottom: '10px' }}>Assurance Rating</div>
                 <CrChoiceGroup
                     options={options}
-                    // options={[
-                    //     { key: '1', imageSrc: this.redIcon, selectedImageSrc: this.redIcon, text: 'Unsatisfactory', imageSize: { width: 44, height: 40 } },
-                    //     { key: '2', imageSrc: this.yellowIcon, selectedImageSrc: this.yellowIcon, text: 'Limited', imageSize: { width: 44, height: 40 } },
-                    //     { key: '3', imageSrc: this.amberIcon, selectedImageSrc: this.amberIcon, text: 'Moderate', imageSize: { width: 44, height: 40 } },
-                    //     { key: '4', imageSrc: this.greenIcon, selectedImageSrc: this.greenIcon, text: 'Substantial', imageSize: { width: 44, height: 40 } },
-
-                    // ]}
                     selectedKey={this.state.FormData.Rating}
                     onChange={(ev, option) => this.changeChoiceGroup(ev, option, "Rating")}
                 />
@@ -210,7 +204,7 @@ export default class UpdateForm extends React.Component<IUpdateFormProps, IUpdat
                 <div style={{ marginTop: '30px', fontWeight: "bold", marginBottom: '10px' }}>List evidence documents</div>
                 <div style={{ minHeight: '120px', border: '1px solid rgb(166,166,166)' }}>
                     <EvidenceList
-
+                        isViewOnlyGoForm={this.props.isViewOnly}
                         goElementId={this.state.FormData.ID}
                         filterText={this.state.Evidence_ListFilterText}
                         onChangeFilterText={this.handleEvidence_ChangeFilterText}
@@ -246,11 +240,11 @@ export default class UpdateForm extends React.Component<IUpdateFormProps, IUpdat
                 isMultiline: true,
                 name: 'Action',
                 fieldName: 'Title',
-                minWidth: 320,
-                maxWidth: 320,
+                minWidth: 120,
+                maxWidth: 120,
                 isResizable: true,
                 isRequired: true,
-                fieldMaxLength: 2000,
+                fieldMaxLength: 500,
                 headerClassName: styles.bold,
             },
 
@@ -290,7 +284,7 @@ export default class UpdateForm extends React.Component<IUpdateFormProps, IUpdat
                 minWidth: 120,
                 isResizable: true,
                 isRequired: true,
-                fieldMaxLength: 8000,
+                fieldMaxLength: 2000,
                 headerClassName: styles.bold,
             },
 
@@ -304,7 +298,7 @@ export default class UpdateForm extends React.Component<IUpdateFormProps, IUpdat
                 <div style={{ minHeight: '120px', border: '1px solid rgb(166,166,166)' }}>
                     <EntityList
                         entityReadAllWithArg1={this.state.FormData.ID}
-                        allowAdd={true}
+                        allowAdd={!this.props.isViewOnly}
                         columns={listColumns}
                         {...this.props}
                         onError={this.props.onError}
@@ -377,6 +371,8 @@ export default class UpdateForm extends React.Component<IUpdateFormProps, IUpdat
                 isResizable: true,
                 isRequired: true,
                 fieldMaxLength: 1000,
+                isMultiline: true,
+                numRows: 5,
                 headerClassName: styles.bold,
             },
 
@@ -412,41 +408,62 @@ export default class UpdateForm extends React.Component<IUpdateFormProps, IUpdat
 
     private renderMarkAsReadyCheckbox() {
 
-        return (
-            <div>
+        if (this.props.isViewOnly === false) {
 
-                <CrCheckbox
-                    className={`${styles.formField} ${styles.checkbox}`}
-                    label="Mark as ready for approval"
-                    checked={this.state.FormData.MarkReadyForApproval}
-                    onChange={(ev, isChecked) => this.changeCheckbox(isChecked, "MarkReadyForApproval")}
-                    disabled={!this.validateForStatus()}
+            return (
+                <div>
 
-                />
+                    <CrCheckbox
+                        className={`${styles.formField} ${styles.checkbox}`}
+                        label="Mark as ready for approval"
+                        checked={this.state.FormData.MarkReadyForApproval}
+                        onChange={(ev, isChecked) => this.changeCheckbox(isChecked, "MarkReadyForApproval")}
+                        disabled={!this.validateForStatus()}
 
-            </div>
-        );
+                    />
+
+                </div>
+            );
+        }
+        else
+            return null;
+
     }
 
     private renderFormButtons() {
 
         return (
             <div>
-                <PrimaryButton text="Save &amp; Close" className={styles.formButton} style={{ marginRight: '5px' }}
-                    onClick={() => this.onBeforeSave(false)}
-                />
 
-                <DefaultButton text="Cancel" className={styles.formButton} style={{ marginRight: '40px' }}
-                    onClick={this.props.onShowList}
-                />
+                {(this.props.isViewOnly === false) &&
+                    <React.Fragment>
+                        { (this.state.HideNextButton === false) && <PrimaryButton text="Save &amp; Next" className={styles.formButton} style={{ marginRight: '5px' }}
+                            onClick={() => this.onBeforeSave(true)}
+                        />}
 
-                {/* <PrimaryButton text="Save/Next" className={styles.formButton} style={{ marginRight: '5px' }}
-                    onClick={() => this.handleSave(true)}
-                />
+                        <PrimaryButton text="Save &amp; Close" className={styles.formButton} style={{ marginRight: '5px' }}
+                            onClick={() => this.onBeforeSave(false)}
+                        />
 
-                <DefaultButton text="Cancel/Next" className={styles.formButton}
-                    onClick={() => this.showNextPolicy()}
-                /> */}
+                        <DefaultButton text="Cancel" className={styles.formButton} style={{ marginRight: '5px' }}
+                            onClick={this.props.onShowList}
+                        />
+
+
+                    </React.Fragment>
+                }
+
+                {(this.props.isViewOnly === true) &&
+                    <div style={{ marginTop: '20px' }}>
+                        { (this.state.HideNextButton === false) && <PrimaryButton text="Next" className={styles.formButton} style={{ marginRight: '5px' }}
+                            onClick={() => this.showNext()}
+                        />}
+
+                        <DefaultButton text="Close" className={styles.formButton} style={{ marginRight: '5px' }}
+                            onClick={this.props.onShowList}
+                        />
+                    </div>
+                }
 
             </div>
         );
@@ -459,67 +476,101 @@ export default class UpdateForm extends React.Component<IUpdateFormProps, IUpdat
 
 
 
-    private loadGoElement = (): Promise<IGoElement> => {
-        if (this.props.goElementId > 0) {
-            //console.log('in if');
-            return this.goElementService.readWithExpandDefElement(this.props.goElementId).then((e: IGoElement) => {
-                console.log('GoElement: ', e);
-                this.setState({ FormData: e });
-                return e;
+    // private loadGoElement = (): Promise<IGoElement> => {
+    //     if (this.props.goElementId > 0) {
+    //         //console.log('in if');
+    //         return this.goElementService.readWithExpandDefElement(this.props.goElementId).then((e: IGoElement) => {
+    //             console.log('GoElement: ', e);
+    //             this.setState({ FormData: e });
+    //             return e;
 
-            }, (err) => {
-                if (this.props.onError) this.props.onError(`Error loading GoElement`, err.message);
-            });
-        }
-        else {
+    //         }, (err) => {
+    //             if (this.props.onError) this.props.onError(`Error loading GoElement`, err.message);
+    //         });
+    //     }
+    //     else {
 
-            //console.log('in else');
-            //add record in db
-            const formData: IGoElement = this.state.FormData;
-            delete formData.ID;
-            delete formData.GoDefElement;
-            delete formData.GoForm;
-            delete formData.GoAssignments;
+    //         //console.log('in else');
+    //         //add record in db
+    //         const formData: IGoElement = this.state.FormData;
+    //         delete formData.ID;
+    //         delete formData.GoDefElement;
+    //         delete formData.GoForm;
+    //         delete formData.GoAssignments;
 
-            this.goElementService.create(formData).then((fdAfterSave: IGoElement): void => {
+    //         this.goElementService.create(formData).then((fdAfterSave: IGoElement): void => {
 
-                this.goElementService.readWithExpandDefElement(fdAfterSave.ID).then((e: IGoElement) => {
-                    console.log('GoElement after create new: ', e);
-                    this.setState({ FormData: e });
+    //             this.goElementService.readWithExpandDefElement(fdAfterSave.ID).then((e: IGoElement) => {
+    //                 console.log('GoElement after create new: ', e);
+    //                 this.setState({ FormData: e });
 
-                }, (err) => { });
+    //             }, (err) => { });
 
-            }, (err) => {
-            });
+    //         }, (err) => {
+    //         });
 
-            return null;
-        }
+    //         return null;
+    //     }
+
+    // }
+
+    private loadGoElement = (firstLoad: boolean): Promise<IGoElement> => {
+
+        return this.goElementService.readWithExpandDefElement(this.state.GoElementId).then((e: IGoElement) => {
+            console.log('GoElement: ', e);
+            if (firstLoad === false) {
+                //if we need to send info to parent component after loading next goElement- do it here
+            }
+
+            //check if this is the last record or not in the props.filteredItems
+            const lastGoElementId_FilteredItems:number = Number(this.props.filteredItems[this.props.filteredItems.length-1]["GoElementId"]);
+            const goElementId_Current:number = Number(this.state.GoElementId);
+            let hideNextButton:boolean = false;
+            if(goElementId_Current === lastGoElementId_FilteredItems){
+                //console.log("This is the last one...");
+                hideNextButton = true;
+
+            }
+
+
+            this.setState({ FormData: e, HideNextButton: hideNextButton });
+            return e;
+
+        }, (err) => {
+            if (this.props.onError) this.props.onError(`Error loading GoElement`, err.message);
+        });
+
+
+
 
     }
 
     private loadLookups(): Promise<any> {
 
         return Promise.all([
-            this.loadGoElement(),
+            //any data load should go here before loading the GoElement
         ]);
+
+        // return Promise.all([
+        //     this.loadGoElement(),
+        // ]);
     }
 
-    private loadUpdates = (): void => {
-        this.setState({ Loading: true });
-        let loadingPromises = [this.loadLookups()];
 
-        Promise.all(loadingPromises).then(this.onLoaded, this.onErrorLoading);
-    }
 
-    private onLoaded = (loadedData: any[]): void => {
-        this.setState({ Loading: false });
-    }
 
-    private onErrorLoading = (): void => {
-        this.setState({ Loading: false });
-    }
     public componentDidMount(): void {
-        this.loadUpdates();
+        //this.loadUpdates();
+        this.setState({ Loading: true, GoElementId: this.props.goElementId }, this.callBackFirstLoad
+
+        );
+    }
+    private callBackFirstLoad = (): void => {
+        let loadingPromises = [this.loadLookups()];
+        if (this.state.GoElementId > 0) {
+            loadingPromises.push(this.loadGoElement(true));
+        }
+        Promise.all(loadingPromises).then(p => this.setState({ Loading: false })).catch(err => this.setState({ Loading: false }));
     }
     protected validateForStatus = (): boolean => {
         if (this.state.FormData.Rating === null) {
@@ -577,7 +628,7 @@ export default class UpdateForm extends React.Component<IUpdateFormProps, IUpdat
                     this.props.onError(null);
 
                 if (showNext === true) {
-                    //this.showNext();
+                    this.showNext();
                 }
                 else {
                     //console.log('calling on show list ..');
@@ -592,6 +643,50 @@ export default class UpdateForm extends React.Component<IUpdateFormProps, IUpdat
 
 
         }
+    }
+
+    private showNext = (): void => {
+
+        const currentGoElementID: number = Number(this.state.GoElementId);
+        //console.log("filtered items", this.props.filteredItems);
+        //console.log("current GoElementId", currentGoElementID);
+        let currentIDFound: boolean = false;
+        let nextGoElementID: number = 0;
+
+
+
+
+        for (let i = 0; i < this.props.filteredItems.length; i++) {
+            let e: any = this.props.filteredItems[i];
+            const id: number = Number(e["GoElementId"]);
+
+            if (id === currentGoElementID) {
+                currentIDFound = true;
+                //console.log("if condition", id, currentGoElementID);
+                continue;
+
+            }
+            if (currentIDFound === true) {
+                nextGoElementID = id;
+                console.log("nextGoElementID", nextGoElementID);
+                break;
+            }
+
+        }
+
+        if (nextGoElementID > 0) {
+            this.setState({
+                GoElementId: nextGoElementID,
+            }, () => this.loadGoElement(false));
+        }
+        else {
+
+            //this condition will not run cause we are already hiding next buttons
+            this.setState({
+                HideNoElementsMessage: false,
+            });
+        }
+
     }
 
     protected validateEntityUpdate = (): boolean => {

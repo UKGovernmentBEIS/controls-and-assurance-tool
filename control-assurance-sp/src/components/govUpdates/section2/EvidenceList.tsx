@@ -11,7 +11,7 @@ import { Selection } from '../../cr/FilteredList';
 import { ConfirmDialog } from '../../cr/ConfirmDialog';
 import styles from '../../../styles/cr.module.scss';
 import { DateService } from '../../../services';
-import { UploadFolder_Evidence } from '../../../types/AppGlobals';
+import { getUploadFolder_Evidence } from '../../../types/AppGlobals';
 
 
 export interface IEvidenceListProps extends types.IBaseComponentProps {
@@ -20,6 +20,8 @@ export interface IEvidenceListProps extends types.IBaseComponentProps {
     goElementId: number;
     filterText?: string;
     onChangeFilterText: (value: string) => void;
+
+    isViewOnlyGoForm:boolean;
 
 }
 
@@ -57,6 +59,7 @@ export class EvidenceListState<T> implements IEvidenceListState<T>{
 }
 
 export default class EvidenceList extends React.Component<IEvidenceListProps, IEvidenceListState<IEntity>> {
+    private UploadFolder_Evidence:string = "";
     private _selection: Selection;
     private goElementEvidenceService: services.GoElementEvidenceService = new services.GoElementEvidenceService(this.props.spfxContext, this.props.api);
 
@@ -158,6 +161,8 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
         super(props);
         this.state = new EvidenceListState<IEntity>();
 
+        this.UploadFolder_Evidence = getUploadFolder_Evidence(props.spfxContext);
+
         this._selection = new Selection({
             onSelectionChanged: () => {
                 if (this._selection.getSelectedCount() === 1) {
@@ -204,6 +209,7 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
         return (
             <FilteredEvidenceList
                 //onItemTitleClick={this.props.onItemTitleClick}
+                isViewOnlyGoForm={this.props.isViewOnlyGoForm}
                 columns={listColumns}
                 items={items}
                 filterText={this.props.filterText}
@@ -308,7 +314,7 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
 
         }
         else{
-            const f = sp.web.getFolderByServerRelativeUrl(UploadFolder_Evidence).files.getByName(fileName);
+            const f = sp.web.getFolderByServerRelativeUrl(this.UploadFolder_Evidence).files.getByName(fileName);
     
             f.get().then(t => {
                 console.log(t);
@@ -381,7 +387,7 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
             }
             else{
 
-                sp.web.getFolderByServerRelativeUrl(UploadFolder_Evidence).files.getByName(fileName).delete().then(df => {
+                sp.web.getFolderByServerRelativeUrl(this.UploadFolder_Evidence).files.getByName(fileName).delete().then(df => {
                     //console.log('file deleted', df);
     
                     this.goElementEvidenceService.delete(this.state.SelectedEntity).then(this.loadEvidences, (err) => {

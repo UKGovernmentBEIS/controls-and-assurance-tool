@@ -4,7 +4,7 @@ import * as services from '../../services';
 import SpecificAreasList from '../../components/govUpdates/section2/SpecificAreasList';
 import styles from '../../styles/cr.module.scss';
 import { FormButtons } from '.././cr/FormButtons';
-import { UpdateHeader } from '.././cr/UpdateHeader';
+import { UpdateHeader2 } from '.././cr/UpdateHeader2';
 import { ConfirmDialog } from '.././cr/ConfirmDialog';
 
 
@@ -47,7 +47,7 @@ export default class Section2Update extends React.Component<ISection2UpdateProps
 
         return (
             <div className={styles.cr}>
-                <UpdateHeader title={Section2Title} isOpen={ShowForm}
+                <UpdateHeader2 title={Section2Title} isOpen={ShowForm}
                     leadUser=""
                     rag={ this.props.section2CompletionStatus === SectionStatus.Completed ? 5 : this.props.section2CompletionStatus === SectionStatus.InProgress ? 3 : null }
                     ragLabel={ this.props.section2CompletionStatus === SectionStatus.Completed ? "Completed" : this.props.section2CompletionStatus === SectionStatus.InProgress ? "In Progress" : null }
@@ -86,7 +86,7 @@ export default class Section2Update extends React.Component<ISection2UpdateProps
 
     private getRagLabel(): string {
 
-        return "Not Started";
+        return "To be completed";
     }
 
     private getRag(): number {

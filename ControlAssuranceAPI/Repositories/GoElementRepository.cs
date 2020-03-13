@@ -34,7 +34,7 @@ namespace ControlAssuranceAPI.Repositories
             return db.GoElements.Add(goElement);
         }
 
-        public void StatusChecksForSection2(int goFormId)
+        public void StatusChecksForSection2(int goFormId, GoFormRepository goFormRepository)
         {
             //update form status
             var goForm = db.GoForms.FirstOrDefault(x => x.ID == goFormId);
@@ -53,6 +53,10 @@ namespace ControlAssuranceAPI.Repositories
                     {
                         goFormSection2Status = "Completed";
                     }
+                    else
+                    {
+                        goFormSection2Status = "InProgress";
+                    }
 
 
                 }
@@ -69,6 +73,20 @@ namespace ControlAssuranceAPI.Repositories
 
 
                 goForm.SpecificAreasCompletionStatus = goFormSection2Status;
+
+                //sign-off check
+                goForm = goFormRepository.SignOffCheck(goForm);
+
+                //if(goForm.SpecificAreasCompletionStatus == "Completed" && goForm.SummaryCompletionStatus == "Completed" && goForm.DGSignOffStatus != "Completed")
+                //{
+                //    //make DGSignOffStatus to "WaitingSignOff"
+                //    goForm.DGSignOffStatus = "WaitingSignOff";
+                //}
+                //else if(goForm.SpecificAreasCompletionStatus == "InProgress" || goForm.SummaryCompletionStatus == "InProgress")
+                //{
+                //    goForm.DGSignOffStatus = null;
+                //}
+
                 db.SaveChanges();
             }
 

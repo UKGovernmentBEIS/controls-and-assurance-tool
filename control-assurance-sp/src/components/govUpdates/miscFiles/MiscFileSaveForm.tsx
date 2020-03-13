@@ -8,7 +8,7 @@ import { FormButtons } from '../../cr/FormButtons';
 import { Panel, PanelType } from 'office-ui-fabric-react/lib/Panel';
 import { FormCommandBar } from '../../cr/FormCommandBar';
 import { sp, ChunkedFileUploadProgressData } from '@pnp/sp';
-import { UploadFolder_MiscFiles } from '../../../types/AppGlobals';
+import { getUploadFolder_MiscFiles } from '../../../types/AppGlobals';
 import styles from '../../../styles/cr.module.scss';
 
 export interface IMiscFileSaveFormProps extends types.IBaseComponentProps {
@@ -56,11 +56,12 @@ export class MiscFileSaveFormState implements IMiscFileSaveFormState {
 
 export default class MiscFileSaveForm extends React.Component<IMiscFileSaveFormProps, IMiscFileSaveFormState> {
 
-    //private uploadFolder: string = "/sites/site1/documents/MiscFiles";
+    private UploadFolder_MiscFiles:string = "";
     private goMiscFileService: services.GoMiscFileService = new services.GoMiscFileService(this.props.spfxContext, this.props.api);
 
     constructor(props: IMiscFileSaveFormProps, state: IMiscFileSaveFormState) {
         super(props);
+        this.UploadFolder_MiscFiles = getUploadFolder_MiscFiles(props.spfxContext);
         this.state = new MiscFileSaveFormState();
     }
 
@@ -148,7 +149,7 @@ export default class MiscFileSaveForm extends React.Component<IMiscFileSaveFormP
         //const chunkSize:number = 10485760; //10mb
         const chunkSize: number = 1048576; //1mb
         if (myfile.size <= chunkSize) {
-            sp.web.getFolderByServerRelativeUrl(UploadFolder_MiscFiles).files.add(fileName, myfile, true).then(f => {
+            sp.web.getFolderByServerRelativeUrl(this.UploadFolder_MiscFiles).files.add(fileName, myfile, true).then(f => {
                 console.log("File Uploaded..");
                 this.setState({
                     UploadStatus: "Almost done ...",
@@ -170,7 +171,7 @@ export default class MiscFileSaveForm extends React.Component<IMiscFileSaveFormP
             });
         }
         else {
-            sp.web.getFolderByServerRelativeUrl(UploadFolder_MiscFiles)
+            sp.web.getFolderByServerRelativeUrl(this.UploadFolder_MiscFiles)
                 .files.addChunked(fileName, myfile, this.progressUpload, true, chunkSize)
                 .then(({ file }) => file.getItem()).then((item: any) => {
                     console.log("File Uploaded");

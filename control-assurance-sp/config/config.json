@@ -73,6 +73,14 @@
           "manifest": "./src/webparts/goUpdates/GoUpdatesWebPart.manifest.json"
         }
       ]
+    },
+    "go-properties-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/goProperties/GoPropertiesWebPart.js",
+          "manifest": "./src/webparts/goProperties/GoPropertiesWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {},
@@ -85,6 +93,7 @@
     "WelcomeWebPartStrings": "lib/webparts/welcome/loc/{locale}.js",
     "AppHomeWebPartStrings": "lib/webparts/appHome/loc/{locale}.js",
     "GoWelcomeWebPartStrings": "lib/webparts/goWelcome/loc/{locale}.js",
-    "GoUpdatesWebPartStrings": "lib/webparts/goUpdates/loc/{locale}.js"
+    "GoUpdatesWebPartStrings": "lib/webparts/goUpdates/loc/{locale}.js",
+    "GoPropertiesWebPartStrings": "lib/webparts/goProperties/loc/{locale}.js"
   }
 }

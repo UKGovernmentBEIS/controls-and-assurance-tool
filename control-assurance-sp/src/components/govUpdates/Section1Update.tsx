@@ -3,7 +3,7 @@ import { IEntityFormProps, IUser, IGoDefForm, GoForm, IGoForm, SectionStatus } f
 import * as services from '../../services';
 import styles from '../../styles/cr.module.scss';
 import { FormButtons } from '.././cr/FormButtons';
-import { UpdateHeader } from '.././cr/UpdateHeader';
+import { UpdateHeader2 } from '.././cr/UpdateHeader2';
 
 import { CrTextField } from '../cr/CrTextField';
 import { CrChoiceGroup, IChoiceGroupOption } from '../cr/CrChoiceGroup';
@@ -22,9 +22,11 @@ export interface ISection1UpdateProps extends IEntityFormProps {
     //onSignOff: ()=> void;
     //canSignOffDDSection: boolean;
     //canSignOffDirSection: boolean;
-    GoDefForm: IGoDefForm;
-    PeriodId: number;
-    DirectorateGroupId: number;
+    goDefForm: IGoDefForm;
+    goForm: IGoForm;
+    isViewOnly:boolean;
+    //periodId: number;
+    //directorateGroupId: number;
 }
 
 export class Section1UpdateState {
@@ -53,7 +55,8 @@ export default class Section1Update extends React.Component<ISection1UpdateProps
 
     constructor(props: ISection1UpdateProps, state: Section1UpdateState) {
         super(props);
-        this.state = new Section1UpdateState(this.props.PeriodId, this.props.DirectorateGroupId);
+        //this.state = new Section1UpdateState(this.props.periodId, this.props.directorateGroupId);
+        this.state = new Section1UpdateState(this.props.goForm.PeriodId, this.props.goForm.DirectorateGroupId);
         //console.log("in constructor", this.props.formId);
     }
 
@@ -61,13 +64,13 @@ export default class Section1Update extends React.Component<ISection1UpdateProps
 
         //const {title, signoffText} = this.props;
 
-        const { Section1Title } = this.props.GoDefForm;
+        const { Section1Title } = this.props.goDefForm;
 
         const { ShowForm } = this.state;
 
         return (
             <div className={styles.cr}>
-                <UpdateHeader title={Section1Title} isOpen={ShowForm}
+                <UpdateHeader2 title={Section1Title} isOpen={ShowForm}
                     leadUser=""
                     rag={ this.state.FormData.SummaryCompletionStatus === SectionStatus.Completed ? 5 : this.state.FormData.SummaryCompletionStatus === SectionStatus.InProgress ? 3 : null }
                     ragLabel={ this.state.FormData.SummaryCompletionStatus === SectionStatus.Completed ? "Completed" : this.state.FormData.SummaryCompletionStatus === SectionStatus.InProgress ? "In Progress" : null }
@@ -75,7 +78,7 @@ export default class Section1Update extends React.Component<ISection1UpdateProps
 
                 {ShowForm && <div className={`ms-scaleDownIn100`}>
                     {this.renderFormFields()}
-                    <FormButtons
+                    { (this.props.isViewOnly===false) &&  <FormButtons
                         onPrimaryClick={() => this.onBeforeSave()}
                         primaryText="Save"
                         //primaryDisabled={(this.props.form.LastSignOffFor === "Dir" && this.props.form.DirSignOffStatus === true) ? true: (externalUserLoggedIn === true) ? true : (isArchivedPeriod === true) ? true : false}
@@ -83,7 +86,7 @@ export default class Section1Update extends React.Component<ISection1UpdateProps
 
                         onSecondaryClick={() => { }}
 
-                    />
+                    />}
                     <br /><br />
                     <Panel isOpen={this.state.ShowHelpPanel} headerText="" type={PanelType.medium} onDismiss={this.hideHelpPanel} >
                         <div dangerouslySetInnerHTML={{ __html: this.state.UserHelpText }}></div>
@@ -98,7 +101,7 @@ export default class Section1Update extends React.Component<ISection1UpdateProps
 
     public renderFormFields() {
 
-        const { SummaryShortInstructions, SummaryFullInstructions, SummaryFormRatingText } = this.props.GoDefForm;
+        const { SummaryShortInstructions, SummaryFullInstructions, SummaryFormRatingText } = this.props.goDefForm;
 
         return (
             <React.Fragment>
@@ -197,20 +200,26 @@ export default class Section1Update extends React.Component<ISection1UpdateProps
 
     private renderMarkAsReadyCheckbox() {
 
-        return (
-            <div>
+        if(this.props.isViewOnly === false){
 
-                <CrCheckbox
-                    className={`${styles.formField} ${styles.checkbox}`}
-                    label="Mark as ready for approval"
-                    checked={this.state.FormData.SummaryMarkReadyForApproval}
-                    onChange={(ev, isChecked) => this.changeCheckbox(isChecked, "SummaryMarkReadyForApproval")}
-                    disabled={!this.validateForStatus()}
-                //disabled={(this.props.form.LastSignOffFor === "Dir" && this.props.form.DirSignOffStatus === true) === true}
-                />
+            return (
+                <div>
+    
+                    <CrCheckbox
+                        className={`${styles.formField} ${styles.checkbox}`}
+                        label="Mark as ready for approval"
+                        checked={this.state.FormData.SummaryMarkReadyForApproval}
+                        onChange={(ev, isChecked) => this.changeCheckbox(isChecked, "SummaryMarkReadyForApproval")}
+                        disabled={!this.validateForStatus()}
+                    //disabled={(this.props.form.LastSignOffFor === "Dir" && this.props.form.DirSignOffStatus === true) === true}
+                    />
+    
+                </div>
+            );
+        }
+        else
+            return null;
 
-            </div>
-        );
     }
 
 
@@ -218,13 +227,24 @@ export default class Section1Update extends React.Component<ISection1UpdateProps
 
     public componentDidMount(): void {
         //console.log('section1 componentDidMount');
-        this.loadUpdates();
+        console.log("section 1 componentDidMount");
+        console.log("goForm", this.props.goForm);
+        //this.loadUpdates();
+        const fd = this.props.goForm;
+        this.setState({ FormData: fd });
     }
 
     public componentDidUpdate(prevProps: ISection1UpdateProps): void {
-        if (prevProps.PeriodId !== this.props.PeriodId || prevProps.DirectorateGroupId !== this.props.DirectorateGroupId){
-            this.loadUpdates();
+        if(prevProps.goForm !== this.props.goForm){
+            console.log("section 1 componentDidUpdate");
+            console.log("goForm", this.props.goForm);
+            const fd = {...this.props.goForm};
+            this.setState({ FormData: fd });
+
         }
+        // if (prevProps.PeriodId !== this.props.PeriodId || prevProps.DirectorateGroupId !== this.props.DirectorateGroupId){
+        //     this.loadUpdates();
+        // }
     }
 
 
@@ -281,45 +301,45 @@ export default class Section1Update extends React.Component<ISection1UpdateProps
 
     //#region Data Load
 
-    protected loadGoForm = (): Promise<IGoForm> => {
-        return this.goFormService.readGoForm(this.props.PeriodId, this.props.DirectorateGroupId).then((arrGF: IGoForm[]) => {
-            console.log('reading GoForm: ', arrGF);
-            if(arrGF.length > 0){
-                const formData: IGoDefForm = arrGF[0];
-                this.setState({ FormData: formData });
-                return formData;
-            }
-            else{
-                //GoForm doesn't exist in db, reset FormData, so all the fields are empty, request may come from componentDidUpdate
-                const fd = new GoForm(this.props.PeriodId, this.props.DirectorateGroupId);
-                this.setState({ FormData: fd });
-                return null;
-            }
+    // private loadGoForm = (): Promise<IGoForm> => {
+    //     return this.goFormService.readGoForm(this.props.PeriodId, this.props.DirectorateGroupId).then((arrGF: IGoForm[]) => {
+    //         console.log('reading GoForm: ', arrGF);
+    //         if(arrGF.length > 0){
+    //             const formData: IGoDefForm = arrGF[0];
+    //             this.setState({ FormData: formData });
+    //             return formData;
+    //         }
+    //         else{
+    //             //GoForm doesn't exist in db, reset FormData, so all the fields are empty, request may come from componentDidUpdate
+    //             const fd = new GoForm(this.props.PeriodId, this.props.DirectorateGroupId);
+    //             this.setState({ FormData: fd });
+    //             return null;
+    //         }
 
-        }, (err) => {
-            if (this.props.onError) this.props.onError(`Error loading progress update`, err.message);
-        });
-    }
+    //     }, (err) => {
+    //         if (this.props.onError) this.props.onError(`Error loading progress update`, err.message);
+    //     });
+    // }
 
-    protected loadUpdates = (): void => {
-        this.setState({ Loading: true });
-        let loadingPromises = [this.loadLookups()];
+    // private loadUpdates = (): void => {
+    //     this.setState({ Loading: true });
+    //     let loadingPromises = [this.loadLookups()];
 
-        Promise.all(loadingPromises).then(this.onLoaded, this.onErrorLoading);
-    }
-    protected loadLookups(): Promise<any> {
+    //     Promise.all(loadingPromises).then(this.onLoaded, this.onErrorLoading);
+    // }
+    // private loadLookups(): Promise<any> {
     
-        return Promise.all([
-            this.loadGoForm(),    
-        ]);
-    }
-    protected onLoaded = (loadedData: any[]): void => {
-        this.setState({ Loading: false });
-    }
+    //     return Promise.all([
+    //         this.loadGoForm(),    
+    //     ]);
+    // }
+    // protected onLoaded = (loadedData: any[]): void => {
+    //     this.setState({ Loading: false });
+    // }
 
-    protected onErrorLoading = (): void => {
-        this.setState({ Loading: false });
-    }
+    // protected onErrorLoading = (): void => {
+    //     this.setState({ Loading: false });
+    // }
 
     //#endregion Data Load
 

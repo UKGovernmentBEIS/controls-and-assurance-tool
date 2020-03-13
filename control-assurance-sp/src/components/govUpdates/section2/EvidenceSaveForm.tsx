@@ -9,7 +9,7 @@ import { FormButtons } from '../../cr/FormButtons';
 import { Panel, PanelType } from 'office-ui-fabric-react/lib/Panel';
 import { FormCommandBar } from '../../cr/FormCommandBar';
 import { sp, ChunkedFileUploadProgressData } from '@pnp/sp';
-import { UploadFolder_Evidence } from '../../../types/AppGlobals';
+import { getUploadFolder_Evidence } from '../../../types/AppGlobals';
 import styles from '../../../styles/cr.module.scss';
 
 export interface IEvidenceSaveFormProps extends types.IBaseComponentProps {
@@ -69,10 +69,12 @@ export class EvidenceSaveFormState implements IEvidenceSaveFormState {
 
 export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormProps, IEvidenceSaveFormState> {
 
+    private UploadFolder_Evidence:string = "";
     private goElementEvidenceService: services.GoElementEvidenceService = new services.GoElementEvidenceService(this.props.spfxContext, this.props.api);
 
     constructor(props: IEvidenceSaveFormProps, state: IEvidenceSaveFormState) {
         super(props);
+        this.UploadFolder_Evidence = getUploadFolder_Evidence(props.spfxContext);
         //console.log('props goElementId ', props.goElementId);
         //console.log('props goElementEvidenceId ', props.goElementEvidenceId);
         this.state = new EvidenceSaveFormState(props.goElementId);
@@ -259,7 +261,7 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
         //const chunkSize:number = 10485760; //10mb
         const chunkSize: number = 1048576; //1mb
         if (myfile.size <= chunkSize) {
-            sp.web.getFolderByServerRelativeUrl(UploadFolder_Evidence).files.add(fileName, myfile, true).then(f => {
+            sp.web.getFolderByServerRelativeUrl(this.UploadFolder_Evidence).files.add(fileName, myfile, true).then(f => {
                 console.log("File Uploaded..");
                 this.setState({
                     UploadStatus: "Almost done ...",
@@ -281,7 +283,7 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
             });
         }
         else {
-            sp.web.getFolderByServerRelativeUrl(UploadFolder_Evidence)
+            sp.web.getFolderByServerRelativeUrl(this.UploadFolder_Evidence)
                 .files.addChunked(fileName, myfile, this.progressUpload, true, chunkSize)
                 .then(({ file }) => file.getItem()).then((item: any) => {
                     console.log("File Uploaded");

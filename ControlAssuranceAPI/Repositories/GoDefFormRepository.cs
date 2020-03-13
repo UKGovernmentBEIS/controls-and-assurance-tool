@@ -24,11 +24,28 @@ namespace ControlAssuranceAPI.Repositories
             }
         }
 
+
         public GoDefForm Find(int keyValue)
         {
             return GoDefForms.Where(f => f.ID == keyValue).FirstOrDefault();
         }
 
+        public GoDefForm Add(GoDefForm goDefForm)
+        {
+            int newID = 1;
+            var lastRecord = db.GoDefForms.OrderByDescending(x => x.ID).FirstOrDefault();
+            if(lastRecord != null)
+            {
+                newID = lastRecord.ID + 1;
+            }
+            goDefForm.ID = newID;
+            return db.GoDefForms.Add(goDefForm);
+        }
+
+        public GoDefForm Remove(GoDefForm goDefForm)
+        {
+            return db.GoDefForms.Remove(goDefForm);
+        }
 
     }
 }

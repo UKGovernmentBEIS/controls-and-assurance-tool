@@ -1,13 +1,13 @@
 import * as React from 'react';
-import styles from '../../styles/RagIndicator.module.scss';
+import styles from '../../styles/RagIndicator2.module.scss';
 import { TooltipHost, TooltipOverflowMode } from 'office-ui-fabric-react/lib/Tooltip';
 
-export interface IRagIndicatorProps {
+export interface IRagIndicator2Props {
     rag: number;
     label?: string;
 }
 
-export class RagIndicator extends React.Component<IRagIndicatorProps, {}> {
+export class RagIndicator2 extends React.Component<IRagIndicator2Props, {}> {
     public render(): JSX.Element {
         const r = this.props.rag;
         return (
@@ -39,7 +39,7 @@ export class RagIndicator extends React.Component<IRagIndicatorProps, {}> {
                     </div>}
                 {this.props.rag === null &&
                     <div className={`ms-font-m ${styles.indicator} ${styles.grey}`}>
-                        <TooltipHost content='To be completed' overflowMode={TooltipOverflowMode.Parent}>{this.props.label || 'To be completed'}</TooltipHost>
+                        <TooltipHost content='Not Started' overflowMode={TooltipOverflowMode.Parent}>{this.props.label || 'Not Started'}</TooltipHost>
                     </div>}
             </div>
         );

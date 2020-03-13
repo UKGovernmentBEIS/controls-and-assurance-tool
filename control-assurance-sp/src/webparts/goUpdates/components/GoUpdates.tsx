@@ -47,6 +47,8 @@ export interface IGoUpdatesState extends types.IUserContextWebPartState {
   Section2_SelectedDefElementId: number;
   Section2_SelectedElementId: number;
   Section2_SelectedDefElementTitle: string;
+
+  FilteredItems: any[];
 }
 export class GoUpdatesState extends types.UserContextWebPartState implements IGoUpdatesState {
   public LookupData = new LookupData();
@@ -63,6 +65,8 @@ export class GoUpdatesState extends types.UserContextWebPartState implements IGo
   public Section2_SelectedDefElementId: number = 0;
   public Section2_SelectedElementId: number = 0;
   public Section2_SelectedDefElementTitle: string = null;
+
+  public FilteredItems = [];
 
   constructor() {
     super();
@@ -132,10 +136,12 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
           {this.state.PeriodId > 0 && this.state.DirectorateGroupId > 0 && this.state.GoForm &&
             <div>
               <Section1Update
-                GoDefForm={this.state.LookupData.GoDefForm}
-                PeriodId={periodId}
-                DirectorateGroupId={directorateGroupId}
-                onSaved={this.createGoFormInDb}
+                goDefForm={this.state.LookupData.GoDefForm}
+                goForm={this.state.GoForm}
+                isViewOnly={this.isViewOnlyGoForm()}
+                //periodId={periodId}
+                //directorateGroupId={directorateGroupId}
+                onSaved={this.readOrCreateGoFormInDb} //to refresh goForm in state
                 {...this.props}
               />
               <Section2Update
@@ -151,10 +157,14 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
                 onChangeFilterText={this.handleSection2_ChangeFilterText}
                 onChangeIncompleteOnly={this.handleSection2_ChangeIncompleteOnly}
                 onChangeJustMine={this.handleSection2_ChangeJustMine}
-                
+
                 {...this.props}
               />
-              <Section3Update GoDefForm={this.state.LookupData.GoDefForm} {...this.props} />
+              <Section3Update
+                goDefForm={this.state.LookupData.GoDefForm}
+                goForm={this.state.GoForm}
+                onSignOff={this.readOrCreateGoFormInDb} //to refresh goForm in state
+                {...this.props} />
               <Section4Update {...this.props} />
             </div>
           }
@@ -184,25 +194,12 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
     return (
 
       <UpdateForm
-        defElementTitle={this.state.Section2_SelectedDefElementTitle}
-        goDefElementId={this.state.Section2_SelectedDefElementId}
+        filteredItems={this.state.FilteredItems}
         goElementId={this.state.Section2_SelectedElementId}
-        goFormId={this.state.GoForm.ID}
+        isViewOnly={this.isViewOnlyGoForm()}
         onShowList={this.handleShowListSection2}
-
         {...this.props}
       />
-
-      // <UpdateForm
-      //   policyID={this.state.SelectedPolicyID}
-      //   filteredItems={this.state.FilteredItems} //4Oct19
-      //   prevPeriodPolicyID={null}
-      //   onShowList={this.handleShowList}
-      //   currentUserID={this.state.UserID}
-      //   allReadOnly={this.state.IsArchivedPeriod}
-      //   onNextLoadPolicyDetails={this.handleOnNextLoadPolicyDetails}
-      //   {...this.props}
-      // />
 
     );
 
@@ -292,6 +289,16 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
     return false;
   }
 
+  private isViewOnlyGoForm = () :boolean => {
+
+    if(this.state.GoForm && this.state.GoForm.DGSignOffStatus === "Completed") {
+      return true;   
+    }
+
+    return false;
+
+  }
+
   //#endregion Permissions
 
   //#region event handlers
@@ -308,20 +315,20 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
         }
 
         this.setState({ PeriodId: option.key/*, IsArchivedPeriod: isArchivedPeriod*/ },
-          this.createGoFormInDb
+          this.readOrCreateGoFormInDb
         );
       }
     }
     else {
       //f === "DirectorateGroupId"
       this.setState({ DirectorateGroupId: option.key },
-        this.createGoFormInDb
+        this.readOrCreateGoFormInDb
       );
     }
 
   }
 
-  private createGoFormInDb = (): void => {
+  private readOrCreateGoFormInDb = (): void => {
 
     if (this.state.PeriodId > 0 && this.state.DirectorateGroupId > 0) {
 
@@ -367,9 +374,7 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
       Section2_SelectedDefElementId: ID,
       Section2_SelectedElementId: goElementId,
       Section2_SelectedDefElementTitle: title,
-      //SelectedPolicyID: ID,
-      //SelectedPolicyTitle: title,
-      //FilteredItems: filteredItems
+      FilteredItems: filteredItems
     });
   }
 
@@ -392,7 +397,7 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
   private handleShowListSection2 = (): void => {
     console.log('in handleShowListSection2');
     this.clearErrors();
-    this.setState({ SelectedPivotKey: this.headerTxt_Updates }, this.createGoFormInDb);
+    this.setState({ SelectedPivotKey: this.headerTxt_Updates }, this.readOrCreateGoFormInDb);
   }
 
   //#endregion event handlers
