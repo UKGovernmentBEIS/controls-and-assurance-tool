@@ -117,8 +117,8 @@ export class FilteredSpecificAreasList extends React.Component<IFilteredSpecific
                     />
 
                     <Toggle
-                        onText="Just Mine"
-                        offText="Just Mine"
+                        onText="Assigned to me"
+                        offText="Assigned to me"
                         styles={controlStyles}
                         checked={props.justMine}
                         onChanged={(isChecked) => props.onChangeJustMine(isChecked)}
