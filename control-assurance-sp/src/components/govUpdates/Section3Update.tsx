@@ -16,7 +16,7 @@ export interface ISection3UpdateProps extends IEntityFormProps {
     //title?: string;
     //signoffText?: string;
     onSignOff: ()=> void;
-    //canSignOffDDSection: boolean;
+    canSignOff: boolean;
     //canSignOffDirSection: boolean;
 
 }
@@ -98,7 +98,8 @@ export default class Section3Update extends React.Component<ISection3UpdateProps
 
     private enableSignOff(): boolean {
         if(this.props.goForm.DGSignOffStatus === "WaitingSignOff"){
-            return true;
+            if(this.props.canSignOff === true)
+                return true;
         }
 
         return false;

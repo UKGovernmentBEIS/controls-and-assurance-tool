@@ -1328,10 +1328,11 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
   private superUserOrSysManagerPermission(): boolean {
 
     //super user/SysManager check
-    let ups = this.state.UserPermissions;
+    let ups: IUserPermission[] = this.state.UserPermissions;
+    
     for (let i = 0; i < ups.length; i++) {
       let up: IUserPermission = ups[i];
-      if (up.PermissionTypeId == 1 || up.PermissionTypeId == 2) {
+      if (up.PermissionTypeId == 1 || up.PermissionTypeId == 2 || up.PermissionTypeId == 5) {
         //super user or sys manager
         return true;
       }

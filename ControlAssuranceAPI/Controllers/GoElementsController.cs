@@ -64,6 +64,12 @@ namespace ControlAssuranceAPI.Controllers
                 return NotFound();
             }
 
+            string user = db.GoElementRepository.ApiUser.Title;
+            string date = DateTime.Now.ToString("ddMMMyyyy HH:mm");
+            string newChangeLog = goElement.GoElementChangeLog + $"{date} Updated by {user},";
+
+            patch.TrySetPropertyValue("GoElementChangeLog", newChangeLog);
+
             patch.Patch(goElement);
 
             try

@@ -117,5 +117,42 @@ namespace ControlAssuranceAPI.Repositories
             return false;
         }
 
+        protected bool Go_SuperUser(int userId)
+        {
+            bool superUser = false;
+            bool goSuperUser = false;
+            //bool sysManager = false;
+            //bool externalUser = false;
+
+            var userPermissions = db.UserPermissions.Where(up => up.UserId == userId).ToList();
+            foreach (var permissioin in userPermissions)
+            {
+                if (permissioin.PermissionTypeId == 1)
+                {
+                    superUser = true;
+                }
+                else if (permissioin.PermissionTypeId == 6) //Governance Super User
+                {
+                    goSuperUser = true;
+                }
+                //else if (permissioin.PermissionTypeId == 2)
+                //{
+                //    sysManager = true;
+                //}
+                //else if (permissioin.PermissionTypeId == 3)
+                //{
+                //    externalUser = true;
+                //}
+            }
+
+            //if (sysManager == true || superUser == true || externalUser == true)
+            //    return true;
+
+            if (superUser == true || goSuperUser == true)
+                return true;
+
+            return false;
+        }
+
     }
 }

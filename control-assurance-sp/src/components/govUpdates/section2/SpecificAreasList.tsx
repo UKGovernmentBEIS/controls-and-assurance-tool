@@ -98,7 +98,7 @@ export default class SpecificAreasList extends React.Component<ISpecificAreasLis
         },
         {
             key: 'Users',
-            name: 'Contributions By',
+            name: 'Assigned To',
             fieldName: 'Users',
             minWidth: 280,
             maxWidth: 280,

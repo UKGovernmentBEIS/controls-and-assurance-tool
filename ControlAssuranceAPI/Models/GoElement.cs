@@ -31,6 +31,7 @@ namespace ControlAssuranceAPI.Models
         public string Rating { get; set; }
         public string CompletionStatus { get; set; }
         public Nullable<bool> MarkReadyForApproval { get; set; }
+        public string GoElementChangeLog { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<GoAssignment> GoAssignments { get; set; }

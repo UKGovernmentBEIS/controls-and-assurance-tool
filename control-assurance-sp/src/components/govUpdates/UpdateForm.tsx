@@ -32,7 +32,7 @@ export interface IUpdateFormState {
     ShowHelpPanel: boolean;
     GoElementId: number;
     HideNoElementsMessage: boolean;
-    HideNextButton:boolean;
+    HideNextButton: boolean;
     //LookupData: IPolicyLookupData;
     //FormIsDirty: boolean;
 }
@@ -45,7 +45,7 @@ export class UpdateFormState implements IUpdateFormState {
     public ShowHelpPanel: boolean = false;
     public GoElementId: number = 0;
     public HideNoElementsMessage: boolean = true;
-    public HideNextButton:boolean = false;
+    public HideNextButton: boolean = false;
 
     constructor(goFormId: number, goDefElementId: number) {
         this.FormData = new GoElement(goFormId, goDefElementId);
@@ -96,6 +96,7 @@ export default class UpdateForm extends React.Component<IUpdateFormProps, IUpdat
                         {this.renderFeedbacksList()}
                         {this.renderMarkAsReadyCheckbox()}
                         {this.renderFormButtons()}
+                        {this.renderChangeLogs()}
 
                         <Panel isOpen={this.state.ShowHelpPanel} headerText="" type={PanelType.medium} onDismiss={this.hideHelpPanel} >
                             <div dangerouslySetInnerHTML={{ __html: this.state.UserHelpText }}></div>
@@ -240,8 +241,8 @@ export default class UpdateForm extends React.Component<IUpdateFormProps, IUpdat
                 isMultiline: true,
                 name: 'Action',
                 fieldName: 'Title',
-                minWidth: 220,
-                maxWidth: 220,
+                minWidth: 120,
+                maxWidth: 120,
                 isResizable: true,
                 isRequired: true,
                 fieldMaxLength: 500,
@@ -437,7 +438,7 @@ export default class UpdateForm extends React.Component<IUpdateFormProps, IUpdat
 
                 {(this.props.isViewOnly === false) &&
                     <React.Fragment>
-                        { (this.state.HideNextButton === false) && <PrimaryButton text="Save &amp; Next" className={styles.formButton} style={{ marginRight: '5px' }}
+                        {(this.state.HideNextButton === false) && <PrimaryButton text="Save &amp; Next" className={styles.formButton} style={{ marginRight: '5px' }}
                             onClick={() => this.onBeforeSave(true)}
                         />}
 
@@ -455,7 +456,7 @@ export default class UpdateForm extends React.Component<IUpdateFormProps, IUpdat
 
                 {(this.props.isViewOnly === true) &&
                     <div style={{ marginTop: '20px' }}>
-                        { (this.state.HideNextButton === false) && <PrimaryButton text="Next" className={styles.formButton} style={{ marginRight: '5px' }}
+                        {(this.state.HideNextButton === false) && <PrimaryButton text="Next" className={styles.formButton} style={{ marginRight: '5px' }}
                             onClick={() => this.showNext()}
                         />}
 
@@ -469,6 +470,28 @@ export default class UpdateForm extends React.Component<IUpdateFormProps, IUpdat
         );
 
 
+    }
+
+    private renderChangeLogs() {
+        const fd = this.state.FormData;
+        let changeLog = fd.GoElementChangeLog ? fd.GoElementChangeLog : "";
+        let changeLogArr = changeLog.split(',');
+        let changeLogs = "";
+
+        changeLogArr.reverse().forEach(log => {
+            if (log.length > 0) {
+                changeLogs += `${log}<br />`;
+            }
+        });
+
+        return (
+            <React.Fragment>
+                <div style={{ marginTop: "30px" }}>
+                    <div style={{fontWeight:'bold'}}>Change Log:</div>
+                    <div style={{ marginTop: "20px" }} dangerouslySetInnerHTML={{ __html: changeLogs }} />
+                </div>
+            </React.Fragment>
+        );
     }
 
 
@@ -523,10 +546,10 @@ export default class UpdateForm extends React.Component<IUpdateFormProps, IUpdat
             }
 
             //check if this is the last record or not in the props.filteredItems
-            const lastGoElementId_FilteredItems:number = Number(this.props.filteredItems[this.props.filteredItems.length-1]["GoElementId"]);
-            const goElementId_Current:number = Number(this.state.GoElementId);
-            let hideNextButton:boolean = false;
-            if(goElementId_Current === lastGoElementId_FilteredItems){
+            const lastGoElementId_FilteredItems: number = Number(this.props.filteredItems[this.props.filteredItems.length - 1]["GoElementId"]);
+            const goElementId_Current: number = Number(this.state.GoElementId);
+            let hideNextButton: boolean = false;
+            if (goElementId_Current === lastGoElementId_FilteredItems) {
                 //console.log("This is the last one...");
                 hideNextButton = true;
 

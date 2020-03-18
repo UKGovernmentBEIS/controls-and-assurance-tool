@@ -166,7 +166,7 @@ export default class GoProperties extends BaseUserContextWebPartComponent<types.
 
 
         <EntityList
-          allowAdd={true}
+          allowAdd={this.superUserOrSysManagerPermission()}
           columns={listColumns}
           {...this.props}
           onError={this.onError}
@@ -250,7 +250,7 @@ export default class GoProperties extends BaseUserContextWebPartComponent<types.
 
 
         <EntityList
-          allowAdd={true}
+          allowAdd={this.superUserOrSysManagerPermission()}
           columns={listColumns}
           {...this.props}
           onError={this.onError}
@@ -269,6 +269,27 @@ export default class GoProperties extends BaseUserContextWebPartComponent<types.
 
     );
   }
+
+
+  //#region Permissions
+
+  private superUserOrSysManagerPermission = (): boolean => {
+
+    //super user/SysManager check
+    let ups: IUserPermission[] = this.state.UserPermissions;
+    
+    for (let i = 0; i < ups.length; i++) {
+      let up: IUserPermission = ups[i];
+      if (up.PermissionTypeId == 1 || up.PermissionTypeId == 2 || up.PermissionTypeId == 6) {
+        //super user or sys manager
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  //#endregion Permissions
 
 
 

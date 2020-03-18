@@ -303,6 +303,7 @@
           <Property Name="Rating" Type="nvarchar" MaxLength="50" />
           <Property Name="CompletionStatus" Type="nvarchar" MaxLength="50" />
           <Property Name="MarkReadyForApproval" Type="bit" />
+          <Property Name="GoElementChangeLog" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="GoElementAction">
           <Key>
@@ -1535,6 +1536,7 @@
           <Property Name="Rating" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CompletionStatus" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="MarkReadyForApproval" Type="Boolean" />
+          <Property Name="GoElementChangeLog" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="GoAssignments" Relationship="Self.FK_GoAssignment_GoElement" FromRole="GoElement" ToRole="GoAssignment" />
           <NavigationProperty Name="GoDefElement" Relationship="Self.FK_GoElement_GoDefElement" FromRole="GoElement" ToRole="GoDefElement" />
           <NavigationProperty Name="GoForm" Relationship="Self.FK_GoElement_GoForm" FromRole="GoElement" ToRole="GoForm" />
@@ -2917,6 +2919,7 @@
                 <ScalarProperty Name="Rating" ColumnName="Rating" />
                 <ScalarProperty Name="CompletionStatus" ColumnName="CompletionStatus" />
                 <ScalarProperty Name="MarkReadyForApproval" ColumnName="MarkReadyForApproval" />
+                <ScalarProperty Name="GoElementChangeLog" ColumnName="GoElementChangeLog" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

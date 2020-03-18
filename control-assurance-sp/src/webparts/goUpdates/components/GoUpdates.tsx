@@ -36,6 +36,7 @@ export interface IGoUpdatesState extends types.IUserContextWebPartState {
   LookupData: ILookupData;
   PeriodId: string | number;
   DirectorateGroupId: string | number;
+  IsArchivedPeriod:boolean;
   //GoFormId: number;
   GoForm: IGoForm;
   SelectedPivotKey: string;
@@ -53,6 +54,7 @@ export interface IGoUpdatesState extends types.IUserContextWebPartState {
 export class GoUpdatesState extends types.UserContextWebPartState implements IGoUpdatesState {
   public LookupData = new LookupData();
   public PeriodId: string | number = 0;
+  public IsArchivedPeriod = false;
   public DirectorateGroupId: string | number = 0;
   //public GoFormId: number = 0;
   public GoForm: IGoForm = null;
@@ -163,6 +165,7 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
               <Section3Update
                 goDefForm={this.state.LookupData.GoDefForm}
                 goForm={this.state.GoForm}
+                canSignOff={this.canSignOff()}
                 onSignOff={this.readOrCreateGoFormInDb} //to refresh goForm in state
                 {...this.props} />
               <Section4Update {...this.props} />
@@ -237,7 +240,7 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
 
 
       //check user permissions
-      if (this.superUserOrSysManagerLoggedIn() === true) {
+      if (this.isSuperUser() === true) {
       }
       else {
         //dont show design periods
@@ -254,7 +257,7 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
   }
 
   protected loadDGAreas = (): Promise<IEntity[]> => {
-    return this.deirectorateGroupService.readAll().then((data: IEntity[]): IEntity[] => {
+    return this.deirectorateGroupService.readAllForGoList().then((data: IEntity[]): IEntity[] => {
       this.setState({ LookupData: this.cloneObject(this.state.LookupData, 'DGAreas', data) });
       return data;
     }, (err) => { if (this.onError) this.onError(`Error loading Teams lookup data`, err.message); });
@@ -275,12 +278,12 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
 
   //#region Permissions
 
-  private superUserOrSysManagerLoggedIn(): boolean {
+  private isSuperUser(): boolean {
     //super user/SysManager check
     let ups = this.state.UserPermissions;
     for (let i = 0; i < ups.length; i++) {
       let up: IUserPermission = ups[i];
-      if (up.PermissionTypeId == 1 || up.PermissionTypeId == 2) {
+      if (up.PermissionTypeId == 1 || up.PermissionTypeId == 6) {
         //super user or sys manager
         return true;
       }
@@ -299,6 +302,28 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
 
   }
 
+  private canSignOff(): boolean{
+
+    //Archived Period check - dont allow if period is archived
+    if(this.state.IsArchivedPeriod === true)
+      return false;
+
+    //DirectorateGroups check
+    if(this.state.DirectorateGroups.length > 0){
+      return true;
+    }
+     
+    // //DirectorateGroup member check
+    // let dgms = this.state.DirectorateGroupMembers;
+    // for(let i=0; i<dgms.length; i++){
+    //   let dgm: types.IDirectorateGroupMember = dgms[i];
+    //   if(dgm.CanSignOff === true)
+    //     return true; 
+    // }
+
+    return false;
+  }
+
   //#endregion Permissions
 
   //#region event handlers
@@ -314,7 +339,7 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
           }
         }
 
-        this.setState({ PeriodId: option.key/*, IsArchivedPeriod: isArchivedPeriod*/ },
+        this.setState({ PeriodId: option.key, IsArchivedPeriod: isArchivedPeriod },
           this.readOrCreateGoFormInDb
         );
       }

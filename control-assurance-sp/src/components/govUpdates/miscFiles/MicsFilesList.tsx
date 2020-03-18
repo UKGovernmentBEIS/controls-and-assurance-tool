@@ -118,6 +118,7 @@ export default class MiscFilesList extends React.Component<IMiscFilesListProps, 
         this.state = new MiscFilesListState<IEntity>();
 
         this.UploadFolder_MiscFiles = getUploadFolder_MiscFiles(props.spfxContext);
+        //console.log("this.UploadFolder_MiscFiles", this.UploadFolder_MiscFiles);
         
         this._selection = new Selection({
             onSelectionChanged: () => {

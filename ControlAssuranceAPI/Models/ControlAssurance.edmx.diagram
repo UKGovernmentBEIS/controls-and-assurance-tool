@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="64360c180b5749e3b3667f65dc837f89" Name="Diagram1">
+      <Diagram DiagramId="c16dba9b89134bd5a807098eba2d6814" Name="Diagram1">
         <EntityTypeShape EntityType="ControlAssuranceModel.APILog" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.AuditFeedback" Width="1.5" PointX="3" PointY="26.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.DefElement" Width="1.5" PointX="16.5" PointY="34.75" IsExpanded="true" />
@@ -17,13 +17,13 @@
         <EntityTypeShape EntityType="ControlAssuranceModel.Element" Width="1.5" PointX="18.75" PointY="22.25" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.EntityStatusType" Width="1.5" PointX="0.75" PointY="22.25" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.Form" Width="1.5" PointX="13.5" PointY="26.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.GoAssignment" Width="1.5" PointX="12.75" PointY="19.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.GoAssignment" Width="1.5" PointX="12.75" PointY="19.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.GoDefElement" Width="1.5" PointX="8.25" PointY="20.875" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.GoDefForm" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.GoElement" Width="1.5" PointX="10.5" PointY="22.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.GoElement" Width="1.5" PointX="10.5" PointY="21" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.GoElementAction" Width="1.5" PointX="12.75" PointY="22.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.GoElementEvidence" Width="1.5" PointX="15.75" PointY="18.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.GoElementFeedback" Width="1.5" PointX="12.75" PointY="31.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.GoElementEvidence" Width="1.5" PointX="15.75" PointY="18.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.GoElementFeedback" Width="1.5" PointX="15.75" PointY="30.625" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.GoForm" Width="1.5" PointX="8.25" PointY="24" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.GoMiscFile" Width="1.5" PointX="3" PointY="40.375" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.Log" Width="1.5" PointX="16.5" PointY="26.75" IsExpanded="true" />

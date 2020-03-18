@@ -34,6 +34,12 @@ namespace ControlAssuranceAPI.Controllers
             return db.DirectorateGroupRepository.DirectorateGroupsForUser;
         }
 
+        [EnableQuery]
+        public IQueryable<DirectorateGroup> Get(string currentUser, string goAppList, string openDirectorateGroups)
+        {
+            return db.DirectorateGroupRepository.DirectorateGroupsFor_GO_User;
+        }
+
         // GET: odata/DirectorateGroups(1)
         [EnableQuery]
         public SingleResult<DirectorateGroup> Get([FromODataUri] int key)

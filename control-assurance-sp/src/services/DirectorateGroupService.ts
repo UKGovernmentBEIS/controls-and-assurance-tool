@@ -19,4 +19,9 @@ export class DirectorateGroupService extends EntityService<IDirectorateGroup> {
     public readAllForUser(): Promise<IDirectorateGroup[]> {
         return this.readAll(`?currentUser=&$orderby=Title`);
     }
+
+    public readAllForGoList(): Promise<IDirectorateGroup[]> {
+        //reads all DG Areas for GoUpdates picklist
+        return this.readAll(`?currentUser=&openDirectorateGroups=&goAppList&$orderby=Title`);
+    }
 }

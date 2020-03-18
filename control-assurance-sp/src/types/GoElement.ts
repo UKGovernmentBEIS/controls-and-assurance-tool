@@ -11,9 +11,9 @@ export interface IGoElement extends IEntity {
     Rating?: string;
     CompletionStatus?: string;
     MarkReadyForApproval?:boolean;
+    GoElementChangeLog?: string;
     GoForm?: IGoForm;
     GoDefElement?: IGoDefElement;
-
     GoAssignments?: IGoAssignment[];
 
 }
@@ -27,6 +27,7 @@ export class GoElement implements IGoElement{
     public Rating?: string = null;
     public CompletionStatus?: string = null;
     public MarkReadyForApproval?:boolean = null;
+    public GoElementChangeLog?: string = null;
     public GoForm?: IGoForm = null;
     public GoDefElement?: IGoDefElement = null;
 
