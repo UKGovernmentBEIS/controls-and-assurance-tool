@@ -55,6 +55,7 @@ export interface IFilteredMiscFilesListProps {
     onEdit: () => void;
     onDelete: () => void;
     onView: () => void;
+    onView2: () => void;
 
     editDisabled: boolean;
     deleteDisabled: boolean;
@@ -116,6 +117,13 @@ export class FilteredMiscFilesList extends React.Component<IFilteredMiscFilesLis
                             onClick={this.props.onView}
                         />}
 
+                    {(props.editDisabled === false) &&
+                        <CommandBarButton
+                            iconProps={{ iconName: 'View' }}
+                            text="View2"
+                            onClick={this.props.onView2}
+                        />}
+
                     <span style={controlStyles2}>
 
 
@@ -151,7 +159,7 @@ export class FilteredMiscFilesList extends React.Component<IFilteredMiscFilesLis
     public componentDidMount(): void {
         this.setState({ FilteredItems: SearchObjectService.filterEntities(this.props.items, this.props.filterText) });
 
-        
+
     }
 
     public componentDidUpdate(prevProps: IFilteredMiscFilesListProps): void {

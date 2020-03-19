@@ -222,6 +222,7 @@
     </Compile>
     <Compile Include="HelperMethods.cs" />
     <Compile Include="Libs\UKGovNotify.cs" />
+    <Compile Include="Libs\Utils.cs" />
     <Compile Include="Models\APILog.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>

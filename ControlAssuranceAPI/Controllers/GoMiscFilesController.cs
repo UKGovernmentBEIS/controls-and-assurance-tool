@@ -1,4 +1,5 @@
-﻿using ControlAssuranceAPI.Models;
+﻿using ControlAssuranceAPI.Libs;
+using ControlAssuranceAPI.Models;
 using Microsoft.AspNet.OData;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,9 @@ using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Web;
 using System.Web.Http;
+
 
 namespace ControlAssuranceAPI.Controllers
 {
@@ -27,6 +30,37 @@ namespace ControlAssuranceAPI.Controllers
         public SingleResult<GoMiscFile> Get([FromODataUri] int key)
         {
             return SingleResult.Create(db.GoMiscFilesRepository.GoMiscFiles.Where(x => x.ID == key));
+        }
+
+        //GET: odata/GoMiscFiles?spFileUrl=[url]&fileName=[fileName]
+        [EnableQuery]
+        public string Get(string spFileUrl, string fileName)
+        {
+            try
+            {
+                string appDomainAppPath = HttpRuntime.AppDomainAppPath;
+                string downloadFolder = System.IO.Path.Combine(appDomainAppPath, "downloads");
+                string logFilePath = System.IO.Path.Combine(downloadFolder, "log1.txt");
+
+                Utils.WriteToFile(DateTime.Now.ToString() + " download folder : " + downloadFolder, logFilePath);
+
+
+                //string downloadFolder = System.Configuration.ConfigurationManager.AppSettings["DownloadFolder"];
+                string saveFilePath = System.IO.Path.Combine(downloadFolder, fileName);
+                using (var client = new WebClient())
+                {
+                    client.DownloadFile(spFileUrl, saveFilePath);
+                }
+
+                return "File downloaded " + fileName;
+            }
+            catch(Exception ex)
+            {
+                return "Error: " + ex.Message;
+            }
+
+
+            
         }
 
         // POST: odata/GoMiscFiles

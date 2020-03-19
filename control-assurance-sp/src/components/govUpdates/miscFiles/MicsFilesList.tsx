@@ -181,6 +181,7 @@ export default class MiscFilesList extends React.Component<IMiscFilesListProps, 
                 onEdit={this.editFile}
                 onDelete={this.toggleDeleteConfirm}
                 onView={this.viewFile}
+                onView2={this.viewFile2}
                 editDisabled={!this.state.EnableEdit}
                 deleteDisabled={!this.state.EnableDelete}
                 
@@ -291,6 +292,21 @@ export default class MiscFilesList extends React.Component<IMiscFilesListProps, 
       
           });
   
+
+    }
+
+    private viewFile2 = (): void => {
+
+        const fileName:string = this.state.SelectedEntityTitle;
+        const x = `${this.props.spfxContext.pageContext.web.absoluteUrl}/Shared%20Documents/MiscFiles/${fileName}`;
+        console.log('file url', x);
+
+        this.goMiscFileService.readString(`?spFileUrl=${x}&fileName=${fileName}`).then((result:string) => {
+
+            console.log("result", result);
+            
+        });
+
 
     }
 
