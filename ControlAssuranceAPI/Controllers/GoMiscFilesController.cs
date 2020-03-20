@@ -55,7 +55,9 @@ namespace ControlAssuranceAPI.Controllers
 
                 */
 
-                Utils.WriteToFile(DateTime.Now.ToString() + " download folder : " , "d:\\local\temp\\log.txt");
+                string filePath = @"d:\\local\temp\\log.txt";
+
+                Utils.WriteToFile(DateTime.Now.ToString() + " download folder : " , filePath);
 
 
 
