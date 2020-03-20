@@ -51,7 +51,7 @@ namespace ControlAssuranceAPI.Controllers
                 string saveFilePath = System.IO.Path.Combine(downloadFolder, fileName);
                 using (var client = new WebClient())
                 {
-                    //client.UseDefaultCredentials = true;
+                    client.UseDefaultCredentials = true;
                     client.DownloadFile(spFileUrl, saveFilePath);
                 }
 
