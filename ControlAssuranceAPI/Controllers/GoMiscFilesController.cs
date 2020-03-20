@@ -38,30 +38,24 @@ namespace ControlAssuranceAPI.Controllers
         {
             try
             {
-                /*
-                string appDomainAppPath = HttpRuntime.AppDomainAppPath;
-                string downloadFolder = System.IO.Path.Combine(appDomainAppPath, "downloads");
-                string logFilePath = System.IO.Path.Combine(downloadFolder, "log1.txt");
+                //HttpContext.Current.Server.MapPath("~")
 
-                Utils.WriteToFile(DateTime.Now.ToString() + " download folder : " + downloadFolder, logFilePath);
+                //string appDomainAppPath = HttpRuntime.AppDomainAppPath;
+                //string downloadFolder = System.IO.Path.Combine(appDomainAppPath, "downloads");
+                //string logFilePath = System.IO.Path.Combine(downloadFolder, "log1.txt");
+
+                //Utils.WriteToFile(DateTime.Now.ToString() + " download folder : " + downloadFolder, logFilePath);
 
 
-                //string downloadFolder = System.Configuration.ConfigurationManager.AppSettings["DownloadFolder"];
+                string downloadFolder = "d:\\local\\temp";
                 string saveFilePath = System.IO.Path.Combine(downloadFolder, fileName);
                 using (var client = new WebClient())
                 {
+                    //client.UseDefaultCredentials = true;
                     client.DownloadFile(spFileUrl, saveFilePath);
                 }
 
-                */
-
-                string filePath = @"d:\\local\temp\\log.txt";
-
-                Utils.WriteToFile(DateTime.Now.ToString() + " download folder : " , filePath);
-
-
-
-                return "File downloaded " + fileName;
+                return "File downloaded " + saveFilePath;
             }
             catch(Exception ex)
             {
