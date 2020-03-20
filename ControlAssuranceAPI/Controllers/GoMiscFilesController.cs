@@ -38,6 +38,7 @@ namespace ControlAssuranceAPI.Controllers
         {
             try
             {
+                /*
                 string appDomainAppPath = HttpRuntime.AppDomainAppPath;
                 string downloadFolder = System.IO.Path.Combine(appDomainAppPath, "downloads");
                 string logFilePath = System.IO.Path.Combine(downloadFolder, "log1.txt");
@@ -51,6 +52,12 @@ namespace ControlAssuranceAPI.Controllers
                 {
                     client.DownloadFile(spFileUrl, saveFilePath);
                 }
+
+                */
+
+                Utils.WriteToFile(DateTime.Now.ToString() + " download folder : " , "d:\\local\temp\\log.txt");
+
+
 
                 return "File downloaded " + fileName;
             }
