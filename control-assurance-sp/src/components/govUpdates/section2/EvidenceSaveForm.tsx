@@ -13,22 +13,22 @@ import { getUploadFolder_Evidence } from '../../../types/AppGlobals';
 import styles from '../../../styles/cr.module.scss';
 
 export interface IEvidenceSaveFormProps extends types.IBaseComponentProps {
-    goElementId:number;
+    goElementId: number;
     goElementEvidenceId: number;
     showForm: boolean;
     onSaved?: () => void;
     onCancelled?: () => void;
 }
 
-export interface IErrorMessage{
-    Details:string;
-    Title:string;
+export interface IErrorMessage {
+    Details: string;
+    Title: string;
     //Controls:string;
     //Team:string;
 
-    FileUpload:string;
+    FileUpload: string;
 }
-export class ErrorMessage implements IErrorMessage{
+export class ErrorMessage implements IErrorMessage {
     public Details = null;
     public Title = null;
     public FileUpload = null;
@@ -39,11 +39,11 @@ export interface IEvidenceSaveFormState {
     FormData: IGoElementEvidence;
     FormDataBeforeChanges: IGoElementEvidence;
     FormIsDirty: boolean;
-    UploadStatus:string;
-    UploadProgress:number;
-    ShowUploadProgress:boolean;
-    ShowFileUpload:boolean;
-    EditRequest:boolean;
+    UploadStatus: string;
+    UploadProgress: number;
+    ShowUploadProgress: boolean;
+    ShowFileUpload: boolean;
+    EditRequest: boolean;
     ErrMessages: IErrorMessage;
 }
 
@@ -54,7 +54,7 @@ export class EvidenceSaveFormState implements IEvidenceSaveFormState {
     public FormDataBeforeChanges;// = new GoElementEvidence();
     public FormIsDirty = false;
     public UploadStatus = "";
-    public UploadProgress:number = 0;
+    public UploadProgress: number = 0;
     public ShowUploadProgress = false;
     public ShowFileUpload = false;
     public EditRequest = false;
@@ -69,7 +69,7 @@ export class EvidenceSaveFormState implements IEvidenceSaveFormState {
 
 export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormProps, IEvidenceSaveFormState> {
 
-    private UploadFolder_Evidence:string = "";
+    private UploadFolder_Evidence: string = "";
     private goElementEvidenceService: services.GoElementEvidenceService = new services.GoElementEvidenceService(this.props.spfxContext, this.props.api);
 
     constructor(props: IEvidenceSaveFormProps, state: IEvidenceSaveFormState) {
@@ -102,7 +102,7 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
     public renderFormFields() {
         return (
             <React.Fragment>
-                {this.renderDetails()}                
+                {this.renderDetails()}
                 {this.renderControls()}
                 {this.renderTeam()}
                 {this.renderInfoHolder()}
@@ -126,7 +126,7 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
                 onChanged={(v) => this.changeTextField(v, "Details")}
                 multiline={true}
                 rows={3}
-                errorMessage={this.state.ErrMessages.Details} 
+                errorMessage={this.state.ErrMessages.Details}
             />
         );
     }
@@ -181,7 +181,7 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
 
     private renderIsLinkCheckbox() {
 
-        if(this.state.EditRequest === true) return null;
+        if (this.state.EditRequest === true) return null;
         return (
             <div>
 
@@ -199,10 +199,10 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
     }
 
     private renderLinkBox() {
-        if(this.state.ShowFileUpload == true)
+        if (this.state.ShowFileUpload == true)
             return null;
-        
-        if(this.state.FormData.IsLink === true){
+
+        if (this.state.FormData.IsLink === true) {
 
             return (
                 <CrTextField
@@ -211,7 +211,7 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
                     className={styles.formField}
                     value={this.state.FormData.Title}
                     onChanged={(v) => this.changeTextField(v, "Title")}
-                    errorMessage={this.state.ErrMessages.Title} 
+                    errorMessage={this.state.ErrMessages.Title}
                 />
             );
         }
@@ -222,16 +222,16 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
     }
 
     private renderFileUpload() {
-        if(this.state.ShowFileUpload == false)
+        if (this.state.ShowFileUpload == false)
             return null;
 
         return (
-            <div style={{ marginTop:'20px', marginBottom: '20px' }}>
+            <div style={{ marginTop: '20px', marginBottom: '20px' }}>
                 <div>
                     <input type="file" name="fileUpload" id="fileUpload"></input>
                     {this.state.ErrMessages.FileUpload && <FieldErrorMessage value={this.state.ErrMessages.FileUpload} />}
                 </div>
-                {this.state.ShowUploadProgress && <div style={{minHeight:'80px', marginTop:'15px'}}>
+                {this.state.ShowUploadProgress && <div style={{ minHeight: '80px', marginTop: '15px' }}>
                     <div>
                         {this.state.UploadStatus}
                     </div>
@@ -239,7 +239,7 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
                         {this.state.UploadProgress} %
                     </div>
                 </div>}
-                
+
             </div>
         );
     }
@@ -249,7 +249,7 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
 
     //#region Class Methods
 
-    private uploadFile = (goElementEvidenceId:number, uploadedByUserId:number) => {
+    private uploadFile = (goElementEvidenceId: number, uploadedByUserId: number) => {
         this.setState({
             UploadStatus: "Uploading file ...",
             ShowUploadProgress: true
@@ -304,31 +304,31 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
 
     private progressUpload = (d: ChunkedFileUploadProgressData) => {
         console.log('progress', d.blockNumber, d.currentPointer, d.stage, d.totalBlocks);
-        const progress:number = Number(((d.blockNumber / d.totalBlocks) * 100).toFixed());
+        const progress: number = Number(((d.blockNumber / d.totalBlocks) * 100).toFixed());
 
-        if(progress >= 99){
-            this.setState({            
+        if (progress >= 99) {
+            this.setState({
                 UploadProgress: 99,
                 UploadStatus: 'Almost done ...'
             });
         }
-        else{
+        else {
 
-            this.setState({            
+            this.setState({
                 UploadProgress: progress
             });
         }
 
-        
+
 
     }
-    private afterFileUpload = (goElementEvidenceId:number, fileName: string, uploadedByUserId: number):void => {
+    private afterFileUpload = (goElementEvidenceId: number, fileName: string, uploadedByUserId: number): void => {
         //console.log('after uploading file ', fileName, miscFileID);
 
-        const fdata = { ...this.state.FormData, "Title": fileName, "ID" : goElementEvidenceId, "UploadedByUserId": uploadedByUserId  };
-        this.setState({ 
+        const fdata = { ...this.state.FormData, "Title": fileName, "ID": goElementEvidenceId, "UploadedByUserId": uploadedByUserId };
+        this.setState({
             FormData: fdata
-         }, this.saveEvidence);
+        }, this.saveEvidence);
 
     }
 
@@ -345,19 +345,19 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
             if (f.ID === 0) {
 
                 //firts create record in the db, so we can get the ID, then use the ID to append in the file name to make file name unique
-                this.goElementEvidenceService.create(f).then(x=> {
+                this.goElementEvidenceService.create(f).then(x => {
                     //console.log(x);
-                    if(this.state.ShowFileUpload === true){
+                    if (this.state.ShowFileUpload === true) {
                         this.uploadFile(x.ID, x.UploadedByUserId);
                     }
-                    else{
+                    else {
                         //its a link instead of the file, so close the form
                         console.log('evidence saved as link');
                         this.props.onSaved();
                     }
-                    
+
                 });
-                
+
             }
             else {
 
@@ -371,31 +371,44 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
     }
 
     private validateEntity = (): boolean => {
-        let returnVal:boolean = true;
-        let errMsg:IErrorMessage = {...this.state.ErrMessages};        
+        let returnVal: boolean = true;
+        let errMsg: IErrorMessage = { ...this.state.ErrMessages };
 
-        if ((this.state.FormData.Details === null) || (this.state.FormData.Details === '' )) {
+        if ((this.state.FormData.Details === null) || (this.state.FormData.Details === '')) {
             //this.setState({ ErrMsgDetailsRequired: 'Details required' });
             errMsg.Details = "Details required";
             returnVal = false;
         }
-        else{
+        else {
             errMsg.Details = null;
         }
-        
-        if(this.state.ShowFileUpload === true && ((document.querySelector("#fileUpload") as HTMLInputElement).files[0]) == null){
+
+        if (this.state.ShowFileUpload === true && ((document.querySelector("#fileUpload") as HTMLInputElement).files[0]) == null) {
             errMsg.FileUpload = "File required";
             returnVal = false;
         }
-        else{
+        else {
             errMsg.FileUpload = null;
         }
-        if(this.state.EditRequest === false && this.state.FormData.IsLink === true && (this.state.FormData.Title === null || this.state.FormData.Title === '')  ){
-            errMsg.Title = "Link Required";
-            returnVal = false;
-            console.log('error link required');
+        
+        if (this.state.FormData.IsLink === true) {
+            if (this.state.FormData.Title === null || this.state.FormData.Title === '') {
+
+                errMsg.Title = "Link Required";
+                returnVal = false;
+                console.log('error link required');
+            }
+            else {
+                const x: string = this.state.FormData.Title.toLowerCase();
+                if (x.search("http://") === -1) {
+                    errMsg.Title = "Link should start with http://";
+                    returnVal = false;
+                    console.log('Link should start with http://');
+                }
+            }
+
         }
-        else{
+        else {
             errMsg.Title = null;
             console.log('link validation ok');
         }
@@ -430,7 +443,7 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
             this.setState({ EditRequest: true });
             loadingPromises.push(this.loadEvidence());
         }
-        else{
+        else {
             this.setState({ ShowFileUpload: true });
         }
         Promise.all(loadingPromises).then(p => this.onAfterLoad(p[1])).then(p => this.setState({ Loading: false })).catch(err => this.setState({ Loading: false }));

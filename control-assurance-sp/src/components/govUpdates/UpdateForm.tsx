@@ -145,7 +145,7 @@ export default class UpdateForm extends React.Component<IUpdateFormProps, IUpdat
                     multiline
                     placeholder="Enter details ..."
                     rows={10}
-                    maxLength={2000}
+                    maxLength={10000}
                     charCounter={true}
                     onChanged={(v) => this.changeTextField(v, "EvidenceStatement")}
                     value={this.state.FormData.EvidenceStatement}
@@ -241,8 +241,8 @@ export default class UpdateForm extends React.Component<IUpdateFormProps, IUpdat
                 isMultiline: true,
                 name: 'Action',
                 fieldName: 'Title',
-                minWidth: 120,
-                maxWidth: 120,
+                minWidth: 250,
+                maxWidth: 250,
                 isResizable: true,
                 isRequired: true,
                 fieldMaxLength: 500,
@@ -285,7 +285,7 @@ export default class UpdateForm extends React.Component<IUpdateFormProps, IUpdat
                 minWidth: 120,
                 isResizable: true,
                 isRequired: true,
-                fieldMaxLength: 2000,
+                fieldMaxLength: 10000,
                 headerClassName: styles.bold,
             },
 
@@ -371,7 +371,7 @@ export default class UpdateForm extends React.Component<IUpdateFormProps, IUpdat
                 minWidth: 300,
                 isResizable: true,
                 isRequired: true,
-                fieldMaxLength: 1000,
+                fieldMaxLength: 10000,
                 isMultiline: true,
                 numRows: 5,
                 headerClassName: styles.bold,
