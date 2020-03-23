@@ -1,5 +1,6 @@
 ﻿using ControlAssuranceAPI.Libs;
 using ControlAssuranceAPI.Models;
+using ControlAssuranceAPI.Sharepoint;
 using Microsoft.AspNet.OData;
 using System;
 using System.Collections.Generic;
@@ -46,7 +47,7 @@ namespace ControlAssuranceAPI.Controllers
 
                 //Utils.WriteToFile(DateTime.Now.ToString() + " download folder : " + downloadFolder, logFilePath);
 
-
+                /*
                 string downloadFolder = "d:\\local\\temp";
                 string saveFilePath = System.IO.Path.Combine(downloadFolder, fileName);
                 using (var client = new WebClient())
@@ -56,6 +57,16 @@ namespace ControlAssuranceAPI.Controllers
                 }
 
                 return "File downloaded " + saveFilePath;
+
+                */
+
+                var spClient = new SharepointLib();
+
+                string numFiles = spClient.DownloadFiles();
+
+                return "Downloaded num files "+ numFiles;
+
+
             }
             catch(Exception ex)
             {
