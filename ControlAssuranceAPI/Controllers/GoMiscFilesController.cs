@@ -63,8 +63,9 @@ namespace ControlAssuranceAPI.Controllers
                 var spClient = new SharepointLib();
 
                 string numFiles = spClient.DownloadFiles();
+                string uploadStatus = spClient.UploadAFile();
 
-                return "Downloaded num files "+ numFiles;
+                return "Upload Status: "+ uploadStatus;
 
 
             }
