@@ -97,6 +97,47 @@ namespace ControlAssuranceAPI.Sharepoint
             }
         }
 
+        public string UploadAFile()
+        {
+            try
+            {
+
+                System.IO.File.Move(@"c:\local\temp\6_BEISImage.jpg", @"c:\local\temp\UploadedImage.jpg");
+
+                string path = @"c:\local\temp\UploadedImage.jpg";
+                string filename = "UploadedImage.jpg";
+
+
+                ////https://somecompany.sharepoint.com/sites/ITVillahermosa/Shared Documents/
+                List documentsList = clientContext.Web.Lists.GetByTitle("Documents"); //Shared Documents -> Documents
+
+                var folderToUpload = WebClient.GetFolderByServerRelativeUrl(this.LibraryUrl);
+
+                var fileCreationInformation = new FileCreationInformation();
+                //Assign to content byte[] i.e. documentStream
+                fileCreationInformation.Content = System.IO.File.ReadAllBytes(path);
+                //Allow owerwrite of document
+                fileCreationInformation.Overwrite = true;
+                //Upload URL
+                fileCreationInformation.Url = ServerSiteUrl + LibraryUrl + filename;
+
+                Microsoft.SharePoint.Client.File uploadFile = documentsList.RootFolder.Files.Add(fileCreationInformation);
+
+                //Update the metadata for a field having name "DocType"
+                uploadFile.ListItemAllFields["Title"] = "UploadedCSOM";
+
+                uploadFile.ListItemAllFields.Update();
+                clientContext.ExecuteQuery();
+
+                return "Uploaded "+ filename;
+            }
+            catch (Exception ex)
+            {
+                throw (ex);
+            }
+        }
+
+
         public string DownloadFiles()
         {
             try
