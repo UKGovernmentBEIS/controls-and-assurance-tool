@@ -39,6 +39,19 @@ namespace ControlAssuranceAPI.Controllers
                 return false.ToString();
         }
 
+        //GET: odata/GoForms?key=12&createPdf=&dummy1
+        [EnableQuery]
+        public string Get(int key, string createPdf, string dummy1)
+        {
+            return db.GoFormRepository.CreatePdf(key).ToString();
+        }
+
+        // GET: /odata/GoForms?periodId=1&goFormReport1=
+        public List<GoFormReport_Result> Get(int periodId, string goFormReport1)
+        {
+            return db.GoFormRepository.GetReport1(periodId);
+        }
+
         // POST: odata/GoForms
         public IHttpActionResult Post(GoForm goForm)
         {

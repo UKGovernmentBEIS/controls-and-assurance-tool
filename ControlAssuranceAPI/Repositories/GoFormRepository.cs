@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Principal;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace ControlAssuranceAPI.Repositories
@@ -106,6 +108,112 @@ namespace ControlAssuranceAPI.Repositories
 
             return false;
             
+        }
+
+        public void ChangePdfStatus(int goFormId, string pdfStatus)
+        {
+            var goForm = db.GoForms.FirstOrDefault(x => x.ID == goFormId);
+            if (goForm != null)
+            {
+                goForm.PdfStatus = pdfStatus;
+                if(pdfStatus == "Cr")
+                {
+                    goForm.PdfDate = DateTime.Now;
+                    
+                    //todo set pdf name
+                    //goForm.PdfName = pdfName;
+                }
+                db.SaveChanges();
+            }
+        }
+
+        public bool CreatePdf(int key)
+        {
+
+            this.ChangePdfStatus(key, "Working... Please Wait");
+            Task.Run(() =>
+            {
+                try
+
+                {
+                    GoFormRepository goFR = new GoFormRepository(base.user);
+                    //Thread.Sleep(5*60*1000);
+                    //Thread.Sleep(20 * 1000);
+
+                    Libs.SharepointLib spLib = new Libs.SharepointLib();
+                    spLib.DownloadFilesAndUpload();
+
+
+                    goFR.ChangePdfStatus(key, "Cr");
+
+                    //should add log
+                }
+                catch(Exception ex)
+                {
+                    //should add log
+                }
+
+
+
+
+            });
+
+
+            return true;
+        }
+
+        public List<GoFormReport_Result> GetReport1(int periodId)
+        {
+            List<GoFormReport_Result> lstReturn = new List<GoFormReport_Result>();
+
+            var qry = from f in db.GoForms
+                      where f.PeriodId == periodId
+                      orderby f.DirectorateGroup.Title
+                      select new
+                      {
+                          f.ID,
+                          f.DirectorateGroup.Title,
+                          f.PdfStatus,
+                          f.PdfName,
+                          f.PdfDate,
+                          f.SummaryCompletionStatus,
+                          f.SpecificAreasCompletionStatus,
+                          f.DGSignOffStatus
+                          
+                      };
+
+            var list = qry.ToList();
+
+            foreach(var goForm in list)
+            {
+                GoFormReport_Result item = new GoFormReport_Result();
+                item.ID = goForm.ID;
+                item.Title = goForm.Title;
+                item.PdfName = goForm.PdfName;
+
+                string pdfStatus = "";
+                if(string.IsNullOrEmpty(goForm.PdfStatus) == false)
+                {
+                    pdfStatus = goForm.PdfStatus;
+                    if(goForm.PdfStatus == "Cr" && goForm.PdfDate != null)
+                    {
+                        pdfStatus = $"Cr {goForm.PdfDate.Value.ToString("dd/MM/yyyy HH:mm")}";
+                    }
+                }
+
+                item.PdfStatus = pdfStatus;
+                item.OverviewStatus = string.IsNullOrEmpty(goForm.SummaryCompletionStatus) == true ? "Not Started" : goForm.SummaryCompletionStatus;
+                item.SpecificAreaStatus = string.IsNullOrEmpty(goForm.SpecificAreasCompletionStatus) == true ? "Not Started" : goForm.SpecificAreasCompletionStatus;
+                item.SignOffStatus = goForm.DGSignOffStatus == "Completed" ? "Signed Off" : "N/A";
+
+                lstReturn.Add(item);
+            }
+
+
+
+            return lstReturn;
+
+
         }
     }
 }

@@ -72,6 +72,9 @@ namespace ControlAssuranceAPI
             //register PolicyView_Result for custom display of policies
             builder.EntitySet<SpecificAreaView_Result>("SpecificAreaViewResult");
 
+            //register GoFormReport_Result for custom display of report1
+            builder.EntitySet<GoFormReport_Result>("GoFormReportResult");
+
             config.MapODataServiceRoute(
                 routeName: "ODataRoute",
                 routePrefix: "odata",

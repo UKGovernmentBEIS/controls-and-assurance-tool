@@ -51,6 +51,7 @@ namespace ControlAssuranceAPI.Models
         public virtual DbSet<Log> Logs { get; set; }
         public virtual DbSet<Period> Periods { get; set; }
         public virtual DbSet<PermissionType> PermissionTypes { get; set; }
+        public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<Team> Teams { get; set; }
         public virtual DbSet<TeamMember> TeamMembers { get; set; }
         public virtual DbSet<User> Users { get; set; }

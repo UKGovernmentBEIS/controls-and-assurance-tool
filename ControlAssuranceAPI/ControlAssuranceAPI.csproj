@@ -266,7 +266,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="HelperMethods.cs" />
-    <Compile Include="Libs\Sharepoint.cs" />
+    <Compile Include="Libs\SharepointLib.cs" />
     <Compile Include="Libs\UKGovNotify.cs" />
     <Compile Include="Libs\Utils.cs" />
     <Compile Include="Models\APILog.cs">
@@ -344,6 +344,7 @@
     <Compile Include="Models\GoForm.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\GoFormReport_Result.cs" />
     <Compile Include="Models\GoMiscFile.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
@@ -367,6 +368,9 @@
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\SpecificAreaView_Result.cs" />
+    <Compile Include="Models\sysdiagram.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Team.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>

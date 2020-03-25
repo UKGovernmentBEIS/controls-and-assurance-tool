@@ -81,6 +81,14 @@
           "manifest": "./src/webparts/goProperties/GoPropertiesWebPart.manifest.json"
         }
       ]
+    },
+    "go-report-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/goReport/GoReportWebPart.js",
+          "manifest": "./src/webparts/goReport/GoReportWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {},
@@ -94,6 +102,7 @@
     "AppHomeWebPartStrings": "lib/webparts/appHome/loc/{locale}.js",
     "GoWelcomeWebPartStrings": "lib/webparts/goWelcome/loc/{locale}.js",
     "GoUpdatesWebPartStrings": "lib/webparts/goUpdates/loc/{locale}.js",
-    "GoPropertiesWebPartStrings": "lib/webparts/goProperties/loc/{locale}.js"
+    "GoPropertiesWebPartStrings": "lib/webparts/goProperties/loc/{locale}.js",
+    "GoReportWebPartStrings": "lib/webparts/goReport/loc/{locale}.js"
   }
 }

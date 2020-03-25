@@ -32,6 +32,9 @@ namespace ControlAssuranceAPI.Models
         public string DGSignOffStatus { get; set; }
         public Nullable<int> DGSignOffUserId { get; set; }
         public Nullable<System.DateTime> DGSignOffDate { get; set; }
+        public string PdfStatus { get; set; }
+        public Nullable<System.DateTime> PdfDate { get; set; }
+        public string PdfName { get; set; }
     
         public virtual DirectorateGroup DirectorateGroup { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

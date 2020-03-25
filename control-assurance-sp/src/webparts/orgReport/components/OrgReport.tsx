@@ -1114,7 +1114,7 @@ export default class OrgReport extends BaseUserContextWebPartComponent<types.IWe
       this.setState({
         LookupData: this.cloneObject(this.state.LookupData, 'Periods', pArr),
         SelectedPeriod: currentPeriodId,
-      }, ()=> { console.log("After set ", this.state.SelectedPeriod); } );
+      }, () => { console.log("After set ", this.state.SelectedPeriod); });
       return pArr;
     }, (err) => { if (this.onError) this.onError(`Error loading Periods lookup data`, err.message); });
   }

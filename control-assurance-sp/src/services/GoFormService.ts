@@ -1,6 +1,6 @@
 import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { EntityService } from './EntityService';
-import { IDataAPI, IGoForm } from '../types';
+import { IDataAPI, IGoForm, IEntity } from '../types';
 
 
 
@@ -18,6 +18,16 @@ export class GoFormService extends EntityService<IGoForm> {
 
     public signOffForm(goFormId: number): Promise<string> {
         return super.readString(`?key=${goFormId}&signOffForm=true`).then((result:string): string => {
+            return result;
+        });
+    }
+
+    public readAllReport1(periodId: number | string): Promise<IEntity[]> {
+        return this.readAll(`?periodId=${periodId}&goFormReport1=`);
+    }
+
+    public createPDF(goFormId: number): Promise<string> {
+        return super.readString(`?key=${goFormId}&createPdf=&dummy1=`).then((result:string): string => {
             return result;
         });
     }
