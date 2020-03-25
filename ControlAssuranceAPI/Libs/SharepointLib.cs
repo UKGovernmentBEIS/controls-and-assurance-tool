@@ -254,7 +254,7 @@ namespace ControlAssuranceAPI.Libs
                 clientContext.ExecuteQuery();
 
                 //delete temp folder which we created earlier
-                System.IO.Directory.Delete(tempLocation);
+                System.IO.Directory.Delete(tempLocation, true);
 
                 return "Uploaded " + filename;
 

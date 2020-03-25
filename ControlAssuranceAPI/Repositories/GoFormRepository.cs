@@ -145,7 +145,7 @@ namespace ControlAssuranceAPI.Repositories
 
 
                     //goFR.ChangePdfStatus(key, "Cr");
-                    goFR.ChangePdfStatus(3, "Cr");
+                    goFR.ChangePdfStatus(key, "Cr");
 
                     //should add log
                 }
