@@ -144,7 +144,8 @@ namespace ControlAssuranceAPI.Repositories
                     spLib.DownloadFilesAndUpload();
 
 
-                    goFR.ChangePdfStatus(key, "Cr");
+                    //goFR.ChangePdfStatus(key, "Cr");
+                    goFR.ChangePdfStatus(3, "Cr");
 
                     //should add log
                 }
