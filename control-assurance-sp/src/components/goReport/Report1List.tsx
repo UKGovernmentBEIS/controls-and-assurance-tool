@@ -8,7 +8,9 @@ import { IUpdatesListColumn, ColumnDisplayTypes } from '../../types/UpdatesListC
 import { CrLoadingOverlay } from '../cr/CrLoadingOverlay';
 import { Selection } from '../cr/FilteredList';
 import { ConfirmDialog } from '../cr/ConfirmDialog';
+import { getUploadFolder_Report } from '../../types/AppGlobals';
 import styles from '../../styles/cr.module.scss';
+
 
 
 export interface IReport1ListProps extends types.IBaseComponentProps {
@@ -57,6 +59,7 @@ export class Report1ListState<T> implements IReport1ListState<T>{
 
 export default class Report1List extends React.Component<IReport1ListProps, IReport1ListState<IEntity>> {
     private _selection: Selection;
+    private UploadFolder_Report:string = "";
     private goFormService: services.GoFormService = new services.GoFormService(this.props.spfxContext, this.props.api);
 
 
@@ -130,6 +133,7 @@ export default class Report1List extends React.Component<IReport1ListProps, IRep
     constructor(props: IReport1ListProps, state: IReport1ListState<IEntity>) {
         super(props);
         this.state = new Report1ListState<IEntity>();
+        this.UploadFolder_Report = getUploadFolder_Report(props.spfxContext);
         
         this._selection = new Selection({
             onSelectionChanged: () => {
@@ -268,10 +272,57 @@ export default class Report1List extends React.Component<IReport1ListProps, IRep
         }
     }
     private handleDeletePdf = (): void => {
-        //this.setState({ ShowForm: true });
+        console.log('in del pdf');
     }
     private handleDownloadPdf = (): void => {
-        //this.setState({ ShowForm: true });
+        console.log('in download pdf');
+        let entity = this.state.Entities.filter((e) => { return e.ID === this.state.SelectedEntity; });
+        if(entity[0]){
+            const pdfStatus:string = entity[0]["PdfStatus"];
+            if(pdfStatus.search("Cr") === 0){
+                //status is Cr
+                const pdfName:string = entity[0]["PdfName"];
+                //download pdf
+
+                const f = sp.web.getFolderByServerRelativeUrl(this.UploadFolder_Report).files.getByName(pdfName);
+    
+                f.get().then(t => {
+                    //console.log(t);
+                    const serverRelativeUrl = t["ServerRelativeUrl"];
+                    //console.log(serverRelativeUrl);
+              
+                    const a = document.createElement('a');
+                    //document.body.appendChild(a);
+                    a.href = serverRelativeUrl;
+                    a.target = "_blank";
+                    a.download = pdfName;
+                    
+                    document.body.appendChild(a);
+                    //console.log(a);
+                    //a.click();
+                    //document.body.removeChild(a);
+                    
+                    
+                    setTimeout(() => {
+                      window.URL.revokeObjectURL(serverRelativeUrl);
+                      window.open(serverRelativeUrl, '_blank');
+                      document.body.removeChild(a);
+                    }, 1);
+                    
+              
+                  });
+
+
+
+
+
+            }
+            else{
+                console.log("Output not created");
+            }
+        
+                
+        }
     }
 
 

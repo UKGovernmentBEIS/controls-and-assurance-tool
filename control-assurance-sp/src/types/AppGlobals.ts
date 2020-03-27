@@ -28,6 +28,14 @@ export function getUploadFolder_Evidence(context: WebPartContext) : string {
     return path;
 }
 
+export function getUploadFolder_Report(context: WebPartContext) : string {
+
+    const serverRelativeUrl = context.pageContext.web.serverRelativeUrl;
+    const path:string = `${serverRelativeUrl}/Shared%20Documents/Report`;
+
+    return path;
+}
+
 
 export enum ElementStatuses {
     ToBeCompleted = "Not Started",

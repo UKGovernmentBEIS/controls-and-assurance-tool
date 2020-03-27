@@ -146,7 +146,7 @@ namespace ControlAssuranceAPI.Repositories
         }
 
 
-        private string getRatingLabel(string ratingNum)
+        public string getRatingLabel(string ratingNum)
         {
             if (string.IsNullOrEmpty(ratingNum) == false)
             {

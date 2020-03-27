@@ -113,7 +113,7 @@ export class FilteredReport1List extends React.Component<IFilteredReport1ListPro
                         <CommandBarButton
                             iconProps={{ iconName: 'View' }}
                             text="Download PDF"
-                            onClick={props.onDeletePdf}
+                            onClick={props.onDownloadPdf}
                         />}
 
                     <span style={controlStyles2}>

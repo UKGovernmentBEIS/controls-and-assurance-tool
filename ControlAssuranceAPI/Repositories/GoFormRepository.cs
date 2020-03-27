@@ -110,7 +110,7 @@ namespace ControlAssuranceAPI.Repositories
             
         }
 
-        public void ChangePdfStatus(int goFormId, string pdfStatus)
+        public void ChangePdfStatus(int goFormId, string pdfStatus, string outputPdfName)
         {
             var goForm = db.GoForms.FirstOrDefault(x => x.ID == goFormId);
             if (goForm != null)
@@ -119,9 +119,7 @@ namespace ControlAssuranceAPI.Repositories
                 if(pdfStatus == "Cr")
                 {
                     goForm.PdfDate = DateTime.Now;
-                    
-                    //todo set pdf name
-                    //goForm.PdfName = pdfName;
+                    goForm.PdfName = outputPdfName;
                 }
                 db.SaveChanges();
             }
@@ -130,28 +128,42 @@ namespace ControlAssuranceAPI.Repositories
         public bool CreatePdf(int key)
         {
 
-            this.ChangePdfStatus(key, "Working... Please Wait");
+            this.ChangePdfStatus(key, "Working... Please Wait", null);
             Task.Run(() =>
             {
                 try
 
                 {
+                    string tempFolder = @"c:\local\temp\";
+                    string guid = System.Guid.NewGuid().ToString();
+                    string tempLocation = System.IO.Path.Combine(tempFolder, guid);
+                    System.IO.Directory.CreateDirectory(tempLocation);
+
+                    
+
+
                     GoFormRepository goFR = new GoFormRepository(base.user);
-                    //Thread.Sleep(5*60*1000);
-                    //Thread.Sleep(20 * 1000);
+                    GoDefElementRepository goDER = new GoDefElementRepository(base.user);
+                    
+                    var goForm = goFR.GoForms.FirstOrDefault(x => x.ID == key);
+                    string outputPdfName = "GovernanceOutput_" + goForm.DirectorateGroup.Title.Trim().Replace(" ", "_").Replace("&", "and") + "_" + goForm.ID + ".pdf";
 
-                    Libs.SharepointLib spLib = new Libs.SharepointLib();
-                    spLib.DownloadFilesAndUpload();
 
+                    Libs.PdfLib pdfLib = new Libs.PdfLib();
+                    pdfLib.CreatetPdf(goForm, goDER, tempLocation, outputPdfName);
 
-                    //goFR.ChangePdfStatus(key, "Cr");
-                    goFR.ChangePdfStatus(key, "Cr");
+                    Thread.Sleep(500);
+                    //delete temp folder which we created earlier
+                    System.IO.Directory.Delete(tempLocation, true);
+
+                    goFR.ChangePdfStatus(key, "Cr", outputPdfName);
 
                     //should add log
                 }
                 catch(Exception ex)
                 {
                     //should add log
+                    string msg = ex.Message;
                 }
 
 
