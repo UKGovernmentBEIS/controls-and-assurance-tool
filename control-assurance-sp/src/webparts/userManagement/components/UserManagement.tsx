@@ -65,7 +65,7 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
       {
         key: '1',
         columnType: ColumnType.TextBox,
-        name: 'Username',
+        name: 'Username(Email)',
         fieldName: 'Username',
         minWidth: 300,
         isResizable: true,
@@ -105,7 +105,7 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
       {
         key: '1',
         columnType: ColumnType.TagPickerForUser,
-        name: 'Username',
+        name: 'Username(Email)',
         fieldName: 'UserTitle',
         idFieldName: 'UserId',
         isParent: true,

@@ -109,6 +109,26 @@ namespace ControlAssuranceAPI.Repositories
             return false;
             
         }
+        public bool UnSignForm(int key)
+        {
+            var goForm = db.GoForms.FirstOrDefault(x => x.ID == key);
+            if (goForm != null)
+            {
+                //int userId = ApiUser.ID;
+                goForm.DGSignOffStatus = "WaitingSignOff";
+                goForm.DGSignOffUserId = null;
+                goForm.DGSignOffDate = null;
+
+                //goForm.PdfStatus = null;
+                //goForm.PdfName = null;
+                //goForm.PdfDate = null;
+
+                db.SaveChanges();
+                return true;
+            }
+
+            return false;
+        }
 
         public void ChangePdfStatus(int goFormId, string pdfStatus, string outputPdfName)
         {
@@ -125,12 +145,13 @@ namespace ControlAssuranceAPI.Repositories
             }
         }
 
-        public bool CreatePdf(int key)
+        public bool CreatePdf(int key, string spSiteUrl)
         {
 
             this.ChangePdfStatus(key, "Working... Please Wait", null);
             Task.Run(() =>
             {
+                GoFormRepository goFR = new GoFormRepository(base.user);
                 try
 
                 {
@@ -142,7 +163,7 @@ namespace ControlAssuranceAPI.Repositories
                     
 
 
-                    GoFormRepository goFR = new GoFormRepository(base.user);
+                    
                     GoDefElementRepository goDER = new GoDefElementRepository(base.user);
                     
                     var goForm = goFR.GoForms.FirstOrDefault(x => x.ID == key);
@@ -150,7 +171,7 @@ namespace ControlAssuranceAPI.Repositories
 
 
                     Libs.PdfLib pdfLib = new Libs.PdfLib();
-                    pdfLib.CreatetPdf(goForm, goDER, tempLocation, outputPdfName);
+                    pdfLib.CreatetPdf(goForm, goDER, tempLocation, outputPdfName, spSiteUrl);
 
                     Thread.Sleep(500);
                     //delete temp folder which we created earlier
@@ -163,7 +184,9 @@ namespace ControlAssuranceAPI.Repositories
                 catch(Exception ex)
                 {
                     //should add log
-                    string msg = ex.Message;
+                    string msg = "Err: " + ex.Message;
+                    goFR.ChangePdfStatus(key, msg, null);
+
                 }
 
 

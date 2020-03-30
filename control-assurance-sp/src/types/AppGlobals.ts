@@ -11,6 +11,7 @@ export function getUploadFolder_MiscFiles(context: WebPartContext) : string {
     //const webTitle = context.pageContext.web.title;
     //console.log("props.spfxContext.pageContext.web.title ", `'${webTitle}'`);
     //const path:string = `/sites/${webTitle}/Shared%20Documents/MiscFiles`;
+    //console.log("serverRelativeUrl", context.pageContext.web.absoluteUrl);
     const serverRelativeUrl = context.pageContext.web.serverRelativeUrl;
     const path:string = `${serverRelativeUrl}/Shared%20Documents/MiscFiles`;
     //console.log("path", path);

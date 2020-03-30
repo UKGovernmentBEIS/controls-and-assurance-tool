@@ -143,9 +143,14 @@ export default class Report1List extends React.Component<IReport1ListProps, IRep
                     console.log(sel);
                     const key = Number(sel.key);
                     const title: string = sel["Title"];
+                    const pdfStatus: string = sel["PdfStatus"];
+
+                    let pdfCreated:boolean = false;
+                    if(pdfStatus.search("Cr") === 0)
+                        pdfCreated = true;
                     
 
-                    this.setState({ SelectedEntity: key, SelectedEntityTitle: title, EnableCreatePdf: true, EnableDeletePdf:true, EnableDownloadPdf:true });
+                    this.setState({ SelectedEntity: key, SelectedEntityTitle: title, EnableCreatePdf: true, EnableDeletePdf:pdfCreated, EnableDownloadPdf:pdfCreated });
                 }
                 else {
                     this.setState({ SelectedEntity: null, SelectedEntityTitle: null, EnableCreatePdf: false, EnableDeletePdf:false, EnableDownloadPdf:false });
@@ -258,7 +263,10 @@ export default class Report1List extends React.Component<IReport1ListProps, IRep
         if (this.props.onError) this.props.onError(null);
         if (this.state.SelectedEntity) {
             const goFormId:number = this.state.SelectedEntity;
-            this.goFormService.createPDF(goFormId).then((res: string): void => {
+            const spSiteUrl: string = this.props.spfxContext.pageContext.web.absoluteUrl;
+            console.log('spSiteUrl', spSiteUrl);
+
+            this.goFormService.createPDF(goFormId, spSiteUrl).then((res: string): void => {
     
                 console.log('Pdf creation initialized');
                 this.loadData();

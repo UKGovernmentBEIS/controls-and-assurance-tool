@@ -17,13 +17,15 @@ export interface ISection3UpdateProps extends IEntityFormProps {
     //signoffText?: string;
     onSignOff: ()=> void;
     canSignOff: boolean;
+    canUnSign: boolean;
     //canSignOffDirSection: boolean;
 
 }
 
 export class Section3UpdateState {
     public ShowForm = false;
-    public ShowConfirmDialog = false;
+    public ShowSignOffConfirmDialog = false;
+    public ShowUnSignConfirmDialog = false;
     public DGSignOffName: string = null;
     //public DirSignOffName: string = null;
 }
@@ -44,7 +46,9 @@ export default class Section3Update extends React.Component<ISection3UpdateProps
 
         const { ShowForm } = this.state;
 
+        console.log("can unsign", this.props.canUnSign);
         return (
+            
             <div className={styles.cr}>
                 <UpdateHeader2 title={Section3Title} isOpen={ShowForm}
                     leadUser=""
@@ -55,11 +59,15 @@ export default class Section3Update extends React.Component<ISection3UpdateProps
                 {ShowForm && <div className={`ms-scaleDownIn100`}>
                     <div>
                         {this.renderSignOffText(DGSignOffText)}
-                        <ConfirmDialog hidden={!this.state.ShowConfirmDialog} title="Sign-Off Confirmation" content="Are you sure you want to sign-off this form?" confirmButtonText="Sign-Off" handleConfirm={this.saveSignOff} handleCancel={() => this.setState({ ShowConfirmDialog: false })} />
+                        <ConfirmDialog hidden={!this.state.ShowSignOffConfirmDialog} title="Sign-Off Confirmation" content="Are you sure you want to sign-off this form?" confirmButtonText="Sign-Off" handleConfirm={this.saveSignOff} handleCancel={() => this.setState({ ShowSignOffConfirmDialog: false })} />
+                        <ConfirmDialog hidden={!this.state.ShowUnSignConfirmDialog} title="Un-Sign Confirmation" content="Are you sure you want to un-sign this form?" confirmButtonText="Un-Sign" handleConfirm={this.saveUnSign} handleCancel={() => this.setState({ ShowUnSignConfirmDialog: false })} />
                         <FormButtons
                             primaryText="Sign off as Director General"
-                            onPrimaryClick={ ()=> { this.setState({ ShowConfirmDialog: true }); } }
+                            onPrimaryClick={ ()=> { this.setState({ ShowSignOffConfirmDialog: true }); } }
                             primaryDisabled={!this.enableSignOff()}
+
+                            primary2Text="Un-Sign"
+                            onPrimary2Click={ (this.props.canUnSign === false || this.props.goForm.DGSignOffStatus !== "Completed") ? null : ()=> { this.setState({ ShowUnSignConfirmDialog: true }); } }
                         />
                     </div>
 
@@ -109,7 +117,7 @@ export default class Section3Update extends React.Component<ISection3UpdateProps
 
     private saveSignOff = (): void => {
 
-        this.setState({ ShowConfirmDialog: false });
+        this.setState({ ShowSignOffConfirmDialog: false });
 
         const goFormId = this.props.goForm.ID;
 
@@ -121,6 +129,26 @@ export default class Section3Update extends React.Component<ISection3UpdateProps
         }, (err) => {
             if (this.props.onError)
                 this.props.onError(`Error saving sign-off`, err.message);
+
+        });
+
+
+    }
+
+    private saveUnSign = (): void => {
+
+        this.setState({ ShowUnSignConfirmDialog: false });
+
+        const goFormId = this.props.goForm.ID;
+
+        this.goformService.unSignForm(goFormId).then((res: string): void => {
+    
+            console.log('un-signed');
+            this.props.onSignOff();
+
+        }, (err) => {
+            if (this.props.onError)
+                this.props.onError(`Error saving unsign`, err.message);
 
         });
 

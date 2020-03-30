@@ -17,7 +17,12 @@ export class GoFormService extends EntityService<IGoForm> {
     }
 
     public signOffForm(goFormId: number): Promise<string> {
-        return super.readString(`?key=${goFormId}&signOffForm=true`).then((result:string): string => {
+        return super.readString(`?key=${goFormId}&singOffOrUnSignRequest=true&signOffAction=SignOff`).then((result:string): string => {
+            return result;
+        });
+    }
+    public unSignForm(goFormId: number): Promise<string> {
+        return super.readString(`?key=${goFormId}&singOffOrUnSignRequest=true&signOffAction=UnSign`).then((result:string): string => {
             return result;
         });
     }
@@ -26,8 +31,9 @@ export class GoFormService extends EntityService<IGoForm> {
         return this.readAll(`?periodId=${periodId}&goFormReport1=`);
     }
 
-    public createPDF(goFormId: number): Promise<string> {
-        return super.readString(`?key=${goFormId}&createPdf=&dummy1=`).then((result:string): string => {
+    public createPDF(goFormId: number, spSiteUrl): Promise<string> {
+        
+        return super.readString(`?key=${goFormId}&createPdf=&spSiteUrl=${spSiteUrl}`).then((result:string): string => {
             return result;
         });
     }

@@ -14,15 +14,21 @@ namespace ControlAssuranceAPI.Libs
         public ClientContext clientContext { get; set; }
         //private string LibraryUrl = "Shared Documents/MiscFiles/";
 
-        private string ServerSiteUrl = "https://beisdigitalsvc.sharepoint.com/sites/ControlsAndAssuranceToolTest";        
+        private string ServerSiteUrl = ""; //"https://beisdigitalsvc.sharepoint.com/sites/ControlsAndAssuranceToolDev";
+
         private string UserName = "tas.tasniem@beisdigitalsvc.onmicrosoft.com";
         private string Password = "Townshend39";
 
 
+
+
+
+
         private Web WebClient { get; set; }
 
-        public SharepointLib()
+        public SharepointLib(string spSiteUrl)
         {
+            this.ServerSiteUrl = spSiteUrl;
             this.Connect();
         }
 

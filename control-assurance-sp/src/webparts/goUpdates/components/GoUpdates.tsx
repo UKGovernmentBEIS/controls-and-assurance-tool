@@ -166,6 +166,7 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
                 goDefForm={this.state.LookupData.GoDefForm}
                 goForm={this.state.GoForm}
                 canSignOff={this.canSignOff()}
+                canUnSign={this.canUnSign()}
                 onSignOff={this.readOrCreateGoFormInDb} //to refresh goForm in state
                 {...this.props} />
               <Section4Update {...this.props} />
@@ -320,6 +321,31 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
     //   if(dgm.CanSignOff === true)
     //     return true; 
     // }
+
+    return false;
+  }
+
+  private canUnSign(): boolean{
+
+    //Archived Period check - dont allow if period is archived
+    if(this.state.IsArchivedPeriod === true)
+      return false;
+
+    //DirectorateGroups check
+    if(this.state.DirectorateGroups.length > 0){
+      return true;
+    }
+     
+    //DirectorateGroup member check
+    let dgms = this.state.DirectorateGroupMembers;
+    for(let i=0; i<dgms.length; i++){
+      //let dgm: types.IDirectorateGroupMember = dgms[i];
+      //if(dgm.CanSignOff === true)
+        return true; 
+    }
+
+    if(this.isSuperUser() === true)
+      return true;
 
     return false;
   }

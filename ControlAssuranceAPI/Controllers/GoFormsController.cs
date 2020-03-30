@@ -29,21 +29,32 @@ namespace ControlAssuranceAPI.Controllers
             return SingleResult.Create(db.GoFormRepository.GoForms.Where(x => x.ID == key));
         }
 
-        //GET: odata/GoForms?key=12&signOffForm=
+        //GET: odata/GoForms?key=12&singOffOrUnSignRequest=true&signOffAction=[action]
         [EnableQuery]
-        public string Get(int key, bool signOffForm)
+        public string Get(int key, bool singOffOrUnSignRequest, string signOffAction)
         {
-            if (signOffForm == true)
-                return db.GoFormRepository.SignOffForm(key).ToString();
-            else
-                return false.ToString();
+            if(singOffOrUnSignRequest == true)
+            {
+                if (signOffAction == "SignOff")
+                {
+                    return db.GoFormRepository.SignOffForm(key).ToString();
+                }
+                else if (signOffAction == "UnSign")
+                {
+                    //unsing form
+                    return db.GoFormRepository.UnSignForm(key).ToString();
+                }
+                else
+                    return false.ToString();
+            }
+            return false.ToString();
         }
 
-        //GET: odata/GoForms?key=12&createPdf=&dummy1
+        //GET: odata/GoForms?key=12&createPdf=&spSiteUrl=[url]
         [EnableQuery]
-        public string Get(int key, string createPdf, string dummy1)
+        public string Get(int key, string createPdf, string spSiteUrl)
         {
-            return db.GoFormRepository.CreatePdf(key).ToString();
+            return db.GoFormRepository.CreatePdf(key, spSiteUrl).ToString();
         }
 
         // GET: /odata/GoForms?periodId=1&goFormReport1=

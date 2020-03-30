@@ -94,11 +94,24 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
                         onPrimaryClick={() => this.saveEvidence()}
                         onSecondaryClick={this.props.onCancelled}
                     />
+                    {this.renderInfoText()}
                 </div>
             </Panel>
         );
     }
 
+    public renderInfoText(){
+        if(this.state.FormData.ID > 0 && this.state.EditRequest === true && this.state.FormData.IsLink !== true ){
+            const fileName = this.state.FormData.Title;
+            return(
+                <div style={{marginTop: '20px'}}>
+                    This evidence is linked to file "{fileName}". <br/>
+                    To change the file, please delete this evidence record and add again. 
+                </div>
+            );
+        }
+        return null;
+    }
     public renderFormFields() {
         return (
             <React.Fragment>
@@ -400,10 +413,13 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
             }
             else {
                 const x: string = this.state.FormData.Title.toLowerCase();
-                if (x.search("http://") === -1) {
-                    errMsg.Title = "Link should start with http://";
+                if (x.search("http") === 0) {
+                    //ok
+                }
+                else{
+                    errMsg.Title = "Link should start with http:// or https://";
                     returnVal = false;
-                    console.log('Link should start with http://');
+                    console.log('Link should start with http:// or https://');
                 }
             }
 

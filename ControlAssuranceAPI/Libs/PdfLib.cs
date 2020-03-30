@@ -16,9 +16,9 @@ namespace ControlAssuranceAPI.Libs
 
         }
 
-        public void CreatetPdf(Models.GoForm goForm, Repositories.GoDefElementRepository goDER, string tempLocation, string outputPdfName)
+        public void CreatetPdf(Models.GoForm goForm, Repositories.GoDefElementRepository goDER, string tempLocation, string outputPdfName, string spSiteUrl)
         {
-            SharepointLib sharepointLib = new SharepointLib();
+            SharepointLib sharepointLib = new SharepointLib(spSiteUrl);
             List<string> finalEvList = new List<string>();
             string firstPdfPath = System.IO.Path.Combine(tempLocation, "first.pdf");
             //add first in list
@@ -139,7 +139,7 @@ namespace ControlAssuranceAPI.Libs
 
                 
                 int goElementEvidenceIndex = 0;
-                foreach (var goElementEvidence in goElement.GoElementEvidences)
+                foreach (var goElementEvidence in goElement.GoElementEvidences.Where(x=> x.Title != null))
                 {
                     string evidenceSrNo = $"{goElementIndex + 1}-{goElementEvidenceIndex + 1}";
                     paragraphGoElement1.AddFormattedText($"Evidence {evidenceSrNo}", "subHeading2");
