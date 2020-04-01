@@ -57,9 +57,9 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
     return (
 
       <Pivot onLinkClick={this.clearErrors}>
-        <PivotItem headerText="Periods">
+        {/* <PivotItem headerText="Periods">
           {this.renderCustomPeriodsList()}
-        </PivotItem>
+        </PivotItem> */}
         <PivotItem headerText="Define Form">
           {this.renderDefForm()}
         </PivotItem>
@@ -72,9 +72,9 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         <PivotItem headerText="Define Help">
           {this.renderDefineHelp()}
         </PivotItem>
-        <PivotItem headerText="Logs">
+        {/* <PivotItem headerText="Logs">
           {this.renderLogsList()}
-        </PivotItem>
+        </PivotItem> */}
       </Pivot>
     );
   }

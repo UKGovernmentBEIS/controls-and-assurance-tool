@@ -14,6 +14,7 @@ import { IGoElement, GoElement, IGoDefElement } from '../../types';
 import { IGenColumn, ColumnType, ColumnDisplayType } from '../../types/GenColumn';
 import EntityList from '../entity/EntityList';
 import EvidenceList from './section2/EvidenceList';
+import TestList2 from '../entity/TestList2';
 import { ElementStatuses } from '../../types/AppGlobals';
 
 export interface IUpdateFormProps extends types.IBaseComponentProps {
@@ -94,6 +95,7 @@ export default class UpdateForm extends React.Component<IUpdateFormProps, IUpdat
                         {this.renderEvidencesList()}
                         {this.renderActionsList()}
                         {this.renderFeedbacksList()}
+                    
                         {this.renderMarkAsReadyCheckbox()}
                         {this.renderFormButtons()}
                         {this.renderChangeLogs()}
@@ -205,8 +207,10 @@ export default class UpdateForm extends React.Component<IUpdateFormProps, IUpdat
                 <div style={{ marginTop: '30px', fontWeight: "bold", marginBottom: '10px' }}>List evidence documents</div>
                 <div style={{ minHeight: '120px', border: '1px solid rgb(166,166,166)' }}>
                     <EvidenceList
+                        entityReadAllWithArg1={this.state.FormData.ID}
                         isViewOnlyGoForm={this.props.isViewOnly}
-                        goElementId={this.state.FormData.ID}
+                        //goElementId={this.state.FormData.ID}
+                        //goElementId={this.state.GoElementId}
                         filterText={this.state.Evidence_ListFilterText}
                         onChangeFilterText={this.handleEvidence_ChangeFilterText}
                         {...this.props}
@@ -219,6 +223,10 @@ export default class UpdateForm extends React.Component<IUpdateFormProps, IUpdat
         );
 
     }
+
+
+
+
 
     private renderActionsList() {
         const listColumns: IGenColumn[] = [

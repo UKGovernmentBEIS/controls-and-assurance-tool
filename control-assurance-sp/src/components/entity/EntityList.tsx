@@ -187,6 +187,7 @@ export default class EntityList extends BaseList<IEntityListProps, IEntityListSt
     }
 
     public componentDidUpdate(prevProps: IEntityListProps): void {
+        console.log("in component DidUpdate GEN", this.props.entityReadAllWithArg1);
         if (prevProps.entityReadAllWithArg1 !== this.props.entityReadAllWithArg1) {
             this.loadEntities();
         }

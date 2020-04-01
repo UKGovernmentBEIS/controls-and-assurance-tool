@@ -17,7 +17,8 @@ import { getUploadFolder_Evidence } from '../../../types/AppGlobals';
 export interface IEvidenceListProps extends types.IBaseComponentProps {
 
     //onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
-    goElementId: number;
+    //goElementId: any;
+    entityReadAllWithArg1: any;
     filterText?: string;
     onChangeFilterText: (value: string) => void;
 
@@ -232,7 +233,9 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
 
             <EvidenceSaveForm
                 showForm={this.state.ShowForm}
-                goElementId={this.props.goElementId}
+                //goElementId={this.props.goElementId}
+                goElementId={this.props.entityReadAllWithArg1}
+                
                 goElementEvidenceId={this.state.SelectedEntity}
                 onSaved={this.fileSaved}
                 onCancelled={this.closePanel}
@@ -408,7 +411,7 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
 
     private loadEvidences = (): void => {
         this.setState({ Loading: true });
-        const read: Promise<IEntity[]> = this.goElementEvidenceService.readAllByElement(this.props.goElementId);
+        const read: Promise<IEntity[]> = this.goElementEvidenceService.readAllByElement(this.props.entityReadAllWithArg1);
         read.then((entities: any): void => {
             console.log(entities);
             this.setState({
@@ -428,7 +431,11 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
 
     }
     public componentDidUpdate(prevProps: IEvidenceListProps): void {
-
+        console.log("in component DidUpdate", this.props.entityReadAllWithArg1);
+        if(prevProps.entityReadAllWithArg1 !== this.props.entityReadAllWithArg1){
+            console.log("in component DidUpdate load");
+            this.loadEvidences();
+        }
     }
 
 

@@ -12,4 +12,10 @@ export class GoDefFormService extends EntityService<IGoDefForm> {
         super(spfxContext, api, `/GoDefForms`);
     }
 
+    public welcomeAccess(): Promise<string> {
+        return super.readString(`?welcomeAccess=`).then((result:string): string => {
+            return result;
+        });
+    }
+
 }

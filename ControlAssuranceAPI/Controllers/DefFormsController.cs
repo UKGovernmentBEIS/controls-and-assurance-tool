@@ -34,7 +34,7 @@ namespace ControlAssuranceAPI.Controllers
         public SingleResult<DefForm> Get([FromODataUri] int key)
         {
             //db.LogRepository.Add(new Log { Title = "Launched welcome page", Module = "Security" });            
-            db.LogRepository.Write(title: "Launched welcome page", category: Repositories.LogRepository.LogCategory.Security);
+            db.LogRepository.Write(title: "Launched control assurance welcome page", category: Repositories.LogRepository.LogCategory.Security);
             return SingleResult.Create(db.DefFormRepository.DefForms.Where(defForm => defForm.ID == key));
         }
 

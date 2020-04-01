@@ -31,6 +31,14 @@ namespace ControlAssuranceAPI.Controllers
             return SingleResult.Create(db.GoDefFormRepository.GoDefForms.Where(defForm => defForm.ID == key));
         }
 
+        //GET: odata/GoDefForms?welcomeAccess=
+        [EnableQuery]
+        public string Get(string welcomeAccess)
+        {
+            db.LogRepository.Write(title: "Launched governance welcome page", category: Repositories.LogRepository.LogCategory.Security);
+            return "";
+        }
+
         // POST: odata/GoDefForms
         public IHttpActionResult Post(GoDefForm goDefForm)
         {
