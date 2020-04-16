@@ -20,7 +20,9 @@ namespace ControlAssuranceAPI.Models
         public string Timescale { get; set; }
         public string Owner { get; set; }
         public string Progress { get; set; }
+        public Nullable<int> EntityPriorityId { get; set; }
     
+        public virtual EntityPriority EntityPriority { get; set; }
         public virtual GoElement GoElement { get; set; }
     }
 }

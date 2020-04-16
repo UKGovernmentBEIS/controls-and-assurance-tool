@@ -84,7 +84,7 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
         },
         {
             key: 'Details',
-            name: 'Details',
+            name: 'Title',
             fieldName: 'Details',
             minWidth: 200,
             maxWidth: 300,
@@ -93,37 +93,37 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
             headerClassName: styles.bold,
 
         },
-        {
-            key: 'Controls',
-            name: 'Controls',
-            fieldName: 'Controls',
-            minWidth: 200,
-            maxWidth: 300,
-            isResizable: true,
-            isMultiline: true,
-            headerClassName: styles.bold,
+        // {
+        //     key: 'Controls',
+        //     name: 'Controls',
+        //     fieldName: 'Controls',
+        //     minWidth: 200,
+        //     maxWidth: 300,
+        //     isResizable: true,
+        //     isMultiline: true,
+        //     headerClassName: styles.bold,
 
-        },
-        {
-            key: 'Team',
-            name: 'Team/Info Holder',
-            fieldName: 'Team',
-            minWidth: 200,
-            maxWidth: 300,
-            isResizable: true,
-            isMultiline: true,
-            headerClassName: styles.bold,
+        // },
+        // {
+        //     key: 'Team',
+        //     name: 'Team/Info Holder',
+        //     fieldName: 'Team',
+        //     minWidth: 200,
+        //     maxWidth: 300,
+        //     isResizable: true,
+        //     isMultiline: true,
+        //     headerClassName: styles.bold,
 
-        },
-        {
-            key: 'InfoHolder',
-            name: 'InfoHolder',
-            fieldName: 'InfoHolder',
-            minWidth: 1,
-            isResizable: true,
-            columnDisplayType: ColumnDisplayTypes.Hidden,
+        // },
+        // {
+        //     key: 'InfoHolder',
+        //     name: 'InfoHolder',
+        //     fieldName: 'InfoHolder',
+        //     minWidth: 1,
+        //     isResizable: true,
+        //     columnDisplayType: ColumnDisplayTypes.Hidden,
 
-        },
+        // },
         {
             key: 'AdditionalNotes',
             name: 'Additional Notes',
@@ -135,15 +135,15 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
             headerClassName: styles.bold,
 
         },
-        // {
-        //     key: 'UploadedByUser',
-        //     name: 'Uploaded By',
-        //     fieldName: 'UploadedByUser',
-        //     minWidth: 100,
-        //     maxWidth: 200,
-        //     isResizable: true,
-        //     headerClassName: styles.bold,
-        // },
+        {
+            key: 'UploadedByUser',
+            name: 'Uploaded By',
+            fieldName: 'UploadedByUser',
+            minWidth: 100,
+            maxWidth: 200,
+            isResizable: true,
+            headerClassName: styles.bold,
+        },
         // {
         //     key: 'DateUploaded',
         //     name: 'Upload Date',
@@ -256,10 +256,20 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
         listColumns.map((c) => {
             let fieldContent: string = String(e[c.fieldName]);
 
-            item = {
-                [c.fieldName]: fieldContent,
-                ...item
-            };
+            if (c.fieldName === "UploadedByUser") {
+                item = {
+                    [c.fieldName]: e["User"]["Title"],
+                    ...item
+                };
+            }
+            else{
+                item = {
+                    [c.fieldName]: fieldContent,
+                    ...item
+                };
+            }
+
+
 
         });
         return item;

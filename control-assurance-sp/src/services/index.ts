@@ -41,6 +41,7 @@ export { EntityStatusTypeService } from './EntityStatusTypeService';
 export { UserHelpService } from './UserHelpService';
 export { LogService } from './LogService';
 export { AuditFeedbackService } from './AuditFeedbackService';
+export { EntityPriorityService } from './EntityPriorityService';
 
 export { DGAreaStatService } from './DGAreaStatService';
 export { DirectorateStatService } from './DirectorateStatService';

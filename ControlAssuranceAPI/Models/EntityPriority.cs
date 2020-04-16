@@ -12,19 +12,18 @@ namespace ControlAssuranceAPI.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class DirectorateGroupMember
+    public partial class EntityPriority
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public EntityPriority()
+        {
+            this.GoElementActions = new HashSet<GoElementAction>();
+        }
+    
         public int ID { get; set; }
         public string Title { get; set; }
-        public int UserID { get; set; }
-        public int DirectorateGroupID { get; set; }
-        public Nullable<System.DateTime> SysStartTime { get; set; }
-        public Nullable<System.DateTime> SysEndTime { get; set; }
-        public Nullable<int> ModifiedByUserID { get; set; }
-        public bool IsAdmin { get; set; }
-        public Nullable<bool> ViewOnly { get; set; }
     
-        public virtual DirectorateGroup DirectorateGroup { get; set; }
-        public virtual User User { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<GoElementAction> GoElementActions { get; set; }
     }
 }

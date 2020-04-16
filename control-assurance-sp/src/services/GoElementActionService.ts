@@ -13,7 +13,8 @@ export class GoElementActionService extends EntityService<IEntity> {
     }
 
     public readAllWithArgs(goElementId: number): Promise<IEntity[]> {
-        return this.readAll(`?$filter=GoElementId eq ${goElementId}`);
+        //return this.readAll(`?$filter=GoElementId eq ${goElementId}`);
+        return this.readAll(`?$orderby=EntityPriorityId&$expand=EntityPriority&$filter=GoElementId eq ${goElementId}`);
     }
 
 

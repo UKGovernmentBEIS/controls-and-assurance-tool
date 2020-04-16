@@ -43,6 +43,7 @@ namespace ControlAssuranceAPI.Models
         private GoElementActionRepository goElementActionRepository;
         private GoAssignmentRepository goAssignmentRepository;
         private GoElementEvidenceRepository goElementEvidenceRepository;
+        private EntityPriorityRepository entityPriorityRepository;
 
         private SPDGAreaStatRepository spDGAreaStatRepository;
         private SPDirectorateStatRepository spDirectorateStatRepository;
@@ -393,6 +394,14 @@ namespace ControlAssuranceAPI.Models
             get
             {
                 return goElementEvidenceRepository = goElementEvidenceRepository ?? new GoElementEvidenceRepository(user, context);
+            }
+        }
+
+        public EntityPriorityRepository EntityPriorityRepository
+        {
+            get
+            {
+                return entityPriorityRepository = entityPriorityRepository ?? new EntityPriorityRepository(user, context);
             }
         }
 

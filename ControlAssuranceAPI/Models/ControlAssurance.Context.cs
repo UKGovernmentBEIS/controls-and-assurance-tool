@@ -37,6 +37,7 @@ namespace ControlAssuranceAPI.Models
         public virtual DbSet<DirectorateGroupMember> DirectorateGroupMembers { get; set; }
         public virtual DbSet<DirectorateMember> DirectorateMembers { get; set; }
         public virtual DbSet<Element> Elements { get; set; }
+        public virtual DbSet<EntityPriority> EntityPriorities { get; set; }
         public virtual DbSet<EntityStatusType> EntityStatusTypes { get; set; }
         public virtual DbSet<Form> Forms { get; set; }
         public virtual DbSet<GoAssignment> GoAssignments { get; set; }

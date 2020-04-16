@@ -9,10 +9,13 @@
 }
 .titleLnk{
     cursor: pointer;
+    color: blue;
+    text-decoration: underline;
 }
 .titleLnk:hover {
     color: blue;
     cursor: pointer;
+    text-decoration: none;
 }
 .noHScroll{
     overflow-x: hidden;

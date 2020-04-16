@@ -256,6 +256,21 @@ export default class UpdateForm extends React.Component<IUpdateFormProps, IUpdat
                 fieldMaxLength: 500,
                 headerClassName: styles.bold,
             },
+            {
+                key: 'EntityPriorityTitle',
+                columnType: ColumnType.DropDown,
+                name: 'Priority',
+                fieldName: 'EntityPriorityTitle',
+                idFieldName: 'EntityPriorityId',
+                isParent: true,
+                parentEntityName: 'EntityPriority',
+                parentColumnName: 'Title',
+                parentService: new services.EntityPriorityService(this.props.spfxContext, this.props.api),
+                minWidth: 100,
+                maxWidth: 150,
+                isResizable: true,
+                isRequired: true
+            },
 
             {
                 key: 'Timescale',
@@ -409,6 +424,9 @@ export default class UpdateForm extends React.Component<IUpdateFormProps, IUpdat
                         hideTitleBelowCommandBar={true}
                     />
                 </div>
+                <div style={{paddingTop:"10px", fontStyle:"italic"}}>
+                    This area can be used to leave comments for other users as this section of the Statement is being completed.
+                </div>
 
             </React.Fragment>
         );
@@ -420,11 +438,12 @@ export default class UpdateForm extends React.Component<IUpdateFormProps, IUpdat
         if (this.props.isViewOnly === false) {
 
             return (
-                <div>
+                <div style={{paddingTop:"35px"}}>
 
                     <CrCheckbox
-                        className={`${styles.formField} ${styles.checkbox}`}
-                        label="Mark as ready for approval"
+                        className={`${styles.checkbox}`}
+                        style={{marginBottom:"10px"}}
+                        label="Mark as Completed"
                         checked={this.state.FormData.MarkReadyForApproval}
                         onChange={(ev, isChecked) => this.changeCheckbox(isChecked, "MarkReadyForApproval")}
                         disabled={!this.validateForStatus()}

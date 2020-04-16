@@ -157,6 +157,7 @@
           <Property Name="SysEndTime" Type="datetime2" Precision="0" />
           <Property Name="ModifiedByUserID" Type="int" />
           <Property Name="IsAdmin" Type="bit" Nullable="false" />
+          <Property Name="ViewOnly" Type="bit" />
         </EntityType>
         <EntityType Name="DirectorateMember">
           <Key>
@@ -231,6 +232,13 @@
           <Property Name="ResponseB3EffectModerate" Type="bit" />
           <Property Name="ResponseB3EffectSubstantial" Type="bit" />
           <Property Name="ResponseB3EffectNotApplicable" Type="bit" />
+        </EntityType>
+        <EntityType Name="EntityPriority">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="EntityStatusType">
           <Key>
@@ -315,6 +323,7 @@
           <Property Name="Timescale" Type="nvarchar" MaxLength="1000" />
           <Property Name="Owner" Type="nvarchar" MaxLength="1000" />
           <Property Name="Progress" Type="nvarchar(max)" />
+          <Property Name="EntityPriorityId" Type="int" />
         </EntityType>
         <EntityType Name="GoElementEvidence">
           <Key>
@@ -766,6 +775,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_GoElementAction_EntityPriority">
+          <End Role="EntityPriority" Type="Self.EntityPriority" Multiplicity="0..1" />
+          <End Role="GoElementAction" Type="Self.GoElementAction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntityPriority">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GoElementAction">
+              <PropertyRef Name="EntityPriorityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_GoElementAction_GoElement">
           <End Role="GoElement" Type="Self.GoElement" Multiplicity="0..1" />
           <End Role="GoElementAction" Type="Self.GoElementAction" Multiplicity="*" />
@@ -1014,6 +1035,7 @@
           <EntitySet Name="DirectorateGroupMember" EntityType="Self.DirectorateGroupMember" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DirectorateMember" EntityType="Self.DirectorateMember" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Element" EntityType="Self.Element" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EntityPriority" EntityType="Self.EntityPriority" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntityStatusType" EntityType="Self.EntityStatusType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Form" EntityType="Self.Form" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GoAssignment" EntityType="Self.GoAssignment" Schema="dbo" store:Type="Tables" />
@@ -1133,6 +1155,10 @@
           <AssociationSet Name="FK_GoElement_GoForm" Association="Self.FK_GoElement_GoForm">
             <End Role="GoForm" EntitySet="GoForm" />
             <End Role="GoElement" EntitySet="GoElement" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GoElementAction_EntityPriority" Association="Self.FK_GoElementAction_EntityPriority">
+            <End Role="EntityPriority" EntitySet="EntityPriority" />
+            <End Role="GoElementAction" EntitySet="GoElementAction" />
           </AssociationSet>
           <AssociationSet Name="FK_GoElementAction_GoElement" Association="Self.FK_GoElementAction_GoElement">
             <End Role="GoElement" EntitySet="GoElement" />
@@ -1389,6 +1415,7 @@
           <Property Name="SysEndTime" Type="DateTime" Precision="0" />
           <Property Name="ModifiedByUserID" Type="Int32" />
           <Property Name="IsAdmin" Type="Boolean" Nullable="false" />
+          <Property Name="ViewOnly" Type="Boolean" />
           <NavigationProperty Name="DirectorateGroup" Relationship="Self.FK_DirectorateGroupMember_DirectorateGroup" FromRole="DirectorateGroupMember" ToRole="DirectorateGroup" />
           <NavigationProperty Name="User" Relationship="Self.FK_DirectorateGroupMember_User" FromRole="DirectorateGroupMember" ToRole="User" />
         </EntityType>
@@ -1469,6 +1496,14 @@
           <Property Name="ResponseB3EffectNotApplicable" Type="Boolean" />
           <NavigationProperty Name="DefElement" Relationship="Self.FK_Element_DefElement" FromRole="Element" ToRole="DefElement" />
           <NavigationProperty Name="Form" Relationship="Self.FK_Element_Form" FromRole="Element" ToRole="Form" />
+        </EntityType>
+        <EntityType Name="EntityPriority">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="GoElementActions" Relationship="Self.FK_GoElementAction_EntityPriority" FromRole="EntityPriority" ToRole="GoElementAction" />
         </EntityType>
         <EntityType Name="EntityStatusType">
           <Key>
@@ -1568,6 +1603,8 @@
           <Property Name="Timescale" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
           <Property Name="Owner" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
           <Property Name="Progress" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="EntityPriorityId" Type="Int32" />
+          <NavigationProperty Name="EntityPriority" Relationship="Self.FK_GoElementAction_EntityPriority" FromRole="GoElementAction" ToRole="EntityPriority" />
           <NavigationProperty Name="GoElement" Relationship="Self.FK_GoElementAction_GoElement" FromRole="GoElementAction" ToRole="GoElement" />
         </EntityType>
         <EntityType Name="GoElementEvidence">
@@ -2017,6 +2054,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_GoElementAction_EntityPriority">
+          <End Role="EntityPriority" Type="Self.EntityPriority" Multiplicity="0..1" />
+          <End Role="GoElementAction" Type="Self.GoElementAction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntityPriority">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GoElementAction">
+              <PropertyRef Name="EntityPriorityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Team_EntityStatusType">
           <End Role="EntityStatusType" Type="Self.EntityStatusType" Multiplicity="0..1" />
           <End Role="Team" Type="Self.Team" Multiplicity="*" />
@@ -2304,6 +2353,7 @@
           <EntitySet Name="DirectorateGroupMembers" EntityType="Self.DirectorateGroupMember" />
           <EntitySet Name="DirectorateMembers" EntityType="Self.DirectorateMember" />
           <EntitySet Name="Elements" EntityType="Self.Element" />
+          <EntitySet Name="EntityPriorities" EntityType="Self.EntityPriority" />
           <EntitySet Name="EntityStatusTypes" EntityType="Self.EntityStatusType" />
           <EntitySet Name="Forms" EntityType="Self.Form" />
           <EntitySet Name="GoAssignments" EntityType="Self.GoAssignment" />
@@ -2407,6 +2457,10 @@
           <AssociationSet Name="FK_Element_Form" Association="Self.FK_Element_Form">
             <End Role="Form" EntitySet="Forms" />
             <End Role="Element" EntitySet="Elements" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GoElementAction_EntityPriority" Association="Self.FK_GoElementAction_EntityPriority">
+            <End Role="EntityPriority" EntitySet="EntityPriorities" />
+            <End Role="GoElementAction" EntitySet="GoElementActions" />
           </AssociationSet>
           <AssociationSet Name="FK_Team_EntityStatusType" Association="Self.FK_Team_EntityStatusType">
             <End Role="EntityStatusType" EntitySet="EntityStatusTypes" />
@@ -2793,6 +2847,7 @@
                 <ScalarProperty Name="SysEndTime" ColumnName="SysEndTime" />
                 <ScalarProperty Name="ModifiedByUserID" ColumnName="ModifiedByUserID" />
                 <ScalarProperty Name="IsAdmin" ColumnName="IsAdmin" />
+                <ScalarProperty Name="ViewOnly" ColumnName="ViewOnly" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -2869,6 +2924,14 @@
                 <ScalarProperty Name="ResponseB3EffectModerate" ColumnName="ResponseB3EffectModerate" />
                 <ScalarProperty Name="ResponseB3EffectSubstantial" ColumnName="ResponseB3EffectSubstantial" />
                 <ScalarProperty Name="ResponseB3EffectNotApplicable" ColumnName="ResponseB3EffectNotApplicable" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EntityPriorities">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.EntityPriority">
+              <MappingFragment StoreEntitySet="EntityPriority">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -2960,6 +3023,7 @@
                 <ScalarProperty Name="Timescale" ColumnName="Timescale" />
                 <ScalarProperty Name="Owner" ColumnName="Owner" />
                 <ScalarProperty Name="Progress" ColumnName="Progress" />
+                <ScalarProperty Name="EntityPriorityId" ColumnName="EntityPriorityId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

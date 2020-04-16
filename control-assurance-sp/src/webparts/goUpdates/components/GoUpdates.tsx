@@ -299,6 +299,19 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
       return true;   
     }
 
+    //DirectorateGroup member check
+    let dgms = this.state.DirectorateGroupMembers;
+    for(let i=0; i<dgms.length; i++){
+      let dgm: types.IDirectorateGroupMember = dgms[i];
+      if(dgm.ViewOnly === true){
+        if(this.state.DirectorateGroupId === dgm.DirectorateGroupID){
+          return true; 
+        }
+        
+      }
+        
+    }
+
     return false;
 
   }
@@ -339,9 +352,17 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
     //DirectorateGroup member check
     let dgms = this.state.DirectorateGroupMembers;
     for(let i=0; i<dgms.length; i++){
-      //let dgm: types.IDirectorateGroupMember = dgms[i];
-      //if(dgm.CanSignOff === true)
-        return true; 
+      let dgm: types.IDirectorateGroupMember = dgms[i];
+      if(this.state.DirectorateGroupId === dgm.DirectorateGroupID){
+        if(dgm.ViewOnly === true){
+          return false;
+        }
+        else{
+          //may need is admin check here
+          return true;
+        }  
+      }
+
     }
 
     if(this.isSuperUser() === true)

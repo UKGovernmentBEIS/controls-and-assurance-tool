@@ -14,7 +14,7 @@ export class GoElementEvidenceService extends EntityService<IGoElementEvidence> 
 
     public readAllByElement(goElementId:number): Promise<IEntity[]> {
         //ne null means not null, cause we only want to get completed uploaded files.
-        return this.readAll(`?$orderby=ID&$filter=GoElementId eq ${goElementId} and Title ne null `);
+        return this.readAll(`?$orderby=ID&$expand=User&$filter=GoElementId eq ${goElementId} and Title ne null `);
     }
 
 }

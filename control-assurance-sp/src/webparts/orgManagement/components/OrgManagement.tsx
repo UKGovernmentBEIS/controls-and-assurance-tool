@@ -4,10 +4,11 @@ import * as types from '../../../types';
 import BaseUserContextWebPartComponent from '../../../components/BaseUserContextWebPartComponent';
 import * as services from '../../../services';
 import EntityList from '../../../components/entity/EntityList';
-import { IGenColumn, ColumnType } from '../../../types/GenColumn';
+import { IGenColumn, ColumnType, ColumnDisplayType } from '../../../types/GenColumn';
 import { IUserPermission } from '../../../types/UserPermissions';
 
 import { DetailsListCustomColumnsExample } from '../../../components/DetailsListCustomColumnsExample';
+import { ColumnDisplayTypes } from '../../../types/UpdatesListColumn';
 
 
 //#region types defination
@@ -348,6 +349,17 @@ export default class OrgManagement extends BaseUserContextWebPartComponent<types
         maxWidth: 150,
         isResizable: true,
         //isRequired: true
+      },
+      {
+        key: 'ViewOnly',
+        columnType: ColumnType.Checkbox,
+        name: 'View Only',
+        fieldName: 'ViewOnly',
+        minWidth: 100,
+        maxWidth: 150,
+        isResizable: true,
+        isRequired: true,
+        columnDisplayType: ColumnDisplayType.FormOnly,
       },
 
     ];

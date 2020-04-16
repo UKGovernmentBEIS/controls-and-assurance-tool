@@ -142,24 +142,29 @@ namespace ControlAssuranceAPI.Libs
                 foreach (var goElementEvidence in goElement.GoElementEvidences.Where(x=> x.Title != null))
                 {
                     string evidenceSrNo = $"{goElementIndex + 1}-{goElementEvidenceIndex + 1}";
-                    paragraphGoElement1.AddFormattedText($"Evidence {evidenceSrNo}", "subHeading2");
+                    string evidenceSrNoWithGroup = $"{goElement.GoDefElement.Title} Evidence {evidenceSrNo}";
+                    paragraphGoElement1.AddFormattedText(evidenceSrNoWithGroup, "subHeading2");
                     paragraphGoElement1.AddLineBreak();
                     
-                    paragraphGoElement1.AddFormattedText("Details:", "subHeading3");
+                    paragraphGoElement1.AddFormattedText("Title: ", "subHeading3");
                     paragraphGoElement1.AddFormattedText(goElementEvidence.Details?.ToString() ?? "", "normalTxt");
                     paragraphGoElement1.AddLineBreak();
 
-                    paragraphGoElement1.AddFormattedText("Controls:", "subHeading3");
-                    paragraphGoElement1.AddFormattedText(goElementEvidence.Controls?.ToString() ?? "", "normalTxt");
+                    //paragraphGoElement1.AddFormattedText("Controls:", "subHeading3");
+                    //paragraphGoElement1.AddFormattedText(goElementEvidence.Controls?.ToString() ?? "", "normalTxt");
+                    //paragraphGoElement1.AddLineBreak();
+
+                    //paragraphGoElement1.AddFormattedText("Team/Info Holder:", "subHeading3");
+                    //paragraphGoElement1.AddFormattedText(goElementEvidence.Team?.ToString() ?? "", "normalTxt");
+                    //paragraphGoElement1.AddFormattedText("/" + goElementEvidence.InfoHolder?.ToString() ?? "", "normalTxt");
+                    //paragraphGoElement1.AddLineBreak();
+                   
+                    paragraphGoElement1.AddFormattedText("Additional Notes: ", "subHeading3");
+                    paragraphGoElement1.AddFormattedText(goElementEvidence.AdditionalNotes?.ToString() ?? "", "normalTxt");
                     paragraphGoElement1.AddLineBreak();
 
-                    paragraphGoElement1.AddFormattedText("Team/Info Holder:", "subHeading3");
-                    paragraphGoElement1.AddFormattedText(goElementEvidence.Team?.ToString() ?? "", "normalTxt");
-                    paragraphGoElement1.AddFormattedText("/" + goElementEvidence.InfoHolder?.ToString() ?? "", "normalTxt");
-                    paragraphGoElement1.AddLineBreak();
-                   
-                    paragraphGoElement1.AddFormattedText("Additional Notes:", "subHeading3");
-                    paragraphGoElement1.AddFormattedText(goElementEvidence.AdditionalNotes?.ToString() ?? "", "normalTxt");
+                    paragraphGoElement1.AddFormattedText("Uploaded By: ", "subHeading3");
+                    paragraphGoElement1.AddFormattedText(goElementEvidence.User.Title?.ToString() ?? "", "normalTxt");
                     paragraphGoElement1.AddLineBreak();
 
 
@@ -169,7 +174,7 @@ namespace ControlAssuranceAPI.Libs
 
 
                     //also create new pdf per evidence and save
-                    this.CreateEvidencePdf(sharepointLib, ref finalEvList, goElementEvidence, evidenceSrNo, tempLocation);
+                    this.CreateEvidencePdf(sharepointLib, ref finalEvList, goElementEvidence, dgArea, evidenceSrNoWithGroup, tempLocation);
 
 
                     goElementEvidenceIndex++;
@@ -185,22 +190,26 @@ namespace ControlAssuranceAPI.Libs
                 int goElementActionIndex = 0;
                 foreach (var goElementAction in goElement.GoElementActions)
                 {
-                    paragraphGoElement1.AddFormattedText($"Action Plan {goElementIndex + 1}-{goElementActionIndex + 1}", "subHeading2");
+                    paragraphGoElement1.AddFormattedText($"{goElement.GoDefElement.Title} Action Plan {goElementIndex + 1}-{goElementActionIndex + 1}", "subHeading2");
                     paragraphGoElement1.AddLineBreak();
 
-                    paragraphGoElement1.AddFormattedText("Action:", "subHeading3");
+                    paragraphGoElement1.AddFormattedText("Action: ", "subHeading3");
                     paragraphGoElement1.AddFormattedText(goElementAction.Title?.ToString() ?? "", "normalTxt");
                     paragraphGoElement1.AddLineBreak();
 
-                    paragraphGoElement1.AddFormattedText("Timescale:", "subHeading3");
+                    paragraphGoElement1.AddFormattedText("Priority: ", "subHeading3");
+                    paragraphGoElement1.AddFormattedText(goElementAction.EntityPriority.Title?.ToString() ?? "", "normalTxt");
+                    paragraphGoElement1.AddLineBreak();
+
+                    paragraphGoElement1.AddFormattedText("Timescale: ", "subHeading3");
                     paragraphGoElement1.AddFormattedText(goElementAction.Timescale?.ToString() ?? "", "normalTxt");
                     paragraphGoElement1.AddLineBreak();
 
-                    paragraphGoElement1.AddFormattedText("Owner:", "subHeading3");
+                    paragraphGoElement1.AddFormattedText("Owner: ", "subHeading3");
                     paragraphGoElement1.AddFormattedText(goElementAction.Owner?.ToString() ?? "", "normalTxt");
                     paragraphGoElement1.AddLineBreak();
 
-                    paragraphGoElement1.AddFormattedText("Progress:", "subHeading3");
+                    paragraphGoElement1.AddFormattedText("Progress: ", "subHeading3");
                     paragraphGoElement1.AddFormattedText(goElementAction.Progress?.ToString() ?? "", "normalTxt");
                     paragraphGoElement1.AddLineBreak();
 
@@ -254,23 +263,24 @@ namespace ControlAssuranceAPI.Libs
 
         }
 
-        private void CreateEvidencePdf(SharepointLib sharepointLib, ref List<string> finalEvList, Models.GoElementEvidence goElementEvidence, string evidenceSrNo, string tempLocation)
+        private void CreateEvidencePdf(SharepointLib sharepointLib, ref List<string> finalEvList, Models.GoElementEvidence goElementEvidence, string dgArea, string evidenceSrNoWithGroup, string tempLocation)
         {
             
             Document document = new Document();
 
 
-            Style heading1 = document.Styles.AddStyle("heading1", "Normal");
-            heading1.Font.Size = 36;
-            heading1.Font.Name = "Calibri (Body)";
+            Style coverDGArea = document.Styles.AddStyle("coverDGArea", "Normal");
+            coverDGArea.Font.Size = 18;
+            coverDGArea.Font.Name = "Calibri (Body)";
 
-            Style heading2 = document.Styles.AddStyle("heading2", "Normal");
-            heading2.Font.Size = 20;
-            heading2.Font.Name = "Calibri (Body)";
+            Style coverEVNo = document.Styles.AddStyle("coverEVNo", "Normal");
+            coverEVNo.Font.Size = 22;
+            coverEVNo.Font.Name = "Calibri (Body)";
 
-            Style heading3 = document.Styles.AddStyle("heading3", "Normal");
-            heading3.Font.Size = 16;
-            heading3.Font.Name = "Calibri (Body)";
+            Style coverEvDetails = document.Styles.AddStyle("coverEvDetails", "Normal");
+            coverEvDetails.Font.Size = 14;
+            coverEvDetails.Font.Name = "Calibri (Body)";
+            coverEvDetails.Font.Italic = true;
 
             Style subHeading1 = document.Styles.AddStyle("subHeading1", "Normal");
             subHeading1.Font.Size = 14;
@@ -302,8 +312,12 @@ namespace ControlAssuranceAPI.Libs
 
 
             paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak();
-            paragraph.AddFormattedText($"Evidence {evidenceSrNo}", "heading1");
+            paragraph.AddFormattedText(dgArea, "coverDGArea");
             paragraph.AddLineBreak();
+
+            paragraph.AddFormattedText(evidenceSrNoWithGroup, "coverEVNo");
+            paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak();
+            paragraph.AddFormattedText(goElementEvidence.Details?.ToString() ?? "", "coverEvDetails");
 
             if (goElementEvidence.IsLink == true)
             {

@@ -9,7 +9,7 @@ import { FormButtons } from '../../cr/FormButtons';
 import { Panel, PanelType } from 'office-ui-fabric-react/lib/Panel';
 import { FormCommandBar } from '../../cr/FormCommandBar';
 import { sp, ChunkedFileUploadProgressData } from '@pnp/sp';
-import { getUploadFolder_Evidence } from '../../../types/AppGlobals';
+import { getUploadFolder_Evidence, getFolder_Help } from '../../../types/AppGlobals';
 import styles from '../../../styles/cr.module.scss';
 
 export interface IEvidenceSaveFormProps extends types.IBaseComponentProps {
@@ -70,11 +70,14 @@ export class EvidenceSaveFormState implements IEvidenceSaveFormState {
 export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormProps, IEvidenceSaveFormState> {
 
     private UploadFolder_Evidence: string = "";
+    private Folder_Help: string = "";
+
     private goElementEvidenceService: services.GoElementEvidenceService = new services.GoElementEvidenceService(this.props.spfxContext, this.props.api);
 
     constructor(props: IEvidenceSaveFormProps, state: IEvidenceSaveFormState) {
         super(props);
         this.UploadFolder_Evidence = getUploadFolder_Evidence(props.spfxContext);
+        this.Folder_Help = getFolder_Help(props.spfxContext);
         //console.log('props goElementId ', props.goElementId);
         //console.log('props goElementEvidenceId ', props.goElementEvidenceId);
         this.state = new EvidenceSaveFormState(props.goElementId);
@@ -116,9 +119,9 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
         return (
             <React.Fragment>
                 {this.renderDetails()}
-                {this.renderControls()}
+                {/* {this.renderControls()}
                 {this.renderTeam()}
-                {this.renderInfoHolder()}
+                {this.renderInfoHolder()} */}
                 {this.renderAdditionalNotes()}
                 {this.renderIsLinkCheckbox()}
                 {this.renderLinkBox()}
@@ -132,7 +135,7 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
     private renderDetails() {
         return (
             <CrTextField
-                label="Details"
+                label="Title"
                 required={true}
                 className={styles.formField}
                 value={this.state.FormData.Details}
@@ -243,6 +246,9 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
                 <div>
                     <input type="file" name="fileUpload" id="fileUpload"></input>
                     {this.state.ErrMessages.FileUpload && <FieldErrorMessage value={this.state.ErrMessages.FileUpload} />}
+                    <div style={{paddingTop:'10px'}}>
+                        Please upload all evidence files as PDFs. For guidance on savings documents as PDFs, please click <span onClick={this.viewHelpPDF} style={{textDecoration:'underline', cursor:'pointer'}}>here</span>.
+                    </div>
                 </div>
                 {this.state.ShowUploadProgress && <div style={{ minHeight: '80px', marginTop: '15px' }}>
                     <div>
@@ -261,6 +267,40 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
     //#endregion Render
 
     //#region Class Methods
+
+    private viewHelpPDF = () => {
+        console.log('help pdf');
+        const fileName:string = "HowToSaveToPDFFiles.pdf";
+
+        const f = sp.web.getFolderByServerRelativeUrl(this.Folder_Help).files.getByName(fileName);
+    
+        f.get().then(t => {
+            console.log(t);
+            const serverRelativeUrl = t["ServerRelativeUrl"];
+            console.log(serverRelativeUrl);
+      
+            const a = document.createElement('a');
+            //document.body.appendChild(a);
+            a.href = serverRelativeUrl;
+            a.target = "_blank";
+            a.download = fileName;
+            
+            document.body.appendChild(a);
+            console.log(a);
+            //a.click();
+            //document.body.removeChild(a);
+            
+            
+            setTimeout(() => {
+              window.URL.revokeObjectURL(serverRelativeUrl);
+              window.open(serverRelativeUrl, '_blank');
+              document.body.removeChild(a);
+            }, 1);
+            
+      
+          });
+
+    }
 
     private uploadFile = (goElementEvidenceId: number, uploadedByUserId: number) => {
         this.setState({
@@ -396,9 +436,32 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
             errMsg.Details = null;
         }
 
-        if (this.state.ShowFileUpload === true && ((document.querySelector("#fileUpload") as HTMLInputElement).files[0]) == null) {
-            errMsg.FileUpload = "File required";
-            returnVal = false;
+        if (this.state.ShowFileUpload === true) {
+
+            //((document.querySelector("#fileUpload") as HTMLInputElement).files[0]) == null
+            const file = (document.querySelector("#fileUpload") as HTMLInputElement).files[0];
+
+            if(file == null){
+                errMsg.FileUpload = "PDF file required";
+                returnVal = false;                    
+            }
+            else{
+                const fileName = file.name;
+                console.log("fileName", fileName);
+                const ext = fileName.substr(fileName.lastIndexOf('.') + 1).toLowerCase();
+                console.log("File Ext", ext);
+
+                if(ext === "pdf"){
+                    errMsg.FileUpload = null;
+                }
+                else{
+                    errMsg.FileUpload = "PDF file required";
+                    returnVal = false;                    
+                }
+
+                    
+            }
+
         }
         else {
             errMsg.FileUpload = null;

@@ -39,6 +39,8 @@ namespace ControlAssuranceAPI.Models
         DbSet<GoElementAction> GoElementActions { get; set; }
         DbSet<GoElementEvidence> GoElementEvidences { get; set; }
 
+        DbSet<EntityPriority> EntityPriorities { get; set; }
+
 
         ObjectResult<SPDGAreaStat_Result> SPDGAreaStat(Nullable<int> periodId);
         ObjectResult<SPDirectorateStat_Result> SPDirectorateStat(Nullable<int> periodId);

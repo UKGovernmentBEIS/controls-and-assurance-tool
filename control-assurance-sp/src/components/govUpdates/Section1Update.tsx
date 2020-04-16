@@ -11,6 +11,7 @@ import { CrCheckbox } from '../cr/CrCheckbox';
 
 import { Panel, PanelType } from 'office-ui-fabric-react/lib/Panel';
 import { ConfirmDialog } from '.././cr/ConfirmDialog';
+import { MessageDialog } from '../cr/MessageDialog';
 
 
 export interface ISection1UpdateProps extends IEntityFormProps {
@@ -35,6 +36,7 @@ export class Section1UpdateState {
     public UserHelpText: string = null;
     public FormData:IGoForm;
     public Loading:boolean = false;
+    public ShowConfirmDialog = false;
 
     constructor(periodId: number, directorateGroupId:number) {
         this.FormData = new GoForm(periodId, directorateGroupId);
@@ -91,6 +93,7 @@ export default class Section1Update extends React.Component<ISection1UpdateProps
                     <Panel isOpen={this.state.ShowHelpPanel} headerText="" type={PanelType.medium} onDismiss={this.hideHelpPanel} >
                         <div dangerouslySetInnerHTML={{ __html: this.state.UserHelpText }}></div>
                     </Panel>
+                    <MessageDialog hidden={!this.state.ShowConfirmDialog} title="Information" content="Summary details saved." handleOk={()=> {this.setState( {ShowConfirmDialog: false} );} } />
                 </div>}
 
 
@@ -207,7 +210,7 @@ export default class Section1Update extends React.Component<ISection1UpdateProps
     
                     <CrCheckbox
                         className={`${styles.formField} ${styles.checkbox}`}
-                        label="Mark as ready for approval"
+                        label="Mark as Completed"
                         checked={this.state.FormData.SummaryMarkReadyForApproval}
                         onChange={(ev, isChecked) => this.changeCheckbox(isChecked, "SummaryMarkReadyForApproval")}
                         disabled={!this.validateForStatus()}
@@ -397,6 +400,7 @@ export default class Section1Update extends React.Component<ISection1UpdateProps
     }
 
     protected onAfterSave(): void {
+        this.setState({ ShowConfirmDialog:true });
         // if(saveForLater === false)
         //     this.setState({ ShowSaveConfirmation: true });
             

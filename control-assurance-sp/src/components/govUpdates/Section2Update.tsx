@@ -71,6 +71,9 @@ export default class Section2Update extends React.Component<ISection2UpdateProps
 
                         />
                     </div>
+                    <div style={{paddingTop:"10px", paddingLeft:"10px", fontStyle:"italic"}}>
+                    Please click on a specific area title text to view or update.
+                    </div>
                     <br /><br />
 
                 </div>}

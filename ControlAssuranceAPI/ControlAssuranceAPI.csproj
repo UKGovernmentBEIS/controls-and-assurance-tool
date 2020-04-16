@@ -248,6 +248,7 @@
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\DefElementGroupsController.cs" />
     <Compile Include="Controllers\DefElementsController.cs" />
+    <Compile Include="Controllers\EntityPrioritiesController.cs" />
     <Compile Include="Controllers\GoAssignmentsController.cs" />
     <Compile Include="Controllers\GoDefElementsController.cs" />
     <Compile Include="Controllers\GoDefFormsController.cs" />
@@ -330,6 +331,9 @@
     <Compile Include="Models\Element.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\EntityPriority.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\EntityStatusType.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
@@ -408,6 +412,7 @@
     <Compile Include="Repositories\BaseRepository.cs" />
     <Compile Include="Repositories\DefElementGroupRespository.cs" />
     <Compile Include="Repositories\DefElementRepository.cs" />
+    <Compile Include="Repositories\EntityPriorityRepository.cs" />
     <Compile Include="Repositories\GoAssignmentRepository.cs" />
     <Compile Include="Repositories\GoDefElementRepository.cs" />
     <Compile Include="Repositories\GoDefFormRepository.cs" />
