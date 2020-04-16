@@ -270,7 +270,7 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
 
     private viewHelpPDF = () => {
         console.log('help pdf');
-        const fileName:string = "HowToSaveToPDFFiles.pdf";
+        const fileName:string = "HowToConvertDocumentsToPDF.pdf";
 
         const f = sp.web.getFolderByServerRelativeUrl(this.Folder_Help).files.getByName(fileName);
     
