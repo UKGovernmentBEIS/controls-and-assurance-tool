@@ -269,7 +269,8 @@ export default class UpdateForm extends React.Component<IUpdateFormProps, IUpdat
                 minWidth: 100,
                 maxWidth: 150,
                 isResizable: true,
-                isRequired: true
+                isRequired: true,
+                headerClassName: styles.bold
             },
 
             {
