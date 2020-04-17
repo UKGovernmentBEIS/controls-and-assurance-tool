@@ -244,7 +244,7 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
         return (
             <div style={{ marginTop: '20px', marginBottom: '20px' }}>
                 <div>
-                    <input type="file" name="fileUpload" id="fileUpload"></input>
+                    <input type="file" name="fileUpload" id="fileUpload" accept="application/pdf"></input>
                     {this.state.ErrMessages.FileUpload && <FieldErrorMessage value={this.state.ErrMessages.FileUpload} />}
                     <div style={{paddingTop:'10px'}}>
                         Please upload all evidence files as PDFs. For guidance on savings documents as PDFs, please click <span onClick={this.viewHelpPDF} style={{textDecoration:'underline', cursor:'pointer'}}>here</span>.

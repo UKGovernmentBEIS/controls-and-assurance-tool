@@ -10,9 +10,9 @@ using System.Web;
 
 namespace ControlAssuranceAPI.Libs
 {
-    public class PdfLib
+    public class PdfLibOld
     {
-        public PdfLib()
+        public PdfLibOld()
         {
 
         }
@@ -33,9 +33,9 @@ namespace ControlAssuranceAPI.Libs
             string summaryEvidenceStatement = goForm.SummaryEvidenceStatement?.ToString() ?? "";
 
 
-            
+
             Document document = new Document();
-            
+
 
             Style heading1 = document.Styles.AddStyle("heading1", "Normal");
             heading1.Font.Size = 36;
@@ -51,8 +51,7 @@ namespace ControlAssuranceAPI.Libs
 
             Style subHeading1 = document.Styles.AddStyle("subHeading1", "Normal");
             subHeading1.Font.Size = 14;
-            //subHeading1.Font.Underline = Underline.Single;
-            subHeading1.Font.Bold = true;
+            subHeading1.Font.Underline = Underline.Single;
             subHeading1.Font.Name = "Calibri (Body)";
 
             Style subHeading2 = document.Styles.AddStyle("subHeading2", "Normal");
@@ -76,9 +75,9 @@ namespace ControlAssuranceAPI.Libs
 
             //page 1(cover page)
             Paragraph paragraph = section.AddParagraph();
-            paragraph.Format.Alignment = ParagraphAlignment.Center;            
-            
-            
+            paragraph.Format.Alignment = ParagraphAlignment.Center;
+
+
             paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak();
             paragraph.AddFormattedText(dgArea, "heading1");
 
@@ -101,7 +100,7 @@ namespace ControlAssuranceAPI.Libs
             paragraphSummary.AddFormattedText("Summary of Evidence and Assurance level", "heading2");
             paragraphSummary.AddLineBreak(); paragraphSummary.AddLineBreak(); paragraphSummary.AddLineBreak();
 
-            paragraphSummary.AddFormattedText("Rating", "subHeading1"); 
+            paragraphSummary.AddFormattedText("Rating", "subHeading1");
             paragraphSummary.AddLineBreak(); paragraphSummary.AddLineBreak();
             paragraphSummary.AddFormattedText($"Overall rating is {summaryRagRatingLabel}.", "normalTxt");
             paragraphSummary.AddLineBreak(); paragraphSummary.AddLineBreak();
@@ -117,11 +116,11 @@ namespace ControlAssuranceAPI.Libs
 
             int goElementIndex = 0;
             int totalGoElements = goForm.GoElements.Count();
-            foreach(var goElement in goForm.GoElements)
+            foreach (var goElement in goForm.GoElements)
             {
-                
+
                 Paragraph paragraphGoElement1 = section.AddParagraph();
-                
+
                 paragraphGoElement1.AddFormattedText($"Specific Area Evidence: {goElement.GoDefElement.Title}", "heading2");
                 paragraphGoElement1.AddLineBreak(); paragraphGoElement1.AddLineBreak(); paragraphGoElement1.AddLineBreak();
 
@@ -132,29 +131,26 @@ namespace ControlAssuranceAPI.Libs
 
                 paragraphGoElement1.AddFormattedText("Statement", "subHeading1");
                 paragraphGoElement1.AddLineBreak(); paragraphGoElement1.AddLineBreak();
-                paragraphGoElement1.AddFormattedText(goElement.EvidenceStatement?.ToString() ?? "" , "normalTxt");
+                paragraphGoElement1.AddFormattedText(goElement.EvidenceStatement?.ToString() ?? "", "normalTxt");
                 paragraphGoElement1.AddLineBreak(); paragraphGoElement1.AddLineBreak();
 
 
                 //Evidence List
-                paragraphGoElement1.AddFormattedText($"Evidence for {goElement.GoDefElement.Title}", "subHeading1");
+                paragraphGoElement1.AddFormattedText("Evidence", "subHeading1");
                 paragraphGoElement1.AddLineBreak(); paragraphGoElement1.AddLineBreak();
 
-                //table code
+                //new table code
 
                 MigraDoc.DocumentObjectModel.Tables.Table table = section.AddTable();
                 //table.Style = "Table";
-                //table.Borders.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(237, 28, 36); //TableBorder;
+                table.Borders.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(237, 28, 36); //TableBorder;
                 table.Borders.Width = 0.25;
                 //table.Borders.Left.Width = 0.5;
                 //table.Borders.Right.Width = 0.5;
                 table.Rows.LeftIndent = 0;
 
                 // Before you can add a row, you must define the columns
-                Column column = table.AddColumn("1cm");
-                column.Format.Alignment = ParagraphAlignment.Left;
-
-                column = table.AddColumn("6cm");
+                Column column = table.AddColumn("6cm");
                 column.Format.Alignment = ParagraphAlignment.Left;
 
                 column = table.AddColumn("6cm");
@@ -169,35 +165,55 @@ namespace ControlAssuranceAPI.Libs
                 row.Format.Alignment = ParagraphAlignment.Left;
                 row.Format.Font.Bold = true;
 
-                row.Cells[0].AddParagraph("ID");
+                row.Cells[0].AddParagraph("Title");
                 //row.Cells[0].Format.Font.Bold = false;
                 row.Cells[0].Format.Alignment = ParagraphAlignment.Left;
-
-                row.Cells[1].AddParagraph("Title");
-                //row.Cells[0].Format.Font.Bold = false;
-                row.Cells[1].Format.Alignment = ParagraphAlignment.Left;
                 //row.Cells[0].VerticalAlignment = VerticalAlignment.Bottom;
                 //row.Cells[0].MergeDown = 1;
-                row.Cells[2].AddParagraph("Additional Notes");
-                row.Cells[2].Format.Alignment = ParagraphAlignment.Left;
+                row.Cells[1].AddParagraph("Additional Notes");
+                row.Cells[1].Format.Alignment = ParagraphAlignment.Left;
                 //row.Cells[1].MergeRight = 3;
-                row.Cells[3].AddParagraph("Uploaded By");
-                row.Cells[3].Format.Alignment = ParagraphAlignment.Left;
+                row.Cells[2].AddParagraph("Uploaded By");
+                row.Cells[2].Format.Alignment = ParagraphAlignment.Left;
                 //row.Cells[2].VerticalAlignment = VerticalAlignment.Bottom;
                 //row.Cells[2].MergeDown = 1;
 
-                Paragraph paragraphGoElementEvs = section.AddParagraph();
+
                 int goElementEvidenceIndex = 0;
-                foreach (var goElementEvidence in goElement.GoElementEvidences.Where(x=> x.Title != null))
+                foreach (var goElementEvidence in goElement.GoElementEvidences.Where(x => x.Title != null))
                 {
                     string evidenceSrNo = $"{goElementIndex + 1}-{goElementEvidenceIndex + 1}";
                     string evidenceSrNoWithGroup = $"{goElement.GoDefElement.Title} Evidence {evidenceSrNo}";
+                    paragraphGoElement1.AddFormattedText(evidenceSrNoWithGroup, "subHeading2");
+                    paragraphGoElement1.AddLineBreak();
 
-                    row = table.AddRow();
-                    row.Cells[0].AddParagraph(evidenceSrNo); //ID
-                    row.Cells[1].AddParagraph(goElementEvidence.Details?.ToString() ?? ""); //Title
-                    row.Cells[2].AddParagraph(goElementEvidence.AdditionalNotes?.ToString() ?? ""); //AdditionalNotes
-                    row.Cells[3].AddParagraph(goElementEvidence.User.Title?.ToString() ?? ""); //Uploaded By
+                    paragraphGoElement1.AddFormattedText("Title: ", "subHeading3");
+                    paragraphGoElement1.AddFormattedText(goElementEvidence.Details?.ToString() ?? "", "normalTxt");
+                    paragraphGoElement1.AddLineBreak();
+
+                    //paragraphGoElement1.AddFormattedText("Controls:", "subHeading3");
+                    //paragraphGoElement1.AddFormattedText(goElementEvidence.Controls?.ToString() ?? "", "normalTxt");
+                    //paragraphGoElement1.AddLineBreak();
+
+                    //paragraphGoElement1.AddFormattedText("Team/Info Holder:", "subHeading3");
+                    //paragraphGoElement1.AddFormattedText(goElementEvidence.Team?.ToString() ?? "", "normalTxt");
+                    //paragraphGoElement1.AddFormattedText("/" + goElementEvidence.InfoHolder?.ToString() ?? "", "normalTxt");
+                    //paragraphGoElement1.AddLineBreak();
+
+                    paragraphGoElement1.AddFormattedText("Additional Notes: ", "subHeading3");
+                    paragraphGoElement1.AddFormattedText(goElementEvidence.AdditionalNotes?.ToString() ?? "", "normalTxt");
+                    paragraphGoElement1.AddLineBreak();
+
+                    paragraphGoElement1.AddFormattedText("Uploaded By: ", "subHeading3");
+                    paragraphGoElement1.AddFormattedText(goElementEvidence.User.Title?.ToString() ?? "", "normalTxt");
+                    paragraphGoElement1.AddLineBreak();
+
+
+
+                    paragraphGoElement1.AddLineBreak();
+                    paragraphGoElement1.AddLineBreak();
+
+
 
                     //also create new pdf per evidence and save
                     this.CreateEvidencePdf(sharepointLib, ref finalEvList, goElementEvidence, dgArea, evidenceSrNoWithGroup, tempLocation);
@@ -205,64 +221,53 @@ namespace ControlAssuranceAPI.Libs
 
                     goElementEvidenceIndex++;
                 }
-                paragraphGoElementEvs.AddLineBreak(); paragraphGoElementEvs.AddLineBreak();
+                paragraphGoElement1.AddLineBreak(); paragraphGoElement1.AddLineBreak();
 
 
 
                 //Action Plan List
-
-                Paragraph paragraphGoElementActions = section.AddParagraph();
-                paragraphGoElementActions.AddFormattedText($"Action Plan for {goElement.GoDefElement.Title}", "subHeading1");
-                paragraphGoElementActions.AddLineBreak(); paragraphGoElementActions.AddLineBreak();
-
-                table = section.AddTable();
-                table.Borders.Width = 0.25;
-                table.Rows.LeftIndent = 0;
-
-                // Before you can add a row, you must define the columns
-                column = table.AddColumn("1cm");
-                column = table.AddColumn("3cm");
-                column = table.AddColumn("3cm");
-                column = table.AddColumn("3cm");
-                column = table.AddColumn("3cm");
-                column = table.AddColumn("3cm");
-
-                // Create the header of the table
-                row = table.AddRow();
-                row.HeadingFormat = true;
-                row.Format.Alignment = ParagraphAlignment.Left;
-                row.Format.Font.Bold = true;
-
-                row.Cells[0].AddParagraph("ID");
-                row.Cells[1].AddParagraph("Action");
-                row.Cells[2].AddParagraph("Priority");
-                row.Cells[3].AddParagraph("Timescale");
-                row.Cells[4].AddParagraph("Owner");
-                row.Cells[5].AddParagraph("Progress");
-
+                paragraphGoElement1.AddFormattedText("Action Plan", "subHeading1");
+                paragraphGoElement1.AddLineBreak(); paragraphGoElement1.AddLineBreak();
 
                 int goElementActionIndex = 0;
                 foreach (var goElementAction in goElement.GoElementActions)
                 {
-                    string actionSrNo = $"{goElementIndex + 1}-{goElementActionIndex + 1}";
+                    paragraphGoElement1.AddFormattedText($"{goElement.GoDefElement.Title} Action Plan {goElementIndex + 1}-{goElementActionIndex + 1}", "subHeading2");
+                    paragraphGoElement1.AddLineBreak();
 
-                    row = table.AddRow();
-                    row.Cells[0].AddParagraph(actionSrNo); //ID
-                    row.Cells[1].AddParagraph(goElementAction.Title?.ToString() ?? ""); //Action
-                    row.Cells[2].AddParagraph(goElementAction.EntityPriority.Title?.ToString() ?? ""); //Priority
-                    row.Cells[3].AddParagraph(goElementAction.Timescale?.ToString() ?? ""); //Timescale
-                    row.Cells[4].AddParagraph(goElementAction.Owner?.ToString() ?? ""); //Owner
-                    row.Cells[5].AddParagraph(goElementAction.Progress?.ToString() ?? ""); //Progress
+                    paragraphGoElement1.AddFormattedText("Action: ", "subHeading3");
+                    paragraphGoElement1.AddFormattedText(goElementAction.Title?.ToString() ?? "", "normalTxt");
+                    paragraphGoElement1.AddLineBreak();
 
-                    goElementActionIndex++;
+                    paragraphGoElement1.AddFormattedText("Priority: ", "subHeading3");
+                    paragraphGoElement1.AddFormattedText(goElementAction.EntityPriority.Title?.ToString() ?? "", "normalTxt");
+                    paragraphGoElement1.AddLineBreak();
+
+                    paragraphGoElement1.AddFormattedText("Timescale: ", "subHeading3");
+                    paragraphGoElement1.AddFormattedText(goElementAction.Timescale?.ToString() ?? "", "normalTxt");
+                    paragraphGoElement1.AddLineBreak();
+
+                    paragraphGoElement1.AddFormattedText("Owner: ", "subHeading3");
+                    paragraphGoElement1.AddFormattedText(goElementAction.Owner?.ToString() ?? "", "normalTxt");
+                    paragraphGoElement1.AddLineBreak();
+
+                    paragraphGoElement1.AddFormattedText("Progress: ", "subHeading3");
+                    paragraphGoElement1.AddFormattedText(goElementAction.Progress?.ToString() ?? "", "normalTxt");
+                    paragraphGoElement1.AddLineBreak();
+
+
+
+                    paragraphGoElement1.AddLineBreak();
+                    paragraphGoElement1.AddLineBreak();
+                    goElementEvidenceIndex++;
                 }
 
 
 
 
-                
+
                 goElementIndex++;
-                if(goElementIndex < totalGoElements)
+                if (goElementIndex < totalGoElements)
                 {
                     section.AddPageBreak();
                 }
@@ -285,7 +290,7 @@ namespace ControlAssuranceAPI.Libs
             pdfRenderer.Document = document;
             pdfRenderer.RenderDocument();
 
-            
+
             pdfRenderer.PdfDocument.Save(firstPdfPath);
 
 
@@ -302,7 +307,7 @@ namespace ControlAssuranceAPI.Libs
 
         private void CreateEvidencePdf(SharepointLib sharepointLib, ref List<string> finalEvList, Models.GoElementEvidence goElementEvidence, string dgArea, string evidenceSrNoWithGroup, string tempLocation)
         {
-            
+
             Document document = new Document();
 
 
@@ -361,23 +366,23 @@ namespace ControlAssuranceAPI.Libs
                 //add 2nd page with link info
                 section.AddPageBreak();
                 Paragraph paragraphLink = section.AddParagraph();
-                
+
 
                 paragraphLink.AddFormattedText("Evidence Link", "subHeading3");
                 paragraphLink.AddLineBreak();
                 var h = paragraphLink.AddHyperlink(goElementEvidence.Title?.ToString() ?? "", HyperlinkType.Web);
                 h.AddFormattedText(goElementEvidence.Title?.ToString() ?? "");
-                
+
 
             }
             else
             {
                 //else download evidence from sharepoint and combine 2 files to make final evidence doc
-                if(goElementEvidence.Title != null)
+                if (goElementEvidence.Title != null)
                 {
                     sharepointLib.DownloadEvidence(goElementEvidence.Title, tempLocation);
                 }
-                
+
             }
 
 
@@ -388,7 +393,7 @@ namespace ControlAssuranceAPI.Libs
             pdfRenderer.Document = document;
             pdfRenderer.RenderDocument();
 
-            if(goElementEvidence.IsLink == true)
+            if (goElementEvidence.IsLink == true)
             {
                 //save with final evidence name
                 string pdfPath = System.IO.Path.Combine(tempLocation, $"{goElementEvidence.ID}_Ev.pdf");

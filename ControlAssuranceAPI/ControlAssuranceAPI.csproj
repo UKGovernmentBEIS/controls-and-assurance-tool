@@ -283,6 +283,7 @@
     </Compile>
     <Compile Include="HelperMethods.cs" />
     <Compile Include="Libs\PdfLib.cs" />
+    <Compile Include="Libs\PdfLibOld.cs" />
     <Compile Include="Libs\SharepointLib.cs" />
     <Compile Include="Libs\UKGovNotify.cs" />
     <Compile Include="Libs\Utils.cs" />

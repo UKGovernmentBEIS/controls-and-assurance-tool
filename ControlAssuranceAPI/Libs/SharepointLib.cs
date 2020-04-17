@@ -21,13 +21,6 @@ namespace ControlAssuranceAPI.Libs
 
 
 
-
-
-
-
-
-
-
         private Web WebClient { get; set; }
 
         public SharepointLib(string spSiteUrl)
