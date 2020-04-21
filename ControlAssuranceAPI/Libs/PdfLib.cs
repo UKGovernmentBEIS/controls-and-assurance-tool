@@ -87,6 +87,7 @@ namespace ControlAssuranceAPI.Libs
 
             // Create the header of the table
             Row fullActionsRow = fullActionstable.AddRow();
+            fullActionsRow.Format.Font.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(255, 255, 255);
             fullActionsRow.Shading.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(0, 162, 232);
             fullActionsRow.HeadingFormat = true;
             fullActionsRow.Format.Alignment = ParagraphAlignment.Left;
