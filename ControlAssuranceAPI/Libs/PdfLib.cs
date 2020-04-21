@@ -72,6 +72,33 @@ namespace ControlAssuranceAPI.Libs
 
 
 
+            //full actions table to be inserted at the end
+
+            MigraDoc.DocumentObjectModel.Tables.Table fullActionstable = new Table();
+            fullActionstable.Borders.Width = 0.25;
+            fullActionstable.Borders.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(127, 127, 127);
+            fullActionstable.Rows.LeftIndent = 0;
+
+            Column fullActionsColumn = fullActionstable.AddColumn("6cm");
+            fullActionsColumn = fullActionstable.AddColumn("2cm");
+            fullActionsColumn = fullActionstable.AddColumn("4cm");
+            fullActionsColumn = fullActionstable.AddColumn("4cm");
+
+
+            // Create the header of the table
+            Row fullActionsRow = fullActionstable.AddRow();
+            fullActionsRow.Shading.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(0, 162, 232);
+            fullActionsRow.HeadingFormat = true;
+            fullActionsRow.Format.Alignment = ParagraphAlignment.Left;
+            fullActionsRow.Format.Font.Bold = true;
+
+            fullActionsRow.Cells[0].AddParagraph("ID");
+            fullActionsRow.Cells[1].AddParagraph("Priority");
+            fullActionsRow.Cells[2].AddParagraph("Timescale");
+            fullActionsRow.Cells[3].AddParagraph("Owner");
+
+            //full actions table defination end
+
             Section section = document.AddSection();
 
             //page 1(cover page)
@@ -119,7 +146,8 @@ namespace ControlAssuranceAPI.Libs
             int totalGoElements = goForm.GoElements.Count();
             foreach(var goElement in goForm.GoElements)
             {
-                
+
+
                 Paragraph paragraphGoElement1 = section.AddParagraph();
                 
                 paragraphGoElement1.AddFormattedText($"Specific Area Evidence: {goElement.GoDefElement.Title}", "heading2");
@@ -143,8 +171,9 @@ namespace ControlAssuranceAPI.Libs
                 //table code
 
                 MigraDoc.DocumentObjectModel.Tables.Table table = section.AddTable();
+                
                 //table.Style = "Table";
-                //table.Borders.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(237, 28, 36); //TableBorder;
+                table.Borders.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(127, 127, 127); //TableBorder;
                 table.Borders.Width = 0.25;
                 //table.Borders.Left.Width = 0.5;
                 //table.Borders.Right.Width = 0.5;
@@ -168,6 +197,8 @@ namespace ControlAssuranceAPI.Libs
                 row.HeadingFormat = true;
                 row.Format.Alignment = ParagraphAlignment.Left;
                 row.Format.Font.Bold = true;
+                row.Format.Font.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(255, 255, 255);
+                row.Shading.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(0, 162, 232);
 
                 row.Cells[0].AddParagraph("ID");
                 //row.Cells[0].Format.Font.Bold = false;
@@ -199,6 +230,7 @@ namespace ControlAssuranceAPI.Libs
                     row.Cells[2].AddParagraph(goElementEvidence.AdditionalNotes?.ToString() ?? ""); //AdditionalNotes
                     row.Cells[3].AddParagraph(goElementEvidence.User.Title?.ToString() ?? ""); //Uploaded By
 
+
                     //also create new pdf per evidence and save
                     this.CreateEvidencePdf(sharepointLib, ref finalEvList, goElementEvidence, dgArea, evidenceSrNoWithGroup, tempLocation);
 
@@ -217,28 +249,27 @@ namespace ControlAssuranceAPI.Libs
 
                 table = section.AddTable();
                 table.Borders.Width = 0.25;
+                table.Borders.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(127, 127, 127);
                 table.Rows.LeftIndent = 0;
 
                 // Before you can add a row, you must define the columns
-                column = table.AddColumn("1cm");
-                column = table.AddColumn("3cm");
-                column = table.AddColumn("3cm");
-                column = table.AddColumn("3cm");
-                column = table.AddColumn("3cm");
-                column = table.AddColumn("3cm");
+                column = table.AddColumn("6cm");
+                column = table.AddColumn("2cm");
+                column = table.AddColumn("4cm");
+                column = table.AddColumn("4cm");
 
                 // Create the header of the table
                 row = table.AddRow();
                 row.HeadingFormat = true;
                 row.Format.Alignment = ParagraphAlignment.Left;
                 row.Format.Font.Bold = true;
+                row.Format.Font.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(255, 255, 255);
+                row.Shading.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(0, 162, 232);
 
                 row.Cells[0].AddParagraph("ID");
-                row.Cells[1].AddParagraph("Action");
-                row.Cells[2].AddParagraph("Priority");
-                row.Cells[3].AddParagraph("Timescale");
-                row.Cells[4].AddParagraph("Owner");
-                row.Cells[5].AddParagraph("Progress");
+                row.Cells[1].AddParagraph("Priority");
+                row.Cells[2].AddParagraph("Timescale");
+                row.Cells[3].AddParagraph("Owner");
 
 
                 int goElementActionIndex = 0;
@@ -247,12 +278,39 @@ namespace ControlAssuranceAPI.Libs
                     string actionSrNo = $"{goElementIndex + 1}-{goElementActionIndex + 1}";
 
                     row = table.AddRow();
-                    row.Cells[0].AddParagraph(actionSrNo); //ID
-                    row.Cells[1].AddParagraph(goElementAction.Title?.ToString() ?? ""); //Action
-                    row.Cells[2].AddParagraph(goElementAction.EntityPriority.Title?.ToString() ?? ""); //Priority
-                    row.Cells[3].AddParagraph(goElementAction.Timescale?.ToString() ?? ""); //Timescale
-                    row.Cells[4].AddParagraph(goElementAction.Owner?.ToString() ?? ""); //Owner
-                    row.Cells[5].AddParagraph(goElementAction.Progress?.ToString() ?? ""); //Progress
+                    row.Shading.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(207, 218, 233);
+                    row.Cells[0].AddParagraph($"{actionSrNo} {goElement.GoDefElement.Title}"); //ID
+                    row.Cells[1].AddParagraph(goElementAction.EntityPriority.Title?.ToString() ?? ""); //Priority
+                    row.Cells[2].AddParagraph(goElementAction.Timescale?.ToString() ?? ""); //Timescale
+                    row.Cells[3].AddParagraph(goElementAction.Owner?.ToString() ?? ""); //Owner
+
+                    //2nd row with action+progress
+                    row = table.AddRow();
+                    row.Cells[0].MergeRight = 3;
+                    Paragraph p2ndRow = new Paragraph();
+                    p2ndRow.AddFormattedText("Action: ", TextFormat.Bold);
+                    p2ndRow.AddFormattedText(goElementAction.Title?.ToString() ?? ""); //action
+                    p2ndRow.AddLineBreak();p2ndRow.AddLineBreak();
+                    p2ndRow.AddFormattedText("Progress: ", TextFormat.Bold);
+                    p2ndRow.AddFormattedText(goElementAction.Progress?.ToString() ?? ""); //progress
+                    p2ndRow.AddLineBreak(); p2ndRow.AddLineBreak();
+                    row.Cells[0].Add(p2ndRow);
+
+
+
+                    //full actions row
+                    fullActionsRow = fullActionstable.AddRow();
+                    fullActionsRow.Shading.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(207, 218, 233);
+                    fullActionsRow.Cells[0].AddParagraph($"{actionSrNo} {goElement.GoDefElement.Title}"); //ID
+                    fullActionsRow.Cells[1].AddParagraph(goElementAction.EntityPriority.Title?.ToString() ?? ""); //Priority
+                    fullActionsRow.Cells[2].AddParagraph(goElementAction.Timescale?.ToString() ?? ""); //Timescale
+                    fullActionsRow.Cells[3].AddParagraph(goElementAction.Owner?.ToString() ?? ""); //Owner
+
+                    //2nd row with action+progress
+                    Paragraph fullActinsRowp2ndRow = p2ndRow.Clone();
+                    fullActionsRow = fullActionstable.AddRow();
+                    fullActionsRow.Cells[0].MergeRight = 3;
+                    fullActionsRow.Cells[0].Add(fullActinsRowp2ndRow);
 
                     goElementActionIndex++;
                 }
@@ -262,14 +320,20 @@ namespace ControlAssuranceAPI.Libs
 
                 
                 goElementIndex++;
-                if(goElementIndex < totalGoElements)
-                {
+                //if(goElementIndex < totalGoElements)
+                //{
                     section.AddPageBreak();
-                }
+                //}
             }
 
 
 
+            //full action plan list
+            Paragraph paragraphFullActions = section.AddParagraph();
+            paragraphFullActions.AddFormattedText($"Full Action Plan for {dgArea}", "heading2");
+            paragraphFullActions.AddLineBreak(); paragraphFullActions.AddLineBreak();
+
+            section.Add(fullActionstable);
 
 
 
