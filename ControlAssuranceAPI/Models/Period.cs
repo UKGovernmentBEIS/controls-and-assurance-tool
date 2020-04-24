@@ -31,6 +31,7 @@ namespace ControlAssuranceAPI.Models
         public string PeriodStatus { get; set; }
         public Nullable<System.DateTime> PeriodStartDate { get; set; }
         public Nullable<System.DateTime> PeriodEndDate { get; set; }
+        public Nullable<int> LastPeriodId { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AuditFeedback> AuditFeedbacks { get; set; }

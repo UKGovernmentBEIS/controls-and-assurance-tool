@@ -16,6 +16,12 @@ export class ElementService extends EntityService<IEntity> {
         return this.readAll(`?$filter=FormId eq ${formId} and DefElementId eq ${defElementId}`);
     }
 
+    public readLastPeriodElement(periodId: number, teamId: number, formId:number, defElementId:number, defElementTitle: string): Promise<IElement> {
+        return this.readEntity(`?periodId=${periodId}&teamId=${teamId}&formId=${formId}&defElementId=${defElementId}&defElementTitle=${defElementTitle}&getFromLastPeriod=`);
+
+
+    }
+
 
 
 

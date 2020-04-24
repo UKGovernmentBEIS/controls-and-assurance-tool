@@ -14,7 +14,7 @@ namespace ControlAssuranceAPI.Libs
         public ClientContext clientContext { get; set; }
         //private string LibraryUrl = "Shared Documents/MiscFiles/";
 
-        private string ServerSiteUrl = ""; //"https://beisdigitalsvc.sharepoint.com/sites/ControlsAndAssuranceToolDev/";
+        private string ServerSiteUrl = "";// not using this, its passed from sp //"https://beisdigitalsvc.sharepoint.com/sites/ControlsAndAssuranceToolDev/";
         private string UserName = "tas.tasniem@beisdigitalsvc.onmicrosoft.com";
         private string Password = "Townshend39";
 
@@ -27,6 +27,8 @@ namespace ControlAssuranceAPI.Libs
         {
             this.ServerSiteUrl = spSiteUrl;
             this.Connect();
+
+            
         }
 
         public void Connect()
@@ -42,6 +44,9 @@ namespace ControlAssuranceAPI.Libs
                     }
 
                     clientContext.Credentials = new SharePointOnlineCredentials(UserName, securePassword);
+
+                    //var cr = new System.Net.NetworkCredential();
+                    //HttpContext.Current.User.Identity.
                     WebClient = clientContext.Web;
                 }
             }

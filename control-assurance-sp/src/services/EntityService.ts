@@ -55,6 +55,12 @@ export class EntityService<T> extends DataService<T> {
     }
     //6Nov19 End
 
+    public readEntity(querystring?: string): Promise<T> {
+        return this.getEntity(this.entityUrl + querystring).then((data: any): T => {
+            return data;
+        });
+    }
+
     public readAllForUser(querystring?: string): Promise<T[]> {
         return this.readAll(querystring);
     }

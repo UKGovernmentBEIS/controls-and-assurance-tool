@@ -23,6 +23,11 @@ namespace ControlAssuranceAPI.AuthFilters
             if(actionContext.Request.Headers.Authorization != null && HttpContext.Current.User.Identity.IsAuthenticated)
             {
                 //user is authenticated with AD
+                var authToken = actionContext.Request.Headers.Authorization.Parameter;
+                
+                //var decodeauthToken = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(authToken));
+                //var arrUserNameandPassword = decodeauthToken.Split(':');
+
             }
             else
             {

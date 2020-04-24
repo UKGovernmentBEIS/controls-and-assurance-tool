@@ -87,11 +87,11 @@ namespace ControlAssuranceAPI.Libs
 
             // Create the header of the table
             Row fullActionsRow = fullActionstable.AddRow();
-            fullActionsRow.Format.Font.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(255, 255, 255);
             fullActionsRow.Shading.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(0, 162, 232);
             fullActionsRow.HeadingFormat = true;
             fullActionsRow.Format.Alignment = ParagraphAlignment.Left;
             fullActionsRow.Format.Font.Bold = true;
+            fullActionsRow.Format.Font.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(255, 255, 255);
 
             fullActionsRow.Cells[0].AddParagraph("ID");
             fullActionsRow.Cells[1].AddParagraph("Priority");
@@ -198,8 +198,8 @@ namespace ControlAssuranceAPI.Libs
                 row.HeadingFormat = true;
                 row.Format.Alignment = ParagraphAlignment.Left;
                 row.Format.Font.Bold = true;
-                row.Format.Font.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(255, 255, 255);
                 row.Shading.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(0, 162, 232);
+                row.Format.Font.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(255, 255, 255);
 
                 row.Cells[0].AddParagraph("ID");
                 //row.Cells[0].Format.Font.Bold = false;
@@ -264,8 +264,8 @@ namespace ControlAssuranceAPI.Libs
                 row.HeadingFormat = true;
                 row.Format.Alignment = ParagraphAlignment.Left;
                 row.Format.Font.Bold = true;
-                row.Format.Font.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(255, 255, 255);
                 row.Shading.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(0, 162, 232);
+                row.Format.Font.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(255, 255, 255);
 
                 row.Cells[0].AddParagraph("ID");
                 row.Cells[1].AddParagraph("Priority");

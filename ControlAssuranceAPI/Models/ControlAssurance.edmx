@@ -404,6 +404,7 @@
           <Property Name="PeriodStatus" Type="nvarchar" MaxLength="50" />
           <Property Name="PeriodStartDate" Type="date" />
           <Property Name="PeriodEndDate" Type="date" />
+          <Property Name="LastPeriodId" Type="int" />
         </EntityType>
         <EntityType Name="PermissionType">
           <Key>
@@ -1698,6 +1699,7 @@
           <Property Name="PeriodStatus" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="PeriodStartDate" Type="DateTime" Precision="0" />
           <Property Name="PeriodEndDate" Type="DateTime" Precision="0" />
+          <Property Name="LastPeriodId" Type="Int32" />
           <NavigationProperty Name="AuditFeedbacks" Relationship="Self.FK_AuditFeedback_Period" FromRole="Period" ToRole="AuditFeedback" />
           <NavigationProperty Name="DefElements" Relationship="Self.FK_DefElement_Period" FromRole="Period" ToRole="DefElement" />
           <NavigationProperty Name="DefElementGroups" Relationship="Self.FK_DefElementGroup_Period" FromRole="Period" ToRole="DefElementGroup" />
@@ -3110,6 +3112,7 @@
                 <ScalarProperty Name="PeriodStatus" ColumnName="PeriodStatus" />
                 <ScalarProperty Name="PeriodStartDate" ColumnName="PeriodStartDate" />
                 <ScalarProperty Name="PeriodEndDate" ColumnName="PeriodEndDate" />
+                <ScalarProperty Name="LastPeriodId" ColumnName="LastPeriodId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

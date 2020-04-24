@@ -7,6 +7,7 @@ export interface ICrUpdateFormState<T/*, V*/> {
     ShowForm: boolean;
     Loading: boolean;
     ShowSaveConfirmation: boolean;
+    ShowLoadPreviousPeriodConfirmation:boolean;
     ShowHelpPanel: boolean;
     UserHelpText: string;
     //ParentEntity: E;
@@ -22,6 +23,7 @@ export class CrUpdateFormState<T/*, V*/> implements ICrUpdateFormState<T/*, V*/>
     public ShowForm = false;
     public Loading = false;
     public ShowSaveConfirmation = false;
+    public ShowLoadPreviousPeriodConfirmation = false;
     public ShowHelpPanel = false;
     public UserHelpText = "";
 

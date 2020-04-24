@@ -7,6 +7,7 @@ import { UpdateHeader } from './cr/UpdateHeader';
 import { IChoiceGroupOption } from './cr/CrChoiceGroup';
 import { MessageDialog } from './cr/MessageDialog';
 import { Panel, PanelType } from 'office-ui-fabric-react/lib/Panel';
+import { ConfirmDialog } from './cr/ConfirmDialog';
 
 
 export interface IBaseProgressUpdateFormState extends ICrUpdateFormState<IElement> { }
@@ -18,6 +19,14 @@ export abstract class BaseProgressUpdateForm<P extends IBaseProgressUpdateFormPr
     public render(): React.ReactElement<IBaseProgressUpdateFormProps> {
         const {entityName, externalUserLoggedIn, isArchivedPeriod} = this.props;
         const {ShowForm, FormData} = this.state;
+
+
+        const loadPreviousPeriodConfirmationMsg = <div>
+            Are you sure you want to overwrite data with data from last period ?
+            <br /><br />
+            Note: You will need to click save on form to accept or can press cancel to revert.
+
+        </div>;
 
                 
         return (
@@ -41,6 +50,7 @@ export abstract class BaseProgressUpdateForm<P extends IBaseProgressUpdateFormPr
                         />                        
                     </div>}
                     <MessageDialog hidden={!this.state.ShowSaveConfirmation} title={`Save Confirmation`} content={`${this.state.FormData.Status === ElementStatus.Completed ? "Submitted as Completed." : this.state.FormData.Status === ElementStatus.NotApplicable ? "Submitted as Not Applicable." : "Saved Incomplete and marked as In Progress."}`} handleOk={ ()=> { this.setState({ ShowSaveConfirmation : false }); } } />
+                    <ConfirmDialog hidden={!this.state.ShowLoadPreviousPeriodConfirmation} title="Confirmation" htmlContent={loadPreviousPeriodConfirmationMsg} confirmButtonText="Yes" handleConfirm={this.copyFromLastPeriod} handleCancel={this.toggleCopyDataFromLastPeriodConfirm} />
                                
                 </div>
                 <Panel isOpen={this.state.ShowHelpPanel} headerText="" type={PanelType.medium} onDismiss={this.hideHelpPanel} >
@@ -101,6 +111,8 @@ export abstract class BaseProgressUpdateForm<P extends IBaseProgressUpdateFormPr
     }
 
     protected loadEntityUpdate = (formId: number, defElementId: number): Promise<IElement> => { return Promise.resolve(); };
+
+    protected copyFromLastPeriod = (): void => { };
 
 
     protected onPreviousEntityUpdateLoaded(entityUpdate: IProgressUpdate): void { }
@@ -402,6 +414,10 @@ export abstract class BaseProgressUpdateForm<P extends IBaseProgressUpdateFormPr
     protected toggleProgressUpdateForm = (): void => {
         this.setState({ ShowForm: !this.state.ShowForm });
 
+    }
+
+    protected toggleCopyDataFromLastPeriodConfirm = (): void => {
+        this.setState({ ShowLoadPreviousPeriodConfirmation: !this.state.ShowLoadPreviousPeriodConfirmation });
     }
 
     //#endregion

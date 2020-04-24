@@ -6,6 +6,7 @@ export interface IConfirmDialogProps {
     hidden: boolean;
     title: string;
     content?: string;
+    htmlContent?: any;
     confirmButtonText: string;
     handleConfirm: () => void;
     handleCancel: () => void;
@@ -20,6 +21,8 @@ export class ConfirmDialog extends React.Component<IConfirmDialogProps> {
         return (
             <Dialog hidden={this.props.hidden} onDismiss={this.props.handleCancel} dialogContentProps={{ type: DialogType.normal, title: this.props.title }}>
                 {this.props.content}
+                {this.props.htmlContent && this.props.htmlContent}
+
                 <DialogFooter>
                     <FormButtons onPrimaryClick={this.handleConfirm} onSecondaryClick={this.handleCancel} primaryText={this.props.confirmButtonText} />
                 </DialogFooter>
