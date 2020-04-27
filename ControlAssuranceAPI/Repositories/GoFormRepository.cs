@@ -165,13 +165,15 @@ namespace ControlAssuranceAPI.Repositories
 
                     
                     GoDefElementRepository goDER = new GoDefElementRepository(base.user);
+                    GoDefFormRepository goDFR = new GoDefFormRepository(base.user);
+                    string spAccessDetails = goDFR.GoDefForms.FirstOrDefault(x => x.ID == 1).Access;
                     
                     var goForm = goFR.GoForms.FirstOrDefault(x => x.ID == key);
                     string outputPdfName = "GovernanceOutput_" + goForm.DirectorateGroup.Title.Trim().Replace(" ", "_").Replace("&", "and") + "_" + goForm.ID + ".pdf";
 
 
                     Libs.PdfLib pdfLib = new Libs.PdfLib();
-                    pdfLib.CreatetPdf(goForm, goDER, tempLocation, outputPdfName, spSiteUrl);
+                    pdfLib.CreatetPdf(goForm, goDER, tempLocation, outputPdfName, spSiteUrl, spAccessDetails);
 
                     Thread.Sleep(500);
                     //delete temp folder which we created earlier

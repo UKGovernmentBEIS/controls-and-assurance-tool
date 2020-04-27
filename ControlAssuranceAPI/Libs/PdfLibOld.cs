@@ -19,7 +19,7 @@ namespace ControlAssuranceAPI.Libs
 
         public void CreatetPdf(Models.GoForm goForm, Repositories.GoDefElementRepository goDER, string tempLocation, string outputPdfName, string spSiteUrl)
         {
-            SharepointLib sharepointLib = new SharepointLib(spSiteUrl);
+            SharepointLib sharepointLib = new SharepointLib(spSiteUrl,"");
             List<string> finalEvList = new List<string>();
             string firstPdfPath = System.IO.Path.Combine(tempLocation, "first.pdf");
             //add first in list

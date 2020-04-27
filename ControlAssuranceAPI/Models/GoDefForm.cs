@@ -24,5 +24,6 @@ namespace ControlAssuranceAPI.Models
         public string SummaryFullInstructions { get; set; }
         public string SummaryFormRatingText { get; set; }
         public string DGSignOffText { get; set; }
+        public string Access { get; set; }
     }
 }

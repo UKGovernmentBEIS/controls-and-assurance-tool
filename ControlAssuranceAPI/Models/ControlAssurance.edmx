@@ -298,6 +298,7 @@
           <Property Name="SummaryFullInstructions" Type="nvarchar(max)" />
           <Property Name="SummaryFormRatingText" Type="nvarchar(max)" />
           <Property Name="DGSignOffText" Type="nvarchar(max)" />
+          <Property Name="Access" Type="nvarchar" MaxLength="500" />
         </EntityType>
         <EntityType Name="GoElement">
           <Key>
@@ -1573,6 +1574,7 @@
           <Property Name="SummaryFullInstructions" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="SummaryFormRatingText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="DGSignOffText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Access" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="GoElement">
           <Key>
@@ -2998,6 +3000,7 @@
                 <ScalarProperty Name="SummaryFullInstructions" ColumnName="SummaryFullInstructions" />
                 <ScalarProperty Name="SummaryFormRatingText" ColumnName="SummaryFormRatingText" />
                 <ScalarProperty Name="DGSignOffText" ColumnName="DGSignOffText" />
+                <ScalarProperty Name="Access" ColumnName="Access" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

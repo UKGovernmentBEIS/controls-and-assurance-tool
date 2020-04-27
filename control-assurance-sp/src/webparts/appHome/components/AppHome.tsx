@@ -24,14 +24,19 @@ export class AppHomeState extends types.UserContextWebPartState {
 
 export default class AppHome extends BaseUserContextWebPartComponent<types.IWebPartComponentProps, AppHomeState> {
 
-  private controlsAssuranceApphomeImg: string = require('../../../images/controls-assurance-apphome.png');
-  private governanceApphomeImg: string = require('../../../images/governance-apphome.png');
+  private controlsAssuranceApphomeImg: string = ""; // require('../../../images/controls-assurance-apphome.png');
+  private governanceApphomeImg: string = ""; // require('../../../images/governance-apphome.png');
 
+  private spSiteUrl: string = this.props.spfxContext.pageContext.web.absoluteUrl;
+  
 
 
   constructor(props: types.IWebPartComponentProps) {
     super(props);
     this.state = new AppHomeState();
+    console.log('spSiteUrl', this.spSiteUrl);
+    this.controlsAssuranceApphomeImg = `${this.spSiteUrl}/Shared%20Documents/images/controls-assurance-apphome.png`;
+    this.governanceApphomeImg = `${this.spSiteUrl}/Shared%20Documents/images/governance-apphome.png`;
   }
 
   //#region Render
@@ -81,18 +86,16 @@ export default class AppHome extends BaseUserContextWebPartComponent<types.IWebP
   //#region event handlers
 
   private handleControlsAssuranceClick = (): void => {
-    const pageUrl = this.props.spfxContext.pageContext.web.absoluteUrl + "/SitePages/ControlsAssuranceWelcome.aspx";
+    const pageUrl = this.spSiteUrl + "/SitePages/ControlsAssuranceWelcome.aspx";
     window.location.href = pageUrl;
   }
 
   private handleGovernanceClick = (): void => {
-    const pageUrl = this.props.spfxContext.pageContext.web.absoluteUrl + "/SitePages/GovernanceWelcome.aspx";
+    const pageUrl = this.spSiteUrl + "/SitePages/GovernanceWelcome.aspx";
     window.location.href = pageUrl;
   }
 
-  private showHighlighted = (): void => {
-    
-  }
+
   
 
   //#endregion event handlers

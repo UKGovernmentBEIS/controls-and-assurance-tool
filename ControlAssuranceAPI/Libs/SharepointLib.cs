@@ -15,17 +15,22 @@ namespace ControlAssuranceAPI.Libs
         //private string LibraryUrl = "Shared Documents/MiscFiles/";
 
         private string ServerSiteUrl = "";// not using this, its passed from sp //"https://beisdigitalsvc.sharepoint.com/sites/ControlsAndAssuranceToolDev/";
-        private string UserName = "tas.tasniem@beisdigitalsvc.onmicrosoft.com";
-        private string Password = "Townshend39";
+        private string UserName = "";
+        private string Password = "";
 
 
 
 
         private Web WebClient { get; set; }
 
-        public SharepointLib(string spSiteUrl)
+        public SharepointLib(string spSiteUrl, string spAccessDetails)
         {
             this.ServerSiteUrl = spSiteUrl;
+
+            UserName = spAccessDetails.Substring(0, spAccessDetails.IndexOf("/"));
+            Password = spAccessDetails.Substring(spAccessDetails.IndexOf("/") + 1);
+
+
             this.Connect();
 
             
