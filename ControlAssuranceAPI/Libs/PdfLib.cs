@@ -143,7 +143,11 @@ namespace ControlAssuranceAPI.Libs
 
             //page 3 ... n (specific areas)
 
-            int goElementIndex = 0;
+            //int goElementIndex = 0;
+            int goElementEvidenceIndexAcrossDGArea = 0;
+            int goElementActionIndexAcrossDGArea = 0;
+
+
             int totalGoElements = goForm.GoElements.Count();
             foreach(var goElement in goForm.GoElements)
             {
@@ -219,10 +223,11 @@ namespace ControlAssuranceAPI.Libs
                 //row.Cells[2].MergeDown = 1;
 
                 Paragraph paragraphGoElementEvs = section.AddParagraph();
-                int goElementEvidenceIndex = 0;
+                //int goElementEvidenceIndex = 0;
                 foreach (var goElementEvidence in goElement.GoElementEvidences.Where(x=> x.Title != null))
                 {
-                    string evidenceSrNo = $"{goElementIndex + 1}-{goElementEvidenceIndex + 1}";
+                    //string evidenceSrNo = $"{goElementIndex + 1}-{goElementEvidenceIndex + 1}";
+                    string evidenceSrNo = $"{goElementEvidenceIndexAcrossDGArea + 1}";
                     string evidenceSrNoWithGroup = $"{goElement.GoDefElement.Title} Evidence {evidenceSrNo}";
 
                     row = table.AddRow();
@@ -236,7 +241,8 @@ namespace ControlAssuranceAPI.Libs
                     this.CreateEvidencePdf(sharepointLib, ref finalEvList, goElementEvidence, dgArea, evidenceSrNoWithGroup, tempLocation);
 
 
-                    goElementEvidenceIndex++;
+                    //goElementEvidenceIndex++;
+                    goElementEvidenceIndexAcrossDGArea++;
                 }
                 paragraphGoElementEvs.AddLineBreak(); paragraphGoElementEvs.AddLineBreak();
 
@@ -273,10 +279,12 @@ namespace ControlAssuranceAPI.Libs
                 row.Cells[3].AddParagraph("Owner");
 
 
-                int goElementActionIndex = 0;
+                //int goElementActionIndex = 0;
                 foreach (var goElementAction in goElement.GoElementActions)
                 {
-                    string actionSrNo = $"{goElementIndex + 1}-{goElementActionIndex + 1}";
+                    
+                    //string actionSrNo = $"{goElementIndex + 1}-{goElementActionIndex + 1}";
+                    string actionSrNo = $"{goElementActionIndexAcrossDGArea + 1}";
 
                     row = table.AddRow();
                     row.Shading.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(207, 218, 233);
@@ -313,18 +321,17 @@ namespace ControlAssuranceAPI.Libs
                     fullActionsRow.Cells[0].MergeRight = 3;
                     fullActionsRow.Cells[0].Add(fullActinsRowp2ndRow);
 
-                    goElementActionIndex++;
+                    //goElementActionIndex++;
+                    goElementActionIndexAcrossDGArea++;
                 }
 
 
 
 
-                
-                goElementIndex++;
-                //if(goElementIndex < totalGoElements)
-                //{
-                    section.AddPageBreak();
-                //}
+
+                //goElementIndex++;
+                section.AddPageBreak();
+
             }
 
 
