@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as types from '../../types';
 import * as services from '../../services';
-import { IDirectorate, INAORecommendation } from '../../types';
+import { IDirectorate, INAORecommendation, NAORecommendation } from '../../types';
 import { CrTextField } from '../cr/CrTextField';
 import { CrDropdown, IDropdownOption } from '../cr/CrDropdown';
 import { FormButtons } from '../cr/FormButtons';
@@ -49,8 +49,8 @@ export interface IRecommendationSaveFormState {
 export class RecommendationSaveFormState implements IRecommendationSaveFormState {
     public Loading = false;
     public LookupData = new LookupData();
-    public FormData = new types.NAORecommendation();
-    public FormDataBeforeChanges = new types.NAORecommendation();
+    public FormData = new NAORecommendation();
+    public FormDataBeforeChanges = new NAORecommendation();
     public FormIsDirty = false;
     //public ClearSuggestedStatus = false;
     public ErrMessages = new ErrorMessage();

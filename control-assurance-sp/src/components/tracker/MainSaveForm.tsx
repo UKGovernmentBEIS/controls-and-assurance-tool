@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as types from '../../types';
 import * as services from '../../services';
-import { IDirectorate, INAOPublication } from '../../types';
+import { IDirectorate, INAOPublication, NAOPublication } from '../../types';
 import { CrTextField } from '../cr/CrTextField';
 import { CrDropdown, IDropdownOption } from '../cr/CrDropdown';
 import { FormButtons } from '../cr/FormButtons';
@@ -50,8 +50,8 @@ export interface IMainSaveFormState {
 export class MainSaveFormState implements IMainSaveFormState {
     public Loading = false;
     public LookupData = new LookupData();
-    public FormData = new types.NAOPublication();
-    public FormDataBeforeChanges = new types.NAOPublication();
+    public FormData = new NAOPublication();
+    public FormDataBeforeChanges = new NAOPublication();
     public FormIsDirty = false;
     //public ClearSuggestedStatus = false;
     public ErrMessages = new ErrorMessage();
