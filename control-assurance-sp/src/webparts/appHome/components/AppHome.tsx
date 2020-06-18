@@ -26,9 +26,10 @@ export default class AppHome extends BaseUserContextWebPartComponent<types.IWebP
 
   private controlsAssuranceApphomeImg: string = ""; // require('../../../images/controls-assurance-apphome.png');
   private governanceApphomeImg: string = ""; // require('../../../images/governance-apphome.png');
+  private naoApphomeImg: string = "";
 
   private spSiteUrl: string = this.props.spfxContext.pageContext.web.absoluteUrl;
-  
+
 
 
   constructor(props: types.IWebPartComponentProps) {
@@ -37,6 +38,7 @@ export default class AppHome extends BaseUserContextWebPartComponent<types.IWebP
     console.log('spSiteUrl', this.spSiteUrl);
     this.controlsAssuranceApphomeImg = `${this.spSiteUrl}/Shared%20Documents/images/controls-assurance-apphome.png`;
     this.governanceApphomeImg = `${this.spSiteUrl}/Shared%20Documents/images/governance-apphome.png`;
+    this.naoApphomeImg = `${this.spSiteUrl}/Shared%20Documents/images/naotracker-apphome.png`;
   }
 
   //#region Render
@@ -45,30 +47,46 @@ export default class AppHome extends BaseUserContextWebPartComponent<types.IWebP
 
     return (
 
-      <div style={{ paddingLeft:'0px', paddingTop:'0px' }}>
+      <div style={{ paddingLeft: '0px', paddingTop: '0px' }}>
         <div style={{ display: 'flex' }}>
           {/* first card */}
-          <div style={{width: '250px'}}>            
-            <div style={{textAlign:'center', color: 'white', backgroundColor: 'rgb(122,116,117)', fontSize:'35px', height: '270px', borderBottom:'1px solid white' }}>
+          <div style={{ width: '250px' }}>
+            <div style={{ textAlign: 'center', color: 'white', backgroundColor: 'rgb(122,116,117)', fontSize: '35px', height: '270px', borderBottom: '1px solid white' }}>
               <img src={this.controlsAssuranceApphomeImg}></img>
-              <div>Controls &amp; Assurance</div>                
+              <div>Controls &amp; Assurance</div>
             </div>
-            <div style={{backgroundColor: 'rgb(122,116,117)', textAlign: 'center', padding: '10px', cursor: 'pointer' }} onClick={this.handleControlsAssuranceClick} >
-              <a style={{color: 'white', fontSize: '25px', textDecoration: 'none' }} >Start</a>
+            <div style={{ backgroundColor: 'rgb(122,116,117)', textAlign: 'center', padding: '10px', cursor: 'pointer' }} onClick={this.handleControlsAssuranceClick} >
+              <a style={{ color: 'white', fontSize: '25px', textDecoration: 'none' }} >Start</a>
             </div>
           </div>
 
           {/* second card */}
-          <div style={{marginLeft: '20px', width: '250px'}}>            
-            <div style={{textAlign:'center', color: 'white', backgroundColor: 'rgb(122,116,117)', fontSize:'35px', height: '270px', borderBottom:'1px solid white' }}>
+          <div style={{ marginLeft: '20px', width: '250px' }}>
+            <div style={{ textAlign: 'center', color: 'white', backgroundColor: 'rgb(122,116,117)', fontSize: '35px', height: '270px', borderBottom: '1px solid white' }}>
               <img src={this.governanceApphomeImg}></img>
-              <div>Governance</div>                
+              <div>Governance</div>
             </div>
-            <div style={{ backgroundColor: 'rgb(122,116,117)', textAlign: 'center', padding: '10px', cursor: 'pointer' }}                      
-                    onClick={this.handleGovernanceClick}  >
-              <a style={{color: 'white', fontSize: '25px', textDecoration: 'none' }} >Start</a>              
+            <div style={{ backgroundColor: 'rgb(122,116,117)', textAlign: 'center', padding: '10px', cursor: 'pointer' }}
+              onClick={this.handleGovernanceClick}  >
+              <a style={{ color: 'white', fontSize: '25px', textDecoration: 'none' }} >Start</a>
             </div>
-          </div>                              
+          </div>
+
+          {/* third card */}
+          <div style={{ marginLeft: '20px', width: '250px' }}>
+            <div style={{ textAlign: 'center', color: 'white', backgroundColor: 'rgb(122,116,117)', fontSize: '35px', height: '270px', borderBottom: '1px solid white' }}>
+              <img src={this.naoApphomeImg}></img>
+              <div>NAO/PAC Tracker</div>
+            </div>
+            <div style={{ backgroundColor: 'rgb(122,116,117)', textAlign: 'center', padding: '10px', cursor: 'pointer' }}
+              onClick={this.handleNAOTrackerClick}  >
+              <a style={{ color: 'white', fontSize: '25px', textDecoration: 'none' }} >Start</a>
+            </div>
+          </div>
+
+
+
+
         </div>
       </div>
     );
@@ -95,8 +113,13 @@ export default class AppHome extends BaseUserContextWebPartComponent<types.IWebP
     window.location.href = pageUrl;
   }
 
+  private handleNAOTrackerClick = (): void => {
+    const pageUrl = this.spSiteUrl + "/SitePages/NAOTrackerWelcome.aspx";
+    window.location.href = pageUrl;
+  }
 
-  
+
+
 
   //#endregion event handlers
 

@@ -45,6 +45,16 @@ export function getFolder_Help(context: WebPartContext) : string {
 }
 
 
+export function getUploadFolder_NAOUpdateEvidence(context: WebPartContext) : string {
+    //const webTitle = context.pageContext.web.title;
+    //console.log("props.spfxContext.pageContext.web.title ", `'${webTitle}'`);
+    //const path:string = `/sites/${webTitle}/Shared%20Documents/Evidence`;
+    const serverRelativeUrl = context.pageContext.web.serverRelativeUrl;
+    const path:string = `${serverRelativeUrl}/Shared%20Documents/NAOTrackerEvidence`;
+
+    return path;
+}
+
 export enum ElementStatuses {
     ToBeCompleted = "Not Started",
     InProgress = "In Progress",

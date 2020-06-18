@@ -41,6 +41,16 @@ namespace ControlAssuranceAPI.Models
 
         DbSet<EntityPriority> EntityPriorities { get; set; }
 
+        DbSet<NAODefForm> NAODefForms { get; set; }
+        DbSet<NAOPublication> NAOPublications { get; set; }
+        DbSet<NAOType> NAOTypes { get; set; }
+        DbSet<NAOPeriod> NAOPeriods { get; set; }
+        DbSet<NAORecommendation> NAORecommendations { get; set; }
+        DbSet<NAORecStatusType> NAORecStatusTypes { get; set; }
+        DbSet<NAOUpdateStatusType> NAOUpdateStatusTypes { get; set; }
+        DbSet<NAOUpdate> NAOUpdates { get; set; }
+        DbSet<NAOUpdateEvidence> NAOUpdateEvidences { get; set; }
+        DbSet<NAOUpdateFeedback> NAOUpdateFeedbacks { get; set; }
 
         ObjectResult<SPDGAreaStat_Result> SPDGAreaStat(Nullable<int> periodId);
         ObjectResult<SPDirectorateStat_Result> SPDirectorateStat(Nullable<int> periodId);

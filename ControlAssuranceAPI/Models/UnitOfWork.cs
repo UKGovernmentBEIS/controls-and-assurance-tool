@@ -45,6 +45,17 @@ namespace ControlAssuranceAPI.Models
         private GoElementEvidenceRepository goElementEvidenceRepository;
         private EntityPriorityRepository entityPriorityRepository;
 
+        private NAODefFormRepository naoDefFormRepository;
+        private NAOPeriodRepository naoPeriodRepository;
+        private NAOPublicationRepository naoPublicationRepository;
+        private NAOTypeRepository naoTypeRepository;
+        private NAORecStatusTypeRepository naoRecStatusTypeRepository;
+        private NAOUpdateStatusTypeRepository naoUpdateStatusTypeRepository;
+        private NAORecommendationRepository naoRecommendationRepository;
+        private NAOUpdateRepository naoUpdateRepository;
+        private NAOUpdateEvidenceRepository naoUpdateEvidenceRepository;
+        private NAOUpdateFeedbackRepository naoUpdateFeedbackRepository;
+
         private SPDGAreaStatRepository spDGAreaStatRepository;
         private SPDirectorateStatRepository spDirectorateStatRepository;
         private SPDivisionStatRepository spDivisionStatRepository;
@@ -402,6 +413,83 @@ namespace ControlAssuranceAPI.Models
             get
             {
                 return entityPriorityRepository = entityPriorityRepository ?? new EntityPriorityRepository(user, context);
+            }
+        }
+
+        public NAODefFormRepository NAODefFormRepository
+        {
+            get
+            {
+                return naoDefFormRepository = naoDefFormRepository ?? new NAODefFormRepository(user, context);
+            }
+        }
+
+        public NAOPeriodRepository NAOPeriodRepository
+        {
+            get
+            {
+                return naoPeriodRepository = naoPeriodRepository ?? new NAOPeriodRepository(user, context);
+            }
+        }
+
+        public NAOPublicationRepository NAOPublicationRepository
+        {
+            get
+            {
+                return naoPublicationRepository = naoPublicationRepository ?? new NAOPublicationRepository(user, context);
+            }
+        }
+
+        public NAOTypeRepository NAOTypeRepository
+        {
+            get
+            {
+                return naoTypeRepository = naoTypeRepository ?? new NAOTypeRepository(user, context);
+            }
+        }
+        public NAORecStatusTypeRepository NAORecStatusTypeRepository
+        {
+            get
+            {
+                return naoRecStatusTypeRepository = naoRecStatusTypeRepository ?? new NAORecStatusTypeRepository(user, context);
+            }
+        }
+        public NAOUpdateStatusTypeRepository NAOUpdateStatusTypeRepository 
+        {
+            get
+            {
+                return naoUpdateStatusTypeRepository = naoUpdateStatusTypeRepository ?? new NAOUpdateStatusTypeRepository(user, context);
+            }
+        }
+        public NAORecommendationRepository NAORecommendationRepository
+        {
+            get
+            {
+                return naoRecommendationRepository = naoRecommendationRepository ?? new NAORecommendationRepository(user, context);
+            }
+        }
+
+        public NAOUpdateRepository NAOUpdateRepository
+        {
+            get
+            {
+                return naoUpdateRepository = naoUpdateRepository ?? new NAOUpdateRepository(user, context);
+            }
+        }
+
+        public NAOUpdateEvidenceRepository NAOUpdateEvidenceRepository
+        {
+            get
+            {
+                return naoUpdateEvidenceRepository = naoUpdateEvidenceRepository ?? new NAOUpdateEvidenceRepository(user, context);
+            }
+        }
+
+        public NAOUpdateFeedbackRepository NAOUpdateFeedbackRepository
+        {
+            get
+            {
+                return naoUpdateFeedbackRepository = naoUpdateFeedbackRepository ?? new NAOUpdateFeedbackRepository(user, context);
             }
         }
 

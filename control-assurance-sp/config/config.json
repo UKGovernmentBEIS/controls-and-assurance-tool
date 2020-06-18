@@ -97,6 +97,22 @@
           "manifest": "./src/webparts/appSettings/AppSettingsWebPart.manifest.json"
         }
       ]
+    },
+    "nao-updates-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/naoUpdates/NaoUpdatesWebPart.js",
+          "manifest": "./src/webparts/naoUpdates/NaoUpdatesWebPart.manifest.json"
+        }
+      ]
+    },
+    "nao-welcome-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/naoWelcome/NaoWelcomeWebPart.js",
+          "manifest": "./src/webparts/naoWelcome/NaoWelcomeWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {},
@@ -112,6 +128,8 @@
     "GoUpdatesWebPartStrings": "lib/webparts/goUpdates/loc/{locale}.js",
     "GoPropertiesWebPartStrings": "lib/webparts/goProperties/loc/{locale}.js",
     "GoReportWebPartStrings": "lib/webparts/goReport/loc/{locale}.js",
-    "AppSettingsWebPartStrings": "lib/webparts/appSettings/loc/{locale}.js"
+    "AppSettingsWebPartStrings": "lib/webparts/appSettings/loc/{locale}.js",
+    "NaoUpdatesWebPartStrings": "lib/webparts/naoUpdates/loc/{locale}.js",
+    "NaoWelcomeWebPartStrings": "lib/webparts/naoWelcome/loc/{locale}.js"
   }
 }

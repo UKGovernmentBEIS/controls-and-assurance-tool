@@ -37,6 +37,15 @@ export { WebPartComponentState, IWebPartComponentState, UserContextWebPartState,
 export { UpdatePeriodInterval } from './UpdatePeriodInterval';
 export { Entity, IEntity } from './Entity';
 
+export { INAOPeriod, NAOPeriod } from './NAOPeriod';
+export { INAODefForm } from './NAODefForm';
+export { INAOPublication, NAOPublication } from './NAOPublication';
+export { INAOPublicationInfo } from './NAOPublicationInfo';
+export { INAORecommendation, NAORecommendation } from './NAORecommendation';
+export { INAOUpdate, NAOUpdate } from './NAOUpdate';
+export { INAOUpdateEvidence, NAOUpdateEvidence } from './NAOUpdateEvidence';
+
+
 export { SaveStatus } from './SaveStatus';
 export { CrUpdateFormState, ICrUpdateFormState } from './CrUpdateFormState';
 export { ProgressUpdateValidations, IProgressUpdateValidations, ProgressUpdateWithDeliveryDatesValidations, IProgressUpdateWithDeliveryDatesValidations } from './ProgressUpdateValidations';

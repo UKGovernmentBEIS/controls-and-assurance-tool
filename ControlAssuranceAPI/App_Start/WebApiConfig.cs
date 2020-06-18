@@ -65,6 +65,18 @@ namespace ControlAssuranceAPI
             builder.EntitySet<GoElementEvidence>("GoElementEvidences");
             builder.EntitySet<EntityPriority>("EntityPriorities");
 
+            builder.EntitySet<NAODefForm>("NAODefForms");
+            builder.EntitySet<NAOPeriod>("NAOPeriods");
+            builder.EntitySet<NAOPublication>("NAOPublications");
+            builder.EntitySet<NAOType>("NAOTypes");
+            builder.EntitySet<NAOUpdate>("NAOUpdates");
+            builder.EntitySet<NAOUpdateEvidence>("NAOUpdateEvidences");
+            builder.EntitySet<NAOUpdateFeedback>("NAOUpdateFeedbacks");
+            builder.EntitySet<NAORecStatusType>("NAORecStatusTypes");
+            builder.EntitySet<NAOUpdateStatusType>("NAOUpdateStatusTypes");
+            builder.EntitySet<NAORecommendation>("NAORecommendations");
+            
+
             builder.EntitySet<Models.SPDGAreaStat_Result>("DGAreaStats");
             builder.EntitySet<Models.SPDirectorateStat_Result>("DirectorateStats");
             builder.EntitySet<Models.SPDivisionStat_Result>("DivisionStats");
@@ -75,6 +87,14 @@ namespace ControlAssuranceAPI
 
             //register GoFormReport_Result for custom display of report1
             builder.EntitySet<GoFormReport_Result>("GoFormReportResult");
+
+            //register NAOPublicationView_Result for the customer display of nao publications
+            builder.EntitySet<NAOPublicationView_Result>("NAOPublicationViewResult");
+            builder.EntitySet<NAOPublicationInfoView_Result>("NAOPublicationInfoViewResult");
+            
+
+            //register NAORecommendationView_Result for the customer display of nao Recommendations
+            builder.EntitySet<NAORecommendationView_Result>("NAORecommendationViewResult");
 
             config.MapODataServiceRoute(
                 routeName: "ODataRoute",

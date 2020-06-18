@@ -267,6 +267,16 @@
     <Compile Include="Controllers\GoFormsController.cs" />
     <Compile Include="Controllers\GoMiscFilesController.cs" />
     <Compile Include="Controllers\LogsController.cs" />
+    <Compile Include="Controllers\NAODefFormsController.cs" />
+    <Compile Include="Controllers\NAOPeriodsController.cs" />
+    <Compile Include="Controllers\NAOPublicationsController.cs" />
+    <Compile Include="Controllers\NAORecommendationsController.cs" />
+    <Compile Include="Controllers\NAORecStatusTypesController.cs" />
+    <Compile Include="Controllers\NAOTypesController.cs" />
+    <Compile Include="Controllers\NAOUpdateEvidencesController.cs" />
+    <Compile Include="Controllers\NAOUpdateFeedbacksController.cs" />
+    <Compile Include="Controllers\NAOUpdatesController.cs" />
+    <Compile Include="Controllers\NAOUpdateStatusTypesController.cs" />
     <Compile Include="Controllers\PeriodsController.cs" />
     <Compile Include="Controllers\PermissionTypeController.cs" />
     <Compile Include="Controllers\DGAreaStatsController.cs" />
@@ -373,6 +383,39 @@
     <Compile Include="Models\Log.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\NAODefForm.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\NAOPeriod.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\NAOPublication.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\NAOPublicationInfoView_Result.cs" />
+    <Compile Include="Models\NAOPublicationView_Result.cs" />
+    <Compile Include="Models\NAORecommendation.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\NAORecommendationView_Result.cs" />
+    <Compile Include="Models\NAORecStatusType.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\NAOType.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\NAOUpdate.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\NAOUpdateEvidence.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\NAOUpdateFeedback.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\NAOUpdateStatusType.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Period.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
@@ -434,6 +477,16 @@
     <Compile Include="Repositories\GoMiscFilesRepository.cs" />
     <Compile Include="Repositories\LogRepository.cs" />
     <Compile Include="Repositories\AuditFeedbackRepository.cs" />
+    <Compile Include="Repositories\NAODefFormRepository.cs" />
+    <Compile Include="Repositories\NAOPeriodRepository.cs" />
+    <Compile Include="Repositories\NAOPublicationRepository.cs" />
+    <Compile Include="Repositories\NAORecommendationRepository.cs" />
+    <Compile Include="Repositories\NAORecStatusTypeRepository.cs" />
+    <Compile Include="Repositories\NAOTypeRepository.cs" />
+    <Compile Include="Repositories\NAOUpdateEvidenceRepository.cs" />
+    <Compile Include="Repositories\NAOUpdateFeedbackRepository.cs" />
+    <Compile Include="Repositories\NAOUpdateRepository.cs" />
+    <Compile Include="Repositories\NAOUpdateStatusTypeRepository.cs" />
     <Compile Include="Repositories\SPDivisionStatRepository.cs" />
     <Compile Include="Repositories\SPDirectorateStatRepository.cs" />
     <Compile Include="Repositories\SPDGAreaStatRepository.cs" />

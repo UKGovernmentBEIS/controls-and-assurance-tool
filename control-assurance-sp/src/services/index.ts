@@ -43,6 +43,17 @@ export { LogService } from './LogService';
 export { AuditFeedbackService } from './AuditFeedbackService';
 export { EntityPriorityService } from './EntityPriorityService';
 
+export { NAODefFormService } from './NAODefFormService';
+export { NAOPeriodService } from './NAOPeriodService';
+export { NAOPublicationService } from './NAOPublicationService';
+export { NAOTypeService } from './NAOTypeService';
+export { NAORecStatusTypeService } from './NAORecStatusTypeService';
+export { NAOUpdateStatusTypeService } from './NAOUpdateStatusTypeService';
+export { NAORecommendationService } from './NAORecommendationService';
+export { NAOUpdateService } from './NAOUpdateService';
+export { NAOUpdateEvidenceService } from './NAOUpdateEvidenceService';
+export { NAOUpdateFeedbackService } from './NAOUpdateFeedbackService';
+
 export { DGAreaStatService } from './DGAreaStatService';
 export { DirectorateStatService } from './DirectorateStatService';
 export { DivisionStatService } from './DivisionStatService';

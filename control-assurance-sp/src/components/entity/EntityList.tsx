@@ -17,6 +17,7 @@ export interface IEntityListProps extends IBaseListProps {
 
     entityReadAllExpandAll?: boolean;
     entityReadAllWithArg1?: any;
+    entityReadAllWithArg2?: any;
     columns: IGenColumn[];
     displayIDColumn?: boolean;
     idColumnWidth?: number;
@@ -133,8 +134,17 @@ export default class EntityList extends BaseList<IEntityListProps, IEntityListSt
         this.setState({ Loading: true });
         let read: any;
 
-        if (this.props.entityReadAllWithArg1)
-            read = this.entityService.readAllWithArgs(this.props.entityReadAllWithArg1);
+        if (this.props.entityReadAllWithArg1){
+            if(this.props.entityReadAllWithArg2){
+                //2 arguments present, so pass 2
+                read = this.entityService.readAllWithArgs(this.props.entityReadAllWithArg1, this.props.entityReadAllWithArg2);
+            }                
+            else{
+                //only pass aug1
+                read = this.entityService.readAllWithArgs(this.props.entityReadAllWithArg1);
+            }                
+        }
+            
         else if (this.props.entityReadAllExpandAll === true)
             read = this.entityService.readAllExpandAll();
         else
@@ -188,7 +198,7 @@ export default class EntityList extends BaseList<IEntityListProps, IEntityListSt
 
     public componentDidUpdate(prevProps: IEntityListProps): void {
         //console.log("in component DidUpdate GEN", this.props.entityReadAllWithArg1);
-        if (prevProps.entityReadAllWithArg1 !== this.props.entityReadAllWithArg1) {
+        if (prevProps.entityReadAllWithArg1 !== this.props.entityReadAllWithArg1 || prevProps.entityReadAllWithArg2 !== this.props.entityReadAllWithArg2) {
             this.loadEntities();
         }
     }

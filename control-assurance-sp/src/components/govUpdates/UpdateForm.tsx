@@ -622,6 +622,9 @@ export default class UpdateForm extends React.Component<IUpdateFormProps, IUpdat
             loadingPromises.push(this.loadGoElement(true));
         }
         Promise.all(loadingPromises).then(p => this.setState({ Loading: false })).catch(err => this.setState({ Loading: false }));
+
+
+
     }
     protected validateForStatus = (): boolean => {
         if (this.state.FormData.Rating === null) {

@@ -50,6 +50,16 @@ namespace ControlAssuranceAPI.Models
         public virtual DbSet<GoForm> GoForms { get; set; }
         public virtual DbSet<GoMiscFile> GoMiscFiles { get; set; }
         public virtual DbSet<Log> Logs { get; set; }
+        public virtual DbSet<NAODefForm> NAODefForms { get; set; }
+        public virtual DbSet<NAOPeriod> NAOPeriods { get; set; }
+        public virtual DbSet<NAOPublication> NAOPublications { get; set; }
+        public virtual DbSet<NAORecommendation> NAORecommendations { get; set; }
+        public virtual DbSet<NAORecStatusType> NAORecStatusTypes { get; set; }
+        public virtual DbSet<NAOType> NAOTypes { get; set; }
+        public virtual DbSet<NAOUpdate> NAOUpdates { get; set; }
+        public virtual DbSet<NAOUpdateEvidence> NAOUpdateEvidences { get; set; }
+        public virtual DbSet<NAOUpdateFeedback> NAOUpdateFeedbacks { get; set; }
+        public virtual DbSet<NAOUpdateStatusType> NAOUpdateStatusTypes { get; set; }
         public virtual DbSet<Period> Periods { get; set; }
         public virtual DbSet<PermissionType> PermissionTypes { get; set; }
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
