@@ -47,7 +47,7 @@ export class Section2State {
     //public DirSignOffName: string = null;
 }
 
-export default class Section1 extends React.Component<ISection2Props, Section2State> {
+export default class Section2 extends React.Component<ISection2Props, Section2State> {
     //private goFormService: services.GoFormService = new services.GoFormService(this.props.spfxContext, this.props.api);
     //private userService: services.UserService = new services.UserService(this.props.spfxContext, this.props.api);
 

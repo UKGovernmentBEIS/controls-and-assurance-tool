@@ -23,9 +23,9 @@ export interface IPeriodUpdateTabProps extends types.IBaseComponentProps {
     filteredItems: any[];
     naoRecommendationId: any;
     naoPeriodId: any;
-    onSavedAndClose?: () => void;
+    //onSavedAndClose?: () => void;
     //parentTitle: string;
-    //onShowList: () => void;
+    onShowList: () => void;
     //isViewOnly: boolean;
 
     //onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
@@ -51,6 +51,9 @@ export interface IPeriodUpdateTabState {
     FormData: INAOUpdate;
     RecInfo: INAOUpdate;
     Evidence_ListFilterText: string;
+    NAORecommendationId: number;
+    HideNoNextMessage: boolean;
+    HideNextButton: boolean;
     //FormData: IGoElement;
 
     //IncompleteOnly: boolean;
@@ -68,6 +71,9 @@ export class PeriodUpdateTabState implements IPeriodUpdateTabState {
     public FormData;
     public RecInfo = null;
     public Evidence_ListFilterText: string = null;
+    public NAORecommendationId: number = 0;
+    public HideNoNextMessage: boolean = true;
+    public HideNextButton: boolean = false;
 
     constructor(naoPeriodId: number, naoRecommendationId: number) {
         this.FormData = new NAOUpdate(naoPeriodId, naoRecommendationId);
@@ -85,7 +91,7 @@ export class PeriodUpdateTabState implements IPeriodUpdateTabState {
     // public FilteredItems = [];
 }
 
-export default class RecommendationsTab extends React.Component<IPeriodUpdateTabProps, IPeriodUpdateTabState> {
+export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabProps, IPeriodUpdateTabState> {
 
     private naoRecStatusTypeService: services.NAORecStatusTypeService = new services.NAORecStatusTypeService(this.props.spfxContext, this.props.api);
     private naoUpdateStatusTypeService: services.NAOUpdateStatusTypeService = new services.NAOUpdateStatusTypeService(this.props.spfxContext, this.props.api);
@@ -112,6 +118,9 @@ export default class RecommendationsTab extends React.Component<IPeriodUpdateTab
                 {this.renderEvidencesList()}
                 {this.renderFeedbacksList()}
                 {this.renderHistoricUpdatesList()}
+                {this.renderChangeLogs()}
+
+                <MessageDialog hidden={this.state.HideNoNextMessage} title="Information" content="This is the last record in your list." handleOk={() => { this.setState({ HideNoNextMessage: true }); }} />
 
             </React.Fragment>
         );
@@ -128,7 +137,7 @@ export default class RecommendationsTab extends React.Component<IPeriodUpdateTab
 
     private renderInfoTable() {
         const recInfo = this.state.RecInfo;
-        if(recInfo === null) return;
+        if (recInfo === null) return;
         return (
 
             <React.Fragment>
@@ -141,18 +150,18 @@ export default class RecommendationsTab extends React.Component<IPeriodUpdateTab
 
                         <tbody>
                             <tr>
-                                <td style={{ width:'150px', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                <td style={{ width: '150px', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
                                     Period
                             </td>
                                 <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)' }}>
                                     {recInfo["NAOPeriod"]["Title"]}
-                            </td>
-                                <td style={{ width:'150px', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                </td>
+                                <td style={{ width: '150px', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
                                     Rec Ref
                             </td>
                                 <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
                                     {recInfo["NAORecommendation"]["Title"]}
-                            </td>
+                                </td>
 
                             </tr>
 
@@ -162,8 +171,8 @@ export default class RecommendationsTab extends React.Component<IPeriodUpdateTab
                                     Recommendation
                             </td>
                                 <td colSpan={3} style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
-                                {recInfo["NAORecommendation"]["RecommendationDetails"]}
-                            </td>
+                                    {recInfo["NAORecommendation"]["RecommendationDetails"]}
+                                </td>
 
                             </tr>
                         </tbody>
@@ -292,16 +301,16 @@ export default class RecommendationsTab extends React.Component<IPeriodUpdateTab
 
                 {
                     <React.Fragment>
-                        {<PrimaryButton text="Save &amp; Next" className={styles.formButton} style={{ marginRight: '5px' }}
-                        onClick={() => this.saveAndNext()}
+                        {(this.state.HideNextButton === false) && <PrimaryButton text="Save &amp; Next" className={styles.formButton} style={{ marginRight: '5px' }}
+                            onClick={() => this.saveData(true)}
                         />}
 
                         <PrimaryButton text="Save &amp; Close" className={styles.formButton} style={{ marginRight: '5px' }}
-                            onClick={() => this.saveData()}
+                            onClick={() => this.saveData(false)}
                         />
 
                         <DefaultButton text="Cancel" className={styles.formButton} style={{ marginRight: '5px' }}
-                        onClick={this.props.onSavedAndClose}
+                            onClick={this.props.onShowList}
                         />
 
 
@@ -326,8 +335,8 @@ export default class RecommendationsTab extends React.Component<IPeriodUpdateTab
 
     }
 
-    private renderListsMainTitle(){
-        return(
+    private renderListsMainTitle() {
+        return (
             <div style={{ marginBottom: '20px', marginTop: '50px' }} className={styles.sectionATitle}>
                 Evidence, Feedback, Previous Updates and Logs
             </div>
@@ -439,7 +448,7 @@ export default class RecommendationsTab extends React.Component<IPeriodUpdateTab
                         hideTitleBelowCommandBar={true}
                     />
                 </div>
-                <div style={{paddingTop:"10px", fontStyle:"italic"}}>
+                <div style={{ paddingTop: "10px", fontStyle: "italic" }}>
                     This area can be used to leave comments for other users.
                 </div>
 
@@ -496,8 +505,8 @@ export default class RecommendationsTab extends React.Component<IPeriodUpdateTab
             {
                 key: 'NAOComments',
                 columnType: ColumnType.TextBox,
-                name: 'NAOComments',
-                fieldName: 'NAO Comments',
+                name: 'NAO Comments',
+                fieldName: 'NAOComments',
                 minWidth: 250,
                 isResizable: true,
                 isRequired: true,
@@ -510,8 +519,8 @@ export default class RecommendationsTab extends React.Component<IPeriodUpdateTab
             {
                 key: 'TargetDate',
                 columnType: ColumnType.TextBox,
-                name: 'TargetDate',
-                fieldName: 'Target Date',
+                name: 'Target Date',
+                fieldName: 'TargetDate',
                 minWidth: 150,
                 isResizable: true,
                 isRequired: true,
@@ -527,7 +536,7 @@ export default class RecommendationsTab extends React.Component<IPeriodUpdateTab
                 <div style={{ marginTop: '30px', fontWeight: "bold", marginBottom: '10px' }}>Historic Updates</div>
                 <div style={{ minHeight: '120px', border: '1px solid rgb(166,166,166)' }}>
                     <EntityList
-                        entityReadAllWithArg1={this.props.naoRecommendationId}
+                        entityReadAllWithArg1={this.state.NAORecommendationId}
                         //entityReadAllWithArg2={this.props.naoPeriodId}
                         allowAdd={false}
                         columns={listColumns}
@@ -550,12 +559,34 @@ export default class RecommendationsTab extends React.Component<IPeriodUpdateTab
 
     }
 
+    private renderChangeLogs() {
+        const fd = this.state.FormData;
+        let changeLog = fd.UpdateChangeLog ? fd.UpdateChangeLog : "";
+        let changeLogArr = changeLog.split(',');
+        let changeLogs = "";
+
+        changeLogArr.reverse().forEach(log => {
+            if (log.length > 0) {
+                changeLogs += `${log}<br />`;
+            }
+        });
+
+        return (
+            <React.Fragment>
+                <div style={{ marginTop: "30px" }}>
+                    <div style={{fontWeight:'bold'}}>Change Log:</div>
+                    <div style={{ marginTop: "20px" }} dangerouslySetInnerHTML={{ __html: changeLogs }} />
+                </div>
+            </React.Fragment>
+        );
+    }
+
     //#region Data Load/Save
 
     private validateEntity = (): boolean => {
         return true;
     }
-    private saveData = (): void => {
+    private saveData = (showNext: boolean): void => {
         if (this.validateEntity()) {
             console.log('in save data');
             if (this.props.onError) this.props.onError(null);
@@ -563,16 +594,78 @@ export default class RecommendationsTab extends React.Component<IPeriodUpdateTab
             //remove all the child and parent entities before sending post/patch
             //delete f.User; //parent entity
 
-            this.naoUpdateService.create(f).then(this.props.onSavedAndClose, (err) => {
-                if (this.props.onError) this.props.onError(`Error updating item`, err.message);
+            // this.naoUpdateService.create(f).then(this.props.onSavedAndClose, (err) => {
+            //     if (this.props.onError) this.props.onError(`Error updating item`, err.message);
+            // });
+
+            this.naoUpdateService.create(f).then((): void => {
+                //console.log('saved..');
+
+                if (this.props.onError)
+                    this.props.onError(null);
+
+                if (showNext === true) {
+                    this.showNext();
+                }
+                else {
+                    //console.log('calling on show list ..');
+                    this.props.onShowList();
+                }
+
+
+            }, (err) => {
+                if (this.props.onError)
+                    this.props.onError(`Error saving update`, err.message);
             });
 
 
         }
     }
 
-    private saveAndNext = (): void => {
-        alert('todo');
+    private showNext = (): void => {
+
+
+        const currentNAORecId: number = Number(this.state.NAORecommendationId);
+        //console.log("filtered items", this.props.filteredItems);
+        //console.log("current GoElementId", currentGoElementID);
+        let currentIDFound: boolean = false;
+        let nextNAORecID: number = 0;
+
+
+
+
+        for (let i = 0; i < this.props.filteredItems.length; i++) {
+            let e: any = this.props.filteredItems[i];
+            const id: number = Number(e["ID"]);
+
+            if (id === currentNAORecId) {
+                currentIDFound = true;
+                //console.log("if condition", id, currentGoElementID);
+                continue;
+
+            }
+            if (currentIDFound === true) {
+                nextNAORecID = id;
+                console.log("nextNAORecID", nextNAORecID);
+                break;
+            }
+
+        }
+
+        if (nextNAORecID > 0) {
+            this.setState({
+                NAORecommendationId: nextNAORecID,
+            }, () => this.loadUpdate(false));
+        }
+        else {
+
+            //this condition will not run cause we are already hiding next buttons
+            this.setState({
+                HideNoNextMessage: false,
+            });
+        }
+
+
     }
 
     private loadNAORecStatusTypes = (): Promise<IEntity[]> => {
@@ -589,34 +682,29 @@ export default class RecommendationsTab extends React.Component<IPeriodUpdateTab
         }, (err) => { if (this.props.onError) this.props.onError(`Error loading NAOUpdateStatusTypes lookup data`, err.message); });
     }
 
-    private loadUpdate = (): void => {
+    private loadUpdate = (firstLoad: boolean): void => {
 
-        // const read: Promise<IEntity[]> = this.naoUpdateService.readAllByPeriodAndRec(this.props.naoRecommendationId, this.props.naoPeriodId);
-        // read.then((entities: INAOUpdate[]): void => {
-        //     if(entities.length > 0){
-        //         const fd: INAOUpdate = entities[0];
-        //         console.log('Existing record found:', fd);
-        //         this.setState({
-        //             FormData: fd
-        //         });
-        //     }
-        //     else{
-        //         console.log('New Record will be added');
-        //     }
-        //     console.log('loadUpdate', entities);
-
-
-        // }, (err) => { if (this.props.onError) this.props.onError(`Error loading Update`, err.message); });
-
-
-
-        this.naoUpdateService.readByPeriodAndRec(this.props.naoRecommendationId, this.props.naoPeriodId).then((u: INAOUpdate) => {
+        this.naoUpdateService.readByPeriodAndRec(this.state.NAORecommendationId, this.props.naoPeriodId).then((u: INAOUpdate) => {
             console.log('NAOUpdate', u);
+            // if (firstLoad === false) {
+            //     //if we need to send info to parent component after loading next goElement- do it here
+            // }
+
+            //check if this is the last record or not in the props.filteredItems
+            const lastRecId_FilteredItems: number = Number(this.props.filteredItems[this.props.filteredItems.length - 1]["ID"]);
+            const recId_Current: number = Number(this.state.NAORecommendationId);
+            let hideNextButton: boolean = false;
+            if (recId_Current === lastRecId_FilteredItems) {
+                //console.log("This is the last one...");
+                hideNextButton = true;
+
+            }
 
             this.setState({
-                FormData: u
+                FormData: u,
+                HideNextButton: hideNextButton
             }, this.loadRecInfo);
-            
+
 
         }, (err) => {
             if (this.props.onError) this.props.onError(`Error loading update`, err.message);
@@ -624,17 +712,17 @@ export default class RecommendationsTab extends React.Component<IPeriodUpdateTab
 
 
     }
-    private loadRecInfo = ():void => {
-        if(this.state.FormData.ID > 0){
+    private loadRecInfo = (): void => {
+        if (this.state.FormData.ID > 0) {
 
             this.naoUpdateService.getRecInfo(this.state.FormData.ID).then((u: INAOUpdate) => {
                 console.log('Rec Info', u);
-    
+
                 this.setState({
                     RecInfo: u
                 });
-                
-    
+
+
             }, (err) => {
                 if (this.props.onError) this.props.onError(`Error loading rec info`, err.message);
             });
@@ -647,7 +735,7 @@ export default class RecommendationsTab extends React.Component<IPeriodUpdateTab
         return Promise.all([
             this.loadNAORecStatusTypes(),
             this.loadNAOUpdateStatusTypes(),
-            this.loadUpdate(),
+            this.loadUpdate(true),
 
         ]);
     }
@@ -655,7 +743,7 @@ export default class RecommendationsTab extends React.Component<IPeriodUpdateTab
 
     public componentDidMount(): void {
         //this.loadUpdates();
-        this.setState({ Loading: true }, this.callBackFirstLoad
+        this.setState({ Loading: true, NAORecommendationId: Number(this.props.naoRecommendationId) }, this.callBackFirstLoad
 
         );
     }

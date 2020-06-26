@@ -249,6 +249,16 @@
     <Compile Include="Controllers\DefElementGroupsController.cs" />
     <Compile Include="Controllers\DefElementsController.cs" />
     <Compile Include="Controllers\EntityPrioritiesController.cs" />
+    <Compile Include="Controllers\GIAAActionPrioritiesController.cs" />
+    <Compile Include="Controllers\GIAAActionStatusTypesController.cs" />
+    <Compile Include="Controllers\GIAAAssurancesController.cs" />
+    <Compile Include="Controllers\GIAAAuditReportsController.cs" />
+    <Compile Include="Controllers\GIAADefFormsController.cs" />
+    <Compile Include="Controllers\GIAAPeriodsController.cs" />
+    <Compile Include="Controllers\GIAARecommendationsController.cs" />
+    <Compile Include="Controllers\GIAAUpdateFeedbacksController.cs" />
+    <Compile Include="Controllers\GIAAUpdatesController.cs" />
+    <Compile Include="Controllers\GIAAUpdateStatusTypesController.cs" />
     <Compile Include="Controllers\GoAssignmentsController.cs" />
     <Compile Include="Controllers\GoDefElementsController.cs" />
     <Compile Include="Controllers\GoDefFormsController.cs" />
@@ -349,6 +359,39 @@
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Form.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\GIAAActionPriority.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\GIAAActionStatusType.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\GIAAAssurance.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\GIAAAuditReport.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\GIAAAuditReportInfoView_Result.cs" />
+    <Compile Include="Models\GIAAAuditReportView_Result.cs" />
+    <Compile Include="Models\GIAADefForm.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\GIAAPeriod.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\GIAARecommendation.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\GIAARecommendationView_Result.cs" />
+    <Compile Include="Models\GIAAUpdate.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\GIAAUpdateFeedback.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\GIAAUpdateStatusType.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\GoAssignment.cs">
@@ -457,6 +500,16 @@
     <Compile Include="Repositories\DefElementGroupRespository.cs" />
     <Compile Include="Repositories\DefElementRepository.cs" />
     <Compile Include="Repositories\EntityPriorityRepository.cs" />
+    <Compile Include="Repositories\GIAAActionPriorityRepository.cs" />
+    <Compile Include="Repositories\GIAAActionStatusTypeRepository.cs" />
+    <Compile Include="Repositories\GIAAAssuranceRepository.cs" />
+    <Compile Include="Repositories\GIAAAuditReportRepository.cs" />
+    <Compile Include="Repositories\GIAADefFormRepository.cs" />
+    <Compile Include="Repositories\GIAAPeriodRepository.cs" />
+    <Compile Include="Repositories\GIAARecommendationRepository.cs" />
+    <Compile Include="Repositories\GIAAUpdateFeedbackRepository.cs" />
+    <Compile Include="Repositories\GIAAUpdateRepository.cs" />
+    <Compile Include="Repositories\GIAAUpdateStatusTypeRepository.cs" />
     <Compile Include="Repositories\GoAssignmentRepository.cs" />
     <Compile Include="Repositories\GoDefElementRepository.cs" />
     <Compile Include="Repositories\GoDefFormRepository.cs" />

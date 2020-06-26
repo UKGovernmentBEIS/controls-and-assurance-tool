@@ -11,6 +11,7 @@ export interface INAOUpdate  extends IEntity {
     NAOPeriodId?: number;
     NAORecStatusTypeId?: number;
     NAOUpdateStatusTypeId?: number;
+    UpdateChangeLog?: string;
 
 }
 
@@ -25,6 +26,7 @@ export class NAOUpdate implements INAOUpdate{
     public NAOPeriodId = null;
     public NAORecStatusTypeId = null;
     public NAOUpdateStatusTypeId = null;
+    public UpdateChangeLog = null;
 
     constructor(naoPeriodId: number, naoRecommendationId: number) {
         this.NAOPeriodId = naoPeriodId;

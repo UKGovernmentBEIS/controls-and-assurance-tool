@@ -56,6 +56,17 @@ namespace ControlAssuranceAPI.Models
         private NAOUpdateEvidenceRepository naoUpdateEvidenceRepository;
         private NAOUpdateFeedbackRepository naoUpdateFeedbackRepository;
 
+        private GIAAAssuranceRepository gIAAAssuranceRepository;
+        private GIAAPeriodRepository gIAAPeriodRepository;
+        private GIAADefFormRepository gIAADefFormRepository;
+        private GIAAAuditReportRepository gIAAAuditReportRepository;
+        private GIAAActionPriorityRepository gIAAActionPriorityRepository;
+        private GIAAActionStatusTypeRepository gIAAActionStatusTypeRepository;
+        private GIAARecommendationRepository gIAARecommendationRepository;
+        private GIAAUpdateRepository gIAAUpdateRepository;
+        private GIAAUpdateFeedbackRepository gIAAUpdateFeedbackRepository;
+        private GIAAUpdateStatusTypeRepository gIAAUpdateStatusTypeRepository;
+
         private SPDGAreaStatRepository spDGAreaStatRepository;
         private SPDirectorateStatRepository spDirectorateStatRepository;
         private SPDivisionStatRepository spDivisionStatRepository;
@@ -492,6 +503,88 @@ namespace ControlAssuranceAPI.Models
                 return naoUpdateFeedbackRepository = naoUpdateFeedbackRepository ?? new NAOUpdateFeedbackRepository(user, context);
             }
         }
+
+        public GIAAPeriodRepository GIAAPeriodRepository
+        {
+            get
+            {
+                return gIAAPeriodRepository = gIAAPeriodRepository ?? new GIAAPeriodRepository(user, context);
+            }
+        }
+
+        public GIAAAssuranceRepository GIAAAssuranceRepository
+        {
+            get
+            {
+                return gIAAAssuranceRepository = gIAAAssuranceRepository ?? new GIAAAssuranceRepository(user, context);
+            }
+        }
+
+        public GIAADefFormRepository GIAADefFormRepository
+        {
+            get
+            {
+                return gIAADefFormRepository = gIAADefFormRepository ?? new GIAADefFormRepository(user, context);
+            }
+        }
+
+        public GIAAAuditReportRepository GIAAAuditReportRepository
+        {
+            get
+            {
+                return gIAAAuditReportRepository = gIAAAuditReportRepository ?? new GIAAAuditReportRepository(user, context);
+            }
+        }
+
+        public GIAAActionPriorityRepository GIAAActionPriorityRepository
+        {
+            get
+            {
+                return gIAAActionPriorityRepository = gIAAActionPriorityRepository ?? new GIAAActionPriorityRepository(user, context);
+            }
+        }
+
+        public GIAAActionStatusTypeRepository GIAAActionStatusTypeRepository
+        {
+            get
+            {
+                return gIAAActionStatusTypeRepository = gIAAActionStatusTypeRepository ?? new GIAAActionStatusTypeRepository(user, context);
+            }
+        }
+
+        public GIAARecommendationRepository GIAARecommendationRepository
+        {
+            get
+            {
+                return gIAARecommendationRepository = gIAARecommendationRepository ?? new GIAARecommendationRepository(user, context);
+            }
+        }
+
+        public GIAAUpdateRepository GIAAUpdateRepository
+        {
+            get
+            {
+                return gIAAUpdateRepository = gIAAUpdateRepository ?? new GIAAUpdateRepository(user, context);
+            }
+        }
+
+        public GIAAUpdateFeedbackRepository GIAAUpdateFeedbackRepository
+        {
+            get
+            {
+                return gIAAUpdateFeedbackRepository = gIAAUpdateFeedbackRepository ?? new GIAAUpdateFeedbackRepository(user, context);
+            }
+        }
+
+        public GIAAUpdateStatusTypeRepository GIAAUpdateStatusTypeRepository
+        {
+            get
+            {
+                return gIAAUpdateStatusTypeRepository = gIAAUpdateStatusTypeRepository ?? new GIAAUpdateStatusTypeRepository(user, context);
+            }
+        }
+
+
 
         public SPDGAreaStatRepository SPDGAreaStatRepository
         {

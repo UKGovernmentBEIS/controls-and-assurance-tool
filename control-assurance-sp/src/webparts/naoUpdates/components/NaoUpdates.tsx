@@ -238,7 +238,7 @@ export default class NaoUpdates extends BaseUserContextWebPartComponent<types.IW
         naoRecommendationId={this.state.Section1_RecList_SelectedId}
         naoPeriodId={this.state.PeriodId}
         filteredItems={this.state.Section1_RecList_FilteredItems}
-        onSavedAndClose={this.handleShowSection1RecList}
+        onShowList={this.handleShowSection1RecList}
         {...this.props}
       />
 

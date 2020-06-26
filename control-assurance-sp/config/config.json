@@ -113,6 +113,22 @@
           "manifest": "./src/webparts/naoWelcome/NaoWelcomeWebPart.manifest.json"
         }
       ]
+    },
+    "giaa-welcome-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/giaaWelcome/GiaaWelcomeWebPart.js",
+          "manifest": "./src/webparts/giaaWelcome/GiaaWelcomeWebPart.manifest.json"
+        }
+      ]
+    },
+    "giaa-updates-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/giaaUpdates/GiaaUpdatesWebPart.js",
+          "manifest": "./src/webparts/giaaUpdates/GiaaUpdatesWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {},
@@ -130,6 +146,8 @@
     "GoReportWebPartStrings": "lib/webparts/goReport/loc/{locale}.js",
     "AppSettingsWebPartStrings": "lib/webparts/appSettings/loc/{locale}.js",
     "NaoUpdatesWebPartStrings": "lib/webparts/naoUpdates/loc/{locale}.js",
-    "NaoWelcomeWebPartStrings": "lib/webparts/naoWelcome/loc/{locale}.js"
+    "NaoWelcomeWebPartStrings": "lib/webparts/naoWelcome/loc/{locale}.js",
+    "GiaaWelcomeWebPartStrings": "lib/webparts/giaaWelcome/loc/{locale}.js",
+    "GiaaUpdatesWebPartStrings": "lib/webparts/giaaUpdates/loc/{locale}.js"
   }
 }

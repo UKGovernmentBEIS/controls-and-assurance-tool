@@ -52,6 +52,17 @@ namespace ControlAssuranceAPI.Models
         DbSet<NAOUpdateEvidence> NAOUpdateEvidences { get; set; }
         DbSet<NAOUpdateFeedback> NAOUpdateFeedbacks { get; set; }
 
+        DbSet<GIAAAssurance> GIAAAssurances { get; set; }
+        DbSet<GIAAAuditReport> GIAAAuditReports { get; set; }
+        DbSet<GIAADefForm> GIAADefForms { get; set; }
+        DbSet<GIAAPeriod> GIAAPeriods { get; set; }
+        DbSet<GIAAActionPriority> GIAAActionPriorities { get; set; }
+        DbSet<GIAAActionStatusType> GIAAActionStatusTypes { get; set; }
+        DbSet<GIAARecommendation> GIAARecommendations { get; set; }
+        DbSet<GIAAUpdate> GIAAUpdates { get; set; }
+        DbSet<GIAAUpdateFeedback> GIAAUpdateFeedbacks { get; set; }
+        DbSet<GIAAUpdateStatusType> GIAAUpdateStatusTypes { get; set; }
+
         ObjectResult<SPDGAreaStat_Result> SPDGAreaStat(Nullable<int> periodId);
         ObjectResult<SPDirectorateStat_Result> SPDirectorateStat(Nullable<int> periodId);
         ObjectResult<SPDivisionStat_Result> SPDivisionStat(Nullable<int> periodId);

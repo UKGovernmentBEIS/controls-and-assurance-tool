@@ -49,6 +49,8 @@ namespace ControlAssuranceAPI.Repositories
                 newR.NAORecommendationId = naoRecommendationId;
                 newR.NAOUpdateStatusTypeId = 1;
                 newR.NAORecStatusTypeId = 1;
+                newR.TargetDate = "";
+                newR.UpdateChangeLog = "";
 
                 ret = db.NAOUpdates.Add(newR);
                 db.SaveChanges();
@@ -75,10 +77,17 @@ namespace ControlAssuranceAPI.Repositories
                 naoUpdateDb.NAORecommendation.TargetDate = naoUpdate.TargetDate;
                 naoUpdateDb.NAORecommendation.NAORecStatusTypeId = naoUpdate.NAORecStatusTypeId;
 
+                string user = ApiUser.Title;
+                string date = DateTime.Now.ToString("ddMMMyyyy HH:mm");
+                string newChangeLog = naoUpdateDb.UpdateChangeLog + $"{date} Updated by {user},";
+
+                naoUpdateDb.UpdateChangeLog = newChangeLog;
+
                 ret = naoUpdateDb;
             }
             else
             {
+                //this condition will not be called cause we are using FindCreate method on page load
                 ret = db.NAOUpdates.Add(naoUpdate);
             }
 

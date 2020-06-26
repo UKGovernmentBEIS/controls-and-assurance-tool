@@ -64,7 +64,7 @@ export class RecommendationsListState<T> implements IRecommendationsListState<T>
     public InitDataLoaded = false;
 }
 
-export default class Recommendations extends React.Component<IRecommendationsListProps, IRecommendationsListState<IEntity>> {
+export default class RecommendationsList extends React.Component<IRecommendationsListProps, IRecommendationsListState<IEntity>> {
     private _selection: Selection;
     private recService: services.NAORecommendationService = new services.NAORecommendationService(this.props.spfxContext, this.props.api);
 

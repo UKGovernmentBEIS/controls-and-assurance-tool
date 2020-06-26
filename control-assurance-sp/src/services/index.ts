@@ -1,3 +1,5 @@
+
+
 export { SearchObjectService } from './SearchObjectService';
 export { ContextService } from './ContextService';
 export { DateService } from './DateService';
@@ -53,6 +55,17 @@ export { NAORecommendationService } from './NAORecommendationService';
 export { NAOUpdateService } from './NAOUpdateService';
 export { NAOUpdateEvidenceService } from './NAOUpdateEvidenceService';
 export { NAOUpdateFeedbackService } from './NAOUpdateFeedbackService';
+
+export { GIAAPeriodService } from './GIAAPeriodService';
+export { GIAAAssuranceService } from './GIAAAssuranceService';
+export { GIAADefFormService } from './GIAADefFormService';
+export { GIAAAuditReportService } from './GIAAAuditReportService';
+export { GIAARecommendationService } from './GIAARecommendationService';
+export { GIAAActionPriorityService } from './GIAAActionPriorityService';
+export { GIAAActionStatusTypeService } from './GIAAActionStatusTypeService';
+export { GIAAUpdateService } from './GIAAUpdateService';
+export { GIAAUpdateFeedbackService } from './GIAAUpdateFeedbackService';
+export { GIAAUpdateStatusTypeService } from './GIAAUpdateStatusTypeService';
 
 export { DGAreaStatService } from './DGAreaStatService';
 export { DirectorateStatService } from './DirectorateStatService';

@@ -75,7 +75,19 @@ namespace ControlAssuranceAPI
             builder.EntitySet<NAORecStatusType>("NAORecStatusTypes");
             builder.EntitySet<NAOUpdateStatusType>("NAOUpdateStatusTypes");
             builder.EntitySet<NAORecommendation>("NAORecommendations");
-            
+
+            builder.EntitySet<GIAAPeriod>("GIAAPeriods");
+            builder.EntitySet<GIAADefForm>("GIAADefForms");
+            builder.EntitySet<GIAAAssurance>("GIAAAssurances");
+            builder.EntitySet<GIAAAuditReport>("GIAAAuditReports");
+
+            builder.EntitySet<GIAAActionPriority>("GIAAActionPriorities");
+            builder.EntitySet<GIAAActionStatusType>("GIAAActionStatusTypes");
+            builder.EntitySet<GIAARecommendation>("GIAARecommendations");
+            builder.EntitySet<GIAAUpdate>("GIAAUpdates");
+            builder.EntitySet<GIAAUpdateFeedback>("GIAAUpdateFeedbacks");
+            builder.EntitySet<GIAAUpdateStatusType>("GIAAUpdateStatusTypes");
+
 
             builder.EntitySet<Models.SPDGAreaStat_Result>("DGAreaStats");
             builder.EntitySet<Models.SPDirectorateStat_Result>("DirectorateStats");
@@ -95,6 +107,16 @@ namespace ControlAssuranceAPI
 
             //register NAORecommendationView_Result for the customer display of nao Recommendations
             builder.EntitySet<NAORecommendationView_Result>("NAORecommendationViewResult");
+
+            //register GIAAAuditReportView_Result for the customer display of giaa audit reports
+            builder.EntitySet<GIAAAuditReportView_Result>("GIAAAuditReportViewResult");
+            builder.EntitySet<GIAAAuditReportInfoView_Result>("GIAAAuditReportInfoViewResult");
+
+            //register GIAARecommendationView_Result for the customer display of giaa Recommendations
+            builder.EntitySet<GIAARecommendationView_Result>("GIAARecommendationViewResult");
+
+            
+            
 
             config.MapODataServiceRoute(
                 routeName: "ODataRoute",

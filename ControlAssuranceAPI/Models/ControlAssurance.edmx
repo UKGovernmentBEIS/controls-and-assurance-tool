@@ -265,6 +265,107 @@
           <Property Name="LastSignOffFor" Type="nvarchar" MaxLength="50" />
           <Property Name="FirstSignedOff" Type="bit" />
         </EntityType>
+        <EntityType Name="GIAAActionPriority">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="GIAAActionStatusType">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="GIAAAssurance">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="GIAAAuditReport">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="2000" />
+          <Property Name="NumberStr" Type="nvarchar" MaxLength="50" />
+          <Property Name="IssueDate" Type="datetime" />
+          <Property Name="AuditYear" Type="nvarchar" MaxLength="50" />
+          <Property Name="Link" Type="nvarchar" MaxLength="2000" />
+          <Property Name="DirectorateId" Type="int" />
+          <Property Name="GIAAAssuranceId" Type="int" />
+        </EntityType>
+        <EntityType Name="GIAADefForm">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="1000" />
+          <Property Name="Details" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="GIAAPeriod">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="PeriodStatus" Type="nvarchar" MaxLength="50" />
+          <Property Name="PeriodStartDate" Type="date" />
+          <Property Name="PeriodEndDate" Type="date" />
+          <Property Name="LastPeriodId" Type="int" />
+        </EntityType>
+        <EntityType Name="GIAARecommendation">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="100" />
+          <Property Name="RecommendationDetails" Type="nvarchar(max)" />
+          <Property Name="TargetDate" Type="datetime" />
+          <Property Name="GIAAActionPriorityId" Type="int" />
+          <Property Name="GIAAActionStatusTypeId" Type="int" />
+          <Property Name="GIAAPeriodUpdateStatusId" Type="int" />
+          <Property Name="GIAAAuditReportId" Type="int" />
+        </EntityType>
+        <EntityType Name="GIAAUpdate">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" />
+          <Property Name="TargetDate" Type="datetime" />
+          <Property Name="ProgressUpdateDetails" Type="nvarchar(max)" />
+          <Property Name="GIAAComments" Type="nvarchar(max)" />
+          <Property Name="Link" Type="nvarchar" MaxLength="2000" />
+          <Property Name="GIAARecommendationId" Type="int" />
+          <Property Name="GIAAPeriodId" Type="int" />
+          <Property Name="GIAAActionStatusTypeId" Type="int" />
+          <Property Name="GIAAActionPriorityId" Type="int" />
+          <Property Name="GIAAUpdateStatusId" Type="int" Nullable="false" />
+          <Property Name="UpdateChangeLog" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="GIAAUpdateFeedback">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" />
+          <Property Name="GIAAUpdateId" Type="int" />
+          <Property Name="Comment" Type="nvarchar(max)" />
+          <Property Name="CommentById" Type="int" />
+          <Property Name="CommentDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="GIAAUpdateStatusType">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" />
+        </EntityType>
         <EntityType Name="GoAssignment">
           <Key>
             <PropertyRef Name="ID" />
@@ -467,6 +568,7 @@
           <Property Name="NAOPeriodId" Type="int" />
           <Property Name="NAORecStatusTypeId" Type="int" />
           <Property Name="NAOUpdateStatusTypeId" Type="int" Nullable="false" />
+          <Property Name="UpdateChangeLog" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="NAOUpdateEvidence">
           <Key>
@@ -829,6 +931,150 @@
             </Principal>
             <Dependent Role="Form">
               <PropertyRef Name="TeamId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GIAAAuditReport_Directorate">
+          <End Role="Directorate" Type="Self.Directorate" Multiplicity="0..1" />
+          <End Role="GIAAAuditReport" Type="Self.GIAAAuditReport" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Directorate">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GIAAAuditReport">
+              <PropertyRef Name="DirectorateId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GIAAAuditReport_GIAAAssurance">
+          <End Role="GIAAAssurance" Type="Self.GIAAAssurance" Multiplicity="0..1" />
+          <End Role="GIAAAuditReport" Type="Self.GIAAAuditReport" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GIAAAssurance">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GIAAAuditReport">
+              <PropertyRef Name="GIAAAssuranceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GIAARecommendation_GIAAActionPriority">
+          <End Role="GIAAActionPriority" Type="Self.GIAAActionPriority" Multiplicity="0..1" />
+          <End Role="GIAARecommendation" Type="Self.GIAARecommendation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GIAAActionPriority">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GIAARecommendation">
+              <PropertyRef Name="GIAAActionPriorityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GIAARecommendation_GIAAActionStatusType">
+          <End Role="GIAAActionStatusType" Type="Self.GIAAActionStatusType" Multiplicity="0..1" />
+          <End Role="GIAARecommendation" Type="Self.GIAARecommendation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GIAAActionStatusType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GIAARecommendation">
+              <PropertyRef Name="GIAAActionStatusTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GIAARecommendation_GIAAAuditReport">
+          <End Role="GIAAAuditReport" Type="Self.GIAAAuditReport" Multiplicity="0..1" />
+          <End Role="GIAARecommendation" Type="Self.GIAARecommendation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GIAAAuditReport">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GIAARecommendation">
+              <PropertyRef Name="GIAAAuditReportId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GIAAUpdate_GIAAActionPriority">
+          <End Role="GIAAActionPriority" Type="Self.GIAAActionPriority" Multiplicity="0..1" />
+          <End Role="GIAAUpdate" Type="Self.GIAAUpdate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GIAAActionPriority">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GIAAUpdate">
+              <PropertyRef Name="GIAAActionPriorityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GIAAUpdate_GIAAActionStatusType">
+          <End Role="GIAAActionStatusType" Type="Self.GIAAActionStatusType" Multiplicity="0..1" />
+          <End Role="GIAAUpdate" Type="Self.GIAAUpdate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GIAAActionStatusType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GIAAUpdate">
+              <PropertyRef Name="GIAAActionStatusTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GIAAUpdate_GIAAPeriod">
+          <End Role="GIAAPeriod" Type="Self.GIAAPeriod" Multiplicity="0..1" />
+          <End Role="GIAAUpdate" Type="Self.GIAAUpdate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GIAAPeriod">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GIAAUpdate">
+              <PropertyRef Name="GIAAPeriodId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GIAAUpdate_GIAARecommendation">
+          <End Role="GIAARecommendation" Type="Self.GIAARecommendation" Multiplicity="0..1" />
+          <End Role="GIAAUpdate" Type="Self.GIAAUpdate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GIAARecommendation">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GIAAUpdate">
+              <PropertyRef Name="GIAARecommendationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GIAAUpdate_GIAAUpdateStatusType">
+          <End Role="GIAAUpdateStatusType" Type="Self.GIAAUpdateStatusType" Multiplicity="1" />
+          <End Role="GIAAUpdate" Type="Self.GIAAUpdate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GIAAUpdateStatusType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GIAAUpdate">
+              <PropertyRef Name="GIAAUpdateStatusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GIAAUpdateFeedback_GIAAUpdate">
+          <End Role="GIAAUpdate" Type="Self.GIAAUpdate" Multiplicity="0..1" />
+          <End Role="GIAAUpdateFeedback" Type="Self.GIAAUpdateFeedback" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GIAAUpdate">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GIAAUpdateFeedback">
+              <PropertyRef Name="GIAAUpdateId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GIAAUpdateFeedback_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="GIAAUpdateFeedback" Type="Self.GIAAUpdateFeedback" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GIAAUpdateFeedback">
+              <PropertyRef Name="CommentById" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1299,6 +1545,16 @@
           <EntitySet Name="EntityPriority" EntityType="Self.EntityPriority" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntityStatusType" EntityType="Self.EntityStatusType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Form" EntityType="Self.Form" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GIAAActionPriority" EntityType="Self.GIAAActionPriority" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GIAAActionStatusType" EntityType="Self.GIAAActionStatusType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GIAAAssurance" EntityType="Self.GIAAAssurance" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GIAAAuditReport" EntityType="Self.GIAAAuditReport" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GIAADefForm" EntityType="Self.GIAADefForm" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GIAAPeriod" EntityType="Self.GIAAPeriod" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GIAARecommendation" EntityType="Self.GIAARecommendation" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GIAAUpdate" EntityType="Self.GIAAUpdate" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GIAAUpdateFeedback" EntityType="Self.GIAAUpdateFeedback" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GIAAUpdateStatusType" EntityType="Self.GIAAUpdateStatusType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GoAssignment" EntityType="Self.GoAssignment" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GoDefElement" EntityType="Self.GoDefElement" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GoDefForm" EntityType="Self.GoDefForm" Schema="dbo" store:Type="Tables" />
@@ -1410,6 +1666,54 @@
           <AssociationSet Name="FK_Form_TeamSet" Association="Self.FK_Form_TeamSet">
             <End Role="Team" EntitySet="Team" />
             <End Role="Form" EntitySet="Form" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GIAAAuditReport_Directorate" Association="Self.FK_GIAAAuditReport_Directorate">
+            <End Role="Directorate" EntitySet="Directorate" />
+            <End Role="GIAAAuditReport" EntitySet="GIAAAuditReport" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GIAAAuditReport_GIAAAssurance" Association="Self.FK_GIAAAuditReport_GIAAAssurance">
+            <End Role="GIAAAssurance" EntitySet="GIAAAssurance" />
+            <End Role="GIAAAuditReport" EntitySet="GIAAAuditReport" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GIAARecommendation_GIAAActionPriority" Association="Self.FK_GIAARecommendation_GIAAActionPriority">
+            <End Role="GIAAActionPriority" EntitySet="GIAAActionPriority" />
+            <End Role="GIAARecommendation" EntitySet="GIAARecommendation" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GIAARecommendation_GIAAActionStatusType" Association="Self.FK_GIAARecommendation_GIAAActionStatusType">
+            <End Role="GIAAActionStatusType" EntitySet="GIAAActionStatusType" />
+            <End Role="GIAARecommendation" EntitySet="GIAARecommendation" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GIAARecommendation_GIAAAuditReport" Association="Self.FK_GIAARecommendation_GIAAAuditReport">
+            <End Role="GIAAAuditReport" EntitySet="GIAAAuditReport" />
+            <End Role="GIAARecommendation" EntitySet="GIAARecommendation" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GIAAUpdate_GIAAActionPriority" Association="Self.FK_GIAAUpdate_GIAAActionPriority">
+            <End Role="GIAAActionPriority" EntitySet="GIAAActionPriority" />
+            <End Role="GIAAUpdate" EntitySet="GIAAUpdate" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GIAAUpdate_GIAAActionStatusType" Association="Self.FK_GIAAUpdate_GIAAActionStatusType">
+            <End Role="GIAAActionStatusType" EntitySet="GIAAActionStatusType" />
+            <End Role="GIAAUpdate" EntitySet="GIAAUpdate" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GIAAUpdate_GIAAPeriod" Association="Self.FK_GIAAUpdate_GIAAPeriod">
+            <End Role="GIAAPeriod" EntitySet="GIAAPeriod" />
+            <End Role="GIAAUpdate" EntitySet="GIAAUpdate" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GIAAUpdate_GIAARecommendation" Association="Self.FK_GIAAUpdate_GIAARecommendation">
+            <End Role="GIAARecommendation" EntitySet="GIAARecommendation" />
+            <End Role="GIAAUpdate" EntitySet="GIAAUpdate" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GIAAUpdate_GIAAUpdateStatusType" Association="Self.FK_GIAAUpdate_GIAAUpdateStatusType">
+            <End Role="GIAAUpdateStatusType" EntitySet="GIAAUpdateStatusType" />
+            <End Role="GIAAUpdate" EntitySet="GIAAUpdate" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GIAAUpdateFeedback_GIAAUpdate" Association="Self.FK_GIAAUpdateFeedback_GIAAUpdate">
+            <End Role="GIAAUpdate" EntitySet="GIAAUpdate" />
+            <End Role="GIAAUpdateFeedback" EntitySet="GIAAUpdateFeedback" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GIAAUpdateFeedback_User" Association="Self.FK_GIAAUpdateFeedback_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="GIAAUpdateFeedback" EntitySet="GIAAUpdateFeedback" />
           </AssociationSet>
           <AssociationSet Name="FK_GoAssignment_GoElement" Association="Self.FK_GoAssignment_GoElement">
             <End Role="GoElement" EntitySet="GoElement" />
@@ -1704,6 +2008,7 @@
           <NavigationProperty Name="EntityStatusType" Relationship="Self.FK_Directorate_EntityStatusType" FromRole="Directorate" ToRole="EntityStatusType" />
           <NavigationProperty Name="User" Relationship="Self.FK_Directorate_User" FromRole="Directorate" ToRole="User" />
           <NavigationProperty Name="DirectorateMembers" Relationship="Self.FK_DirectorateMember_Directorate" FromRole="Directorate" ToRole="DirectorateMember" />
+          <NavigationProperty Name="GIAAAuditReports" Relationship="Self.FK_GIAAAuditReport_Directorate" FromRole="Directorate" ToRole="GIAAAuditReport" />
           <NavigationProperty Name="NAOPublications" Relationship="Self.FK_NAOPublication_Directorate" FromRole="Directorate" ToRole="NAOPublication" />
           <NavigationProperty Name="Teams" Relationship="Self.FK_Team_Directorate" FromRole="Directorate" ToRole="Team" />
         </EntityType>
@@ -1859,6 +2164,129 @@
           <NavigationProperty Name="Elements" Relationship="Self.FK_Element_Form" FromRole="Form" ToRole="Element" />
           <NavigationProperty Name="Period" Relationship="Self.FK_Form_Period" FromRole="Form" ToRole="Period" />
           <NavigationProperty Name="Team" Relationship="Self.FK_Form_TeamSet" FromRole="Form" ToRole="Team" />
+        </EntityType>
+        <EntityType Name="GIAAActionPriority">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="GIAARecommendations" Relationship="Self.FK_GIAARecommendation_GIAAActionPriority" FromRole="GIAAActionPriority" ToRole="GIAARecommendation" />
+          <NavigationProperty Name="GIAAUpdates" Relationship="Self.FK_GIAAUpdate_GIAAActionPriority" FromRole="GIAAActionPriority" ToRole="GIAAUpdate" />
+        </EntityType>
+        <EntityType Name="GIAAActionStatusType">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="GIAARecommendations" Relationship="Self.FK_GIAARecommendation_GIAAActionStatusType" FromRole="GIAAActionStatusType" ToRole="GIAARecommendation" />
+          <NavigationProperty Name="GIAAUpdates" Relationship="Self.FK_GIAAUpdate_GIAAActionStatusType" FromRole="GIAAActionStatusType" ToRole="GIAAUpdate" />
+        </EntityType>
+        <EntityType Name="GIAAAssurance">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="GIAAAuditReports" Relationship="Self.FK_GIAAAuditReport_GIAAAssurance" FromRole="GIAAAssurance" ToRole="GIAAAuditReport" />
+        </EntityType>
+        <EntityType Name="GIAAAuditReport">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
+          <Property Name="NumberStr" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IssueDate" Type="DateTime" Precision="3" />
+          <Property Name="AuditYear" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Link" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
+          <Property Name="DirectorateId" Type="Int32" />
+          <Property Name="GIAAAssuranceId" Type="Int32" />
+          <NavigationProperty Name="Directorate" Relationship="Self.FK_GIAAAuditReport_Directorate" FromRole="GIAAAuditReport" ToRole="Directorate" />
+          <NavigationProperty Name="GIAAAssurance" Relationship="Self.FK_GIAAAuditReport_GIAAAssurance" FromRole="GIAAAuditReport" ToRole="GIAAAssurance" />
+          <NavigationProperty Name="GIAARecommendations" Relationship="Self.FK_GIAARecommendation_GIAAAuditReport" FromRole="GIAAAuditReport" ToRole="GIAARecommendation" />
+        </EntityType>
+        <EntityType Name="GIAADefForm">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="Details" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="GIAAPeriod">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PeriodStatus" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PeriodStartDate" Type="DateTime" Precision="0" />
+          <Property Name="PeriodEndDate" Type="DateTime" Precision="0" />
+          <Property Name="LastPeriodId" Type="Int32" />
+          <NavigationProperty Name="GIAAUpdates" Relationship="Self.FK_GIAAUpdate_GIAAPeriod" FromRole="GIAAPeriod" ToRole="GIAAUpdate" />
+        </EntityType>
+        <EntityType Name="GIAARecommendation">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="RecommendationDetails" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="TargetDate" Type="DateTime" Precision="3" />
+          <Property Name="GIAAActionPriorityId" Type="Int32" />
+          <Property Name="GIAAActionStatusTypeId" Type="Int32" />
+          <Property Name="GIAAPeriodUpdateStatusId" Type="Int32" />
+          <Property Name="GIAAAuditReportId" Type="Int32" />
+          <NavigationProperty Name="GIAAActionPriority" Relationship="Self.FK_GIAARecommendation_GIAAActionPriority" FromRole="GIAARecommendation" ToRole="GIAAActionPriority" />
+          <NavigationProperty Name="GIAAActionStatusType" Relationship="Self.FK_GIAARecommendation_GIAAActionStatusType" FromRole="GIAARecommendation" ToRole="GIAAActionStatusType" />
+          <NavigationProperty Name="GIAAAuditReport" Relationship="Self.FK_GIAARecommendation_GIAAAuditReport" FromRole="GIAARecommendation" ToRole="GIAAAuditReport" />
+          <NavigationProperty Name="GIAAUpdates" Relationship="Self.FK_GIAAUpdate_GIAARecommendation" FromRole="GIAARecommendation" ToRole="GIAAUpdate" />
+        </EntityType>
+        <EntityType Name="GIAAUpdate">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TargetDate" Type="DateTime" Precision="3" />
+          <Property Name="ProgressUpdateDetails" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="GIAAComments" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Link" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
+          <Property Name="GIAARecommendationId" Type="Int32" />
+          <Property Name="GIAAPeriodId" Type="Int32" />
+          <Property Name="GIAAActionStatusTypeId" Type="Int32" />
+          <Property Name="GIAAActionPriorityId" Type="Int32" />
+          <Property Name="GIAAUpdateStatusId" Type="Int32" Nullable="false" />
+          <Property Name="UpdateChangeLog" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="GIAAActionPriority" Relationship="Self.FK_GIAAUpdate_GIAAActionPriority" FromRole="GIAAUpdate" ToRole="GIAAActionPriority" />
+          <NavigationProperty Name="GIAAActionStatusType" Relationship="Self.FK_GIAAUpdate_GIAAActionStatusType" FromRole="GIAAUpdate" ToRole="GIAAActionStatusType" />
+          <NavigationProperty Name="GIAAPeriod" Relationship="Self.FK_GIAAUpdate_GIAAPeriod" FromRole="GIAAUpdate" ToRole="GIAAPeriod" />
+          <NavigationProperty Name="GIAARecommendation" Relationship="Self.FK_GIAAUpdate_GIAARecommendation" FromRole="GIAAUpdate" ToRole="GIAARecommendation" />
+          <NavigationProperty Name="GIAAUpdateStatusType" Relationship="Self.FK_GIAAUpdate_GIAAUpdateStatusType" FromRole="GIAAUpdate" ToRole="GIAAUpdateStatusType" />
+          <NavigationProperty Name="GIAAUpdateFeedbacks" Relationship="Self.FK_GIAAUpdateFeedback_GIAAUpdate" FromRole="GIAAUpdate" ToRole="GIAAUpdateFeedback" />
+        </EntityType>
+        <EntityType Name="GIAAUpdateFeedback">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="GIAAUpdateId" Type="Int32" />
+          <Property Name="Comment" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CommentById" Type="Int32" />
+          <Property Name="CommentDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="GIAAUpdate" Relationship="Self.FK_GIAAUpdateFeedback_GIAAUpdate" FromRole="GIAAUpdateFeedback" ToRole="GIAAUpdate" />
+          <NavigationProperty Name="User" Relationship="Self.FK_GIAAUpdateFeedback_User" FromRole="GIAAUpdateFeedback" ToRole="User" />
+        </EntityType>
+        <EntityType Name="GIAAUpdateStatusType">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="GIAAUpdates" Relationship="Self.FK_GIAAUpdate_GIAAUpdateStatusType" FromRole="GIAAUpdateStatusType" ToRole="GIAAUpdate" />
         </EntityType>
         <EntityType Name="GoAssignment">
           <Key>
@@ -2096,6 +2524,7 @@
           <Property Name="NAOPeriodId" Type="Int32" />
           <Property Name="NAORecStatusTypeId" Type="Int32" />
           <Property Name="NAOUpdateStatusTypeId" Type="Int32" Nullable="false" />
+          <Property Name="UpdateChangeLog" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="NAOPeriod" Relationship="Self.FK_NAOUpdate_NAOPeriod" FromRole="NAOUpdate" ToRole="NAOPeriod" />
           <NavigationProperty Name="NAORecommendation" Relationship="Self.FK_NAOUpdate_NAORecommendation" FromRole="NAOUpdate" ToRole="NAORecommendation" />
           <NavigationProperty Name="NAORecStatusType" Relationship="Self.FK_NAOUpdate_NAORecStatusType" FromRole="NAOUpdate" ToRole="NAORecStatusType" />
@@ -2221,6 +2650,7 @@
           <NavigationProperty Name="DirectorateGroups" Relationship="Self.FK_DirectorateGroup_User" FromRole="User" ToRole="DirectorateGroup" />
           <NavigationProperty Name="DirectorateGroupMembers" Relationship="Self.FK_DirectorateGroupMember_User" FromRole="User" ToRole="DirectorateGroupMember" />
           <NavigationProperty Name="DirectorateMembers" Relationship="Self.FK_DirectorateMember_User" FromRole="User" ToRole="DirectorateMember" />
+          <NavigationProperty Name="GIAAUpdateFeedbacks" Relationship="Self.FK_GIAAUpdateFeedback_User" FromRole="User" ToRole="GIAAUpdateFeedback" />
           <NavigationProperty Name="GoAssignments" Relationship="Self.FK_GoAssignment_User" FromRole="User" ToRole="GoAssignment" />
           <NavigationProperty Name="GoElementEvidences" Relationship="Self.FK_GoElementEvidence_User" FromRole="User" ToRole="GoElementEvidence" />
           <NavigationProperty Name="GoElementFeedbacks" Relationship="Self.FK_GoElementFeedback_User" FromRole="User" ToRole="GoElementFeedback" />
@@ -2412,6 +2842,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_GIAAAuditReport_Directorate">
+          <End Role="Directorate" Type="Self.Directorate" Multiplicity="0..1" />
+          <End Role="GIAAAuditReport" Type="Self.GIAAAuditReport" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Directorate">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GIAAAuditReport">
+              <PropertyRef Name="DirectorateId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_NAOPublication_Directorate">
           <End Role="Directorate" Type="Self.Directorate" Multiplicity="0..1" />
           <End Role="NAOPublication" Type="Self.NAOPublication" Multiplicity="*" />
@@ -2565,6 +3007,138 @@
             </Principal>
             <Dependent Role="Form">
               <PropertyRef Name="TeamId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GIAARecommendation_GIAAActionPriority">
+          <End Role="GIAAActionPriority" Type="Self.GIAAActionPriority" Multiplicity="0..1" />
+          <End Role="GIAARecommendation" Type="Self.GIAARecommendation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GIAAActionPriority">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GIAARecommendation">
+              <PropertyRef Name="GIAAActionPriorityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GIAAUpdate_GIAAActionPriority">
+          <End Role="GIAAActionPriority" Type="Self.GIAAActionPriority" Multiplicity="0..1" />
+          <End Role="GIAAUpdate" Type="Self.GIAAUpdate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GIAAActionPriority">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GIAAUpdate">
+              <PropertyRef Name="GIAAActionPriorityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GIAARecommendation_GIAAActionStatusType">
+          <End Role="GIAAActionStatusType" Type="Self.GIAAActionStatusType" Multiplicity="0..1" />
+          <End Role="GIAARecommendation" Type="Self.GIAARecommendation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GIAAActionStatusType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GIAARecommendation">
+              <PropertyRef Name="GIAAActionStatusTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GIAAUpdate_GIAAActionStatusType">
+          <End Role="GIAAActionStatusType" Type="Self.GIAAActionStatusType" Multiplicity="0..1" />
+          <End Role="GIAAUpdate" Type="Self.GIAAUpdate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GIAAActionStatusType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GIAAUpdate">
+              <PropertyRef Name="GIAAActionStatusTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GIAAAuditReport_GIAAAssurance">
+          <End Role="GIAAAssurance" Type="Self.GIAAAssurance" Multiplicity="0..1" />
+          <End Role="GIAAAuditReport" Type="Self.GIAAAuditReport" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GIAAAssurance">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GIAAAuditReport">
+              <PropertyRef Name="GIAAAssuranceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GIAARecommendation_GIAAAuditReport">
+          <End Role="GIAAAuditReport" Type="Self.GIAAAuditReport" Multiplicity="0..1" />
+          <End Role="GIAARecommendation" Type="Self.GIAARecommendation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GIAAAuditReport">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GIAARecommendation">
+              <PropertyRef Name="GIAAAuditReportId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GIAAUpdate_GIAAPeriod">
+          <End Role="GIAAPeriod" Type="Self.GIAAPeriod" Multiplicity="0..1" />
+          <End Role="GIAAUpdate" Type="Self.GIAAUpdate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GIAAPeriod">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GIAAUpdate">
+              <PropertyRef Name="GIAAPeriodId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GIAAUpdate_GIAARecommendation">
+          <End Role="GIAARecommendation" Type="Self.GIAARecommendation" Multiplicity="0..1" />
+          <End Role="GIAAUpdate" Type="Self.GIAAUpdate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GIAARecommendation">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GIAAUpdate">
+              <PropertyRef Name="GIAARecommendationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GIAAUpdate_GIAAUpdateStatusType">
+          <End Role="GIAAUpdateStatusType" Type="Self.GIAAUpdateStatusType" Multiplicity="1" />
+          <End Role="GIAAUpdate" Type="Self.GIAAUpdate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GIAAUpdateStatusType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GIAAUpdate">
+              <PropertyRef Name="GIAAUpdateStatusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GIAAUpdateFeedback_GIAAUpdate">
+          <End Role="GIAAUpdate" Type="Self.GIAAUpdate" Multiplicity="0..1" />
+          <End Role="GIAAUpdateFeedback" Type="Self.GIAAUpdateFeedback" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GIAAUpdate">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GIAAUpdateFeedback">
+              <PropertyRef Name="GIAAUpdateId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GIAAUpdateFeedback_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="GIAAUpdateFeedback" Type="Self.GIAAUpdateFeedback" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GIAAUpdateFeedback">
+              <PropertyRef Name="CommentById" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2966,6 +3540,16 @@
           <EntitySet Name="EntityPriorities" EntityType="Self.EntityPriority" />
           <EntitySet Name="EntityStatusTypes" EntityType="Self.EntityStatusType" />
           <EntitySet Name="Forms" EntityType="Self.Form" />
+          <EntitySet Name="GIAAActionPriorities" EntityType="Self.GIAAActionPriority" />
+          <EntitySet Name="GIAAActionStatusTypes" EntityType="Self.GIAAActionStatusType" />
+          <EntitySet Name="GIAAAssurances" EntityType="Self.GIAAAssurance" />
+          <EntitySet Name="GIAAAuditReports" EntityType="Self.GIAAAuditReport" />
+          <EntitySet Name="GIAADefForms" EntityType="Self.GIAADefForm" />
+          <EntitySet Name="GIAAPeriods" EntityType="Self.GIAAPeriod" />
+          <EntitySet Name="GIAARecommendations" EntityType="Self.GIAARecommendation" />
+          <EntitySet Name="GIAAUpdates" EntityType="Self.GIAAUpdate" />
+          <EntitySet Name="GIAAUpdateFeedbacks" EntityType="Self.GIAAUpdateFeedback" />
+          <EntitySet Name="GIAAUpdateStatusTypes" EntityType="Self.GIAAUpdateStatusType" />
           <EntitySet Name="GoAssignments" EntityType="Self.GoAssignment" />
           <EntitySet Name="GoDefElements" EntityType="Self.GoDefElement" />
           <EntitySet Name="GoDefForms" EntityType="Self.GoDefForm" />
@@ -3046,6 +3630,10 @@
             <End Role="Directorate" EntitySet="Directorates" />
             <End Role="DirectorateMember" EntitySet="DirectorateMembers" />
           </AssociationSet>
+          <AssociationSet Name="FK_GIAAAuditReport_Directorate" Association="Self.FK_GIAAAuditReport_Directorate">
+            <End Role="Directorate" EntitySet="Directorates" />
+            <End Role="GIAAAuditReport" EntitySet="GIAAAuditReports" />
+          </AssociationSet>
           <AssociationSet Name="FK_NAOPublication_Directorate" Association="Self.FK_NAOPublication_Directorate">
             <End Role="Directorate" EntitySet="Directorates" />
             <End Role="NAOPublication" EntitySet="NAOPublications" />
@@ -3097,6 +3685,50 @@
           <AssociationSet Name="FK_Form_TeamSet" Association="Self.FK_Form_TeamSet">
             <End Role="Team" EntitySet="Teams" />
             <End Role="Form" EntitySet="Forms" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GIAARecommendation_GIAAActionPriority" Association="Self.FK_GIAARecommendation_GIAAActionPriority">
+            <End Role="GIAAActionPriority" EntitySet="GIAAActionPriorities" />
+            <End Role="GIAARecommendation" EntitySet="GIAARecommendations" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GIAAUpdate_GIAAActionPriority" Association="Self.FK_GIAAUpdate_GIAAActionPriority">
+            <End Role="GIAAActionPriority" EntitySet="GIAAActionPriorities" />
+            <End Role="GIAAUpdate" EntitySet="GIAAUpdates" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GIAARecommendation_GIAAActionStatusType" Association="Self.FK_GIAARecommendation_GIAAActionStatusType">
+            <End Role="GIAAActionStatusType" EntitySet="GIAAActionStatusTypes" />
+            <End Role="GIAARecommendation" EntitySet="GIAARecommendations" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GIAAUpdate_GIAAActionStatusType" Association="Self.FK_GIAAUpdate_GIAAActionStatusType">
+            <End Role="GIAAActionStatusType" EntitySet="GIAAActionStatusTypes" />
+            <End Role="GIAAUpdate" EntitySet="GIAAUpdates" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GIAAAuditReport_GIAAAssurance" Association="Self.FK_GIAAAuditReport_GIAAAssurance">
+            <End Role="GIAAAssurance" EntitySet="GIAAAssurances" />
+            <End Role="GIAAAuditReport" EntitySet="GIAAAuditReports" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GIAARecommendation_GIAAAuditReport" Association="Self.FK_GIAARecommendation_GIAAAuditReport">
+            <End Role="GIAAAuditReport" EntitySet="GIAAAuditReports" />
+            <End Role="GIAARecommendation" EntitySet="GIAARecommendations" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GIAAUpdate_GIAAPeriod" Association="Self.FK_GIAAUpdate_GIAAPeriod">
+            <End Role="GIAAPeriod" EntitySet="GIAAPeriods" />
+            <End Role="GIAAUpdate" EntitySet="GIAAUpdates" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GIAAUpdate_GIAARecommendation" Association="Self.FK_GIAAUpdate_GIAARecommendation">
+            <End Role="GIAARecommendation" EntitySet="GIAARecommendations" />
+            <End Role="GIAAUpdate" EntitySet="GIAAUpdates" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GIAAUpdate_GIAAUpdateStatusType" Association="Self.FK_GIAAUpdate_GIAAUpdateStatusType">
+            <End Role="GIAAUpdateStatusType" EntitySet="GIAAUpdateStatusTypes" />
+            <End Role="GIAAUpdate" EntitySet="GIAAUpdates" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GIAAUpdateFeedback_GIAAUpdate" Association="Self.FK_GIAAUpdateFeedback_GIAAUpdate">
+            <End Role="GIAAUpdate" EntitySet="GIAAUpdates" />
+            <End Role="GIAAUpdateFeedback" EntitySet="GIAAUpdateFeedbacks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GIAAUpdateFeedback_User" Association="Self.FK_GIAAUpdateFeedback_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="GIAAUpdateFeedback" EntitySet="GIAAUpdateFeedbacks" />
           </AssociationSet>
           <AssociationSet Name="FK_GoAssignment_GoElement" Association="Self.FK_GoAssignment_GoElement">
             <End Role="GoElement" EntitySet="GoElements" />
@@ -3634,6 +4266,117 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="GIAAActionPriorities">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.GIAAActionPriority">
+              <MappingFragment StoreEntitySet="GIAAActionPriority">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GIAAActionStatusTypes">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.GIAAActionStatusType">
+              <MappingFragment StoreEntitySet="GIAAActionStatusType">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GIAAAssurances">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.GIAAAssurance">
+              <MappingFragment StoreEntitySet="GIAAAssurance">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GIAAAuditReports">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.GIAAAuditReport">
+              <MappingFragment StoreEntitySet="GIAAAuditReport">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="NumberStr" ColumnName="NumberStr" />
+                <ScalarProperty Name="IssueDate" ColumnName="IssueDate" />
+                <ScalarProperty Name="AuditYear" ColumnName="AuditYear" />
+                <ScalarProperty Name="Link" ColumnName="Link" />
+                <ScalarProperty Name="DirectorateId" ColumnName="DirectorateId" />
+                <ScalarProperty Name="GIAAAssuranceId" ColumnName="GIAAAssuranceId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GIAADefForms">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.GIAADefForm">
+              <MappingFragment StoreEntitySet="GIAADefForm">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Details" ColumnName="Details" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GIAAPeriods">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.GIAAPeriod">
+              <MappingFragment StoreEntitySet="GIAAPeriod">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="PeriodStatus" ColumnName="PeriodStatus" />
+                <ScalarProperty Name="PeriodStartDate" ColumnName="PeriodStartDate" />
+                <ScalarProperty Name="PeriodEndDate" ColumnName="PeriodEndDate" />
+                <ScalarProperty Name="LastPeriodId" ColumnName="LastPeriodId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GIAARecommendations">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.GIAARecommendation">
+              <MappingFragment StoreEntitySet="GIAARecommendation">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="RecommendationDetails" ColumnName="RecommendationDetails" />
+                <ScalarProperty Name="TargetDate" ColumnName="TargetDate" />
+                <ScalarProperty Name="GIAAActionPriorityId" ColumnName="GIAAActionPriorityId" />
+                <ScalarProperty Name="GIAAActionStatusTypeId" ColumnName="GIAAActionStatusTypeId" />
+                <ScalarProperty Name="GIAAPeriodUpdateStatusId" ColumnName="GIAAPeriodUpdateStatusId" />
+                <ScalarProperty Name="GIAAAuditReportId" ColumnName="GIAAAuditReportId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GIAAUpdates">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.GIAAUpdate">
+              <MappingFragment StoreEntitySet="GIAAUpdate">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="TargetDate" ColumnName="TargetDate" />
+                <ScalarProperty Name="ProgressUpdateDetails" ColumnName="ProgressUpdateDetails" />
+                <ScalarProperty Name="GIAAComments" ColumnName="GIAAComments" />
+                <ScalarProperty Name="Link" ColumnName="Link" />
+                <ScalarProperty Name="GIAARecommendationId" ColumnName="GIAARecommendationId" />
+                <ScalarProperty Name="GIAAPeriodId" ColumnName="GIAAPeriodId" />
+                <ScalarProperty Name="GIAAActionStatusTypeId" ColumnName="GIAAActionStatusTypeId" />
+                <ScalarProperty Name="GIAAActionPriorityId" ColumnName="GIAAActionPriorityId" />
+                <ScalarProperty Name="GIAAUpdateStatusId" ColumnName="GIAAUpdateStatusId" />
+                <ScalarProperty Name="UpdateChangeLog" ColumnName="UpdateChangeLog" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GIAAUpdateFeedbacks">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.GIAAUpdateFeedback">
+              <MappingFragment StoreEntitySet="GIAAUpdateFeedback">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="GIAAUpdateId" ColumnName="GIAAUpdateId" />
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="CommentById" ColumnName="CommentById" />
+                <ScalarProperty Name="CommentDate" ColumnName="CommentDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GIAAUpdateStatusTypes">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.GIAAUpdateStatusType">
+              <MappingFragment StoreEntitySet="GIAAUpdateStatusType">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="GoAssignments">
             <EntityTypeMapping TypeName="ControlAssuranceModel.GoAssignment">
               <MappingFragment StoreEntitySet="GoAssignment">
@@ -3851,6 +4594,7 @@
                 <ScalarProperty Name="NAOPeriodId" ColumnName="NAOPeriodId" />
                 <ScalarProperty Name="NAORecStatusTypeId" ColumnName="NAORecStatusTypeId" />
                 <ScalarProperty Name="NAOUpdateStatusTypeId" ColumnName="NAOUpdateStatusTypeId" />
+                <ScalarProperty Name="UpdateChangeLog" ColumnName="UpdateChangeLog" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

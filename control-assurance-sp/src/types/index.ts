@@ -45,6 +45,13 @@ export { INAORecommendation, NAORecommendation } from './NAORecommendation';
 export { INAOUpdate, NAOUpdate } from './NAOUpdate';
 export { INAOUpdateEvidence, NAOUpdateEvidence } from './NAOUpdateEvidence';
 
+export { IGIAAPeriod, GIAAPeriod } from './GIAAPeriod';
+export { IGIAADefForm } from './GIAADefForm';
+export { IGIAAAuditReport, GIAAAuditReport } from './GIAAAuditReport';
+export { IGIAAAuditReportInfo } from './GIAAAuditReportInfo';
+export { IGIAARecommendation, GIAARecommendation } from './GIAARecommendation';
+export { IGIAAUpdate, GIAAUpdate } from './GIAAUpdate';
+
 
 export { SaveStatus } from './SaveStatus';
 export { CrUpdateFormState, ICrUpdateFormState } from './CrUpdateFormState';
