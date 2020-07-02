@@ -63,6 +63,13 @@ namespace ControlAssuranceAPI.Models
         DbSet<GIAAUpdateFeedback> GIAAUpdateFeedbacks { get; set; }
         DbSet<GIAAUpdateStatusType> GIAAUpdateStatusTypes { get; set; }
 
+        DbSet<IAPDefForm> IAPDefForms { get; set; }
+        DbSet<IAPPriority> IAPPriorities { get; set; }
+        DbSet<IAPStatusType> IAPStatusTypes { get; set; }
+        DbSet<IAPType> IAPTypes { get; set; }
+        DbSet<IAPUpdate> IAPUpdates { get; set; }
+        DbSet<IAPAssignment> IAPAssignments { get; set; }
+
         ObjectResult<SPDGAreaStat_Result> SPDGAreaStat(Nullable<int> periodId);
         ObjectResult<SPDirectorateStat_Result> SPDirectorateStat(Nullable<int> periodId);
         ObjectResult<SPDivisionStat_Result> SPDivisionStat(Nullable<int> periodId);

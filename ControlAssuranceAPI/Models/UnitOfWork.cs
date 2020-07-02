@@ -67,6 +67,13 @@ namespace ControlAssuranceAPI.Models
         private GIAAUpdateFeedbackRepository gIAAUpdateFeedbackRepository;
         private GIAAUpdateStatusTypeRepository gIAAUpdateStatusTypeRepository;
 
+        private IAPDefFormRepository iAPDefFormRepository;
+        private IAPTypeRepository iAPTypeRepository;
+        private IAPStatusTypeRepository iAPStatusTypeRepository;
+        private IAPPriorityRepository iAPPriorityRepository;
+        private IAPUpdateRepository iAPUpdateRepository;
+        private IAPAssignmentRepository iAPAssignmentRepository;
+
         private SPDGAreaStatRepository spDGAreaStatRepository;
         private SPDirectorateStatRepository spDirectorateStatRepository;
         private SPDivisionStatRepository spDivisionStatRepository;
@@ -581,6 +588,54 @@ namespace ControlAssuranceAPI.Models
             get
             {
                 return gIAAUpdateStatusTypeRepository = gIAAUpdateStatusTypeRepository ?? new GIAAUpdateStatusTypeRepository(user, context);
+            }
+        }
+
+        public IAPDefFormRepository IAPDefFormRepository
+        {
+            get
+            {
+                return iAPDefFormRepository = iAPDefFormRepository ?? new IAPDefFormRepository(user, context);
+            }
+        }
+
+        public IAPTypeRepository IAPTypeRepository
+        {
+            get
+            {
+                return iAPTypeRepository = iAPTypeRepository ?? new IAPTypeRepository(user, context);
+            }
+        }
+
+        public IAPStatusTypeRepository IAPStatusTypeRepository
+        {
+            get
+            {
+                return iAPStatusTypeRepository = iAPStatusTypeRepository ?? new IAPStatusTypeRepository(user, context);
+            }
+        }
+
+        public IAPPriorityRepository IAPPriorityRepository
+        {
+            get
+            {
+                return iAPPriorityRepository = iAPPriorityRepository ?? new IAPPriorityRepository(user, context);
+            }
+        }
+
+        public IAPUpdateRepository IAPUpdateRepository
+        {
+            get
+            {
+                return iAPUpdateRepository = iAPUpdateRepository ?? new IAPUpdateRepository(user, context);
+            }
+        }
+
+        public IAPAssignmentRepository IAPAssignmentRepository
+        {
+            get
+            {
+                return iAPAssignmentRepository = iAPAssignmentRepository ?? new IAPAssignmentRepository(user, context);
             }
         }
 

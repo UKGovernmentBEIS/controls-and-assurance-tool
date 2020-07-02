@@ -59,6 +59,12 @@ namespace ControlAssuranceAPI.Models
         public virtual DbSet<GoElementFeedback> GoElementFeedbacks { get; set; }
         public virtual DbSet<GoForm> GoForms { get; set; }
         public virtual DbSet<GoMiscFile> GoMiscFiles { get; set; }
+        public virtual DbSet<IAPAssignment> IAPAssignments { get; set; }
+        public virtual DbSet<IAPDefForm> IAPDefForms { get; set; }
+        public virtual DbSet<IAPPriority> IAPPriorities { get; set; }
+        public virtual DbSet<IAPStatusType> IAPStatusTypes { get; set; }
+        public virtual DbSet<IAPType> IAPTypes { get; set; }
+        public virtual DbSet<IAPUpdate> IAPUpdates { get; set; }
         public virtual DbSet<Log> Logs { get; set; }
         public virtual DbSet<NAODefForm> NAODefForms { get; set; }
         public virtual DbSet<NAOPeriod> NAOPeriods { get; set; }

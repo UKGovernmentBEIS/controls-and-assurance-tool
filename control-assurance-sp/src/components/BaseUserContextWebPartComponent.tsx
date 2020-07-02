@@ -27,6 +27,7 @@ export default abstract class BaseUserContextWebPartComponent<P extends types.IW
         return this.userService.readMyPermissions().then((user: types.IUser): void => {
             console.log("User Permissions", user);
             this.setState({
+                User: user,
                 UserPermissions: user.UserPermissions,
                 DirectorateGroups: user.DirectorateGroups,
                 DirectorateGroupMembers: user.DirectorateGroupMembers,

@@ -52,6 +52,10 @@ export { IGIAAAuditReportInfo } from './GIAAAuditReportInfo';
 export { IGIAARecommendation, GIAARecommendation } from './GIAARecommendation';
 export { IGIAAUpdate, GIAAUpdate } from './GIAAUpdate';
 
+export { IIAPDefForm } from './IAPDefForm';
+export { IIAPUpdate, IAPUpdate } from './IAPUpdate';
+export { IIAPAssignment, IAPAssignment } from './IAPAssignment';
+
 
 export { SaveStatus } from './SaveStatus';
 export { CrUpdateFormState, ICrUpdateFormState } from './CrUpdateFormState';

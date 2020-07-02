@@ -88,6 +88,13 @@ namespace ControlAssuranceAPI
             builder.EntitySet<GIAAUpdateFeedback>("GIAAUpdateFeedbacks");
             builder.EntitySet<GIAAUpdateStatusType>("GIAAUpdateStatusTypes");
 
+            builder.EntitySet<IAPDefForm>("IAPDefForms");
+            builder.EntitySet<IAPType>("IAPTypes");
+            builder.EntitySet<IAPStatusType>("IAPStatusTypes");
+            builder.EntitySet<IAPPriority>("IAPPriorities");
+            builder.EntitySet<IAPUpdate>("IAPUpdates");
+            builder.EntitySet<IAPAssignment>("IAPAssignments");
+
 
             builder.EntitySet<Models.SPDGAreaStat_Result>("DGAreaStats");
             builder.EntitySet<Models.SPDirectorateStat_Result>("DirectorateStats");
@@ -115,8 +122,11 @@ namespace ControlAssuranceAPI
             //register GIAARecommendationView_Result for the customer display of giaa Recommendations
             builder.EntitySet<GIAARecommendationView_Result>("GIAARecommendationViewResult");
 
-            
-            
+            //register IAPUpdateView_Result for the customer display of individual action plans list
+            builder.EntitySet<IAPUpdateView_Result>("IAPUpdateViewResult");
+
+
+
 
             config.MapODataServiceRoute(
                 routeName: "ODataRoute",

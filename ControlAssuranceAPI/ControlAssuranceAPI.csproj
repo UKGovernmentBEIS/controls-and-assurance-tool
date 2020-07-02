@@ -276,6 +276,12 @@
     <Compile Include="Controllers\GoElementsController.cs" />
     <Compile Include="Controllers\GoFormsController.cs" />
     <Compile Include="Controllers\GoMiscFilesController.cs" />
+    <Compile Include="Controllers\IAPAssignmentsController.cs" />
+    <Compile Include="Controllers\IAPDefFormsController.cs" />
+    <Compile Include="Controllers\IAPPrioritiesController.cs" />
+    <Compile Include="Controllers\IAPStatusTypesController.cs" />
+    <Compile Include="Controllers\IAPTypesController.cs" />
+    <Compile Include="Controllers\IAPUpdatesController.cs" />
     <Compile Include="Controllers\LogsController.cs" />
     <Compile Include="Controllers\NAODefFormsController.cs" />
     <Compile Include="Controllers\NAOPeriodsController.cs" />
@@ -422,6 +428,25 @@
     <Compile Include="Models\GoMiscFile.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\IAPAssignment.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\IAPDefForm.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\IAPPriority.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\IAPStatusType.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\IAPType.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\IAPUpdate.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\IAPUpdateView_Result.cs" />
     <Compile Include="Models\IControlAssuranceContext.cs" />
     <Compile Include="Models\Log.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
@@ -528,6 +553,12 @@
     <Compile Include="Repositories\GoElementRepository.cs" />
     <Compile Include="Repositories\GoFormRepository.cs" />
     <Compile Include="Repositories\GoMiscFilesRepository.cs" />
+    <Compile Include="Repositories\IAPAssignmentRepository.cs" />
+    <Compile Include="Repositories\IAPDefFormRepository.cs" />
+    <Compile Include="Repositories\IAPPriorityRepository.cs" />
+    <Compile Include="Repositories\IAPStatusTypeRepository.cs" />
+    <Compile Include="Repositories\IAPTypeRepository.cs" />
+    <Compile Include="Repositories\IAPUpdateRepository.cs" />
     <Compile Include="Repositories\LogRepository.cs" />
     <Compile Include="Repositories\AuditFeedbackRepository.cs" />
     <Compile Include="Repositories\NAODefFormRepository.cs" />

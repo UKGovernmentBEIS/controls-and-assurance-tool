@@ -484,6 +484,57 @@
           <Property Name="DateUploaded" Type="datetime" />
           <Property Name="UploadedByUserId" Type="int" />
         </EntityType>
+        <EntityType Name="IAPAssignment">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" />
+          <Property Name="IAPUpdateId" Type="int" />
+          <Property Name="UserId" Type="int" />
+        </EntityType>
+        <EntityType Name="IAPDefForm">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="1000" />
+          <Property Name="Details" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="IAPPriority">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="IAPStatusType">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="IAPType">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="IAPUpdate">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="2000" />
+          <Property Name="Details" Type="nvarchar(max)" />
+          <Property Name="IAPPriorityId" Type="int" />
+          <Property Name="IAPStatusTypeId" Type="int" />
+          <Property Name="IAPTypeId" Type="int" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedOn" Type="datetime" />
+        </EntityType>
         <EntityType Name="Log">
           <Key>
             <PropertyRef Name="ID" />
@@ -1246,6 +1297,66 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_IAPAssignment_IAPUpdate">
+          <End Role="IAPUpdate" Type="Self.IAPUpdate" Multiplicity="0..1" />
+          <End Role="IAPAssignment" Type="Self.IAPAssignment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="IAPUpdate">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="IAPAssignment">
+              <PropertyRef Name="IAPUpdateId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_IAPAssignment_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="IAPAssignment" Type="Self.IAPAssignment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="IAPAssignment">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_IAPUpdate_IAPPriority">
+          <End Role="IAPPriority" Type="Self.IAPPriority" Multiplicity="0..1" />
+          <End Role="IAPUpdate" Type="Self.IAPUpdate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="IAPPriority">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="IAPUpdate">
+              <PropertyRef Name="IAPPriorityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_IAPUpdate_IAPStatusType">
+          <End Role="IAPStatusType" Type="Self.IAPStatusType" Multiplicity="0..1" />
+          <End Role="IAPUpdate" Type="Self.IAPUpdate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="IAPStatusType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="IAPUpdate">
+              <PropertyRef Name="IAPStatusTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_IAPUpdate_IAPType">
+          <End Role="IAPType" Type="Self.IAPType" Multiplicity="0..1" />
+          <End Role="IAPUpdate" Type="Self.IAPUpdate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="IAPType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="IAPUpdate">
+              <PropertyRef Name="IAPTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Log_Period">
           <End Role="Period" Type="Self.Period" Multiplicity="0..1" />
           <End Role="Log" Type="Self.Log" Multiplicity="*" />
@@ -1564,6 +1675,12 @@
           <EntitySet Name="GoElementFeedback" EntityType="Self.GoElementFeedback" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GoForm" EntityType="Self.GoForm" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GoMiscFiles" EntityType="Self.GoMiscFiles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="IAPAssignment" EntityType="Self.IAPAssignment" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="IAPDefForm" EntityType="Self.IAPDefForm" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="IAPPriority" EntityType="Self.IAPPriority" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="IAPStatusType" EntityType="Self.IAPStatusType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="IAPType" EntityType="Self.IAPType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="IAPUpdate" EntityType="Self.IAPUpdate" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Log" EntityType="Self.Log" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="NAODefForm" EntityType="Self.NAODefForm" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="NAOPeriod" EntityType="Self.NAOPeriod" Schema="dbo" store:Type="Tables" />
@@ -1770,6 +1887,26 @@
           <AssociationSet Name="FK_GoMiscFiles_User" Association="Self.FK_GoMiscFiles_User">
             <End Role="User" EntitySet="User" />
             <End Role="GoMiscFiles" EntitySet="GoMiscFiles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_IAPAssignment_IAPUpdate" Association="Self.FK_IAPAssignment_IAPUpdate">
+            <End Role="IAPUpdate" EntitySet="IAPUpdate" />
+            <End Role="IAPAssignment" EntitySet="IAPAssignment" />
+          </AssociationSet>
+          <AssociationSet Name="FK_IAPAssignment_User" Association="Self.FK_IAPAssignment_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="IAPAssignment" EntitySet="IAPAssignment" />
+          </AssociationSet>
+          <AssociationSet Name="FK_IAPUpdate_IAPPriority" Association="Self.FK_IAPUpdate_IAPPriority">
+            <End Role="IAPPriority" EntitySet="IAPPriority" />
+            <End Role="IAPUpdate" EntitySet="IAPUpdate" />
+          </AssociationSet>
+          <AssociationSet Name="FK_IAPUpdate_IAPStatusType" Association="Self.FK_IAPUpdate_IAPStatusType">
+            <End Role="IAPStatusType" EntitySet="IAPStatusType" />
+            <End Role="IAPUpdate" EntitySet="IAPUpdate" />
+          </AssociationSet>
+          <AssociationSet Name="FK_IAPUpdate_IAPType" Association="Self.FK_IAPUpdate_IAPType">
+            <End Role="IAPType" EntitySet="IAPType" />
+            <End Role="IAPUpdate" EntitySet="IAPUpdate" />
           </AssociationSet>
           <AssociationSet Name="FK_Log_Period" Association="Self.FK_Log_Period">
             <End Role="Period" EntitySet="Period" />
@@ -2426,6 +2563,66 @@
           <Property Name="UploadedByUserId" Type="Int32" />
           <NavigationProperty Name="User" Relationship="Self.FK_GoMiscFiles_User" FromRole="GoMiscFiles" ToRole="User" />
         </EntityType>
+        <EntityType Name="IAPAssignment">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IAPUpdateId" Type="Int32" />
+          <Property Name="UserId" Type="Int32" />
+          <NavigationProperty Name="IAPUpdate" Relationship="Self.FK_IAPAssignment_IAPUpdate" FromRole="IAPAssignment" ToRole="IAPUpdate" />
+          <NavigationProperty Name="User" Relationship="Self.FK_IAPAssignment_User" FromRole="IAPAssignment" ToRole="User" />
+        </EntityType>
+        <EntityType Name="IAPDefForm">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="Details" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="IAPPriority">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="IAPUpdates" Relationship="Self.FK_IAPUpdate_IAPPriority" FromRole="IAPPriority" ToRole="IAPUpdate" />
+        </EntityType>
+        <EntityType Name="IAPStatusType">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="IAPUpdates" Relationship="Self.FK_IAPUpdate_IAPStatusType" FromRole="IAPStatusType" ToRole="IAPUpdate" />
+        </EntityType>
+        <EntityType Name="IAPType">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="IAPUpdates" Relationship="Self.FK_IAPUpdate_IAPType" FromRole="IAPType" ToRole="IAPUpdate" />
+        </EntityType>
+        <EntityType Name="IAPUpdate">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
+          <Property Name="Details" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="IAPPriorityId" Type="Int32" />
+          <Property Name="IAPStatusTypeId" Type="Int32" />
+          <Property Name="IAPTypeId" Type="Int32" />
+          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="IAPAssignments" Relationship="Self.FK_IAPAssignment_IAPUpdate" FromRole="IAPUpdate" ToRole="IAPAssignment" />
+          <NavigationProperty Name="IAPPriority" Relationship="Self.FK_IAPUpdate_IAPPriority" FromRole="IAPUpdate" ToRole="IAPPriority" />
+          <NavigationProperty Name="IAPStatusType" Relationship="Self.FK_IAPUpdate_IAPStatusType" FromRole="IAPUpdate" ToRole="IAPStatusType" />
+          <NavigationProperty Name="IAPType" Relationship="Self.FK_IAPUpdate_IAPType" FromRole="IAPUpdate" ToRole="IAPType" />
+        </EntityType>
         <EntityType Name="Log">
           <Key>
             <PropertyRef Name="ID" />
@@ -2656,6 +2853,7 @@
           <NavigationProperty Name="GoElementFeedbacks" Relationship="Self.FK_GoElementFeedback_User" FromRole="User" ToRole="GoElementFeedback" />
           <NavigationProperty Name="GoForms" Relationship="Self.FK_GoForm_User" FromRole="User" ToRole="GoForm" />
           <NavigationProperty Name="GoMiscFiles" Relationship="Self.FK_GoMiscFiles_User" FromRole="User" ToRole="GoMiscFiles" />
+          <NavigationProperty Name="IAPAssignments" Relationship="Self.FK_IAPAssignment_User" FromRole="User" ToRole="IAPAssignment" />
           <NavigationProperty Name="Logs" Relationship="Self.FK_Log_User" FromRole="User" ToRole="Log" />
           <NavigationProperty Name="NAOUpdateEvidences" Relationship="Self.FK_NAOUpdateEvidence_User" FromRole="User" ToRole="NAOUpdateEvidence" />
           <NavigationProperty Name="NAOUpdateFeedbacks" Relationship="Self.FK_NAOUpdateFeedback_User" FromRole="User" ToRole="NAOUpdateFeedback" />
@@ -3286,6 +3484,66 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_IAPAssignment_IAPUpdate">
+          <End Role="IAPUpdate" Type="Self.IAPUpdate" Multiplicity="0..1" />
+          <End Role="IAPAssignment" Type="Self.IAPAssignment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="IAPUpdate">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="IAPAssignment">
+              <PropertyRef Name="IAPUpdateId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_IAPAssignment_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="IAPAssignment" Type="Self.IAPAssignment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="IAPAssignment">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_IAPUpdate_IAPPriority">
+          <End Role="IAPPriority" Type="Self.IAPPriority" Multiplicity="0..1" />
+          <End Role="IAPUpdate" Type="Self.IAPUpdate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="IAPPriority">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="IAPUpdate">
+              <PropertyRef Name="IAPPriorityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_IAPUpdate_IAPStatusType">
+          <End Role="IAPStatusType" Type="Self.IAPStatusType" Multiplicity="0..1" />
+          <End Role="IAPUpdate" Type="Self.IAPUpdate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="IAPStatusType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="IAPUpdate">
+              <PropertyRef Name="IAPStatusTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_IAPUpdate_IAPType">
+          <End Role="IAPType" Type="Self.IAPType" Multiplicity="0..1" />
+          <End Role="IAPUpdate" Type="Self.IAPUpdate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="IAPType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="IAPUpdate">
+              <PropertyRef Name="IAPTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Log_Period">
           <End Role="Period" Type="Self.Period" Multiplicity="0..1" />
           <End Role="Log" Type="Self.Log" Multiplicity="*" />
@@ -3559,6 +3817,12 @@
           <EntitySet Name="GoElementFeedbacks" EntityType="Self.GoElementFeedback" />
           <EntitySet Name="GoForms" EntityType="Self.GoForm" />
           <EntitySet Name="GoMiscFiles" EntityType="Self.GoMiscFile" />
+          <EntitySet Name="IAPAssignments" EntityType="Self.IAPAssignment" />
+          <EntitySet Name="IAPDefForms" EntityType="Self.IAPDefForm" />
+          <EntitySet Name="IAPPriorities" EntityType="Self.IAPPriority" />
+          <EntitySet Name="IAPStatusTypes" EntityType="Self.IAPStatusType" />
+          <EntitySet Name="IAPTypes" EntityType="Self.IAPType" />
+          <EntitySet Name="IAPUpdates" EntityType="Self.IAPUpdate" />
           <EntitySet Name="Logs" EntityType="Self.Log" />
           <EntitySet Name="NAODefForms" EntityType="Self.NAODefForm" />
           <EntitySet Name="NAOPeriods" EntityType="Self.NAOPeriod" />
@@ -3777,6 +4041,26 @@
           <AssociationSet Name="FK_GoMiscFiles_User" Association="Self.FK_GoMiscFiles_User">
             <End Role="User" EntitySet="Users" />
             <End Role="GoMiscFiles" EntitySet="GoMiscFiles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_IAPAssignment_IAPUpdate" Association="Self.FK_IAPAssignment_IAPUpdate">
+            <End Role="IAPUpdate" EntitySet="IAPUpdates" />
+            <End Role="IAPAssignment" EntitySet="IAPAssignments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_IAPAssignment_User" Association="Self.FK_IAPAssignment_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="IAPAssignment" EntitySet="IAPAssignments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_IAPUpdate_IAPPriority" Association="Self.FK_IAPUpdate_IAPPriority">
+            <End Role="IAPPriority" EntitySet="IAPPriorities" />
+            <End Role="IAPUpdate" EntitySet="IAPUpdates" />
+          </AssociationSet>
+          <AssociationSet Name="FK_IAPUpdate_IAPStatusType" Association="Self.FK_IAPUpdate_IAPStatusType">
+            <End Role="IAPStatusType" EntitySet="IAPStatusTypes" />
+            <End Role="IAPUpdate" EntitySet="IAPUpdates" />
+          </AssociationSet>
+          <AssociationSet Name="FK_IAPUpdate_IAPType" Association="Self.FK_IAPUpdate_IAPType">
+            <End Role="IAPType" EntitySet="IAPTypes" />
+            <End Role="IAPUpdate" EntitySet="IAPUpdates" />
           </AssociationSet>
           <AssociationSet Name="FK_Log_Period" Association="Self.FK_Log_Period">
             <End Role="Period" EntitySet="Periods" />
@@ -4501,6 +4785,63 @@
                 <ScalarProperty Name="Details" ColumnName="Details" />
                 <ScalarProperty Name="DateUploaded" ColumnName="DateUploaded" />
                 <ScalarProperty Name="UploadedByUserId" ColumnName="UploadedByUserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="IAPAssignments">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.IAPAssignment">
+              <MappingFragment StoreEntitySet="IAPAssignment">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="IAPUpdateId" ColumnName="IAPUpdateId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="IAPDefForms">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.IAPDefForm">
+              <MappingFragment StoreEntitySet="IAPDefForm">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Details" ColumnName="Details" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="IAPPriorities">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.IAPPriority">
+              <MappingFragment StoreEntitySet="IAPPriority">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="IAPStatusTypes">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.IAPStatusType">
+              <MappingFragment StoreEntitySet="IAPStatusType">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="IAPTypes">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.IAPType">
+              <MappingFragment StoreEntitySet="IAPType">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="IAPUpdates">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.IAPUpdate">
+              <MappingFragment StoreEntitySet="IAPUpdate">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Details" ColumnName="Details" />
+                <ScalarProperty Name="IAPPriorityId" ColumnName="IAPPriorityId" />
+                <ScalarProperty Name="IAPStatusTypeId" ColumnName="IAPStatusTypeId" />
+                <ScalarProperty Name="IAPTypeId" ColumnName="IAPTypeId" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

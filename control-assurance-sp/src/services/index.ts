@@ -1,5 +1,3 @@
-
-
 export { SearchObjectService } from './SearchObjectService';
 export { ContextService } from './ContextService';
 export { DateService } from './DateService';
@@ -66,6 +64,10 @@ export { GIAAActionStatusTypeService } from './GIAAActionStatusTypeService';
 export { GIAAUpdateService } from './GIAAUpdateService';
 export { GIAAUpdateFeedbackService } from './GIAAUpdateFeedbackService';
 export { GIAAUpdateStatusTypeService } from './GIAAUpdateStatusTypeService';
+
+export { IAPDefFormService } from './IAPDefFormService';
+export { IAPUpdateService } from './IAPUpdateService';
+export { IAPAssignmentService } from './IAPAssignmentService';
 
 export { DGAreaStatService } from './DGAreaStatService';
 export { DirectorateStatService } from './DirectorateStatService';

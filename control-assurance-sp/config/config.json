@@ -129,6 +129,22 @@
           "manifest": "./src/webparts/giaaUpdates/GiaaUpdatesWebPart.manifest.json"
         }
       ]
+    },
+    "iap-welcome-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/iapWelcome/IapWelcomeWebPart.js",
+          "manifest": "./src/webparts/iapWelcome/IapWelcomeWebPart.manifest.json"
+        }
+      ]
+    },
+    "iap-updates-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/iapUpdates/IapUpdatesWebPart.js",
+          "manifest": "./src/webparts/iapUpdates/IapUpdatesWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {},
@@ -148,6 +164,8 @@
     "NaoUpdatesWebPartStrings": "lib/webparts/naoUpdates/loc/{locale}.js",
     "NaoWelcomeWebPartStrings": "lib/webparts/naoWelcome/loc/{locale}.js",
     "GiaaWelcomeWebPartStrings": "lib/webparts/giaaWelcome/loc/{locale}.js",
-    "GiaaUpdatesWebPartStrings": "lib/webparts/giaaUpdates/loc/{locale}.js"
+    "GiaaUpdatesWebPartStrings": "lib/webparts/giaaUpdates/loc/{locale}.js",
+    "IapWelcomeWebPartStrings": "lib/webparts/iapWelcome/loc/{locale}.js",
+    "IapUpdatesWebPartStrings": "lib/webparts/iapUpdates/loc/{locale}.js"
   }
 }

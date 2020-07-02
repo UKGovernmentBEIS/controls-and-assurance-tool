@@ -5,6 +5,7 @@ import { IDirectorateGroup } from "./DirectorateGroup";
 import { IDirectorateGroupMember } from "./DirectorateGroupMember";
 import { ITeam } from "./Team";
 import { ITeamMember } from "./TeamMember";
+import { IUser } from "./User";
 
 export interface IWebPartComponentState {
 	Error: string;
@@ -15,13 +16,14 @@ export interface IWebPartComponentState {
 }
 
 export interface IUserContextWebPartState extends IWebPartComponentState {
-	 UserPermissions: IUserPermission[];
-	 DirectorateGroups: IDirectorateGroup[];
-	 DirectorateGroupMembers: IDirectorateGroupMember[];
-	 Directorates: IDirectorate[];
-	 DirectorateMembers: IDirectorateMember[];
-	 Teams: ITeam[];
-	 TeamMembers: ITeamMember[];
+	User: IUser;
+	UserPermissions: IUserPermission[];
+	DirectorateGroups: IDirectorateGroup[];
+	DirectorateGroupMembers: IDirectorateGroupMember[];
+	Directorates: IDirectorate[];
+	DirectorateMembers: IDirectorateMember[];
+	Teams: ITeam[];
+	TeamMembers: ITeamMember[];
 	// DirectorOf: IDirectorate[];
 	// ApproverOfDirectorates: IDirectorate[];
 	// SROOf: IProject[];
@@ -38,13 +40,14 @@ export class WebPartComponentState implements IWebPartComponentState {
 }
 
 export class UserContextWebPartState extends WebPartComponentState implements IUserContextWebPartState {
-	 public UserPermissions = [];
-	 public DirectorateGroups = [];
-	 public DirectorateGroupMembers = [];
-	 public Directorates = [];
-	 public DirectorateMembers = [];
-	 public Teams = [];
-	 public TeamMembers = [];
+	public User: IUser = null;
+	public UserPermissions = [];
+	public DirectorateGroups = [];
+	public DirectorateGroupMembers = [];
+	public Directorates = [];
+	public DirectorateMembers = [];
+	public Teams = [];
+	public TeamMembers = [];
 	// public DirectorOf = [];
 	// public ApproverOfDirectorates = [];
 	// public SROOf = [];

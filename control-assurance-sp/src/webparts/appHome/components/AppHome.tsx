@@ -28,6 +28,7 @@ export default class AppHome extends BaseUserContextWebPartComponent<types.IWebP
   private governanceApphomeImg: string = ""; // require('../../../images/governance-apphome.png');
   private naoApphomeImg: string = "";
   private giaaApphomeImg: string = "";
+  private individualActionAppHomeImg: string = "";
 
   private spSiteUrl: string = this.props.spfxContext.pageContext.web.absoluteUrl;
 
@@ -41,6 +42,7 @@ export default class AppHome extends BaseUserContextWebPartComponent<types.IWebP
     this.governanceApphomeImg = `${this.spSiteUrl}/Shared%20Documents/images/governance-apphome.png`;
     this.naoApphomeImg = `${this.spSiteUrl}/Shared%20Documents/images/naotracker-apphome.png`;
     this.giaaApphomeImg = `${this.spSiteUrl}/Shared%20Documents/images/giaaactions-apphome.png`;
+    this.individualActionAppHomeImg = `${this.spSiteUrl}/Shared%20Documents/images/individual-actions-apphome.png`;
   }
 
   //#region Render
@@ -50,32 +52,34 @@ export default class AppHome extends BaseUserContextWebPartComponent<types.IWebP
     return (
 
       <div style={{ paddingLeft: '0px', paddingTop: '0px' }}>
-        <div style={{ display: 'flex' }}>
-          {/* first card */}
-          <div style={{ width: '250px' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+
+          {/* giaa individual actions */}
+          <div style={{ marginTop: '20px', marginRight: '20px', width: '250px' }}>
             <div style={{ textAlign: 'center', color: 'white', backgroundColor: 'rgb(122,116,117)', fontSize: '35px', height: '270px', borderBottom: '1px solid white' }}>
-              <img src={this.controlsAssuranceApphomeImg}></img>
-              <div>Controls &amp; Assurance</div>
+              <img src={this.individualActionAppHomeImg}></img>
+              <div>Individual Action Plans</div>
             </div>
-            <div style={{ backgroundColor: 'rgb(122,116,117)', textAlign: 'center', padding: '10px', cursor: 'pointer' }} onClick={this.handleControlsAssuranceClick} >
+            <div style={{ backgroundColor: 'rgb(122,116,117)', textAlign: 'center', padding: '10px', cursor: 'pointer' }} onClick={this.handleIndividualActionClick} >
               <a style={{ color: 'white', fontSize: '25px', textDecoration: 'none' }} >Start</a>
             </div>
           </div>
 
-          {/* second card */}
-          <div style={{ marginLeft: '20px', width: '250px' }}>
+
+          {/* giaa actions */}
+          <div style={{ marginTop: '20px', marginRight: '20px', width: '250px' }}>
             <div style={{ textAlign: 'center', color: 'white', backgroundColor: 'rgb(122,116,117)', fontSize: '35px', height: '270px', borderBottom: '1px solid white' }}>
-              <img src={this.governanceApphomeImg}></img>
-              <div>Governance</div>
+              <img src={this.giaaApphomeImg}></img>
+              <div>GIAA Actions</div>
             </div>
             <div style={{ backgroundColor: 'rgb(122,116,117)', textAlign: 'center', padding: '10px', cursor: 'pointer' }}
-              onClick={this.handleGovernanceClick}  >
+              onClick={this.handleGIAATrackerClick}  >
               <a style={{ color: 'white', fontSize: '25px', textDecoration: 'none' }} >Start</a>
             </div>
           </div>
 
-          {/* third card */}
-          <div style={{ marginLeft: '20px', width: '250px' }}>
+          {/* NAO/PAC Tracker */}
+          <div style={{ marginTop: '20px', marginRight: '20px', width: '250px' }}>
             <div style={{ textAlign: 'center', color: 'white', backgroundColor: 'rgb(122,116,117)', fontSize: '35px', height: '270px', borderBottom: '1px solid white' }}>
               <img src={this.naoApphomeImg}></img>
               <div>NAO/PAC Tracker</div>
@@ -86,17 +90,33 @@ export default class AppHome extends BaseUserContextWebPartComponent<types.IWebP
             </div>
           </div>
 
-          {/* giaa actions card */}
-          <div style={{ marginLeft: '20px', width: '250px' }}>
+
+          {/* Controls Assurance */}
+          <div style={{ marginTop: '20px', marginRight: '20px', width: '250px' }}>
             <div style={{ textAlign: 'center', color: 'white', backgroundColor: 'rgb(122,116,117)', fontSize: '35px', height: '270px', borderBottom: '1px solid white' }}>
-              <img src={this.giaaApphomeImg}></img>
-              <div>GIAA Actions</div>
+              <img src={this.controlsAssuranceApphomeImg}></img>
+              <div>Controls &amp; Assurance</div>
             </div>
-            <div style={{ backgroundColor: 'rgb(122,116,117)', textAlign: 'center', padding: '10px', cursor: 'pointer' }}
-              onClick={this.handleGIAATrackerClick}  >
+            <div style={{ backgroundColor: 'rgb(122,116,117)', textAlign: 'center', padding: '10px', cursor: 'pointer' }} onClick={this.handleControlsAssuranceClick} >
               <a style={{ color: 'white', fontSize: '25px', textDecoration: 'none' }} >Start</a>
             </div>
           </div>
+
+          {/* Governance */}
+          <div style={{ marginTop: '20px', marginRight: '20px', width: '250px' }}>
+            <div style={{ textAlign: 'center', color: 'white', backgroundColor: 'rgb(122,116,117)', fontSize: '35px', height: '270px', borderBottom: '1px solid white' }}>
+              <img src={this.governanceApphomeImg}></img>
+              <div>Governance</div>
+            </div>
+            <div style={{ backgroundColor: 'rgb(122,116,117)', textAlign: 'center', padding: '10px', cursor: 'pointer' }}
+              onClick={this.handleGovernanceClick}  >
+              <a style={{ color: 'white', fontSize: '25px', textDecoration: 'none' }} >Start</a>
+            </div>
+          </div>
+
+
+
+
 
 
 
@@ -137,6 +157,10 @@ export default class AppHome extends BaseUserContextWebPartComponent<types.IWebP
     window.location.href = pageUrl;
   }
 
+  private handleIndividualActionClick = (): void => {
+    const pageUrl = this.spSiteUrl + "/SitePages/IndividualActionsWelcome.aspx";
+    window.location.href = pageUrl;
+  }
 
 
 
