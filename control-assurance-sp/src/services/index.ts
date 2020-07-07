@@ -63,7 +63,9 @@ export { GIAAActionPriorityService } from './GIAAActionPriorityService';
 export { GIAAActionStatusTypeService } from './GIAAActionStatusTypeService';
 export { GIAAUpdateService } from './GIAAUpdateService';
 export { GIAAUpdateFeedbackService } from './GIAAUpdateFeedbackService';
+export { GIAAUpdateEvidenceService } from './GIAAUpdateEvidenceService';
 export { GIAAUpdateStatusTypeService } from './GIAAUpdateStatusTypeService';
+export { GIAAActionOwnerService } from './GIAAActionOwnerService';
 
 export { IAPDefFormService } from './IAPDefFormService';
 export { IAPUpdateService } from './IAPUpdateService';

@@ -15,5 +15,6 @@ namespace ControlAssuranceAPI.Models
         public string ActionStatus { get; set; }
         public string Owners { get; set; }
         public string UpdateStatus { get; set; }
+        public string RevisedDate { get; set; }
     }
 }

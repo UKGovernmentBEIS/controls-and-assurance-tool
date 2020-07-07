@@ -40,6 +40,7 @@ namespace ControlAssuranceAPI.Models
         public virtual DbSet<EntityPriority> EntityPriorities { get; set; }
         public virtual DbSet<EntityStatusType> EntityStatusTypes { get; set; }
         public virtual DbSet<Form> Forms { get; set; }
+        public virtual DbSet<GIAAActionOwner> GIAAActionOwners { get; set; }
         public virtual DbSet<GIAAActionPriority> GIAAActionPriorities { get; set; }
         public virtual DbSet<GIAAActionStatusType> GIAAActionStatusTypes { get; set; }
         public virtual DbSet<GIAAAssurance> GIAAAssurances { get; set; }
@@ -48,6 +49,7 @@ namespace ControlAssuranceAPI.Models
         public virtual DbSet<GIAAPeriod> GIAAPeriods { get; set; }
         public virtual DbSet<GIAARecommendation> GIAARecommendations { get; set; }
         public virtual DbSet<GIAAUpdate> GIAAUpdates { get; set; }
+        public virtual DbSet<GIAAUpdateEvidence> GIAAUpdateEvidences { get; set; }
         public virtual DbSet<GIAAUpdateFeedback> GIAAUpdateFeedbacks { get; set; }
         public virtual DbSet<GIAAUpdateStatusType> GIAAUpdateStatusTypes { get; set; }
         public virtual DbSet<GoAssignment> GoAssignments { get; set; }

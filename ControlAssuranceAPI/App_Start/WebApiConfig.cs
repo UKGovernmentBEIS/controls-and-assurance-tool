@@ -87,6 +87,8 @@ namespace ControlAssuranceAPI
             builder.EntitySet<GIAAUpdate>("GIAAUpdates");
             builder.EntitySet<GIAAUpdateFeedback>("GIAAUpdateFeedbacks");
             builder.EntitySet<GIAAUpdateStatusType>("GIAAUpdateStatusTypes");
+            builder.EntitySet<GIAAUpdateEvidence>("GIAAUpdateEvidences");
+            builder.EntitySet<GIAAActionOwner>("GIAAActionOwners");
 
             builder.EntitySet<IAPDefForm>("IAPDefForms");
             builder.EntitySet<IAPType>("IAPTypes");

@@ -11,7 +11,7 @@ import { MessageDialog } from '../cr/MessageDialog';
 import { DefaultButton, PrimaryButton } from 'office-ui-fabric-react/lib/Button';
 import { Panel, PanelType } from 'office-ui-fabric-react/lib/Panel';
 import styles from '../../styles/cr.module.scss';
-import { IGIAAAuditReportInfo } from '../../types';
+import { IGIAAAuditReportInfo, IEntity } from '../../types';
 import { IGenColumn, ColumnType, ColumnDisplayType } from '../../types/GenColumn';
 import EntityList from '../entity/EntityList';
 import TestList2 from '../entity/TestList2';
@@ -28,12 +28,22 @@ export interface IRecommendationsTabProps extends types.IBaseComponentProps {
     onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
 }
 
+export interface ILookupData {
+    GIAAActionStatusTypes: IEntity[];
+}
+export class LookupData implements ILookupData {
+
+    public GIAAActionStatusTypes: IEntity[] = [];
+
+}
+
 export interface IRecommendationsTabState {
     Loading: boolean;
-
+    LookupData: ILookupData;
 
     IncompleteOnly: boolean;
     JustMine: boolean;
+    ActionStatusTypeId:number;
     ListFilterText: string;
     AuditReportInfo: IGIAAAuditReportInfo;
 
@@ -42,9 +52,10 @@ export interface IRecommendationsTabState {
 
 export class RecommendationsTabState implements IRecommendationsTabState {
     public Loading = false;
-
+    public LookupData = new LookupData();
     public IncompleteOnly = false;
     public JustMine = false;
+    public ActionStatusTypeId = 0;
     public ListFilterText: string = null;
     public AuditReportInfo = null;
 
@@ -54,6 +65,7 @@ export class RecommendationsTabState implements IRecommendationsTabState {
 export default class RecommendationsTab extends React.Component<IRecommendationsTabProps, IRecommendationsTabState> {
 
     private parentService: services.GIAAAuditReportService = new services.GIAAAuditReportService(this.props.spfxContext, this.props.api);
+    private giaaActionStatusTypeService: services.GIAAActionStatusTypeService = new services.GIAAActionStatusTypeService(this.props.spfxContext, this.props.api);
 
     constructor(props: IRecommendationsTabProps, state: IRecommendationsTabState) {
         super(props);
@@ -168,7 +180,7 @@ export default class RecommendationsTab extends React.Component<IRecommendations
                                 Link to Audit Report
                             </td>
                             <td colSpan={3} style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
-                                {rInfo.Link}
+                                <a target="_blank" href={rInfo.Link}>{rInfo.Link}</a>
                             </td>
 
                         </tr>
@@ -194,6 +206,7 @@ export default class RecommendationsTab extends React.Component<IRecommendations
                     <div style={{ width: '98%', minHeight: '120px', border: '1px solid rgb(166,166,166)', marginTop: '10px', marginLeft: 'auto', marginRight: 'auto', paddingRight: '5px', overflowX: 'hidden' }}>
                         <RecommendationsList
                             {...this.props}
+                            actionStatusTypes={this.state.LookupData.GIAAActionStatusTypes}
                             giaaAuditReportId={this.props.parentId}
                             onError={this.props.onError}
                             onItemTitleClick={this.props.onItemTitleClick}
@@ -201,6 +214,8 @@ export default class RecommendationsTab extends React.Component<IRecommendations
                             onChangeIncompleteOnly={this.handle_ChangeIncompleteOnly}
                             justMine={this.state.JustMine}
                             onChangeJustMine={this.handle_ChangeJustMine}
+                            actionStatusTypeId={this.state.ActionStatusTypeId}
+                            onChangeActionStatusType={this.handle_ChangeActionStatusType}
                             filterText={this.state.ListFilterText}
                             onChangeFilterText={this.handle_ChangeFilterText}
 
@@ -242,6 +257,7 @@ export default class RecommendationsTab extends React.Component<IRecommendations
     private loadLookups(): Promise<any> {
 
         return Promise.all([
+            this.loadGIAAActionStatusTypes(),
             this.loadAuditReportInfo(),
 
 
@@ -252,6 +268,15 @@ export default class RecommendationsTab extends React.Component<IRecommendations
         this.setState({ Loading: true }, this.callBackFirstLoad
 
         );
+    }
+
+
+
+    private loadGIAAActionStatusTypes = (): void => {
+        this.giaaActionStatusTypeService.readAll(`?$orderby=ID`).then((data: IEntity[]): IEntity[] => {
+            this.setState({ LookupData: this.cloneObject(this.state.LookupData, 'GIAAActionStatusTypes', data) });
+            return data;
+        }, (err) => { if (this.props.onError) this.props.onError(`Error loading GIAAActionStatusTypes lookup data`, err.message); });
     }
 
     private callBackFirstLoad = (): void => {
@@ -277,6 +302,15 @@ export default class RecommendationsTab extends React.Component<IRecommendations
 
     private handle_ChangeJustMine = (value: boolean): void => {
         this.setState({ JustMine: value });
+    }
+
+    private handle_ChangeActionStatusType = (option: IDropdownOption): void => {
+        this.setState({ ActionStatusTypeId: Number(option.key), },  );
+    }
+    protected cloneObject(obj, changeProp?, changeValue?) {
+        if (changeProp)
+            return { ...obj, [changeProp]: changeValue };
+        return { ...obj };
     }
 
     // private handle_ListItemTitleClick = (ID: number, title: string, filteredItems: any[]): void => {

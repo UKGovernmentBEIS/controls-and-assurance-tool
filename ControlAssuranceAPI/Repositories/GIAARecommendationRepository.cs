@@ -34,7 +34,7 @@ namespace ControlAssuranceAPI.Repositories
             return db.GIAARecommendations.Add(gIAARecommendation);
         }
 
-        public List<GIAARecommendationView_Result> GetRecommendations(int giaaAuditReportId, bool incompleteOnly, bool justMine)
+        public List<GIAARecommendationView_Result> GetRecommendations(int giaaAuditReportId, bool incompleteOnly, bool justMine, int actionStatusTypeId)
         {
             List<GIAARecommendationView_Result> retList = new List<GIAARecommendationView_Result>();
 
@@ -46,9 +46,11 @@ namespace ControlAssuranceAPI.Repositories
                           r.Title,
                           r.RecommendationDetails,
                           r.TargetDate,
+                          r.RevisedDate,
                           Priority = r.GIAAActionPriority.Title,
                           ActionStatus = r.GIAAActionStatusType.Title,
                           UpdateStatus = r.GIAAPeriodUpdateStatusId,
+                          r.GIAAActionStatusTypeId,
                           Owners = "",
 
                       };
@@ -62,6 +64,10 @@ namespace ControlAssuranceAPI.Repositories
                 //qry = qry.Where(gde =>
                 //    gde.GoElements.Any(ge => ge.GoAssignments.Any(gass => gass.UserId == loggedInUserID))
                 //);
+            }
+            if(actionStatusTypeId > 0)
+            {
+                qry = qry.Where(x => x.GIAAActionStatusTypeId == actionStatusTypeId);
             }
 
             int qryCount = qry.Count();
@@ -77,6 +83,7 @@ namespace ControlAssuranceAPI.Repositories
                     Title = ite.Title,
                     RecommendationDetails = ite.RecommendationDetails,
                     TargetDate = ite.TargetDate != null ? ite.TargetDate.Value.ToString("dd/MM/yyyy") : "",
+                    RevisedDate = ite.RevisedDate != null ? ite.RevisedDate.Value.ToString("dd/MM/yyyy") : "",
                     Priority = ite.Priority,
                     ActionStatus = ite.ActionStatus,
                     Owners = ite.Owners,
@@ -91,6 +98,23 @@ namespace ControlAssuranceAPI.Repositories
 
 
             return retList;
+        }
+
+
+        public GIAARecommendation Remove(GIAARecommendation gIAARecommendation)
+        {
+
+            db.GIAAUpdateFeedbacks.RemoveRange(db.GIAAUpdateFeedbacks.Where(x => x.GIAAUpdate.GIAARecommendationId == gIAARecommendation.ID));
+            db.GIAAUpdateEvidences.RemoveRange(db.GIAAUpdateEvidences.Where(x => x.GIAAUpdate.GIAARecommendationId == gIAARecommendation.ID));
+            db.GIAAUpdates.RemoveRange(db.GIAAUpdates.Where(x => x.GIAARecommendationId == gIAARecommendation.ID));
+            db.GIAAActionOwners.RemoveRange(db.GIAAActionOwners.Where(x => x.GIAARecommendationId == gIAARecommendation.ID));
+            var r = db.GIAARecommendations.Remove(gIAARecommendation);
+
+
+            db.SaveChanges();
+
+            return r;
+            
         }
     }
 }

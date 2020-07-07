@@ -17,6 +17,7 @@ namespace ControlAssuranceAPI.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public GIAARecommendation()
         {
+            this.GIAAActionOwners = new HashSet<GIAAActionOwner>();
             this.GIAAUpdates = new HashSet<GIAAUpdate>();
         }
     
@@ -28,7 +29,10 @@ namespace ControlAssuranceAPI.Models
         public Nullable<int> GIAAActionStatusTypeId { get; set; }
         public Nullable<int> GIAAPeriodUpdateStatusId { get; set; }
         public Nullable<int> GIAAAuditReportId { get; set; }
+        public Nullable<System.DateTime> RevisedDate { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<GIAAActionOwner> GIAAActionOwners { get; set; }
         public virtual GIAAActionPriority GIAAActionPriority { get; set; }
         public virtual GIAAActionStatusType GIAAActionStatusType { get; set; }
         public virtual GIAAAuditReport GIAAAuditReport { get; set; }

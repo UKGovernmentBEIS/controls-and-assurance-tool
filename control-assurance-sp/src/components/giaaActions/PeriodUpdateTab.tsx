@@ -15,6 +15,7 @@ import styles from '../../styles/cr.module.scss';
 import { IEntity, IGIAAUpdate, GIAAUpdate } from '../../types';
 import { IGenColumn, ColumnType, ColumnDisplayType } from '../../types/GenColumn';
 import EntityList from '../entity/EntityList';
+import EvidenceList from './EV/EvidenceList';
 
 
 
@@ -35,14 +36,14 @@ export interface IPeriodUpdateTabProps extends types.IBaseComponentProps {
 export interface ILookupData {
     GIAAUpdateStatusTypes: IEntity[];
     GIAAActionStatusTypes: IEntity[];
-    GIAAActionPriorities: IEntity[];
+    //GIAAActionPriorities: IEntity[];
 }
 
 export class LookupData implements ILookupData {
 
     public GIAAUpdateStatusTypes: IEntity[] = [];
     public GIAAActionStatusTypes: IEntity[] = [];
-    public GIAAActionPriorities: IEntity[] = [];
+    //public GIAAActionPriorities: IEntity[] = [];
 
 }
 
@@ -119,6 +120,7 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
                 {this.renderPeriodUpdateDetails()}
                 {this.renderFormButtons()}
                 {this.renderListsMainTitle()}
+                {this.renderEvidencesList()}
                 {this.renderFeedbacksList()}
                 {this.renderHistoricUpdatesList()}
                 {this.renderChangeLogs()}
@@ -214,19 +216,27 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
                     />
 
                     <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>
-                        Target Date
+                        Revised Implementation Date
                     </div>
-                    <div style={{ width: '350px' }}>
+                    <div className={styles.formField}>
 
-                        <CrDatePicker
-                            className={styles.formField}
-                            value={this.state.FormData.TargetDate}
-                            onSelectDate={(v) => this.changeDatePicker(v, "TargetDate")}
-                        />
+                        <div style={{ width: '350px' }}>
 
+                            <CrDatePicker
+                                //className={styles.formField}
+                                value={this.state.FormData.TargetDate}
+                                onSelectDate={(v) => this.changeDatePicker(v, "TargetDate")}
+                            />
+
+
+                        </div>
+                        <div style={{ fontStyle: 'italic' }}>
+                            Must be agreed with GIAA and evidence of such provided in evidence section below
+                        </div>
                     </div>
 
-                    <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>
+
+                    {/* <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>
                         Priority
                     </div>
                     <CrDropdown
@@ -238,7 +248,7 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
                         onChanged={(v) => this.changeDropdown(v, "GIAAActionPriorityId")}
 
 
-                    />
+                    /> */}
 
 
 
@@ -354,12 +364,35 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
     private renderListsMainTitle() {
         return (
             <div style={{ marginBottom: '20px', marginTop: '50px' }} className={styles.sectionATitle}>
-                Feedback, Previous Updates and Logs
+                Evidence, Feedback, Previous Updates and Logs
             </div>
         );
     }
 
 
+    private renderEvidencesList() {
+
+        return (
+            <React.Fragment>
+                <div style={{ marginTop: '30px', fontWeight: "bold", marginBottom: '10px' }}>Evidence</div>
+                <div style={{ minHeight: '120px', border: '1px solid rgb(166,166,166)' }}>
+                    <EvidenceList
+                        entityReadAllWithArg1={this.state.FormData.ID}
+                        isViewOnly={false}
+                        //goElementId={this.state.FormData.ID}
+                        //goElementId={this.state.GoElementId}
+                        filterText={this.state.Evidence_ListFilterText}
+                        onChangeFilterText={this.handleEvidence_ChangeFilterText}
+                        {...this.props}
+                        onError={this.props.onError}
+
+                    />
+                </div>
+
+            </React.Fragment>
+        );
+
+    }
 
     private renderFeedbacksList() {
         const listColumns: IGenColumn[] = [
@@ -667,12 +700,12 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
         }, (err) => { if (this.props.onError) this.props.onError(`Error loading GIAAActionStatusTypes lookup data`, err.message); });
     }
 
-    private loadGIAAActionPriorities = (): void => {
-        this.giaaActionPriorityService.readAll(`?$orderby=ID`).then((data: IEntity[]): IEntity[] => {
-            this.setState({ LookupData: this.cloneObject(this.state.LookupData, 'GIAAActionPriorities', data) });
-            return data;
-        }, (err) => { if (this.props.onError) this.props.onError(`Error loading GIAAActionPriorities lookup data`, err.message); });
-    }
+    // private loadGIAAActionPriorities = (): void => {
+    //     this.giaaActionPriorityService.readAll(`?$orderby=ID`).then((data: IEntity[]): IEntity[] => {
+    //         this.setState({ LookupData: this.cloneObject(this.state.LookupData, 'GIAAActionPriorities', data) });
+    //         return data;
+    //     }, (err) => { if (this.props.onError) this.props.onError(`Error loading GIAAActionPriorities lookup data`, err.message); });
+    // }
 
     private loadGIAAUpdateStatusTypes = (): void => {
         this.giaaUpdateStatusTypeService.readAll(`?$orderby=ID`).then((data: IEntity[]): IEntity[] => {
@@ -736,7 +769,7 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
 
         return Promise.all([
             this.loadGIAAActionStatusTypes(),
-            this.loadGIAAActionPriorities(),
+            //this.loadGIAAActionPriorities(),
             this.loadGIAAUpdateStatusTypes(),
             this.loadUpdate(true),
 
@@ -768,6 +801,9 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
 
 
 
+    private handleEvidence_ChangeFilterText = (value: string): void => {
+        this.setState({ Evidence_ListFilterText: value });
+    }
 
 
     protected cloneObject(obj, changeProp?, changeValue?) {

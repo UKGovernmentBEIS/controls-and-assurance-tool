@@ -51,6 +51,8 @@ export { IGIAAAuditReport, GIAAAuditReport } from './GIAAAuditReport';
 export { IGIAAAuditReportInfo } from './GIAAAuditReportInfo';
 export { IGIAARecommendation, GIAARecommendation } from './GIAARecommendation';
 export { IGIAAUpdate, GIAAUpdate } from './GIAAUpdate';
+export { IGIAAUpdateEvidence, GIAAUpdateEvidence } from './GIAAUpdateEvidence';
+export { IGIAAActionOwner, GIAAActionOwner } from './GIAAActionOwner';
 
 export { IIAPDefForm } from './IAPDefForm';
 export { IIAPUpdate, IAPUpdate } from './IAPUpdate';

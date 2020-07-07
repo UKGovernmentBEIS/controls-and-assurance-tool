@@ -3,12 +3,13 @@ import * as types from '../../types';
 import * as services from '../../services';
 import { sp } from '@pnp/sp';
 import RecommendationSaveForm from './RecommendationSaveForm';
-import { FilteredMainList, IObjectWithKey } from './FilteredMainList';
+import { FilteredRecList, IObjectWithKey } from './FilteredRecList';
 import { IEntity } from '../../types';
 import { IUpdatesListColumn, ColumnDisplayTypes } from '../../types/UpdatesListColumn';
 import { CrLoadingOverlay } from '../cr/CrLoadingOverlay';
 import { Selection } from '../cr/FilteredList';
 import { ConfirmDialog } from '../cr/ConfirmDialog';
+import { CrDropdown, IDropdownOption } from '../cr/CrDropdown';
 import styles from '../../styles/cr.module.scss';
 
 
@@ -21,8 +22,13 @@ export interface IRecommendationsListProps extends types.IBaseComponentProps {
     justMine: boolean;
     onChangeJustMine: (value: boolean) => void;
 
+    actionStatusTypeId:number;
+    onChangeActionStatusType: (option: IDropdownOption)=> void;
+
     filterText?: string;
     onChangeFilterText: (value: string) => void;
+
+    actionStatusTypes: IEntity[];
 
 }
 
@@ -110,8 +116,19 @@ export default class RecommendationsList extends React.Component<IRecommendation
         },
         {
             key: 'TargetDate',
-            name: 'Target Date',
+            name: 'Original Date',
             fieldName: 'TargetDate',
+            minWidth: 78,
+            maxWidth: 78,
+            isResizable: true,
+            isMultiline: true,
+            headerClassName: styles.bold,
+        },
+
+        {
+            key: 'RevisedDate',
+            name: 'Revised Date',
+            fieldName: 'RevisedDate',
             minWidth: 78,
             maxWidth: 78,
             isResizable: true,
@@ -187,7 +204,7 @@ export default class RecommendationsList extends React.Component<IRecommendation
                     {this.renderList()}
                     {this.state.ShowForm && this.renderForm()}
 
-                    <ConfirmDialog hidden={this.state.HideDeleteDialog} title={`Are you sure you want to delete ${this.getSelectedEntityName()}?`} content={`A deleted record cannot be un-deleted.`} confirmButtonText="Delete" handleConfirm={this.deleteRecord} handleCancel={this.toggleDeleteConfirm} />
+                    <ConfirmDialog hidden={this.state.HideDeleteDialog} title={`Are you sure you want to delete ${this.getSelectedEntityName()}?`} content={`Please note, all updates and related information will also be deleted.`} confirmButtonText="Delete" handleConfirm={this.deleteRecord} handleCancel={this.toggleDeleteConfirm} />
                 </div>
             </div>
         );
@@ -203,7 +220,7 @@ export default class RecommendationsList extends React.Component<IRecommendation
 
 
         return (
-            <FilteredMainList
+            <FilteredRecList
                 onItemTitleClick={this.props.onItemTitleClick}
                 columns={listColumns}
                 items={items}
@@ -212,6 +229,8 @@ export default class RecommendationsList extends React.Component<IRecommendation
                 onChangeIncompleteOnly={this.props.onChangeIncompleteOnly}
                 justMine={this.props.justMine}
                 onChangeJustMine={this.props.onChangeJustMine}
+                actionStatusTypeId={this.props.actionStatusTypeId}
+                onChangeActionStatusType={this.props.onChangeActionStatusType}                    
 
                 filterText={this.props.filterText}
                 onFilterChange={this.props.onChangeFilterText}
@@ -219,8 +238,11 @@ export default class RecommendationsList extends React.Component<IRecommendation
 
                 onAdd={this.addItem}
                 onEdit={this.editItem}
+                onDelete={this.checkDelete}
                 editDisabled={!this.state.EnableEdit}
                 deleteDisabled={!this.state.EnableDelete}
+
+                actionStatusTypes={this.props.actionStatusTypes}
 
                 
             />
@@ -303,6 +325,13 @@ export default class RecommendationsList extends React.Component<IRecommendation
 
     private deleteRecord = (): void => {
 
+        this.setState({ HideDeleteDialog: true });
+        if (this.state.SelectedEntity) {
+            this.recService.delete(this.state.SelectedEntity).then(this.loadData, (err) => {
+                if (this.props.onError) this.props.onError(`Error deleting item ${this.state.SelectedEntity}`, err.message);
+            });
+        }
+
     }
 
     //#endregion Class Methods
@@ -314,7 +343,7 @@ export default class RecommendationsList extends React.Component<IRecommendation
         this.setState({ Loading: true });
 
 
-        const read: Promise<IEntity[]> = this.recService.readAllWithFilters(this.props.giaaAuditReportId, this.props.incompleteOnly, this.props.justMine);
+        const read: Promise<IEntity[]> = this.recService.readAllWithFilters(this.props.giaaAuditReportId, this.props.incompleteOnly, this.props.justMine, this.props.actionStatusTypeId);
         read.then((entities: any): void => {
             this.setState({
                 Loading: false, Entities: entities,
@@ -331,13 +360,13 @@ export default class RecommendationsList extends React.Component<IRecommendation
         //console.log('web title: ', this.props.spfxContext.pageContext.web.title);
 
     }
-    // public componentDidUpdate(prevProps: IRecommendationsListProps): void {
-    //     if (prevProps.naoPeriodId !== this.props.naoPeriodId || prevProps.dgAreaId !== this.props.dgAreaId || prevProps.justMine !== this.props.justMine || prevProps.incompleteOnly !== this.props.incompleteOnly) {
-    //         //console.log('props changed, load data again');
-    //         this._selection.setAllSelected(false);
-    //         this.loadData();
-    //     }
-    // }
+    public componentDidUpdate(prevProps: IRecommendationsListProps): void {
+        if (prevProps.actionStatusTypeId !== this.props.actionStatusTypeId || prevProps.justMine !== this.props.justMine || prevProps.incompleteOnly !== this.props.incompleteOnly) {
+            //console.log('props changed, load data again');
+            this._selection.setAllSelected(false);
+            this.loadData();
+        }
+    }
 
 
 
@@ -355,6 +384,12 @@ export default class RecommendationsList extends React.Component<IRecommendation
 
     private editItem = (): void => {
         this.setState({ ShowForm: true });
+    }
+
+    private checkDelete = (): void => {
+
+        this.toggleDeleteConfirm();
+
     }
 
 

@@ -9,6 +9,7 @@ import { Fabric } from 'office-ui-fabric-react/lib/Fabric';
 import { mergeStyleSets } from 'office-ui-fabric-react/lib/Styling';
 import { Toggle } from 'office-ui-fabric-react/lib/Toggle';
 import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox';
+import { CrDropdown, IDropdownOption } from '../cr/CrDropdown';
 import '../../styles/CustomFabric2.scss';
 
 
@@ -43,7 +44,17 @@ const controlStyles2 = {
     //}
 };
 
-export interface IFilteredMainListProps {
+const filterDrpsStyle = {
+
+    width: "120px",
+    //marginRight: "10px",
+    //marginBottom: "10px"
+
+
+
+};
+
+export interface IFilteredRecListProps {
     className?: string;
     columns: IColumn[];
     items: any[];
@@ -53,8 +64,15 @@ export interface IFilteredMainListProps {
     onChangeIncompleteOnly: (value: boolean) => void;
     justMine: boolean;
     onChangeJustMine: (value: boolean) => void;
+
+    actionStatusTypeId:number;
+    onChangeActionStatusType: (option: IDropdownOption)=> void;
+
+
     onFilterChange: (value: string) => void;
     onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
+
+    actionStatusTypes: IEntity[];
 
     selection?: ISelection;
 
@@ -74,12 +92,12 @@ export interface IFilteredMainListProps {
     //deleteDisabled: boolean;
 }
 
-export interface IFilteredMainListState {
+export interface IFilteredRecListState {
     Columns: IColumn[];
     FilteredItems: any[];
 }
 
-export class FilteredMainList extends React.Component<IFilteredMainListProps, IFilteredMainListState> {
+export class FilteredRecList extends React.Component<IFilteredRecListProps, IFilteredRecListState> {
 
 
     private statusImgNotStarted: string = require('../../images/goelement/list/status/notstarted.png');
@@ -87,7 +105,7 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
     private statusImgCompleted: string = require('../../images/goelement/list/status/completed.png');
 
 
-    constructor(props: IFilteredMainListProps) {
+    constructor(props: IFilteredRecListProps) {
         super(props);
 
         props.columns.forEach((c) => { c.onColumnClick = this._onColumnClick; });
@@ -101,6 +119,9 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
 
     public render(): JSX.Element {
         const { props, state } = this;
+        let dgActionStatusTypeOptions = this.props.actionStatusTypes.map((x) => { return { key: x.ID, text: x.Title }; });
+        dgActionStatusTypeOptions = [{ key: 0, text: "All Statuses" }, ...dgActionStatusTypeOptions];
+
         return (
             <Fabric>
 
@@ -120,6 +141,13 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
                         styles={controlStyles}
                         checked={props.justMine}
                         onChanged={(isChecked) => props.onChangeJustMine(isChecked)}
+                    />
+
+                    <CrDropdown
+                        options={dgActionStatusTypeOptions}
+                        selectedKey={props.actionStatusTypeId}
+                        onChanged={(v)=> props.onChangeActionStatusType(v)}
+                        style={filterDrpsStyle}
                     />
 
                     {props.editDisabled && props.deleteDisabled &&
@@ -144,6 +172,8 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
                             text="Delete"
                             onClick={props.onDelete}
                         />}
+
+
 
                     <span style={controlStyles2}>
 
@@ -183,7 +213,7 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
 
     }
 
-    public componentDidUpdate(prevProps: IFilteredMainListProps): void {
+    public componentDidUpdate(prevProps: IFilteredRecListProps): void {
 
         if (prevProps.columns !== this.props.columns) {
             this.props.columns.forEach((c) => { c.onColumnClick = this._onColumnClick; });
@@ -204,39 +234,8 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
 
         let fieldContent = item[column.fieldName as keyof IEntity] as string;
 
-        if (column.key === "GIAAAssuranceId") {
-            let txtColor: string = "white";
-            let bgColor: string = "";
-            let txt:string = "";
-            const giaaAssuranceId: number = Number(fieldContent);
-            if (giaaAssuranceId === 1) {
-                bgColor = "rgb(128,0,128)";
-                txtColor = "white";
-                txt = "Advisory";
-            }
-            else if (giaaAssuranceId === 2) {
-                bgColor = "rgb(242,231,2)";
-                txtColor = "black";
-                txt = "Limited";
-            }
-            else if (giaaAssuranceId === 3) {
-                bgColor = "rgb(255,128,41)";
-                txtColor = "white";
-                txt = "Moderate";
-            }
-            else if (giaaAssuranceId === 4) {
-                bgColor = "rgb(31,148,67)";
-                txtColor = "white";
-                txt = "Substantial";
-            }
-            return (
-                <span style={{ backgroundColor: bgColor, color: txtColor, width: "140px", display: "block", paddingLeft: "10px", paddingTop: "5px", paddingBottom: "5px" }}>
-                    {txt}
-                </span>
-            );
-        }
 
-        else if (column.key === "UpdateStatus") {
+        if (column.key === "UpdateStatus") {
 
             //let txtColor: string = "white";
             //let bgColor: string = "";

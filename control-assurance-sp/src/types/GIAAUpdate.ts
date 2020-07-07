@@ -26,7 +26,7 @@ export class GIAAUpdate implements IGIAAUpdate{
     public GIAARecommendationId = null;
     public GIAAPeriodId = null;
     public GIAAActionStatusTypeId = null;
-    public GIAAActionPriorityId = null;
+    public GIAAActionPriorityId = 1;
     public GIAAUpdateStatusId = null;
     public UpdateChangeLog = null;
 

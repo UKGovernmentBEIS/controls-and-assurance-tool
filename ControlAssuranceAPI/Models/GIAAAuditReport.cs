@@ -28,6 +28,7 @@ namespace ControlAssuranceAPI.Models
         public string Link { get; set; }
         public Nullable<int> DirectorateId { get; set; }
         public Nullable<int> GIAAAssuranceId { get; set; }
+        public Nullable<bool> IsArchive { get; set; }
     
         public virtual Directorate Directorate { get; set; }
         public virtual GIAAAssurance GIAAAssurance { get; set; }

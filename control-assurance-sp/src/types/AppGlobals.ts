@@ -46,11 +46,15 @@ export function getFolder_Help(context: WebPartContext) : string {
 
 
 export function getUploadFolder_NAOUpdateEvidence(context: WebPartContext) : string {
-    //const webTitle = context.pageContext.web.title;
-    //console.log("props.spfxContext.pageContext.web.title ", `'${webTitle}'`);
-    //const path:string = `/sites/${webTitle}/Shared%20Documents/Evidence`;
     const serverRelativeUrl = context.pageContext.web.serverRelativeUrl;
     const path:string = `${serverRelativeUrl}/Shared%20Documents/NAOTrackerEvidence`;
+
+    return path;
+}
+
+export function getUploadFolder_GIAAUpdateEvidence(context: WebPartContext) : string {
+    const serverRelativeUrl = context.pageContext.web.serverRelativeUrl;
+    const path:string = `${serverRelativeUrl}/Shared%20Documents/GIAAActionsEvidence`;
 
     return path;
 }

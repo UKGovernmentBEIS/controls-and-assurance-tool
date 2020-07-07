@@ -5,9 +5,12 @@ import { IEntity, IDirectorate, IGIAAAuditReport, GIAAAuditReport } from '../../
 import { CrTextField } from '../cr/CrTextField';
 import { CrDropdown, IDropdownOption } from '../cr/CrDropdown';
 import { FormButtons } from '../cr/FormButtons';
+import { CrCheckbox } from '../cr/CrCheckbox';
 import { Panel, PanelType } from 'office-ui-fabric-react/lib/Panel';
 import { FormCommandBar } from '../cr/FormCommandBar';
 import { CrEntityPicker } from '../cr/CrEntityPicker';
+
+
 import { CrDatePicker } from '../cr/CrDatePicker';
 import styles from '../../styles/cr.module.scss';
 
@@ -107,7 +110,8 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
                 {this.renderYear()}
                 {this.renderAssurance()}
                 {this.renderLink()}
-                
+                {this.renderIsArchiveCheckbox()}
+
 
 
 
@@ -228,6 +232,24 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
     }
 
 
+    private renderIsArchiveCheckbox() {
+
+        return (
+            <div>
+
+                <CrCheckbox
+                    className={`${styles.formField} ${styles.checkbox}`}
+                    label="Archive"
+                    checked={this.state.FormData.IsArchive}
+                    onChange={(ev, isChecked) => this.changeCheckbox(isChecked, "IsArchive")}
+
+
+                />
+
+            </div>
+        );
+
+    }
 
     //#endregion Render
 
@@ -421,6 +443,9 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
 
     private changeDropdown = (option: IDropdownOption, f: string, index?: number): void => {
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, option.key), FormIsDirty: true });
+    }
+    private changeCheckbox = (value: boolean, f: string): void => {
+        this.setState({ FormData: this.cloneObject(this.state.FormData, f, value), FormIsDirty: true });
     }
 
     //#endregion Form Operations

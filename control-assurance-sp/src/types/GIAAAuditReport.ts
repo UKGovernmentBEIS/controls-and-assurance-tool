@@ -9,6 +9,7 @@ export interface IGIAAAuditReport  extends IEntity {
     Link?: string;
     DirectorateId?: number;
     GIAAAssuranceId?: number;
+    IsArchive?:boolean;
     
 }
 
@@ -21,6 +22,7 @@ export class GIAAAuditReport implements IGIAAAuditReport{
     public Link = null;
     public DirectorateId = null;
     public GIAAAssuranceId = null;
+    public IsArchive = false;
 
 
 

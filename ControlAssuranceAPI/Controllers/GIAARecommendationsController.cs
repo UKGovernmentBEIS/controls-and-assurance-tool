@@ -30,10 +30,10 @@ namespace ControlAssuranceAPI.Controllers
             return SingleResult.Create(db.GIAARecommendationRepository.GIAARecommendations.Where(x => x.ID == key));
         }
 
-        // GET: /odata/GIAARecommendations?giaaAuditReportId=1&incompleteOnly=true&justMine=false
-        public List<GIAARecommendationView_Result> Get(int giaaAuditReportId, bool incompleteOnly, bool justMine)
+        // GET: /odata/GIAARecommendations?giaaAuditReportId=1&incompleteOnly=true&justMine=false&actionStatusTypeId=0
+        public List<GIAARecommendationView_Result> Get(int giaaAuditReportId, bool incompleteOnly, bool justMine, int actionStatusTypeId)
         {
-            return db.GIAARecommendationRepository.GetRecommendations(giaaAuditReportId , incompleteOnly, justMine);
+            return db.GIAARecommendationRepository.GetRecommendations(giaaAuditReportId , incompleteOnly, justMine, actionStatusTypeId);
         }
 
         // POST: odata/GIAARecommendations
@@ -87,6 +87,23 @@ namespace ControlAssuranceAPI.Controllers
             }
 
             return Updated(giaaRecommendation);
+        }
+
+        // DELETE: odata/GIAARecommendations(1)
+        public IHttpActionResult Delete([FromODataUri] int key)
+        {
+            GIAARecommendation gIAARecommendation = db.GIAARecommendationRepository.Find(key);
+            if (gIAARecommendation == null)
+            {
+                return NotFound();
+            }
+
+            var x = db.GIAARecommendationRepository.Remove(gIAARecommendation);
+            //if (x == null) return Unauthorized();
+
+            //db.SaveChanges();
+
+            return StatusCode(HttpStatusCode.NoContent);
         }
 
         private bool GIAARecommendationExists(int key)

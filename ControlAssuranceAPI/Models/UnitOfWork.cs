@@ -66,6 +66,8 @@ namespace ControlAssuranceAPI.Models
         private GIAAUpdateRepository gIAAUpdateRepository;
         private GIAAUpdateFeedbackRepository gIAAUpdateFeedbackRepository;
         private GIAAUpdateStatusTypeRepository gIAAUpdateStatusTypeRepository;
+        private GIAAUpdateEvidenceRepository gIAAUpdateEvidenceRepository;
+        private GIAAActionOwnerRepository gIAAActionOwnerRepository;
 
         private IAPDefFormRepository iAPDefFormRepository;
         private IAPTypeRepository iAPTypeRepository;
@@ -588,6 +590,22 @@ namespace ControlAssuranceAPI.Models
             get
             {
                 return gIAAUpdateStatusTypeRepository = gIAAUpdateStatusTypeRepository ?? new GIAAUpdateStatusTypeRepository(user, context);
+            }
+        }
+
+        public GIAAUpdateEvidenceRepository GIAAUpdateEvidenceRepository
+        {
+            get
+            {
+                return gIAAUpdateEvidenceRepository = gIAAUpdateEvidenceRepository ?? new GIAAUpdateEvidenceRepository(user, context);
+            }
+        }
+
+        public GIAAActionOwnerRepository GIAAActionOwnerRepository
+        {
+            get
+            {
+                return gIAAActionOwnerRepository = gIAAActionOwnerRepository ?? new GIAAActionOwnerRepository(user, context);
             }
         }
 

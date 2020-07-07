@@ -39,13 +39,14 @@ namespace ControlAssuranceAPI.Repositories
             }
             else
             {
+                var rec = db.GIAARecommendations.FirstOrDefault(x => x.ID == giaaRecommendationId);
                 GIAAUpdate newR = new GIAAUpdate();
                 newR.GIAAPeriodId = giaaPeriodId;
                 newR.GIAARecommendationId = giaaRecommendationId;
                 newR.GIAAActionPriorityId = 1;
-                newR.GIAAActionStatusTypeId = 1;
+                newR.GIAAActionStatusTypeId = rec.GIAAActionStatusTypeId; //get default value from rec
                 newR.GIAAUpdateStatusId = 1;
-                newR.TargetDate = DateTime.Now;
+                newR.TargetDate = rec.RevisedDate; //get default value from rec
                 newR.UpdateChangeLog = "";
 
                 ret = db.GIAAUpdates.Add(newR);
@@ -70,9 +71,9 @@ namespace ControlAssuranceAPI.Repositories
                 giaaUpdateDb.GIAAActionPriorityId = giaaUpdate.GIAAActionPriorityId;
                 giaaUpdateDb.GIAAUpdateStatusId = giaaUpdate.GIAAUpdateStatusId;
 
-                giaaUpdateDb.GIAARecommendation.TargetDate = giaaUpdate.TargetDate;
+                giaaUpdateDb.GIAARecommendation.RevisedDate = giaaUpdate.TargetDate;
                 giaaUpdateDb.GIAARecommendation.GIAAActionStatusTypeId = giaaUpdate.GIAAActionStatusTypeId;
-                giaaUpdateDb.GIAARecommendation.GIAAActionPriorityId = giaaUpdate.GIAAActionPriorityId;
+                //giaaUpdateDb.GIAARecommendation.GIAAActionPriorityId = giaaUpdate.GIAAActionPriorityId;
 
                 string user = ApiUser.Title;
                 string date = DateTime.Now.ToString("ddMMMyyyy HH:mm");

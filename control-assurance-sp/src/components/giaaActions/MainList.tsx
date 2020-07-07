@@ -9,12 +9,13 @@ import { IUpdatesListColumn, ColumnDisplayTypes } from '../../types/UpdatesListC
 import { CrLoadingOverlay } from '../cr/CrLoadingOverlay';
 import { Selection } from '../cr/FilteredList';
 import { ConfirmDialog } from '../cr/ConfirmDialog';
+import { MessageDialog } from '../cr/MessageDialog';
 import styles from '../../styles/cr.module.scss';
 
 
 export interface IMainListProps extends types.IBaseComponentProps {
 
-    onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
+    isArchive:boolean;
     giaaPeriodId: number | string;
     dgAreaId: number | string;
     incompleteOnly: boolean;
@@ -24,6 +25,8 @@ export interface IMainListProps extends types.IBaseComponentProps {
 
     filterText?: string;
     onChangeFilterText: (value: string) => void;
+
+    onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
 
 }
 
@@ -37,6 +40,7 @@ export interface IMainListState<T> {
     EnableEdit?: boolean;
     EnableDelete?: boolean;
     HideDeleteDialog: boolean;
+    HideDeleteDisallowed: boolean;
     ShowChildForm: boolean;
     CurrentPage?: number;
     NextPageAvailable?: boolean;
@@ -53,6 +57,7 @@ export class MainListState<T> implements IMainListState<T>{
     public SelectedEntityChildren = null;
     public ShowForm = false;
     public HideDeleteDialog = true;
+    public HideDeleteDisallowed = true;
     public EnableEdit = false;
     public EnableDelete = false;
     public ShowChildForm = false;
@@ -68,6 +73,7 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
     private _selection: Selection;
     private mainService: services.GIAAAuditReportService = new services.GIAAAuditReportService(this.props.spfxContext, this.props.api);
 
+    private ChildEntityName: { Plural: string, Singular: string } = { Plural: 'Recommendations', Singular: 'Recommendation' };
 
     private listColumns: IUpdatesListColumn[] = [
         //use fieldName as key
@@ -78,6 +84,13 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
             fieldName: 'ID',
             minWidth: 1,
             isResizable: true,
+            columnDisplayType: ColumnDisplayTypes.Hidden,
+        },
+        {
+            key: 'Directorate',
+            name: 'Directorate',
+            fieldName: 'Directorate',
+            minWidth: 1,
             columnDisplayType: ColumnDisplayTypes.Hidden,
         },
         {
@@ -102,23 +115,14 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
         },
         {
             key: 'DGArea',
-            name: 'DGArea',
+            name: 'Area',
             fieldName: 'DGArea',
-            minWidth: 150,
-            maxWidth: 150,
+            minWidth: 210,
+            maxWidth: 210,
             isResizable: true,
             isMultiline: true,
             headerClassName: styles.bold,
         },
-        // {
-        //     key: 'Type',
-        //     name: 'Type',
-        //     fieldName: 'Type',
-        //     minWidth: 90,
-        //     maxWidth: 90,
-        //     isResizable: true,
-        //     headerClassName: styles.bold,
-        // },
 
         {
             key: 'IssueDateStr',
@@ -150,17 +154,8 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
         },
 
         {
-            key: 'Assurance',
-            name: 'Assurance',
-            fieldName: 'Assurance',
-            minWidth: 70,
-            maxWidth: 70,
-            isResizable: true,
-            headerClassName: styles.bold,
-        },
-        {
             key: 'AssignedTo',
-            name: 'Assigned To',
+            name: 'Action Owners',
             fieldName: 'AssignedTo',
             minWidth: 120,
             maxWidth: 120,
@@ -169,14 +164,24 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
         },
 
         {
-            key: 'UpdateStatus',
-            name: 'Period Update Status',
-            fieldName: 'UpdateStatus',
+            key: 'GIAAAssuranceId',
+            name: 'Assurance',
+            fieldName: 'GIAAAssuranceId',
             minWidth: 150,
             maxWidth: 150,
             isResizable: true,
             headerClassName: styles.bold,
         },
+
+        // {
+        //     key: 'UpdateStatus',
+        //     name: 'Period Update Status',
+        //     fieldName: 'UpdateStatus',
+        //     minWidth: 150,
+        //     maxWidth: 150,
+        //     isResizable: true,
+        //     headerClassName: styles.bold,
+        // },
     ];
 
 
@@ -215,6 +220,7 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
                     {this.renderList()}
                     {this.state.ShowForm && this.renderForm()}
 
+                    <MessageDialog hidden={this.state.HideDeleteDisallowed} title={`This report cannot be deleted`} content={`GIAA Audit Report '${this.getSelectedEntityName()}' has ${this.state.SelectedEntityChildren} ${this.state.SelectedEntityChildren === 1 ? this.ChildEntityName.Singular.toLowerCase() : this.ChildEntityName.Plural.toLowerCase()} belonging to it.`} handleOk={this.toggleDeleteDisallowed} />
                     <ConfirmDialog hidden={this.state.HideDeleteDialog} title={`Are you sure you want to delete ${this.getSelectedEntityName()}?`} content={`A deleted record cannot be un-deleted.`} confirmButtonText="Delete" handleConfirm={this.deleteRecord} handleCancel={this.toggleDeleteConfirm} />
                 </div>
             </div>
@@ -247,6 +253,7 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
 
                 onAdd={this.addItem}
                 onEdit={this.editItem}
+                onDelete={this.checkDelete}
                 editDisabled={!this.state.EnableEdit}
                 deleteDisabled={!this.state.EnableDelete}
 
@@ -324,11 +331,16 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
         return entity[0] ? entity[0].Title : null;
     }
 
-    private toggleDeleteConfirm = (): void => {
-        this.setState({ HideDeleteDialog: !this.state.HideDeleteDialog });
-    }
+
 
     private deleteRecord = (): void => {
+
+        this.setState({ HideDeleteDialog: true });
+        if (this.state.SelectedEntity) {
+            this.mainService.delete(this.state.SelectedEntity).then(this.loadData, (err) => {
+                if (this.props.onError) this.props.onError(`Error deleting item ${this.state.SelectedEntity}`, err.message);
+            });
+        }
 
     }
 
@@ -341,7 +353,7 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
         this.setState({ Loading: true });
 
 
-        const read: Promise<IEntity[]> = this.mainService.readAllWithFilters(this.props.giaaPeriodId, this.props.dgAreaId, this.props.incompleteOnly, this.props.justMine);
+        const read: Promise<IEntity[]> = this.mainService.readAllWithFilters(this.props.giaaPeriodId, this.props.dgAreaId, this.props.incompleteOnly, this.props.justMine, this.props.isArchive);
         read.then((entities: any): void => {
             this.setState({
                 Loading: false, Entities: entities,
@@ -382,6 +394,28 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
 
     private editItem = (): void => {
         this.setState({ ShowForm: true });
+    }
+    private checkDelete = (): void => {
+
+        this.mainService.numberOfChildren(this.state.SelectedEntity, 'GIAARecommendations').then((numberOfChildren: number) => {
+            //console.log(numberOfChildren);
+            if (numberOfChildren > 0){
+                this.setState({ SelectedEntityChildren: numberOfChildren }, this.toggleDeleteDisallowed);
+
+            }                
+            else{
+                this.toggleDeleteConfirm();
+            }
+                
+        });
+
+    }
+
+    private toggleDeleteDisallowed = (): void => {
+        this.setState({ HideDeleteDisallowed: !this.state.HideDeleteDisallowed });
+    }
+    private toggleDeleteConfirm = (): void => {
+        this.setState({ HideDeleteDialog: !this.state.HideDeleteDialog });
     }
 
 

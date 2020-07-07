@@ -29,11 +29,12 @@ namespace ControlAssuranceAPI.Repositories
             return GIAAAuditReports.Where(x => x.ID == keyValue).FirstOrDefault();
         }
 
-        public List<GIAAAuditReportView_Result> GetAuditReports(int giaaPeriodId, int dgAreaId, bool incompleteOnly, bool justMine)
+        public List<GIAAAuditReportView_Result> GetAuditReports(int giaaPeriodId, int dgAreaId, bool incompleteOnly, bool justMine, bool isArchive)
         {
             List<GIAAAuditReportView_Result> retList = new List<GIAAAuditReportView_Result>();
 
             var qry = from r in db.GIAAAuditReports
+                      where r.IsArchive == isArchive
                           //where p.NAORecommendations.Any(x => x.NAOUpdates.Any (y => y.NAOPeriodId == naoPeriodId))
                       select new
                       {
@@ -44,7 +45,9 @@ namespace ControlAssuranceAPI.Repositories
                           r.AuditYear,
                           r.Directorate.DirectorateGroupID,
                           DGArea = r.Directorate.DirectorateGroup.Title,
-                          Assurance = r.GIAAAssurance.Title,
+                          Directorate = r.Directorate.Title,
+                          //Assurance = r.GIAAAssurance.Title,
+                          r.GIAAAssuranceId
 
                       };
 
@@ -78,7 +81,8 @@ namespace ControlAssuranceAPI.Repositories
                     Title = title,
                     NumberStr = iteR.NumberStr,
                     DGArea = iteR.DGArea,
-                    Assurance = iteR.Assurance,
+                    Directorate = iteR.Directorate,
+                    GIAAAssuranceId = iteR.GIAAAssuranceId.Value,
                     Year = iteR.AuditYear,
                     IssueDateStr = (iteR.IssueDate != null) ? iteR.IssueDate.Value.ToString("dd/MM/yyyy") : "",
                     CompletePercent = "0%",
@@ -111,6 +115,20 @@ namespace ControlAssuranceAPI.Repositories
             var r = db.GIAAAuditReports.FirstOrDefault(x => x.ID == id);
             if (r != null)
             {
+                int totalRec = r.GIAARecommendations.Count();
+                int totalOpen = r.GIAARecommendations.Count(x => x.GIAAActionStatusTypeId == 1); //open
+                int percentOpen = 0;
+                try
+                {
+                    decimal a = (decimal)((decimal)totalOpen / (decimal)totalRec);
+                    decimal b = Math.Round((a * 100));
+                    percentOpen = (int)b;
+                    //percentOpen = (int)(((decimal)(totalOpen / totalRec)) * (decimal)100);
+                }
+                catch(Exception ex) {
+                    string m = ex.Message;
+                }
+                
                 ret.ID = r.ID;
                 ret.NumberStr = r.NumberStr;
                 ret.Directorate = r.Directorate.Title;
@@ -118,7 +136,7 @@ namespace ControlAssuranceAPI.Repositories
                 ret.DG = r.Directorate.DirectorateGroup.User.Title;
                 ret.IssueDate = r.IssueDate != null ? r.IssueDate.Value.ToString("dd/MM/yyyy") : "";
                 ret.Director = r.Directorate.User.Title;
-                ret.Stats = "";
+                ret.Stats = $"{totalRec}/{totalOpen}/{percentOpen}%";
                 ret.Assurance = r.GIAAAssurance.Title;
                 ret.Link = r.Link;
 

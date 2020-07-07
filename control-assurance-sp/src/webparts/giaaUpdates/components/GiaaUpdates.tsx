@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { Pivot, PivotItem } from 'office-ui-fabric-react/lib/Pivot';
 import { CrDropdown, IDropdownOption } from '../../../components/cr/CrDropdown';
-import Section1 from '../../../components/giaaActions/Section1';
-import Section2 from '../../../components/giaaActions/Section2';
+import Section from '../../../components/giaaActions/Section';
 //import Section2Update from '../../../components/govUpdates/Section2Update';
 //import Section3Update from '../../../components/govUpdates/Section3Update';
 //import Section4Update from '../../../components/govUpdates/Section4Update';
@@ -39,21 +38,28 @@ export interface IGiaaUpdatesState extends types.IUserContextWebPartState {
   PeriodId: string | number;
   DirectorateGroupId: string | number;
   IsArchivedPeriod: boolean;
-  
+
   SelectedPivotKey: string;
 
   Section1_IsOpen: boolean;
   Section1_MainList_IncompleteOnly: boolean;
   Section1__MainList_JustMine: boolean;
   Section1_MainList_ListFilterText: string;
-  Section1_MainList_SelectedId: number;
-  Section1_MainList_SelectedTitle: string;
-  Section1_MainList_FilteredItems: any[];
+
+  Section2_IsOpen: boolean;
+  Section2_MainList_IncompleteOnly: boolean;
+  Section2__MainList_JustMine: boolean;
+  Section2_MainList_ListFilterText: string;
+
+  //generic for both sections
+  Section_MainList_SelectedId: number;
+  Section_MainList_SelectedTitle: string;
+  Section_MainList_FilteredItems: any[];
 
   //Rec Tab
-  Section1_RecList_SelectedId: number;
-  Section1_RecList_SelectedTitle: string;
-  Section1_RecList_FilteredItems: any[];
+  RecList_SelectedId: number;
+  RecList_SelectedTitle: string;
+  RecList_FilteredItems: any[];
 
 }
 export class GiaaUpdatesState extends types.UserContextWebPartState implements IGiaaUpdatesState {
@@ -61,20 +67,28 @@ export class GiaaUpdatesState extends types.UserContextWebPartState implements I
   public PeriodId: string | number = 0;
   public IsArchivedPeriod = false;
   public DirectorateGroupId: string | number = 0;
-   public SelectedPivotKey = "GIAA Updates-Main"; //default, 1st tab selected
+  public SelectedPivotKey = "GIAA Updates-Main"; //default, 1st tab selected
 
   public Section1_IsOpen: boolean = false;
   public Section1_MainList_IncompleteOnly = false;
   public Section1__MainList_JustMine = false;
   public Section1_MainList_ListFilterText: string = null;
-  public Section1_MainList_SelectedId: number = 0;
-  public Section1_MainList_SelectedTitle: string = null;
-  public Section1_MainList_FilteredItems = [];
+
+
+  public Section2_IsOpen: boolean = false;
+  public Section2_MainList_IncompleteOnly = false;
+  public Section2__MainList_JustMine = false;
+  public Section2_MainList_ListFilterText: string = null;
+
+  //generic for both sections
+  public Section_MainList_SelectedId: number = 0;
+  public Section_MainList_SelectedTitle: string = null;
+  public Section_MainList_FilteredItems = [];
 
   //Rec Tab
-  public Section1_RecList_SelectedId: number;
-  public Section1_RecList_SelectedTitle: string;
-  public Section1_RecList_FilteredItems: any[];
+  public RecList_SelectedId: number;
+  public RecList_SelectedTitle: string;
+  public RecList_FilteredItems: any[];
 
   constructor() {
     super();
@@ -91,7 +105,7 @@ export default class GiaaUpdates extends BaseUserContextWebPartComponent<types.I
 
   private readonly headerTxt_MainTab: string = "GIAA Updates-Main";
   private readonly headerTxt_RecommendationsTab: string = "Recommendations";
-  private readonly headerTxt_PeriodUpdateTab: string = "Period Update";
+  private readonly headerTxt_PeriodUpdateTab: string = "Action Updates";
 
   constructor(props: types.IWebPartComponentProps) {
     super(props);
@@ -132,7 +146,7 @@ export default class GiaaUpdates extends BaseUserContextWebPartComponent<types.I
         <div style={{ paddingTop: "10px" }}>
           <CrDropdown
             placeholder="Select an Option"
-            label="Which period do you want to view or report on?"
+            label="Current Period"
             options={lookups.Periods.map((p) => { return { key: p.ID, text: p.Title }; })}
             onChanged={(v) => this.changeDropdown(v, 'PeriodId')}
             selectedKey={this.state.PeriodId}
@@ -149,13 +163,15 @@ export default class GiaaUpdates extends BaseUserContextWebPartComponent<types.I
 
           {this.state.PeriodId > 0 &&
             <div>
-              <Section1
+              <Section
+                isArchive={false}
+                sectionTitle="Active GIAA Audit Reports"
                 giaaPeriodId={this.state.PeriodId}
                 dgAreaId={this.state.DirectorateGroupId}
                 //section1CompletionStatus={this.state.GoForm.SpecificAreasCompletionStatus}
-                onItemTitleClick={this.handleSection1_MainListItemTitleClick}
-                section1_IsOpen={this.state.Section1_IsOpen}
-                onSection1_toggleOpen={this.handleSection1_toggleOpen}
+                onItemTitleClick={this.handleSection_MainListItemTitleClick}
+                section_IsOpen={this.state.Section1_IsOpen}
+                onSection_toggleOpen={this.handleSection1_toggleOpen}
                 justMine={this.state.Section1__MainList_JustMine}
                 incompleteOnly={this.state.Section1_MainList_IncompleteOnly}
                 listFilterText={this.state.Section1_MainList_ListFilterText}
@@ -164,7 +180,24 @@ export default class GiaaUpdates extends BaseUserContextWebPartComponent<types.I
                 onChangeJustMine={this.handleSection1_ChangeJustMine}
                 {...this.props}
               />
-              <Section2
+
+
+
+              <Section
+                isArchive={true}
+                sectionTitle="Archived GIAA Audit Reports"
+                giaaPeriodId={this.state.PeriodId}
+                dgAreaId={this.state.DirectorateGroupId}
+                //section1CompletionStatus={this.state.GoForm.SpecificAreasCompletionStatus}
+                onItemTitleClick={this.handleSection_MainListItemTitleClick}
+                section_IsOpen={this.state.Section2_IsOpen}
+                onSection_toggleOpen={this.handleSection2_toggleOpen}
+                justMine={this.state.Section2__MainList_JustMine}
+                incompleteOnly={this.state.Section2_MainList_IncompleteOnly}
+                listFilterText={this.state.Section2_MainList_ListFilterText}
+                onChangeFilterText={this.handleSection2_ChangeFilterText}
+                onChangeIncompleteOnly={this.handleSection2_ChangeIncompleteOnly}
+                onChangeJustMine={this.handleSection2_ChangeJustMine}
                 {...this.props}
               />
 
@@ -214,12 +247,12 @@ export default class GiaaUpdates extends BaseUserContextWebPartComponent<types.I
     return (
 
       <RecommendationsTab
-        filteredItems={this.state.Section1_MainList_FilteredItems}
-        parentId={this.state.Section1_MainList_SelectedId}
-        parentTitle={this.state.Section1_MainList_SelectedTitle}
+        filteredItems={this.state.Section_MainList_FilteredItems}
+        parentId={this.state.Section_MainList_SelectedId}
+        parentTitle={this.state.Section_MainList_SelectedTitle}
         //isViewOnly={this.isViewOnlyGoForm()}
-        onItemTitleClick={this.handleSection1_RecListItemTitleClick}
-        onShowList={this.handleShowListSection1}
+        onItemTitleClick={this.handle_RecListItemTitleClick}
+        onShowList={this.handleShowMainTab}
         {...this.props}
       />
 
@@ -231,10 +264,10 @@ export default class GiaaUpdates extends BaseUserContextWebPartComponent<types.I
   private renderPeriodUpdate(): React.ReactElement<types.IWebPartComponentProps> {
     return (
       <PeriodUpdateTab
-        giaaRecommendationId={this.state.Section1_RecList_SelectedId}
+        giaaRecommendationId={this.state.RecList_SelectedId}
         giaaPeriodId={this.state.PeriodId}
-        filteredItems={this.state.Section1_RecList_FilteredItems}
-        onShowList={this.handleShowSection1RecList}
+        filteredItems={this.state.RecList_FilteredItems}
+        onShowList={this.handleShowRecList}
         {...this.props}
       />
 
@@ -355,7 +388,7 @@ export default class GiaaUpdates extends BaseUserContextWebPartComponent<types.I
 
   //#region event handlers
 
-  protected changeDropdown = (option: IDropdownOption, f: string, index?: number): void => {
+  private changeDropdown = (option: IDropdownOption, f: string, index?: number): void => {
     if (f === "PeriodId") {
       if (option.key !== this.state.PeriodId) {
         const pArrTemp: IGIAAPeriod[] = this.state.LookupData.Periods.filter(p => p.ID === option.key);
@@ -380,63 +413,22 @@ export default class GiaaUpdates extends BaseUserContextWebPartComponent<types.I
 
   }
 
-  // private readOrCreateGoFormInDb = (): void => {
-
-  //   if (this.state.PeriodId > 0 && this.state.DirectorateGroupId > 0) {
-
-  //     const goForm = new GoForm(Number(this.state.PeriodId), Number(this.state.DirectorateGroupId));
-
-  //     goForm.Title = "_ADD_ONLY_IF_DOESNT_EXIST_"; //send this msg to api, so it doesnt do any change if goForm already exist in the db
-
-  //     delete goForm.ID;
-  //     //delete goForm.Title;
-  //     delete goForm.SummaryRagRating;
-  //     delete goForm.SummaryEvidenceStatement;
-  //     delete goForm.SummaryCompletionStatus;
-  //     delete goForm.SummaryMarkReadyForApproval;
-  //     delete goForm.SpecificAreasCompletionStatus;
-  //     delete goForm.DGSignOffStatus;
-  //     delete goForm.DGSignOffUserId;
-  //     delete goForm.DGSignOffDate;
-
-
-
-  //     //following service only adds form in db if its needed
-  //     this.goFormService.create(goForm).then((newForm: IGoForm): void => {
-  //       //this.setState({ GoFormId: newForm.ID });
-  //       this.setState({ GoForm: newForm });
-  //       //console.log('goForm created ', newForm);
-  //     }, (err) => { });
-
-  //   }
-
-  // }
-
 
   private handlePivotClick = (item: PivotItem): void => {
     this.clearErrors();
     this.setState({ SelectedPivotKey: item.props.headerText });
   }
 
-  private handleSection1_MainListItemTitleClick = (ID: number, title: string, filteredItems: any[]): void => {
+  //section 1 event handlers
+
+  private handleSection_MainListItemTitleClick = (ID: number, title: string, filteredItems: any[]): void => {
 
     console.log('on main list item title click ', ID, title, filteredItems);
     this.setState({
       SelectedPivotKey: this.headerTxt_RecommendationsTab,
-      Section1_MainList_SelectedId: ID,
-      Section1_MainList_SelectedTitle: title,
-      Section1_MainList_FilteredItems: filteredItems
-    });
-  }
-
-  private handleSection1_RecListItemTitleClick = (ID: number, title: string, filteredItems: any[]): void => {
-
-    console.log('on rec list item title click ', ID, title, filteredItems);
-    this.setState({
-      SelectedPivotKey: this.headerTxt_PeriodUpdateTab,
-      Section1_RecList_SelectedId: ID,
-      Section1_RecList_SelectedTitle: title,
-      Section1_RecList_FilteredItems: filteredItems
+      Section_MainList_SelectedId: ID,
+      Section_MainList_SelectedTitle: title,
+      Section_MainList_FilteredItems: filteredItems
     });
   }
 
@@ -456,13 +448,56 @@ export default class GiaaUpdates extends BaseUserContextWebPartComponent<types.I
     this.setState({ Section1__MainList_JustMine: value });
   }
 
-  private handleShowListSection1 = (): void => {
-    console.log('in handleShowListSection1');
+
+  //section 2 event handlers
+
+
+
+  private handleSection2_toggleOpen = (): void => {
+    this.setState({ Section2_IsOpen: !this.state.Section2_IsOpen });
+  }
+
+  private handleSection2_ChangeFilterText = (value: string): void => {
+    this.setState({ Section2_MainList_ListFilterText: value });
+  }
+
+  private handleSection2_ChangeIncompleteOnly = (value: boolean): void => {
+    this.setState({ Section2_MainList_IncompleteOnly: value });
+  }
+
+  private handleSection2_ChangeJustMine = (value: boolean): void => {
+    this.setState({ Section2__MainList_JustMine: value });
+  }
+
+
+
+
+
+
+
+
+
+
+  //rec event handlers
+  private handleShowMainTab = (): void => {
+    console.log('in handleShowMainTab');
     this.clearErrors();
     this.setState({ SelectedPivotKey: this.headerTxt_MainTab });
   }
 
-  private handleShowSection1RecList = (): void => {
+  private handle_RecListItemTitleClick = (ID: number, title: string, filteredItems: any[]): void => {
+
+    console.log('on rec list item title click ', ID, title, filteredItems);
+    this.setState({
+      SelectedPivotKey: this.headerTxt_PeriodUpdateTab,
+      RecList_SelectedId: ID,
+      RecList_SelectedTitle: title,
+      RecList_FilteredItems: filteredItems
+    });
+  }
+
+  //update (3rd tab) event handerls
+  private handleShowRecList = (): void => {
     console.log('in handleShowSection1RecList');
     this.clearErrors();
     this.setState({ SelectedPivotKey: this.headerTxt_RecommendationsTab });
