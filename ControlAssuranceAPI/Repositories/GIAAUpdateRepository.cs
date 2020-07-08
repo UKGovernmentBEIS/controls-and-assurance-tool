@@ -93,5 +93,17 @@ namespace ControlAssuranceAPI.Repositories
 
             return ret;
         }
+
+        public void UpdateAfterRecUpdate(int giaaRecommendationId, int giaaPeriodId)
+        {
+            var giaaUpdate = db.GIAAUpdates.FirstOrDefault(x => x.GIAAPeriodId == giaaPeriodId && x.GIAARecommendationId == giaaRecommendationId);
+            if(giaaUpdate != null)
+            {
+                giaaUpdate.GIAAActionStatusTypeId = giaaUpdate.GIAARecommendation.GIAAActionStatusTypeId; //get value from rec
+                giaaUpdate.TargetDate = giaaUpdate.GIAARecommendation.RevisedDate; //get value from rec
+
+                db.SaveChanges();
+            }
+        }
     }
 }

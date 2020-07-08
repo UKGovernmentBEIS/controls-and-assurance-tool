@@ -51,7 +51,7 @@ namespace ControlAssuranceAPI.Repositories
                           ActionStatus = r.GIAAActionStatusType.Title,
                           UpdateStatus = r.GIAAPeriodUpdateStatusId,
                           r.GIAAActionStatusTypeId,
-                          Owners = "",
+                          r.GIAAActionOwners
 
                       };
 
@@ -76,9 +76,20 @@ namespace ControlAssuranceAPI.Repositories
 
             foreach (var ite in list)
             {
+                string owners = "";
+                foreach (var o in ite.GIAAActionOwners)
+                {
+                    owners += o.User.Title + ", ";
+                }
+                owners = owners.Trim();
+                if(owners.Length > 0)
+                {
+                    owners = owners.Substring(0, owners.Length - 1);
+                }
 
                 GIAARecommendationView_Result item = new GIAARecommendationView_Result
                 {
+                    
                     ID = ite.ID,
                     Title = ite.Title,
                     RecommendationDetails = ite.RecommendationDetails,
@@ -86,7 +97,7 @@ namespace ControlAssuranceAPI.Repositories
                     RevisedDate = ite.RevisedDate != null ? ite.RevisedDate.Value.ToString("dd/MM/yyyy") : "",
                     Priority = ite.Priority,
                     ActionStatus = ite.ActionStatus,
-                    Owners = ite.Owners,
+                    Owners = owners,
                     UpdateStatus = (ite.UpdateStatus != null && ite.UpdateStatus.ToString() == "1") ? "Completed" : "Not Started"
 
 

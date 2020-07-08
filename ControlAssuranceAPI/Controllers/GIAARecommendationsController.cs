@@ -70,6 +70,7 @@ namespace ControlAssuranceAPI.Controllers
 
             patch.Patch(giaaRecommendation);
 
+
             try
             {
                 db.SaveChanges();
@@ -87,6 +88,14 @@ namespace ControlAssuranceAPI.Controllers
             }
 
             return Updated(giaaRecommendation);
+        }
+
+        //GET: odata/GIAARecommendations?giaaRecommendationId=1&giaaPeriodId=1&updateGiaaUpdateOnEditRec=
+        [EnableQuery]
+        public string Get(int giaaRecommendationId,  int giaaPeriodId, string updateGiaaUpdateOnEditRec)
+        {
+            db.GIAAUpdateRepository.UpdateAfterRecUpdate(giaaRecommendationId, giaaPeriodId);
+            return "";
         }
 
         // DELETE: odata/GIAARecommendations(1)

@@ -558,6 +558,8 @@
           <Property Name="IAPTypeId" Type="int" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
           <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="Attachment" Type="nvarchar" MaxLength="1000" />
+          <Property Name="IsLink" Type="bit" />
         </EntityType>
         <EntityType Name="Log">
           <Key>
@@ -2738,6 +2740,8 @@
           <Property Name="IAPTypeId" Type="Int32" />
           <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="Attachment" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="IsLink" Type="Boolean" />
           <NavigationProperty Name="IAPAssignments" Relationship="Self.FK_IAPAssignment_IAPUpdate" FromRole="IAPUpdate" ToRole="IAPAssignment" />
           <NavigationProperty Name="IAPPriority" Relationship="Self.FK_IAPUpdate_IAPPriority" FromRole="IAPUpdate" ToRole="IAPPriority" />
           <NavigationProperty Name="IAPStatusType" Relationship="Self.FK_IAPUpdate_IAPStatusType" FromRole="IAPUpdate" ToRole="IAPStatusType" />
@@ -5056,6 +5060,8 @@
                 <ScalarProperty Name="IAPTypeId" ColumnName="IAPTypeId" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="Attachment" ColumnName="Attachment" />
+                <ScalarProperty Name="IsLink" ColumnName="IsLink" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
