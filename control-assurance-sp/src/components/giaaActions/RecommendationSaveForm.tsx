@@ -13,6 +13,7 @@ import styles from '../../styles/cr.module.scss';
 
 export interface IRecommendationSaveFormProps extends types.IBaseComponentProps {
     //periodID: number | string;
+    giaaPeriodId:number | string;
     giaaAuditReportId: number | string;
     entityId: number;
     showForm: boolean;
@@ -109,7 +110,7 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
                 {this.renderTargetDate()}
                 {this.renderRevisedDate()}
                 {this.renderGIAAActionStatusTypes()}
-                {this.renderUsers()}
+                {this.renderActionOwners()}
 
             </React.Fragment>
         );
@@ -211,14 +212,14 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
             return null;
     }
 
-    private renderUsers() {
+    private renderActionOwners() {
         const users = this.state.LookupData.Users;
         const fd_users: IGIAAActionOwner[] = this.state.FormData['GIAAActionOwners'];
         //console.log('fd_users', fd_users);
         if (users) {
             return (
                 <CrEntityPicker
-                    label="Users"
+                    label="Action Owners"
                     className={styles.formField}
                     displayForUser={true}
                     entities={this.state.LookupData.Users}
@@ -331,6 +332,14 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
 
                 this.giaaRecommendationService.update(f.ID, f).then(this.saveChildEntitiesAfterUpdate).then(this.onAfterUpdate).then(this.props.onSaved, (err) => {
                     if (this.props.onError) this.props.onError(`Error updating item`, err.message);
+                });
+
+                this.giaaRecommendationService.updateGiaaUpdateAfterEditRec(f.ID, Number(this.props.giaaPeriodId)).then((res: string): void => {
+    
+                    console.log('welcome accessed');
+              
+                }, (err) => {
+              
                 });
             }
         }

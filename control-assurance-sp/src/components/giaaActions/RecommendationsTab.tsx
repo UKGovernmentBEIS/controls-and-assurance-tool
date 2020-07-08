@@ -21,6 +21,7 @@ export interface IRecommendationsTabProps extends types.IBaseComponentProps {
 
     filteredItems: any[];
     parentId: any;
+    giaaPeriodId:number | string;
     parentTitle: string;
     onShowList: () => void;
     //isViewOnly: boolean;
@@ -180,7 +181,7 @@ export default class RecommendationsTab extends React.Component<IRecommendations
                                 Link to Audit Report
                             </td>
                             <td colSpan={3} style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
-                                <a target="_blank" href={rInfo.Link}>{rInfo.Link}</a>
+                                <a target="_blank" href={rInfo.Link}>Click to View Report</a>
                             </td>
 
                         </tr>
@@ -206,6 +207,7 @@ export default class RecommendationsTab extends React.Component<IRecommendations
                     <div style={{ width: '98%', minHeight: '120px', border: '1px solid rgb(166,166,166)', marginTop: '10px', marginLeft: 'auto', marginRight: 'auto', paddingRight: '5px', overflowX: 'hidden' }}>
                         <RecommendationsList
                             {...this.props}
+                            giaaPeriodId={this.props.giaaPeriodId}
                             actionStatusTypes={this.state.LookupData.GIAAActionStatusTypes}
                             giaaAuditReportId={this.props.parentId}
                             onError={this.props.onError}

@@ -15,6 +15,7 @@ import styles from '../../styles/cr.module.scss';
 
 export interface IRecommendationsListProps extends types.IBaseComponentProps {
 
+    giaaPeriodId:number | string;
     onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
     giaaAuditReportId: number | string;
     incompleteOnly: boolean;
@@ -151,6 +152,7 @@ export default class RecommendationsList extends React.Component<IRecommendation
             fieldName: 'Owners',
             minWidth: 150,
             maxWidth: 150,
+            isMultiline:true,
             isResizable: true,
             headerClassName: styles.bold,
         },
@@ -255,6 +257,7 @@ export default class RecommendationsList extends React.Component<IRecommendation
         return (
             <RecommendationSaveForm
                 giaaAuditReportId={this.props.giaaAuditReportId}
+                giaaPeriodId={this.props.giaaPeriodId}
                 showForm={this.state.ShowForm}
                 entityId={this.state.SelectedEntity}
                 onSaved={this.formSaved}

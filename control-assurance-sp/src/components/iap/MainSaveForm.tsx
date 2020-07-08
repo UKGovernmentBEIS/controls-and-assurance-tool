@@ -8,7 +8,10 @@ import { FormButtons } from '../cr/FormButtons';
 import { Panel, PanelType } from 'office-ui-fabric-react/lib/Panel';
 import { FormCommandBar } from '../cr/FormCommandBar';
 import { CrEntityPicker } from '../cr/CrEntityPicker';
+import { CrCheckbox } from '../cr/CrCheckbox';
 import { CrDatePicker } from '../cr/CrDatePicker';
+import { getUploadFolder_IAPFiles, getFolder_Help } from '../../types/AppGlobals';
+import { sp, ChunkedFileUploadProgressData } from '@pnp/sp';
 import styles from '../../styles/cr.module.scss';
 
 export interface IMainSaveFormProps extends types.IBaseComponentProps {
@@ -50,6 +53,13 @@ export interface IMainSaveFormState {
     //ClearSuggestedStatus:boolean;
     FormDataBeforeChanges: IIAPUpdate;
     FormIsDirty: boolean;
+
+    UploadStatus: string;
+    UploadProgress: number;
+    ShowUploadProgress: boolean;
+    ShowFileUpload: boolean;
+    EditRequest: boolean;
+
     ErrMessages: IErrorMessage;
 }
 export class MainSaveFormState implements IMainSaveFormState {
@@ -59,6 +69,14 @@ export class MainSaveFormState implements IMainSaveFormState {
     public FormDataBeforeChanges = new IAPUpdate(1, 1, 1);
     public FormIsDirty = false;
     //public ClearSuggestedStatus = false;
+
+    public UploadStatus = "";
+    public UploadProgress: number = 0;
+    public ShowUploadProgress = false;
+    public ShowFileUpload = false;
+    public EditRequest = false;
+
+
     public ErrMessages = new ErrorMessage();
 }
 
@@ -67,6 +85,9 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
     private iapUpdateService: services.IAPUpdateService = new services.IAPUpdateService(this.props.spfxContext, this.props.api);
     private aipAssignmentService: services.IAPAssignmentService = new services.IAPAssignmentService(this.props.spfxContext, this.props.api);
 
+    private UploadFolder_Files: string = "";
+    private Folder_Help: string = "";
+
 
     private childEntities: types.IFormDataChildEntities[] = [
         { ObjectParentProperty: 'IAPAssignments', ParentIdProperty: 'IAPUpdateId', ChildIdProperty: 'UserId', ChildService: this.aipAssignmentService },
@@ -74,6 +95,9 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
 
     constructor(props: IMainSaveFormProps, state: IMainSaveFormState) {
         super(props);
+        this.UploadFolder_Files = getUploadFolder_IAPFiles(props.spfxContext);
+        this.Folder_Help = getFolder_Help(props.spfxContext);
+
         this.state = new MainSaveFormState();
     }
 
@@ -102,6 +126,9 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
                 {this.renderTitle()}
                 {this.renderDetails()}
                 {this.renderUsers()}
+                {/* {this.renderIsLinkCheckbox()}
+                {this.renderLinkBox()}
+                {this.renderFileUpload()} */}
 
 
 
@@ -161,10 +188,115 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
             return null;
     }
 
+    private renderIsLinkCheckbox() {
+
+        if (this.state.EditRequest === true) return null;
+        return (
+            <div>
+
+                <CrCheckbox
+                    className={`${styles.formField} ${styles.checkbox}`}
+                    label="Provide a link instead of uploading a file"
+                    checked={this.state.FormData.IsLink}
+                    onChange={(ev, isChecked) => this.changeCheckboxIsLink(isChecked, "IsLink")}
+
+
+                />
+
+            </div>
+        );
+    }
+
+    private renderLinkBox() {
+        if (this.state.ShowFileUpload == true)
+            return null;
+
+        if (this.state.FormData.IsLink === true) {
+
+            return (
+                <CrTextField
+                    label="Link"
+                    required={true}
+                    className={styles.formField}
+                    value={this.state.FormData.Attachment}
+                    onChanged={(v) => this.changeTextField(v, "Attachment")}
+                    //errorMessage={this.state.ErrMessages.Attachment}
+                />
+            );
+        }
+        else
+            return false;
+
+
+    }
+
+    private renderFileUpload() {
+        if (this.state.ShowFileUpload == false)
+            return null;
+
+        return (
+            <div style={{ marginTop: '20px', marginBottom: '20px' }}>
+                <div>
+                    <input type="file" name="fileUpload" id="fileUpload" accept="application/pdf"></input>
+                    {/* {this.state.ErrMessages.FileUpload && <FieldErrorMessage value={this.state.ErrMessages.FileUpload} />} */}
+                    <div style={{paddingTop:'10px'}}>
+                        Please upload all evidence files as PDFs. For guidance on savings documents as PDFs, please click <span onClick={this.viewHelpPDF} style={{textDecoration:'underline', cursor:'pointer'}}>here</span>.
+                    </div>
+                </div>
+                {this.state.ShowUploadProgress && <div style={{ minHeight: '80px', marginTop: '15px' }}>
+                    <div>
+                        {this.state.UploadStatus}
+                    </div>
+                    <div>
+                        {this.state.UploadProgress} %
+                    </div>
+                </div>}
+
+            </div>
+        );
+    }
+
 
 
     //#endregion Render
 
+    //#region Class Methods
+
+    private viewHelpPDF = () => {
+        console.log('help pdf');
+        const fileName:string = "HowToConvertDocumentsToPDF.pdf";
+
+        const f = sp.web.getFolderByServerRelativeUrl(this.Folder_Help).files.getByName(fileName);
+    
+        f.get().then(t => {
+            console.log(t);
+            const serverRelativeUrl = t["ServerRelativeUrl"];
+            console.log(serverRelativeUrl);
+      
+            const a = document.createElement('a');
+            //document.body.appendChild(a);
+            a.href = serverRelativeUrl;
+            a.target = "_blank";
+            a.download = fileName;
+            
+            document.body.appendChild(a);
+            console.log(a);
+            //a.click();
+            //document.body.removeChild(a);
+            
+            
+            setTimeout(() => {
+              window.URL.revokeObjectURL(serverRelativeUrl);
+              window.open(serverRelativeUrl, '_blank');
+              document.body.removeChild(a);
+            }, 1);
+            
+      
+          });
+
+    }
+
+    //#endregion Class Methods
 
     //#region Data Load/Save
 
@@ -186,7 +318,11 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
         this.setState({ Loading: true });
         let loadingPromises = [this.loadLookups()];
         if (this.props.entityId) {
+            this.setState({ EditRequest: true });
             loadingPromises.push(this.loadData());
+        }
+        else{
+            this.setState({ ShowFileUpload: true });
         }
         Promise.all(loadingPromises).then(p => this.onAfterLoad(p[1])).then(p => this.setState({ Loading: false })).catch(err => this.setState({ Loading: false }));
 
@@ -342,6 +478,9 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
 
     private changeDropdown = (option: IDropdownOption, f: string, index?: number): void => {
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, option.key), FormIsDirty: true });
+    }
+    protected changeCheckboxIsLink = (value: boolean, f: string): void => {
+        this.setState({ FormData: this.cloneObject(this.state.FormData, f, value), ShowFileUpload: !value , FormIsDirty: true });
     }
 
     private changeMultiUserPicker = (value: number[], f: string, newEntity: object, userIdProperty: string): void => {

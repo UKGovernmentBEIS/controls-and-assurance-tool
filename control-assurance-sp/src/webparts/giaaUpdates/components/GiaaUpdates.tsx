@@ -51,6 +51,8 @@ export interface IGiaaUpdatesState extends types.IUserContextWebPartState {
   Section2__MainList_JustMine: boolean;
   Section2_MainList_ListFilterText: string;
 
+  MainListsSaveCounter:number;
+
   //generic for both sections
   Section_MainList_SelectedId: number;
   Section_MainList_SelectedTitle: string;
@@ -73,6 +75,7 @@ export class GiaaUpdatesState extends types.UserContextWebPartState implements I
   public Section1_MainList_IncompleteOnly = false;
   public Section1__MainList_JustMine = false;
   public Section1_MainList_ListFilterText: string = null;
+  public MainListsSaveCounter:number = 0;
 
 
   public Section2_IsOpen: boolean = false;
@@ -178,6 +181,8 @@ export default class GiaaUpdates extends BaseUserContextWebPartComponent<types.I
                 onChangeFilterText={this.handleSection1_ChangeFilterText}
                 onChangeIncompleteOnly={this.handleSection1_ChangeIncompleteOnly}
                 onChangeJustMine={this.handleSection1_ChangeJustMine}
+                onMainSaved={this.handleMainFormSaved}
+                mainListsSaveCounter={this.state.MainListsSaveCounter}
                 {...this.props}
               />
 
@@ -198,6 +203,8 @@ export default class GiaaUpdates extends BaseUserContextWebPartComponent<types.I
                 onChangeFilterText={this.handleSection2_ChangeFilterText}
                 onChangeIncompleteOnly={this.handleSection2_ChangeIncompleteOnly}
                 onChangeJustMine={this.handleSection2_ChangeJustMine}
+                onMainSaved={this.handleMainFormSaved}
+                mainListsSaveCounter={this.state.MainListsSaveCounter}
                 {...this.props}
               />
 
@@ -249,6 +256,7 @@ export default class GiaaUpdates extends BaseUserContextWebPartComponent<types.I
       <RecommendationsTab
         filteredItems={this.state.Section_MainList_FilteredItems}
         parentId={this.state.Section_MainList_SelectedId}
+        giaaPeriodId={this.state.PeriodId}
         parentTitle={this.state.Section_MainList_SelectedTitle}
         //isViewOnly={this.isViewOnlyGoForm()}
         onItemTitleClick={this.handle_RecListItemTitleClick}
@@ -448,6 +456,13 @@ export default class GiaaUpdates extends BaseUserContextWebPartComponent<types.I
     this.setState({ Section1__MainList_JustMine: value });
   }
 
+  private handleMainFormSaved = (): void => {
+    
+    const x:number = this.state.MainListsSaveCounter + 1;
+    console.log('in handleMainFormSaved', x);
+    this.setState({ MainListsSaveCounter: x });
+
+}
 
   //section 2 event handlers
 

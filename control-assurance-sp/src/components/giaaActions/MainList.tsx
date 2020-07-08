@@ -27,6 +27,8 @@ export interface IMainListProps extends types.IBaseComponentProps {
     onChangeFilterText: (value: string) => void;
 
     onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
+    onMainSaved: () => void;
+    mainListsSaveCounter:number;
 
 }
 
@@ -322,8 +324,16 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
     }
 
     private formSaved = (): void => {
-        this.loadData();
-        this.closePanel();
+        //this.loadData();
+        
+        this.setState({ ShowForm: false }, this.props.onMainSaved);
+
+
+        //this.props.onMainSaved();
+        //this.closePanel();
+
+
+        
     }
 
     private getSelectedEntityName = (): string => {
@@ -371,7 +381,7 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
 
     }
     public componentDidUpdate(prevProps: IMainListProps): void {
-        if (prevProps.giaaPeriodId !== this.props.giaaPeriodId || prevProps.dgAreaId !== this.props.dgAreaId || prevProps.justMine !== this.props.justMine || prevProps.incompleteOnly !== this.props.incompleteOnly) {
+        if (prevProps.giaaPeriodId !== this.props.giaaPeriodId || prevProps.dgAreaId !== this.props.dgAreaId || prevProps.justMine !== this.props.justMine || prevProps.incompleteOnly !== this.props.incompleteOnly || prevProps.mainListsSaveCounter !== this.props.mainListsSaveCounter) {
             //console.log('props changed, load data again');
             this._selection.setAllSelected(false);
             this.loadData();

@@ -59,6 +59,13 @@ export function getUploadFolder_GIAAUpdateEvidence(context: WebPartContext) : st
     return path;
 }
 
+export function getUploadFolder_IAPFiles(context: WebPartContext) : string {
+    const serverRelativeUrl = context.pageContext.web.serverRelativeUrl;
+    const path:string = `${serverRelativeUrl}/Shared%20Documents/IAPFiles`;
+
+    return path;
+}
+
 export enum ElementStatuses {
     ToBeCompleted = "Not Started",
     InProgress = "In Progress",

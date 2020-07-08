@@ -31,6 +31,9 @@ export interface ISectionProps extends IEntityFormProps {
 
     section_IsOpen: boolean;
     onSection_toggleOpen: () => void;
+
+    onMainSaved: () => void;
+    mainListsSaveCounter:number;
 }
 
 export class SectionState {
@@ -85,6 +88,8 @@ export default class Section extends React.Component<ISectionProps, SectionState
                             giaaPeriodId={this.props.giaaPeriodId}
                             filterText={this.props.listFilterText}
                             onChangeFilterText={this.props.onChangeFilterText}
+                            onMainSaved={this.props.onMainSaved}
+                            mainListsSaveCounter={this.props.mainListsSaveCounter}
 
                         />
                     </div>

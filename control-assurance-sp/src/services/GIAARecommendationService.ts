@@ -27,6 +27,13 @@ export class GIAARecommendationService extends EntityService<IEntity> {
         });
     }
 
+    public updateGiaaUpdateAfterEditRec(giaaRecommendationId:number, giaaPeriodId:number): Promise<string> {
+        //?giaaRecommendationId=1&giaaPeriodId=1&updateGiaaUpdateOnEditRec=
+        return super.readString(`?giaaRecommendationId=${giaaRecommendationId}&giaaPeriodId=${giaaPeriodId}&updateGiaaUpdateOnEditRec=`).then((result:string): string => {
+            return result;
+        });
+    }
+
 
 
 

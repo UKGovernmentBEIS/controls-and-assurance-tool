@@ -9,6 +9,8 @@ export interface IIAPUpdate  extends IEntity {
     IAPTypeId?:number;
     CreatedBy?:string;
     CreatedOn?:Date; 
+    Attachment?:string;
+    IsLink?:boolean;
 }
 
 export class IAPUpdate implements IIAPUpdate{ 
@@ -20,6 +22,8 @@ export class IAPUpdate implements IIAPUpdate{
     public IAPTypeId?:number = null;
     public CreatedBy?:string = null;
     public CreatedOn?:Date = null;
+    public Attachment?:string = null;
+    public IsLink:boolean = null;
 
 
     constructor(IAPPriorityId: number, IAPStatusTypeId:number, IAPTypeId: number) {
