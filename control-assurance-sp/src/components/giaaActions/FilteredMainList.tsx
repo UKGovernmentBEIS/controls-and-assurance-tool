@@ -21,6 +21,9 @@ const classNames = mergeStyleSets({
         padding: "5px 0px 5px 10px",
         marginBottom: "5px"
     },
+    cmdBtn: {
+        border: 'none'
+    }
 });
 const controlStyles = {
     root: {
@@ -42,6 +45,8 @@ const controlStyles2 = {
 
     //}
 };
+
+
 
 export interface IFilteredMainListProps {
     className?: string;
@@ -125,6 +130,7 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
                     {props.editDisabled && props.deleteDisabled &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Add' }}
+                            className={classNames.cmdBtn}
                             text="New"
                             onClick={props.onAdd}
                         />}
@@ -132,6 +138,7 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
                     {(props.editDisabled === false) &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Edit' }}
+                            className={classNames.cmdBtn}
                             text="Edit"
                             onClick={props.onEdit}
                         />}
@@ -141,6 +148,7 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
                     {(props.deleteDisabled === false) &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Delete' }}
+                            className={classNames.cmdBtn}
                             text="Delete"
                             onClick={props.onDelete}
                         />}
