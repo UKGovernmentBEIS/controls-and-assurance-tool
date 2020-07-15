@@ -21,6 +21,9 @@ const classNames = mergeStyleSets({
         padding: "5px 0px 5px 10px",
         marginBottom: "5px"
     },
+    cmdBtn: {
+        border: 'none'
+    }
 });
 const controlStyles = {
     root: {
@@ -95,6 +98,7 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
                     {props.editDisabled && props.deleteDisabled &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Add' }}
+                            className={classNames.cmdBtn}
                             text="New"
                             onClick={props.onAdd}
                         />}
@@ -102,6 +106,7 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
                     {(props.editDisabled === false) &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Edit' }}
+                            className={classNames.cmdBtn}
                             text="Edit"
                             onClick={props.onEdit}
                         />}

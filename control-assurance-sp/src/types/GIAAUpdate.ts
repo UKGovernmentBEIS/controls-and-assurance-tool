@@ -3,36 +3,42 @@ import { IEntity } from "./Entity";
 
 export interface IGIAAUpdate  extends IEntity {
 
-    TargetDate?: Date;
-    ProgressUpdateDetails?: string;
-    GIAAComments?: string;
+    UpdateType?: string;
+    UpdateDetails?: string;
+    RevisedDate?: Date;
     Link?: string;
+    EvFileName?: string;
+    EvIsLink?:boolean;
+    EvAdditionalNotes?: string;
     GIAARecommendationId?: number;
-    GIAAPeriodId?: number;
     GIAAActionStatusTypeId?: number;
-    GIAAActionPriorityId?: number;
-    GIAAUpdateStatusId?: number;
+    UpdatedById?: number;
+    UpdateDate?: Date;
     UpdateChangeLog?: string;
+    
 
 }
 
 export class GIAAUpdate implements IGIAAUpdate{ 
     public ID: number = 0;
     public Title: string = null;    
-    public TargetDate = null;
-    public ProgressUpdateDetails = null;
-    public GIAAComments = null;
-    public Link = null;
-    public GIAARecommendationId = null;
-    public GIAAPeriodId = null;
-    public GIAAActionStatusTypeId = null;
-    public GIAAActionPriorityId = 1;
-    public GIAAUpdateStatusId = null;
-    public UpdateChangeLog = null;
 
-    constructor(giaaPeriodId: number, giaaRecommendationId: number) {
-        this.GIAAPeriodId = giaaPeriodId;
+    public UpdateType?: string = null;
+    public UpdateDetails?: string = null;
+    public RevisedDate?: Date = null;
+    public Link?: string = null;
+    public EvFileName?: string = null;
+    public EvIsLink?:boolean = false;
+    public EvAdditionalNotes?: string = null;
+    public GIAARecommendationId?: number = null;
+    public GIAAActionStatusTypeId?: number = null;
+    public UpdatedById?: number = null;
+    public UpdateDate?: Date = null;
+    public UpdateChangeLog?: string = null;
+
+    constructor(giaaRecommendationId: number, updateType: string) {
         this.GIAARecommendationId = giaaRecommendationId;
+        this.UpdateType = updateType;
     }
 
 

@@ -6,8 +6,8 @@ import Section2 from '../../../components/iap/Section2';
 //import Section2Update from '../../../components/govUpdates/Section2Update';
 //import Section3Update from '../../../components/govUpdates/Section3Update';
 //import Section4Update from '../../../components/govUpdates/Section4Update';
-import RecommendationsTab from '../../../components/giaaActions/RecommendationsTab';
-import PeriodUpdateTab from '../../../components/giaaActions/PeriodUpdateTab';
+
+
 
 import * as types from '../../../types';
 import BaseUserContextWebPartComponent from '../../../components/BaseUserContextWebPartComponent';

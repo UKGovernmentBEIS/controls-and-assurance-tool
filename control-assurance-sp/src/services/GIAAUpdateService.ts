@@ -4,7 +4,7 @@ import { IDataAPI, IEntity, IGIAAUpdate } from '../types';
 
 
 
-export class GIAAUpdateService extends EntityService<IEntity> {
+export class GIAAUpdateService extends EntityService<IGIAAUpdate> {
     public readonly parentEntities = [];
     protected childrenEntities = [];
 
@@ -12,27 +12,35 @@ export class GIAAUpdateService extends EntityService<IEntity> {
         super(spfxContext, api, `/GIAAUpdates`);
     }
 
-    public readByPeriodAndRec(giaaRecommendationId:number, giaaPeriodId:number): Promise<IGIAAUpdate> {
-        return this.readEntity(`?giaaRecommendationId=${giaaRecommendationId}&giaaPeriodId=${giaaPeriodId}&findCreate=true`);
+
+    public readAllByRec(giaaRecommendationId: number): Promise<IEntity[]> {
+        return this.readAll(`?giaaRecommendationId=${giaaRecommendationId}&dataForUpdatesList=`);
     }
 
-    public getRecInfo(giaaUpdateId: number): Promise<IGIAAUpdate> {
-        //const qry:string = `?$expand=GIAARecommendation,GIAAPeriod`;
+    // public getRecInfo(giaaUpdateId: number): Promise<IGIAAUpdate> {
+    //     //const qry:string = `?$expand=GIAARecommendation,GIAAPeriod`;
 
-        let entitiesToExpand: string[] = [];
-        entitiesToExpand.push("GIAARecommendation");
-        entitiesToExpand.push("GIAAPeriod");
+    //     let entitiesToExpand: string[] = [];
+    //     entitiesToExpand.push("GIAARecommendation");
+    //     entitiesToExpand.push("GIAAPeriod");
 
-        return this.read(giaaUpdateId, false, false, entitiesToExpand).then((e: IGIAAUpdate): IGIAAUpdate => {
-            return e;
-        });
-    }
+    //     return this.read(giaaUpdateId, false, false, entitiesToExpand).then((e: IGIAAUpdate): IGIAAUpdate => {
+    //         return e;
+    //     });
+    // }
 
 
 
-    public readAllWithArgs(giaaRecommendationId:number): Promise<IGIAAUpdate[]> {
+    //for historic updates
+    // public readAllWithArgs(giaaRecommendationId:number): Promise<IGIAAUpdate[]> {
+    //     //console.log('historic update - rec id', naoRecommendationId, 'period id', naoPeriodId);
+    //     return this.readAll(`?$filter=GIAARecommendationId eq ${giaaRecommendationId} and GIAAPeriod/PeriodStatus eq 'Archived Period'&$expand=GIAAActionStatusType,GIAAPeriod`);
+    // }
+
+    public readAllForList(giaaRecommendationId:number): Promise<IGIAAUpdate[]> {
         //console.log('historic update - rec id', naoRecommendationId, 'period id', naoPeriodId);
-        return this.readAll(`?$filter=GIAARecommendationId eq ${giaaRecommendationId} and GIAAPeriod/PeriodStatus eq 'Archived Period'&$expand=GIAAActionStatusType,GIAAPeriod`);
+        //?giaaRecommendationId=1&dataForUpdatesList=
+        return this.readAll(`?giaaRecommendationId=${giaaRecommendationId}&dataForUpdatesList=`);
     }
 
 

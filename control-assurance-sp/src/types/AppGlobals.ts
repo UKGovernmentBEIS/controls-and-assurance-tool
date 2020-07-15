@@ -87,3 +87,10 @@ export enum RAGRatings {
 
     NoData = "No Data"
 }
+
+export enum GIAAUpdateTypes {
+    ActionUpdate = "Action Update",
+    RevisedDate = "Revised Date",
+    GIAAComment = "GIAA Comment",
+    MiscComment = "Misc Comment"
+}

@@ -57,58 +57,49 @@ const filterDrpsStyle = {
 
 };
 
-export interface IFilteredRecListProps {
+export interface IFilteredUpdatesListProps {
     className?: string;
     columns: IColumn[];
     items: any[];
     filterText?: string;
 
-    incompleteOnly: boolean;
-    onChangeIncompleteOnly: (value: boolean) => void;
-    justMine: boolean;
-    onChangeJustMine: (value: boolean) => void;
-
-    actionStatusTypeId:number;
-    onChangeActionStatusType: (option: IDropdownOption)=> void;
-
-
     onFilterChange: (value: string) => void;
-    onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
 
-    actionStatusTypes: IEntity[];
 
     selection?: ISelection;
 
-    onAdd: () => void;
-    onEdit: () => void;
-    onDelete: () => void;
+    onAddActionUpdate: () => void;
+    onAddRevisedDate: () => void;
+    onAddGIAAComments: () => void;
+    onAddMiscComments: () => void;
 
-    editDisabled: boolean;
+
+
+    //editDisabled: boolean;
+    onDelete: () => void;
     deleteDisabled: boolean;
 
-    //onAdd: () => void;
-    //onAssign: () => void;
-    //onDelete: () => void;
+    viewDisabled: boolean;
+    onView: () => void;
 
+    //isViewOnly:boolean;
 
-    //assignDisabled: boolean;
-    //deleteDisabled: boolean;
 }
 
-export interface IFilteredRecListState {
+export interface IFilteredUpdatesListState {
     Columns: IColumn[];
     FilteredItems: any[];
 }
 
-export class FilteredRecList extends React.Component<IFilteredRecListProps, IFilteredRecListState> {
+export class FilteredUpdatesList extends React.Component<IFilteredUpdatesListProps, IFilteredUpdatesListState> {
 
 
-    private statusImgNotStarted: string = require('../../images/goelement/list/status/notstarted.png');
-    private statusImgInProgress: string = require('../../images/goelement/list/status/inprogress.png');
-    private statusImgCompleted: string = require('../../images/goelement/list/status/completed.png');
+    // private statusImgNotStarted: string = require('../../images/goelement/list/status/notstarted.png');
+    // private statusImgInProgress: string = require('../../images/goelement/list/status/inprogress.png');
+    // private statusImgCompleted: string = require('../../images/goelement/list/status/completed.png');
 
 
-    constructor(props: IFilteredRecListProps) {
+    constructor(props: IFilteredUpdatesListProps) {
         super(props);
 
         props.columns.forEach((c) => { c.onColumnClick = this._onColumnClick; });
@@ -122,62 +113,73 @@ export class FilteredRecList extends React.Component<IFilteredRecListProps, IFil
 
     public render(): JSX.Element {
         const { props, state } = this;
-        let dgActionStatusTypeOptions = this.props.actionStatusTypes.map((x) => { return { key: x.ID, text: x.Title }; });
-        dgActionStatusTypeOptions = [{ key: 0, text: "All Statuses" }, ...dgActionStatusTypeOptions];
+        const selCount: number = props.selection.getSelectedCount();
 
         return (
             <Fabric>
 
                 <div className={classNames.controlWrapper}>
 
-                    <Toggle
-                        onText="Incomplete Only"
-                        offText="Incomplete Only"
-                        styles={controlStyles}
-                        checked={props.incompleteOnly}
-                        onChanged={(isChecked) => props.onChangeIncompleteOnly(isChecked)}
-                    />
 
-                    <Toggle
-                        onText="Just Mine"
-                        offText="Just Mine"
-                        styles={controlStyles}
-                        checked={props.justMine}
-                        onChanged={(isChecked) => props.onChangeJustMine(isChecked)}
-                    />
-
-                    <CrDropdown
-                        options={dgActionStatusTypeOptions}
-                        selectedKey={props.actionStatusTypeId}
-                        onChanged={(v)=> props.onChangeActionStatusType(v)}
-                        style={filterDrpsStyle}
-                    />
-
-                    {props.editDisabled && props.deleteDisabled &&
+                    {selCount === 0 &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Add' }}
                             className={classNames.cmdBtn}
-                            text="New"
-                            onClick={props.onAdd}
+                            text="Action Update"
+                            onClick={props.onAddActionUpdate}
                         />}
 
-                    {(props.editDisabled === false) &&
+                    {selCount === 0 &&
+                        <CommandBarButton
+                            iconProps={{ iconName: 'Add' }}
+                            className={classNames.cmdBtn}
+                            text="Revise Implementation Date"
+                            onClick={props.onAddRevisedDate}
+                        />}
+
+                    {selCount === 0 &&
+                        <CommandBarButton
+                            iconProps={{ iconName: 'Add' }}
+                            className={classNames.cmdBtn}
+                            text="GIAA Comments"
+                            onClick={props.onAddGIAAComments}
+                        />}
+
+                    {selCount === 0 &&
+                        <CommandBarButton
+                            iconProps={{ iconName: 'Add' }}
+                            className={classNames.cmdBtn}
+                            text="Misc Comments"
+                            onClick={props.onAddMiscComments}
+                        />}
+
+                    {selCount === 1 && props.deleteDisabled === false &&
+                        <CommandBarButton
+                            iconProps={{ iconName: 'Delete' }}
+                            className={classNames.cmdBtn}
+                            text="Delete"
+                            onClick={this.props.onDelete}
+                        />}
+
+                    {selCount === 1 && props.viewDisabled === false &&
+                        <CommandBarButton
+                            iconProps={{ iconName: 'View' }}
+                            className={classNames.cmdBtn}
+                            text="View Evidence"
+                            onClick={this.props.onView}
+                        />}
+
+
+                    {/* {(props.editDisabled === false) &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Edit' }}
                             className={classNames.cmdBtn}
                             text="Edit"
                             onClick={props.onEdit}
-                        />}
+                        />} */}
 
 
 
-                    {(props.deleteDisabled === false) &&
-                        <CommandBarButton
-                            iconProps={{ iconName: 'Delete' }}
-                            className={classNames.cmdBtn}
-                            text="Delete"
-                            onClick={props.onDelete}
-                        />}
 
 
 
@@ -219,7 +221,7 @@ export class FilteredRecList extends React.Component<IFilteredRecListProps, IFil
 
     }
 
-    public componentDidUpdate(prevProps: IFilteredRecListProps): void {
+    public componentDidUpdate(prevProps: IFilteredUpdatesListProps): void {
 
         if (prevProps.columns !== this.props.columns) {
             this.props.columns.forEach((c) => { c.onColumnClick = this._onColumnClick; });
@@ -240,60 +242,8 @@ export class FilteredRecList extends React.Component<IFilteredRecListProps, IFil
 
         let fieldContent = item[column.fieldName as keyof IEntity] as string;
 
+        return <span>{fieldContent}</span>;
 
-        if (column.key === "UpdateStatus") {
-
-            //let txtColor: string = "white";
-            //let bgColor: string = "";
-            let statusImg: string = "";
-
-            if (fieldContent === ElementStatuses.ToBeCompleted) {
-                //bgColor = "rgb(230,230,230)";
-                //txtColor = "black";
-                statusImg = this.statusImgNotStarted;
-            }
-            else if (fieldContent === ElementStatuses.InProgress) {
-                //bgColor = "rgb(255,191,0)";
-                //txtColor = "white";
-                statusImg = this.statusImgInProgress;
-            }
-            // else if (fieldContent === ElementStatuses.ReqSignOff) {
-            //     bgColor = "rgb(185,0,185)";
-            //     txtColor = "white";
-            // }
-            else if (fieldContent === ElementStatuses.Completed) {
-                //bgColor = "rgb(0,127,0)";
-                //txtColor = "white";
-                statusImg = this.statusImgCompleted;
-            }
-
-            return (
-                // <span style={{ backgroundColor: bgColor, color: txtColor, width: "140px", display: "block", paddingLeft: "10px", paddingTop: "5px", paddingBottom: "5px" }}>
-                //     {fieldContent}
-                // </span>
-                <img src={statusImg} />
-
-            );
-        }
-        else if (column.key === "DGArea") {
-            const directorate = item["Directorate"];
-            return <span>{fieldContent} - {directorate}</span>;
-        }
-
-
-        else if (column.key === "Title") {
-
-            const id: number = item["ID"];
-
-            return (
-                <span><a className="titleLnk" onClick={(ev) => this.props.onItemTitleClick(id, fieldContent, this.state.FilteredItems)} > {fieldContent}</a> </span>
-                // <span>{fieldContent}</span>
-            );
-
-        }
-        else {
-            return <span>{fieldContent}</span>;
-        }
 
 
     }

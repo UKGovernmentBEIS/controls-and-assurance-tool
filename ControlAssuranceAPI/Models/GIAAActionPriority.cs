@@ -18,7 +18,6 @@ namespace ControlAssuranceAPI.Models
         public GIAAActionPriority()
         {
             this.GIAARecommendations = new HashSet<GIAARecommendation>();
-            this.GIAAUpdates = new HashSet<GIAAUpdate>();
         }
     
         public int ID { get; set; }
@@ -26,7 +25,5 @@ namespace ControlAssuranceAPI.Models
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<GIAARecommendation> GIAARecommendations { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<GIAAUpdate> GIAAUpdates { get; set; }
     }
 }

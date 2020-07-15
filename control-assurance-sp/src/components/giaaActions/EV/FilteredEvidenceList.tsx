@@ -19,6 +19,9 @@ const classNames = mergeStyleSets({
         padding: "5px 0px 5px 10px",
         marginBottom: "5px"
     },
+    cmdBtn: {
+        border: 'none'
+    }
 });
 const controlStyles = {
     root: {
@@ -93,6 +96,7 @@ export class FilteredEvidenceList extends React.Component<IFilteredEvidenceListP
                     {(props.isViewOnly === false) && props.editDisabled && props.deleteDisabled &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Add' }}
+                            className={classNames.cmdBtn}
                             text="New"
                             onClick={props.onAdd}
                         />}
@@ -100,6 +104,7 @@ export class FilteredEvidenceList extends React.Component<IFilteredEvidenceListP
                     {(props.isViewOnly === false) && (props.editDisabled === false) &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Edit' }}
+                            className={classNames.cmdBtn}
                             text="Edit"
                             onClick={props.onEdit}
                         />}
@@ -107,6 +112,7 @@ export class FilteredEvidenceList extends React.Component<IFilteredEvidenceListP
                     {(props.isViewOnly === false) && (props.deleteDisabled === false) &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Delete' }}
+                            className={classNames.cmdBtn}
                             text="Delete"
                             onClick={this.props.onDelete}
                         />}
@@ -114,6 +120,7 @@ export class FilteredEvidenceList extends React.Component<IFilteredEvidenceListP
                     {(props.editDisabled === false) &&
                         <CommandBarButton
                             iconProps={{ iconName: 'View' }}
+                            className={classNames.cmdBtn}
                             text="View"
                             onClick={this.props.onView}
                         />}

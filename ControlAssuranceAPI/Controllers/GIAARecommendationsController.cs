@@ -91,12 +91,12 @@ namespace ControlAssuranceAPI.Controllers
         }
 
         //GET: odata/GIAARecommendations?giaaRecommendationId=1&giaaPeriodId=1&updateGiaaUpdateOnEditRec=
-        [EnableQuery]
-        public string Get(int giaaRecommendationId,  int giaaPeriodId, string updateGiaaUpdateOnEditRec)
-        {
-            db.GIAAUpdateRepository.UpdateAfterRecUpdate(giaaRecommendationId, giaaPeriodId);
-            return "";
-        }
+        //[EnableQuery]
+        //public string Get(int giaaRecommendationId,  int giaaPeriodId, string updateGiaaUpdateOnEditRec)
+        //{
+        //    db.GIAAUpdateRepository.UpdateAfterRecUpdate(giaaRecommendationId, giaaPeriodId);
+        //    return "";
+        //}
 
         // DELETE: odata/GIAARecommendations(1)
         public IHttpActionResult Delete([FromODataUri] int key)

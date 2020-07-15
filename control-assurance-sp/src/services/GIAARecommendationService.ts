@@ -27,6 +27,18 @@ export class GIAARecommendationService extends EntityService<IEntity> {
         });
     }
 
+    public getRecInfo(giaaRecommendationId: number): Promise<IGIAARecommendation> {
+        //const qry:string = `?$expand=GIAAAuditReport`;
+
+        let entitiesToExpand: string[] = [];
+        entitiesToExpand.push("GIAAAuditReport");
+
+
+        return this.read(giaaRecommendationId, false, false, entitiesToExpand).then((e: IGIAARecommendation): IGIAARecommendation => {
+            return e;
+        });
+    }
+
     public updateGiaaUpdateAfterEditRec(giaaRecommendationId:number, giaaPeriodId:number): Promise<string> {
         //?giaaRecommendationId=1&giaaPeriodId=1&updateGiaaUpdateOnEditRec=
         return super.readString(`?giaaRecommendationId=${giaaRecommendationId}&giaaPeriodId=${giaaPeriodId}&updateGiaaUpdateOnEditRec=`).then((result:string): string => {

@@ -28,6 +28,9 @@ const classNames = mergeStyleSets({
         padding: "5px 0px 5px 10px",
         marginBottom:"30px"
       },
+      cmdBtn: {
+        border: 'none'
+    }
   });
   const controlStyles = {
     root: {

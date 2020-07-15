@@ -1,4 +1,5 @@
 ﻿using ControlAssuranceAPI.Models;
+using Microsoft.Office.SharePoint.Tools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,81 +30,144 @@ namespace ControlAssuranceAPI.Repositories
             return GIAAUpdates.Where(x => x.ID == keyValue).FirstOrDefault();
         }
 
-        public GIAAUpdate FindCreate(int giaaRecommendationId, int giaaPeriodId)
+        public List<GIAAUpdateView_Result> GetUpdates(int giaaRecommendationId)
         {
-            var giaaUpdateDb = db.GIAAUpdates.FirstOrDefault(x => x.GIAAPeriodId == giaaPeriodId && x.GIAARecommendationId == giaaRecommendationId);
-            GIAAUpdate ret;
-            if (giaaUpdateDb != null)
-            {
-                ret = giaaUpdateDb;
-            }
-            else
-            {
-                var rec = db.GIAARecommendations.FirstOrDefault(x => x.ID == giaaRecommendationId);
-                GIAAUpdate newR = new GIAAUpdate();
-                newR.GIAAPeriodId = giaaPeriodId;
-                newR.GIAARecommendationId = giaaRecommendationId;
-                newR.GIAAActionPriorityId = 1;
-                newR.GIAAActionStatusTypeId = rec.GIAAActionStatusTypeId; //get default value from rec
-                newR.GIAAUpdateStatusId = 1;
-                newR.TargetDate = rec.RevisedDate; //get default value from rec
-                newR.UpdateChangeLog = "";
+            List<GIAAUpdateView_Result> retList = new List<GIAAUpdateView_Result>();
 
-                ret = db.GIAAUpdates.Add(newR);
-                db.SaveChanges();
+            var qry = from u in db.GIAAUpdates
+                      where u.GIAARecommendationId == giaaRecommendationId
+                      select new
+                      {
+                          u.ID,
+                          u.Title,
+                          u.UpdateType,
+                          UpdateBy = u.User.Title,
+                          u.UpdateDate,
+                          u.UpdateDetails,
+                          Status = u.GIAAActionStatusType.Title,
+                          u.RevisedDate,
+                          u.EvFileName,
+                          u.EvIsLink
+
+                      };
+
+
+
+
+            //int qryCount = qry.Count();
+
+            var list = qry.ToList();
+
+            foreach (var ite in list)
+            {
+
+                GIAAUpdateView_Result item = new GIAAUpdateView_Result
+                {
+
+                    ID = ite.ID,
+                    Title = ite.Title,
+                    UpdateType = ite.UpdateType,
+                    UpdateBy = ite.UpdateBy,
+                    UpdateDate = ite.UpdateDate != null ? ite.UpdateDate.Value.ToString("dd/MM/yyyy HH:mm") : "",
+                    UpdateDetails = ite.UpdateDetails != null ? ite.UpdateDetails : "",
+                    Status = ite.Status != null ? ite.Status : "",
+                    RevisedDate = ite.RevisedDate != null ? ite.RevisedDate.Value.ToString("dd/MM/yyyy") : "",
+                    Evidence = ite.EvFileName != null ? ite.EvFileName : "",
+                    EvIsLink = ite.EvIsLink != null ? ite.EvIsLink.Value : false
+
+
+                };
+
+                retList.Add(item);
+
             }
 
-            return ret;
+
+            return retList;
         }
 
         public GIAAUpdate Add(GIAAUpdate giaaUpdate)
         {
-            GIAAUpdate ret;
-            var giaaUpdateDb = db.GIAAUpdates.FirstOrDefault(x => x.GIAAPeriodId == giaaUpdate.GIAAPeriodId && x.GIAARecommendationId == giaaUpdate.GIAARecommendationId);
-            if (giaaUpdateDb != null)
-            {
-                giaaUpdateDb.Title = giaaUpdate.Title;
-                giaaUpdateDb.TargetDate = giaaUpdate.TargetDate;
-                giaaUpdateDb.ProgressUpdateDetails = giaaUpdate.ProgressUpdateDetails;
-                giaaUpdateDb.GIAAComments = giaaUpdate.GIAAComments;
-                giaaUpdateDb.Link = giaaUpdate.Link;
-                giaaUpdateDb.GIAAActionStatusTypeId = giaaUpdate.GIAAActionStatusTypeId;
-                giaaUpdateDb.GIAAActionPriorityId = giaaUpdate.GIAAActionPriorityId;
-                giaaUpdateDb.GIAAUpdateStatusId = giaaUpdate.GIAAUpdateStatusId;
-
-                giaaUpdateDb.GIAARecommendation.RevisedDate = giaaUpdate.TargetDate;
-                giaaUpdateDb.GIAARecommendation.GIAAActionStatusTypeId = giaaUpdate.GIAAActionStatusTypeId;
-                //giaaUpdateDb.GIAARecommendation.GIAAActionPriorityId = giaaUpdate.GIAAActionPriorityId;
-
-                string user = ApiUser.Title;
-                string date = DateTime.Now.ToString("ddMMMyyyy HH:mm");
-                string newChangeLog = giaaUpdateDb.UpdateChangeLog + $"{date} Updated by {user},";
-
-                giaaUpdateDb.UpdateChangeLog = newChangeLog;
-
-                ret = giaaUpdateDb;
-            }
-            else
-            {
-                //this condition will not be called cause we are using FindCreate method on page load
-                ret = db.GIAAUpdates.Add(giaaUpdate);
-            }
-
-            db.SaveChanges();
-
-            return ret;
+            giaaUpdate.UpdateDate = DateTime.Now;
+            giaaUpdate.UpdatedById = ApiUser.ID;
+            return db.GIAAUpdates.Add(giaaUpdate);
         }
 
-        public void UpdateAfterRecUpdate(int giaaRecommendationId, int giaaPeriodId)
-        {
-            var giaaUpdate = db.GIAAUpdates.FirstOrDefault(x => x.GIAAPeriodId == giaaPeriodId && x.GIAARecommendationId == giaaRecommendationId);
-            if(giaaUpdate != null)
-            {
-                giaaUpdate.GIAAActionStatusTypeId = giaaUpdate.GIAARecommendation.GIAAActionStatusTypeId; //get value from rec
-                giaaUpdate.TargetDate = giaaUpdate.GIAARecommendation.RevisedDate; //get value from rec
+        //public GIAAUpdate FindCreate(int giaaRecommendationId, int giaaPeriodId)
+        //{
+        //    var giaaUpdateDb = db.GIAAUpdates.FirstOrDefault(x => x.GIAAPeriodId == giaaPeriodId && x.GIAARecommendationId == giaaRecommendationId);
+        //    GIAAUpdate ret;
+        //    if (giaaUpdateDb != null)
+        //    {
+        //        ret = giaaUpdateDb;
+        //    }
+        //    else
+        //    {
+        //        var rec = db.GIAARecommendations.FirstOrDefault(x => x.ID == giaaRecommendationId);
+        //        GIAAUpdate newR = new GIAAUpdate();
+        //        newR.GIAAPeriodId = giaaPeriodId;
+        //        newR.GIAARecommendationId = giaaRecommendationId;
+        //        newR.GIAAActionPriorityId = 1;
+        //        newR.GIAAActionStatusTypeId = rec.GIAAActionStatusTypeId; //get default value from rec
+        //        newR.GIAAUpdateStatusId = 1;
+        //        newR.TargetDate = rec.RevisedDate; //get default value from rec
+        //        newR.UpdateChangeLog = "";
 
-                db.SaveChanges();
-            }
-        }
+        //        ret = db.GIAAUpdates.Add(newR);
+        //        db.SaveChanges();
+        //    }
+
+        //    return ret;
+        //}
+
+        //public GIAAUpdate Add(GIAAUpdate giaaUpdate)
+        //{
+        //    GIAAUpdate ret;
+        //    var giaaUpdateDb = db.GIAAUpdates.FirstOrDefault(x => x.GIAAPeriodId == giaaUpdate.GIAAPeriodId && x.GIAARecommendationId == giaaUpdate.GIAARecommendationId);
+        //    if (giaaUpdateDb != null)
+        //    {
+        //        giaaUpdateDb.Title = giaaUpdate.Title;
+        //        giaaUpdateDb.TargetDate = giaaUpdate.TargetDate;
+        //        giaaUpdateDb.ProgressUpdateDetails = giaaUpdate.ProgressUpdateDetails;
+        //        giaaUpdateDb.GIAAComments = giaaUpdate.GIAAComments;
+        //        giaaUpdateDb.Link = giaaUpdate.Link;
+        //        giaaUpdateDb.GIAAActionStatusTypeId = giaaUpdate.GIAAActionStatusTypeId;
+        //        giaaUpdateDb.GIAAActionPriorityId = giaaUpdate.GIAAActionPriorityId;
+        //        giaaUpdateDb.GIAAUpdateStatusId = giaaUpdate.GIAAUpdateStatusId;
+
+        //        giaaUpdateDb.GIAARecommendation.RevisedDate = giaaUpdate.TargetDate;
+        //        giaaUpdateDb.GIAARecommendation.GIAAActionStatusTypeId = giaaUpdate.GIAAActionStatusTypeId;
+        //        //giaaUpdateDb.GIAARecommendation.GIAAActionPriorityId = giaaUpdate.GIAAActionPriorityId;
+
+        //        string user = ApiUser.Title;
+        //        string date = DateTime.Now.ToString("ddMMMyyyy HH:mm");
+        //        string newChangeLog = giaaUpdateDb.UpdateChangeLog + $"{date} Updated by {user},";
+
+        //        giaaUpdateDb.UpdateChangeLog = newChangeLog;
+
+        //        ret = giaaUpdateDb;
+        //    }
+        //    else
+        //    {
+        //        //this condition will not be called cause we are using FindCreate method on page load
+        //        ret = db.GIAAUpdates.Add(giaaUpdate);
+        //    }
+
+        //    db.SaveChanges();
+
+        //    return ret;
+        //}
+
+        //public void UpdateAfterRecUpdate(int giaaRecommendationId, int giaaPeriodId)
+        //{
+        //    var giaaUpdate = db.GIAAUpdates.FirstOrDefault(x => x.GIAAPeriodId == giaaPeriodId && x.GIAARecommendationId == giaaRecommendationId);
+        //    if(giaaUpdate != null)
+        //    {
+        //        giaaUpdate.GIAAActionStatusTypeId = giaaUpdate.GIAARecommendation.GIAAActionStatusTypeId; //get value from rec
+        //        giaaUpdate.TargetDate = giaaUpdate.GIAARecommendation.RevisedDate; //get value from rec
+
+        //        db.SaveChanges();
+        //    }
+        //}
     }
 }

@@ -20,6 +20,9 @@ const classNames = mergeStyleSets({
         padding: "5px 0px 5px 10px",
         marginBottom: "5px"
     },
+    cmdBtn: {
+        border: 'none'
+    }
 });
 const controlStyles = {
     root: {
@@ -98,6 +101,7 @@ export class FilteredReport1List extends React.Component<IFilteredReport1ListPro
                     {(props.createPdfDisabled === false) &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Edit' }}
+                            className={classNames.cmdBtn}
                             text="Create PDF"
                             onClick={props.onCreatePdf}
                         />}
@@ -105,6 +109,7 @@ export class FilteredReport1List extends React.Component<IFilteredReport1ListPro
                     {(props.deletePdfDisabled === false) &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Delete' }}
+                            className={classNames.cmdBtn}
                             text="Delete PDF"
                             onClick={props.onDeletePdf}
                         />}
@@ -112,6 +117,7 @@ export class FilteredReport1List extends React.Component<IFilteredReport1ListPro
                     {(props.downloadPdfDisabled === false) &&
                         <CommandBarButton
                             iconProps={{ iconName: 'View' }}
+                            className={classNames.cmdBtn}
                             text="Download PDF"
                             onClick={props.onDownloadPdf}
                         />}

@@ -21,6 +21,9 @@ const classNames = mergeStyleSets({
         padding: "5px 0px 5px 10px",
         marginBottom: "5px"
     },
+    cmdBtn: {
+        border: 'none'
+    }
 });
 const controlStyles = {
     root: {
@@ -127,6 +130,7 @@ export class FilteredSpecificAreasList extends React.Component<IFilteredSpecific
                     {(props.assignDisabled === false) &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Assign' }}
+                            className={classNames.cmdBtn}
                             text="Assign"
                             onClick={props.onAssign}
                         />}

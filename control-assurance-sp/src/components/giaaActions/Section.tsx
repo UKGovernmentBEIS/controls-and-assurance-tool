@@ -75,6 +75,7 @@ export default class Section extends React.Component<ISectionProps, SectionState
                 {ShowForm && <div style={{ overflowX: 'hidden' }}
                 >
                     <div style={{ width: '98%', minHeight: '120px', border: '1px solid rgb(166,166,166)', marginTop: '10px', marginLeft: 'auto', marginRight: 'auto', paddingRight: '5px', overflowX: 'hidden' }}>
+
                         <MainList
                             {...this.props}
                             isArchive={this.props.isArchive}

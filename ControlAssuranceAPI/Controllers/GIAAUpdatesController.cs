@@ -30,11 +30,17 @@ namespace ControlAssuranceAPI.Controllers
             return SingleResult.Create(db.GIAAUpdateRepository.GIAAUpdates.Where(x => x.ID == key));
         }
 
-        public GIAAUpdate Get(int giaaRecommendationId, int giaaPeriodId, bool findCreate)
+        // GET: /odata/GIAAUpdates?giaaRecommendationId=1&dataForUpdatesList=
+        public List<GIAAUpdateView_Result> Get(int giaaRecommendationId, string dataForUpdatesList)
         {
-            var r = db.GIAAUpdateRepository.FindCreate(giaaRecommendationId, giaaPeriodId);
-            return r;
+            return db.GIAAUpdateRepository.GetUpdates(giaaRecommendationId);
         }
+
+        //public GIAAUpdate Get(int giaaRecommendationId, int giaaPeriodId, bool findCreate)
+        //{
+        //    var r = db.GIAAUpdateRepository.FindCreate(giaaRecommendationId, giaaPeriodId);
+        //    return r;
+        //}
 
         // POST: odata/GIAAUpdates
         public IHttpActionResult Post(GIAAUpdate giaaUpdate)
@@ -50,6 +56,51 @@ namespace ControlAssuranceAPI.Controllers
             db.SaveChanges();
 
             return Created(x);
+        }
+
+        // PATCH: odata/GIAAUpdates(1)
+        [AcceptVerbs("PATCH", "MERGE")]
+        public IHttpActionResult Patch([FromODataUri] int key, Delta<GIAAUpdate> patch)
+        {
+            //Validate(patch.GetEntity());
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            GIAAUpdate gIAAUpdate = db.GIAAUpdateRepository.Find(key);
+            if (gIAAUpdate == null)
+            {
+                return NotFound();
+            }
+
+            //patch.TrySetPropertyValue("DateUploaded", DateTime.Now);
+
+            patch.Patch(gIAAUpdate);
+
+            try
+            {
+                db.SaveChanges();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!GIAAUpdateExists(key))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return Updated(gIAAUpdate);
+        }
+
+        private bool GIAAUpdateExists(int key)
+        {
+            return db.GIAAUpdateRepository.GIAAUpdates.Count(e => e.ID == key) > 0;
         }
 
         protected override void Dispose(bool disposing)

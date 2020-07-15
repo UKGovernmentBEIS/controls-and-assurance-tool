@@ -334,13 +334,13 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
                     if (this.props.onError) this.props.onError(`Error updating item`, err.message);
                 });
 
-                this.giaaRecommendationService.updateGiaaUpdateAfterEditRec(f.ID, Number(this.props.giaaPeriodId)).then((res: string): void => {
+                // this.giaaRecommendationService.updateGiaaUpdateAfterEditRec(f.ID, Number(this.props.giaaPeriodId)).then((res: string): void => {
     
-                    console.log('welcome accessed');
+                //     console.log('welcome accessed');
               
-                }, (err) => {
+                // }, (err) => {
               
-                });
+                // });
             }
         }
 

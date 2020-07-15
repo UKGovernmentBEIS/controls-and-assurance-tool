@@ -14,34 +14,23 @@ namespace ControlAssuranceAPI.Models
     
     public partial class GIAAUpdate
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public GIAAUpdate()
-        {
-            this.GIAAUpdateEvidences = new HashSet<GIAAUpdateEvidence>();
-            this.GIAAUpdateFeedbacks = new HashSet<GIAAUpdateFeedback>();
-        }
-    
         public int ID { get; set; }
         public string Title { get; set; }
-        public Nullable<System.DateTime> TargetDate { get; set; }
-        public string ProgressUpdateDetails { get; set; }
-        public string GIAAComments { get; set; }
+        public string UpdateType { get; set; }
+        public string UpdateDetails { get; set; }
+        public Nullable<System.DateTime> RevisedDate { get; set; }
         public string Link { get; set; }
+        public string EvFileName { get; set; }
+        public Nullable<bool> EvIsLink { get; set; }
+        public string EvAdditionalNotes { get; set; }
         public Nullable<int> GIAARecommendationId { get; set; }
-        public Nullable<int> GIAAPeriodId { get; set; }
         public Nullable<int> GIAAActionStatusTypeId { get; set; }
-        public Nullable<int> GIAAActionPriorityId { get; set; }
-        public int GIAAUpdateStatusId { get; set; }
+        public Nullable<int> UpdatedById { get; set; }
+        public Nullable<System.DateTime> UpdateDate { get; set; }
         public string UpdateChangeLog { get; set; }
     
-        public virtual GIAAActionPriority GIAAActionPriority { get; set; }
         public virtual GIAAActionStatusType GIAAActionStatusType { get; set; }
-        public virtual GIAAPeriod GIAAPeriod { get; set; }
         public virtual GIAARecommendation GIAARecommendation { get; set; }
-        public virtual GIAAUpdateStatusType GIAAUpdateStatusType { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<GIAAUpdateEvidence> GIAAUpdateEvidences { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<GIAAUpdateFeedback> GIAAUpdateFeedbacks { get; set; }
+        public virtual User User { get; set; }
     }
 }

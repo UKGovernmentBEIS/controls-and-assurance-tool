@@ -14,20 +14,11 @@ namespace ControlAssuranceAPI.Models
     
     public partial class GIAAPeriod
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public GIAAPeriod()
-        {
-            this.GIAAUpdates = new HashSet<GIAAUpdate>();
-        }
-    
         public int ID { get; set; }
         public string Title { get; set; }
         public string PeriodStatus { get; set; }
         public Nullable<System.DateTime> PeriodStartDate { get; set; }
         public Nullable<System.DateTime> PeriodEndDate { get; set; }
         public Nullable<int> LastPeriodId { get; set; }
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<GIAAUpdate> GIAAUpdates { get; set; }
     }
 }

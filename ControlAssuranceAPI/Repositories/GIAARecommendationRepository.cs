@@ -115,8 +115,7 @@ namespace ControlAssuranceAPI.Repositories
         public GIAARecommendation Remove(GIAARecommendation gIAARecommendation)
         {
 
-            db.GIAAUpdateFeedbacks.RemoveRange(db.GIAAUpdateFeedbacks.Where(x => x.GIAAUpdate.GIAARecommendationId == gIAARecommendation.ID));
-            db.GIAAUpdateEvidences.RemoveRange(db.GIAAUpdateEvidences.Where(x => x.GIAAUpdate.GIAARecommendationId == gIAARecommendation.ID));
+
             db.GIAAUpdates.RemoveRange(db.GIAAUpdates.Where(x => x.GIAARecommendationId == gIAARecommendation.ID));
             db.GIAAActionOwners.RemoveRange(db.GIAAActionOwners.Where(x => x.GIAARecommendationId == gIAARecommendation.ID));
             var r = db.GIAARecommendations.Remove(gIAARecommendation);

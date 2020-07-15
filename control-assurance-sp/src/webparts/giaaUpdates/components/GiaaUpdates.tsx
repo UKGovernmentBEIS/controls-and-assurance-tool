@@ -273,8 +273,8 @@ export default class GiaaUpdates extends BaseUserContextWebPartComponent<types.I
     return (
       <PeriodUpdateTab
         giaaRecommendationId={this.state.RecList_SelectedId}
-        giaaPeriodId={this.state.PeriodId}
-        filteredItems={this.state.RecList_FilteredItems}
+        //giaaPeriodId={this.state.PeriodId}
+        //filteredItems={this.state.RecList_FilteredItems}
         onShowList={this.handleShowRecList}
         {...this.props}
       />

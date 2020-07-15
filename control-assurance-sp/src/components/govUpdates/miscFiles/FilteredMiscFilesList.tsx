@@ -19,6 +19,9 @@ const classNames = mergeStyleSets({
         padding: "5px 0px 5px 10px",
         marginBottom: "5px"
     },
+    cmdBtn: {
+        border: 'none'
+    }
 });
 const controlStyles = {
     root: {
@@ -92,6 +95,7 @@ export class FilteredMiscFilesList extends React.Component<IFilteredMiscFilesLis
                     {props.editDisabled && props.deleteDisabled &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Add' }}
+                            className={classNames.cmdBtn}
                             text="New"
                             onClick={props.onAdd}
                         />}
@@ -99,6 +103,7 @@ export class FilteredMiscFilesList extends React.Component<IFilteredMiscFilesLis
                     {(props.editDisabled === false) &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Edit' }}
+                            className={classNames.cmdBtn}
                             text="Edit"
                             onClick={props.onEdit}
                         />}
@@ -106,6 +111,7 @@ export class FilteredMiscFilesList extends React.Component<IFilteredMiscFilesLis
                     {(props.deleteDisabled === false) &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Delete' }}
+                            className={classNames.cmdBtn}
                             text="Delete"
                             onClick={this.props.onDelete}
                         />}
@@ -113,6 +119,7 @@ export class FilteredMiscFilesList extends React.Component<IFilteredMiscFilesLis
                     {(props.editDisabled === false) &&
                         <CommandBarButton
                             iconProps={{ iconName: 'View' }}
+                            className={classNames.cmdBtn}
                             text="View"
                             onClick={this.props.onView}
                         />}
@@ -120,6 +127,7 @@ export class FilteredMiscFilesList extends React.Component<IFilteredMiscFilesLis
                     {(props.editDisabled === false) &&
                         <CommandBarButton
                             iconProps={{ iconName: 'View' }}
+                            className={classNames.cmdBtn}
                             text="View2"
                             onClick={this.props.onView2}
                         />}

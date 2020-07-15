@@ -60,11 +60,13 @@ namespace ControlAssuranceAPI.Models
         DbSet<GIAAActionPriority> GIAAActionPriorities { get; set; }
         DbSet<GIAAActionStatusType> GIAAActionStatusTypes { get; set; }
         DbSet<GIAARecommendation> GIAARecommendations { get; set; }
-        DbSet<GIAAUpdate> GIAAUpdates { get; set; }
-        DbSet<GIAAUpdateFeedback> GIAAUpdateFeedbacks { get; set; }
-        DbSet<GIAAUpdateEvidence> GIAAUpdateEvidences { get; set; }
-        DbSet<GIAAUpdateStatusType> GIAAUpdateStatusTypes { get; set; }
         DbSet<GIAAActionOwner> GIAAActionOwners { get; set; }
+        DbSet<GIAAUpdate> GIAAUpdates { get; set; }
+        
+        //DbSet<GIAAUpdateFeedback> GIAAUpdateFeedbacks { get; set; }
+        //DbSet<GIAAUpdateEvidence> GIAAUpdateEvidences { get; set; }
+        //DbSet<GIAAUpdateStatusType> GIAAUpdateStatusTypes { get; set; }
+        
 
         DbSet<IAPDefForm> IAPDefForms { get; set; }
         DbSet<IAPPriority> IAPPriorities { get; set; }
