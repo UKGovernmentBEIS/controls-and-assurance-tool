@@ -19,14 +19,22 @@ import { ElementStatuses } from '../../types/AppGlobals';
 
 export interface IRecommendationsTabProps extends types.IBaseComponentProps {
 
-    filteredItems: any[];
+    //filteredItems: any[];
     parentId: any;
-    giaaPeriodId:number | string;
+    //giaaPeriodId:number | string;
     parentTitle: string;
     onShowList: () => void;
     //isViewOnly: boolean;
 
     onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
+
+    incompleteOnly: boolean;
+    justMine: boolean;
+    actionStatusTypeId: number;
+
+    onChangeIncompleteOnly: (value: boolean) => void;
+    onChangeJustMine: (value: boolean) => void;
+    onChangeActionStatusType: (option: IDropdownOption)=> void;
 }
 
 export interface ILookupData {
@@ -42,9 +50,10 @@ export interface IRecommendationsTabState {
     Loading: boolean;
     LookupData: ILookupData;
 
-    IncompleteOnly: boolean;
-    JustMine: boolean;
-    ActionStatusTypeId:number;
+    // IncompleteOnly: boolean;
+    // JustMine: boolean;
+    // ActionStatusTypeId:number;
+
     ListFilterText: string;
     AuditReportInfo: IGIAAAuditReportInfo;
 
@@ -54,9 +63,11 @@ export interface IRecommendationsTabState {
 export class RecommendationsTabState implements IRecommendationsTabState {
     public Loading = false;
     public LookupData = new LookupData();
-    public IncompleteOnly = false;
-    public JustMine = false;
-    public ActionStatusTypeId = 0;
+
+    // public IncompleteOnly = false;
+    // public JustMine = false;
+    // public ActionStatusTypeId = 0;
+
     public ListFilterText: string = null;
     public AuditReportInfo = null;
 
@@ -88,12 +99,25 @@ export default class RecommendationsTab extends React.Component<IRecommendations
     }
 
     private renderSectionTitle() {
-        return (
-            <React.Fragment>
-                <h1 style={{ fontFamily: 'Calibri', fontSize: '36px' }}>{this.props.parentTitle}</h1>
+        const rInfo = this.state.AuditReportInfo;
+        if (rInfo === null) {
+            return (
+                <React.Fragment>
+                    <h1 style={{ fontFamily: 'Calibri', fontSize: '36px' }}>{this.props.parentTitle}</h1>
+    
+                </React.Fragment>
+            );
+        }
+        else{
+            return (
+                <React.Fragment>
+                    <h1 style={{ fontFamily: 'Calibri', fontSize: '36px' }}>{rInfo.Title}</h1>
+    
+                </React.Fragment>
+            );
+        }
 
-            </React.Fragment>
-        );
+
 
 
     }
@@ -101,9 +125,7 @@ export default class RecommendationsTab extends React.Component<IRecommendations
     private renderInfoTable() {
 
         const rInfo = this.state.AuditReportInfo;
-        if(rInfo === null) return null;
-        
-
+        if (rInfo === null) return null;
 
         return (
 
@@ -115,76 +137,76 @@ export default class RecommendationsTab extends React.Component<IRecommendations
                     <table cellSpacing="0" cellPadding="10" style={{ width: '100%' }}>
                         <tbody>
 
-                        <tr>
-                            <td style={{ width:'150px', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
-                                Audit Report Number
+                            <tr>
+                                <td style={{ width: '150px', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Audit Report Number
                             </td>
-                            <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)' }}>
-                                {rInfo.NumberStr}
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)' }}>
+                                    {rInfo.NumberStr}
+                                </td>
+                                <td style={{ width: '150px', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Directorate
                             </td>
-                            <td style={{ width:'150px', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
-                                Directorate
-                            </td>
-                            <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
-                                {rInfo.Directorate}
-                            </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                    {rInfo.Directorate}
+                                </td>
 
-                        </tr>
+                            </tr>
 
-                        <tr>
-                            <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
-                                Audit Year
+                            <tr>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Audit Year
                             </td>
-                            <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)' }}>
-                                {rInfo.Year}
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)' }}>
+                                    {rInfo.Year}
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    DG
                             </td>
-                            <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
-                                DG
-                            </td>
-                            <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
-                                {rInfo.DG}
-                            </td>
-                        </tr>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                    {rInfo.DG}
+                                </td>
+                            </tr>
 
-                        <tr>
-                            <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
-                                Report Issue Date
+                            <tr>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Report Issue Date
                             </td>
-                            <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)' }}>
-                                {rInfo.IssueDate}
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)' }}>
+                                    {rInfo.IssueDate}
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Director
                             </td>
-                            <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
-                                Director
-                            </td>
-                            <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
-                                {rInfo.Director}
-                            </td>
-                        </tr>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                    {rInfo.Director}
+                                </td>
+                            </tr>
 
-                        <tr>
-                            <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
-                                Stats
+                            <tr>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Stats
                             </td>
-                            <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)' }}>
-                                {rInfo.Stats}
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)' }}>
+                                    {rInfo.Stats}
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Assurance Option
                             </td>
-                            <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
-                                Assurance Option
-                            </td>
-                            <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
-                                {rInfo.Assurance}
-                            </td>
-                        </tr>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                    {rInfo.Assurance}
+                                </td>
+                            </tr>
 
-                        <tr>
-                            <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
-                                Link to Audit Report
+                            <tr>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Link to Audit Report
                             </td>
-                            <td colSpan={3} style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
-                                <a target="_blank" href={rInfo.Link}>Click to View Report</a>
-                            </td>
+                                <td colSpan={3} style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                    <a target="_blank" href={rInfo.Link}>Click to View Report</a>
+                                </td>
 
-                        </tr>
+                            </tr>
 
 
                         </tbody>
@@ -207,17 +229,28 @@ export default class RecommendationsTab extends React.Component<IRecommendations
                     <div style={{ width: '98%', minHeight: '120px', border: '1px solid rgb(166,166,166)', marginTop: '10px', marginLeft: 'auto', marginRight: 'auto', paddingRight: '5px', overflowX: 'hidden' }}>
                         <RecommendationsList
                             {...this.props}
-                            giaaPeriodId={this.props.giaaPeriodId}
+                            //giaaPeriodId={this.props.giaaPeriodId}
                             actionStatusTypes={this.state.LookupData.GIAAActionStatusTypes}
                             giaaAuditReportId={this.props.parentId}
                             onError={this.props.onError}
                             onItemTitleClick={this.props.onItemTitleClick}
-                            incompleteOnly={this.state.IncompleteOnly}
-                            onChangeIncompleteOnly={this.handle_ChangeIncompleteOnly}
-                            justMine={this.state.JustMine}
-                            onChangeJustMine={this.handle_ChangeJustMine}
-                            actionStatusTypeId={this.state.ActionStatusTypeId}
-                            onChangeActionStatusType={this.handle_ChangeActionStatusType}
+
+                            // incompleteOnly={this.state.IncompleteOnly}
+                            // onChangeIncompleteOnly={this.handle_ChangeIncompleteOnly}
+                            // justMine={this.state.JustMine}
+                            // onChangeJustMine={this.handle_ChangeJustMine}
+                            // actionStatusTypeId={this.state.ActionStatusTypeId}
+                            // onChangeActionStatusType={this.handle_ChangeActionStatusType}
+
+                            
+                            incompleteOnly={this.props.incompleteOnly}
+                            justMine={this.props.justMine}
+                            actionStatusTypeId={this.props.actionStatusTypeId}
+
+                            onChangeIncompleteOnly={this.props.onChangeIncompleteOnly}                            
+                            onChangeJustMine={this.props.onChangeJustMine}                            
+                            onChangeActionStatusType={this.props.onChangeActionStatusType}
+
                             filterText={this.state.ListFilterText}
                             onChangeFilterText={this.handle_ChangeFilterText}
 
@@ -247,7 +280,7 @@ export default class RecommendationsTab extends React.Component<IRecommendations
             this.setState({
                 AuditReportInfo: x
             });
-            
+
 
         }, (err) => {
             if (this.props.onError) this.props.onError(`Error loading publication info`, err.message);
@@ -298,17 +331,17 @@ export default class RecommendationsTab extends React.Component<IRecommendations
         this.setState({ ListFilterText: value });
     }
 
-    private handle_ChangeIncompleteOnly = (value: boolean): void => {
-        this.setState({ IncompleteOnly: value });
-    }
+    // private handle_ChangeIncompleteOnly = (value: boolean): void => {
+    //     this.setState({ IncompleteOnly: value });
+    // }
 
-    private handle_ChangeJustMine = (value: boolean): void => {
-        this.setState({ JustMine: value });
-    }
+    // private handle_ChangeJustMine = (value: boolean): void => {
+    //     this.setState({ JustMine: value });
+    // }
 
-    private handle_ChangeActionStatusType = (option: IDropdownOption): void => {
-        this.setState({ ActionStatusTypeId: Number(option.key), },  );
-    }
+    // private handle_ChangeActionStatusType = (option: IDropdownOption): void => {
+    //     this.setState({ ActionStatusTypeId: Number(option.key), },  );
+    // }
     protected cloneObject(obj, changeProp?, changeValue?) {
         if (changeProp)
             return { ...obj, [changeProp]: changeValue };

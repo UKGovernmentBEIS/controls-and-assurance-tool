@@ -19,7 +19,7 @@ export interface ISectionProps extends IEntityFormProps {
 
     isArchive: boolean;
     sectionTitle: string;
-    giaaPeriodId: number | string;
+    //giaaPeriodId: number | string;
     dgAreaId: number | string;
     onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
     incompleteOnly: boolean;
@@ -86,7 +86,7 @@ export default class Section extends React.Component<ISectionProps, SectionState
                             justMine={this.props.justMine}
                             onChangeJustMine={this.props.onChangeJustMine}
                             dgAreaId={this.props.dgAreaId}
-                            giaaPeriodId={this.props.giaaPeriodId}
+                            //giaaPeriodId={this.props.giaaPeriodId}
                             filterText={this.props.listFilterText}
                             onChangeFilterText={this.props.onChangeFilterText}
                             onMainSaved={this.props.onMainSaved}

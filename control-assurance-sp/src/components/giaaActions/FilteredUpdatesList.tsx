@@ -123,7 +123,7 @@ export class FilteredUpdatesList extends React.Component<IFilteredUpdatesListPro
 
                     {selCount === 0 &&
                         <CommandBarButton
-                            iconProps={{ iconName: 'Add' }}
+                            iconProps={{ iconName: 'AddNotes' }}
                             className={classNames.cmdBtn}
                             text="Action Update"
                             onClick={props.onAddActionUpdate}
@@ -131,7 +131,7 @@ export class FilteredUpdatesList extends React.Component<IFilteredUpdatesListPro
 
                     {selCount === 0 &&
                         <CommandBarButton
-                            iconProps={{ iconName: 'Add' }}
+                            iconProps={{ iconName: 'AddEvent' }}
                             className={classNames.cmdBtn}
                             text="Revise Implementation Date"
                             onClick={props.onAddRevisedDate}
@@ -139,7 +139,7 @@ export class FilteredUpdatesList extends React.Component<IFilteredUpdatesListPro
 
                     {selCount === 0 &&
                         <CommandBarButton
-                            iconProps={{ iconName: 'Add' }}
+                            iconProps={{ iconName: 'CommentAdd' }}
                             className={classNames.cmdBtn}
                             text="GIAA Comments"
                             onClick={props.onAddGIAAComments}
@@ -147,7 +147,7 @@ export class FilteredUpdatesList extends React.Component<IFilteredUpdatesListPro
 
                     {selCount === 0 &&
                         <CommandBarButton
-                            iconProps={{ iconName: 'Add' }}
+                            iconProps={{ iconName: 'CommentAdd' }}
                             className={classNames.cmdBtn}
                             text="Misc Comments"
                             onClick={props.onAddMiscComments}

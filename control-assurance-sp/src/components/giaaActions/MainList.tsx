@@ -16,7 +16,7 @@ import styles from '../../styles/cr.module.scss';
 export interface IMainListProps extends types.IBaseComponentProps {
 
     isArchive:boolean;
-    giaaPeriodId: number | string;
+    //giaaPeriodId: number | string;
     dgAreaId: number | string;
     incompleteOnly: boolean;
     onChangeIncompleteOnly: (value: boolean) => void;
@@ -162,6 +162,7 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
             minWidth: 120,
             maxWidth: 120,
             isResizable: true,
+            isMultiline:true,
             headerClassName: styles.bold,
         },
 
@@ -363,7 +364,7 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
         this.setState({ Loading: true });
 
 
-        const read: Promise<IEntity[]> = this.mainService.readAllWithFilters(this.props.giaaPeriodId, this.props.dgAreaId, this.props.incompleteOnly, this.props.justMine, this.props.isArchive);
+        const read: Promise<IEntity[]> = this.mainService.readAllWithFilters(this.props.dgAreaId, this.props.incompleteOnly, this.props.justMine, this.props.isArchive);
         read.then((entities: any): void => {
             this.setState({
                 Loading: false, Entities: entities,
@@ -381,7 +382,7 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
 
     }
     public componentDidUpdate(prevProps: IMainListProps): void {
-        if (prevProps.giaaPeriodId !== this.props.giaaPeriodId || prevProps.dgAreaId !== this.props.dgAreaId || prevProps.justMine !== this.props.justMine || prevProps.incompleteOnly !== this.props.incompleteOnly || prevProps.mainListsSaveCounter !== this.props.mainListsSaveCounter) {
+        if (prevProps.dgAreaId !== this.props.dgAreaId || prevProps.justMine !== this.props.justMine || prevProps.incompleteOnly !== this.props.incompleteOnly || prevProps.mainListsSaveCounter !== this.props.mainListsSaveCounter) {
             //console.log('props changed, load data again');
             this._selection.setAllSelected(false);
             this.loadData();

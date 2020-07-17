@@ -29,7 +29,7 @@ namespace ControlAssuranceAPI.Repositories
             return GIAAAuditReports.Where(x => x.ID == keyValue).FirstOrDefault();
         }
 
-        public List<GIAAAuditReportView_Result> GetAuditReports(int giaaPeriodId, int dgAreaId, bool incompleteOnly, bool justMine, bool isArchive)
+        public List<GIAAAuditReportView_Result> GetAuditReports(int dgAreaId, bool incompleteOnly, bool justMine, bool isArchive)
         {
             List<GIAAAuditReportView_Result> retList = new List<GIAAAuditReportView_Result>();
 
@@ -47,7 +47,8 @@ namespace ControlAssuranceAPI.Repositories
                           DGArea = r.Directorate.DirectorateGroup.Title,
                           Directorate = r.Directorate.Title,
                           //Assurance = r.GIAAAssurance.Title,
-                          r.GIAAAssuranceId
+                          r.GIAAAssuranceId,
+                          r.GIAARecommendations
 
                       };
 
@@ -74,6 +75,28 @@ namespace ControlAssuranceAPI.Repositories
                 string completionStatus = "Not Started"; //default value
                 string users = "";
 
+                HashSet<User> uniqueOwners = new HashSet<User>();
+
+                foreach(var rec in iteR.GIAARecommendations)
+                {
+                    foreach(var owner in rec.GIAAActionOwners)
+                    {
+                        var ownerName = owner.User.Title;
+                        uniqueOwners.Add(owner.User);
+                    }
+                }
+
+                int totalUniqueOwners = uniqueOwners.Count;
+                foreach(var uniqueOwner in uniqueOwners)
+                {
+                    users += uniqueOwner.Title + ",";
+                }
+
+                users = users.Trim();
+                if (users.Length > 0)
+                {
+                    users = users.Substring(0, users.Length - 1);
+                }
 
                 GIAAAuditReportView_Result item = new GIAAAuditReportView_Result
                 {
@@ -130,6 +153,7 @@ namespace ControlAssuranceAPI.Repositories
                 }
                 
                 ret.ID = r.ID;
+                ret.Title = r.Title;
                 ret.NumberStr = r.NumberStr;
                 ret.Directorate = r.Directorate.Title;
                 ret.Year = r.AuditYear;

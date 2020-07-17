@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using ControlAssuranceAPI.Models;
+using ControlAssuranceAPI.Repositories;
 using Microsoft.AspNet.OData;
 
 namespace ControlAssuranceAPI.Controllers
@@ -68,7 +69,11 @@ namespace ControlAssuranceAPI.Controllers
                 return NotFound();
             }
 
+            var existingRevisedDate = giaaRecommendation.RevisedDate;
+            var existingStatusId = giaaRecommendation.GIAAActionStatusTypeId;
+
             patch.Patch(giaaRecommendation);
+
 
 
             try
@@ -85,6 +90,11 @@ namespace ControlAssuranceAPI.Controllers
                 {
                     throw;
                 }
+            }
+
+            if(giaaRecommendation.RevisedDate != existingRevisedDate || giaaRecommendation.GIAAActionStatusTypeId != existingStatusId)
+            {
+                db.GIAAUpdateRepository.AddOnRecChanged(giaaRecommendation.ID, giaaRecommendation.RevisedDate, giaaRecommendation.GIAAActionStatusTypeId, existingRevisedDate, existingStatusId);
             }
 
             return Updated(giaaRecommendation);

@@ -53,7 +53,7 @@ namespace ControlAssuranceAPI.Controllers
             var x = db.GIAAUpdateRepository.Add(giaaUpdate);
             if (x == null) return Unauthorized();
 
-            db.SaveChanges();
+            //db.SaveChanges();
 
             return Created(x);
         }

@@ -12,8 +12,8 @@ export class GIAAAuditReportService extends EntityService<IEntity> {
         super(spfxContext, api, `/GIAAAuditReports`);
     }
 
-    public readAllWithFilters(giaaPeriodId: number | string, dgAreaId: number | string, incompleteOnly: boolean, justMine: boolean, isArchive:boolean): Promise<IEntity[]> {
-        return this.readAll(`?giaaPeriodId=${giaaPeriodId}&dgAreaId=${dgAreaId}&incompleteOnly=${incompleteOnly}&justMine=${justMine}&isArchive=${isArchive}`);
+    public readAllWithFilters(dgAreaId: number | string, incompleteOnly: boolean, justMine: boolean, isArchive:boolean): Promise<IEntity[]> {
+        return this.readAll(`?dgAreaId=${dgAreaId}&incompleteOnly=${incompleteOnly}&justMine=${justMine}&isArchive=${isArchive}`);
     }
 
     public getAuditReportInfo(giaaAuditReportId:number): Promise<IGIAAAuditReportInfo> {

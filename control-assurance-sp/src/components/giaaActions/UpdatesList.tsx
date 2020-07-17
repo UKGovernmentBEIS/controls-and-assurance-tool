@@ -13,6 +13,7 @@ import { CrDropdown, IDropdownOption } from '../cr/CrDropdown';
 import { GIAAUpdateTypes } from '../../types/AppGlobals';
 import { getUploadFolder_GIAAUpdateEvidence } from '../../types/AppGlobals';
 import styles from '../../styles/cr.module.scss';
+import { ThemeSettingName } from 'office-ui-fabric-react/lib/Styling';
 
 
 export interface IUpdatesListProps extends types.IBaseComponentProps {
@@ -20,6 +21,8 @@ export interface IUpdatesListProps extends types.IBaseComponentProps {
 
     //onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
     giaaRecommendationId: number | string;
+    defaultGIAAActionStatusTypeId:number;
+    defaultRevisedDate:Date;
 
     filterText?: string;
     onChangeFilterText: (value: string) => void;
@@ -28,6 +31,9 @@ export interface IUpdatesListProps extends types.IBaseComponentProps {
 }
 
 export interface IUpdatesListState<T> {
+    DefaultGIAAActionStatusTypeId:number;
+    DefaultRevisedDate:Date;
+
     SelectedEntity: number;
     SelectedEntityTitle: string;
     //SelectedGoElementId:number;
@@ -47,6 +53,9 @@ export interface IUpdatesListState<T> {
     InitDataLoaded: boolean;
 }
 export class UpdatesListState<T> implements IUpdatesListState<T>{
+    public DefaultGIAAActionStatusTypeId:number = null;
+    public DefaultRevisedDate:Date = null;
+
     public SelectedEntity = null;
     public SelectedEntityTitle: string = null;
     //public SelectedGoElementId = null;
@@ -251,10 +260,14 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
 
     private renderForm() {
 
-
+        const d1 = this.state.DefaultGIAAActionStatusTypeId;
+        const d2 = this.state.DefaultRevisedDate;
+        console.log('in render form d1, d2', d1, d2);
         return (
             <UpdateSaveForm
                 giaaRecommendationId={this.props.giaaRecommendationId}
+                defaultActionStatusTypeId={d1}
+                defaultRevDate={d2}
                 updateType={this.state.FormType}
                 showForm={this.state.ShowForm}
                 entityId={this.state.SelectedEntity}
@@ -310,7 +323,17 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
         this.setState({ ShowForm: false });
     }
 
-    private formSaved = (): void => {
+    private formSaved = (defaultGIAAActionStatusTypeId: number, defaultRevisedDate:Date): void => {
+        console.log('form Saved defaultGIAAActionStatusTypeId, defaultRevisedDate', defaultGIAAActionStatusTypeId, defaultRevisedDate);
+        if(defaultGIAAActionStatusTypeId !== null){
+
+            this.setState({ DefaultGIAAActionStatusTypeId: defaultGIAAActionStatusTypeId });
+            console.log('state updated DefaultGIAAActionStatusTypeId', defaultGIAAActionStatusTypeId);
+        }
+        if(defaultRevisedDate !== null){
+            this.setState({ DefaultRevisedDate: defaultRevisedDate });
+            console.log('state updated DefaultRevisedDate', defaultRevisedDate);
+        }
         this.loadData();
         this.closePanel();
     }
@@ -357,6 +380,7 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
         if (this.props.onError) this.props.onError(`Error loading ${entityName || 'items'}`, err.message);
     }
     public componentDidMount(): void {
+        this.setState( { DefaultGIAAActionStatusTypeId: this.props.defaultGIAAActionStatusTypeId, DefaultRevisedDate: this.props.defaultRevisedDate });
         this.loadData();
         //console.log('web title: ', this.props.spfxContext.pageContext.web.title);
 

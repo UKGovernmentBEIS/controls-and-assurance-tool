@@ -10,6 +10,15 @@ namespace ControlAssuranceAPI.Repositories
 {
     public class GIAAUpdateRepository : BaseRepository
     {
+
+        class GIAAUpdateTypes
+        {
+            public static string ActionUpdate = "Action Update";
+            public static string RevisedDate = "Revised Date";
+            public static string GIAAComment = "GIAA Comment";
+            public static string MiscComment = "Misc Comment";
+            public static string RecChanged = "Rec Changed";
+        }
         public GIAAUpdateRepository(IPrincipal user) : base(user) { }
 
         public GIAAUpdateRepository(IPrincipal user, IControlAssuranceContext context) : base(user, context) { }
@@ -88,11 +97,57 @@ namespace ControlAssuranceAPI.Repositories
 
         public GIAAUpdate Add(GIAAUpdate giaaUpdate)
         {
+            GIAAUpdate ret = new GIAAUpdate(); ;
             giaaUpdate.UpdateDate = DateTime.Now;
             giaaUpdate.UpdatedById = ApiUser.ID;
-            return db.GIAAUpdates.Add(giaaUpdate);
+
+            ret = db.GIAAUpdates.Add(giaaUpdate);
+            db.SaveChanges();
+
+
+            if (giaaUpdate.UpdateType == GIAAUpdateTypes.ActionUpdate)
+            {
+                //copy value back to rec
+                db.Entry(ret).Reference(u => u.GIAARecommendation).Load();
+                ret.GIAARecommendation.GIAAActionStatusTypeId = giaaUpdate.GIAAActionStatusTypeId;
+                db.SaveChanges();
+            }
+            else if(giaaUpdate.UpdateType == GIAAUpdateTypes.RevisedDate)
+            {
+                //copy value back to rec
+                db.Entry(ret).Reference(u => u.GIAARecommendation).Load();
+                ret.GIAARecommendation.RevisedDate = giaaUpdate.RevisedDate;
+                db.SaveChanges();
+            }
+
+
+            return ret;
         }
 
+        public void AddOnRecChanged(int gIAARecommendationId, DateTime? newRevisedDate, int? newStatusId, DateTime? existingRevisedDate, int? existingStatusId )
+        {
+            GIAAUpdate gIAAUpdate = new GIAAUpdate();
+            gIAAUpdate.UpdateDetails = "Super User Edited Recommendation";
+            gIAAUpdate.UpdateType = GIAAUpdateTypes.RecChanged;
+            gIAAUpdate.UpdateDate = DateTime.Now;
+            gIAAUpdate.UpdatedById = ApiUser.ID;
+            gIAAUpdate.GIAARecommendationId = gIAARecommendationId;
+
+            if(existingRevisedDate != newRevisedDate)
+            {
+                gIAAUpdate.RevisedDate = newRevisedDate;
+            }
+            if(existingStatusId != newStatusId)
+            {
+                gIAAUpdate.GIAAActionStatusTypeId = newStatusId;
+            }
+
+            db.GIAAUpdates.Add(gIAAUpdate);
+            db.SaveChanges();
+
+        }
+
+        #region Commented
         //public GIAAUpdate FindCreate(int giaaRecommendationId, int giaaPeriodId)
         //{
         //    var giaaUpdateDb = db.GIAAUpdates.FirstOrDefault(x => x.GIAAPeriodId == giaaPeriodId && x.GIAARecommendationId == giaaRecommendationId);
@@ -169,5 +224,9 @@ namespace ControlAssuranceAPI.Repositories
         //        db.SaveChanges();
         //    }
         //}
+
+        #endregion Commented
+
+
     }
 }

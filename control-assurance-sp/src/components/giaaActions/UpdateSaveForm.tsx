@@ -22,9 +22,11 @@ export interface IUpdatesSaveFormProps extends types.IBaseComponentProps {
 
     giaaRecommendationId: number | string;
     updateType: string;
+    defaultActionStatusTypeId: number;
+    defaultRevDate:Date;
     entityId: number;
     showForm: boolean;
-    onSaved?: () => void;
+    onSaved?: (defaultGIAAActionStatusTypeId:number, defaultRevisedDate:Date) => void;
     onCancelled?: () => void;
 }
 
@@ -381,7 +383,7 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
                     else {
                         //its a link instead of the file, so close the form
                         console.log('evidence saved as link');
-                        this.props.onSaved();
+                        this.props.onSaved(f.GIAAActionStatusTypeId, f.RevisedDate);
                     }
 
                 });
@@ -391,7 +393,7 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
 
                 //console.log('in update');
 
-                this.giaaUpdateService.update(f.ID, f).then(this.props.onSaved, (err) => {
+                this.giaaUpdateService.update(f.ID, f).then(() =>this.props.onSaved(f.GIAAActionStatusTypeId, f.RevisedDate), (err) => {
                     if (this.props.onError) this.props.onError(`Error updating item`, err.message);
                 });
             }
@@ -512,6 +514,14 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
     private onAfterLoad = (entity: types.IEntity): void => {
 
         //console.log('after load', this.state.LookupData.Users);
+        if(this.props.updateType === GIAAUpdateTypes.ActionUpdate){
+            console.log('onAfterLoad', this.props.defaultActionStatusTypeId);
+            this.setState({ FormData: this.cloneObject(this.state.FormData, "GIAAActionStatusTypeId", this.props.defaultActionStatusTypeId), FormIsDirty: true });
+        }
+        else if(this.props.updateType === GIAAUpdateTypes.RevisedDate){
+            console.log('onAfterLoad', this.props.defaultRevDate);
+            this.setState({ FormData: this.cloneObject(this.state.FormData, "RevisedDate", this.props.defaultRevDate), FormIsDirty: true });
+        }
 
     }
 

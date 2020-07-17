@@ -15,7 +15,7 @@ import styles from '../../styles/cr.module.scss';
 
 export interface IRecommendationsListProps extends types.IBaseComponentProps {
 
-    giaaPeriodId:number | string;
+    //giaaPeriodId:number | string;
     onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
     giaaAuditReportId: number | string;
     incompleteOnly: boolean;
@@ -150,8 +150,8 @@ export default class RecommendationsList extends React.Component<IRecommendation
             key: 'Owners',
             name: 'Owners',
             fieldName: 'Owners',
-            minWidth: 150,
-            maxWidth: 150,
+            minWidth: 200,
+            maxWidth: 200,
             isMultiline:true,
             isResizable: true,
             headerClassName: styles.bold,
@@ -159,15 +159,15 @@ export default class RecommendationsList extends React.Component<IRecommendation
 
 
 
-        {
-            key: 'UpdateStatus',
-            name: 'Period Update Status',
-            fieldName: 'UpdateStatus',
-            minWidth: 150,
-            maxWidth: 150,
-            isResizable: true,
-            headerClassName: styles.bold,
-        },
+        // {
+        //     key: 'UpdateStatus',
+        //     name: 'Period Update Status',
+        //     fieldName: 'UpdateStatus',
+        //     minWidth: 150,
+        //     maxWidth: 150,
+        //     isResizable: true,
+        //     headerClassName: styles.bold,
+        // },
     ];
 
 
@@ -257,7 +257,7 @@ export default class RecommendationsList extends React.Component<IRecommendation
         return (
             <RecommendationSaveForm
                 giaaAuditReportId={this.props.giaaAuditReportId}
-                giaaPeriodId={this.props.giaaPeriodId}
+                //giaaPeriodId={this.props.giaaPeriodId}
                 showForm={this.state.ShowForm}
                 entityId={this.state.SelectedEntity}
                 onSaved={this.formSaved}

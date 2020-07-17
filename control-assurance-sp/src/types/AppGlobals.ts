@@ -92,5 +92,6 @@ export enum GIAAUpdateTypes {
     ActionUpdate = "Action Update",
     RevisedDate = "Revised Date",
     GIAAComment = "GIAA Comment",
-    MiscComment = "Misc Comment"
+    MiscComment = "Misc Comment",
+    RecChanged = "Rec Changed"
 }

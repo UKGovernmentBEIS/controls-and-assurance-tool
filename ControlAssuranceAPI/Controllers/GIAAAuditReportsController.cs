@@ -37,10 +37,10 @@ namespace ControlAssuranceAPI.Controllers
             return db.GIAAAuditReportRepository.GIAAAuditReports.Where(x => x.ID == key).SelectMany(x => x.GIAARecommendations);
         }
 
-        // GET: /odata/GIAAAuditReports?giaaPeriodId=1&dgAreaId=1&incompleteOnly=true&justMine=false
-        public List<GIAAAuditReportView_Result> Get(int giaaPeriodId, int dgAreaId, bool incompleteOnly, bool justMine, bool isArchive)
+        // GET: /odata/GIAAAuditReports?dgAreaId=1&incompleteOnly=true&justMine=false
+        public List<GIAAAuditReportView_Result> Get(int dgAreaId, bool incompleteOnly, bool justMine, bool isArchive)
         {
-            var res = db.GIAAAuditReportRepository.GetAuditReports(giaaPeriodId, dgAreaId, incompleteOnly, justMine, isArchive);
+            var res = db.GIAAAuditReportRepository.GetAuditReports(dgAreaId, incompleteOnly, justMine, isArchive);
             return res;
         }
 

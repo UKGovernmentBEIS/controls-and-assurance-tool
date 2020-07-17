@@ -39,6 +39,7 @@ namespace ControlAssuranceAPI.Repositories
             List<GIAARecommendationView_Result> retList = new List<GIAARecommendationView_Result>();
 
             var qry = from r in db.GIAARecommendations
+                      orderby r.ID
                       where r.GIAAAuditReportId == giaaAuditReportId
                       select new
                       {

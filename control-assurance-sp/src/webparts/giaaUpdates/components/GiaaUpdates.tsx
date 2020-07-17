@@ -6,7 +6,7 @@ import Section from '../../../components/giaaActions/Section';
 //import Section3Update from '../../../components/govUpdates/Section3Update';
 //import Section4Update from '../../../components/govUpdates/Section4Update';
 import RecommendationsTab from '../../../components/giaaActions/RecommendationsTab';
-import PeriodUpdateTab from '../../../components/giaaActions/PeriodUpdateTab';
+import ActionUpdatesTab from '../../../components/giaaActions/ActionUpdatesTab';
 
 import * as types from '../../../types';
 import BaseUserContextWebPartComponent from '../../../components/BaseUserContextWebPartComponent';
@@ -22,20 +22,20 @@ import { PrimaryButton } from 'office-ui-fabric-react/lib/Button';
 
 export interface ILookupData {
   //GoDefForm: IGoDefForm;
-  Periods: IEntity[];
+  //Periods: IEntity[];
   DGAreas: IDirectorateGroup[];
 }
 
 export class LookupData implements ILookupData {
   //public GoDefForm: IGoDefForm;
-  public Periods: IGIAAPeriod[] = [];
+  //public Periods: IGIAAPeriod[] = [];
   public DGAreas: IDirectorateGroup[] = [];
 
 }
 
 export interface IGiaaUpdatesState extends types.IUserContextWebPartState {
   LookupData: ILookupData;
-  PeriodId: string | number;
+  //PeriodId: string | number;
   DirectorateGroupId: string | number;
   IsArchivedPeriod: boolean;
 
@@ -51,7 +51,7 @@ export interface IGiaaUpdatesState extends types.IUserContextWebPartState {
   Section2__MainList_JustMine: boolean;
   Section2_MainList_ListFilterText: string;
 
-  MainListsSaveCounter:number;
+  MainListsSaveCounter: number;
 
   //generic for both sections
   Section_MainList_SelectedId: number;
@@ -63,10 +63,14 @@ export interface IGiaaUpdatesState extends types.IUserContextWebPartState {
   RecList_SelectedTitle: string;
   RecList_FilteredItems: any[];
 
+  RecList_IncompleteOnly: boolean;
+  RecList_JustMine: boolean;
+  RecList_ActionStatusTypeId: number;
+
 }
 export class GiaaUpdatesState extends types.UserContextWebPartState implements IGiaaUpdatesState {
   public LookupData = new LookupData();
-  public PeriodId: string | number = 0;
+  //public PeriodId: string | number = 0;
   public IsArchivedPeriod = false;
   public DirectorateGroupId: string | number = 0;
   public SelectedPivotKey = "GIAA Updates-Main"; //default, 1st tab selected
@@ -75,7 +79,7 @@ export class GiaaUpdatesState extends types.UserContextWebPartState implements I
   public Section1_MainList_IncompleteOnly = false;
   public Section1__MainList_JustMine = false;
   public Section1_MainList_ListFilterText: string = null;
-  public MainListsSaveCounter:number = 0;
+  public MainListsSaveCounter: number = 0;
 
 
   public Section2_IsOpen: boolean = false;
@@ -93,6 +97,10 @@ export class GiaaUpdatesState extends types.UserContextWebPartState implements I
   public RecList_SelectedTitle: string;
   public RecList_FilteredItems: any[];
 
+  public RecList_IncompleteOnly = false;
+  public RecList_JustMine = false;
+  public RecList_ActionStatusTypeId = 0;
+
   constructor() {
     super();
   }
@@ -103,12 +111,12 @@ export class GiaaUpdatesState extends types.UserContextWebPartState implements I
 export default class GiaaUpdates extends BaseUserContextWebPartComponent<types.IWebPartComponentProps, GiaaUpdatesState> {
 
 
-  private periodService: services.GIAAPeriodService = new services.GIAAPeriodService(this.props.spfxContext, this.props.api);
+  //private periodService: services.GIAAPeriodService = new services.GIAAPeriodService(this.props.spfxContext, this.props.api);
   private deirectorateGroupService: services.DirectorateGroupService = new services.DirectorateGroupService(this.props.spfxContext, this.props.api);
 
   private readonly headerTxt_MainTab: string = "GIAA Updates-Main";
   private readonly headerTxt_RecommendationsTab: string = "Recommendations";
-  private readonly headerTxt_PeriodUpdateTab: string = "Action Updates";
+  private readonly headerTxt_ActionUpdatesTab: string = "Action Updates";
 
   constructor(props: types.IWebPartComponentProps) {
     super(props);
@@ -126,7 +134,7 @@ export default class GiaaUpdates extends BaseUserContextWebPartComponent<types.I
           {this.renderMainTab()}
         </PivotItem>
         {this.renderRecommendationsTab()}
-        {this.renderPeriodUpdateTab()}
+        {this.renderActionUpdatesTab()}
 
       </Pivot>
     );
@@ -139,7 +147,7 @@ export default class GiaaUpdates extends BaseUserContextWebPartComponent<types.I
     dgAreasDrpOptions = [{ key: 0, text: "All DGAreas" }, ...dgAreasDrpOptions];
 
 
-    const periodId = Number(this.state.PeriodId);
+    //const periodId = Number(this.state.PeriodId);
     const directorateGroupId = Number(this.state.DirectorateGroupId);
 
 
@@ -147,13 +155,13 @@ export default class GiaaUpdates extends BaseUserContextWebPartComponent<types.I
       <div>
         <CrLoadingOverlayWelcome isLoading={this.state.Loading} />
         <div style={{ paddingTop: "10px" }}>
-          <CrDropdown
+          {/* <CrDropdown
             placeholder="Select an Option"
             label="Current Period"
             options={lookups.Periods.map((p) => { return { key: p.ID, text: p.Title }; })}
             onChanged={(v) => this.changeDropdown(v, 'PeriodId')}
             selectedKey={this.state.PeriodId}
-          />
+          /> */}
           <CrDropdown
             //placeholder="Select an Option"
             label="Which DGArea?"
@@ -164,12 +172,12 @@ export default class GiaaUpdates extends BaseUserContextWebPartComponent<types.I
 
           <br />
 
-          {this.state.PeriodId > 0 &&
+          {//this.state.PeriodId > 0 &&
             <div>
               <Section
                 isArchive={false}
                 sectionTitle="Active GIAA Audit Reports"
-                giaaPeriodId={this.state.PeriodId}
+                //giaaPeriodId={this.state.PeriodId}
                 dgAreaId={this.state.DirectorateGroupId}
                 //section1CompletionStatus={this.state.GoForm.SpecificAreasCompletionStatus}
                 onItemTitleClick={this.handleSection_MainListItemTitleClick}
@@ -191,7 +199,7 @@ export default class GiaaUpdates extends BaseUserContextWebPartComponent<types.I
               <Section
                 isArchive={true}
                 sectionTitle="Archived GIAA Audit Reports"
-                giaaPeriodId={this.state.PeriodId}
+                //giaaPeriodId={this.state.PeriodId}
                 dgAreaId={this.state.DirectorateGroupId}
                 //section1CompletionStatus={this.state.GoForm.SpecificAreasCompletionStatus}
                 onItemTitleClick={this.handleSection_MainListItemTitleClick}
@@ -221,7 +229,7 @@ export default class GiaaUpdates extends BaseUserContextWebPartComponent<types.I
   }
 
   private renderRecommendationsTab() {
-    if (this.state.SelectedPivotKey === this.headerTxt_RecommendationsTab || this.state.SelectedPivotKey === this.headerTxt_PeriodUpdateTab) {
+    if (this.state.SelectedPivotKey === this.headerTxt_RecommendationsTab || this.state.SelectedPivotKey === this.headerTxt_ActionUpdatesTab) {
       return (
 
         <PivotItem headerText={this.headerTxt_RecommendationsTab} itemKey={this.headerTxt_RecommendationsTab}>
@@ -234,12 +242,12 @@ export default class GiaaUpdates extends BaseUserContextWebPartComponent<types.I
       return <React.Fragment></React.Fragment>;
   }
 
-  private renderPeriodUpdateTab() {
-    if (this.state.SelectedPivotKey === this.headerTxt_PeriodUpdateTab) {
+  private renderActionUpdatesTab() {
+    if (this.state.SelectedPivotKey === this.headerTxt_ActionUpdatesTab) {
       return (
 
-        <PivotItem headerText={this.headerTxt_PeriodUpdateTab} itemKey={this.headerTxt_PeriodUpdateTab}>
-          {this.renderPeriodUpdate()}
+        <PivotItem headerText={this.headerTxt_ActionUpdatesTab} itemKey={this.headerTxt_ActionUpdatesTab}>
+          {this.renderActionUpdates()}
         </PivotItem>
 
       );
@@ -254,13 +262,22 @@ export default class GiaaUpdates extends BaseUserContextWebPartComponent<types.I
     return (
 
       <RecommendationsTab
-        filteredItems={this.state.Section_MainList_FilteredItems}
+        //filteredItems={this.state.Section_MainList_FilteredItems}
         parentId={this.state.Section_MainList_SelectedId}
-        giaaPeriodId={this.state.PeriodId}
+        //giaaPeriodId={this.state.PeriodId}
         parentTitle={this.state.Section_MainList_SelectedTitle}
         //isViewOnly={this.isViewOnlyGoForm()}
         onItemTitleClick={this.handle_RecListItemTitleClick}
         onShowList={this.handleShowMainTab}
+
+        incompleteOnly={this.state.RecList_IncompleteOnly}
+        justMine={this.state.RecList_JustMine}
+        actionStatusTypeId={this.state.RecList_ActionStatusTypeId}
+
+        onChangeIncompleteOnly={this.handleRecList_ChangeIncompleteOnly}
+        onChangeJustMine={this.handleRecList_ChangeJustMine}
+        onChangeActionStatusType={this.handleRecList_ChangeActionStatusType}
+
         {...this.props}
       />
 
@@ -269,13 +286,22 @@ export default class GiaaUpdates extends BaseUserContextWebPartComponent<types.I
 
   }
 
-  private renderPeriodUpdate(): React.ReactElement<types.IWebPartComponentProps> {
+  private renderActionUpdates(): React.ReactElement<types.IWebPartComponentProps> {
     return (
-      <PeriodUpdateTab
+      <ActionUpdatesTab
         giaaRecommendationId={this.state.RecList_SelectedId}
+        giaaAuditReportId={this.state.Section_MainList_SelectedId}
         //giaaPeriodId={this.state.PeriodId}
-        //filteredItems={this.state.RecList_FilteredItems}
+        filteredItemsRecList={this.state.RecList_FilteredItems}
+        filteredItemsMainList={this.state.Section_MainList_FilteredItems}
         onShowList={this.handleShowRecList}
+
+        recListIncompleteOnly={this.state.RecList_IncompleteOnly}
+        recListJustMine={this.state.RecList_JustMine}
+        recListActionStatusTypeId={this.state.RecList_ActionStatusTypeId}
+
+        onChangeMainListID={this.handleSection_MainListChangeSelectedID}
+
         {...this.props}
       />
 
@@ -298,38 +324,38 @@ export default class GiaaUpdates extends BaseUserContextWebPartComponent<types.I
   //   }, (err) => { if (this.onError) this.onError(`Error loading DefForm lookup data`, err.message); });
   // }
 
-  private loadPeriods = (): Promise<IGIAAPeriod[]> => {
-    return this.periodService.readAll().then((pArr: IGIAAPeriod[]): IGIAAPeriod[] => {
-      //get the current period
-      let currentPeriodId: number = 0;
-      const currentPeriod = pArr.filter(p => p.PeriodStatus === "Current Period");
-      if (currentPeriod && currentPeriod.length > 0) {
-        currentPeriodId = currentPeriod[0].ID;
-      }
+  // private loadPeriods = (): Promise<IGIAAPeriod[]> => {
+  //   return this.periodService.readAll().then((pArr: IGIAAPeriod[]): IGIAAPeriod[] => {
+  //     //get the current period
+  //     let currentPeriodId: number = 0;
+  //     const currentPeriod = pArr.filter(p => p.PeriodStatus === "Current Period");
+  //     if (currentPeriod && currentPeriod.length > 0) {
+  //       currentPeriodId = currentPeriod[0].ID;
+  //     }
 
-      //show status like Qtr 2 2019 ( Current Period ) in Title
-      for (let i = 0; i < pArr.length; i++) {
-        let p: IGIAAPeriod = pArr[i];
-        pArr[i].Title = `${p.Title} ( ${p.PeriodStatus} )`;
-      }
-
-
-      //check user permissions
-      if (this.isSuperUser() === true) {
-      }
-      else {
-        //dont show design periods
-        pArr = pArr.filter(p => p.PeriodStatus !== "Design Period");
-      }
+  //     //show status like Qtr 2 2019 ( Current Period ) in Title
+  //     for (let i = 0; i < pArr.length; i++) {
+  //       let p: IGIAAPeriod = pArr[i];
+  //       pArr[i].Title = `${p.Title} ( ${p.PeriodStatus} )`;
+  //     }
 
 
-      this.setState({
-        LookupData: this.cloneObject(this.state.LookupData, 'Periods', pArr),
-        PeriodId: currentPeriodId
-      });
-      return pArr;
-    }, (err) => { if (this.onError) this.onError(`Error loading Periods lookup data`, err.message); });
-  }
+  //     //check user permissions
+  //     if (this.isSuperUser() === true) {
+  //     }
+  //     else {
+  //       //dont show design periods
+  //       pArr = pArr.filter(p => p.PeriodStatus !== "Design Period");
+  //     }
+
+
+  //     this.setState({
+  //       LookupData: this.cloneObject(this.state.LookupData, 'Periods', pArr),
+  //       PeriodId: currentPeriodId
+  //     });
+  //     return pArr;
+  //   }, (err) => { if (this.onError) this.onError(`Error loading Periods lookup data`, err.message); });
+  // }
 
   protected loadDGAreas = (): Promise<IEntity[]> => {
     return this.deirectorateGroupService.readAll(`?$orderby=Title`).then((data: IEntity[]): IEntity[] => {
@@ -342,7 +368,7 @@ export default class GiaaUpdates extends BaseUserContextWebPartComponent<types.I
   protected loadLookups(): Promise<any> {
 
     return Promise.all([
-      this.loadPeriods(),
+      //this.loadPeriods(),
       this.loadDGAreas(),
       //this.loadDefForm(),
 
@@ -398,19 +424,19 @@ export default class GiaaUpdates extends BaseUserContextWebPartComponent<types.I
 
   private changeDropdown = (option: IDropdownOption, f: string, index?: number): void => {
     if (f === "PeriodId") {
-      if (option.key !== this.state.PeriodId) {
-        const pArrTemp: IGIAAPeriod[] = this.state.LookupData.Periods.filter(p => p.ID === option.key);
-        let isArchivedPeriod: boolean = false;
-        if (pArrTemp.length > 0) {
-          if (pArrTemp[0].PeriodStatus === "Archived Period") {
-            isArchivedPeriod = true;
-          }
-        }
+      // if (option.key !== this.state.PeriodId) {
+      //   const pArrTemp: IGIAAPeriod[] = this.state.LookupData.Periods.filter(p => p.ID === option.key);
+      //   let isArchivedPeriod: boolean = false;
+      //   if (pArrTemp.length > 0) {
+      //     if (pArrTemp[0].PeriodStatus === "Archived Period") {
+      //       isArchivedPeriod = true;
+      //     }
+      //   }
 
-        this.setState({ PeriodId: option.key, IsArchivedPeriod: isArchivedPeriod },
-          //this.readOrCreateGoFormInDb
-        );
-      }
+      //   this.setState({ PeriodId: option.key, IsArchivedPeriod: isArchivedPeriod },
+      //     //this.readOrCreateGoFormInDb
+      //   );
+      // }
     }
     else {
       //f === "DirectorateGroupId"
@@ -440,6 +466,15 @@ export default class GiaaUpdates extends BaseUserContextWebPartComponent<types.I
     });
   }
 
+  private handleSection_MainListChangeSelectedID = (ID: number): void => {
+
+    console.log('on handleSection_MainListSelectedID', ID);
+    this.setState({
+      Section_MainList_SelectedId: ID,
+      
+    });
+  }
+
   private handleSection1_toggleOpen = (): void => {
     this.setState({ Section1_IsOpen: !this.state.Section1_IsOpen });
   }
@@ -457,12 +492,12 @@ export default class GiaaUpdates extends BaseUserContextWebPartComponent<types.I
   }
 
   private handleMainFormSaved = (): void => {
-    
-    const x:number = this.state.MainListsSaveCounter + 1;
+
+    const x: number = this.state.MainListsSaveCounter + 1;
     console.log('in handleMainFormSaved', x);
     this.setState({ MainListsSaveCounter: x });
 
-}
+  }
 
   //section 2 event handlers
 
@@ -504,12 +539,29 @@ export default class GiaaUpdates extends BaseUserContextWebPartComponent<types.I
 
     console.log('on rec list item title click ', ID, title, filteredItems);
     this.setState({
-      SelectedPivotKey: this.headerTxt_PeriodUpdateTab,
+      SelectedPivotKey: this.headerTxt_ActionUpdatesTab,
       RecList_SelectedId: ID,
       RecList_SelectedTitle: title,
       RecList_FilteredItems: filteredItems
     });
   }
+
+
+  private handleRecList_ChangeIncompleteOnly = (value: boolean): void => {
+    this.setState({ RecList_IncompleteOnly: value });
+  }
+
+  private handleRecList_ChangeJustMine = (value: boolean): void => {
+    this.setState({ RecList_JustMine: value });
+  }
+
+  private handleRecList_ChangeActionStatusType = (option: IDropdownOption): void => {
+    this.setState({ RecList_ActionStatusTypeId: Number(option.key), },);
+  }
+
+
+
+
 
   //update (3rd tab) event handerls
   private handleShowRecList = (): void => {

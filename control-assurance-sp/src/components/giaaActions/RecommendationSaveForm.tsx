@@ -13,7 +13,7 @@ import styles from '../../styles/cr.module.scss';
 
 export interface IRecommendationSaveFormProps extends types.IBaseComponentProps {
     //periodID: number | string;
-    giaaPeriodId:number | string;
+    //giaaPeriodId:number | string;
     giaaAuditReportId: number | string;
     entityId: number;
     showForm: boolean;
