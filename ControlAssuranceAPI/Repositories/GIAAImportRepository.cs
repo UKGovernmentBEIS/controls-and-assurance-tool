@@ -112,6 +112,8 @@ namespace ControlAssuranceAPI.Repositories
                     int rowIndex = 0;
                     int reportCode_cellIndex = 0;
                     int reportTitle_cellIndex = 0;
+                    int managerName_cellIndex = 0;
+                    int leadName_cellIndex = 0;
                     int recTitle_cellIndex = 0;
                     int recDetails_cellIndex = 0;
                     int recPriority_cellIndex = 0;
@@ -146,6 +148,14 @@ namespace ControlAssuranceAPI.Repositories
 
                                     case "Engagement Title":
                                         reportTitle_cellIndex = cellIndex;
+                                        break;
+                                    
+                                    case "Manager Name":
+                                        managerName_cellIndex = cellIndex;
+                                        break;
+
+                                    case "Lead Name":
+                                        leadName_cellIndex = cellIndex;
                                         break;
 
                                     case "Recommendation Title":
@@ -190,7 +200,10 @@ namespace ControlAssuranceAPI.Repositories
                         {
                             //data row(s)
                             string reportCode = "";
+                            string auditYear = "";
                             string reportTitle = "";
+                            string managerName = "";
+                            string leadName = "";
                             string recTitle = "";
                             string recDetails = "";
                             string recPriority = "";
@@ -209,11 +222,45 @@ namespace ControlAssuranceAPI.Repositories
                                 if (cellIndex == reportCode_cellIndex)
                                 {
                                     reportCode = cellTxt;
+
+                                    try
+                                    {
+
+                                        //get audit year from report code
+                                        //1920-BEIS-012 
+                                        //in this example audit yea ris 2019/2020
+                                        string yearsStr = reportCode.Substring(0, 4);
+                                        string firstYear = yearsStr.Substring(0, 2);
+                                        string secondYear = yearsStr.Substring(2, 2);
+
+                                        int firstYearInt = int.Parse(firstYear);
+                                        int secondYearInt = int.Parse(secondYear);
+
+                                        if (firstYearInt > 0 && firstYearInt < 99 && secondYearInt > 0 && secondYearInt < 99)
+                                        {
+                                            auditYear = $"20{firstYear}/20{secondYear}";
+                                        }
+                                    }
+                                    catch
+                                    {
+
+                                    }
+
+
                                 }
                                 else if (cellIndex == reportTitle_cellIndex)
                                 {
                                     reportTitle = cellTxt;
                                 }
+                                else if (cellIndex == managerName_cellIndex)
+                                {
+                                    managerName = cellTxt;
+                                }
+                                else if (cellIndex == leadName_cellIndex)
+                                {
+                                    leadName = cellTxt;
+                                }
+
                                 else if (cellIndex == recTitle_cellIndex)
                                 {
                                     recTitle = cellTxt;
@@ -266,6 +313,7 @@ namespace ControlAssuranceAPI.Repositories
 
                             gIAAAuditReport.NumberStr = reportCode;
                             gIAAAuditReport.Title = reportTitle;
+                            gIAAAuditReport.AuditYear = auditYear;
                             if (gIAAAuditReport.ID == 0)
                             {
 
@@ -289,6 +337,16 @@ namespace ControlAssuranceAPI.Repositories
 
                             gIAARecommendation.GIAAAuditReportId = gIAAAuditReport.ID;
                             gIAARecommendation.Title = recTitle;
+
+                            if(string.IsNullOrEmpty(managerName) == false)
+                            {
+                                recDetails += $"{Environment.NewLine}GIAA Manager: {managerName}";
+                            }
+                            if (string.IsNullOrEmpty(leadName) == false)
+                            {
+                                recDetails += $"{Environment.NewLine}GIAA Lead: {leadName}";
+                            }
+
                             gIAARecommendation.RecommendationDetails = recDetails;
 
 

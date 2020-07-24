@@ -106,8 +106,9 @@ export default class ActionUpdatesTab extends React.Component<IActionUpdatesTabP
             <React.Fragment>
                 {this.renderSectionTitle()}
                 {this.renderInfoTable()}
-                {this.renderUpdatesList()}
                 {this.renderFormButtons()}
+                {this.renderUpdatesList()}
+                
 
             </React.Fragment>
         );
@@ -128,7 +129,11 @@ export default class ActionUpdatesTab extends React.Component<IActionUpdatesTabP
         const auditReportTitle: string = recInfo['GIAAAuditReport']['Title'];
         const recRef: string = recInfo.Title;
         let recDetails: string = recInfo.RecommendationDetails;
-        recDetails = recDetails.replace('\n', '<br/>');
+
+
+        //replace all
+        recDetails =  recDetails.split('\n').join('<br/>');
+
         return (
 
             <React.Fragment>
@@ -183,7 +188,7 @@ export default class ActionUpdatesTab extends React.Component<IActionUpdatesTabP
 
         return (
             <React.Fragment>
-                <div style={{ marginBottom: '20px', marginTop: '50px' }} className={styles.sectionATitle}>Updates, Feedback, Evidence</div>
+                <div style={{ marginBottom: '20px', marginTop: '20px' }} className={styles.sectionATitle}>Updates, Feedback, Evidence</div>
 
 
                 {<div style={{ overflowX: 'hidden' }}
@@ -217,7 +222,7 @@ export default class ActionUpdatesTab extends React.Component<IActionUpdatesTabP
         if (recInfo === null) return;
 
         return (
-            <div>
+            <div style={{marginTop:'30px'}}>
 
                 {
                     <React.Fragment>
