@@ -65,6 +65,7 @@ namespace ControlAssuranceAPI.Models
         private GIAARecommendationRepository gIAARecommendationRepository;
         private GIAAUpdateRepository gIAAUpdateRepository;
         private GIAAActionOwnerRepository gIAAActionOwnerRepository;
+        private GIAAImportRepository gIAAImportRepository;
 
         private IAPDefFormRepository iAPDefFormRepository;
         private IAPTypeRepository iAPTypeRepository;
@@ -581,6 +582,14 @@ namespace ControlAssuranceAPI.Models
             get
             {
                 return gIAAActionOwnerRepository = gIAAActionOwnerRepository ?? new GIAAActionOwnerRepository(user, context);
+            }
+        }
+
+        public GIAAImportRepository GIAAImportRepository
+        {
+            get
+            {
+                return gIAAImportRepository = gIAAImportRepository ?? new GIAAImportRepository(user, context);
             }
         }
 

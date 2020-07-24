@@ -255,6 +255,7 @@
     <Compile Include="Controllers\GIAAAssurancesController.cs" />
     <Compile Include="Controllers\GIAAAuditReportsController.cs" />
     <Compile Include="Controllers\GIAADefFormsController.cs" />
+    <Compile Include="Controllers\GIAAImportsController.cs" />
     <Compile Include="Controllers\GIAAPeriodsController.cs" />
     <Compile Include="Controllers\GIAARecommendationsController.cs" />
     <Compile Include="Controllers\GIAAUpdatesController.cs" />
@@ -387,6 +388,10 @@
     <Compile Include="Models\GIAADefForm.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\GIAAImport.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\GIAAImportInfoView_Result.cs" />
     <Compile Include="Models\GIAAPeriod.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
@@ -518,6 +523,7 @@
     <Compile Include="Models\UserPermission.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\XmlDetail.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\BaseRepository.cs" />
     <Compile Include="Repositories\DefElementGroupRespository.cs" />
@@ -529,6 +535,7 @@
     <Compile Include="Repositories\GIAAAssuranceRepository.cs" />
     <Compile Include="Repositories\GIAAAuditReportRepository.cs" />
     <Compile Include="Repositories\GIAADefFormRepository.cs" />
+    <Compile Include="Repositories\GIAAImportRepository.cs" />
     <Compile Include="Repositories\GIAAPeriodRepository.cs" />
     <Compile Include="Repositories\GIAARecommendationRepository.cs" />
     <Compile Include="Repositories\GIAAUpdateRepository.cs" />

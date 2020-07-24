@@ -46,6 +46,7 @@ namespace ControlAssuranceAPI.Models
         public virtual DbSet<GIAAAssurance> GIAAAssurances { get; set; }
         public virtual DbSet<GIAAAuditReport> GIAAAuditReports { get; set; }
         public virtual DbSet<GIAADefForm> GIAADefForms { get; set; }
+        public virtual DbSet<GIAAImport> GIAAImports { get; set; }
         public virtual DbSet<GIAAPeriod> GIAAPeriods { get; set; }
         public virtual DbSet<GIAARecommendation> GIAARecommendations { get; set; }
         public virtual DbSet<GIAAUpdate> GIAAUpdates { get; set; }

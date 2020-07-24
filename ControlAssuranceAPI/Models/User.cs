@@ -23,6 +23,7 @@ namespace ControlAssuranceAPI.Models
             this.DirectorateGroupMembers = new HashSet<DirectorateGroupMember>();
             this.DirectorateMembers = new HashSet<DirectorateMember>();
             this.GIAAActionOwners = new HashSet<GIAAActionOwner>();
+            this.GIAAImports = new HashSet<GIAAImport>();
             this.GIAAUpdates = new HashSet<GIAAUpdate>();
             this.GoAssignments = new HashSet<GoAssignment>();
             this.GoElementEvidences = new HashSet<GoElementEvidence>();
@@ -57,6 +58,8 @@ namespace ControlAssuranceAPI.Models
         public virtual ICollection<DirectorateMember> DirectorateMembers { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<GIAAActionOwner> GIAAActionOwners { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<GIAAImport> GIAAImports { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<GIAAUpdate> GIAAUpdates { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

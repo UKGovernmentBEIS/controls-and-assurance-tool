@@ -1,9 +1,11 @@
 ﻿using ControlAssuranceAPI.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Principal;
 using System.Web;
+using System.Xml;
 
 namespace ControlAssuranceAPI.Repositories
 {
@@ -34,6 +36,7 @@ namespace ControlAssuranceAPI.Repositories
             List<GIAAAuditReportView_Result> retList = new List<GIAAAuditReportView_Result>();
 
             var qry = from r in db.GIAAAuditReports
+                      orderby r.ID
                       where r.IsArchive == isArchive
                           //where p.NAORecommendations.Any(x => x.NAOUpdates.Any (y => y.NAOPeriodId == naoPeriodId))
                       select new
@@ -43,9 +46,10 @@ namespace ControlAssuranceAPI.Repositories
                           r.NumberStr,
                           r.IssueDate,
                           r.AuditYear,
-                          r.Directorate.DirectorateGroupID,
-                          DGArea = r.Directorate.DirectorateGroup.Title,
-                          Directorate = r.Directorate.Title,
+                          DirectorateGroupID = r.Directorate != null ? r.Directorate.DirectorateGroupID : 0,
+                          DGArea = r.Directorate != null ? r.Directorate.DirectorateGroup.Title : "",
+                          Directorate = r.Directorate != null ? r.Directorate.Title : "",
+
                           //Assurance = r.GIAAAssurance.Title,
                           r.GIAAAssuranceId,
                           r.GIAARecommendations
@@ -105,8 +109,8 @@ namespace ControlAssuranceAPI.Repositories
                     NumberStr = iteR.NumberStr,
                     DGArea = iteR.DGArea,
                     Directorate = iteR.Directorate,
-                    GIAAAssuranceId = iteR.GIAAAssuranceId.Value,
-                    Year = iteR.AuditYear,
+                    GIAAAssuranceId = iteR.GIAAAssuranceId != null ? iteR.GIAAAssuranceId.Value : 0,
+                    Year = iteR.AuditYear != null ? iteR.AuditYear : "",
                     IssueDateStr = (iteR.IssueDate != null) ? iteR.IssueDate.Value.ToString("dd/MM/yyyy") : "",
                     CompletePercent = "0%",
                     AssignedTo = users,
@@ -155,18 +159,20 @@ namespace ControlAssuranceAPI.Repositories
                 ret.ID = r.ID;
                 ret.Title = r.Title;
                 ret.NumberStr = r.NumberStr;
-                ret.Directorate = r.Directorate.Title;
-                ret.Year = r.AuditYear;
-                ret.DG = r.Directorate.DirectorateGroup.User.Title;
+                ret.Directorate = r.Directorate != null ? r.Directorate.Title : "";
+                ret.Year = r.AuditYear != null ? r.AuditYear : "";
+                ret.DG = r.Directorate != null ? r.Directorate.DirectorateGroup.User.Title : "";
                 ret.IssueDate = r.IssueDate != null ? r.IssueDate.Value.ToString("dd/MM/yyyy") : "";
-                ret.Director = r.Directorate.User.Title;
+                ret.Director = r.Directorate != null ? r.Directorate.User.Title : "";
                 ret.Stats = $"{totalRec}/{totalOpen}/{percentOpen}%";
-                ret.Assurance = r.GIAAAssurance.Title;
-                ret.Link = r.Link;
+                ret.Assurance = r.GIAAAssurance != null ? r.GIAAAssurance.Title : "";
+                ret.Link = r.Link != null ? r.Link : "";
 
             }
 
             return ret;
         }
+
+        
     }
 }

@@ -3,6 +3,7 @@ import * as types from '../../types';
 import * as services from '../../services';
 import { sp } from '@pnp/sp';
 import MainSaveForm from './MainSaveForm';
+import MainImportForm from './MainImportForm';
 import { FilteredMainList, IObjectWithKey } from './FilteredMainList';
 import { IEntity } from '../../types';
 import { IUpdatesListColumn, ColumnDisplayTypes } from '../../types/UpdatesListColumn';
@@ -15,7 +16,7 @@ import styles from '../../styles/cr.module.scss';
 
 export interface IMainListProps extends types.IBaseComponentProps {
 
-    isArchive:boolean;
+    isArchive: boolean;
     //giaaPeriodId: number | string;
     dgAreaId: number | string;
     incompleteOnly: boolean;
@@ -28,7 +29,7 @@ export interface IMainListProps extends types.IBaseComponentProps {
 
     onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
     onMainSaved: () => void;
-    mainListsSaveCounter:number;
+    mainListsSaveCounter: number;
 
 }
 
@@ -39,6 +40,7 @@ export interface IMainListState<T> {
 
     SelectedEntityChildren: number;
     ShowForm: boolean;
+    ShowImportForm: boolean;
     EnableEdit?: boolean;
     EnableDelete?: boolean;
     HideDeleteDialog: boolean;
@@ -58,6 +60,7 @@ export class MainListState<T> implements IMainListState<T>{
 
     public SelectedEntityChildren = null;
     public ShowForm = false;
+    public ShowImportForm = false;
     public HideDeleteDialog = true;
     public HideDeleteDisallowed = true;
     public EnableEdit = false;
@@ -102,7 +105,7 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
             minWidth: 38,
             maxWidth: 38,
             isResizable: true,
-            isMultiline:true,
+            isMultiline: true,
             headerClassName: styles.bold,
         },
         {
@@ -112,7 +115,7 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
             minWidth: 370,
             maxWidth: 370,
             isResizable: true,
-            isMultiline:true,
+            isMultiline: true,
             headerClassName: styles.bold,
         },
         {
@@ -162,7 +165,7 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
             minWidth: 120,
             maxWidth: 120,
             isResizable: true,
-            isMultiline:true,
+            isMultiline: true,
             headerClassName: styles.bold,
         },
 
@@ -191,7 +194,7 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
     constructor(props: IMainListProps, state: IMainListState<IEntity>) {
         super(props);
         this.state = new MainListState<IEntity>();
-        
+
         this._selection = new Selection({
             onSelectionChanged: () => {
                 if (this._selection.getSelectedCount() === 1) {
@@ -201,12 +204,12 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
                     const key = Number(sel.key);
                     const title: string = sel["Title"];
                     //const goElementId = Number(sel["GoElementId"]);
-                    
 
-                    this.setState({ SelectedEntity: key, SelectedEntityTitle: title, EnableEdit:true, EnableDelete: true });
+
+                    this.setState({ SelectedEntity: key, SelectedEntityTitle: title, EnableEdit: true, EnableDelete: true });
                 }
                 else {
-                    this.setState({ SelectedEntity: null, SelectedEntityTitle: null, EnableEdit:false, EnableDelete: false });
+                    this.setState({ SelectedEntity: null, SelectedEntityTitle: null, EnableEdit: false, EnableDelete: false });
                 }
             }
         });
@@ -222,6 +225,7 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
                     <CrLoadingOverlay isLoading={this.state.Loading} />
                     {this.renderList()}
                     {this.state.ShowForm && this.renderForm()}
+                    {this.state.ShowImportForm && this.renderImportForm()}
 
                     <MessageDialog hidden={this.state.HideDeleteDisallowed} title={`This report cannot be deleted`} content={`GIAA Audit Report '${this.getSelectedEntityName()}' has ${this.state.SelectedEntityChildren} ${this.state.SelectedEntityChildren === 1 ? this.ChildEntityName.Singular.toLowerCase() : this.ChildEntityName.Plural.toLowerCase()} belonging to it.`} handleOk={this.toggleDeleteDisallowed} />
                     <ConfirmDialog hidden={this.state.HideDeleteDialog} title={`Are you sure you want to delete ${this.getSelectedEntityName()}?`} content={`A deleted record cannot be un-deleted.`} confirmButtonText="Delete" handleConfirm={this.deleteRecord} handleCancel={this.toggleDeleteConfirm} />
@@ -244,7 +248,7 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
                 onItemTitleClick={this.props.onItemTitleClick}
                 columns={listColumns}
                 items={items}
-                
+
                 incompleteOnly={this.props.incompleteOnly}
                 onChangeIncompleteOnly={this.props.onChangeIncompleteOnly}
                 justMine={this.props.justMine}
@@ -255,12 +259,13 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
                 selection={this._selection}
 
                 onAdd={this.addItem}
+                onImport={this.importItems}
                 onEdit={this.editItem}
                 onDelete={this.checkDelete}
                 editDisabled={!this.state.EnableEdit}
                 deleteDisabled={!this.state.EnableDelete}
 
-                
+
             />
         );
     }
@@ -279,6 +284,17 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
 
         );
 
+    }
+
+    private renderImportForm() {
+        return (
+            <MainImportForm
+                showForm={this.state.ShowImportForm}
+                onSaved={this.formSaved}
+                onCancelled={this.closePanel}
+                {...this.props}
+            />
+        );
     }
 
     //#endregion Render
@@ -321,20 +337,20 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
 
 
     private closePanel = (): void => {
-        this.setState({ ShowForm: false });
+        this.setState({ ShowForm: false, ShowImportForm: false });
     }
 
     private formSaved = (): void => {
         //this.loadData();
-        
-        this.setState({ ShowForm: false }, this.props.onMainSaved);
+
+        this.setState({ ShowForm: false, ShowImportForm: false }, this.props.onMainSaved);
 
 
         //this.props.onMainSaved();
         //this.closePanel();
 
 
-        
+
     }
 
     private getSelectedEntityName = (): string => {
@@ -402,6 +418,11 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
             this._selection.setKeySelected(this.state.SelectedEntity.toString(), false, false);
         this.setState({ SelectedEntity: null, ShowForm: true });
     }
+    private importItems = (): void => {
+        if (this.state.SelectedEntity)
+            this._selection.setKeySelected(this.state.SelectedEntity.toString(), false, false);
+        this.setState({ SelectedEntity: null, ShowImportForm: true });
+    }
 
     private editItem = (): void => {
         this.setState({ ShowForm: true });
@@ -410,14 +431,14 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
 
         this.mainService.numberOfChildren(this.state.SelectedEntity, 'GIAARecommendations').then((numberOfChildren: number) => {
             //console.log(numberOfChildren);
-            if (numberOfChildren > 0){
+            if (numberOfChildren > 0) {
                 this.setState({ SelectedEntityChildren: numberOfChildren }, this.toggleDeleteDisallowed);
 
-            }                
-            else{
+            }
+            else {
                 this.toggleDeleteConfirm();
             }
-                
+
         });
 
     }

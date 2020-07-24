@@ -11,13 +11,14 @@ namespace ControlAssuranceAPI.Repositories
     public class GIAAUpdateRepository : BaseRepository
     {
 
-        class GIAAUpdateTypes
+        public class GIAAUpdateTypes
         {
             public static string ActionUpdate = "Action Update";
             public static string RevisedDate = "Revised Date";
             public static string GIAAComment = "GIAA Comment";
             public static string MiscComment = "Misc Comment";
             public static string RecChanged = "Rec Changed";
+            public static string GIAAUpdate = "GIAA Update";
         }
         public GIAAUpdateRepository(IPrincipal user) : base(user) { }
 

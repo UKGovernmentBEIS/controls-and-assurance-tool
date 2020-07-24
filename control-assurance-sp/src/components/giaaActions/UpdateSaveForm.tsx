@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as types from '../../types';
 import * as services from '../../services';
-import { IGIAAUpdate, GIAAUpdate, IEntity } from '../../types';
+import { IGIAAUpdate, GIAAUpdate, IEntity, Entity } from '../../types';
 import { CrTextField } from '../cr/CrTextField';
 import { CrDropdown, IDropdownOption } from '../cr/CrDropdown';
 import { CrCheckbox } from '../cr/CrCheckbox';
@@ -89,6 +89,7 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
 
     private giaaActionStatusTypeService: services.GIAAActionStatusTypeService = new services.GIAAActionStatusTypeService(this.props.spfxContext, this.props.api);
     private giaaUpdateService: services.GIAAUpdateService = new services.GIAAUpdateService(this.props.spfxContext, this.props.api);
+    
 
     private Folder_Help: string = "";
     private UploadFolder_Evidence: string = "";
@@ -564,6 +565,35 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
 
             //((document.querySelector("#fileUpload") as HTMLInputElement).files[0]) == null
             const file = (document.querySelector("#fileUpload") as HTMLInputElement).files[0];
+            
+
+            // const reader = new FileReader();
+            // // reader.addEventListener('load', (event) => {
+            // //   //img.src = event.target.result;
+            // //   //const r = event.target.res
+            // //   //console.log('r', r);
+            // // });
+
+            // reader.onload = (e) => {
+            //     // e.target.result should contain the text
+            //     const xx = e.target['result'];
+            //     const ee = new Entity();
+            //     ee.Title = xx;
+
+            //     this.xmlStringManagerService.create(ee).then(x => {
+            //         //console.log(x);
+
+
+            //     });
+
+            //     console.log('xx', xx);
+                
+            // };
+
+            // reader.readAsText(file);
+
+
+            //console.log('x1', x1);
 
             if(file == null){
                 errMsg.FileUpload = "PDF file required";

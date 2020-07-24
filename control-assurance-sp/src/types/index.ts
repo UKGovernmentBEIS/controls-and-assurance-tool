@@ -53,6 +53,7 @@ export { IGIAARecommendation, GIAARecommendation } from './GIAARecommendation';
 export { IGIAAUpdate, GIAAUpdate } from './GIAAUpdate';
 export { IGIAAUpdateEvidence, GIAAUpdateEvidence } from './GIAAUpdateEvidence';
 export { IGIAAActionOwner, GIAAActionOwner } from './GIAAActionOwner';
+export { IGIAAImport, IGIAAImportInfo, GIAAImport } from './GIAAImport';
 
 export { IIAPDefForm } from './IAPDefForm';
 export { IIAPUpdate, IAPUpdate } from './IAPUpdate';

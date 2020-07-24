@@ -317,6 +317,19 @@
           <Property Name="Title" Type="nvarchar" MaxLength="1000" />
           <Property Name="Details" Type="nvarchar(max)" />
         </EntityType>
+        <EntityType Name="GIAAImport">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" />
+          <Property Name="XMLContents" Type="nvarchar(max)" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="LogDetails" Type="nvarchar(max)" />
+          <Property Name="LastImportStatus" Type="nvarchar" MaxLength="1000" />
+          <Property Name="LastImportDate" Type="datetime" />
+          <Property Name="LastImportById" Type="int" />
+        </EntityType>
         <EntityType Name="GIAAPeriod">
           <Key>
             <PropertyRef Name="ID" />
@@ -333,7 +346,7 @@
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Title" Type="nvarchar" MaxLength="100" />
+          <Property Name="Title" Type="nvarchar" MaxLength="2000" />
           <Property Name="RecommendationDetails" Type="nvarchar(max)" />
           <Property Name="TargetDate" Type="datetime" />
           <Property Name="GIAAActionPriorityId" Type="int" />
@@ -1030,6 +1043,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_GIAAImport_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="GIAAImport" Type="Self.GIAAImport" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GIAAImport">
+              <PropertyRef Name="LastImportById" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_GIAARecommendation_GIAAActionPriority">
           <End Role="GIAAActionPriority" Type="Self.GIAAActionPriority" Multiplicity="0..1" />
           <End Role="GIAARecommendation" Type="Self.GIAARecommendation" Multiplicity="*" />
@@ -1635,6 +1660,7 @@
           <EntitySet Name="GIAAAssurance" EntityType="Self.GIAAAssurance" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GIAAAuditReport" EntityType="Self.GIAAAuditReport" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GIAADefForm" EntityType="Self.GIAADefForm" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GIAAImport" EntityType="Self.GIAAImport" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GIAAPeriod" EntityType="Self.GIAAPeriod" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GIAARecommendation" EntityType="Self.GIAARecommendation" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GIAAUpdate" EntityType="Self.GIAAUpdate" Schema="dbo" store:Type="Tables" />
@@ -1771,6 +1797,10 @@
           <AssociationSet Name="FK_GIAAAuditReport_GIAAAssurance" Association="Self.FK_GIAAAuditReport_GIAAAssurance">
             <End Role="GIAAAssurance" EntitySet="GIAAAssurance" />
             <End Role="GIAAAuditReport" EntitySet="GIAAAuditReport" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GIAAImport_User" Association="Self.FK_GIAAImport_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="GIAAImport" EntitySet="GIAAImport" />
           </AssociationSet>
           <AssociationSet Name="FK_GIAARecommendation_GIAAActionPriority" Association="Self.FK_GIAARecommendation_GIAAActionPriority">
             <End Role="GIAAActionPriority" EntitySet="GIAAActionPriority" />
@@ -2327,6 +2357,20 @@
           <Property Name="Title" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
           <Property Name="Details" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EntityType Name="GIAAImport">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="XMLContents" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LogDetails" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="LastImportStatus" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="LastImportDate" Type="DateTime" Precision="3" />
+          <Property Name="LastImportById" Type="Int32" />
+          <NavigationProperty Name="User" Relationship="Self.FK_GIAAImport_User" FromRole="GIAAImport" ToRole="User" />
+        </EntityType>
         <EntityType Name="GIAAPeriod">
           <Key>
             <PropertyRef Name="ID" />
@@ -2343,7 +2387,7 @@
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Title" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Title" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
           <Property Name="RecommendationDetails" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="TargetDate" Type="DateTime" Precision="3" />
           <Property Name="GIAAActionPriorityId" Type="Int32" />
@@ -2804,6 +2848,7 @@
           <NavigationProperty Name="DirectorateGroupMembers" Relationship="Self.FK_DirectorateGroupMember_User" FromRole="User" ToRole="DirectorateGroupMember" />
           <NavigationProperty Name="DirectorateMembers" Relationship="Self.FK_DirectorateMember_User" FromRole="User" ToRole="DirectorateMember" />
           <NavigationProperty Name="GIAAActionOwners" Relationship="Self.FK_GIAAActionOwner_User" FromRole="User" ToRole="GIAAActionOwner" />
+          <NavigationProperty Name="GIAAImports" Relationship="Self.FK_GIAAImport_User" FromRole="User" ToRole="GIAAImport" />
           <NavigationProperty Name="GIAAUpdates" Relationship="Self.FK_GIAAUpdate_User" FromRole="User" ToRole="GIAAUpdate" />
           <NavigationProperty Name="GoAssignments" Relationship="Self.FK_GoAssignment_User" FromRole="User" ToRole="GoAssignment" />
           <NavigationProperty Name="GoElementEvidences" Relationship="Self.FK_GoElementEvidence_User" FromRole="User" ToRole="GoElementEvidence" />
@@ -3246,6 +3291,18 @@
             </Principal>
             <Dependent Role="GIAARecommendation">
               <PropertyRef Name="GIAAAuditReportId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GIAAImport_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="GIAAImport" Type="Self.GIAAImport" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GIAAImport">
+              <PropertyRef Name="LastImportById" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -3737,6 +3794,7 @@
           <EntitySet Name="GIAAAssurances" EntityType="Self.GIAAAssurance" />
           <EntitySet Name="GIAAAuditReports" EntityType="Self.GIAAAuditReport" />
           <EntitySet Name="GIAADefForms" EntityType="Self.GIAADefForm" />
+          <EntitySet Name="GIAAImports" EntityType="Self.GIAAImport" />
           <EntitySet Name="GIAAPeriods" EntityType="Self.GIAAPeriod" />
           <EntitySet Name="GIAARecommendations" EntityType="Self.GIAARecommendation" />
           <EntitySet Name="GIAAUpdates" EntityType="Self.GIAAUpdate" />
@@ -3909,6 +3967,10 @@
           <AssociationSet Name="FK_GIAARecommendation_GIAAAuditReport" Association="Self.FK_GIAARecommendation_GIAAAuditReport">
             <End Role="GIAAAuditReport" EntitySet="GIAAAuditReports" />
             <End Role="GIAARecommendation" EntitySet="GIAARecommendations" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GIAAImport_User" Association="Self.FK_GIAAImport_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="GIAAImport" EntitySet="GIAAImports" />
           </AssociationSet>
           <AssociationSet Name="FK_GIAAUpdate_GIAARecommendation" Association="Self.FK_GIAAUpdate_GIAARecommendation">
             <End Role="GIAARecommendation" EntitySet="GIAARecommendations" />
@@ -4529,6 +4591,20 @@
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Title" ColumnName="Title" />
                 <ScalarProperty Name="Details" ColumnName="Details" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GIAAImports">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.GIAAImport">
+              <MappingFragment StoreEntitySet="GIAAImport">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="XMLContents" ColumnName="XMLContents" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="LogDetails" ColumnName="LogDetails" />
+                <ScalarProperty Name="LastImportStatus" ColumnName="LastImportStatus" />
+                <ScalarProperty Name="LastImportDate" ColumnName="LastImportDate" />
+                <ScalarProperty Name="LastImportById" ColumnName="LastImportById" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

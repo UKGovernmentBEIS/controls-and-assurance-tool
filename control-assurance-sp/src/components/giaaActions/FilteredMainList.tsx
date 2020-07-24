@@ -64,6 +64,7 @@ export interface IFilteredMainListProps {
     selection?: ISelection;
 
     onAdd: () => void;
+    onImport: () => void;
     onEdit: () => void;
     onDelete: () => void;
 
@@ -133,6 +134,14 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
                             className={classNames.cmdBtn}
                             text="New"
                             onClick={props.onAdd}
+                        />}
+
+                    {props.editDisabled && props.deleteDisabled &&
+                        <CommandBarButton
+                            iconProps={{ iconName: 'BuildQueueNew' }}
+                            className={classNames.cmdBtn}
+                            text="Import"
+                            onClick={props.onImport}
                         />}
 
                     {(props.editDisabled === false) &&
@@ -215,7 +224,7 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
         if (column.key === "GIAAAssuranceId") {
             let txtColor: string = "white";
             let bgColor: string = "";
-            let txt:string = "";
+            let txt: string = "";
             const giaaAssuranceId: number = Number(fieldContent);
             if (giaaAssuranceId === 1) {
                 bgColor = "rgb(128,0,128)";
@@ -236,6 +245,11 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
                 bgColor = "rgb(31,148,67)";
                 txtColor = "white";
                 txt = "Substantial";
+            }
+            else{
+                bgColor = "rgb(166,166,166)";
+                txtColor = "white";
+                txt = "No Data";
             }
             return (
                 <span style={{ backgroundColor: bgColor, color: txtColor, width: "140px", display: "block", paddingLeft: "10px", paddingTop: "5px", paddingBottom: "5px" }}>
