@@ -221,27 +221,27 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
 
         let fieldContent = item[column.fieldName as keyof IEntity] as string;
 
-        if (column.key === "GIAAAssuranceId") {
+        if (column.key === "Assurance") {
             let txtColor: string = "white";
             let bgColor: string = "";
             let txt: string = "";
-            const giaaAssuranceId: number = Number(fieldContent);
-            if (giaaAssuranceId === 1) {
+            //const giaaAssuranceId: number = Number(fieldContent);
+            if (fieldContent === 'Advisory') {
                 bgColor = "rgb(128,0,128)";
                 txtColor = "white";
                 txt = "Advisory";
             }
-            else if (giaaAssuranceId === 2) {
+            else if (fieldContent === 'Limited') {
                 bgColor = "rgb(242,231,2)";
                 txtColor = "black";
                 txt = "Limited";
             }
-            else if (giaaAssuranceId === 3) {
+            else if (fieldContent === 'Moderate') {
                 bgColor = "rgb(255,128,41)";
                 txtColor = "white";
                 txt = "Moderate";
             }
-            else if (giaaAssuranceId === 4) {
+            else if (fieldContent === 'Substantial') {
                 bgColor = "rgb(31,148,67)";
                 txtColor = "white";
                 txt = "Substantial";
@@ -249,7 +249,7 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
             else{
                 bgColor = "rgb(166,166,166)";
                 txtColor = "white";
-                txt = "No Data";
+                txt = "NoData";
             }
             return (
                 <span style={{ backgroundColor: bgColor, color: txtColor, width: "140px", display: "block", paddingLeft: "10px", paddingTop: "5px", paddingBottom: "5px" }}>

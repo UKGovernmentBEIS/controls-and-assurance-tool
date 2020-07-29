@@ -50,7 +50,7 @@ namespace ControlAssuranceAPI.Repositories
                           DGArea = r.Directorate != null ? r.Directorate.DirectorateGroup.Title : "",
                           Directorate = r.Directorate != null ? r.Directorate.Title : "",
 
-                          //Assurance = r.GIAAAssurance.Title,
+                          Assurance = r.GIAAAssurance != null ? r.GIAAAssurance.Title : "NoData",
                           r.GIAAAssuranceId,
                           r.GIAARecommendations
 
@@ -110,6 +110,7 @@ namespace ControlAssuranceAPI.Repositories
                     DGArea = iteR.DGArea,
                     Directorate = iteR.Directorate,
                     GIAAAssuranceId = iteR.GIAAAssuranceId != null ? iteR.GIAAAssuranceId.Value : 0,
+                    Assurance = iteR.Assurance,
                     Year = iteR.AuditYear != null ? iteR.AuditYear : "",
                     IssueDateStr = (iteR.IssueDate != null) ? iteR.IssueDate.Value.ToString("dd/MM/yyyy") : "",
                     CompletePercent = "0%",

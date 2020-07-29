@@ -170,9 +170,9 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
         },
 
         {
-            key: 'GIAAAssuranceId',
+            key: 'Assurance',
             name: 'Assurance',
-            fieldName: 'GIAAAssuranceId',
+            fieldName: 'Assurance',
             minWidth: 150,
             maxWidth: 150,
             isResizable: true,
@@ -180,14 +180,16 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
         },
 
         // {
-        //     key: 'UpdateStatus',
-        //     name: 'Period Update Status',
-        //     fieldName: 'UpdateStatus',
+        //     key: 'GIAAAssuranceId',
+        //     name: 'Assurance',
+        //     fieldName: 'GIAAAssuranceId',
         //     minWidth: 150,
         //     maxWidth: 150,
         //     isResizable: true,
         //     headerClassName: styles.bold,
         // },
+
+
     ];
 
 
