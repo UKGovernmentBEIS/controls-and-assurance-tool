@@ -49,8 +49,10 @@ namespace ControlAssuranceAPI.Repositories
                 newR.NAORecommendationId = naoRecommendationId;
                 newR.NAOUpdateStatusTypeId = 1;
                 newR.NAORecStatusTypeId = 1;
+                newR.LastSavedInfo = "Not Started";
                 newR.TargetDate = "";
                 newR.UpdateChangeLog = "";
+                newR.ProvideUpdate = "1";
 
                 ret = db.NAOUpdates.Add(newR);
                 db.SaveChanges();
@@ -66,6 +68,7 @@ namespace ControlAssuranceAPI.Repositories
             var naoUpdateDb = db.NAOUpdates.FirstOrDefault(x => x.NAOPeriodId == naoUpdate.NAOPeriodId && x.NAORecommendationId == naoUpdate.NAORecommendationId);
             if(naoUpdateDb != null)
             {
+                naoUpdateDb.ProvideUpdate = naoUpdate.ProvideUpdate;
                 naoUpdateDb.Title = naoUpdate.Title;
                 naoUpdateDb.TargetDate = naoUpdate.TargetDate;
                 naoUpdateDb.ActionsTaken = naoUpdate.ActionsTaken;
@@ -82,6 +85,8 @@ namespace ControlAssuranceAPI.Repositories
                 string newChangeLog = naoUpdateDb.UpdateChangeLog + $"{date} Updated by {user},";
 
                 naoUpdateDb.UpdateChangeLog = newChangeLog;
+
+                naoUpdateDb.LastSavedInfo = $"Last Saved by {user} on {date}";
 
                 ret = naoUpdateDb;
             }

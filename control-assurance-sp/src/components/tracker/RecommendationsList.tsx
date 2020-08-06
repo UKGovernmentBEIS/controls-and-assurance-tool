@@ -4,7 +4,8 @@ import * as services from '../../services';
 import { sp } from '@pnp/sp';
 //import MiscFileSaveForm from './MiscFileSaveForm';
 import RecommendationSaveForm from './RecommendationSaveForm';
-import { FilteredMainList, IObjectWithKey } from './FilteredMainList';
+import RecommendationAssignForm from './RecommendationAssignForm';
+import { FilteredRecList, IObjectWithKey } from './FilteredRecList';
 import { IEntity } from '../../types';
 import { IUpdatesListColumn, ColumnDisplayTypes } from '../../types/UpdatesListColumn';
 import { CrLoadingOverlay } from '../cr/CrLoadingOverlay';
@@ -34,6 +35,7 @@ export interface IRecommendationsListState<T> {
 
     SelectedEntityChildren: number;
     ShowForm: boolean;
+    ShowAssignForm: boolean;
     EnableEdit?: boolean;
     EnableDelete?: boolean;
     HideDeleteDialog: boolean;
@@ -52,6 +54,7 @@ export class RecommendationsListState<T> implements IRecommendationsListState<T>
 
     public SelectedEntityChildren = null;
     public ShowForm = false;
+    public ShowAssignForm = false;
     public HideDeleteDialog = true;
     public EnableEdit = false;
     public EnableDelete = false;
@@ -177,6 +180,7 @@ export default class RecommendationsList extends React.Component<IRecommendation
                     <CrLoadingOverlay isLoading={this.state.Loading} />
                     {this.renderList()}
                     {this.state.ShowForm && this.renderForm()}
+                    {this.state.ShowAssignForm && this.renderAssignForm()}
 
                     <ConfirmDialog hidden={this.state.HideDeleteDialog} title={`Are you sure you want to delete ${this.getSelectedEntityName()}?`} content={`A deleted record cannot be un-deleted.`} confirmButtonText="Delete" handleConfirm={this.deleteRecord} handleCancel={this.toggleDeleteConfirm} />
                 </div>
@@ -194,7 +198,7 @@ export default class RecommendationsList extends React.Component<IRecommendation
 
 
         return (
-            <FilteredMainList
+            <FilteredRecList
                 onItemTitleClick={this.props.onItemTitleClick}
                 columns={listColumns}
                 items={items}
@@ -210,6 +214,7 @@ export default class RecommendationsList extends React.Component<IRecommendation
 
                 onAdd={this.addItem}
                 onEdit={this.editItem}
+                onAssign={this.handleAssign}
                 editDisabled={!this.state.EnableEdit}
                 deleteDisabled={!this.state.EnableDelete}
 
@@ -233,6 +238,23 @@ export default class RecommendationsList extends React.Component<IRecommendation
         );
 
     }
+
+    private renderAssignForm() {
+
+        return (
+            <RecommendationAssignForm
+                //naoPublicationId={this.props.naoPublicationId}
+                showForm={this.state.ShowAssignForm}
+                recId={this.state.SelectedEntity}
+                onSaved={this.formSaved}
+                onCancelled={this.closePanel}
+                {...this.props}
+            />
+
+        );
+
+    }
+
 
     //#endregion Render
 
@@ -274,7 +296,7 @@ export default class RecommendationsList extends React.Component<IRecommendation
 
 
     private closePanel = (): void => {
-        this.setState({ ShowForm: false });
+        this.setState({ ShowForm: false, ShowAssignForm: false });
     }
 
     private formSaved = (): void => {
@@ -345,6 +367,10 @@ export default class RecommendationsList extends React.Component<IRecommendation
 
     private editItem = (): void => {
         this.setState({ ShowForm: true });
+    }
+
+    private handleAssign = (): void => {
+        this.setState({ ShowAssignForm: true });
     }
 
 

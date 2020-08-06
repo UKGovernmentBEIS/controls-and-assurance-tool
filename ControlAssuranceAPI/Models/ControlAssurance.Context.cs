@@ -66,15 +66,18 @@ namespace ControlAssuranceAPI.Models
         public virtual DbSet<IAPType> IAPTypes { get; set; }
         public virtual DbSet<IAPUpdate> IAPUpdates { get; set; }
         public virtual DbSet<Log> Logs { get; set; }
+        public virtual DbSet<NAOAssignment> NAOAssignments { get; set; }
         public virtual DbSet<NAODefForm> NAODefForms { get; set; }
         public virtual DbSet<NAOPeriod> NAOPeriods { get; set; }
         public virtual DbSet<NAOPublication> NAOPublications { get; set; }
+        public virtual DbSet<NAOPublicationDirectorate> NAOPublicationDirectorates { get; set; }
         public virtual DbSet<NAORecommendation> NAORecommendations { get; set; }
         public virtual DbSet<NAORecStatusType> NAORecStatusTypes { get; set; }
         public virtual DbSet<NAOType> NAOTypes { get; set; }
         public virtual DbSet<NAOUpdate> NAOUpdates { get; set; }
         public virtual DbSet<NAOUpdateEvidence> NAOUpdateEvidences { get; set; }
         public virtual DbSet<NAOUpdateFeedback> NAOUpdateFeedbacks { get; set; }
+        public virtual DbSet<NAOUpdateFeedbackType> NAOUpdateFeedbackTypes { get; set; }
         public virtual DbSet<NAOUpdateStatusType> NAOUpdateStatusTypes { get; set; }
         public virtual DbSet<Period> Periods { get; set; }
         public virtual DbSet<PermissionType> PermissionTypes { get; set; }

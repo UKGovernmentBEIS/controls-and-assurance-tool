@@ -93,7 +93,7 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
         },
         {
             key: 'DGArea',
-            name: 'DGArea',
+            name: 'DGArea(s)',
             fieldName: 'DGArea',
             minWidth: 150,
             maxWidth: 150,

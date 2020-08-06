@@ -32,6 +32,7 @@ namespace ControlAssuranceAPI.Models
             this.GoMiscFiles = new HashSet<GoMiscFile>();
             this.IAPAssignments = new HashSet<IAPAssignment>();
             this.Logs = new HashSet<Log>();
+            this.NAOAssignments = new HashSet<NAOAssignment>();
             this.NAOUpdateEvidences = new HashSet<NAOUpdateEvidence>();
             this.NAOUpdateFeedbacks = new HashSet<NAOUpdateFeedback>();
             this.Teams = new HashSet<Team>();
@@ -76,6 +77,8 @@ namespace ControlAssuranceAPI.Models
         public virtual ICollection<IAPAssignment> IAPAssignments { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Log> Logs { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<NAOAssignment> NAOAssignments { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<NAOUpdateEvidence> NAOUpdateEvidences { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

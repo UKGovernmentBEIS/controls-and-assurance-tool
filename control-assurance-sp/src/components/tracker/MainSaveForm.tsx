@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as types from '../../types';
 import * as services from '../../services';
-import { IDirectorate, INAOPublication, NAOPublication } from '../../types';
+import { IDirectorate, INAOPublication, NAOPublication, INAOPublicationDirectorate, NAOPublicationDirectorate } from '../../types';
 import { CrTextField } from '../cr/CrTextField';
 import { CrDropdown, IDropdownOption } from '../cr/CrDropdown';
 import { FormButtons } from '../cr/FormButtons';
@@ -61,11 +61,12 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
     private directorateService: services.DirectorateService = new services.DirectorateService(this.props.spfxContext, this.props.api);
     private naoTypeService: services.NAOTypeService = new services.NAOTypeService(this.props.spfxContext, this.props.api);
     private naoPublicationService: services.NAOPublicationService = new services.NAOPublicationService(this.props.spfxContext, this.props.api);
+    private naoPublicationDirectorateService: services.NAOPublicationDirectorateService = new services.NAOPublicationDirectorateService(this.props.spfxContext, this.props.api);
 
 
-    // private childEntities: types.IFormDataChildEntities[] = [
-    //     { ObjectParentProperty: 'GoAssignments', ParentIdProperty: 'GoElementId', ChildIdProperty: 'UserId', ChildService: this.goAssignmentService },
-    // ];
+    private childEntities: types.IFormDataChildEntities[] = [
+        { ObjectParentProperty: 'NAOPublicationDirectorates', ParentIdProperty: 'NAOPublicationId', ChildIdProperty: 'DirectorateId', ChildService: this.naoPublicationDirectorateService },
+    ];
 
     constructor(props: IMainSaveFormProps, state: IMainSaveFormState) {
         super(props);
@@ -94,7 +95,8 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
         return (
             <React.Fragment>
                 {this.renderTitle()}
-                {this.renderDirectorate()}
+                {this.renderPublicationSummary()}
+                {this.renderDirectorates()}
                 {this.renderNAOTypes()}
                 {this.renderYear()}
                 {this.renderPublicationLink()}
@@ -118,18 +120,44 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
         );
     }
 
-    private renderDirectorate() {
+    private renderPublicationSummary() {
+
+        return (
+            <CrTextField
+                label="Publication Summary"
+                //required={true}
+                className={styles.formField}
+                value={this.state.FormData.PublicationSummary}
+                onChanged={(v) => this.changeTextField(v, "PublicationSummary")}
+                multiline={true}
+                rows={5}
+                //errorMessage={this.state.ErrMessages.Title}
+            />
+        );
+    }
+
+    private renderDirectorates() {
         const directorates = this.state.LookupData.Directorates;
+        const fd_dirs: INAOPublicationDirectorate[] = this.state.FormData.NAOPublicationDirectorates;
+
         if (directorates) {
             return (
                 <CrDropdown
-                    label="Directorate"
-                    placeholder="Select an Option"
-                    required={true}
+                    label="Directorate(s)"
+                    placeholder="Select"
+                    multiSelect                    
                     className={styles.formField}
                     options={services.LookupService.entitiesToSelectableOptions(directorates)}
-                    selectedKey={this.state.FormData.DirectorateId}
-                    onChanged={(v) => this.changeDropdown(v, "DirectorateId")}
+
+
+                    selectedKeys={fd_dirs && fd_dirs.map((x) => { return x.DirectorateId; })}
+                    onChanged={(v) => this.changeMultiDropdown(v, 'NAOPublicationDirectorates', new NAOPublicationDirectorate(), 'DirectorateId')}
+
+
+                    //selectedKey={this.state.FormData.DirectorateId}
+                    //onChanged={(v) => this.changeDropdown(v, "DirectorateId")}
+
+                    required={true}
                     errorMessage={this.state.ErrMessages.Directorate}
                 />
             );
@@ -208,7 +236,7 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
 
     private loadData = (): Promise<void> => {
         console.log('loadData - Id: ', this.props.entityId);
-        let x = this.naoPublicationService.read(this.props.entityId).then((e: INAOPublication): void => {
+        let x = this.naoPublicationService.readWithExpandDirectorates(this.props.entityId).then((e: INAOPublication): void => {
 
             console.log('publication ', e);
             this.setState({
@@ -275,32 +303,95 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
             let f: INAOPublication = { ...this.state.FormData };
 
             //remove all the child and parent entities before sending post/patch
-            //delete f.User; //parent entity
+            delete f.NAOPublicationDirectorates;
 
             if (f.ID === 0) {
 
-                //firts create record in the db, so we can get the ID, then use the ID to append in the file name to make file name unique
-                this.naoPublicationService.create(f).then(x => {
-                    this.props.onSaved();
 
+                this.naoPublicationService.create(f).then(this.saveChildEntitiesAfterCreate).then(this.onAfterCreate).then(this.props.onSaved, (err) => {
+                    if (this.props.onError) this.props.onError(`Error creating item`, err.message);
                 });
 
             }
             else {
 
-                //console.log('in update');
 
-                this.naoPublicationService.update(f.ID, f).then(this.props.onSaved, (err) => {
+                this.naoPublicationService.update(f.ID, f).then(this.saveChildEntitiesAfterUpdate).then(this.onAfterUpdate).then(this.props.onSaved, (err) => {
                     if (this.props.onError) this.props.onError(`Error updating item`, err.message);
                 });
+
             }
         }
 
     }
 
+    private saveChildEntitiesAfterCreate = (parentEntity: INAOPublication): Promise<any> => {
+        let promises = [];
 
+        if (this.childEntities) {
+            this.childEntities.forEach((ce) => {
+
+
+                const assignments = this.state.FormData[ce.ObjectParentProperty];
+
+                if(assignments){
+
+                    this.state.FormData[ce.ObjectParentProperty].forEach((c) => {
+                        c[ce.ParentIdProperty] = parentEntity.ID;
+                        if (c.ID === 0){
+                            promises.push(ce.ChildService.create(c));
+                            
+                        }
+                            
+                    });
+                }
+
+
+            });
+
+            return Promise.all(promises).then(() => parentEntity);
+        
+            
+        }
+    }
+
+    private saveChildEntitiesAfterUpdate = (): Promise<any> => {
+
+        let promises = [];
+        if (this.childEntities) {
+            this.childEntities.forEach((ce) => {
+                this.state.FormData[ce.ObjectParentProperty].forEach((c) => {
+                    if (c.ID === 0) {
+                        c[ce.ParentIdProperty] = this.state.FormData.ID;
+                        promises.push(ce.ChildService.create(c));
+                    }
+                    else {
+                        //no need to update
+                    }
+                });
+
+                this.state.FormDataBeforeChanges[ce.ObjectParentProperty].forEach((c) => {
+                    if (this.state.FormData[ce.ObjectParentProperty].map(i => i[ce.ChildIdProperty]).indexOf(c[ce.ChildIdProperty]) === -1) {
+                        promises.push(ce.ChildService.delete(c.ID));
+                    }
+
+                });
+            });
+            return Promise.all(promises).then(() => this.state.FormData);
+        }
+    }
 
     private onAfterUpdate(): Promise<any> { return Promise.resolve(); }
+
+    private onAfterCreate(): Promise<any>  
+    {
+        console.log('onAfterCreate');
+         return Promise.resolve(); 
+    }
+
+
+
+
 
     //#endregion Data Load/Save
 
@@ -320,8 +411,8 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
             errMsg.Title = null;
         }
 
-        if ((this.state.FormData.DirectorateId === null)) {
-            errMsg.Directorate = "Directorate required";
+        if ((this.state.FormData.NAOPublicationDirectorates.length === 0)) {
+            errMsg.Directorate = "Directorate(s) required";
             returnVal = false;
         }
         else {
@@ -367,6 +458,30 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
     private changeDropdown = (option: IDropdownOption, f: string, index?: number): void => {
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, option.key), FormIsDirty: true });
     }
+
+    private changeMultiDropdown = (item: IDropdownOption, f: string, newEntity: object, optionIdProperty: string): void => {
+        const loadedChoices = this.cloneArray(this.state.FormDataBeforeChanges[f]);
+        const editedChoices = this.cloneArray(this.state.FormData[f]);
+
+
+        if (item.selected) {
+            let indexOfExisting = loadedChoices.map(choice => choice[optionIdProperty]).indexOf(item.key);
+            if (indexOfExisting !== -1) {
+                editedChoices.push(this.cloneObject(loadedChoices[indexOfExisting]));
+            } else {
+                let newChoice = { ...newEntity };
+                newChoice[optionIdProperty] = item.key;
+                editedChoices.push(newChoice);
+            }
+        } else {
+            let indexToRemove = editedChoices.map(choice => choice[optionIdProperty]).indexOf(item.key);
+            editedChoices.splice(indexToRemove, 1);
+        }
+
+        this.setState({ FormData: this.cloneObject(this.state.FormData, f, editedChoices), FormIsDirty: true });
+    }
+
+    private cloneArray(array): any[] { return [...array]; }
 
     //#endregion Form Operations
 

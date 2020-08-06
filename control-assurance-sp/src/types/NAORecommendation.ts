@@ -4,6 +4,7 @@ import { IEntity } from "./Entity";
 export interface INAORecommendation  extends IEntity {
 
     RecommendationDetails?: string;
+    Conclusion?: string;
     TargetDate?: string;
     NAOPublicationId?: number;
     NAORecStatusTypeId?: number;
@@ -14,6 +15,7 @@ export class NAORecommendation implements INAORecommendation{
     public ID: number = 0;
     public Title: string = null;
     public RecommendationDetails?: string = null;
+    public Conclusion?: string = null;
     public TargetDate = null;
     public NAOPublicationId = null;
     public NAORecStatusTypeId = null;

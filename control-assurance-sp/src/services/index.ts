@@ -46,6 +46,7 @@ export { EntityPriorityService } from './EntityPriorityService';
 export { NAODefFormService } from './NAODefFormService';
 export { NAOPeriodService } from './NAOPeriodService';
 export { NAOPublicationService } from './NAOPublicationService';
+export { NAOPublicationDirectorateService } from './NAOPublicationDirectorateService';
 export { NAOTypeService } from './NAOTypeService';
 export { NAORecStatusTypeService } from './NAORecStatusTypeService';
 export { NAOUpdateStatusTypeService } from './NAOUpdateStatusTypeService';
@@ -53,6 +54,8 @@ export { NAORecommendationService } from './NAORecommendationService';
 export { NAOUpdateService } from './NAOUpdateService';
 export { NAOUpdateEvidenceService } from './NAOUpdateEvidenceService';
 export { NAOUpdateFeedbackService } from './NAOUpdateFeedbackService';
+export { NAOUpdateFeedbackTypeService } from './NAOUpdateFeedbackTypeService';
+export { NAOAssignmentService } from './NAOAssignmentService';
 
 export { GIAAPeriodService } from './GIAAPeriodService';
 export { GIAAAssuranceService } from './GIAAAssuranceService';

@@ -10,58 +10,43 @@ import { FormCommandBar } from '../cr/FormCommandBar';
 import { CrEntityPicker } from '../cr/CrEntityPicker';
 import styles from '../../styles/cr.module.scss';
 
-export interface IRecommendationSaveFormProps extends types.IBaseComponentProps {
+export interface IRecommendationAssignFormProps extends types.IBaseComponentProps {
     //periodID: number | string;
-    naoPublicationId: number | string;
-    entityId: number;
+    recId: number;
     showForm: boolean;
     onSaved?: () => void;
     onCancelled?: () => void;
 }
 
 export interface ILookupData {
-    NAORecStatusTypes: types.IEntity[];
+
     Users: IUser[];
 }
 export class LookupData implements ILookupData {
-    public NAORecStatusTypes = null;
+
     public Users = null;
     
 }
-export interface IErrorMessage {
-    Title: string;
-    //Directorate: string;
-    //Type: string;
-    //Year: string;
-}
-export class ErrorMessage implements IErrorMessage {
-    public Title = null;
-    //public Directorate = null;
-    //public Type = null;
-    //public Year = null;
-}
-export interface IRecommendationSaveFormState {
+
+export interface IRecommendationAssignFormState {
     Loading: boolean;
     LookupData: ILookupData;
     FormData: INAORecommendation;
-    //ClearSuggestedStatus:boolean;
     FormDataBeforeChanges: INAORecommendation;
     FormIsDirty: boolean;
-    ErrMessages: IErrorMessage;
+
 }
-export class RecommendationSaveFormState implements IRecommendationSaveFormState {
+export class RecommendationAssignFormState implements IRecommendationAssignFormState {
     public Loading = false;
     public LookupData = new LookupData();
     public FormData = new NAORecommendation();
     public FormDataBeforeChanges = new NAORecommendation();
     public FormIsDirty = false;
-    //public ClearSuggestedStatus = false;
-    public ErrMessages = new ErrorMessage();
+
 }
 
-export default class RecommendationSaveForm extends React.Component<IRecommendationSaveFormProps, IRecommendationSaveFormState> {
+export default class RecommendationAssignForm extends React.Component<IRecommendationAssignFormProps, IRecommendationAssignFormState> {
     private userService: services.UserService = new services.UserService(this.props.spfxContext, this.props.api);
-    private naoRecStatusTypeService: services.NAORecStatusTypeService = new services.NAORecStatusTypeService(this.props.spfxContext, this.props.api);
     private naoRecommendationService: services.NAORecommendationService = new services.NAORecommendationService(this.props.spfxContext, this.props.api);
     private naoAssignmentService: services.NAOAssignmentService = new services.NAOAssignmentService(this.props.spfxContext, this.props.api);
 
@@ -71,17 +56,17 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
         { ObjectParentProperty: 'NAOAssignments', ParentIdProperty: 'NAORecommendationId', ChildIdProperty: 'UserId', ChildService: this.naoAssignmentService },
     ];
 
-    constructor(props: IRecommendationSaveFormProps, state: IRecommendationSaveFormState) {
+    constructor(props: IRecommendationAssignFormProps, state: IRecommendationAssignFormState) {
         super(props);
-        this.state = new RecommendationSaveFormState();
+        this.state = new RecommendationAssignFormState();
     }
 
     //#region Render
 
-    public render(): React.ReactElement<IRecommendationSaveFormProps> {
+    public render(): React.ReactElement<IRecommendationAssignFormProps> {
         //const errors = this.state.ValidationErrors;
         return (
-            <Panel isOpen={this.props.showForm} headerText={"Recommendation"} type={PanelType.medium} onRenderNavigation={() => <FormCommandBar onSave={this.saveData} onCancel={this.props.onCancelled} />}>
+            <Panel isOpen={this.props.showForm} headerText={"Recommendation Assignments"} type={PanelType.medium} onRenderNavigation={() => <FormCommandBar onSave={this.saveData} onCancel={this.props.onCancelled} />}>
                 <div className={styles.cr}>
                     {this.renderFormFields()}
                     <FormButtons
@@ -98,10 +83,6 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
         return (
             <React.Fragment>
                 {this.renderTitle()}
-                {this.renderRecommendationDetails()}
-                {this.renderConclusion()}
-                {this.renderTargetDate()}
-                {this.renderNAORecStatusTypes()}
                 {this.renderAssignments()}
 
             </React.Fragment>
@@ -117,76 +98,12 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
                 className={styles.formField}
                 value={this.state.FormData.Title}
                 onChanged={(v) => this.changeTextField(v, "Title")}
-                errorMessage={this.state.ErrMessages.Title}
+                disabled={true}
+
             />
         );
     }
 
-    private renderRecommendationDetails() {
-
-        return (
-            <CrTextField
-                label="Recommendation Details"
-                className={styles.formField}
-                value={this.state.FormData.RecommendationDetails}
-                onChanged={(v) => this.changeTextField(v, "RecommendationDetails")}
-                multiline={true}
-                required={true}
-                //errorMessage={this.state.ErrMessages.RecommendationDetails}
-                rows={5}
-            />
-        );
-    }
-
-    private renderConclusion() {
-
-        return (
-            <CrTextField
-                label="Conclusion"
-                className={styles.formField}
-                value={this.state.FormData.Conclusion}
-                onChanged={(v) => this.changeTextField(v, "Conclusion")}
-                multiline={true}
-                //required={true}
-                //errorMessage={this.state.ErrMessages.RecommendationDetails}
-                rows={5}
-            />
-        );
-    }
-
-    private renderTargetDate() {
-
-        return (
-            <CrTextField
-                label="Target Date"
-                required={true}
-                className={styles.formField}
-                value={this.state.FormData.TargetDate}
-                onChanged={(v) => this.changeTextField(v, "TargetDate")}
-                //errorMessage={this.state.ErrMessages.Title}
-            />
-        );
-    }
-
-    private renderNAORecStatusTypes() {
-        const naoRecStatusTypes = this.state.LookupData.NAORecStatusTypes;
-        if (naoRecStatusTypes) {
-            return (
-                <CrDropdown
-                    label="Current Rec Status"
-                    placeholder="Select an Option"
-                    required={true}
-                    className={styles.formField}
-                    options={services.LookupService.entitiesToSelectableOptions(naoRecStatusTypes)}
-                    selectedKey={this.state.FormData.NAORecStatusTypeId}
-                    onChanged={(v) => this.changeDropdown(v, "NAORecStatusTypeId")}
-                    //errorMessage={this.state.ErrMessages.Directorate}
-                />
-            );
-        }
-        else
-            return null;
-    }
 
     private renderAssignments() {
         const users = this.state.LookupData.Users;
@@ -217,8 +134,8 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
     //#region Data Load/Save
 
     private loadData = (): Promise<void> => {
-        console.log('loadData - Id: ', this.props.entityId);
-        let x = this.naoRecommendationService.readWithExpandAssignments(this.props.entityId).then((e: INAORecommendation): void => {
+        console.log('loadData - Id: ', this.props.recId);
+        let x = this.naoRecommendationService.readWithExpandAssignments(this.props.recId).then((e: INAORecommendation): void => {
 
             console.log('rec ', e);
             this.setState({
@@ -233,7 +150,7 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
     public componentDidMount(): void {
         this.setState({ Loading: true });
         let loadingPromises = [this.loadLookups()];
-        if (this.props.entityId) {
+        if (this.props.recId) {
             loadingPromises.push(this.loadData());
         }
         Promise.all(loadingPromises).then(p => this.onAfterLoad(p[1])).then(p => this.setState({ Loading: false })).catch(err => this.setState({ Loading: false }));
@@ -243,7 +160,6 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
     private loadLookups(): Promise<any> {
 
         let proms: any[] = [];
-        proms.push(this.loadNAORecStatusTypess());
         proms.push(this.loadUsers());
         
         return Promise.all(proms);
@@ -255,22 +171,6 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
             return data;
         }, (err) => { if (this.props.onError) this.props.onError(`Error loading Users lookup data`, err.message); });
     }
-
-    // private loadIDirectorates = (): Promise<IDirectorate[]> => {
-    //     return this.directorateService.readAll().then((data: IDirectorate[]): IDirectorate[] => {
-    //         this.setState({ LookupData: this.cloneObject(this.state.LookupData, "IDirectorates", data) });
-    //         return data;
-    //     }, (err) => { if (this.props.onError) this.props.onError(`Error loading Users lookup data`, err.message); });
-    // }
-
-    private loadNAORecStatusTypess = (): void => {
-        this.naoRecStatusTypeService.readAll().then((data: types.IEntity[]): types.IEntity[] => {
-            this.setState({ LookupData: this.cloneObject(this.state.LookupData, "NAORecStatusTypes", data) });
-            return data;
-        }, (err) => { if (this.props.onError) this.props.onError(`Error loading NAORecStatusTypes lookup data`, err.message); });
-    }
-
-
 
 
     private onAfterLoad = (entity: types.IEntity): void => {
@@ -291,54 +191,19 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
             //remove all the child and parent entities before sending post/patch
             delete f['NAOAssignments']; //chile entity
 
-            if (f.ID === 0) {
 
-                f.NAOPublicationId = Number(this.props.naoPublicationId);
-
-                this.naoRecommendationService.create(f).then(this.saveChildEntitiesAfterCreate).then(this.onAfterCreate).then(this.props.onSaved, (err) => {
-                    if (this.props.onError) this.props.onError(`Error creating item`, err.message);
-                });
-
-            }
-            else {
-
-                this.naoRecommendationService.update(f.ID, f).then(this.saveChildEntitiesAfterUpdate).then(this.onAfterUpdate).then(this.props.onSaved, (err) => {
-                    if (this.props.onError) this.props.onError(`Error updating item`, err.message);
-                });
-            }
-        }
-
-    }
-
-    private saveChildEntitiesAfterCreate = (parentEntity: INAORecommendation): Promise<any> => {
-        let promises = [];
-
-        if (this.childEntities) {
-            this.childEntities.forEach((ce) => {
-
-
-                const assignments = this.state.FormData[ce.ObjectParentProperty];
-
-                if(assignments){
-
-                    this.state.FormData[ce.ObjectParentProperty].forEach((c) => {
-                        c[ce.ParentIdProperty] = parentEntity.ID;
-                        if (c.ID === 0){
-                            promises.push(ce.ChildService.create(c));
-                            
-                        }
-                            
-                    });
-                }
-
-
+            this.naoRecommendationService.update(f.ID, f).then(this.saveChildEntitiesAfterUpdate).then(this.onAfterUpdate).then(this.props.onSaved, (err) => {
+                if (this.props.onError) this.props.onError(`Error updating item`, err.message);
             });
 
-            return Promise.all(promises).then(() => parentEntity);
-        
-            
         }
+
     }
+
+    private validateEntity = (): boolean => {
+        return true;
+    }
+
 
     private saveChildEntitiesAfterUpdate = (): Promise<any> => {
 
@@ -382,30 +247,6 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
 
     //#region Form Operations
 
-    private validateEntity = (): boolean => {
-
-        let returnVal: boolean = true;
-        let errMsg: IErrorMessage = { ...this.state.ErrMessages };
-
-        if ((this.state.FormData.Title === null) || (this.state.FormData.Title === '')) {
-            errMsg.Title = "Title required";
-            returnVal = false;
-        }
-        else {
-            errMsg.Title = null;
-        }
-
-
-
-
-
-        //at the end set state
-        this.setState({ ErrMessages: errMsg });
-
-        return returnVal;
-
-
-    }
 
     private cloneObject(obj, changeProp?, changeValue?) {
         if (changeProp)

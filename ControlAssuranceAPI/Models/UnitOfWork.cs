@@ -48,6 +48,7 @@ namespace ControlAssuranceAPI.Models
         private NAODefFormRepository naoDefFormRepository;
         private NAOPeriodRepository naoPeriodRepository;
         private NAOPublicationRepository naoPublicationRepository;
+        private NAOPublicationDirectorateRepository nAOPublicationDirectorateRepository;
         private NAOTypeRepository naoTypeRepository;
         private NAORecStatusTypeRepository naoRecStatusTypeRepository;
         private NAOUpdateStatusTypeRepository naoUpdateStatusTypeRepository;
@@ -55,6 +56,9 @@ namespace ControlAssuranceAPI.Models
         private NAOUpdateRepository naoUpdateRepository;
         private NAOUpdateEvidenceRepository naoUpdateEvidenceRepository;
         private NAOUpdateFeedbackRepository naoUpdateFeedbackRepository;
+        private NAOUpdateFeedbackTypeRepository naoUpdateFeedbackTypeRepository;
+        private NAOAssignmentRepository nAOAssignmentRepository;
+        
 
         private GIAAAssuranceRepository gIAAAssuranceRepository;
         private GIAAPeriodRepository gIAAPeriodRepository;
@@ -458,6 +462,14 @@ namespace ControlAssuranceAPI.Models
             }
         }
 
+        public NAOPublicationDirectorateRepository NAOPublicationDirectorateRepository
+        {
+            get
+            {
+                return nAOPublicationDirectorateRepository = nAOPublicationDirectorateRepository ?? new NAOPublicationDirectorateRepository(user, context);
+            }
+        }
+
         public NAOTypeRepository NAOTypeRepository
         {
             get
@@ -508,6 +520,22 @@ namespace ControlAssuranceAPI.Models
             get
             {
                 return naoUpdateFeedbackRepository = naoUpdateFeedbackRepository ?? new NAOUpdateFeedbackRepository(user, context);
+            }
+        }
+
+        public NAOUpdateFeedbackTypeRepository NAOUpdateFeedbackTypeRepository
+        {
+            get
+            {
+                return naoUpdateFeedbackTypeRepository = naoUpdateFeedbackTypeRepository ?? new NAOUpdateFeedbackTypeRepository(user, context);
+            }
+        }
+
+        public NAOAssignmentRepository NAOAssignmentRepository
+        {
+            get
+            {
+                return nAOAssignmentRepository = nAOAssignmentRepository ?? new NAOAssignmentRepository(user, context);
             }
         }
 

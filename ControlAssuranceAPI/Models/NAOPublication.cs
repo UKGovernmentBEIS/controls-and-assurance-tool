@@ -17,19 +17,21 @@ namespace ControlAssuranceAPI.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public NAOPublication()
         {
+            this.NAOPublicationDirectorates = new HashSet<NAOPublicationDirectorate>();
             this.NAORecommendations = new HashSet<NAORecommendation>();
         }
     
         public int ID { get; set; }
         public string Title { get; set; }
-        public Nullable<int> DirectorateId { get; set; }
         public Nullable<int> NAOTypeId { get; set; }
         public string Year { get; set; }
         public string PublicationLink { get; set; }
         public string ContactDetails { get; set; }
+        public string PublicationSummary { get; set; }
     
-        public virtual Directorate Directorate { get; set; }
         public virtual NAOType NAOType { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<NAOPublicationDirectorate> NAOPublicationDirectorates { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<NAORecommendation> NAORecommendations { get; set; }
     }

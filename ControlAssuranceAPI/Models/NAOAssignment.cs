@@ -12,18 +12,14 @@ namespace ControlAssuranceAPI.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class NAOUpdateFeedback
+    public partial class NAOAssignment
     {
         public int ID { get; set; }
         public string Title { get; set; }
-        public Nullable<int> NAOUpdateId { get; set; }
-        public string Comment { get; set; }
-        public Nullable<int> CommentById { get; set; }
-        public Nullable<System.DateTime> CommentDate { get; set; }
-        public Nullable<int> NAOUpdateFeedbackTypeId { get; set; }
+        public Nullable<int> NAORecommendationId { get; set; }
+        public Nullable<int> UserId { get; set; }
     
-        public virtual NAOUpdate NAOUpdate { get; set; }
-        public virtual NAOUpdateFeedbackType NAOUpdateFeedbackType { get; set; }
+        public virtual NAORecommendation NAORecommendation { get; set; }
         public virtual User User { get; set; }
     }
 }

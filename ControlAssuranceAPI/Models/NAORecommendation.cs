@@ -17,6 +17,7 @@ namespace ControlAssuranceAPI.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public NAORecommendation()
         {
+            this.NAOAssignments = new HashSet<NAOAssignment>();
             this.NAOUpdates = new HashSet<NAOUpdate>();
         }
     
@@ -27,7 +28,10 @@ namespace ControlAssuranceAPI.Models
         public Nullable<int> NAOPublicationId { get; set; }
         public Nullable<int> NAORecStatusTypeId { get; set; }
         public Nullable<int> NAOUpdateStatusTypeId { get; set; }
+        public string Conclusion { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<NAOAssignment> NAOAssignments { get; set; }
         public virtual NAOPublication NAOPublication { get; set; }
         public virtual NAORecStatusType NAORecStatusType { get; set; }
         public virtual NAOUpdateStatusType NAOUpdateStatusType { get; set; }

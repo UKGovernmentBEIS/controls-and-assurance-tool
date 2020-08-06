@@ -32,6 +32,8 @@ namespace ControlAssuranceAPI.Models
         public Nullable<int> NAORecStatusTypeId { get; set; }
         public int NAOUpdateStatusTypeId { get; set; }
         public string UpdateChangeLog { get; set; }
+        public string LastSavedInfo { get; set; }
+        public string ProvideUpdate { get; set; }
     
         public virtual NAOPeriod NAOPeriod { get; set; }
         public virtual NAORecommendation NAORecommendation { get; set; }

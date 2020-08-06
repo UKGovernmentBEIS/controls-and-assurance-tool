@@ -68,21 +68,22 @@ namespace ControlAssuranceAPI
             builder.EntitySet<NAODefForm>("NAODefForms");
             builder.EntitySet<NAOPeriod>("NAOPeriods");
             builder.EntitySet<NAOPublication>("NAOPublications");
+            builder.EntitySet<NAOPublicationDirectorate>("NAOPublicationDirectorates");
             builder.EntitySet<NAOType>("NAOTypes");
             builder.EntitySet<NAOUpdate>("NAOUpdates");
             builder.EntitySet<NAOUpdateEvidence>("NAOUpdateEvidences");
             builder.EntitySet<NAOUpdateFeedback>("NAOUpdateFeedbacks");
+            builder.EntitySet<NAOUpdateFeedbackType>("NAOUpdateFeedbackTypes");
             builder.EntitySet<NAORecStatusType>("NAORecStatusTypes");
             builder.EntitySet<NAOUpdateStatusType>("NAOUpdateStatusTypes");
             builder.EntitySet<NAORecommendation>("NAORecommendations");
+            builder.EntitySet<NAOAssignment>("NAOAssignments");
 
             builder.EntitySet<GIAAPeriod>("GIAAPeriods");
             builder.EntitySet<GIAADefForm>("GIAADefForms");
             builder.EntitySet<GIAAAssurance>("GIAAAssurances");
             builder.EntitySet<GIAAAuditReport>("GIAAAuditReports");
             builder.EntitySet<GIAAImport>("GIAAImports");
-
-            builder.EntitySet<XmlDetail>("XmlStringManager");
 
 
 
@@ -133,7 +134,7 @@ namespace ControlAssuranceAPI
             //register IAPUpdateView_Result for the customer display of individual action plans list
             builder.EntitySet<IAPUpdateView_Result>("IAPUpdateViewResult");
 
-            builder.EntitySet<APIInfo>("APIInfo24July20_2");
+            builder.EntitySet<APIInfo>("APIInfo08Aug20");
 
 
 

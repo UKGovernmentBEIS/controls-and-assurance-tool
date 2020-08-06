@@ -15,6 +15,7 @@ import { IEntity, INAOUpdate, NAOUpdate } from '../../types';
 import { IGenColumn, ColumnType, ColumnDisplayType } from '../../types/GenColumn';
 import EntityList from '../entity/EntityList';
 import EvidenceList from './EV/EvidenceList';
+import '../../styles/CustomFabric.scss';
 
 
 
@@ -138,6 +139,14 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
     private renderInfoTable() {
         const recInfo = this.state.RecInfo;
         if (recInfo === null) return;
+
+
+        let recDetails: string = recInfo["NAORecommendation"]["RecommendationDetails"];
+        recDetails = recDetails.split('\n').join('<br/>');
+
+        let conclusion: string = recInfo["NAORecommendation"]["Conclusion"];
+        conclusion = conclusion.split('\n').join('<br/>');
+
         return (
 
             <React.Fragment>
@@ -167,11 +176,21 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
 
 
                             <tr>
-                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
                                     Recommendation
                             </td>
+                                <td colSpan={3} style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                    <div dangerouslySetInnerHTML={{ __html: recDetails }} ></div>
+                                </td>
+
+                            </tr>
+
+                            <tr>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Conclusion
+                                </td>
                                 <td colSpan={3} style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
-                                    {recInfo["NAORecommendation"]["RecommendationDetails"]}
+                                    <div dangerouslySetInnerHTML={{ __html: conclusion }} ></div>
                                 </td>
 
                             </tr>
@@ -187,11 +206,33 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
 
     private renderPeriodUpdateDetails() {
         const fd = this.state.FormData;
+
+
         return (
             <div>
                 <div style={{ marginBottom: '20px', marginTop: '50px' }} className={styles.sectionATitle}>Period Update Details</div>
 
                 <div style={{ width: '98%', marginTop: '10px', marginLeft: 'auto', marginRight: 'auto', paddingRight: '5px' }}>
+
+                    <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>
+                        We wish to provide an update for this period
+                    </div>
+                    <CrChoiceGroup
+                        className="inlineflex"
+                        options={[
+                            {
+                                key: '1',
+                                text: 'Yes',
+                            },
+                            {
+                                key: '0',
+                                text: 'No'
+                            },
+                        ]}
+                        selectedKey={fd.ProvideUpdate}
+                        onChange={(ev, option) => this.changeChoiceGroup(ev, option, "ProvideUpdate")}
+                    />
+
 
                     <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>
                         Proposed Status
@@ -242,7 +283,7 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
                     //readonly={this.readOnlyMode()}
                     />
 
-                    <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>
+                    {/* <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>
                         NAO Comments
                     </div>
 
@@ -255,8 +296,8 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
                         onChanged={(v) => this.changeTextField(v, "NAOComments")}
                         value={fd.NAOComments}
 
-                    //readonly={this.readOnlyMode()}
-                    />
+
+                    /> */}
 
 
                     <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>
@@ -271,10 +312,10 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
                     //readonly={this.readOnlyMode()}
                     />
 
-                    <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>
-                        Set Period Update Status to
+                    <div style={{ marginBottom: '5px' }}>
+                        <span style={{ fontWeight: 'bold' }}>Update Status:&nbsp;</span><span>{fd.LastSavedInfo}</span>
                     </div>
-                    <CrDropdown
+                    {/* <CrDropdown
                         style={{ width: '350px' }}
                         placeholder="Select an Option"
                         className={styles.formField}
@@ -282,7 +323,7 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
                         selectedKey={fd.NAOUpdateStatusTypeId}
                         onChanged={(v) => this.changeDropdown(v, "NAOUpdateStatusTypeId")}
 
-                    />
+                    /> */}
 
                 </div>
 
@@ -382,6 +423,22 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
                 isResizable: true,
                 isRequired: true,
             },
+            {
+                key: 'NAOUpdateFeedbackTitle',
+                columnType: ColumnType.DropDown,
+                name: 'Comment Type',
+                fieldName: 'NAOUpdateFeedbackTitle',
+                idFieldName: 'NAOUpdateFeedbackTypeId',
+                isParent: true,
+                parentEntityName: 'NAOUpdateFeedbackType',
+                parentColumnName: 'Title',
+                parentService: new services.NAOUpdateFeedbackTypeService(this.props.spfxContext, this.props.api),
+                minWidth: 120,
+                maxWidth: 120,
+                isResizable: true,
+                isRequired: true,
+        
+              },
             {
                 key: 'UserUsername',
                 columnType: ColumnType.DisplayInListOnly,
@@ -493,7 +550,7 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
                 columnType: ColumnType.TextBox,
                 name: 'Actions taken',
                 fieldName: 'ActionsTaken',
-                minWidth: 300,
+                minWidth: 500,
                 isResizable: true,
                 isRequired: true,
                 fieldMaxLength: 10000,
@@ -502,19 +559,19 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
                 headerClassName: styles.bold,
             },
 
-            {
-                key: 'NAOComments',
-                columnType: ColumnType.TextBox,
-                name: 'NAO Comments',
-                fieldName: 'NAOComments',
-                minWidth: 250,
-                isResizable: true,
-                isRequired: true,
-                fieldMaxLength: 10000,
-                isMultiline: true,
-                numRows: 5,
-                headerClassName: styles.bold,
-            },
+            // {
+            //     key: 'NAOComments',
+            //     columnType: ColumnType.TextBox,
+            //     name: 'NAO Comments',
+            //     fieldName: 'NAOComments',
+            //     minWidth: 250,
+            //     isResizable: true,
+            //     isRequired: true,
+            //     fieldMaxLength: 10000,
+            //     isMultiline: true,
+            //     numRows: 5,
+            //     headerClassName: styles.bold,
+            // },
 
             {
                 key: 'TargetDate',
@@ -574,7 +631,7 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
         return (
             <React.Fragment>
                 <div style={{ marginTop: "30px" }}>
-                    <div style={{fontWeight:'bold'}}>Change Log:</div>
+                    <div style={{ fontWeight: 'bold' }}>Change Log:</div>
                     <div style={{ marginTop: "20px" }} dangerouslySetInnerHTML={{ __html: changeLogs }} />
                 </div>
             </React.Fragment>
@@ -783,6 +840,11 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
     }
     private changeDropdown = (option: IDropdownOption, f: string, index?: number): void => {
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, option.key), /*FormIsDirty: true*/ });
+    }
+    protected changeChoiceGroup = (ev, option: IChoiceGroupOption, f: string): void => {
+        const selectedKey = option.key;
+        this.setState({ FormData: this.cloneObject(this.state.FormData, f, selectedKey)/*, FormIsDirty: true*/ });
+
     }
 
     //#endregion Event Handlers

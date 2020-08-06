@@ -19,7 +19,7 @@ namespace ControlAssuranceAPI.Models
         {
             this.DirectorateMembers = new HashSet<DirectorateMember>();
             this.GIAAAuditReports = new HashSet<GIAAAuditReport>();
-            this.NAOPublications = new HashSet<NAOPublication>();
+            this.NAOPublicationDirectorates = new HashSet<NAOPublicationDirectorate>();
             this.Teams = new HashSet<Team>();
         }
     
@@ -43,7 +43,7 @@ namespace ControlAssuranceAPI.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<GIAAAuditReport> GIAAAuditReports { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<NAOPublication> NAOPublications { get; set; }
+        public virtual ICollection<NAOPublicationDirectorate> NAOPublicationDirectorates { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Team> Teams { get; set; }
     }

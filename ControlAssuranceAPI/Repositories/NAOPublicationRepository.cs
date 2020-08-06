@@ -35,14 +35,27 @@ namespace ControlAssuranceAPI.Repositories
             var p = db.NAOPublications.FirstOrDefault(x => x.ID == id);
             if(p != null)
             {
+                string directorates = "";
+                foreach (var d in p.NAOPublicationDirectorates)
+                {
+                    directorates += d.Directorate.Title + ", ";
+                }
+                directorates = directorates.Trim();
+                if (directorates.Length > 0)
+                {
+                    directorates = directorates.Substring(0, directorates.Length - 1);
+                }
+
+
                 ret.ID = p.ID;
                 ret.Title = p.Title;
+                ret.PublicationSummary = p.PublicationSummary != null ? p.PublicationSummary : "";
                 ret.NAOType = p.NAOType.Title;
-                ret.Directorate = p.Directorate.Title;
+                ret.Directorate = directorates;
                 ret.Year = p.Year;
                 ret.Lead = "";
                 ret.Stats = "";
-                ret.ContactDetails = "";
+                ret.ContactDetails = p.ContactDetails != null ? p.ContactDetails : "";
                 ret.Links = p.PublicationLink;
 
             }
@@ -70,8 +83,9 @@ namespace ControlAssuranceAPI.Repositories
                       {
                           p.ID,
                           p.Title,
-                          p.Directorate.DirectorateGroupID,                         
-                          DGArea = p.Directorate.DirectorateGroup.Title,
+                          p.NAOPublicationDirectorates,
+                          //p.Directorate.DirectorateGroupID,                         
+                          //DGArea = p.Directorate.DirectorateGroup.Title,
                           Type = p.NAOType.Title,
                           p.Year,
                           
@@ -80,8 +94,9 @@ namespace ControlAssuranceAPI.Repositories
                       };
 
             if(dgAreaId > 0)
-            {                
-                qry = qry.Where(x => x.DirectorateGroupID == dgAreaId);
+            {     
+                //TODO
+                //qry = qry.Where(x => x.DirectorateGroupID == dgAreaId);
             }
 
             if (justMine == true)
@@ -101,13 +116,31 @@ namespace ControlAssuranceAPI.Repositories
                 string title = iteP.Title;
                 string completionStatus = "Not Started"; //default value
                 string users = "";
+                string dgAreas = "";
+                HashSet<DirectorateGroup> uniqueDgAreas = new HashSet<DirectorateGroup>();
+                foreach (var d in iteP.NAOPublicationDirectorates)
+                {
+                    var dgArea = d.Directorate.DirectorateGroup;
+                    uniqueDgAreas.Add(dgArea);
+                }
 
+                foreach (var uniqueDgArea in uniqueDgAreas)
+                {
+                    dgAreas += uniqueDgArea.Title + ", ";
+                }
+
+
+                dgAreas = dgAreas.Trim();
+                if (dgAreas.Length > 0)
+                {
+                    dgAreas = dgAreas.Substring(0, dgAreas.Length - 1);
+                }
 
                 NAOPublicationView_Result item = new NAOPublicationView_Result
                 {
                     ID = iteP.ID,
                     Title = title,
-                    DGArea = iteP.DGArea,
+                    DGArea = dgAreas,
                     Type = iteP.Type,
                     Year = iteP.Year,
                     CompletePercent = "0%",

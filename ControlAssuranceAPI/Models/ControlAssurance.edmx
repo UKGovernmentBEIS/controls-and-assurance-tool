@@ -558,6 +558,15 @@
           <Property Name="PeriodId" Type="int" />
           <Property Name="TeamId" Type="int" />
         </EntityType>
+        <EntityType Name="NAOAssignment">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" />
+          <Property Name="NAORecommendationId" Type="int" />
+          <Property Name="UserId" Type="int" />
+        </EntityType>
         <EntityType Name="NAODefForm">
           <Key>
             <PropertyRef Name="ID" />
@@ -583,11 +592,20 @@
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Title" Type="nvarchar" MaxLength="2000" />
-          <Property Name="DirectorateId" Type="int" />
           <Property Name="NAOTypeId" Type="int" />
           <Property Name="Year" Type="nvarchar" MaxLength="50" />
           <Property Name="PublicationLink" Type="nvarchar" MaxLength="2000" />
           <Property Name="ContactDetails" Type="nvarchar(max)" />
+          <Property Name="PublicationSummary" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="NAOPublicationDirectorate">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" />
+          <Property Name="NAOPublicationId" Type="int" />
+          <Property Name="DirectorateId" Type="int" />
         </EntityType>
         <EntityType Name="NAORecommendation">
           <Key>
@@ -600,6 +618,7 @@
           <Property Name="NAOPublicationId" Type="int" />
           <Property Name="NAORecStatusTypeId" Type="int" />
           <Property Name="NAOUpdateStatusTypeId" Type="int" />
+          <Property Name="Conclusion" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="NAORecStatusType">
           <Key>
@@ -630,6 +649,8 @@
           <Property Name="NAORecStatusTypeId" Type="int" />
           <Property Name="NAOUpdateStatusTypeId" Type="int" Nullable="false" />
           <Property Name="UpdateChangeLog" Type="nvarchar(max)" />
+          <Property Name="LastSavedInfo" Type="nvarchar" MaxLength="2000" />
+          <Property Name="ProvideUpdate" Type="nvarchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="NAOUpdateEvidence">
           <Key>
@@ -654,6 +675,14 @@
           <Property Name="Comment" Type="nvarchar(max)" />
           <Property Name="CommentById" Type="int" />
           <Property Name="CommentDate" Type="datetime" />
+          <Property Name="NAOUpdateFeedbackTypeId" Type="int" />
+        </EntityType>
+        <EntityType Name="NAOUpdateFeedbackType">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="NAOUpdateStatusType">
           <Key>
@@ -1391,15 +1420,27 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_NAOPublication_Directorate">
-          <End Role="Directorate" Type="Self.Directorate" Multiplicity="0..1" />
-          <End Role="NAOPublication" Type="Self.NAOPublication" Multiplicity="*" />
+        <Association Name="FK_NAOAssignment_NAORecommendation">
+          <End Role="NAORecommendation" Type="Self.NAORecommendation" Multiplicity="0..1" />
+          <End Role="NAOAssignment" Type="Self.NAOAssignment" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Directorate">
+            <Principal Role="NAORecommendation">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="NAOPublication">
-              <PropertyRef Name="DirectorateId" />
+            <Dependent Role="NAOAssignment">
+              <PropertyRef Name="NAORecommendationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_NAOAssignment_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="NAOAssignment" Type="Self.NAOAssignment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="NAOAssignment">
+              <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1412,6 +1453,30 @@
             </Principal>
             <Dependent Role="NAOPublication">
               <PropertyRef Name="NAOTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_NAOPublicationDirectorate_Directorate">
+          <End Role="Directorate" Type="Self.Directorate" Multiplicity="0..1" />
+          <End Role="NAOPublicationDirectorate" Type="Self.NAOPublicationDirectorate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Directorate">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="NAOPublicationDirectorate">
+              <PropertyRef Name="DirectorateId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_NAOPublicationDirectorate_NAOPublication">
+          <End Role="NAOPublication" Type="Self.NAOPublication" Multiplicity="0..1" />
+          <End Role="NAOPublicationDirectorate" Type="Self.NAOPublicationDirectorate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="NAOPublication">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="NAOPublicationDirectorate">
+              <PropertyRef Name="NAOPublicationId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1532,6 +1597,18 @@
             </Principal>
             <Dependent Role="NAOUpdateFeedback">
               <PropertyRef Name="NAOUpdateId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_NAOUpdateFeedback_NAOUpdateFeedbackType">
+          <End Role="NAOUpdateFeedbackType" Type="Self.NAOUpdateFeedbackType" Multiplicity="0..1" />
+          <End Role="NAOUpdateFeedback" Type="Self.NAOUpdateFeedback" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="NAOUpdateFeedbackType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="NAOUpdateFeedback">
+              <PropertyRef Name="NAOUpdateFeedbackTypeId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1680,15 +1757,18 @@
           <EntitySet Name="IAPType" EntityType="Self.IAPType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="IAPUpdate" EntityType="Self.IAPUpdate" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Log" EntityType="Self.Log" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="NAOAssignment" EntityType="Self.NAOAssignment" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="NAODefForm" EntityType="Self.NAODefForm" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="NAOPeriod" EntityType="Self.NAOPeriod" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="NAOPublication" EntityType="Self.NAOPublication" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="NAOPublicationDirectorate" EntityType="Self.NAOPublicationDirectorate" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="NAORecommendation" EntityType="Self.NAORecommendation" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="NAORecStatusType" EntityType="Self.NAORecStatusType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="NAOType" EntityType="Self.NAOType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="NAOUpdate" EntityType="Self.NAOUpdate" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="NAOUpdateEvidence" EntityType="Self.NAOUpdateEvidence" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="NAOUpdateFeedback" EntityType="Self.NAOUpdateFeedback" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="NAOUpdateFeedbackType" EntityType="Self.NAOUpdateFeedbackType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="NAOUpdateStatusType" EntityType="Self.NAOUpdateStatusType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Period" EntityType="Self.Period" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PermissionType" EntityType="Self.PermissionType" Schema="dbo" store:Type="Tables" />
@@ -1914,13 +1994,25 @@
             <End Role="User" EntitySet="User" />
             <End Role="Log" EntitySet="Log" />
           </AssociationSet>
-          <AssociationSet Name="FK_NAOPublication_Directorate" Association="Self.FK_NAOPublication_Directorate">
-            <End Role="Directorate" EntitySet="Directorate" />
-            <End Role="NAOPublication" EntitySet="NAOPublication" />
+          <AssociationSet Name="FK_NAOAssignment_NAORecommendation" Association="Self.FK_NAOAssignment_NAORecommendation">
+            <End Role="NAORecommendation" EntitySet="NAORecommendation" />
+            <End Role="NAOAssignment" EntitySet="NAOAssignment" />
+          </AssociationSet>
+          <AssociationSet Name="FK_NAOAssignment_User" Association="Self.FK_NAOAssignment_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="NAOAssignment" EntitySet="NAOAssignment" />
           </AssociationSet>
           <AssociationSet Name="FK_NAOPublication_NAOType" Association="Self.FK_NAOPublication_NAOType">
             <End Role="NAOType" EntitySet="NAOType" />
             <End Role="NAOPublication" EntitySet="NAOPublication" />
+          </AssociationSet>
+          <AssociationSet Name="FK_NAOPublicationDirectorate_Directorate" Association="Self.FK_NAOPublicationDirectorate_Directorate">
+            <End Role="Directorate" EntitySet="Directorate" />
+            <End Role="NAOPublicationDirectorate" EntitySet="NAOPublicationDirectorate" />
+          </AssociationSet>
+          <AssociationSet Name="FK_NAOPublicationDirectorate_NAOPublication" Association="Self.FK_NAOPublicationDirectorate_NAOPublication">
+            <End Role="NAOPublication" EntitySet="NAOPublication" />
+            <End Role="NAOPublicationDirectorate" EntitySet="NAOPublicationDirectorate" />
           </AssociationSet>
           <AssociationSet Name="FK_NAORecommendation_NAOPublication" Association="Self.FK_NAORecommendation_NAOPublication">
             <End Role="NAOPublication" EntitySet="NAOPublication" />
@@ -1960,6 +2052,10 @@
           </AssociationSet>
           <AssociationSet Name="FK_NAOUpdateFeedback_NAOUpdate" Association="Self.FK_NAOUpdateFeedback_NAOUpdate">
             <End Role="NAOUpdate" EntitySet="NAOUpdate" />
+            <End Role="NAOUpdateFeedback" EntitySet="NAOUpdateFeedback" />
+          </AssociationSet>
+          <AssociationSet Name="FK_NAOUpdateFeedback_NAOUpdateFeedbackType" Association="Self.FK_NAOUpdateFeedback_NAOUpdateFeedbackType">
+            <End Role="NAOUpdateFeedbackType" EntitySet="NAOUpdateFeedbackType" />
             <End Role="NAOUpdateFeedback" EntitySet="NAOUpdateFeedback" />
           </AssociationSet>
           <AssociationSet Name="FK_NAOUpdateFeedback_User" Association="Self.FK_NAOUpdateFeedback_User">
@@ -2140,7 +2236,7 @@
           <NavigationProperty Name="User" Relationship="Self.FK_Directorate_User" FromRole="Directorate" ToRole="User" />
           <NavigationProperty Name="DirectorateMembers" Relationship="Self.FK_DirectorateMember_Directorate" FromRole="Directorate" ToRole="DirectorateMember" />
           <NavigationProperty Name="GIAAAuditReports" Relationship="Self.FK_GIAAAuditReport_Directorate" FromRole="Directorate" ToRole="GIAAAuditReport" />
-          <NavigationProperty Name="NAOPublications" Relationship="Self.FK_NAOPublication_Directorate" FromRole="Directorate" ToRole="NAOPublication" />
+          <NavigationProperty Name="NAOPublicationDirectorates" Relationship="Self.FK_NAOPublicationDirectorate_Directorate" FromRole="Directorate" ToRole="NAOPublicationDirectorate" />
           <NavigationProperty Name="Teams" Relationship="Self.FK_Team_Directorate" FromRole="Directorate" ToRole="Team" />
         </EntityType>
         <EntityType Name="DirectorateGroup">
@@ -2639,6 +2735,17 @@
           <NavigationProperty Name="Team" Relationship="Self.FK_Log_Team" FromRole="Log" ToRole="Team" />
           <NavigationProperty Name="User" Relationship="Self.FK_Log_User" FromRole="Log" ToRole="User" />
         </EntityType>
+        <EntityType Name="NAOAssignment">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="NAORecommendationId" Type="Int32" />
+          <Property Name="UserId" Type="Int32" />
+          <NavigationProperty Name="NAORecommendation" Relationship="Self.FK_NAOAssignment_NAORecommendation" FromRole="NAOAssignment" ToRole="NAORecommendation" />
+          <NavigationProperty Name="User" Relationship="Self.FK_NAOAssignment_User" FromRole="NAOAssignment" ToRole="User" />
+        </EntityType>
         <EntityType Name="NAODefForm">
           <Key>
             <PropertyRef Name="ID" />
@@ -2665,14 +2772,25 @@
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Title" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
-          <Property Name="DirectorateId" Type="Int32" />
           <Property Name="NAOTypeId" Type="Int32" />
           <Property Name="Year" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="PublicationLink" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
           <Property Name="ContactDetails" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Directorate" Relationship="Self.FK_NAOPublication_Directorate" FromRole="NAOPublication" ToRole="Directorate" />
+          <Property Name="PublicationSummary" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="NAOType" Relationship="Self.FK_NAOPublication_NAOType" FromRole="NAOPublication" ToRole="NAOType" />
+          <NavigationProperty Name="NAOPublicationDirectorates" Relationship="Self.FK_NAOPublicationDirectorate_NAOPublication" FromRole="NAOPublication" ToRole="NAOPublicationDirectorate" />
           <NavigationProperty Name="NAORecommendations" Relationship="Self.FK_NAORecommendation_NAOPublication" FromRole="NAOPublication" ToRole="NAORecommendation" />
+        </EntityType>
+        <EntityType Name="NAOPublicationDirectorate">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="NAOPublicationId" Type="Int32" />
+          <Property Name="DirectorateId" Type="Int32" />
+          <NavigationProperty Name="Directorate" Relationship="Self.FK_NAOPublicationDirectorate_Directorate" FromRole="NAOPublicationDirectorate" ToRole="Directorate" />
+          <NavigationProperty Name="NAOPublication" Relationship="Self.FK_NAOPublicationDirectorate_NAOPublication" FromRole="NAOPublicationDirectorate" ToRole="NAOPublication" />
         </EntityType>
         <EntityType Name="NAORecommendation">
           <Key>
@@ -2685,6 +2803,8 @@
           <Property Name="NAOPublicationId" Type="Int32" />
           <Property Name="NAORecStatusTypeId" Type="Int32" />
           <Property Name="NAOUpdateStatusTypeId" Type="Int32" />
+          <Property Name="Conclusion" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="NAOAssignments" Relationship="Self.FK_NAOAssignment_NAORecommendation" FromRole="NAORecommendation" ToRole="NAOAssignment" />
           <NavigationProperty Name="NAOPublication" Relationship="Self.FK_NAORecommendation_NAOPublication" FromRole="NAORecommendation" ToRole="NAOPublication" />
           <NavigationProperty Name="NAORecStatusType" Relationship="Self.FK_NAORecommendation_NAORecStatusType" FromRole="NAORecommendation" ToRole="NAORecStatusType" />
           <NavigationProperty Name="NAOUpdateStatusType" Relationship="Self.FK_NAORecommendation_NAOUpdateStatusType" FromRole="NAORecommendation" ToRole="NAOUpdateStatusType" />
@@ -2722,6 +2842,8 @@
           <Property Name="NAORecStatusTypeId" Type="Int32" />
           <Property Name="NAOUpdateStatusTypeId" Type="Int32" Nullable="false" />
           <Property Name="UpdateChangeLog" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="LastSavedInfo" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
+          <Property Name="ProvideUpdate" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="NAOPeriod" Relationship="Self.FK_NAOUpdate_NAOPeriod" FromRole="NAOUpdate" ToRole="NAOPeriod" />
           <NavigationProperty Name="NAORecommendation" Relationship="Self.FK_NAOUpdate_NAORecommendation" FromRole="NAOUpdate" ToRole="NAORecommendation" />
           <NavigationProperty Name="NAORecStatusType" Relationship="Self.FK_NAOUpdate_NAORecStatusType" FromRole="NAOUpdate" ToRole="NAORecStatusType" />
@@ -2754,8 +2876,18 @@
           <Property Name="Comment" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="CommentById" Type="Int32" />
           <Property Name="CommentDate" Type="DateTime" Precision="3" />
+          <Property Name="NAOUpdateFeedbackTypeId" Type="Int32" />
           <NavigationProperty Name="NAOUpdate" Relationship="Self.FK_NAOUpdateFeedback_NAOUpdate" FromRole="NAOUpdateFeedback" ToRole="NAOUpdate" />
+          <NavigationProperty Name="NAOUpdateFeedbackType" Relationship="Self.FK_NAOUpdateFeedback_NAOUpdateFeedbackType" FromRole="NAOUpdateFeedback" ToRole="NAOUpdateFeedbackType" />
           <NavigationProperty Name="User" Relationship="Self.FK_NAOUpdateFeedback_User" FromRole="NAOUpdateFeedback" ToRole="User" />
+        </EntityType>
+        <EntityType Name="NAOUpdateFeedbackType">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="NAOUpdateFeedbacks" Relationship="Self.FK_NAOUpdateFeedback_NAOUpdateFeedbackType" FromRole="NAOUpdateFeedbackType" ToRole="NAOUpdateFeedback" />
         </EntityType>
         <EntityType Name="NAOUpdateStatusType">
           <Key>
@@ -2857,6 +2989,7 @@
           <NavigationProperty Name="GoMiscFiles" Relationship="Self.FK_GoMiscFiles_User" FromRole="User" ToRole="GoMiscFiles" />
           <NavigationProperty Name="IAPAssignments" Relationship="Self.FK_IAPAssignment_User" FromRole="User" ToRole="IAPAssignment" />
           <NavigationProperty Name="Logs" Relationship="Self.FK_Log_User" FromRole="User" ToRole="Log" />
+          <NavigationProperty Name="NAOAssignments" Relationship="Self.FK_NAOAssignment_User" FromRole="User" ToRole="NAOAssignment" />
           <NavigationProperty Name="NAOUpdateEvidences" Relationship="Self.FK_NAOUpdateEvidence_User" FromRole="User" ToRole="NAOUpdateEvidence" />
           <NavigationProperty Name="NAOUpdateFeedbacks" Relationship="Self.FK_NAOUpdateFeedback_User" FromRole="User" ToRole="NAOUpdateFeedback" />
           <NavigationProperty Name="Teams" Relationship="Self.FK_Team_User" FromRole="User" ToRole="Team" />
@@ -3054,14 +3187,14 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_NAOPublication_Directorate">
+        <Association Name="FK_NAOPublicationDirectorate_Directorate">
           <End Role="Directorate" Type="Self.Directorate" Multiplicity="0..1" />
-          <End Role="NAOPublication" Type="Self.NAOPublication" Multiplicity="*" />
+          <End Role="NAOPublicationDirectorate" Type="Self.NAOPublicationDirectorate" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Directorate">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="NAOPublication">
+            <Dependent Role="NAOPublicationDirectorate">
               <PropertyRef Name="DirectorateId" />
             </Dependent>
           </ReferentialConstraint>
@@ -3570,6 +3703,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_NAOAssignment_NAORecommendation">
+          <End Role="NAORecommendation" Type="Self.NAORecommendation" Multiplicity="0..1" />
+          <End Role="NAOAssignment" Type="Self.NAOAssignment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="NAORecommendation">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="NAOAssignment">
+              <PropertyRef Name="NAORecommendationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_NAOAssignment_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="NAOAssignment" Type="Self.NAOAssignment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="NAOAssignment">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_NAOUpdate_NAOPeriod">
           <End Role="NAOPeriod" Type="Self.NAOPeriod" Multiplicity="0..1" />
           <End Role="NAOUpdate" Type="Self.NAOUpdate" Multiplicity="*" />
@@ -3591,6 +3748,18 @@
             </Principal>
             <Dependent Role="NAOPublication">
               <PropertyRef Name="NAOTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_NAOPublicationDirectorate_NAOPublication">
+          <End Role="NAOPublication" Type="Self.NAOPublication" Multiplicity="0..1" />
+          <End Role="NAOPublicationDirectorate" Type="Self.NAOPublicationDirectorate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="NAOPublication">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="NAOPublicationDirectorate">
+              <PropertyRef Name="NAOPublicationId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -3699,6 +3868,18 @@
             </Principal>
             <Dependent Role="NAOUpdateEvidence">
               <PropertyRef Name="UploadedByUserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_NAOUpdateFeedback_NAOUpdateFeedbackType">
+          <End Role="NAOUpdateFeedbackType" Type="Self.NAOUpdateFeedbackType" Multiplicity="0..1" />
+          <End Role="NAOUpdateFeedback" Type="Self.NAOUpdateFeedback" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="NAOUpdateFeedbackType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="NAOUpdateFeedback">
+              <PropertyRef Name="NAOUpdateFeedbackTypeId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -3814,15 +3995,18 @@
           <EntitySet Name="IAPTypes" EntityType="Self.IAPType" />
           <EntitySet Name="IAPUpdates" EntityType="Self.IAPUpdate" />
           <EntitySet Name="Logs" EntityType="Self.Log" />
+          <EntitySet Name="NAOAssignments" EntityType="Self.NAOAssignment" />
           <EntitySet Name="NAODefForms" EntityType="Self.NAODefForm" />
           <EntitySet Name="NAOPeriods" EntityType="Self.NAOPeriod" />
           <EntitySet Name="NAOPublications" EntityType="Self.NAOPublication" />
+          <EntitySet Name="NAOPublicationDirectorates" EntityType="Self.NAOPublicationDirectorate" />
           <EntitySet Name="NAORecommendations" EntityType="Self.NAORecommendation" />
           <EntitySet Name="NAORecStatusTypes" EntityType="Self.NAORecStatusType" />
           <EntitySet Name="NAOTypes" EntityType="Self.NAOType" />
           <EntitySet Name="NAOUpdates" EntityType="Self.NAOUpdate" />
           <EntitySet Name="NAOUpdateEvidences" EntityType="Self.NAOUpdateEvidence" />
           <EntitySet Name="NAOUpdateFeedbacks" EntityType="Self.NAOUpdateFeedback" />
+          <EntitySet Name="NAOUpdateFeedbackTypes" EntityType="Self.NAOUpdateFeedbackType" />
           <EntitySet Name="NAOUpdateStatusTypes" EntityType="Self.NAOUpdateStatusType" />
           <EntitySet Name="Periods" EntityType="Self.Period" />
           <EntitySet Name="PermissionTypes" EntityType="Self.PermissionType" />
@@ -3888,9 +4072,9 @@
             <End Role="Directorate" EntitySet="Directorates" />
             <End Role="GIAAAuditReport" EntitySet="GIAAAuditReports" />
           </AssociationSet>
-          <AssociationSet Name="FK_NAOPublication_Directorate" Association="Self.FK_NAOPublication_Directorate">
+          <AssociationSet Name="FK_NAOPublicationDirectorate_Directorate" Association="Self.FK_NAOPublicationDirectorate_Directorate">
             <End Role="Directorate" EntitySet="Directorates" />
-            <End Role="NAOPublication" EntitySet="NAOPublications" />
+            <End Role="NAOPublicationDirectorate" EntitySet="NAOPublicationDirectorates" />
           </AssociationSet>
           <AssociationSet Name="FK_Team_Directorate" Association="Self.FK_Team_Directorate">
             <End Role="Directorate" EntitySet="Directorates" />
@@ -4060,6 +4244,14 @@
             <End Role="User" EntitySet="Users" />
             <End Role="Log" EntitySet="Logs" />
           </AssociationSet>
+          <AssociationSet Name="FK_NAOAssignment_NAORecommendation" Association="Self.FK_NAOAssignment_NAORecommendation">
+            <End Role="NAORecommendation" EntitySet="NAORecommendations" />
+            <End Role="NAOAssignment" EntitySet="NAOAssignments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_NAOAssignment_User" Association="Self.FK_NAOAssignment_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="NAOAssignment" EntitySet="NAOAssignments" />
+          </AssociationSet>
           <AssociationSet Name="FK_NAOUpdate_NAOPeriod" Association="Self.FK_NAOUpdate_NAOPeriod">
             <End Role="NAOPeriod" EntitySet="NAOPeriods" />
             <End Role="NAOUpdate" EntitySet="NAOUpdates" />
@@ -4067,6 +4259,10 @@
           <AssociationSet Name="FK_NAOPublication_NAOType" Association="Self.FK_NAOPublication_NAOType">
             <End Role="NAOType" EntitySet="NAOTypes" />
             <End Role="NAOPublication" EntitySet="NAOPublications" />
+          </AssociationSet>
+          <AssociationSet Name="FK_NAOPublicationDirectorate_NAOPublication" Association="Self.FK_NAOPublicationDirectorate_NAOPublication">
+            <End Role="NAOPublication" EntitySet="NAOPublications" />
+            <End Role="NAOPublicationDirectorate" EntitySet="NAOPublicationDirectorates" />
           </AssociationSet>
           <AssociationSet Name="FK_NAORecommendation_NAOPublication" Association="Self.FK_NAORecommendation_NAOPublication">
             <End Role="NAOPublication" EntitySet="NAOPublications" />
@@ -4103,6 +4299,10 @@
           <AssociationSet Name="FK_NAOUpdateEvidence_User" Association="Self.FK_NAOUpdateEvidence_User">
             <End Role="User" EntitySet="Users" />
             <End Role="NAOUpdateEvidence" EntitySet="NAOUpdateEvidences" />
+          </AssociationSet>
+          <AssociationSet Name="FK_NAOUpdateFeedback_NAOUpdateFeedbackType" Association="Self.FK_NAOUpdateFeedback_NAOUpdateFeedbackType">
+            <End Role="NAOUpdateFeedbackType" EntitySet="NAOUpdateFeedbackTypes" />
+            <End Role="NAOUpdateFeedback" EntitySet="NAOUpdateFeedbacks" />
           </AssociationSet>
           <AssociationSet Name="FK_NAOUpdateFeedback_User" Association="Self.FK_NAOUpdateFeedback_User">
             <End Role="User" EntitySet="Users" />
@@ -4855,6 +5055,16 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="NAOAssignments">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.NAOAssignment">
+              <MappingFragment StoreEntitySet="NAOAssignment">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="NAORecommendationId" ColumnName="NAORecommendationId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="NAODefForms">
             <EntityTypeMapping TypeName="ControlAssuranceModel.NAODefForm">
               <MappingFragment StoreEntitySet="NAODefForm">
@@ -4881,11 +5091,21 @@
               <MappingFragment StoreEntitySet="NAOPublication">
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Title" ColumnName="Title" />
-                <ScalarProperty Name="DirectorateId" ColumnName="DirectorateId" />
                 <ScalarProperty Name="NAOTypeId" ColumnName="NAOTypeId" />
                 <ScalarProperty Name="Year" ColumnName="Year" />
                 <ScalarProperty Name="PublicationLink" ColumnName="PublicationLink" />
                 <ScalarProperty Name="ContactDetails" ColumnName="ContactDetails" />
+                <ScalarProperty Name="PublicationSummary" ColumnName="PublicationSummary" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="NAOPublicationDirectorates">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.NAOPublicationDirectorate">
+              <MappingFragment StoreEntitySet="NAOPublicationDirectorate">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="NAOPublicationId" ColumnName="NAOPublicationId" />
+                <ScalarProperty Name="DirectorateId" ColumnName="DirectorateId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -4899,6 +5119,7 @@
                 <ScalarProperty Name="NAOPublicationId" ColumnName="NAOPublicationId" />
                 <ScalarProperty Name="NAORecStatusTypeId" ColumnName="NAORecStatusTypeId" />
                 <ScalarProperty Name="NAOUpdateStatusTypeId" ColumnName="NAOUpdateStatusTypeId" />
+                <ScalarProperty Name="Conclusion" ColumnName="Conclusion" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -4932,6 +5153,8 @@
                 <ScalarProperty Name="NAORecStatusTypeId" ColumnName="NAORecStatusTypeId" />
                 <ScalarProperty Name="NAOUpdateStatusTypeId" ColumnName="NAOUpdateStatusTypeId" />
                 <ScalarProperty Name="UpdateChangeLog" ColumnName="UpdateChangeLog" />
+                <ScalarProperty Name="LastSavedInfo" ColumnName="LastSavedInfo" />
+                <ScalarProperty Name="ProvideUpdate" ColumnName="ProvideUpdate" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -4958,6 +5181,15 @@
                 <ScalarProperty Name="Comment" ColumnName="Comment" />
                 <ScalarProperty Name="CommentById" ColumnName="CommentById" />
                 <ScalarProperty Name="CommentDate" ColumnName="CommentDate" />
+                <ScalarProperty Name="NAOUpdateFeedbackTypeId" ColumnName="NAOUpdateFeedbackTypeId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="NAOUpdateFeedbackTypes">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.NAOUpdateFeedbackType">
+              <MappingFragment StoreEntitySet="NAOUpdateFeedbackType">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

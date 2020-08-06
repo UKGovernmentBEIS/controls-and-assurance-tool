@@ -4,64 +4,67 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="19b2e71cc92d49a087cc3a93f20c6d53" Name="Diagram1">
+      <Diagram DiagramId="8446965b7116485c98643b725f78311b" Name="Diagram1">
         <EntityTypeShape EntityType="ControlAssuranceModel.APILog" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.AuditFeedback" Width="1.5" PointX="3" PointY="38.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.DefElement" Width="1.5" PointX="19.5" PointY="49.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.DefElementGroup" Width="1.5" PointX="17.25" PointY="55.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.DefForm" Width="1.5" PointX="15" PointY="54.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.Directorate" Width="1.5" PointX="6" PointY="38.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.DirectorateGroup" Width="1.5" PointX="3" PointY="33.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.DirectorateGroupMember" Width="1.5" PointX="8.25" PointY="36.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.DirectorateMember" Width="1.5" PointX="8.25" PointY="40.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.Element" Width="1.5" PointX="21.75" PointY="40.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.EntityPriority" Width="1.5" PointX="10.5" PointY="26.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.EntityStatusType" Width="1.5" PointX="0.75" PointY="34.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.Form" Width="1.5" PointX="13.5" PointY="44.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.GIAAActionOwner" Width="1.5" PointX="18.75" PointY="39.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.GIAAActionPriority" Width="1.5" PointX="11.25" PointY="51.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.GIAAActionStatusType" Width="1.5" PointX="11.25" PointY="53.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.GIAAAssurance" Width="1.5" PointX="9" PointY="48.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.GIAAAuditReport" Width="1.5" PointX="11.25" PointY="38.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.AuditFeedback" Width="1.5" PointX="3" PointY="42.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.DefElement" Width="1.5" PointX="19.5" PointY="19.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.DefElementGroup" Width="1.5" PointX="17.25" PointY="24.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.DefForm" Width="1.5" PointX="15" PointY="24.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.Directorate" Width="1.5" PointX="6" PointY="41.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.DirectorateGroup" Width="1.5" PointX="3" PointY="36.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.DirectorateGroupMember" Width="1.5" PointX="8.25" PointY="34.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.DirectorateMember" Width="1.5" PointX="11.25" PointY="45.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.Element" Width="1.5" PointX="21.75" PointY="26.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.EntityPriority" Width="1.5" PointX="19.5" PointY="34" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.EntityStatusType" Width="1.5" PointX="0.75" PointY="37.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.Form" Width="1.5" PointX="16.5" PointY="34.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.GIAAActionOwner" Width="1.5" PointX="15.75" PointY="49" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.GIAAActionPriority" Width="1.5" PointX="11.25" PointY="49.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.GIAAActionStatusType" Width="1.5" PointX="11.25" PointY="52" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.GIAAAssurance" Width="1.5" PointX="6" PointY="52" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.GIAAAuditReport" Width="1.5" PointX="8.25" PointY="46.125" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.GIAADefForm" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.GIAAImport" Width="1.5" PointX="3" PointY="51.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.GIAAImport" Width="1.5" PointX="3" PointY="54.5" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.GIAAPeriod" Width="1.5" PointX="0.75" PointY="3.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.GIAARecommendation" Width="1.5" PointX="13.5" PointY="39.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.GIAAUpdate" Width="1.5" PointX="18.75" PointY="42.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.GoAssignment" Width="1.5" PointX="15.75" PointY="35.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.GoDefElement" Width="1.5" PointX="8.25" PointY="27.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.GIAARecommendation" Width="1.5" PointX="13.5" PointY="45.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.GIAAUpdate" Width="1.5" PointX="18.75" PointY="49" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.GoAssignment" Width="1.5" PointX="18.75" PointY="45.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.GoDefElement" Width="1.5" PointX="14.25" PointY="34.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.GoDefForm" Width="1.5" PointX="2.75" PointY="3.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.GoElement" Width="1.5" PointX="10.5" PointY="29.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.GoElementAction" Width="1.5" PointX="12.75" PointY="30" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.GoElementEvidence" Width="1.5" PointX="15.75" PointY="30.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.GoElementFeedback" Width="1.5" PointX="18.75" PointY="35.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.GoForm" Width="1.5" PointX="8.25" PointY="31" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.GoMiscFile" Width="1.5" PointX="3" PointY="54.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.IAPAssignment" Width="1.5" PointX="3" PointY="43.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.GoElement" Width="1.5" PointX="16.5" PointY="39.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.GoElementAction" Width="1.5" PointX="21.75" PointY="40.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.GoElementEvidence" Width="1.5" PointX="21.75" PointY="44.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.GoElementFeedback" Width="1.5" PointX="18.75" PointY="37.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.GoForm" Width="1.5" PointX="11.25" PointY="39.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.GoMiscFile" Width="1.5" PointX="3" PointY="58" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.IAPAssignment" Width="1.5" PointX="3" PointY="46.625" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.IAPDefForm" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.IAPPriority" Width="1.5" PointX="1.5" PointY="30.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.IAPStatusType" Width="1.5" PointX="1.5" PointY="57.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.IAPType" Width="1.5" PointX="1.5" PointY="59.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.IAPUpdate" Width="1.5" PointX="0.75" PointY="45.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.Log" Width="1.5" PointX="16.5" PointY="40.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.IAPPriority" Width="1.5" PointX="1.5" PointY="61.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.IAPStatusType" Width="1.5" PointX="1.5" PointY="64" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.IAPType" Width="1.5" PointX="1.5" PointY="66.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.IAPUpdate" Width="1.5" PointX="0.75" PointY="48.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.Log" Width="1.5" PointX="19.5" PointY="40.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.NAOAssignment" Width="1.5" PointX="6" PointY="37.625" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.NAODefForm" Width="1.5" PointX="4.75" PointY="3.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.NAOPeriod" Width="1.5" PointX="16.5" PointY="27.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.NAOPublication" Width="1.5" PointX="11.25" PointY="34.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.NAORecommendation" Width="1.5" PointX="13.5" PointY="34.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.NAORecStatusType" Width="1.5" PointX="11.25" PointY="23.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.NAOType" Width="1.5" PointX="9" PointY="45.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.NAOUpdate" Width="1.5" PointX="18.75" PointY="29.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.NAOUpdateEvidence" Width="1.5" PointX="21" PointY="34.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.NAOUpdateFeedback" Width="1.5" PointX="24" PointY="35" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.NAOUpdateStatusType" Width="1.5" PointX="11.25" PointY="48.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.Period" Width="1.5" PointX="6" PointY="29.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.PermissionType" Width="1.5" PointX="3.75" PointY="30.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.NAOPeriod" Width="1.5" PointX="4.5" PointY="25.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.NAOPublication" Width="1.5" PointX="1.5" PointY="27.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.NAOPublicationDirectorate" Width="1.5" PointX="14.25" PointY="42.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.NAORecommendation" Width="1.5" PointX="3.75" PointY="30" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.NAORecStatusType" Width="1.5" PointX="1.5" PointY="31.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.NAOType" Width="1.5" PointX="1.5" PointY="24.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.NAOUpdate" Width="1.5" PointX="6.75" PointY="24.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.NAOUpdateEvidence" Width="1.5" PointX="6" PointY="47.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.NAOUpdateFeedback" Width="1.5" PointX="9" PointY="42.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.NAOUpdateFeedbackType" Width="1.5" PointX="6.75" PointY="54.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.NAOUpdateStatusType" Width="1.5" PointX="1.5" PointY="34" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.Period" Width="1.5" PointX="9" PointY="29.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.PermissionType" Width="1.5" PointX="6.75" PointY="31" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.sysdiagram" Width="1.5" PointX="6.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.Team" Width="1.5" PointX="11.25" PointY="43.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.TeamMember" Width="1.5" PointX="16.5" PointY="44.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.User" Width="1.5" PointX="0.75" PointY="37.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.Team" Width="1.5" PointX="14.25" PointY="38.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.TeamMember" Width="1.5" PointX="16.5" PointY="45.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.User" Width="1.5" PointX="0.75" PointY="40.625" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.UserHelp" Width="1.5" PointX="6.75" PointY="3.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.UserPermission" Width="1.5" PointX="6" PointY="34.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.UserPermission" Width="1.5" PointX="9" PointY="38.625" IsExpanded="true" />
         <AssociationConnector Association="ControlAssuranceModel.FK_AuditFeedback_Period" ManuallyRouted="false" />
         <AssociationConnector Association="ControlAssuranceModel.FK_AuditFeedback_Team" ManuallyRouted="false" />
         <AssociationConnector Association="ControlAssuranceModel.FK_AuditFeedback_User" ManuallyRouted="false" />
@@ -76,7 +79,7 @@
         <AssociationConnector Association="ControlAssuranceModel.FK_Directorate_User" ManuallyRouted="false" />
         <AssociationConnector Association="ControlAssuranceModel.FK_DirectorateMember_Directorate" ManuallyRouted="false" />
         <AssociationConnector Association="ControlAssuranceModel.FK_GIAAAuditReport_Directorate" ManuallyRouted="false" />
-        <AssociationConnector Association="ControlAssuranceModel.FK_NAOPublication_Directorate" ManuallyRouted="false" />
+        <AssociationConnector Association="ControlAssuranceModel.FK_NAOPublicationDirectorate_Directorate" ManuallyRouted="false" />
         <AssociationConnector Association="ControlAssuranceModel.FK_Team_Directorate" ManuallyRouted="false" />
         <AssociationConnector Association="ControlAssuranceModel.FK_DirectorateGroup_EntityStatusType" ManuallyRouted="false" />
         <AssociationConnector Association="ControlAssuranceModel.FK_DirectorateGroup_User" ManuallyRouted="false" />
@@ -119,8 +122,11 @@
         <AssociationConnector Association="ControlAssuranceModel.FK_Log_Period" ManuallyRouted="false" />
         <AssociationConnector Association="ControlAssuranceModel.FK_Log_Team" ManuallyRouted="false" />
         <AssociationConnector Association="ControlAssuranceModel.FK_Log_User" ManuallyRouted="false" />
+        <AssociationConnector Association="ControlAssuranceModel.FK_NAOAssignment_NAORecommendation" ManuallyRouted="false" />
+        <AssociationConnector Association="ControlAssuranceModel.FK_NAOAssignment_User" ManuallyRouted="false" />
         <AssociationConnector Association="ControlAssuranceModel.FK_NAOUpdate_NAOPeriod" ManuallyRouted="false" />
         <AssociationConnector Association="ControlAssuranceModel.FK_NAOPublication_NAOType" ManuallyRouted="false" />
+        <AssociationConnector Association="ControlAssuranceModel.FK_NAOPublicationDirectorate_NAOPublication" ManuallyRouted="false" />
         <AssociationConnector Association="ControlAssuranceModel.FK_NAORecommendation_NAOPublication" ManuallyRouted="false" />
         <AssociationConnector Association="ControlAssuranceModel.FK_NAORecommendation_NAORecStatusType" ManuallyRouted="false" />
         <AssociationConnector Association="ControlAssuranceModel.FK_NAORecommendation_NAOUpdateStatusType" ManuallyRouted="false" />
@@ -130,6 +136,7 @@
         <AssociationConnector Association="ControlAssuranceModel.FK_NAOUpdateEvidence_NAOUpdate" ManuallyRouted="false" />
         <AssociationConnector Association="ControlAssuranceModel.FK_NAOUpdateFeedback_NAOUpdate" ManuallyRouted="false" />
         <AssociationConnector Association="ControlAssuranceModel.FK_NAOUpdateEvidence_User" ManuallyRouted="false" />
+        <AssociationConnector Association="ControlAssuranceModel.FK_NAOUpdateFeedback_NAOUpdateFeedbackType" ManuallyRouted="false" />
         <AssociationConnector Association="ControlAssuranceModel.FK_NAOUpdateFeedback_User" ManuallyRouted="false" />
         <AssociationConnector Association="ControlAssuranceModel.FK_UserPermission_PermissionType" ManuallyRouted="false" />
         <AssociationConnector Association="ControlAssuranceModel.FK_Team_User" ManuallyRouted="false" />

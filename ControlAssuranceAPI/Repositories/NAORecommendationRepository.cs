@@ -75,7 +75,7 @@ namespace ControlAssuranceAPI.Repositories
                     ID = ite.ID,
                     Title = ite.Title,
                     RecommendationDetails = ite.RecommendationDetails,
-                    TargetDate = ite.TargetDate,
+                    TargetDate = ite.TargetDate != null ? ite.TargetDate : "",
                     RecStatus = ite.RecStatus,
                     AssignedTo = ite.AssignedTo,
                     UpdateStatus = ite.UpdateStatus                  

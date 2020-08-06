@@ -10,5 +10,6 @@ export interface INAOPublicationInfo  extends IEntity {
     Stats?: string;
     ContactDetails?: string;
     Links?: string;
+    PublicationSummary?: string;
     
 }

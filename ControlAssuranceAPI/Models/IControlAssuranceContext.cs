@@ -43,6 +43,7 @@ namespace ControlAssuranceAPI.Models
 
         DbSet<NAODefForm> NAODefForms { get; set; }
         DbSet<NAOPublication> NAOPublications { get; set; }
+        DbSet<NAOPublicationDirectorate> NAOPublicationDirectorates { get; set; }
         DbSet<NAOType> NAOTypes { get; set; }
         DbSet<NAOPeriod> NAOPeriods { get; set; }
         DbSet<NAORecommendation> NAORecommendations { get; set; }
@@ -51,6 +52,8 @@ namespace ControlAssuranceAPI.Models
         DbSet<NAOUpdate> NAOUpdates { get; set; }
         DbSet<NAOUpdateEvidence> NAOUpdateEvidences { get; set; }
         DbSet<NAOUpdateFeedback> NAOUpdateFeedbacks { get; set; }
+        DbSet<NAOUpdateFeedbackType> NAOUpdateFeedbackTypes { get; set; }
+        DbSet<NAOAssignment> NAOAssignments { get; set; }
 
 
         DbSet<GIAAAssurance> GIAAAssurances { get; set; }

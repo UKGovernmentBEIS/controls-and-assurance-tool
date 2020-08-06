@@ -4,17 +4,15 @@ import { IDataAPI, IEntity } from '../types';
 
 
 
-export class NAOUpdateFeedbackService extends EntityService<IEntity> {
+export class NAOUpdateFeedbackTypeService extends EntityService<IEntity> {
     public readonly parentEntities = [];
     protected childrenEntities = [];
 
     constructor(spfxContext: WebPartContext, api: IDataAPI) {
-        super(spfxContext, api, `/NAOUpdateFeedbacks`);
+        super(spfxContext, api, `/NAOUpdateFeedbackTypes`);
     }
 
-    public readAllWithArgs(naoUpdateId: number): Promise<IEntity[]> {
-        return this.readAll(`?$filter=NAOUpdateId eq ${naoUpdateId}&$expand=User,NAOUpdateFeedbackType`);
-    }
+
 
 
 }

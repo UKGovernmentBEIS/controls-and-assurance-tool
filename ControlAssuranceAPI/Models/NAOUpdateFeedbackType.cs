@@ -12,18 +12,18 @@ namespace ControlAssuranceAPI.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class NAOUpdateFeedback
+    public partial class NAOUpdateFeedbackType
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public NAOUpdateFeedbackType()
+        {
+            this.NAOUpdateFeedbacks = new HashSet<NAOUpdateFeedback>();
+        }
+    
         public int ID { get; set; }
         public string Title { get; set; }
-        public Nullable<int> NAOUpdateId { get; set; }
-        public string Comment { get; set; }
-        public Nullable<int> CommentById { get; set; }
-        public Nullable<System.DateTime> CommentDate { get; set; }
-        public Nullable<int> NAOUpdateFeedbackTypeId { get; set; }
     
-        public virtual NAOUpdate NAOUpdate { get; set; }
-        public virtual NAOUpdateFeedbackType NAOUpdateFeedbackType { get; set; }
-        public virtual User User { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<NAOUpdateFeedback> NAOUpdateFeedbacks { get; set; }
     }
 }

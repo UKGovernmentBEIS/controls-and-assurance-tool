@@ -40,10 +40,12 @@ export { Entity, IEntity } from './Entity';
 export { INAOPeriod, NAOPeriod } from './NAOPeriod';
 export { INAODefForm } from './NAODefForm';
 export { INAOPublication, NAOPublication } from './NAOPublication';
+export { INAOPublicationDirectorate, NAOPublicationDirectorate } from './NAOPublicationDirectorate';
 export { INAOPublicationInfo } from './NAOPublicationInfo';
 export { INAORecommendation, NAORecommendation } from './NAORecommendation';
 export { INAOUpdate, NAOUpdate } from './NAOUpdate';
 export { INAOUpdateEvidence, NAOUpdateEvidence } from './NAOUpdateEvidence';
+export { INAOAssignment, NAOAssignment } from './NAOAssignment';
 
 export { IGIAAPeriod, GIAAPeriod } from './GIAAPeriod';
 export { IGIAADefForm } from './GIAADefForm';

@@ -93,9 +93,13 @@ export default class RecommendationsTab extends React.Component<IRecommendations
     private renderInfoTable() {
 
         const pInfo = this.state.PublicationInfo;
-        if(pInfo === null) return null;
-        
+        if (pInfo === null) return null;
 
+        let summary: string = pInfo.PublicationSummary;
+        summary = summary.split('\n').join('<br/>');
+
+        let contactDetails: string = pInfo.ContactDetails;
+        contactDetails = contactDetails.split('\n').join('<br/>');
 
         return (
 
@@ -107,61 +111,71 @@ export default class RecommendationsTab extends React.Component<IRecommendations
                     <table cellSpacing="0" cellPadding="10" style={{ width: '100%' }}>
                         <tbody>
 
-                        <tr>
-                            <td style={{ width:'150px', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
-                                Type
+                            <tr>
+                                <td style={{ width: '150px', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Type
                             </td>
-                            <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)' }}>
-                                {pInfo.NAOType}
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)' }}>
+                                    {pInfo.NAOType}
+                                </td>
+                                <td style={{ width: '150px', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Directorate(s)
                             </td>
-                            <td style={{ width:'150px', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
-                                Directorate
-                            </td>
-                            <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
-                                {pInfo.Directorate}
-                            </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                    {pInfo.Directorate}
+                                </td>
 
-                        </tr>
+                            </tr>
 
-                        <tr>
-                            <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
-                                Year
+                            <tr>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Year
                             </td>
-                            <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)' }}>
-                                {pInfo.Year}
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)' }}>
+                                    {pInfo.Year}
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Lead
                             </td>
-                            <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
-                                Lead
-                            </td>
-                            <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
-                                {pInfo.Lead}
-                            </td>
-                        </tr>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                    {pInfo.Lead}
+                                </td>
+                            </tr>
 
-                        <tr>
-                            <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
-                                Stats
+                            <tr>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Stats
                             </td>
-                            <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)' }}>
-                                {pInfo.Stats}
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)' }}>
+                                    {pInfo.Stats}
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Contact Details
                             </td>
-                            <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
-                                Contact Details
-                            </td>
-                            <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
-                                {pInfo.ContactDetails}
-                            </td>
-                        </tr>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                    <div dangerouslySetInnerHTML={{ __html: contactDetails }} ></div>
+                                </td>
+                            </tr>
 
-                        <tr>
-                            <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
-                                Links
+                            <tr>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Links
                             </td>
-                            <td colSpan={3} style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
-                                {pInfo.Links}
-                            </td>
+                                <td colSpan={3} style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                    {pInfo.Links}
+                                </td>
 
-                        </tr>
+                            </tr>
+
+                            <tr>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Summary
+                            </td>
+                                <td colSpan={3} style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                    <div dangerouslySetInnerHTML={{ __html: summary }} ></div>
+                                </td>
+
+                            </tr>
 
 
                         </tbody>
@@ -220,7 +234,7 @@ export default class RecommendationsTab extends React.Component<IRecommendations
             this.setState({
                 PublicationInfo: p
             });
-            
+
 
         }, (err) => {
             if (this.props.onError) this.props.onError(`Error loading publication info`, err.message);
