@@ -146,6 +146,7 @@ export class FilteredRecList extends React.Component<IFilteredRecListProps, IFil
                     {(props.editDisabled === false) &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Assign' }}
+                            className={classNames.cmdBtn}
                             text="Assign"
                             onClick={props.onAssign}
                         />}

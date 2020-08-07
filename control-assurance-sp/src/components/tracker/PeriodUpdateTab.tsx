@@ -142,10 +142,16 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
 
 
         let recDetails: string = recInfo["NAORecommendation"]["RecommendationDetails"];
-        recDetails = recDetails.split('\n').join('<br/>');
+        if(recDetails !== null)
+            recDetails = recDetails.split('\n').join('<br/>');
+        else
+            recDetails = "";
 
         let conclusion: string = recInfo["NAORecommendation"]["Conclusion"];
-        conclusion = conclusion.split('\n').join('<br/>');
+        if(conclusion !== null)
+            conclusion = conclusion.split('\n').join('<br/>');
+        else
+            conclusion = "";
 
         return (
 
