@@ -15,6 +15,7 @@ import styles from '../../styles/cr.module.scss';
 
 export interface IMainListProps extends types.IBaseComponentProps {
 
+    isArchive: boolean;
     onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
     naoPeriodId: number | string;
     dgAreaId: number | string;
@@ -25,6 +26,9 @@ export interface IMainListProps extends types.IBaseComponentProps {
 
     filterText?: string;
     onChangeFilterText: (value: string) => void;
+
+    onMainSaved: () => void;
+    mainListsSaveCounter: number;
 
 }
 
@@ -137,6 +141,7 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
             fieldName: 'AssignedTo',
             minWidth: 120,
             maxWidth: 120,
+            isMultiline: true,
             isResizable: true,
             headerClassName: styles.bold,
         },
@@ -287,8 +292,9 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
     }
 
     private formSaved = (): void => {
-        this.loadData();
-        this.closePanel();
+        //this.loadData();
+        //this.closePanel();
+        this.setState({ ShowForm: false, }, this.props.onMainSaved);
     }
 
     private getSelectedEntityName = (): string => {
@@ -313,7 +319,7 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
         this.setState({ Loading: true });
 
 
-        const read: Promise<IEntity[]> = this.mainService.readAllWithFilters(this.props.naoPeriodId, this.props.dgAreaId, this.props.incompleteOnly, this.props.justMine);
+        const read: Promise<IEntity[]> = this.mainService.readAllWithFilters(this.props.naoPeriodId, this.props.dgAreaId, this.props.incompleteOnly, this.props.justMine, this.props.isArchive);
         read.then((entities: any): void => {
             this.setState({
                 Loading: false, Entities: entities,
@@ -331,7 +337,7 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
 
     }
     public componentDidUpdate(prevProps: IMainListProps): void {
-        if (prevProps.naoPeriodId !== this.props.naoPeriodId || prevProps.dgAreaId !== this.props.dgAreaId || prevProps.justMine !== this.props.justMine || prevProps.incompleteOnly !== this.props.incompleteOnly) {
+        if (prevProps.naoPeriodId !== this.props.naoPeriodId || prevProps.dgAreaId !== this.props.dgAreaId || prevProps.justMine !== this.props.justMine || prevProps.incompleteOnly !== this.props.incompleteOnly || prevProps.mainListsSaveCounter !== this.props.mainListsSaveCounter) {
             //console.log('props changed, load data again');
             this._selection.setAllSelected(false);
             this.loadData();

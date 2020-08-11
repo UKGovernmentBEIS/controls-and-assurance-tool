@@ -12,6 +12,7 @@ export interface INAOPublication  extends IEntity {
     //DirectorateId?: number;
     NAOTypeId?: number;
 
+    IsArchive?:boolean;
     NAOPublicationDirectorates?: INAOPublicationDirectorate[];
     
 }
@@ -26,6 +27,7 @@ export class NAOPublication implements INAOPublication{
     //public DirectorateId = null;
     public NAOTypeId = null;
 
+    public IsArchive = false;
     public NAOPublicationDirectorates = [];
 
 

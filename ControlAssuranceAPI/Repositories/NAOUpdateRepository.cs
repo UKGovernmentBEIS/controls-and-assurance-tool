@@ -75,10 +75,11 @@ namespace ControlAssuranceAPI.Repositories
                 naoUpdateDb.NAOComments = naoUpdate.NAOComments;
                 naoUpdateDb.FurtherLinks = naoUpdate.FurtherLinks;
                 naoUpdateDb.NAORecStatusTypeId = naoUpdate.NAORecStatusTypeId;
-                naoUpdateDb.NAOUpdateStatusTypeId = naoUpdate.NAOUpdateStatusTypeId;
+                naoUpdateDb.NAOUpdateStatusTypeId = 2; //hardcode value on every save 2 means "Saved"
 
                 naoUpdateDb.NAORecommendation.TargetDate = naoUpdate.TargetDate;
                 naoUpdateDb.NAORecommendation.NAORecStatusTypeId = naoUpdate.NAORecStatusTypeId;
+                naoUpdateDb.NAORecommendation.NAOUpdateStatusTypeId = 2; //hardcode value on every save 2 means "Saved"
 
                 string user = ApiUser.Title;
                 string date = DateTime.Now.ToString("ddMMMyyyy HH:mm");

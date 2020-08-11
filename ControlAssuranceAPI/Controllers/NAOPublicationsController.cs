@@ -31,9 +31,9 @@ namespace ControlAssuranceAPI.Controllers
         }
 
         // GET: /odata/NAOPublications?naoPeriodId=1&dgAreaId=1&incompleteOnly=true&justMine=false
-        public List<NAOPublicationView_Result> Get(int naoPeriodId, int dgAreaId, bool incompleteOnly, bool justMine)
+        public List<NAOPublicationView_Result> Get(int naoPeriodId, int dgAreaId, bool incompleteOnly, bool justMine, bool isArchive)
         {
-            return db.NAOPublicationRepository.GetPublications(naoPeriodId, dgAreaId, incompleteOnly, justMine);
+            return db.NAOPublicationRepository.GetPublications(naoPeriodId, dgAreaId, incompleteOnly, justMine, isArchive);
         }
 
         // GET: /odata/NAOPublications?naoPublicationId=1&getInfo=true
@@ -41,6 +41,13 @@ namespace ControlAssuranceAPI.Controllers
         {
             var pInfo = db.NAOPublicationRepository.GetPublicationInfo(naoPublicationId);
             return pInfo;
+        }
+
+        // GET: /odata/NAOPublications?getOverallUpdateStatus=true&dgAreaId=0&archived=false
+        public string Get(bool getOverallUpdateStatus, int dgAreaId, bool archived)
+        {
+            var res = db.NAOPublicationRepository.GetOverallPublicationsUpdateStatus(dgAreaId, archived);
+            return res;
         }
 
         // POST: odata/NAOPublications

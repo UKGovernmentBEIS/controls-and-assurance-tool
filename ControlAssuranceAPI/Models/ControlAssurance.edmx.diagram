@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="8446965b7116485c98643b725f78311b" Name="Diagram1">
+      <Diagram DiagramId="4a644945d7804bb6869341188c96a29d" Name="Diagram1">
         <EntityTypeShape EntityType="ControlAssuranceModel.APILog" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.AuditFeedback" Width="1.5" PointX="3" PointY="42.25" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.DefElement" Width="1.5" PointX="19.5" PointY="19.25" IsExpanded="true" />
@@ -47,7 +47,7 @@
         <EntityTypeShape EntityType="ControlAssuranceModel.NAOAssignment" Width="1.5" PointX="6" PointY="37.625" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.NAODefForm" Width="1.5" PointX="4.75" PointY="3.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.NAOPeriod" Width="1.5" PointX="4.5" PointY="25.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.NAOPublication" Width="1.5" PointX="1.5" PointY="27.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.NAOPublication" Width="1.5" PointX="1.5" PointY="27.625" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.NAOPublicationDirectorate" Width="1.5" PointX="14.25" PointY="42.625" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.NAORecommendation" Width="1.5" PointX="3.75" PointY="30" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.NAORecStatusType" Width="1.5" PointX="1.5" PointY="31.5" IsExpanded="true" />
@@ -56,7 +56,7 @@
         <EntityTypeShape EntityType="ControlAssuranceModel.NAOUpdateEvidence" Width="1.5" PointX="6" PointY="47.25" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.NAOUpdateFeedback" Width="1.5" PointX="9" PointY="42.25" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.NAOUpdateFeedbackType" Width="1.5" PointX="6.75" PointY="54.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.NAOUpdateStatusType" Width="1.5" PointX="1.5" PointY="34" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.NAOUpdateStatusType" Width="1.5" PointX="1.5" PointY="34.125" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.Period" Width="1.5" PointX="9" PointY="29.125" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.PermissionType" Width="1.5" PointX="6.75" PointY="31" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.sysdiagram" Width="1.5" PointX="6.75" PointY="0.75" IsExpanded="true" />

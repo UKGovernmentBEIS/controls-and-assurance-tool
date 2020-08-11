@@ -8,6 +8,7 @@ import { FormButtons } from '../cr/FormButtons';
 import { Panel, PanelType } from 'office-ui-fabric-react/lib/Panel';
 import { FormCommandBar } from '../cr/FormCommandBar';
 import { CrEntityPicker } from '../cr/CrEntityPicker';
+import { CrCheckbox } from '../cr/CrCheckbox';
 import styles from '../../styles/cr.module.scss';
 
 export interface IMainSaveFormProps extends types.IBaseComponentProps {
@@ -101,6 +102,7 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
                 {this.renderYear()}
                 {this.renderPublicationLink()}
                 {this.renderContactDetails()}
+                {this.renderIsArchiveCheckbox()}
 
             </React.Fragment>
         );
@@ -227,6 +229,24 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
         );
     }
 
+    private renderIsArchiveCheckbox() {
+
+        return (
+            <div>
+
+                <CrCheckbox
+                    className={`${styles.formField} ${styles.checkbox}`}
+                    label="Archive"
+                    checked={this.state.FormData.IsArchive}
+                    onChange={(ev, isChecked) => this.changeCheckbox(isChecked, "IsArchive")}
+
+
+                />
+
+            </div>
+        );
+
+    }
 
 
     //#endregion Render
@@ -482,6 +502,10 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
     }
 
     private cloneArray(array): any[] { return [...array]; }
+
+    private changeCheckbox = (value: boolean, f: string): void => {
+        this.setState({ FormData: this.cloneObject(this.state.FormData, f, value), FormIsDirty: true });
+    }
 
     //#endregion Form Operations
 

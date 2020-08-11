@@ -73,11 +73,12 @@ namespace ControlAssuranceAPI.Repositories
             return db.NAOPublications.Remove(naoPublication);
         }
 
-        public List<NAOPublicationView_Result> GetPublications(int naoPeriodId, int dgAreaId, bool incompleteOnly, bool justMine)
+        public List<NAOPublicationView_Result> GetPublications(int naoPeriodId, int dgAreaId, bool incompleteOnly, bool justMine, bool isArchive)
         {
             List<NAOPublicationView_Result> retList = new List<NAOPublicationView_Result>();
 
             var qry = from p in db.NAOPublications
+                      where p.IsArchive == isArchive
                       //where p.NAORecommendations.Any(x => x.NAOUpdates.Any (y => y.NAOPeriodId == naoPeriodId))
                       select new
                       {
@@ -88,15 +89,31 @@ namespace ControlAssuranceAPI.Repositories
                           //DGArea = p.Directorate.DirectorateGroup.Title,
                           Type = p.NAOType.Title,
                           p.Year,
+                          p.NAORecommendations
                           
 
 
                       };
 
             if(dgAreaId > 0)
-            {     
-                //TODO
+            {
+
                 //qry = qry.Where(x => x.DirectorateGroupID == dgAreaId);
+
+                
+                var dirs = db.Directorates.Where(x => x.DirectorateGroupID == dgAreaId).ToList();
+                int totalDirs = dirs.Count();
+
+                int[] arrDirs = new int[totalDirs];
+                int indexD = 0;
+                foreach (var d in dirs)
+                {
+                    arrDirs[indexD] = d.ID;
+                    indexD++;
+                }
+
+                qry = qry.Where(x => x.NAOPublicationDirectorates.Any(d => arrDirs.Contains(d.DirectorateId.Value)));
+
             }
 
             if (justMine == true)
@@ -117,6 +134,59 @@ namespace ControlAssuranceAPI.Repositories
                 string completionStatus = "Not Started"; //default value
                 string users = "";
                 string dgAreas = "";
+
+                int completedPercentage = 0;
+                int totalRecs = iteP.NAORecommendations.Count();
+                int totalImplementedRecs = iteP.NAORecommendations.Count(x => x.NAORecStatusTypeId == 3);
+
+                int updatedRecs = iteP.NAORecommendations.Count(x => x.NAOUpdateStatusTypeId == 2);
+
+                if(totalRecs > 0)
+                {
+                    if(totalRecs == updatedRecs)
+                    {
+                        completionStatus = "Updated";
+                    }
+                    else if(updatedRecs > 0)
+                    {
+                        completionStatus = "Started";
+                    }
+                }
+
+                try
+                {
+                    var completedPercentageD = (decimal)((decimal)(decimal)totalImplementedRecs / (decimal)totalRecs) * 100;
+                    completedPercentage = (int)Math.Round(completedPercentageD);
+                }
+                catch { }
+
+
+                HashSet<User> uniqueUsers = new HashSet<User>();
+
+                foreach (var rec in iteP.NAORecommendations)
+                {
+                    foreach (var ass in rec.NAOAssignments)
+                    {
+                        uniqueUsers.Add(ass.User);
+                    }
+                }
+
+                int totalUniqueOwners = uniqueUsers.Count;
+                foreach (var uniqueOwner in uniqueUsers)
+                {
+                    users += uniqueOwner.Title + ",";
+                }
+
+                users = users.Trim();
+                if (users.Length > 0)
+                {
+                    users = users.Substring(0, users.Length - 1);
+                }
+
+
+
+
+
                 HashSet<DirectorateGroup> uniqueDgAreas = new HashSet<DirectorateGroup>();
                 foreach (var d in iteP.NAOPublicationDirectorates)
                 {
@@ -143,7 +213,7 @@ namespace ControlAssuranceAPI.Repositories
                     DGArea = dgAreas,
                     Type = iteP.Type,
                     Year = iteP.Year,
-                    CompletePercent = "0%",
+                    CompletePercent = $"{completedPercentage}%",
                     AssignedTo = users,
                     UpdateStatus = completionStatus
 
@@ -155,6 +225,77 @@ namespace ControlAssuranceAPI.Repositories
 
 
             return retList;
+        }
+
+        public string GetOverallPublicationsUpdateStatus(int dgAreaId, bool isArchived)
+        {
+            string overAllStatus = "Not Started"; //default value
+            List<string> lstCompletionStatus = new List<string>();
+
+            var qry = from p in db.NAOPublications
+                      where p.IsArchive == isArchived
+                      select p;
+
+            if (dgAreaId > 0)
+            {
+
+                var dirs = db.Directorates.Where(x => x.DirectorateGroupID == dgAreaId).ToList();
+                int totalDirs = dirs.Count();
+
+                int[] arrDirs = new int[totalDirs];
+                int indexD = 0;
+                foreach (var d in dirs)
+                {
+                    arrDirs[indexD] = d.ID;
+                    indexD++;
+                }
+
+                qry = qry.Where(x => x.NAOPublicationDirectorates.Any(d => arrDirs.Contains(d.DirectorateId.Value)));
+
+            }
+
+
+            var publications = qry.ToList();
+            foreach(var pub in publications)
+            {
+                string completionStatus = "Not Started"; //default value
+                var totalRecs = pub.NAORecommendations.Count();
+                if(totalRecs > 0)
+                {
+                    var updatedRecs = pub.NAORecommendations.Count(x => x.NAOUpdateStatusTypeId == 2);
+                    if (totalRecs == updatedRecs)
+                    {
+                        completionStatus = "Updated";
+                    }
+                    else if (updatedRecs > 0)
+                    {
+                        completionStatus = "Started";
+                    }
+
+                }
+
+                lstCompletionStatus.Add(completionStatus);
+            }
+
+
+            if(lstCompletionStatus.Count > 0)
+            {
+                int totalCount = lstCompletionStatus.Count();
+                int totalUpdated = lstCompletionStatus.Count(x => x == "Updated");
+                int totalStarted = lstCompletionStatus.Count(x => x == "Started");
+
+                if (totalCount == totalUpdated)
+                {
+                    overAllStatus = "Updated";
+                }
+                else if(totalStarted > 0 || totalUpdated > 0)
+                {
+                    overAllStatus = "Started";
+                }
+            }
+
+
+            return overAllStatus;
         }
     }
 }

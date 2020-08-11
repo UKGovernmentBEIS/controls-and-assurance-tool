@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Pivot, PivotItem } from 'office-ui-fabric-react/lib/Pivot';
 import { CrDropdown, IDropdownOption } from '../../../components/cr/CrDropdown';
-import Section1 from '../../../components/naoUpdates/Section1';
+import Section from '../../../components/naoUpdates/Section';
 import Section2 from '../../../components/naoUpdates/Section2';
 //import Section2Update from '../../../components/govUpdates/Section2Update';
 //import Section3Update from '../../../components/govUpdates/Section3Update';
@@ -47,14 +47,26 @@ export interface INaoUpdatesState extends types.IUserContextWebPartState {
   Section1_MainList_IncompleteOnly: boolean;
   Section1__MainList_JustMine: boolean;
   Section1_MainList_ListFilterText: string;
-  Section1_MainList_SelectedId: number;
-  Section1_MainList_SelectedTitle: string;
-  Section1_MainList_FilteredItems: any[];
+
+  Section2_IsOpen: boolean;
+  Section2_MainList_IncompleteOnly: boolean;
+  Section2__MainList_JustMine: boolean;
+  Section2_MainList_ListFilterText: string;
+
+  MainListsSaveCounter: number;
+
+  //generic for both sections
+  Section_MainList_SelectedId: number;
+  Section_MainList_SelectedTitle: string;
+  Section_MainList_FilteredItems: any[];
 
   //Rec Tab
   Section1_RecList_SelectedId: number;
   Section1_RecList_SelectedTitle: string;
   Section1_RecList_FilteredItems: any[];
+
+  Section1UpdateStatus: string;
+  Section2UpdateStatus: string;
 
 }
 export class NaoUpdatesState extends types.UserContextWebPartState implements INaoUpdatesState {
@@ -70,14 +82,26 @@ export class NaoUpdatesState extends types.UserContextWebPartState implements IN
   public Section1_MainList_IncompleteOnly = false;
   public Section1__MainList_JustMine = false;
   public Section1_MainList_ListFilterText: string = null;
-  public Section1_MainList_SelectedId: number = 0;
-  public Section1_MainList_SelectedTitle: string = null;
-  public Section1_MainList_FilteredItems = [];
+
+  public MainListsSaveCounter: number = 0;
+
+  public Section2_IsOpen: boolean = false;
+  public Section2_MainList_IncompleteOnly = false;
+  public Section2__MainList_JustMine = false;
+  public Section2_MainList_ListFilterText: string = null;
+
+  //generic for both sections
+  public Section_MainList_SelectedId: number = 0;
+  public Section_MainList_SelectedTitle: string = null;
+  public Section_MainList_FilteredItems = [];
 
   //Rec Tab
   public Section1_RecList_SelectedId: number;
   public Section1_RecList_SelectedTitle: string;
   public Section1_RecList_FilteredItems: any[];
+
+  public Section1UpdateStatus: string = null;
+  public Section2UpdateStatus: string = null;
 
   constructor() {
     super();
@@ -92,6 +116,7 @@ export default class NaoUpdates extends BaseUserContextWebPartComponent<types.IW
   //private goFormService: services.GoFormService = new services.GoFormService(this.props.spfxContext, this.props.api);
   protected periodService: services.NAOPeriodService = new services.NAOPeriodService(this.props.spfxContext, this.props.api);
   protected deirectorateGroupService: services.DirectorateGroupService = new services.DirectorateGroupService(this.props.spfxContext, this.props.api);
+  protected naoPublicationService: services.NAOPublicationService = new services.NAOPublicationService(this.props.spfxContext, this.props.api);
 
   private readonly headerTxt_MainTab: string = "NAO/PAC Updates-Main";
   private readonly headerTxt_RecommendationsTab: string = "Recommendations";
@@ -153,22 +178,43 @@ export default class NaoUpdates extends BaseUserContextWebPartComponent<types.IW
 
           {this.state.PeriodId > 0 &&
             <div>
-              <Section1
+              <Section
+                isArchive={false}
+                sectionTitle="Active NAO/PAC Publications"
                 naoPeriodId={this.state.PeriodId}
                 dgAreaId={this.state.DirectorateGroupId}
-                //section1CompletionStatus={this.state.GoForm.SpecificAreasCompletionStatus}
-                onItemTitleClick={this.handleSection1_MainListItemTitleClick}
-                section1_IsOpen={this.state.Section1_IsOpen}
-                onSection1_toggleOpen={this.handleSection1_toggleOpen}
+                sectionUpdateStatus={this.state.Section1UpdateStatus}
+                onItemTitleClick={this.handleSection_MainListItemTitleClick}
+                section_IsOpen={this.state.Section1_IsOpen}
+                onSection_toggleOpen={this.handleSection1_toggleOpen}
                 justMine={this.state.Section1__MainList_JustMine}
                 incompleteOnly={this.state.Section1_MainList_IncompleteOnly}
                 listFilterText={this.state.Section1_MainList_ListFilterText}
                 onChangeFilterText={this.handleSection1_ChangeFilterText}
                 onChangeIncompleteOnly={this.handleSection1_ChangeIncompleteOnly}
                 onChangeJustMine={this.handleSection1_ChangeJustMine}
+                onMainSaved={this.handleMainFormSaved}
+                mainListsSaveCounter={this.state.MainListsSaveCounter}
                 {...this.props}
               />
-              <Section2
+
+              <Section
+                isArchive={true}
+                sectionTitle="Archived NAO/PAC Publications"
+                naoPeriodId={this.state.PeriodId}
+                dgAreaId={this.state.DirectorateGroupId}
+                sectionUpdateStatus={this.state.Section2UpdateStatus}
+                onItemTitleClick={this.handleSection_MainListItemTitleClick}
+                section_IsOpen={this.state.Section2_IsOpen}
+                onSection_toggleOpen={this.handleSection2_toggleOpen}
+                justMine={this.state.Section2__MainList_JustMine}
+                incompleteOnly={this.state.Section2_MainList_IncompleteOnly}
+                listFilterText={this.state.Section2_MainList_ListFilterText}
+                onChangeFilterText={this.handleSection2_ChangeFilterText}
+                onChangeIncompleteOnly={this.handleSection2_ChangeIncompleteOnly}
+                onChangeJustMine={this.handleSection2_ChangeJustMine}
+                onMainSaved={this.handleMainFormSaved}
+                mainListsSaveCounter={this.state.MainListsSaveCounter}
                 {...this.props}
               />
 
@@ -218,9 +264,9 @@ export default class NaoUpdates extends BaseUserContextWebPartComponent<types.IW
     return (
 
       <RecommendationsTab
-        filteredItems={this.state.Section1_MainList_FilteredItems}
-        parentId={this.state.Section1_MainList_SelectedId}
-        parentTitle={this.state.Section1_MainList_SelectedTitle}
+        filteredItems={this.state.Section_MainList_FilteredItems}
+        parentId={this.state.Section_MainList_SelectedId}
+        parentTitle={this.state.Section_MainList_SelectedTitle}
         //isViewOnly={this.isViewOnlyGoForm()}
         onItemTitleClick={this.handleSection1_RecListItemTitleClick}
         onShowList={this.handleShowListSection1}
@@ -301,12 +347,28 @@ export default class NaoUpdates extends BaseUserContextWebPartComponent<types.IW
     }, (err) => { if (this.onError) this.onError(`Error loading Teams lookup data`, err.message); });
   }
 
+  private loadOverallUpdateStatuses() {
+    this.naoPublicationService.readOverAllUpdateStatus(false, Number(this.state.DirectorateGroupId)).then((res: string): void => {
+      console.log('loadOverallUpdateStatuses active', res);
+      this.setState({ Section1UpdateStatus: res });
+
+    }, (err) => { });
+
+    this.naoPublicationService.readOverAllUpdateStatus(true, Number(this.state.DirectorateGroupId)).then((res: string): void => {
+      console.log('loadOverallUpdateStatuses archived', res);
+
+      this.setState({ Section2UpdateStatus: res });
+
+    }, (err) => { });
+  }
+
 
   protected loadLookups(): Promise<any> {
 
     return Promise.all([
       this.loadPeriods(),
       this.loadDGAreas(),
+      this.loadOverallUpdateStatuses(),
       //this.loadDefForm(),
 
     ]);
@@ -378,7 +440,7 @@ export default class NaoUpdates extends BaseUserContextWebPartComponent<types.IW
     else {
       //f === "DirectorateGroupId"
       this.setState({ DirectorateGroupId: option.key },
-        //this.readOrCreateGoFormInDb
+        this.loadOverallUpdateStatuses
       );
     }
 
@@ -422,14 +484,14 @@ export default class NaoUpdates extends BaseUserContextWebPartComponent<types.IW
     this.setState({ SelectedPivotKey: item.props.headerText });
   }
 
-  private handleSection1_MainListItemTitleClick = (ID: number, title: string, filteredItems: any[]): void => {
+  private handleSection_MainListItemTitleClick = (ID: number, title: string, filteredItems: any[]): void => {
 
     console.log('on main list item title click ', ID, title, filteredItems);
     this.setState({
       SelectedPivotKey: this.headerTxt_RecommendationsTab,
-      Section1_MainList_SelectedId: ID,
-      Section1_MainList_SelectedTitle: title,
-      Section1_MainList_FilteredItems: filteredItems
+      Section_MainList_SelectedId: ID,
+      Section_MainList_SelectedTitle: title,
+      Section_MainList_FilteredItems: filteredItems
     });
   }
 
@@ -470,6 +532,35 @@ export default class NaoUpdates extends BaseUserContextWebPartComponent<types.IW
     console.log('in handleShowSection1RecList');
     this.clearErrors();
     this.setState({ SelectedPivotKey: this.headerTxt_RecommendationsTab });
+  }
+
+  private handleMainFormSaved = (): void => {
+
+    this.loadOverallUpdateStatuses();
+    const x: number = this.state.MainListsSaveCounter + 1;
+    console.log('in handleMainFormSaved', x);
+    this.setState({ MainListsSaveCounter: x });
+
+  }
+
+  //section 2 event handlers
+
+
+
+  private handleSection2_toggleOpen = (): void => {
+    this.setState({ Section2_IsOpen: !this.state.Section2_IsOpen });
+  }
+
+  private handleSection2_ChangeFilterText = (value: string): void => {
+    this.setState({ Section2_MainList_ListFilterText: value });
+  }
+
+  private handleSection2_ChangeIncompleteOnly = (value: boolean): void => {
+    this.setState({ Section2_MainList_IncompleteOnly: value });
+  }
+
+  private handleSection2_ChangeJustMine = (value: boolean): void => {
+    this.setState({ Section2__MainList_JustMine: value });
   }
 
   //#endregion event handlers

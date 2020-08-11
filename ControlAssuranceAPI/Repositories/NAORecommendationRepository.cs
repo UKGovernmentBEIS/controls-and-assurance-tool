@@ -47,8 +47,8 @@ namespace ControlAssuranceAPI.Repositories
                           r.RecommendationDetails,
                           r.TargetDate,
                           RecStatus = r.NAORecStatusType.Title,
-                          UpdateStatus = r.NAOUpdateStatusType.Title,
-                          AssignedTo = "",
+                          r.NAOUpdateStatusTypeId,
+                          r.NAOAssignments
 
                       };
             
@@ -69,6 +69,16 @@ namespace ControlAssuranceAPI.Repositories
 
             foreach (var ite in list)
             {
+                string assignedUsers = "";
+                foreach (var o in ite.NAOAssignments)
+                {
+                    assignedUsers += o.User.Title + ", ";
+                }
+                assignedUsers = assignedUsers.Trim();
+                if (assignedUsers.Length > 0)
+                {
+                    assignedUsers = assignedUsers.Substring(0, assignedUsers.Length - 1);
+                }
 
                 NAORecommendationView_Result item = new NAORecommendationView_Result
                 {
@@ -77,8 +87,8 @@ namespace ControlAssuranceAPI.Repositories
                     RecommendationDetails = ite.RecommendationDetails,
                     TargetDate = ite.TargetDate != null ? ite.TargetDate : "",
                     RecStatus = ite.RecStatus,
-                    AssignedTo = ite.AssignedTo,
-                    UpdateStatus = ite.UpdateStatus                  
+                    AssignedTo = assignedUsers,
+                    UpdateStatus = (ite.NAOUpdateStatusTypeId > 1) ? "Updated" : "Not Started"
 
                 };
 

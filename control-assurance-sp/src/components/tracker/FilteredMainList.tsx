@@ -211,35 +211,34 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
 
         if (column.key === "UpdateStatus") {
 
-            //let txtColor: string = "white";
-            //let bgColor: string = "";
-            let statusImg: string = "";
+            let txtColor: string = "white";
+            let bgColor: string = "";
+            //let statusImg: string = "";
 
-            if (fieldContent === ElementStatuses.ToBeCompleted) {
-                //bgColor = "rgb(230,230,230)";
+            if (fieldContent === "Not Started") {
+                bgColor = "rgb(166,166,166)";
                 //txtColor = "black";
-                statusImg = this.statusImgNotStarted;
+                //statusImg = this.statusImgNotStarted;
             }
-            else if (fieldContent === ElementStatuses.InProgress) {
-                //bgColor = "rgb(255,191,0)";
+
+            else if (fieldContent === "Started") {
+                bgColor = "rgb(255,191,0)";
+                txtColor = "black";
+                //statusImg = this.statusImgInProgress;
+            }
+
+            else if (fieldContent === "Updated") {
+                bgColor = "rgb(0,127,0)";
                 //txtColor = "white";
-                statusImg = this.statusImgInProgress;
+                //statusImg = this.statusImgInProgress;
             }
-            // else if (fieldContent === ElementStatuses.ReqSignOff) {
-            //     bgColor = "rgb(185,0,185)";
-            //     txtColor = "white";
-            // }
-            else if (fieldContent === ElementStatuses.Completed) {
-                //bgColor = "rgb(0,127,0)";
-                //txtColor = "white";
-                statusImg = this.statusImgCompleted;
-            }
+
 
             return (
-                // <span style={{ backgroundColor: bgColor, color: txtColor, width: "140px", display: "block", paddingLeft: "10px", paddingTop: "5px", paddingBottom: "5px" }}>
-                //     {fieldContent}
-                // </span>
-                <img src={statusImg} />
+                <span style={{ backgroundColor: bgColor, color: txtColor, width: "140px", display: "block", paddingLeft: "10px", paddingTop: "5px", paddingBottom: "5px" }}>
+                    {fieldContent}
+                </span>
+                // <img src={statusImg} />
 
             );
         }

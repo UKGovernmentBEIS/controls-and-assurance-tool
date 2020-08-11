@@ -597,6 +597,7 @@
           <Property Name="PublicationLink" Type="nvarchar" MaxLength="2000" />
           <Property Name="ContactDetails" Type="nvarchar(max)" />
           <Property Name="PublicationSummary" Type="nvarchar(max)" />
+          <Property Name="IsArchive" Type="bit" />
         </EntityType>
         <EntityType Name="NAOPublicationDirectorate">
           <Key>
@@ -2777,6 +2778,7 @@
           <Property Name="PublicationLink" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
           <Property Name="ContactDetails" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="PublicationSummary" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="IsArchive" Type="Boolean" />
           <NavigationProperty Name="NAOType" Relationship="Self.FK_NAOPublication_NAOType" FromRole="NAOPublication" ToRole="NAOType" />
           <NavigationProperty Name="NAOPublicationDirectorates" Relationship="Self.FK_NAOPublicationDirectorate_NAOPublication" FromRole="NAOPublication" ToRole="NAOPublicationDirectorate" />
           <NavigationProperty Name="NAORecommendations" Relationship="Self.FK_NAORecommendation_NAOPublication" FromRole="NAOPublication" ToRole="NAORecommendation" />
@@ -5096,6 +5098,7 @@
                 <ScalarProperty Name="PublicationLink" ColumnName="PublicationLink" />
                 <ScalarProperty Name="ContactDetails" ColumnName="ContactDetails" />
                 <ScalarProperty Name="PublicationSummary" ColumnName="PublicationSummary" />
+                <ScalarProperty Name="IsArchive" ColumnName="IsArchive" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

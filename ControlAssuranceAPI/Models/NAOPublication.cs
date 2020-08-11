@@ -28,6 +28,7 @@ namespace ControlAssuranceAPI.Models
         public string PublicationLink { get; set; }
         public string ContactDetails { get; set; }
         public string PublicationSummary { get; set; }
+        public Nullable<bool> IsArchive { get; set; }
     
         public virtual NAOType NAOType { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
