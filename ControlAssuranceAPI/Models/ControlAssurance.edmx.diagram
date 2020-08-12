@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="4a644945d7804bb6869341188c96a29d" Name="Diagram1">
+      <Diagram DiagramId="f4cf205c078343dc95642de95cfc7f5d" Name="Diagram1">
         <EntityTypeShape EntityType="ControlAssuranceModel.APILog" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.AuditFeedback" Width="1.5" PointX="3" PointY="42.25" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.DefElement" Width="1.5" PointX="19.5" PointY="19.25" IsExpanded="true" />
@@ -18,7 +18,7 @@
         <EntityTypeShape EntityType="ControlAssuranceModel.EntityPriority" Width="1.5" PointX="19.5" PointY="34" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.EntityStatusType" Width="1.5" PointX="0.75" PointY="37.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.Form" Width="1.5" PointX="16.5" PointY="34.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.GIAAActionOwner" Width="1.5" PointX="15.75" PointY="49" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.GIAAActionOwner" Width="1.5" PointX="15.75" PointY="49.125" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.GIAAActionPriority" Width="1.5" PointX="11.25" PointY="49.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.GIAAActionStatusType" Width="1.5" PointX="11.25" PointY="52" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.GIAAAssurance" Width="1.5" PointX="6" PointY="52" IsExpanded="true" />
@@ -26,8 +26,8 @@
         <EntityTypeShape EntityType="ControlAssuranceModel.GIAADefForm" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.GIAAImport" Width="1.5" PointX="3" PointY="54.5" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.GIAAPeriod" Width="1.5" PointX="0.75" PointY="3.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.GIAARecommendation" Width="1.5" PointX="13.5" PointY="45.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.GIAAUpdate" Width="1.5" PointX="18.75" PointY="49" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.GIAARecommendation" Width="1.5" PointX="13.5" PointY="45.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.GIAAUpdate" Width="1.5" PointX="18.75" PointY="49.125" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.GoAssignment" Width="1.5" PointX="18.75" PointY="45.25" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.GoDefElement" Width="1.5" PointX="14.25" PointY="34.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.GoDefForm" Width="1.5" PointX="2.75" PointY="3.75" IsExpanded="true" />

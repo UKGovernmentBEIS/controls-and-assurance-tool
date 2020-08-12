@@ -98,8 +98,8 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
         return (
             <React.Fragment>
                 {this.renderTitle()}
-                {this.renderRecommendationDetails()}
                 {this.renderConclusion()}
+                {this.renderRecommendationDetails()}                
                 {this.renderTargetDate()}
                 {this.renderNAORecStatusTypes()}
                 {this.renderAssignments()}
@@ -126,7 +126,7 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
 
         return (
             <CrTextField
-                label="Recommendation Details"
+                label="Recommendation"
                 className={styles.formField}
                 value={this.state.FormData.RecommendationDetails}
                 onChanged={(v) => this.changeTextField(v, "RecommendationDetails")}

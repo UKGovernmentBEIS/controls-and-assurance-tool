@@ -30,6 +30,8 @@ namespace ControlAssuranceAPI.Models
         public Nullable<int> GIAAPeriodUpdateStatusId { get; set; }
         public Nullable<int> GIAAAuditReportId { get; set; }
         public Nullable<System.DateTime> RevisedDate { get; set; }
+        public string OriginalImportedActionOwners { get; set; }
+        public string DisplayedImportedActionOwners { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<GIAAActionOwner> GIAAActionOwners { get; set; }

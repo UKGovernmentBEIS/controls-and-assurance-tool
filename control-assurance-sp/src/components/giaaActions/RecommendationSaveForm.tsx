@@ -35,8 +35,8 @@ export interface IErrorMessage {
     Title: string;
     RecDetails: string;
     Priority: string;
-    TargetDate:string;
-    ActionStatus:string;
+    TargetDate: string;
+    ActionStatus: string;
 
 }
 export class ErrorMessage implements IErrorMessage {
@@ -111,6 +111,7 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
                 {this.renderRevisedDate()}
                 {this.renderGIAAActionStatusTypes()}
                 {this.renderActionOwners()}
+                {this.renderDisplayOwners()}
 
             </React.Fragment>
         );
@@ -235,6 +236,36 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
 
 
 
+    private renderDisplayOwners() {
+
+        if (this.props.entityId && this.state.FormData.DisplayedImportedActionOwners && this.state.FormData.DisplayedImportedActionOwners.length > 0) {
+
+            return (
+                <div>
+                    <CrTextField
+                        label="Imported Action Owners"
+                        //className={styles.formField}
+                        value={this.state.FormData.DisplayedImportedActionOwners}
+                        onChanged={(v) => this.changeTextField(v, "DisplayedImportedActionOwners")}
+                        multiline={true}
+                        rows={2}
+                    />
+                    <div style={{fontSize:'13px', fontStyle: 'italic'}} className={styles.formField}>
+                        Please create Action Owners based on this imported text data, and clear the field once done.
+                    </div>
+
+                </div>
+
+            );
+
+        }
+
+        else
+            return null;
+
+    }
+
+
 
 
     //#endregion Render
@@ -312,7 +343,7 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
             if (this.props.onError) this.props.onError(null);
 
             let f: IGIAARecommendation = { ...this.state.FormData };
-            
+
 
             //remove all the child and parent entities before sending post/patch
             delete f['GIAAActionOwners']; //chile entity
@@ -335,11 +366,11 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
                 });
 
                 // this.giaaRecommendationService.updateGiaaUpdateAfterEditRec(f.ID, Number(this.props.giaaPeriodId)).then((res: string): void => {
-    
+
                 //     console.log('welcome accessed');
-              
+
                 // }, (err) => {
-              
+
                 // });
             }
         }
@@ -355,15 +386,15 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
 
                 const owners = this.state.FormData[ce.ObjectParentProperty];
 
-                if(owners){
+                if (owners) {
 
                     this.state.FormData[ce.ObjectParentProperty].forEach((c) => {
                         c[ce.ParentIdProperty] = parentEntity.ID;
-                        if (c.ID === 0){
+                        if (c.ID === 0) {
                             promises.push(ce.ChildService.create(c));
-                            
+
                         }
-                            
+
                     });
                 }
 
@@ -371,8 +402,8 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
             });
 
             return Promise.all(promises).then(() => parentEntity);
-        
-            
+
+
         }
     }
     private saveChildEntitiesAfterUpdate = (): Promise<any> => {
@@ -405,10 +436,9 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
 
     private onAfterUpdate(): Promise<any> { return Promise.resolve(); }
 
-    private onAfterCreate(): Promise<any>  
-    {
+    private onAfterCreate(): Promise<any> {
         console.log('onAfterCreate');
-         return Promise.resolve(); 
+        return Promise.resolve();
     }
 
     //#endregion Data Load/Save

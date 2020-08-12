@@ -131,7 +131,7 @@ namespace ControlAssuranceAPI.Repositories
             foreach (var iteP in list)
             {
                 string title = iteP.Title;
-                string completionStatus = "Not Started"; //default value
+                string completionStatus = "Not Updated"; //default value
                 string users = "";
                 string dgAreas = "";
 
@@ -149,7 +149,7 @@ namespace ControlAssuranceAPI.Repositories
                     }
                     else if(updatedRecs > 0)
                     {
-                        completionStatus = "Started";
+                        completionStatus = "Partly Updated";
                     }
                 }
 

@@ -215,13 +215,13 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
             let bgColor: string = "";
             //let statusImg: string = "";
 
-            if (fieldContent === "Not Started") {
+            if (fieldContent === "Not Updated") {
                 bgColor = "rgb(166,166,166)";
                 //txtColor = "black";
                 //statusImg = this.statusImgNotStarted;
             }
 
-            else if (fieldContent === "Started") {
+            else if (fieldContent === "Partly Updated") {
                 bgColor = "rgb(255,191,0)";
                 txtColor = "black";
                 //statusImg = this.statusImgInProgress;

@@ -40,6 +40,7 @@ namespace ControlAssuranceAPI.Repositories
 
             var qry = from r in db.NAORecommendations
                       where r.NAOPublicationId == naoPublicationId
+                      orderby r.ID
                       select new
                       {
                           r.ID,
@@ -47,7 +48,7 @@ namespace ControlAssuranceAPI.Repositories
                           r.RecommendationDetails,
                           r.TargetDate,
                           RecStatus = r.NAORecStatusType.Title,
-                          r.NAOUpdateStatusTypeId,
+                          NAOUpdateStatusType = r.NAOUpdateStatusType.Title,
                           r.NAOAssignments
 
                       };
@@ -88,7 +89,7 @@ namespace ControlAssuranceAPI.Repositories
                     TargetDate = ite.TargetDate != null ? ite.TargetDate : "",
                     RecStatus = ite.RecStatus,
                     AssignedTo = assignedUsers,
-                    UpdateStatus = (ite.NAOUpdateStatusTypeId > 1) ? "Updated" : "Not Started"
+                    UpdateStatus = ite.NAOUpdateStatusType != null ? ite.NAOUpdateStatusType : "Not Updated"
 
                 };
 

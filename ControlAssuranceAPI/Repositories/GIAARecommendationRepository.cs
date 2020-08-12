@@ -52,6 +52,7 @@ namespace ControlAssuranceAPI.Repositories
                           ActionStatus = r.GIAAActionStatusType.Title,
                           UpdateStatus = r.GIAAPeriodUpdateStatusId,
                           r.GIAAActionStatusTypeId,
+                          r.DisplayedImportedActionOwners,
                           r.GIAAActionOwners
 
                       };
@@ -78,6 +79,12 @@ namespace ControlAssuranceAPI.Repositories
             foreach (var ite in list)
             {
                 string owners = "";
+
+                if(string.IsNullOrEmpty(ite.DisplayedImportedActionOwners) == false)
+                {
+                    owners = $"<<{ite.DisplayedImportedActionOwners}>>, ";
+                }
+
                 foreach (var o in ite.GIAAActionOwners)
                 {
                     owners += o.User.Title + ", ";

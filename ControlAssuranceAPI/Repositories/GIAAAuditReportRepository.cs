@@ -78,16 +78,26 @@ namespace ControlAssuranceAPI.Repositories
                 string title = iteR.Title;
                 string completionStatus = "Not Started"; //default value
                 string users = "";
+                int numDisplayedOwners = 0;
 
                 HashSet<User> uniqueOwners = new HashSet<User>();
 
                 foreach(var rec in iteR.GIAARecommendations)
                 {
+                    if(string.IsNullOrEmpty(rec.DisplayedImportedActionOwners) == false)
+                    {
+                        numDisplayedOwners++;
+                    }
                     foreach(var owner in rec.GIAAActionOwners)
                     {
                         var ownerName = owner.User.Title;
                         uniqueOwners.Add(owner.User);
                     }
+                }
+
+                if(numDisplayedOwners > 0)
+                {
+                    users = $"<<{numDisplayedOwners}>>,";
                 }
 
                 int totalUniqueOwners = uniqueOwners.Count;

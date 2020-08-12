@@ -142,13 +142,13 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
 
 
         let recDetails: string = recInfo["NAORecommendation"]["RecommendationDetails"];
-        if(recDetails !== null)
+        if (recDetails !== null)
             recDetails = recDetails.split('\n').join('<br/>');
         else
             recDetails = "";
 
         let conclusion: string = recInfo["NAORecommendation"]["Conclusion"];
-        if(conclusion !== null)
+        if (conclusion !== null)
             conclusion = conclusion.split('\n').join('<br/>');
         else
             conclusion = "";
@@ -180,26 +180,27 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
 
                             </tr>
 
-
                             <tr>
                                 <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
-                                    Recommendation
-                            </td>
+                                    Report Conclusion
+                                </td>
                                 <td colSpan={3} style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
-                                    <div dangerouslySetInnerHTML={{ __html: recDetails }} ></div>
+                                    <div dangerouslySetInnerHTML={{ __html: conclusion }} ></div>
                                 </td>
 
                             </tr>
 
                             <tr>
                                 <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
-                                    Conclusion
-                                </td>
+                                    Recommendation
+                            </td>
                                 <td colSpan={3} style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
-                                    <div dangerouslySetInnerHTML={{ __html: conclusion }} ></div>
+                                    <div dangerouslySetInnerHTML={{ __html: recDetails }} ></div>
                                 </td>
 
                             </tr>
+
+
                         </tbody>
 
 
@@ -239,97 +240,74 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
                         onChange={(ev, option) => this.changeChoiceGroup(ev, option, "ProvideUpdate")}
                     />
 
+                    { fd.ProvideUpdate === '1' &&
+                    <div>
 
-                    <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>
-                        Proposed Status
+                        <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>
+                            Proposed Recommendation Status
                     </div>
-                    <CrDropdown
-                        style={{ width: '350px' }}
-                        placeholder="Select an Option"
-                        className={styles.formField}
-                        options={this.state.LookupData.NAORecStatusTypes.map((p) => { return { key: p.ID, text: p.Title }; })}
-                        selectedKey={fd.NAORecStatusTypeId}
-                        onChanged={(v) => this.changeDropdown(v, "NAORecStatusTypeId")}
-                    //options={services.LookupService.entitiesToSelectableOptions(policyStatusOveralls)}
-                    // options={[
-                    //     { key: '1', text: '1' }
-                    // ]}
+                        <CrDropdown
+                            style={{ width: '350px' }}
+                            placeholder="Select an Option"
+                            className={styles.formField}
+                            options={this.state.LookupData.NAORecStatusTypes.map((p) => { return { key: p.ID, text: p.Title }; })}
+                            selectedKey={fd.NAORecStatusTypeId}
+                            onChanged={(v) => this.changeDropdown(v, "NAORecStatusTypeId")}
 
-                    //onChanged={(v) => this.changeDropdown(v, "SuggestOverallStatusID")}
-                    />
+                        />
 
-                    <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>
-                        Target Date
+                        <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>
+                            Target Date
                     </div>
-                    <div style={{ width: '350px' }}>
+                        <div style={{ width: '350px' }}>
+
+                            <CrTextField
+                                className={styles.formField}
+                                onChanged={(v) => this.changeTextField(v, "TargetDate")}
+                                value={fd.TargetDate}
+
+                            />
+                        </div>
+
+
+
+                        <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>
+                            Actions Taken (Please mention by whom if not BEIS)
+                    </div>
 
                         <CrTextField
                             className={styles.formField}
-                            onChanged={(v) => this.changeTextField(v, "TargetDate")}
-                            value={fd.TargetDate}
-                        //readonly={this.readOnlyMode()}
+                            multiline
+                            rows={6}
+                            maxLength={6000}
+                            charCounter={true}
+                            onChanged={(v) => this.changeTextField(v, "ActionsTaken")}
+                            value={fd.ActionsTaken}
+
                         />
+
+
+
+
+                        <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>
+                            Further links in format label: link ( eg: Treasury Minuites: http://bit.ly/23jgds )
                     </div>
 
+                        <CrTextField
+                            className={styles.formField}
+                            onChanged={(v) => this.changeTextField(v, "FurtherLinks")}
+                            value={fd.FurtherLinks}
 
+                        />
 
-                    <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>
-                        Actions Taken (Please mention by whom if not BEIS)
+                        <div style={{ marginBottom: '5px' }}>
+                            <span style={{ fontWeight: 'bold' }}>Update Status:&nbsp;</span><span>{fd.LastSavedInfo}</span>
+                        </div>
+
                     </div>
-
-                    <CrTextField
-                        className={styles.formField}
-                        multiline
-                        rows={6}
-                        maxLength={6000}
-                        charCounter={true}
-                        onChanged={(v) => this.changeTextField(v, "ActionsTaken")}
-                        value={fd.ActionsTaken}
-
-                    //readonly={this.readOnlyMode()}
-                    />
-
-                    {/* <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>
-                        NAO Comments
-                    </div>
-
-                    <CrTextField
-                        className={styles.formField}
-                        multiline
-                        rows={6}
-                        maxLength={6000}
-                        charCounter={true}
-                        onChanged={(v) => this.changeTextField(v, "NAOComments")}
-                        value={fd.NAOComments}
+                    }
 
 
-                    /> */}
-
-
-                    <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>
-                        Further links in format label: link ( eg: Treasury Minuites: http://bit.ly/23jgds )
-                    </div>
-
-                    <CrTextField
-                        className={styles.formField}
-                        onChanged={(v) => this.changeTextField(v, "FurtherLinks")}
-                        value={fd.FurtherLinks}
-
-                    //readonly={this.readOnlyMode()}
-                    />
-
-                    <div style={{ marginBottom: '5px' }}>
-                        <span style={{ fontWeight: 'bold' }}>Update Status:&nbsp;</span><span>{fd.LastSavedInfo}</span>
-                    </div>
-                    {/* <CrDropdown
-                        style={{ width: '350px' }}
-                        placeholder="Select an Option"
-                        className={styles.formField}
-                        options={this.state.LookupData.NAOUpdateStatusTypes.map((p) => { return { key: p.ID, text: p.Title }; })}
-                        selectedKey={fd.NAOUpdateStatusTypeId}
-                        onChanged={(v) => this.changeDropdown(v, "NAOUpdateStatusTypeId")}
-
-                    /> */}
 
                 </div>
 
@@ -443,8 +421,8 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
                 maxWidth: 120,
                 isResizable: true,
                 isRequired: true,
-        
-              },
+
+            },
             {
                 key: 'UserUsername',
                 columnType: ColumnType.DisplayInListOnly,
@@ -732,14 +710,14 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
     }
 
     private loadNAORecStatusTypes = (): Promise<IEntity[]> => {
-        return this.naoRecStatusTypeService.readAll(`?$orderby=Title`).then((data: IEntity[]): IEntity[] => {
+        return this.naoRecStatusTypeService.readAll(`?$orderby=ID`).then((data: IEntity[]): IEntity[] => {
             this.setState({ LookupData: this.cloneObject(this.state.LookupData, 'NAORecStatusTypes', data) });
             return data;
         }, (err) => { if (this.props.onError) this.props.onError(`Error loading NAORecStatusTypes lookup data`, err.message); });
     }
 
     private loadNAOUpdateStatusTypes = (): Promise<IEntity[]> => {
-        return this.naoUpdateStatusTypeService.readAll(`?$orderby=Title`).then((data: IEntity[]): IEntity[] => {
+        return this.naoUpdateStatusTypeService.readAll(`?$orderby=ID`).then((data: IEntity[]): IEntity[] => {
             this.setState({ LookupData: this.cloneObject(this.state.LookupData, 'NAOUpdateStatusTypes', data) });
             return data;
         }, (err) => { if (this.props.onError) this.props.onError(`Error loading NAOUpdateStatusTypes lookup data`, err.message); });

@@ -122,6 +122,7 @@ namespace ControlAssuranceAPI.Repositories
                     int recRevisedDate_cellIndex = 0;
                     int responseDetail_cellIndex = 0;
                     int statusUpdate_cellIndex = 0;
+                    int actionOwner_cellIndex = 0;
 
                     var gIAAActionPriorities = dbThread.GIAAActionPriorities.ToList();
                     var gIAAActionStatusTypes = dbThread.GIAAActionStatusTypes.ToList();
@@ -186,6 +187,10 @@ namespace ControlAssuranceAPI.Repositories
                                         responseDetail_cellIndex = cellIndex;
                                         break;
 
+                                    case "Action Owner":
+                                        actionOwner_cellIndex = cellIndex;
+                                        break;
+
                                     case "Status Update":
                                         statusUpdate_cellIndex = cellIndex;
                                         break;
@@ -212,6 +217,7 @@ namespace ControlAssuranceAPI.Repositories
                             string recRevisedDate = "";
                             string responseDetail = "";
                             string statusUpdate = "";
+                            string actionOwner = "";
 
 
                             int cellIndex = 0;
@@ -293,6 +299,10 @@ namespace ControlAssuranceAPI.Repositories
                                 {
                                     statusUpdate = cellTxt;
                                 }
+                                else if (cellIndex == actionOwner_cellIndex)
+                                {
+                                    actionOwner = cellTxt;
+                                }
 
 
 
@@ -348,6 +358,14 @@ namespace ControlAssuranceAPI.Repositories
                             }
 
                             gIAARecommendation.RecommendationDetails = recDetails;
+
+                            //2 text fields
+                            if(actionOwner != gIAARecommendation.OriginalImportedActionOwners)
+                            {
+                                gIAARecommendation.OriginalImportedActionOwners = actionOwner;
+                                gIAARecommendation.DisplayedImportedActionOwners = actionOwner;
+                            }
+                            
 
 
                             GIAAActionPriority gIAAActionPriority = gIAAActionPriorities.FirstOrDefault(x => x.Title == recPriority);

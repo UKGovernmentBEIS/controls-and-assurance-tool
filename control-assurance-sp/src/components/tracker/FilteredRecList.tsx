@@ -216,7 +216,7 @@ export class FilteredRecList extends React.Component<IFilteredRecListProps, IFil
             let bgColor: string = "";
             //let statusImg: string = "";
 
-            if (fieldContent === "Not Started") {
+            if (fieldContent === "Not Updated") {
                 bgColor = "rgb(166,166,166)";
                 //txtColor = "black";
                 //statusImg = this.statusImgNotStarted;

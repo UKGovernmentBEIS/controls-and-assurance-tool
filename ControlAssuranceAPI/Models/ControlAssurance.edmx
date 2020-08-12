@@ -354,6 +354,8 @@
           <Property Name="GIAAPeriodUpdateStatusId" Type="int" />
           <Property Name="GIAAAuditReportId" Type="int" />
           <Property Name="RevisedDate" Type="datetime" />
+          <Property Name="OriginalImportedActionOwners" Type="nvarchar" MaxLength="2000" />
+          <Property Name="DisplayedImportedActionOwners" Type="nvarchar" MaxLength="2000" />
         </EntityType>
         <EntityType Name="GIAAUpdate">
           <Key>
@@ -2492,6 +2494,8 @@
           <Property Name="GIAAPeriodUpdateStatusId" Type="Int32" />
           <Property Name="GIAAAuditReportId" Type="Int32" />
           <Property Name="RevisedDate" Type="DateTime" Precision="3" />
+          <Property Name="OriginalImportedActionOwners" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
+          <Property Name="DisplayedImportedActionOwners" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="GIAAActionOwners" Relationship="Self.FK_GIAAActionOwner_GIAARecommendation" FromRole="GIAARecommendation" ToRole="GIAAActionOwner" />
           <NavigationProperty Name="GIAAActionPriority" Relationship="Self.FK_GIAARecommendation_GIAAActionPriority" FromRole="GIAARecommendation" ToRole="GIAAActionPriority" />
           <NavigationProperty Name="GIAAActionStatusType" Relationship="Self.FK_GIAARecommendation_GIAAActionStatusType" FromRole="GIAARecommendation" ToRole="GIAAActionStatusType" />
@@ -4834,6 +4838,8 @@
                 <ScalarProperty Name="GIAAPeriodUpdateStatusId" ColumnName="GIAAPeriodUpdateStatusId" />
                 <ScalarProperty Name="GIAAAuditReportId" ColumnName="GIAAAuditReportId" />
                 <ScalarProperty Name="RevisedDate" ColumnName="RevisedDate" />
+                <ScalarProperty Name="OriginalImportedActionOwners" ColumnName="OriginalImportedActionOwners" />
+                <ScalarProperty Name="DisplayedImportedActionOwners" ColumnName="DisplayedImportedActionOwners" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

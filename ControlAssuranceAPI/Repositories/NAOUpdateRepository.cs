@@ -50,6 +50,7 @@ namespace ControlAssuranceAPI.Repositories
                 newR.NAOUpdateStatusTypeId = 1;
                 newR.NAORecStatusTypeId = 1;
                 newR.LastSavedInfo = "Not Started";
+                newR.ActionsTaken = "";
                 newR.TargetDate = "";
                 newR.UpdateChangeLog = "";
                 newR.ProvideUpdate = "1";
