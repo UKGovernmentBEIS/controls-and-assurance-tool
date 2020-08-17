@@ -69,7 +69,7 @@ export default class Section extends React.Component<ISectionProps, SectionState
                 <UpdateHeader2 title={this.props.sectionTitle} isOpen={ShowForm}
                     leadUser=""
                     //rag={ this.state.FormData.SummaryCompletionStatus === SectionStatus.Completed ? 5 : this.state.FormData.SummaryCompletionStatus === SectionStatus.InProgress ? 3 : null }
-                    rag={ this.props.sectionUpdateStatus === "Started" ? 3 : this.props.sectionUpdateStatus === "Updated" ? 5 : null }
+                    rag={ this.props.sectionUpdateStatus === "Partly Updated" ? 3 : this.props.sectionUpdateStatus === "Updated" ? 5 : null }
                     //ragLabel={ this.state.FormData.SummaryCompletionStatus === SectionStatus.Completed ? "Completed" : this.state.FormData.SummaryCompletionStatus === SectionStatus.InProgress ? "In Progress" : null }
                     ragLabel={this.props.sectionUpdateStatus}
                     onClick={this.props.onSection_toggleOpen} />

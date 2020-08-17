@@ -269,7 +269,7 @@ namespace ControlAssuranceAPI.Repositories
                     }
                     else if (updatedRecs > 0)
                     {
-                        completionStatus = "Started";
+                        completionStatus = "Partly Updated";
                     }
 
                 }
@@ -282,7 +282,7 @@ namespace ControlAssuranceAPI.Repositories
             {
                 int totalCount = lstCompletionStatus.Count();
                 int totalUpdated = lstCompletionStatus.Count(x => x == "Updated");
-                int totalStarted = lstCompletionStatus.Count(x => x == "Started");
+                int totalStarted = lstCompletionStatus.Count(x => x == "Partly Updated");
 
                 if (totalCount == totalUpdated)
                 {
@@ -290,7 +290,7 @@ namespace ControlAssuranceAPI.Repositories
                 }
                 else if(totalStarted > 0 || totalUpdated > 0)
                 {
-                    overAllStatus = "Started";
+                    overAllStatus = "Partly Updated";
                 }
             }
 
