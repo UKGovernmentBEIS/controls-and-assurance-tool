@@ -11,8 +11,9 @@ import { CrEntityPicker } from '../cr/CrEntityPicker';
 import styles from '../../styles/cr.module.scss';
 
 export interface IRecommendationSaveFormProps extends types.IBaseComponentProps {
-    //periodID: number | string;
+
     naoPublicationId: number | string;
+    periodId: number | string;
     entityId: number;
     showForm: boolean;
     onSaved?: () => void;
@@ -44,6 +45,8 @@ export interface IRecommendationSaveFormState {
     Loading: boolean;
     LookupData: ILookupData;
     FormData: INAORecommendation;
+    UpdateTargetDate: string;
+    UpdateNAORecStatusTypeId:number;
     //ClearSuggestedStatus:boolean;
     FormDataBeforeChanges: INAORecommendation;
     FormIsDirty: boolean;
@@ -54,6 +57,8 @@ export class RecommendationSaveFormState implements IRecommendationSaveFormState
     public LookupData = new LookupData();
     public FormData = new NAORecommendation();
     public FormDataBeforeChanges = new NAORecommendation();
+    public UpdateTargetDate = "";
+    public UpdateNAORecStatusTypeId = null;
     public FormIsDirty = false;
     //public ClearSuggestedStatus = false;
     public ErrMessages = new ErrorMessage();
@@ -109,7 +114,7 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
     }
 
     private renderTitle() {
-        console.log('in renderTitle');
+        //console.log('in renderTitle');
         return (
             <CrTextField
                 label="Rec Ref"
@@ -161,11 +166,14 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
                 label="Target Date"
                 required={true}
                 className={styles.formField}
-                value={this.state.FormData.TargetDate}
-                onChanged={(v) => this.changeTextField(v, "TargetDate")}
+                value={this.state.UpdateTargetDate}
+                onChanged={(v) => this.changeTargetDate(v)}
+                //value={this.state.FormData.TargetDate}
+                //onChanged={(v) => this.changeTextField(v, "TargetDate")}
                 //errorMessage={this.state.ErrMessages.Title}
             />
         );
+
     }
 
     private renderNAORecStatusTypes() {
@@ -178,8 +186,10 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
                     required={true}
                     className={styles.formField}
                     options={services.LookupService.entitiesToSelectableOptions(naoRecStatusTypes)}
-                    selectedKey={this.state.FormData.NAORecStatusTypeId}
-                    onChanged={(v) => this.changeDropdown(v, "NAORecStatusTypeId")}
+                    selectedKey={this.state.UpdateNAORecStatusTypeId}
+                    onChanged={(v) => this.changeRecStatusTypeId(v)}
+                    //selectedKey={this.state.FormData.NAORecStatusTypeId}
+                    //onChanged={(v) => this.changeDropdown(v, "NAORecStatusTypeId")}
                     //errorMessage={this.state.ErrMessages.Directorate}
                 />
             );
@@ -218,12 +228,24 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
 
     private loadData = (): Promise<void> => {
         console.log('loadData - Id: ', this.props.entityId);
-        let x = this.naoRecommendationService.readWithExpandAssignments(this.props.entityId).then((e: INAORecommendation): void => {
+        let x = this.naoRecommendationService.readWithExpand(this.props.entityId, this.props.periodId).then((e: INAORecommendation): void => {
 
+            let tdate:string = "";
+            let updateRecStatusId:number = null;
+            try{
+                tdate = e['NAOUpdates'][0]['TargetDate'];
+                updateRecStatusId = e['NAOUpdates'][0]['NAORecStatusTypeId'];
+            }
+            catch{
+                console.log('exception on load data');
+            }
+            
             console.log('rec ', e);
             this.setState({
                 FormData: e,
                 FormDataBeforeChanges: e,
+                UpdateTargetDate: tdate,
+                UpdateNAORecStatusTypeId: updateRecStatusId,
             });
 
         }, (err) => { if (this.props.onError) this.props.onError(`Error loading Rec data`, err.message); });
@@ -290,6 +312,7 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
 
             //remove all the child and parent entities before sending post/patch
             delete f['NAOAssignments']; //chile entity
+            delete f['NAOUpdates']; //chile entity
 
             if (f.ID === 0) {
 
@@ -334,6 +357,9 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
 
             });
 
+
+            this.updateTargetDateAndRecStatus(parentEntity.ID);
+
             return Promise.all(promises).then(() => parentEntity);
         
             
@@ -362,6 +388,9 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
 
                 });
             });
+
+            this.updateTargetDateAndRecStatus(this.state.FormData.ID);
+
             return Promise.all(promises).then(() => this.state.FormData);
         }
     }
@@ -374,6 +403,16 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
          return Promise.resolve(); 
     }
 
+    private updateTargetDateAndRecStatus(recId:number){
+
+        this.naoRecommendationService.updateTargetDateAndRecStatus(recId, this.props.periodId, this.state.UpdateTargetDate, this.state.UpdateNAORecStatusTypeId).then((res: string): void => {
+    
+            console.log('updateTargetDateAndRecStatus');
+
+        }, (err) => {});
+
+
+    }
 
 
 
@@ -445,6 +484,34 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
             }
         });
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, newUsers), FormIsDirty: true });
+    }
+
+    private changeTargetDate = (value: string): void => {
+
+        // const fd = {...this.state.FormData};
+        // if(fd){
+        //     fd['NAOUpdates'][0]['TargetDate'] = value;
+        //     this.setState({ FormData: fd, FormIsDirty: true });
+        // }
+
+        this.setState({
+            UpdateTargetDate: value
+        });
+
+    }
+
+    private changeRecStatusTypeId = (option: IDropdownOption): void => {
+
+        let vv:number = null;
+        try{
+            vv = Number(option.key);
+
+        }catch{}
+
+        this.setState({
+            UpdateNAORecStatusTypeId: vv
+        });
+
     }
 
     //#endregion Form Operations

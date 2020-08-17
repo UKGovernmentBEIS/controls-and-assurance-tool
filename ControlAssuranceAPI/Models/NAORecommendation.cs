@@ -24,16 +24,13 @@ namespace ControlAssuranceAPI.Models
         public int ID { get; set; }
         public string Title { get; set; }
         public string RecommendationDetails { get; set; }
-        public string TargetDate { get; set; }
         public Nullable<int> NAOPublicationId { get; set; }
-        public Nullable<int> NAORecStatusTypeId { get; set; }
         public Nullable<int> NAOUpdateStatusTypeId { get; set; }
         public string Conclusion { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<NAOAssignment> NAOAssignments { get; set; }
         public virtual NAOPublication NAOPublication { get; set; }
-        public virtual NAORecStatusType NAORecStatusType { get; set; }
         public virtual NAOUpdateStatusType NAOUpdateStatusType { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<NAOUpdate> NAOUpdates { get; set; }

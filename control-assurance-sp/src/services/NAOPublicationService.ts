@@ -31,8 +31,8 @@ export class NAOPublicationService extends EntityService<IEntity> {
         return this.readEntity(`?naoPublicationId=${naoPublicationId}&getInfo=true`);
     }
 
-    public readOverAllUpdateStatus(isArchive:boolean, dgAreaId: number): Promise<string> {
-        return super.readString(`?getOverallUpdateStatus=true&dgAreaId=${dgAreaId}&archived=${isArchive}`).then((result:string): string => {
+    public readOverAllUpdateStatus(isArchive:boolean, dgAreaId: number, naoPeriodId:number): Promise<string> {
+        return super.readString(`?getOverallUpdateStatus=true&dgAreaId=${dgAreaId}&naoPeriodId=${naoPeriodId}&archived=${isArchive}`).then((result:string): string => {
             return result;
         });
     }

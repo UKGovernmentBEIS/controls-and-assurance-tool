@@ -18,6 +18,7 @@ export interface IRecommendationsListProps extends types.IBaseComponentProps {
 
     onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
     naoPublicationId: number | string;
+    periodId: number | string;
     incompleteOnly: boolean;
     onChangeIncompleteOnly: (value: boolean) => void;
     justMine: boolean;
@@ -327,7 +328,7 @@ export default class RecommendationsList extends React.Component<IRecommendation
         this.setState({ Loading: true });
 
 
-        const read: Promise<IEntity[]> = this.recService.readAllWithFilters(this.props.naoPublicationId, this.props.incompleteOnly, this.props.justMine);
+        const read: Promise<IEntity[]> = this.recService.readAllWithFilters(this.props.naoPublicationId, this.props.periodId, this.props.incompleteOnly, this.props.justMine);
         read.then((entities: any): void => {
             this.setState({
                 Loading: false, Entities: entities,

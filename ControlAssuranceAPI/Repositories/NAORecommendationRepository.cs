@@ -34,7 +34,7 @@ namespace ControlAssuranceAPI.Repositories
             return db.NAORecommendations.Add(naoRecommendation);
         }
 
-        public List<NAORecommendationView_Result> GetRecommendations(int naoPublicationId, bool incompleteOnly, bool justMine)
+        public List<NAORecommendationView_Result> GetRecommendations(int naoPublicationId, int naoPeriodId, bool incompleteOnly, bool justMine)
         {
             List<NAORecommendationView_Result> retList = new List<NAORecommendationView_Result>();
 
@@ -46,10 +46,11 @@ namespace ControlAssuranceAPI.Repositories
                           r.ID,
                           r.Title,
                           r.RecommendationDetails,
-                          r.TargetDate,
-                          RecStatus = r.NAORecStatusType.Title,
-                          NAOUpdateStatusType = r.NAOUpdateStatusType.Title,
-                          r.NAOAssignments
+                          //r.TargetDate,
+                          //RecStatus = r.NAORecStatusType.Title,
+                          //NAOUpdateStatusType = r.NAOUpdateStatusType.Title,
+                          r.NAOAssignments,
+                          r.NAOUpdates
 
                       };
             
@@ -81,15 +82,29 @@ namespace ControlAssuranceAPI.Repositories
                     assignedUsers = assignedUsers.Substring(0, assignedUsers.Length - 1);
                 }
 
+
+                string updateStatus = "Not Updated";
+                string targetDate = "";
+                string recStatus = "";
+                var update = ite.NAOUpdates.FirstOrDefault(u => u.NAOPeriodId == naoPeriodId);
+                if(update != null)
+                {
+                    updateStatus = update.NAOUpdateStatusType.Title;
+                    targetDate = update.TargetDate != null ? update.TargetDate : "";
+                    recStatus = update.NAORecStatusType.Title;
+                }
+
+
                 NAORecommendationView_Result item = new NAORecommendationView_Result
                 {
                     ID = ite.ID,
                     Title = ite.Title,
                     RecommendationDetails = ite.RecommendationDetails,
-                    TargetDate = ite.TargetDate != null ? ite.TargetDate : "",
-                    RecStatus = ite.RecStatus,
+                    TargetDate = targetDate,
+                    RecStatus = recStatus,
                     AssignedTo = assignedUsers,
-                    UpdateStatus = ite.NAOUpdateStatusType != null ? ite.NAOUpdateStatusType : "Not Updated"
+                    //UpdateStatus = ite.NAOUpdateStatusType != null ? ite.NAOUpdateStatusType : "Not Updated"
+                    UpdateStatus = updateStatus
 
                 };
 

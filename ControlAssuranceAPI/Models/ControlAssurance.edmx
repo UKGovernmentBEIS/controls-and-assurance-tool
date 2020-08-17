@@ -617,9 +617,7 @@
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Title" Type="nvarchar" MaxLength="2000" />
           <Property Name="RecommendationDetails" Type="nvarchar(max)" />
-          <Property Name="TargetDate" Type="nvarchar" MaxLength="50" />
           <Property Name="NAOPublicationId" Type="int" />
-          <Property Name="NAORecStatusTypeId" Type="int" />
           <Property Name="NAOUpdateStatusTypeId" Type="int" />
           <Property Name="Conclusion" Type="nvarchar(max)" />
         </EntityType>
@@ -1495,18 +1493,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_NAORecommendation_NAORecStatusType">
-          <End Role="NAORecStatusType" Type="Self.NAORecStatusType" Multiplicity="0..1" />
-          <End Role="NAORecommendation" Type="Self.NAORecommendation" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="NAORecStatusType">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="NAORecommendation">
-              <PropertyRef Name="NAORecStatusTypeId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_NAORecommendation_NAOUpdateStatusType">
           <End Role="NAOUpdateStatusType" Type="Self.NAOUpdateStatusType" Multiplicity="0..1" />
           <End Role="NAORecommendation" Type="Self.NAORecommendation" Multiplicity="*" />
@@ -2019,10 +2005,6 @@
           </AssociationSet>
           <AssociationSet Name="FK_NAORecommendation_NAOPublication" Association="Self.FK_NAORecommendation_NAOPublication">
             <End Role="NAOPublication" EntitySet="NAOPublication" />
-            <End Role="NAORecommendation" EntitySet="NAORecommendation" />
-          </AssociationSet>
-          <AssociationSet Name="FK_NAORecommendation_NAORecStatusType" Association="Self.FK_NAORecommendation_NAORecStatusType">
-            <End Role="NAORecStatusType" EntitySet="NAORecStatusType" />
             <End Role="NAORecommendation" EntitySet="NAORecommendation" />
           </AssociationSet>
           <AssociationSet Name="FK_NAORecommendation_NAOUpdateStatusType" Association="Self.FK_NAORecommendation_NAOUpdateStatusType">
@@ -2805,14 +2787,11 @@
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Title" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
           <Property Name="RecommendationDetails" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="TargetDate" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="NAOPublicationId" Type="Int32" />
-          <Property Name="NAORecStatusTypeId" Type="Int32" />
           <Property Name="NAOUpdateStatusTypeId" Type="Int32" />
           <Property Name="Conclusion" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="NAOAssignments" Relationship="Self.FK_NAOAssignment_NAORecommendation" FromRole="NAORecommendation" ToRole="NAOAssignment" />
           <NavigationProperty Name="NAOPublication" Relationship="Self.FK_NAORecommendation_NAOPublication" FromRole="NAORecommendation" ToRole="NAOPublication" />
-          <NavigationProperty Name="NAORecStatusType" Relationship="Self.FK_NAORecommendation_NAORecStatusType" FromRole="NAORecommendation" ToRole="NAORecStatusType" />
           <NavigationProperty Name="NAOUpdateStatusType" Relationship="Self.FK_NAORecommendation_NAOUpdateStatusType" FromRole="NAORecommendation" ToRole="NAOUpdateStatusType" />
           <NavigationProperty Name="NAOUpdates" Relationship="Self.FK_NAOUpdate_NAORecommendation" FromRole="NAORecommendation" ToRole="NAOUpdate" />
         </EntityType>
@@ -2822,7 +2801,6 @@
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" />
           <Property Name="Title" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="NAORecommendations" Relationship="Self.FK_NAORecommendation_NAORecStatusType" FromRole="NAORecStatusType" ToRole="NAORecommendation" />
           <NavigationProperty Name="NAOUpdates" Relationship="Self.FK_NAOUpdate_NAORecStatusType" FromRole="NAORecStatusType" ToRole="NAOUpdate" />
         </EntityType>
         <EntityType Name="NAOType">
@@ -3781,18 +3759,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_NAORecommendation_NAORecStatusType">
-          <End Role="NAORecStatusType" Type="Self.NAORecStatusType" Multiplicity="0..1" />
-          <End Role="NAORecommendation" Type="Self.NAORecommendation" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="NAORecStatusType">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="NAORecommendation">
-              <PropertyRef Name="NAORecStatusTypeId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_NAORecommendation_NAOUpdateStatusType">
           <End Role="NAOUpdateStatusType" Type="Self.NAOUpdateStatusType" Multiplicity="0..1" />
           <End Role="NAORecommendation" Type="Self.NAORecommendation" Multiplicity="*" />
@@ -4272,10 +4238,6 @@
           </AssociationSet>
           <AssociationSet Name="FK_NAORecommendation_NAOPublication" Association="Self.FK_NAORecommendation_NAOPublication">
             <End Role="NAOPublication" EntitySet="NAOPublications" />
-            <End Role="NAORecommendation" EntitySet="NAORecommendations" />
-          </AssociationSet>
-          <AssociationSet Name="FK_NAORecommendation_NAORecStatusType" Association="Self.FK_NAORecommendation_NAORecStatusType">
-            <End Role="NAORecStatusType" EntitySet="NAORecStatusTypes" />
             <End Role="NAORecommendation" EntitySet="NAORecommendations" />
           </AssociationSet>
           <AssociationSet Name="FK_NAORecommendation_NAOUpdateStatusType" Association="Self.FK_NAORecommendation_NAOUpdateStatusType">
@@ -5124,9 +5086,7 @@
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Title" ColumnName="Title" />
                 <ScalarProperty Name="RecommendationDetails" ColumnName="RecommendationDetails" />
-                <ScalarProperty Name="TargetDate" ColumnName="TargetDate" />
                 <ScalarProperty Name="NAOPublicationId" ColumnName="NAOPublicationId" />
-                <ScalarProperty Name="NAORecStatusTypeId" ColumnName="NAORecStatusTypeId" />
                 <ScalarProperty Name="NAOUpdateStatusTypeId" ColumnName="NAOUpdateStatusTypeId" />
                 <ScalarProperty Name="Conclusion" ColumnName="Conclusion" />
               </MappingFragment>

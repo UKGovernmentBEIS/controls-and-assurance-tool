@@ -17,15 +17,12 @@ namespace ControlAssuranceAPI.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public NAORecStatusType()
         {
-            this.NAORecommendations = new HashSet<NAORecommendation>();
             this.NAOUpdates = new HashSet<NAOUpdate>();
         }
     
         public int ID { get; set; }
         public string Title { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<NAORecommendation> NAORecommendations { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<NAOUpdate> NAOUpdates { get; set; }
     }

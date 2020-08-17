@@ -137,11 +137,19 @@ namespace ControlAssuranceAPI.Repositories
 
                 int completedPercentage = 0;
                 int totalRecs = iteP.NAORecommendations.Count();
-                int totalImplementedRecs = iteP.NAORecommendations.Count(x => x.NAORecStatusTypeId == 3);
+                //int updatedRecs = iteP.NAORecommendations.Count(x => x.NAOUpdateStatusTypeId == 2);
+                //int updatedRecs = iteP.NAORecommendations.Count(x => x.NAOUpdateStatusTypeId == 2 && x.NAOUpdates.Any(u => u.NAOPeriodId == naoPeriodId));
+                int updatedRecs = iteP.NAORecommendations.Count(x => x.NAOUpdates.Any(u => u.NAOPeriodId == naoPeriodId && u.NAOUpdateStatusTypeId == 2));
 
-                int updatedRecs = iteP.NAORecommendations.Count(x => x.NAOUpdateStatusTypeId == 2);
 
-                if(totalRecs > 0)
+                //int totalImplementedRecs = iteP.NAORecommendations.Count(x => x.NAORecStatusTypeId == 3);
+                int totalImplementedRecs = iteP.NAORecommendations.Count(x => x.NAOUpdates.Any(u => u.NAOPeriodId == naoPeriodId && u.NAORecStatusTypeId == 3));
+
+
+
+
+
+                if (totalRecs > 0)
                 {
                     if(totalRecs == updatedRecs)
                     {
@@ -227,7 +235,7 @@ namespace ControlAssuranceAPI.Repositories
             return retList;
         }
 
-        public string GetOverallPublicationsUpdateStatus(int dgAreaId, bool isArchived)
+        public string GetOverallPublicationsUpdateStatus(int dgAreaId, int naoPeriodId, bool isArchived)
         {
             string overAllStatus = "Not Started"; //default value
             List<string> lstCompletionStatus = new List<string>();
@@ -262,7 +270,9 @@ namespace ControlAssuranceAPI.Repositories
                 var totalRecs = pub.NAORecommendations.Count();
                 if(totalRecs > 0)
                 {
-                    var updatedRecs = pub.NAORecommendations.Count(x => x.NAOUpdateStatusTypeId == 2);
+                    //var updatedRecs = pub.NAORecommendations.Count(x => x.NAOUpdateStatusTypeId == 2);
+                    var updatedRecs = pub.NAORecommendations.Count(x => x.NAOUpdates.Any(u => u.NAOPeriodId == naoPeriodId && u.NAOUpdateStatusTypeId == 2));
+
                     if (totalRecs == updatedRecs)
                     {
                         completionStatus = "Updated";

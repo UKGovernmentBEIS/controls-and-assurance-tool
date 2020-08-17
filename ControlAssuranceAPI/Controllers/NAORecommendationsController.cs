@@ -30,10 +30,18 @@ namespace ControlAssuranceAPI.Controllers
             return SingleResult.Create(db.NAORecommendationRepository.NAORecommendations.Where(x => x.ID == key));
         }
 
-        // GET: /odata/NAORecommendations?naoPublicationId=1&incompleteOnly=true&justMine=false
-        public List<NAORecommendationView_Result> Get(int naoPublicationId, bool incompleteOnly, bool justMine)
+        // GET: /odata/NAORecommendations?naoPublicationId=1&naoPeriodId=2&incompleteOnly=true&justMine=false
+        public List<NAORecommendationView_Result> Get(int naoPublicationId, int naoPeriodId, bool incompleteOnly, bool justMine)
         {
-            return db.NAORecommendationRepository.GetRecommendations(naoPublicationId, incompleteOnly, justMine);
+            return db.NAORecommendationRepository.GetRecommendations(naoPublicationId, naoPeriodId, incompleteOnly, justMine);
+        }
+
+        //GET: odata/NAORecommendations?updateTargetDateAndRecStatus=&naoRecommendationId=1&naoPeriodId=2&targetDate=aug&naoRecStatusTypeId=1
+        [EnableQuery]
+        public string Get(string updateTargetDateAndRecStatus, int naoRecommendationId, int naoPeriodId, string targetDate, int naoRecStatusTypeId)
+        {
+            db.NAOUpdateRepository.UpdateTargetDateAndRecStatus(naoRecommendationId, naoPeriodId, targetDate, naoRecStatusTypeId);
+            return "";
         }
 
 

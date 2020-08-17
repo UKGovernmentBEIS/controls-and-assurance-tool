@@ -266,6 +266,7 @@ export default class NaoUpdates extends BaseUserContextWebPartComponent<types.IW
       <RecommendationsTab
         filteredItems={this.state.Section_MainList_FilteredItems}
         parentId={this.state.Section_MainList_SelectedId}
+        periodId={this.state.PeriodId}
         parentTitle={this.state.Section_MainList_SelectedTitle}
         //isViewOnly={this.isViewOnlyGoForm()}
         onItemTitleClick={this.handleSection1_RecListItemTitleClick}
@@ -335,7 +336,7 @@ export default class NaoUpdates extends BaseUserContextWebPartComponent<types.IW
       this.setState({
         LookupData: this.cloneObject(this.state.LookupData, 'Periods', pArr),
         PeriodId: currentPeriodId
-      });
+      }, this.loadOverallUpdateStatuses );
       return pArr;
     }, (err) => { if (this.onError) this.onError(`Error loading Periods lookup data`, err.message); });
   }
@@ -348,13 +349,13 @@ export default class NaoUpdates extends BaseUserContextWebPartComponent<types.IW
   }
 
   private loadOverallUpdateStatuses() {
-    this.naoPublicationService.readOverAllUpdateStatus(false, Number(this.state.DirectorateGroupId)).then((res: string): void => {
+    this.naoPublicationService.readOverAllUpdateStatus(false, Number(this.state.DirectorateGroupId), Number(this.state.PeriodId) ).then((res: string): void => {
       console.log('loadOverallUpdateStatuses active', res);
       this.setState({ Section1UpdateStatus: res });
 
     }, (err) => { });
 
-    this.naoPublicationService.readOverAllUpdateStatus(true, Number(this.state.DirectorateGroupId)).then((res: string): void => {
+    this.naoPublicationService.readOverAllUpdateStatus(true, Number(this.state.DirectorateGroupId), Number(this.state.PeriodId) ).then((res: string): void => {
       console.log('loadOverallUpdateStatuses archived', res);
 
       this.setState({ Section2UpdateStatus: res });
@@ -368,8 +369,7 @@ export default class NaoUpdates extends BaseUserContextWebPartComponent<types.IW
     return Promise.all([
       this.loadPeriods(),
       this.loadDGAreas(),
-      this.loadOverallUpdateStatuses(),
-      //this.loadDefForm(),
+      //this.loadOverallUpdateStatuses(),
 
     ]);
   }
@@ -433,7 +433,7 @@ export default class NaoUpdates extends BaseUserContextWebPartComponent<types.IW
         }
 
         this.setState({ PeriodId: option.key, IsArchivedPeriod: isArchivedPeriod },
-          //this.readOrCreateGoFormInDb
+          this.loadOverallUpdateStatuses
         );
       }
     }

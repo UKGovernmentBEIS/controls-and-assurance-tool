@@ -197,7 +197,7 @@ namespace ControlAssuranceAPI.Repositories
 
             return true;
         }
-
+        
         public List<GoFormReport_Result> GetReport1(int periodId)
         {
             List<GoFormReport_Result> lstReturn = new List<GoFormReport_Result>();

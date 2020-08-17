@@ -34,6 +34,15 @@ namespace ControlAssuranceAPI.Repositories
         //    db.NAOUpdates.Where(x => x.NAORecommendationId == naoRecommendationId && x.NAOPeriodId < naoPeriodId);
         //}
 
+        public void UpdateTargetDateAndRecStatus(int naoRecommendationId, int naoPeriodId, string targetDate, int naoRecStatusTypeId)
+        {
+            var update = this.FindCreate(naoRecommendationId, naoPeriodId);
+            update.TargetDate = targetDate;
+            update.NAORecStatusTypeId = naoRecStatusTypeId;
+
+            db.SaveChanges();
+        }
+
         public NAOUpdate FindCreate(int naoRecommendationId, int naoPeriodId)
         {
             var naoUpdateDb = db.NAOUpdates.FirstOrDefault(x => x.NAOPeriodId == naoPeriodId && x.NAORecommendationId == naoRecommendationId);
@@ -78,9 +87,9 @@ namespace ControlAssuranceAPI.Repositories
                 naoUpdateDb.NAORecStatusTypeId = naoUpdate.NAORecStatusTypeId;
                 naoUpdateDb.NAOUpdateStatusTypeId = 2; //hardcode value on every save 2 means "Saved"
 
-                naoUpdateDb.NAORecommendation.TargetDate = naoUpdate.TargetDate;
-                naoUpdateDb.NAORecommendation.NAORecStatusTypeId = naoUpdate.NAORecStatusTypeId;
-                naoUpdateDb.NAORecommendation.NAOUpdateStatusTypeId = 2; //hardcode value on every save 2 means "Saved"
+                //naoUpdateDb.NAORecommendation.TargetDate = naoUpdate.TargetDate;
+                //naoUpdateDb.NAORecommendation.NAORecStatusTypeId = naoUpdate.NAORecStatusTypeId;
+                naoUpdateDb.NAORecommendation.NAOUpdateStatusTypeId = 2; //hardcode value on every save 2 means "Updated"
 
                 string user = ApiUser.Title;
                 string date = DateTime.Now.ToString("ddMMMyyyy HH:mm");

@@ -21,6 +21,7 @@ export interface IRecommendationsTabProps extends types.IBaseComponentProps {
 
     filteredItems: any[];
     parentId: any;
+    periodId: number | string;
     parentTitle: string;
     onShowList: () => void;
     //isViewOnly: boolean;
@@ -199,6 +200,7 @@ export default class RecommendationsTab extends React.Component<IRecommendations
                         <RecommendationsList
                             {...this.props}
                             naoPublicationId={this.props.parentId}
+                            periodId={this.props.periodId}
                             onError={this.props.onError}
                             onItemTitleClick={this.props.onItemTitleClick}
                             incompleteOnly={this.state.IncompleteOnly}

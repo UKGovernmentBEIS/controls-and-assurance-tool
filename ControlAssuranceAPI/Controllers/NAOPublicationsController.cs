@@ -43,10 +43,10 @@ namespace ControlAssuranceAPI.Controllers
             return pInfo;
         }
 
-        // GET: /odata/NAOPublications?getOverallUpdateStatus=true&dgAreaId=0&archived=false
-        public string Get(bool getOverallUpdateStatus, int dgAreaId, bool archived)
+        // GET: /odata/NAOPublications?getOverallUpdateStatus=true&dgAreaId=0&naoPeriodId=2&&archived=false
+        public string Get(bool getOverallUpdateStatus, int dgAreaId, int naoPeriodId, bool archived)
         {
-            var res = db.NAOPublicationRepository.GetOverallPublicationsUpdateStatus(dgAreaId, archived);
+            var res = db.NAOPublicationRepository.GetOverallPublicationsUpdateStatus(dgAreaId, naoPeriodId, archived);
             return res;
         }
 
