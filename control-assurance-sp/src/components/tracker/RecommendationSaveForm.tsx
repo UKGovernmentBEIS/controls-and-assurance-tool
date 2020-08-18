@@ -236,7 +236,8 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
                 tdate = e['NAOUpdates'][0]['TargetDate'];
                 updateRecStatusId = e['NAOUpdates'][0]['NAORecStatusTypeId'];
             }
-            catch{
+            catch(err)
+            {
                 console.log('exception on load data');
             }
             
@@ -506,7 +507,7 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
         try{
             vv = Number(option.key);
 
-        }catch{}
+        }catch(err){}
 
         this.setState({
             UpdateNAORecStatusTypeId: vv
