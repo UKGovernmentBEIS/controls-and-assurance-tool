@@ -73,7 +73,7 @@ namespace ControlAssuranceAPI.Repositories
             return db.NAOPublications.Remove(naoPublication);
         }
 
-        public List<NAOPublicationView_Result> GetPublications(int naoPeriodId, int dgAreaId, bool incompleteOnly, bool justMine, bool isArchive)
+        public List<NAOPublicationView_Result> GetPublications(int naoPeriodId, int dgAreaId, bool incompleteOnly, bool justMine, bool isArchive, bool includeSummary=false)
         {
             List<NAOPublicationView_Result> retList = new List<NAOPublicationView_Result>();
 
@@ -89,6 +89,7 @@ namespace ControlAssuranceAPI.Repositories
                           //DGArea = p.Directorate.DirectorateGroup.Title,
                           Type = p.NAOType.Title,
                           p.Year,
+                          p.PublicationSummary,
                           p.NAORecommendations
                           
 
@@ -223,7 +224,8 @@ namespace ControlAssuranceAPI.Repositories
                     Year = iteP.Year,
                     CompletePercent = $"{completedPercentage}%",
                     AssignedTo = users,
-                    UpdateStatus = completionStatus
+                    UpdateStatus = completionStatus,
+                    Summary = (includeSummary == true) ? iteP.PublicationSummary != null ? iteP.PublicationSummary : "" : ""
 
                 };
 

@@ -105,6 +105,7 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
                 {this.renderTitle()}
                 {this.renderConclusion()}
                 {this.renderRecommendationDetails()}                
+                {this.renderOriginalTargetDate()}
                 {this.renderTargetDate()}
                 {this.renderNAORecStatusTypes()}
                 {this.renderAssignments()}
@@ -157,6 +158,21 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
                 rows={5}
             />
         );
+    }
+
+    private renderOriginalTargetDate() {
+
+        return (
+            <CrTextField
+                label="Original Target Date"
+                required={true}
+                className={styles.formField}
+                value={this.state.FormData.OriginalTargetDate}
+                onChanged={(v) => this.changeTextField(v, "OriginalTargetDate")}
+                //errorMessage={this.state.ErrMessages.Title}
+            />
+        );
+
     }
 
     private renderTargetDate() {
@@ -507,7 +523,8 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
         try{
             vv = Number(option.key);
 
-        }catch(err){}
+        }catch(Err)
+        {}
 
         this.setState({
             UpdateNAORecStatusTypeId: vv

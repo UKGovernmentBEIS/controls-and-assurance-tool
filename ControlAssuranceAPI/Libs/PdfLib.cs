@@ -1,4 +1,7 @@
-﻿using MigraDoc.DocumentObjectModel;
+﻿using ControlAssuranceAPI.Models;
+using ControlAssuranceAPI.Repositories;
+using Microsoft.OData.Edm;
+using MigraDoc.DocumentObjectModel;
 using MigraDoc.DocumentObjectModel.Tables;
 using MigraDoc.Rendering;
 using PdfSharp.Pdf;
@@ -17,7 +20,9 @@ namespace ControlAssuranceAPI.Libs
 
         }
 
-        public void CreatetPdf(Models.GoForm goForm, Repositories.GoDefElementRepository goDER, string tempLocation, string outputPdfName, string spSiteUrl, string spAccessDetails)
+        #region Gov
+
+        public void CreatetGovPdf(Models.GoForm goForm, Repositories.GoDefElementRepository goDER, string tempLocation, string outputPdfName, string spSiteUrl, string spAccessDetails)
         {
             SharepointLib sharepointLib = new SharepointLib(spSiteUrl, spAccessDetails);
             List<string> finalEvList = new List<string>();
@@ -33,9 +38,9 @@ namespace ControlAssuranceAPI.Libs
             string summaryEvidenceStatement = goForm.SummaryEvidenceStatement?.ToString() ?? "";
 
 
-            
+
             Document document = new Document();
-            
+
 
             Style heading1 = document.Styles.AddStyle("heading1", "Normal");
             heading1.Font.Size = 36;
@@ -104,9 +109,9 @@ namespace ControlAssuranceAPI.Libs
 
             //page 1(cover page)
             Paragraph paragraph = section.AddParagraph();
-            paragraph.Format.Alignment = ParagraphAlignment.Center;            
-            
-            
+            paragraph.Format.Alignment = ParagraphAlignment.Center;
+
+
             paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak();
             paragraph.AddFormattedText(dgArea, "heading1");
 
@@ -129,7 +134,7 @@ namespace ControlAssuranceAPI.Libs
             paragraphSummary.AddFormattedText("Summary of Evidence and Assurance level", "heading2");
             paragraphSummary.AddLineBreak(); paragraphSummary.AddLineBreak(); paragraphSummary.AddLineBreak();
 
-            paragraphSummary.AddFormattedText("Rating", "subHeading1"); 
+            paragraphSummary.AddFormattedText("Rating", "subHeading1");
             paragraphSummary.AddLineBreak(); paragraphSummary.AddLineBreak();
             paragraphSummary.AddFormattedText($"Overall rating is {summaryRagRatingLabel}.", "normalTxt");
             paragraphSummary.AddLineBreak(); paragraphSummary.AddLineBreak();
@@ -149,12 +154,12 @@ namespace ControlAssuranceAPI.Libs
 
 
             int totalGoElements = goForm.GoElements.Count();
-            foreach(var goElement in goForm.GoElements)
+            foreach (var goElement in goForm.GoElements)
             {
 
 
                 Paragraph paragraphGoElement1 = section.AddParagraph();
-                
+
                 paragraphGoElement1.AddFormattedText($"Specific Area Evidence: {goElement.GoDefElement.Title}", "heading2");
                 paragraphGoElement1.AddLineBreak(); paragraphGoElement1.AddLineBreak(); paragraphGoElement1.AddLineBreak();
 
@@ -165,7 +170,7 @@ namespace ControlAssuranceAPI.Libs
 
                 paragraphGoElement1.AddFormattedText("Statement", "subHeading1");
                 paragraphGoElement1.AddLineBreak(); paragraphGoElement1.AddLineBreak();
-                paragraphGoElement1.AddFormattedText(goElement.EvidenceStatement?.ToString() ?? "" , "normalTxt");
+                paragraphGoElement1.AddFormattedText(goElement.EvidenceStatement?.ToString() ?? "", "normalTxt");
                 paragraphGoElement1.AddLineBreak(); paragraphGoElement1.AddLineBreak();
 
 
@@ -176,7 +181,7 @@ namespace ControlAssuranceAPI.Libs
                 //table code
 
                 MigraDoc.DocumentObjectModel.Tables.Table table = section.AddTable();
-                
+
                 //table.Style = "Table";
                 table.Borders.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(127, 127, 127); //TableBorder;
                 table.Borders.Width = 0.25;
@@ -224,7 +229,7 @@ namespace ControlAssuranceAPI.Libs
 
                 Paragraph paragraphGoElementEvs = section.AddParagraph();
                 //int goElementEvidenceIndex = 0;
-                foreach (var goElementEvidence in goElement.GoElementEvidences.Where(x=> x.Title != null))
+                foreach (var goElementEvidence in goElement.GoElementEvidences.Where(x => x.Title != null))
                 {
                     //string evidenceSrNo = $"{goElementIndex + 1}-{goElementEvidenceIndex + 1}";
                     string evidenceSrNo = $"{goElementEvidenceIndexAcrossDGArea + 1}";
@@ -238,7 +243,7 @@ namespace ControlAssuranceAPI.Libs
 
 
                     //also create new pdf per evidence and save
-                    this.CreateEvidencePdf(sharepointLib, ref finalEvList, goElementEvidence, dgArea, evidenceSrNoWithGroup, tempLocation);
+                    this.CreateGovEvidencePdf(sharepointLib, ref finalEvList, goElementEvidence, dgArea, evidenceSrNoWithGroup, tempLocation);
 
 
                     //goElementEvidenceIndex++;
@@ -282,7 +287,7 @@ namespace ControlAssuranceAPI.Libs
                 //int goElementActionIndex = 0;
                 foreach (var goElementAction in goElement.GoElementActions)
                 {
-                    
+
                     //string actionSrNo = $"{goElementIndex + 1}-{goElementActionIndex + 1}";
                     string actionSrNo = $"{goElementActionIndexAcrossDGArea + 1}";
 
@@ -299,7 +304,7 @@ namespace ControlAssuranceAPI.Libs
                     Paragraph p2ndRow = new Paragraph();
                     p2ndRow.AddFormattedText("Action: ", TextFormat.Bold);
                     p2ndRow.AddFormattedText(goElementAction.Title?.ToString() ?? ""); //action
-                    p2ndRow.AddLineBreak();p2ndRow.AddLineBreak();
+                    p2ndRow.AddLineBreak(); p2ndRow.AddLineBreak();
                     p2ndRow.AddFormattedText("Progress: ", TextFormat.Bold);
                     p2ndRow.AddFormattedText(goElementAction.Progress?.ToString() ?? ""); //progress
                     p2ndRow.AddLineBreak(); p2ndRow.AddLineBreak();
@@ -357,7 +362,7 @@ namespace ControlAssuranceAPI.Libs
             pdfRenderer.Document = document;
             pdfRenderer.RenderDocument();
 
-            
+
             pdfRenderer.PdfDocument.Save(firstPdfPath);
 
 
@@ -372,9 +377,9 @@ namespace ControlAssuranceAPI.Libs
 
         }
 
-        private void CreateEvidencePdf(SharepointLib sharepointLib, ref List<string> finalEvList, Models.GoElementEvidence goElementEvidence, string dgArea, string evidenceSrNoWithGroup, string tempLocation)
+        private void CreateGovEvidencePdf(SharepointLib sharepointLib, ref List<string> finalEvList, Models.GoElementEvidence goElementEvidence, string dgArea, string evidenceSrNoWithGroup, string tempLocation)
         {
-            
+
             Document document = new Document();
 
 
@@ -413,6 +418,8 @@ namespace ControlAssuranceAPI.Libs
 
 
 
+
+
             Section section = document.AddSection();
 
             //page 1(cover page)
@@ -433,23 +440,23 @@ namespace ControlAssuranceAPI.Libs
                 //add 2nd page with link info
                 section.AddPageBreak();
                 Paragraph paragraphLink = section.AddParagraph();
-                
+
 
                 paragraphLink.AddFormattedText("Evidence Link", "subHeading3");
                 paragraphLink.AddLineBreak();
                 var h = paragraphLink.AddHyperlink(goElementEvidence.Title?.ToString() ?? "", HyperlinkType.Web);
                 h.AddFormattedText(goElementEvidence.Title?.ToString() ?? "");
-                
+
 
             }
             else
             {
                 //else download evidence from sharepoint and combine 2 files to make final evidence doc
-                if(goElementEvidence.Title != null)
+                if (goElementEvidence.Title != null)
                 {
                     sharepointLib.DownloadEvidence(goElementEvidence.Title, tempLocation);
                 }
-                
+
             }
 
 
@@ -460,7 +467,7 @@ namespace ControlAssuranceAPI.Libs
             pdfRenderer.Document = document;
             pdfRenderer.RenderDocument();
 
-            if(goElementEvidence.IsLink == true)
+            if (goElementEvidence.IsLink == true)
             {
                 //save with final evidence name
                 string pdfPath = System.IO.Path.Combine(tempLocation, $"{goElementEvidence.ID}_Ev.pdf");
@@ -491,6 +498,359 @@ namespace ControlAssuranceAPI.Libs
 
 
         }
+
+        #endregion Gov
+
+        #region Nao
+
+        public void CreatetNaoPdf(Models.NAOOutput naoOutput, NAOPublicationRepository nAOPublicationRepository, string tempLocation, string outputPdfName, string spSiteUrl, string spAccessDetails)
+        {
+            SharepointLib sharepointLib = new SharepointLib(spSiteUrl, spAccessDetails);
+            //string firstPdfPath = System.IO.Path.Combine(tempLocation, "first.pdf");
+
+            string dgArea = naoOutput.DirectorateGroup.Title;
+            DateTime periodStartDate = naoOutput.NAOPeriod.PeriodStartDate.Value;
+            DateTime periodEndDate = naoOutput.NAOPeriod.PeriodEndDate.Value;
+            int periodId = naoOutput.NAOPeriodId.Value;
+            int dgAreaId = naoOutput.DirectorateGroupId.Value;
+
+            var publications = nAOPublicationRepository.GetPublications(periodId, dgAreaId, false, false, false, true);
+
+            Document document = new Document();
+            Section section = document.AddSection();
+
+            Paragraph paragraph = new Paragraph();
+            paragraph.AddTab();
+            paragraph.AddText("Page ");
+            paragraph.AddPageField();
+            paragraph.AddText(" of ");
+            paragraph.AddNumPagesField();
+
+            section.Footers.Primary.Add(paragraph);
+
+            #region styles
+            Style styleFooter = document.Styles[StyleNames.Footer];
+            styleFooter.ParagraphFormat.AddTabStop("8cm", TabAlignment.Center);
+
+
+            Style heading1 = document.Styles.AddStyle("heading1", "Normal");
+            heading1.Font.Size = 48;
+            heading1.Font.Name = "Calibri (Body)";
+            heading1.Font.Color = Color.FromRgb(0, 126, 192);
+
+            Style heading2 = document.Styles.AddStyle("heading2", "Normal");
+            heading2.Font.Size = 26;
+            heading2.Font.Name = "Calibri (Body)";
+            heading2.Font.Color = Color.FromRgb(196, 89, 17);
+
+            Style heading3 = document.Styles.AddStyle("heading3", "Normal");
+            heading3.Font.Size = 14;
+            heading3.Font.Name = "Calibri (Body)";
+            heading3.Font.Color = Color.FromRgb(0, 0, 0);
+
+            Style pubHeading = document.Styles.AddStyle("pubHeading", "Normal");
+            pubHeading.Font.Size = 20;
+            pubHeading.Font.Name = "Calibri Light (Headings)";
+            pubHeading.Font.Bold = true;
+            pubHeading.Font.Color = Color.FromRgb(0, 126, 192);
+
+            Style recHeading = document.Styles.AddStyle("recHeading", "Normal");
+            recHeading.Font.Size = 14;
+            recHeading.Font.Name = "Calibri Light (Headings)";
+            recHeading.Font.Bold = true;
+            recHeading.Font.Color = Color.FromRgb(0, 126, 192);
+
+            Style recSubHeading = document.Styles.AddStyle("recSubHeading", "Normal");
+            //recSubHeading.Font.Size = 14;
+            recSubHeading.Font.Name = "Calibri (Body)";
+            recSubHeading.Font.Bold = true;
+            recSubHeading.Font.Color = Color.FromRgb(196, 89, 17);
+
+            Style normalTxt = document.Styles.AddStyle("normalTxt", "Normal");
+            //normalTxt.Font.Size = 11;
+            normalTxt.Font.Name = "Calibri (Body)";
+
+            Style normalItalicTxt = document.Styles.AddStyle("normalItalicTxt", "Normal");
+            //normalItalicTxt.Font.Size = 12;
+            normalItalicTxt.Font.Name = "Calibri (Body)";
+            normalItalicTxt.Font.Italic = true;
+
+            #endregion styles
+
+            
+
+            #region Page1(cover page)
+
+            //page 1(cover page)
+            paragraph = section.AddParagraph();
+            paragraph.Format.Alignment = ParagraphAlignment.Center;
+
+
+            paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak();
+            paragraph.AddFormattedText(dgArea, "heading1");
+
+
+            paragraph.AddLineBreak();
+            paragraph.AddLineBreak();
+            paragraph.AddFormattedText("NAO/PAC Publication Updates", "heading2");
+
+
+            paragraph.AddLineBreak();paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak();
+            string periodDatesStr = $"{this.GetDayWithSuffix(periodStartDate.Day)} {periodStartDate.ToString("MMMM yyyy")} to {this.GetDayWithSuffix(periodEndDate.Day)} {periodEndDate.ToString("MMMM yyyy")}";
+            paragraph.AddFormattedText("Period", "heading3");
+            paragraph.AddLineBreak();
+            paragraph.AddFormattedText(periodDatesStr, "heading3");
+            paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak();
+
+            
+
+            //list of publications
+
+            MigraDoc.DocumentObjectModel.Tables.Table table = section.AddTable();
+
+            //table.Style = "Table";
+            table.Borders.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(127, 127, 127); //TableBorder;
+            table.Borders.Width = 0.25;
+            table.LeftPadding = 10;
+            table.RightPadding = 10;
+            table.TopPadding = 5;
+            table.BottomPadding = 5;
+            //table.Borders.Left.Width = 0.5;
+            //table.Borders.Right.Width = 0.5;
+            table.Rows.LeftIndent = 0;
+
+            // Before you can add a row, you must define the columns
+            Column column = table.AddColumn("16cm");
+            column.Format.Alignment = ParagraphAlignment.Left;
+
+
+            // Create the header of the table
+            Row row = table.AddRow();
+            row.HeadingFormat = true;
+            row.Format.Alignment = ParagraphAlignment.Left;
+            //row.Format.Font.Bold = true;
+
+            row.Shading.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(0, 126, 192);
+            row.Format.Font.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(255, 255, 255);
+
+            row.Cells[0].AddParagraph("Publications");
+            row.Cells[0].Format.Alignment = ParagraphAlignment.Left;
+
+
+
+
+            foreach (var p in publications)
+            {
+                row = table.AddRow();
+                row.Cells[0].AddParagraph(p.Title);
+            }
+
+            #endregion Page1(cover page)
+
+            //next page, publications loop will start containing all info in publication + recs loop
+            foreach (var p in publications)
+            {
+                //need page break before starting of any publication contents
+                section.AddPageBreak();
+
+                paragraph = section.AddParagraph();
+                paragraph.AddFormattedText($"Publication: {p.Title}", "pubHeading");
+                paragraph.AddLineBreak();
+                paragraph.AddFormattedText(p.Summary?.ToString() ?? "", "normalTxt");
+                paragraph.AddLineBreak(); paragraph.AddLineBreak();
+                paragraph.AddFormattedText($"Publication Type: {p.Type}", "normalTxt");
+                paragraph.AddLineBreak();
+                paragraph.AddFormattedText($"Publication Year: {p.Year?.ToString() ?? ""}", "normalTxt");
+                paragraph.AddLineBreak(); paragraph.AddLineBreak();
+
+
+                var recs = nAOPublicationRepository.Find(p.ID).NAORecommendations;
+
+                #region rec stats table
+
+
+                //rec stats table
+                //calculate stats
+
+                int totalRecs = recs.Count;
+                int openRecs = recs.Count(x => x.NAOUpdates.Any(u => u.NAOPeriodId == periodId && u.NAORecStatusTypeId < 3));
+                int closedRecs = recs.Count(x => x.NAOUpdates.Any(u => u.NAOPeriodId == periodId && u.NAORecStatusTypeId == 3));
+
+                DateTime threeMonthsOlderDate = DateTime.Now.AddMonths(-3);
+                int closedRecsLast3Months = recs.Count(x => x.NAOUpdates.Any(u => u.NAOPeriodId == periodId && u.NAORecStatusTypeId == 3 && u.ImplementationDate >= threeMonthsOlderDate));
+
+                int percentClosed = 0;
+                try
+                {
+                    decimal a = (decimal)((decimal)closedRecs / (decimal)totalRecs);
+                    decimal b = Math.Round((a * 100));
+                    percentClosed = (int)b;
+                }
+                catch (Exception ex)
+                {
+                    string m = ex.Message;
+                }
+
+
+                table = section.AddTable();
+
+                table.Borders.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(127, 127, 127); //TableBorder;
+                table.Borders.Width = 0.25;
+                table.LeftPadding = 10;
+                table.RightPadding = 10;
+                table.TopPadding = 5;
+                table.BottomPadding = 5;
+                //table.Borders.Left.Width = 0.5;
+                //table.Borders.Right.Width = 0.5;
+                table.Rows.LeftIndent = 0;
+
+                // Before you can add a row, you must define the columns
+                column = table.AddColumn("5cm");
+                column.Format.Alignment = ParagraphAlignment.Left;
+
+                column = table.AddColumn("2cm");
+                column.Format.Alignment = ParagraphAlignment.Left;
+
+                column = table.AddColumn("2cm");
+                column.Format.Alignment = ParagraphAlignment.Left;
+
+                column = table.AddColumn("4cm");
+                column.Format.Alignment = ParagraphAlignment.Left;
+
+                column = table.AddColumn("3cm");
+                column.Format.Alignment = ParagraphAlignment.Left;
+
+
+                // Create the header of the table
+                row = table.AddRow();
+                row.HeadingFormat = true;
+                row.Format.Alignment = ParagraphAlignment.Left;
+                //row.Format.Font.Bold = true;
+
+                row.Shading.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(0, 126, 192);
+                row.Format.Font.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(255, 255, 255);
+
+                row.Cells[0].AddParagraph("Number of recommendations");
+                row.Cells[1].AddParagraph("Open");
+                row.Cells[2].AddParagraph("Closed");
+                row.Cells[3].AddParagraph("Closed in last 3 months");
+                row.Cells[4].AddParagraph("% Closed");
+
+                //data row
+                row = table.AddRow();
+                row.HeadingFormat = true;
+                row.Format.Alignment = ParagraphAlignment.Left;
+
+                //row.Shading.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(0, 126, 192);
+                //row.Format.Font.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(255, 255, 255);
+
+                row.Cells[0].AddParagraph($"{totalRecs}");
+                row.Cells[1].AddParagraph($"{openRecs}");
+                row.Cells[2].AddParagraph($"{closedRecs}");
+                row.Cells[3].AddParagraph($"{closedRecsLast3Months}");
+                row.Cells[4].AddParagraph($"{percentClosed}%");
+
+                #endregion rec stats table
+
+                paragraph = section.AddParagraph();
+                
+
+                //recs loop to show each rec contents
+                foreach(var rec in recs)
+                {
+                    paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak();
+                    paragraph.AddFormattedText($"Recommendation: {rec.Title?.ToString() ?? ""}", "recHeading");
+                    paragraph.AddLineBreak(); paragraph.AddLineBreak();
+                    paragraph.AddFormattedText("Status and Target Dates", "recSubHeading");
+                    paragraph.AddLineBreak();
+
+                    var update = rec.NAOUpdates.FirstOrDefault(u => u.NAOPeriodId == periodId);
+                    string recStatus = update.NAORecStatusType.Title?.ToString() ?? "";
+                    string orgTargetDate = rec.OriginalTargetDate?.ToString() ?? "";
+                    string targetDate = update.TargetDate?.ToString() ?? "";
+
+                    paragraph.AddFormattedText($"Recommendation Status: {recStatus}", "normalTxt");
+                    paragraph.AddLineBreak();
+                    paragraph.AddFormattedText($"Initial Target Implementation Date: {orgTargetDate}", "normalTxt");
+                    paragraph.AddLineBreak();
+                    paragraph.AddFormattedText($"Current Target Implementation Date: {targetDate}", "normalTxt");
+
+                    paragraph.AddLineBreak(); paragraph.AddLineBreak();
+                    paragraph.AddFormattedText("Conclusion", "recSubHeading");
+                    paragraph.AddLineBreak();
+                    paragraph.AddFormattedText($"{rec.Conclusion?.ToString() ?? ""}", "normalTxt");
+
+                    paragraph.AddLineBreak(); paragraph.AddLineBreak();
+                    paragraph.AddFormattedText("Recommendation", "recSubHeading");
+                    paragraph.AddLineBreak();
+                    paragraph.AddFormattedText($"{rec.RecommendationDetails?.ToString() ?? ""}", "normalTxt");
+
+                    paragraph.AddLineBreak(); paragraph.AddLineBreak();
+                    paragraph.AddFormattedText("Actions Taken", "recSubHeading");
+                    paragraph.AddLineBreak();
+                    paragraph.AddFormattedText($"{update.ActionsTaken?.ToString() ?? ""}", "normalTxt");
+
+
+                    //comments
+                    string commentsHeading = "";
+                    int naoUpdateFeedbackTypeId = 0;
+                    if (p.Type.Contains("PAC"))
+                    {
+                        //PAC Comments
+                        commentsHeading = "PAC Comments";
+                        naoUpdateFeedbackTypeId = 3;
+                    }
+                    else
+                    {
+                        //NAO Comments
+                        commentsHeading = "NAO Comments";
+                        naoUpdateFeedbackTypeId = 2;
+                    }
+
+                    paragraph.AddLineBreak(); paragraph.AddLineBreak();
+                    paragraph.AddFormattedText(commentsHeading, "recSubHeading");
+                    paragraph.AddLineBreak();
+
+                    var comments = update.NAOUpdateFeedbacks.Where(c => c.NAOUpdateFeedbackTypeId == naoUpdateFeedbackTypeId);
+
+                    foreach(var comment in comments)
+                    {
+                        paragraph.AddFormattedText(comment.Comment?.ToString() ?? "", "normalTxt");
+                        paragraph.AddFormattedText($" Date: {comment.CommentDate.Value.ToString("dd MMM yyyy")} By: {comment.User.Title}", "normalItalicTxt");
+                        paragraph.AddLineBreak();
+                        //string commentTxt = $"{comment.Comment} Date: {comment.CommentDate.Value.ToString("dd MMM yyyy")} By: Tas";
+                    }
+
+
+
+
+                }
+
+
+            }
+
+
+
+            //final creation steps
+            document.UseCmykColor = true;
+            const bool unicode = false;
+            const PdfFontEmbedding embedding = PdfFontEmbedding.Always;
+            PdfDocumentRenderer pdfRenderer = new PdfDocumentRenderer(unicode, embedding);
+            pdfRenderer.Document = document;
+            pdfRenderer.RenderDocument();
+
+
+            string outputPdfPath = System.IO.Path.Combine(tempLocation, outputPdfName);
+            pdfRenderer.PdfDocument.Save(outputPdfPath);
+
+
+            //then upload final out final to the sharepoint
+            sharepointLib.UploadFinalReport1(outputPdfPath, outputPdfName);
+
+
+        }
+
+        #endregion Nao
 
 
 

@@ -173,7 +173,7 @@ namespace ControlAssuranceAPI.Repositories
 
 
                     Libs.PdfLib pdfLib = new Libs.PdfLib();
-                    pdfLib.CreatetPdf(goForm, goDER, tempLocation, outputPdfName, spSiteUrl, spAccessDetails);
+                    pdfLib.CreatetGovPdf(goForm, goDER, tempLocation, outputPdfName, spSiteUrl, spAccessDetails);
 
                     Thread.Sleep(500);
                     //delete temp folder which we created earlier

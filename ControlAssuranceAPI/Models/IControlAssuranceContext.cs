@@ -54,6 +54,7 @@ namespace ControlAssuranceAPI.Models
         DbSet<NAOUpdateFeedback> NAOUpdateFeedbacks { get; set; }
         DbSet<NAOUpdateFeedbackType> NAOUpdateFeedbackTypes { get; set; }
         DbSet<NAOAssignment> NAOAssignments { get; set; }
+        DbSet<NAOOutput> NAOOutputs { get; set; }
 
 
         DbSet<GIAAAssurance> GIAAAssurances { get; set; }

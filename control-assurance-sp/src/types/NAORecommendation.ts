@@ -5,6 +5,7 @@ export interface INAORecommendation  extends IEntity {
 
     RecommendationDetails?: string;
     Conclusion?: string;
+    OriginalTargetDate?: string;
     //TargetDate?: string;
     NAOPublicationId?: number;
     //NAORecStatusTypeId?: number;
@@ -16,6 +17,7 @@ export class NAORecommendation implements INAORecommendation{
     public Title: string = null;
     public RecommendationDetails?: string = null;
     public Conclusion?: string = null;
+    public OriginalTargetDate?: string = null;
     //public TargetDate = null;
     public NAOPublicationId = null;
     //public NAORecStatusTypeId = null;

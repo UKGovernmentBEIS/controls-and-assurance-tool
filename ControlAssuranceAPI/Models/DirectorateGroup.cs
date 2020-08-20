@@ -20,6 +20,7 @@ namespace ControlAssuranceAPI.Models
             this.Directorates = new HashSet<Directorate>();
             this.DirectorateGroupMembers = new HashSet<DirectorateGroupMember>();
             this.GoForms = new HashSet<GoForm>();
+            this.NAOOutputs = new HashSet<NAOOutput>();
         }
     
         public int ID { get; set; }
@@ -41,5 +42,7 @@ namespace ControlAssuranceAPI.Models
         public virtual ICollection<DirectorateGroupMember> DirectorateGroupMembers { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<GoForm> GoForms { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<NAOOutput> NAOOutputs { get; set; }
     }
 }

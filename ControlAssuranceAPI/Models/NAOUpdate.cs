@@ -34,6 +34,7 @@ namespace ControlAssuranceAPI.Models
         public string UpdateChangeLog { get; set; }
         public string LastSavedInfo { get; set; }
         public string ProvideUpdate { get; set; }
+        public Nullable<System.DateTime> ImplementationDate { get; set; }
     
         public virtual NAOPeriod NAOPeriod { get; set; }
         public virtual NAORecommendation NAORecommendation { get; set; }

@@ -56,6 +56,7 @@ export { NAOUpdateEvidenceService } from './NAOUpdateEvidenceService';
 export { NAOUpdateFeedbackService } from './NAOUpdateFeedbackService';
 export { NAOUpdateFeedbackTypeService } from './NAOUpdateFeedbackTypeService';
 export { NAOAssignmentService } from './NAOAssignmentService';
+export { NAOOutputService } from './NAOOutputService';
 
 export { GIAAPeriodService } from './GIAAPeriodService';
 export { GIAAAssuranceService } from './GIAAAssuranceService';

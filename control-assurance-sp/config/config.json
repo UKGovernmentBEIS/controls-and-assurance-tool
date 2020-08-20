@@ -145,6 +145,14 @@
           "manifest": "./src/webparts/iapUpdates/IapUpdatesWebPart.manifest.json"
         }
       ]
+    },
+    "nao-report-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/naoReport/NaoReportWebPart.js",
+          "manifest": "./src/webparts/naoReport/NaoReportWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {},
@@ -166,6 +174,7 @@
     "GiaaWelcomeWebPartStrings": "lib/webparts/giaaWelcome/loc/{locale}.js",
     "GiaaUpdatesWebPartStrings": "lib/webparts/giaaUpdates/loc/{locale}.js",
     "IapWelcomeWebPartStrings": "lib/webparts/iapWelcome/loc/{locale}.js",
-    "IapUpdatesWebPartStrings": "lib/webparts/iapUpdates/loc/{locale}.js"
+    "IapUpdatesWebPartStrings": "lib/webparts/iapUpdates/loc/{locale}.js",
+    "NaoReportWebPartStrings": "lib/webparts/naoReport/loc/{locale}.js"
   }
 }

@@ -577,6 +577,19 @@
           <Property Name="Title" Type="nvarchar" MaxLength="1000" />
           <Property Name="Details" Type="nvarchar(max)" />
         </EntityType>
+        <EntityType Name="NAOOutput">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" />
+          <Property Name="NAOPeriodId" Type="int" />
+          <Property Name="DirectorateGroupId" Type="int" />
+          <Property Name="PdfStatus" Type="nvarchar(max)" />
+          <Property Name="PdfDate" Type="datetime" />
+          <Property Name="PdfName" Type="nvarchar" MaxLength="4000" />
+          <Property Name="PeriodUpdateStatus" Type="nvarchar" MaxLength="50" />
+        </EntityType>
         <EntityType Name="NAOPeriod">
           <Key>
             <PropertyRef Name="ID" />
@@ -620,6 +633,7 @@
           <Property Name="NAOPublicationId" Type="int" />
           <Property Name="NAOUpdateStatusTypeId" Type="int" />
           <Property Name="Conclusion" Type="nvarchar(max)" />
+          <Property Name="OriginalTargetDate" Type="nvarchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="NAORecStatusType">
           <Key>
@@ -652,6 +666,7 @@
           <Property Name="UpdateChangeLog" Type="nvarchar(max)" />
           <Property Name="LastSavedInfo" Type="nvarchar" MaxLength="2000" />
           <Property Name="ProvideUpdate" Type="nvarchar" MaxLength="10" />
+          <Property Name="ImplementationDate" Type="datetime" />
         </EntityType>
         <EntityType Name="NAOUpdateEvidence">
           <Key>
@@ -1445,6 +1460,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_NAOOutput_DirectorateGroup">
+          <End Role="DirectorateGroup" Type="Self.DirectorateGroup" Multiplicity="0..1" />
+          <End Role="NAOOutput" Type="Self.NAOOutput" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DirectorateGroup">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="NAOOutput">
+              <PropertyRef Name="DirectorateGroupId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_NAOOutput_NAOPeriod">
+          <End Role="NAOPeriod" Type="Self.NAOPeriod" Multiplicity="0..1" />
+          <End Role="NAOOutput" Type="Self.NAOOutput" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="NAOPeriod">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="NAOOutput">
+              <PropertyRef Name="NAOPeriodId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_NAOPublication_NAOType">
           <End Role="NAOType" Type="Self.NAOType" Multiplicity="0..1" />
           <End Role="NAOPublication" Type="Self.NAOPublication" Multiplicity="*" />
@@ -1748,6 +1787,7 @@
           <EntitySet Name="Log" EntityType="Self.Log" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="NAOAssignment" EntityType="Self.NAOAssignment" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="NAODefForm" EntityType="Self.NAODefForm" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="NAOOutput" EntityType="Self.NAOOutput" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="NAOPeriod" EntityType="Self.NAOPeriod" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="NAOPublication" EntityType="Self.NAOPublication" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="NAOPublicationDirectorate" EntityType="Self.NAOPublicationDirectorate" Schema="dbo" store:Type="Tables" />
@@ -1990,6 +2030,14 @@
           <AssociationSet Name="FK_NAOAssignment_User" Association="Self.FK_NAOAssignment_User">
             <End Role="User" EntitySet="User" />
             <End Role="NAOAssignment" EntitySet="NAOAssignment" />
+          </AssociationSet>
+          <AssociationSet Name="FK_NAOOutput_DirectorateGroup" Association="Self.FK_NAOOutput_DirectorateGroup">
+            <End Role="DirectorateGroup" EntitySet="DirectorateGroup" />
+            <End Role="NAOOutput" EntitySet="NAOOutput" />
+          </AssociationSet>
+          <AssociationSet Name="FK_NAOOutput_NAOPeriod" Association="Self.FK_NAOOutput_NAOPeriod">
+            <End Role="NAOPeriod" EntitySet="NAOPeriod" />
+            <End Role="NAOOutput" EntitySet="NAOOutput" />
           </AssociationSet>
           <AssociationSet Name="FK_NAOPublication_NAOType" Association="Self.FK_NAOPublication_NAOType">
             <End Role="NAOType" EntitySet="NAOType" />
@@ -2243,6 +2291,7 @@
           <NavigationProperty Name="User" Relationship="Self.FK_DirectorateGroup_User" FromRole="DirectorateGroup" ToRole="User" />
           <NavigationProperty Name="DirectorateGroupMembers" Relationship="Self.FK_DirectorateGroupMember_DirectorateGroup" FromRole="DirectorateGroup" ToRole="DirectorateGroupMember" />
           <NavigationProperty Name="GoForms" Relationship="Self.FK_GoForm_DirectorateGroup" FromRole="DirectorateGroup" ToRole="GoForm" />
+          <NavigationProperty Name="NAOOutputs" Relationship="Self.FK_NAOOutput_DirectorateGroup" FromRole="DirectorateGroup" ToRole="NAOOutput" />
         </EntityType>
         <EntityType Name="DirectorateGroupMember">
           <Key>
@@ -2741,6 +2790,21 @@
           <Property Name="Title" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
           <Property Name="Details" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EntityType Name="NAOOutput">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="NAOPeriodId" Type="Int32" />
+          <Property Name="DirectorateGroupId" Type="Int32" />
+          <Property Name="PdfStatus" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PdfDate" Type="DateTime" Precision="3" />
+          <Property Name="PdfName" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
+          <Property Name="PeriodUpdateStatus" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="DirectorateGroup" Relationship="Self.FK_NAOOutput_DirectorateGroup" FromRole="NAOOutput" ToRole="DirectorateGroup" />
+          <NavigationProperty Name="NAOPeriod" Relationship="Self.FK_NAOOutput_NAOPeriod" FromRole="NAOOutput" ToRole="NAOPeriod" />
+        </EntityType>
         <EntityType Name="NAOPeriod">
           <Key>
             <PropertyRef Name="ID" />
@@ -2751,6 +2815,7 @@
           <Property Name="PeriodStartDate" Type="DateTime" Precision="0" />
           <Property Name="PeriodEndDate" Type="DateTime" Precision="0" />
           <Property Name="LastPeriodId" Type="Int32" />
+          <NavigationProperty Name="NAOOutputs" Relationship="Self.FK_NAOOutput_NAOPeriod" FromRole="NAOPeriod" ToRole="NAOOutput" />
           <NavigationProperty Name="NAOUpdates" Relationship="Self.FK_NAOUpdate_NAOPeriod" FromRole="NAOPeriod" ToRole="NAOUpdate" />
         </EntityType>
         <EntityType Name="NAOPublication">
@@ -2790,6 +2855,7 @@
           <Property Name="NAOPublicationId" Type="Int32" />
           <Property Name="NAOUpdateStatusTypeId" Type="Int32" />
           <Property Name="Conclusion" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="OriginalTargetDate" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="NAOAssignments" Relationship="Self.FK_NAOAssignment_NAORecommendation" FromRole="NAORecommendation" ToRole="NAOAssignment" />
           <NavigationProperty Name="NAOPublication" Relationship="Self.FK_NAORecommendation_NAOPublication" FromRole="NAORecommendation" ToRole="NAOPublication" />
           <NavigationProperty Name="NAOUpdateStatusType" Relationship="Self.FK_NAORecommendation_NAOUpdateStatusType" FromRole="NAORecommendation" ToRole="NAOUpdateStatusType" />
@@ -2828,6 +2894,7 @@
           <Property Name="UpdateChangeLog" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="LastSavedInfo" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
           <Property Name="ProvideUpdate" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="ImplementationDate" Type="DateTime" Precision="3" />
           <NavigationProperty Name="NAOPeriod" Relationship="Self.FK_NAOUpdate_NAOPeriod" FromRole="NAOUpdate" ToRole="NAOPeriod" />
           <NavigationProperty Name="NAORecommendation" Relationship="Self.FK_NAOUpdate_NAORecommendation" FromRole="NAOUpdate" ToRole="NAORecommendation" />
           <NavigationProperty Name="NAORecStatusType" Relationship="Self.FK_NAOUpdate_NAORecStatusType" FromRole="NAOUpdate" ToRole="NAORecStatusType" />
@@ -3239,6 +3306,18 @@
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="GoForm">
+              <PropertyRef Name="DirectorateGroupId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_NAOOutput_DirectorateGroup">
+          <End Role="DirectorateGroup" Type="Self.DirectorateGroup" Multiplicity="0..1" />
+          <End Role="NAOOutput" Type="Self.NAOOutput" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DirectorateGroup">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="NAOOutput">
               <PropertyRef Name="DirectorateGroupId" />
             </Dependent>
           </ReferentialConstraint>
@@ -3711,6 +3790,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_NAOOutput_NAOPeriod">
+          <End Role="NAOPeriod" Type="Self.NAOPeriod" Multiplicity="0..1" />
+          <End Role="NAOOutput" Type="Self.NAOOutput" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="NAOPeriod">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="NAOOutput">
+              <PropertyRef Name="NAOPeriodId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_NAOUpdate_NAOPeriod">
           <End Role="NAOPeriod" Type="Self.NAOPeriod" Multiplicity="0..1" />
           <End Role="NAOUpdate" Type="Self.NAOUpdate" Multiplicity="*" />
@@ -3969,6 +4060,7 @@
           <EntitySet Name="Logs" EntityType="Self.Log" />
           <EntitySet Name="NAOAssignments" EntityType="Self.NAOAssignment" />
           <EntitySet Name="NAODefForms" EntityType="Self.NAODefForm" />
+          <EntitySet Name="NAOOutputs" EntityType="Self.NAOOutput" />
           <EntitySet Name="NAOPeriods" EntityType="Self.NAOPeriod" />
           <EntitySet Name="NAOPublications" EntityType="Self.NAOPublication" />
           <EntitySet Name="NAOPublicationDirectorates" EntityType="Self.NAOPublicationDirectorate" />
@@ -4067,6 +4159,10 @@
           <AssociationSet Name="FK_GoForm_DirectorateGroup" Association="Self.FK_GoForm_DirectorateGroup">
             <End Role="DirectorateGroup" EntitySet="DirectorateGroups" />
             <End Role="GoForm" EntitySet="GoForms" />
+          </AssociationSet>
+          <AssociationSet Name="FK_NAOOutput_DirectorateGroup" Association="Self.FK_NAOOutput_DirectorateGroup">
+            <End Role="DirectorateGroup" EntitySet="DirectorateGroups" />
+            <End Role="NAOOutput" EntitySet="NAOOutputs" />
           </AssociationSet>
           <AssociationSet Name="FK_DirectorateGroupMember_User" Association="Self.FK_DirectorateGroupMember_User">
             <End Role="User" EntitySet="Users" />
@@ -4223,6 +4319,10 @@
           <AssociationSet Name="FK_NAOAssignment_User" Association="Self.FK_NAOAssignment_User">
             <End Role="User" EntitySet="Users" />
             <End Role="NAOAssignment" EntitySet="NAOAssignments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_NAOOutput_NAOPeriod" Association="Self.FK_NAOOutput_NAOPeriod">
+            <End Role="NAOPeriod" EntitySet="NAOPeriods" />
+            <End Role="NAOOutput" EntitySet="NAOOutputs" />
           </AssociationSet>
           <AssociationSet Name="FK_NAOUpdate_NAOPeriod" Association="Self.FK_NAOUpdate_NAOPeriod">
             <End Role="NAOPeriod" EntitySet="NAOPeriods" />
@@ -5044,6 +5144,20 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="NAOOutputs">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.NAOOutput">
+              <MappingFragment StoreEntitySet="NAOOutput">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="NAOPeriodId" ColumnName="NAOPeriodId" />
+                <ScalarProperty Name="DirectorateGroupId" ColumnName="DirectorateGroupId" />
+                <ScalarProperty Name="PdfStatus" ColumnName="PdfStatus" />
+                <ScalarProperty Name="PdfDate" ColumnName="PdfDate" />
+                <ScalarProperty Name="PdfName" ColumnName="PdfName" />
+                <ScalarProperty Name="PeriodUpdateStatus" ColumnName="PeriodUpdateStatus" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="NAOPeriods">
             <EntityTypeMapping TypeName="ControlAssuranceModel.NAOPeriod">
               <MappingFragment StoreEntitySet="NAOPeriod">
@@ -5089,6 +5203,7 @@
                 <ScalarProperty Name="NAOPublicationId" ColumnName="NAOPublicationId" />
                 <ScalarProperty Name="NAOUpdateStatusTypeId" ColumnName="NAOUpdateStatusTypeId" />
                 <ScalarProperty Name="Conclusion" ColumnName="Conclusion" />
+                <ScalarProperty Name="OriginalTargetDate" ColumnName="OriginalTargetDate" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -5124,6 +5239,7 @@
                 <ScalarProperty Name="UpdateChangeLog" ColumnName="UpdateChangeLog" />
                 <ScalarProperty Name="LastSavedInfo" ColumnName="LastSavedInfo" />
                 <ScalarProperty Name="ProvideUpdate" ColumnName="ProvideUpdate" />
+                <ScalarProperty Name="ImplementationDate" ColumnName="ImplementationDate" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

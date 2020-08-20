@@ -27,6 +27,7 @@ namespace ControlAssuranceAPI.Models
         public Nullable<int> NAOPublicationId { get; set; }
         public Nullable<int> NAOUpdateStatusTypeId { get; set; }
         public string Conclusion { get; set; }
+        public string OriginalTargetDate { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<NAOAssignment> NAOAssignments { get; set; }

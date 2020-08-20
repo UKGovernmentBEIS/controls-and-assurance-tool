@@ -37,6 +37,11 @@ namespace ControlAssuranceAPI.Repositories
         public void UpdateTargetDateAndRecStatus(int naoRecommendationId, int naoPeriodId, string targetDate, int naoRecStatusTypeId)
         {
             var update = this.FindCreate(naoRecommendationId, naoPeriodId);
+            int existingRecStatus = update.NAORecStatusTypeId != null ? update.NAORecStatusTypeId.Value : 0;
+            if(existingRecStatus != 3 && naoRecStatusTypeId == 3) //3 is implemented
+            {
+                update.ImplementationDate = DateTime.Now;
+            }
             update.TargetDate = targetDate;
             update.NAORecStatusTypeId = naoRecStatusTypeId;
 
@@ -78,6 +83,13 @@ namespace ControlAssuranceAPI.Repositories
             var naoUpdateDb = db.NAOUpdates.FirstOrDefault(x => x.NAOPeriodId == naoUpdate.NAOPeriodId && x.NAORecommendationId == naoUpdate.NAORecommendationId);
             if(naoUpdateDb != null)
             {
+                int existingRecStatus = naoUpdateDb.NAORecStatusTypeId != null ? naoUpdateDb.NAORecStatusTypeId.Value : 0;
+                if (existingRecStatus != 3 && naoUpdate.NAORecStatusTypeId == 3) //3 is implemented
+                {
+                    naoUpdateDb.ImplementationDate = DateTime.Now;
+                }
+
+
                 naoUpdateDb.ProvideUpdate = naoUpdate.ProvideUpdate;
                 naoUpdateDb.Title = naoUpdate.Title;
                 naoUpdateDb.TargetDate = naoUpdate.TargetDate;

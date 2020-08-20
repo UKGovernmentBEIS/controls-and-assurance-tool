@@ -78,6 +78,8 @@ namespace ControlAssuranceAPI
             builder.EntitySet<NAOUpdateStatusType>("NAOUpdateStatusTypes");
             builder.EntitySet<NAORecommendation>("NAORecommendations");
             builder.EntitySet<NAOAssignment>("NAOAssignments");
+            builder.EntitySet<NAOOutput>("NAOOutputs");
+            builder.EntitySet<NAOOutput_Result>("NAOOutputResult");
 
             builder.EntitySet<GIAAPeriod>("GIAAPeriods");
             builder.EntitySet<GIAADefForm>("GIAADefForms");
