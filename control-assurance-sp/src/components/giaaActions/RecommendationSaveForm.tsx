@@ -37,6 +37,7 @@ export interface IErrorMessage {
     Priority: string;
     TargetDate: string;
     ActionStatus: string;
+    UpdateStatus: string;
 
 }
 export class ErrorMessage implements IErrorMessage {
@@ -45,6 +46,7 @@ export class ErrorMessage implements IErrorMessage {
     public Priority = null;
     public TargetDate = null;
     public ActionStatus = null;
+    public UpdateStatus = null;
 }
 export interface IRecommendationSaveFormState {
     Loading: boolean;
@@ -110,6 +112,7 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
                 {this.renderTargetDate()}
                 {this.renderRevisedDate()}
                 {this.renderGIAAActionStatusTypes()}
+                {this.renderUpdateStatuses()}
                 {this.renderActionOwners()}
                 {this.renderDisplayOwners()}
 
@@ -213,6 +216,29 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
             return null;
     }
 
+    private renderUpdateStatuses() {
+        const options: IDropdownOption[] = [
+            { key: 'Blank', text: '' },
+            { key: 'ReqUpdate', text: 'ReqUpdate' },
+        ];
+
+
+
+        return (
+            <CrDropdown
+                label="Update Status"
+                placeholder="Select an Option"
+                required={true}
+                className={styles.formField}
+                options={options}
+                selectedKey={this.state.FormData.UpdateStatus}
+                onChanged={(v) => this.changeDropdown(v, "UpdateStatus")}
+                errorMessage={this.state.ErrMessages.UpdateStatus}
+            />
+        );
+
+    }
+
     private renderActionOwners() {
         const users = this.state.LookupData.Users;
         const fd_users: IGIAAActionOwner[] = this.state.FormData['GIAAActionOwners'];
@@ -250,7 +276,7 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
                         multiline={true}
                         rows={2}
                     />
-                    <div style={{fontSize:'13px', fontStyle: 'italic'}} className={styles.formField}>
+                    <div style={{ fontSize: '13px', fontStyle: 'italic' }} className={styles.formField}>
                         Please create Action Owners based on this imported text data, and clear the field once done.
                     </div>
 
@@ -489,6 +515,14 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
         }
         else {
             errMsg.ActionStatus = null;
+        }
+
+        if ((this.state.FormData.UpdateStatus === null)) {
+            errMsg.UpdateStatus = "Update Status required";
+            returnVal = false;
+        }
+        else {
+            errMsg.UpdateStatus = null;
         }
 
 

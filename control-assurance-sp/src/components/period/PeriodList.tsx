@@ -3,15 +3,15 @@ import * as types from '../../types';
 import { EntityForm } from '../entity/EntityForm';
 import { FilteredList, IObjectWithKey } from '../cr/FilteredList';
 import BasePeriodList, {IBasePeriodListProps} from './BasePeriodList';
-import { PeriodService, DateService } from '../../services';
-import { IEntity } from '../../types';
+import { EntityService, PeriodService, DateService } from '../../services';
+import { IEntity, IPeriod } from '../../types';
 import { IGenColumn, ColumnType, ColumnDisplayType } from '../../types/GenColumn';
 
 
 
 
 export interface IPeriodListProps extends IBasePeriodListProps {
-    entityService:  PeriodService;
+    entityService:  EntityService<IPeriod>;
     entityNamePlural: string;
     entityNameSingular: string;
     childEntityNameApi: string;
@@ -29,7 +29,7 @@ export interface IPeriodListProps extends IBasePeriodListProps {
 export interface IPeriodListState extends types.ICrListState<types.IEntity> { }
 
 export default class PeriodList extends BasePeriodList<IPeriodListProps, IPeriodListState> {
-    protected entityService: PeriodService = this.props.entityService;
+    protected entityService: EntityService<IPeriod> = this.props.entityService;
     protected ListTitle = this.props.entityNamePlural;
     protected EntityName = { Plural: this.props.entityNamePlural, Singular: this.props.entityNameSingular };
     protected ChildEntityName = { Api: this.props.childEntityNameApi, Plural: this.props.childEntityNamePlural, Singular: this.props.childEntityNameSingular };

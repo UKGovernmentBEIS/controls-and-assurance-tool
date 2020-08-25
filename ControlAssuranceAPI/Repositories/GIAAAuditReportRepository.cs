@@ -47,6 +47,13 @@ namespace ControlAssuranceAPI.Repositories
                           r.IssueDate,
                           r.AuditYear,
                           DirectorateGroupID = r.Directorate != null ? r.Directorate.DirectorateGroupID : 0,
+                          
+                          r.Directorate.DirectorUserID,
+                          r.Directorate.DirectorateGroup.DirectorGeneralUserID,
+                          r.Directorate.DirectorateMembers,
+                          r.Directorate.DirectorateGroup.DirectorateGroupMembers,
+
+
                           DGArea = r.Directorate != null ? r.Directorate.DirectorateGroup.Title : "",
                           Directorate = r.Directorate != null ? r.Directorate.Title : "",
 
@@ -64,11 +71,20 @@ namespace ControlAssuranceAPI.Repositories
             if (justMine == true)
             {
                 int loggedInUserID = ApiUser.ID;
-                //qry = qry.Where(gde =>
-                //    gde.GoElements.Any(ge => ge.GoAssignments.Any(gass => gass.UserId == loggedInUserID))
-                //);
+                qry = qry.Where(x =>
+                    x.GIAARecommendations.Any(r => r.GIAAActionOwners.Any(o => o.UserId == loggedInUserID)) ||
+                    x.DirectorGeneralUserID == loggedInUserID ||
+                    x.DirectorUserID == loggedInUserID ||
+                    x.DirectorateMembers.Any(dm => dm.UserID == loggedInUserID) ||
+                    x.DirectorateGroupMembers.Any(dgm => dgm.UserID == loggedInUserID)
+                    
+                );
             }
 
+            if(incompleteOnly == true)
+            {
+                qry = qry.Where(x => x.GIAARecommendations.Any(r => r.UpdateStatus == "ReqUpdate"));
+            }
             int qryCount = qry.Count();
 
             var list = qry.ToList();
@@ -76,9 +92,25 @@ namespace ControlAssuranceAPI.Repositories
             foreach (var iteR in list)
             {
                 string title = iteR.Title;
-                string completionStatus = "Not Started"; //default value
                 string users = "";
                 int numDisplayedOwners = 0;
+                int completedPercentage = 0;
+
+
+
+
+                int totalRecs = iteR.GIAARecommendations.Count;
+                int totalImplementedRecs = iteR.GIAARecommendations.Count(x => x.GIAAActionStatusTypeId == 3 || x.GIAAActionStatusTypeId == 6);
+
+
+                int reqUpdateRecs = iteR.GIAARecommendations.Count(r => r.UpdateStatus == "ReqUpdate");
+
+                try
+                {
+                    var completedPercentageD = (decimal)((decimal)(decimal)totalImplementedRecs / (decimal)totalRecs) * 100;
+                    completedPercentage = (int)Math.Round(completedPercentageD);
+                }
+                catch { }
 
                 HashSet<User> uniqueOwners = new HashSet<User>();
 
@@ -112,6 +144,14 @@ namespace ControlAssuranceAPI.Repositories
                     users = users.Substring(0, users.Length - 1);
                 }
 
+                string updateStatus = "";
+
+                if(reqUpdateRecs > 0)
+                {
+                    updateStatus = "ReqUpdate";
+                }
+
+
                 GIAAAuditReportView_Result item = new GIAAAuditReportView_Result
                 {
                     ID = iteR.ID,
@@ -123,9 +163,9 @@ namespace ControlAssuranceAPI.Repositories
                     Assurance = iteR.Assurance,
                     Year = iteR.AuditYear != null ? iteR.AuditYear : "",
                     IssueDateStr = (iteR.IssueDate != null) ? iteR.IssueDate.Value.ToString("dd/MM/yyyy") : "",
-                    CompletePercent = "0%",
+                    CompletePercent = $"{completedPercentage}%",
                     AssignedTo = users,
-                    UpdateStatus = completionStatus
+                    UpdateStatus = updateStatus
 
                 };
 

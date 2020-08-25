@@ -120,9 +120,13 @@ namespace ControlAssuranceAPI.Repositories
             if (justMine == true)
             {
                 int loggedInUserID = ApiUser.ID;
-                //qry = qry.Where(gde =>
-                //    gde.GoElements.Any(ge => ge.GoAssignments.Any(gass => gass.UserId == loggedInUserID))
-                //);
+                qry = qry.Where(p =>
+                    p.NAORecommendations.Any(r => r.NAOAssignments.Any(ass => ass.UserId == loggedInUserID)) ||
+                    p.NAOPublicationDirectorates.Any(pd => pd.Directorate.DirectorUserID == loggedInUserID) ||
+                    p.NAOPublicationDirectorates.Any(pd => pd.Directorate.DirectorateGroup.DirectorGeneralUserID == loggedInUserID) ||
+                    p.NAOPublicationDirectorates.Any(pd => pd.Directorate.DirectorateMembers.Any(dm => dm.UserID == loggedInUserID)) ||
+                    p.NAOPublicationDirectorates.Any(pd => pd.Directorate.DirectorateGroup.DirectorateGroupMembers.Any(dgm => dgm.UserID == loggedInUserID))
+                );
             }
 
             int qryCount = qry.Count();
@@ -160,6 +164,11 @@ namespace ControlAssuranceAPI.Repositories
                     {
                         completionStatus = "Partly Updated";
                     }
+                }
+
+                if(incompleteOnly == true && completionStatus == "Updated")
+                {
+                    continue;
                 }
 
                 try

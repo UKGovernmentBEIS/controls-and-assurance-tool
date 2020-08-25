@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="23c9f71728c64bd9851f29cd34ae2dfb" Name="Diagram1">
+      <Diagram DiagramId="60625dc68c3640ae92c282621daf55f9" Name="Diagram1">
         <EntityTypeShape EntityType="ControlAssuranceModel.APILog" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.AuditFeedback" Width="1.5" PointX="3" PointY="44.375" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.DefElement" Width="1.5" PointX="22.5" PointY="19.25" IsExpanded="true" />

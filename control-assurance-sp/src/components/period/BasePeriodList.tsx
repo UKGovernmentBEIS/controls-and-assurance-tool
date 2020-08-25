@@ -19,7 +19,7 @@ export interface IBasePeriodListProps extends types.IBaseComponentProps {
 }
 
 export default abstract class BasePeriodList<P extends IBasePeriodListProps, S extends types.ICrListState<types.IEntity>> extends React.Component<P, S> {
-    protected abstract entityService: services.PeriodService;
+    protected abstract entityService: services.EntityService<IPeriod>;
     protected readonly ragWidth: number = 130;
     protected readonly dateWidth: number = 75;
     protected readonly userWidth: number = 100;

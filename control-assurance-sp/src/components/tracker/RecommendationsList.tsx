@@ -345,13 +345,13 @@ export default class RecommendationsList extends React.Component<IRecommendation
         //console.log('web title: ', this.props.spfxContext.pageContext.web.title);
 
     }
-    // public componentDidUpdate(prevProps: IRecommendationsListProps): void {
-    //     if (prevProps.naoPeriodId !== this.props.naoPeriodId || prevProps.dgAreaId !== this.props.dgAreaId || prevProps.justMine !== this.props.justMine || prevProps.incompleteOnly !== this.props.incompleteOnly) {
-    //         //console.log('props changed, load data again');
-    //         this._selection.setAllSelected(false);
-    //         this.loadData();
-    //     }
-    // }
+    public componentDidUpdate(prevProps: IRecommendationsListProps): void {
+        if (prevProps.incompleteOnly !== this.props.incompleteOnly || prevProps.justMine !== this.props.justMine) {
+            //console.log('props changed, load data again');
+            this._selection.setAllSelected(false);
+            this.loadData();
+        }
+    }
 
 
 

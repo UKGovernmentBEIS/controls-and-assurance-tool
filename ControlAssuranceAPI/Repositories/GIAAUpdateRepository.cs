@@ -111,6 +111,7 @@ namespace ControlAssuranceAPI.Repositories
                 //copy value back to rec
                 db.Entry(ret).Reference(u => u.GIAARecommendation).Load();
                 ret.GIAARecommendation.GIAAActionStatusTypeId = giaaUpdate.GIAAActionStatusTypeId;
+                ret.GIAARecommendation.UpdateStatus = "Blank";
                 db.SaveChanges();
             }
             else if(giaaUpdate.UpdateType == GIAAUpdateTypes.RevisedDate)

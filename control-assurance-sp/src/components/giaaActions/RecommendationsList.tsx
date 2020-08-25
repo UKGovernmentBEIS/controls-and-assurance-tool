@@ -23,8 +23,8 @@ export interface IRecommendationsListProps extends types.IBaseComponentProps {
     justMine: boolean;
     onChangeJustMine: (value: boolean) => void;
 
-    actionStatusTypeId:number;
-    onChangeActionStatusType: (option: IDropdownOption)=> void;
+    actionStatusTypeId: number;
+    onChangeActionStatusType: (option: IDropdownOption) => void;
 
     filterText?: string;
     onChangeFilterText: (value: string) => void;
@@ -147,34 +147,36 @@ export default class RecommendationsList extends React.Component<IRecommendation
         },
 
         {
+            key: 'UpdateStatus',
+            name: 'Update Status',
+            fieldName: 'UpdateStatus',
+            minWidth: 78,
+            maxWidth: 78,
+            isResizable: true,
+            headerClassName: styles.bold,
+        },
+
+        {
             key: 'Owners',
             name: 'Owners',
             fieldName: 'Owners',
             minWidth: 200,
             maxWidth: 200,
-            isMultiline:true,
+            isMultiline: true,
             isResizable: true,
             headerClassName: styles.bold,
         },
 
 
 
-        // {
-        //     key: 'UpdateStatus',
-        //     name: 'Period Update Status',
-        //     fieldName: 'UpdateStatus',
-        //     minWidth: 150,
-        //     maxWidth: 150,
-        //     isResizable: true,
-        //     headerClassName: styles.bold,
-        // },
+
     ];
 
 
     constructor(props: IRecommendationsListProps, state: IRecommendationsListState<IEntity>) {
         super(props);
         this.state = new RecommendationsListState<IEntity>();
-        
+
         this._selection = new Selection({
             onSelectionChanged: () => {
                 if (this._selection.getSelectedCount() === 1) {
@@ -184,12 +186,12 @@ export default class RecommendationsList extends React.Component<IRecommendation
                     const key = Number(sel.key);
                     const title: string = sel["Title"];
                     //const goElementId = Number(sel["GoElementId"]);
-                    
 
-                    this.setState({ SelectedEntity: key, SelectedEntityTitle: title, EnableEdit:true, EnableDelete: true });
+
+                    this.setState({ SelectedEntity: key, SelectedEntityTitle: title, EnableEdit: true, EnableDelete: true });
                 }
                 else {
-                    this.setState({ SelectedEntity: null, SelectedEntityTitle: null, EnableEdit:false, EnableDelete: false });
+                    this.setState({ SelectedEntity: null, SelectedEntityTitle: null, EnableEdit: false, EnableDelete: false });
                 }
             }
         });
@@ -226,13 +228,13 @@ export default class RecommendationsList extends React.Component<IRecommendation
                 onItemTitleClick={this.props.onItemTitleClick}
                 columns={listColumns}
                 items={items}
-                
+
                 incompleteOnly={this.props.incompleteOnly}
                 onChangeIncompleteOnly={this.props.onChangeIncompleteOnly}
                 justMine={this.props.justMine}
                 onChangeJustMine={this.props.onChangeJustMine}
                 actionStatusTypeId={this.props.actionStatusTypeId}
-                onChangeActionStatusType={this.props.onChangeActionStatusType}                    
+                onChangeActionStatusType={this.props.onChangeActionStatusType}
 
                 filterText={this.props.filterText}
                 onFilterChange={this.props.onChangeFilterText}
@@ -246,7 +248,7 @@ export default class RecommendationsList extends React.Component<IRecommendation
 
                 actionStatusTypes={this.props.actionStatusTypes}
 
-                
+
             />
         );
     }

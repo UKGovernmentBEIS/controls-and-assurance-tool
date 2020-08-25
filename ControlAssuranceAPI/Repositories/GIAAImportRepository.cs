@@ -384,6 +384,7 @@ namespace ControlAssuranceAPI.Repositories
                             if (gIAARecommendation.ID == 0)
                             {
                                 //add recStatus and dates only if new rec
+                                gIAARecommendation.UpdateStatus = "Blank";
                                 DateTime recOriginalDate_date;
                                 if (DateTime.TryParse(recOrginalDate, out recOriginalDate_date) == true)
                                 {
@@ -450,6 +451,40 @@ namespace ControlAssuranceAPI.Repositories
 
                         rowIndex++;
                     }
+
+                    //after import
+                    //loop through all the recs and set UpdateStatus
+                    //- if overdue and no updates this month than set ReqUpdate
+                    //- else set blank
+
+                    DateTime todaysDate = DateTime.Now;
+                    foreach(var r in dbThread.GIAARecommendations)
+                    {
+                        if(r.TargetDate != null)
+                        {
+                            bool overdue = r.TargetDate < todaysDate ? true : false;
+                            int totalUpdatesThisMonth = 0;
+                            try
+                            {
+                                totalUpdatesThisMonth = r.GIAAUpdates.Count(x => (x.UpdateType == "Action Update" || x.UpdateType == "GIAA Update") && x.UpdateDate.Value.Month == todaysDate.Month && x.UpdateDate.Value.Year == todaysDate.Year);
+                            }
+                            catch { }
+                            
+                            if(overdue == true && totalUpdatesThisMonth == 0)
+                            {
+                                r.UpdateStatus = "ReqUpdate";
+                            }
+                            else
+                            {
+                                r.UpdateStatus = "Blank";
+                            }
+
+                        }
+                    }
+
+                    dbThread.SaveChanges();
+
+
 
                     gIAAImportRepository.ChangeStatusAfterParsing("Success", "");
                 }

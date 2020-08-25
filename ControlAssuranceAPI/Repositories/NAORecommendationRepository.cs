@@ -60,9 +60,9 @@ namespace ControlAssuranceAPI.Repositories
             if (justMine == true)
             {
                 int loggedInUserID = ApiUser.ID;
-                //qry = qry.Where(gde =>
-                //    gde.GoElements.Any(ge => ge.GoAssignments.Any(gass => gass.UserId == loggedInUserID))
-                //);
+                qry = qry.Where(x =>
+                    x.NAOAssignments.Any(ass=> ass.UserId == loggedInUserID)
+                );
             }
 
             int qryCount = qry.Count();
@@ -92,6 +92,11 @@ namespace ControlAssuranceAPI.Repositories
                     updateStatus = update.NAOUpdateStatusType.Title;
                     targetDate = update.TargetDate != null ? update.TargetDate : "";
                     recStatus = update.NAORecStatusType.Title;
+                }
+
+                if(incompleteOnly == true && updateStatus != "Not Updated")
+                {
+                    continue;
                 }
 
 

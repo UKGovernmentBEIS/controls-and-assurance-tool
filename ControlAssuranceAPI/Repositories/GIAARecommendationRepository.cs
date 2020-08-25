@@ -50,7 +50,7 @@ namespace ControlAssuranceAPI.Repositories
                           r.RevisedDate,
                           Priority = r.GIAAActionPriority.Title,
                           ActionStatus = r.GIAAActionStatusType.Title,
-                          UpdateStatus = r.GIAAPeriodUpdateStatusId,
+                          r.UpdateStatus,
                           r.GIAAActionStatusTypeId,
                           r.DisplayedImportedActionOwners,
                           r.GIAAActionOwners
@@ -63,9 +63,13 @@ namespace ControlAssuranceAPI.Repositories
             if (justMine == true)
             {
                 int loggedInUserID = ApiUser.ID;
-                //qry = qry.Where(gde =>
-                //    gde.GoElements.Any(ge => ge.GoAssignments.Any(gass => gass.UserId == loggedInUserID))
-                //);
+                qry = qry.Where(x =>
+                    x.GIAAActionOwners.Any(o => o.UserId == loggedInUserID)
+                );
+            }
+            if(incompleteOnly == true)
+            {
+                qry = qry.Where(x => x.UpdateStatus == "ReqUpdate");
             }
             if(actionStatusTypeId > 0)
             {
@@ -95,9 +99,19 @@ namespace ControlAssuranceAPI.Repositories
                     owners = owners.Substring(0, owners.Length - 1);
                 }
 
+                string updateStatus = "";
+                if (string.IsNullOrEmpty(ite.UpdateStatus) || ite.UpdateStatus == "Blank")
+                {
+                    //updateStatus = "";
+                }
+                else
+                {
+                    updateStatus = ite.UpdateStatus;
+                }
+
                 GIAARecommendationView_Result item = new GIAARecommendationView_Result
                 {
-                    
+
                     ID = ite.ID,
                     Title = ite.Title,
                     RecommendationDetails = ite.RecommendationDetails,
@@ -106,7 +120,7 @@ namespace ControlAssuranceAPI.Repositories
                     Priority = ite.Priority,
                     ActionStatus = ite.ActionStatus,
                     Owners = owners,
-                    UpdateStatus = (ite.UpdateStatus != null && ite.UpdateStatus.ToString() == "1") ? "Completed" : "Not Started"
+                    UpdateStatus = updateStatus
 
 
                 };

@@ -258,40 +258,40 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
             );
         }
 
-        else if (column.key === "UpdateStatus") {
+        // else if (column.key === "UpdateStatus") {
 
-            //let txtColor: string = "white";
-            //let bgColor: string = "";
-            let statusImg: string = "";
+        //     //let txtColor: string = "white";
+        //     //let bgColor: string = "";
+        //     let statusImg: string = "";
 
-            if (fieldContent === ElementStatuses.ToBeCompleted) {
-                //bgColor = "rgb(230,230,230)";
-                //txtColor = "black";
-                statusImg = this.statusImgNotStarted;
-            }
-            else if (fieldContent === ElementStatuses.InProgress) {
-                //bgColor = "rgb(255,191,0)";
-                //txtColor = "white";
-                statusImg = this.statusImgInProgress;
-            }
-            // else if (fieldContent === ElementStatuses.ReqSignOff) {
-            //     bgColor = "rgb(185,0,185)";
-            //     txtColor = "white";
-            // }
-            else if (fieldContent === ElementStatuses.Completed) {
-                //bgColor = "rgb(0,127,0)";
-                //txtColor = "white";
-                statusImg = this.statusImgCompleted;
-            }
+        //     if (fieldContent === ElementStatuses.ToBeCompleted) {
+        //         //bgColor = "rgb(230,230,230)";
+        //         //txtColor = "black";
+        //         statusImg = this.statusImgNotStarted;
+        //     }
+        //     else if (fieldContent === ElementStatuses.InProgress) {
+        //         //bgColor = "rgb(255,191,0)";
+        //         //txtColor = "white";
+        //         statusImg = this.statusImgInProgress;
+        //     }
+        //     // else if (fieldContent === ElementStatuses.ReqSignOff) {
+        //     //     bgColor = "rgb(185,0,185)";
+        //     //     txtColor = "white";
+        //     // }
+        //     else if (fieldContent === ElementStatuses.Completed) {
+        //         //bgColor = "rgb(0,127,0)";
+        //         //txtColor = "white";
+        //         statusImg = this.statusImgCompleted;
+        //     }
 
-            return (
-                // <span style={{ backgroundColor: bgColor, color: txtColor, width: "140px", display: "block", paddingLeft: "10px", paddingTop: "5px", paddingBottom: "5px" }}>
-                //     {fieldContent}
-                // </span>
-                <img src={statusImg} />
+        //     return (
+        //         // <span style={{ backgroundColor: bgColor, color: txtColor, width: "140px", display: "block", paddingLeft: "10px", paddingTop: "5px", paddingBottom: "5px" }}>
+        //         //     {fieldContent}
+        //         // </span>
+        //         <img src={statusImg} />
 
-            );
-        }
+        //     );
+        // }
         else if (column.key === "DGArea") {
             const directorate = item["Directorate"];
             return <span>{fieldContent} - {directorate}</span>;

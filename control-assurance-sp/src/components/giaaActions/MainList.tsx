@@ -170,6 +170,16 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
         },
 
         {
+            key: 'UpdateStatus',
+            name: 'Update Status',
+            fieldName: 'UpdateStatus',
+            minWidth: 90,
+            maxWidth: 90,
+            isResizable: true,
+            headerClassName: styles.bold,
+        },
+
+        {
             key: 'Assurance',
             name: 'Assurance',
             fieldName: 'Assurance',
