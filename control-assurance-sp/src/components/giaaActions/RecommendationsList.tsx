@@ -93,6 +93,7 @@ export default class RecommendationsList extends React.Component<IRecommendation
             minWidth: 90,
             maxWidth: 90,
             isResizable: true,
+            isMultiline: true,
             headerClassName: styles.bold,
         },
         {
