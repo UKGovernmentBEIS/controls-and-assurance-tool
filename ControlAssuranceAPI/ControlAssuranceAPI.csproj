@@ -345,6 +345,7 @@
     <Compile Include="Models\DefElementGroup.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\DefElementVew_Result.cs" />
     <Compile Include="Models\DefForm.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>

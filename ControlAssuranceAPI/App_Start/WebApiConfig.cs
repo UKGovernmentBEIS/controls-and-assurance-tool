@@ -37,6 +37,9 @@ namespace ControlAssuranceAPI
             builder.EntitySet<DefForm>("DefForms");
             builder.EntitySet<Models.DefElementGroup>("DefElementGroups");
             builder.EntitySet<Models.DefElement>("DefElements");
+
+            builder.EntitySet<DefElementVew_Result>("DefElementVewResult");
+
             builder.EntitySet<Models.Period>("Periods");
             builder.EntitySet<Models.Element>("Elements");
             builder.EntitySet<Models.Form>("Forms");

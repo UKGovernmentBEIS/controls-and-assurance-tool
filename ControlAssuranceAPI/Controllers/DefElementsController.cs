@@ -40,6 +40,12 @@ namespace ControlAssuranceAPI.Controllers
             return db.DefElementRepository.DefElements.Where(d => d.ID == key).SelectMany(d => d.Elements);
         }
 
+        // GET: /odata/DefElements?periodId=20&formId=83
+        public List<DefElementVew_Result> Get(int periodId, int formId)
+        {
+            return db.DefElementRepository.GetDefElements(periodId, formId);
+        }
+
         // POST: odata/DefElements
         public IHttpActionResult Post(DefElement defElement)
         {

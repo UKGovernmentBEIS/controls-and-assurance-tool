@@ -1,6 +1,6 @@
 import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { EntityService } from './EntityService';
-import { IDataAPI, IDefElement } from '../types';
+import { IDataAPI, IDefElement, IEntity } from '../types';
 
 
 
@@ -18,6 +18,10 @@ export class DefElementService extends EntityService<IDefElement> {
 
     public readAllWithArgs(periodId: number): Promise<IDefElement[]> {
         return this.readAll(`?$filter=PeriodId eq ${periodId}`);
+    }
+
+    public readAllForList(periodId: number | string, formId: number): Promise<IEntity[]> {
+        return this.readAll(`?periodId=${periodId}&formId=${formId}`);
     }
 
 

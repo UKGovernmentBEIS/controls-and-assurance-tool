@@ -30,9 +30,10 @@ export default class SignOffList extends React.Component<ISignOffListProps, ISig
     public render(): React.ReactElement<ISignOffListProps> {
         const { defForm, showCancelSignOffs } = this.props;
         return (
-            <div className={`${styles.cr} ${styles.crList}`}>
+            // <div className={`${styles.cr} ${styles.crList}`}>
+            <div>
                 <div style={{ position: 'relative' }}>
-                    {defForm.SignOffSectionTitle && <h1 className='ms-font-xl'>{defForm.SignOffSectionTitle}</h1>}
+                    {/* {defForm.SignOffSectionTitle && <h1 className='ms-font-xl'>{defForm.SignOffSectionTitle}</h1>} */}
                     { this.renderDDSignOffForm(defForm.DDSignOffTitle, defForm.DDSignOffText) }
                     { this.renderDirSignOffForm(defForm.DirSignOffTitle, defForm.DirSignOffText) }
                     { (showCancelSignOffs === true) ? this.renderCancelSignOffForm() : null }

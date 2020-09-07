@@ -2,47 +2,41 @@ import * as React from 'react';
 import * as types from '../../types';
 import * as services from '../../services';
 import { sp } from '@pnp/sp';
-import RecommendationSaveForm from './RecommendationSaveForm';
-import { FilteredRecList, IObjectWithKey } from './FilteredRecList';
+import { FilteredMainList, IObjectWithKey } from './FilteredMainList';
 import { IEntity } from '../../types';
 import { IUpdatesListColumn, ColumnDisplayTypes } from '../../types/UpdatesListColumn';
 import { CrLoadingOverlay } from '../cr/CrLoadingOverlay';
 import { Selection } from '../cr/FilteredList';
 import { ConfirmDialog } from '../cr/ConfirmDialog';
-import { CrDropdown, IDropdownOption } from '../cr/CrDropdown';
+import { MessageDialog } from '../cr/MessageDialog';
 import styles from '../../styles/cr.module.scss';
 
 
-export interface IRecommendationsListProps extends types.IBaseComponentProps {
+export interface IMainListProps extends types.IBaseComponentProps {
 
-    //giaaPeriodId:number | string;
-    onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
-    giaaAuditReportId: number | string;
-    incompleteOnly: boolean;
-    onChangeIncompleteOnly: (value: boolean) => void;
-    justMine: boolean;
-    onChangeJustMine: (value: boolean) => void;
+    periodId: number | string;
+    formId: number;
 
-    actionStatusTypeId: number;
-    onChangeActionStatusType: (option: IDropdownOption) => void;
 
     filterText?: string;
     onChangeFilterText: (value: string) => void;
 
-    actionStatusTypes: IEntity[];
+    onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
 
 }
 
-export interface IRecommendationsListState<T> {
+export interface IMainListState<T> {
     SelectedEntity: number;
     SelectedEntityTitle: string;
     //SelectedGoElementId:number;
 
     SelectedEntityChildren: number;
     ShowForm: boolean;
+    ShowImportForm: boolean;
     EnableEdit?: boolean;
     EnableDelete?: boolean;
     HideDeleteDialog: boolean;
+    HideDeleteDisallowed: boolean;
     ShowChildForm: boolean;
     CurrentPage?: number;
     NextPageAvailable?: boolean;
@@ -51,14 +45,16 @@ export interface IRecommendationsListState<T> {
     ListFilterText?: string;
     InitDataLoaded: boolean;
 }
-export class RecommendationsListState<T> implements IRecommendationsListState<T>{
+export class MainListState<T> implements IMainListState<T>{
     public SelectedEntity = null;
     public SelectedEntityTitle: string = null;
     //public SelectedGoElementId = null;
 
     public SelectedEntityChildren = null;
     public ShowForm = false;
+    public ShowImportForm = false;
     public HideDeleteDialog = true;
+    public HideDeleteDisallowed = true;
     public EnableEdit = false;
     public EnableDelete = false;
     public ShowChildForm = false;
@@ -70,10 +66,11 @@ export class RecommendationsListState<T> implements IRecommendationsListState<T>
     public InitDataLoaded = false;
 }
 
-export default class RecommendationsList extends React.Component<IRecommendationsListProps, IRecommendationsListState<IEntity>> {
+export default class MainList extends React.Component<IMainListProps, IMainListState<IEntity>> {
     private _selection: Selection;
-    private recService: services.GIAARecommendationService = new services.GIAARecommendationService(this.props.spfxContext, this.props.api);
+    private mainService: services.DefElementService = new services.DefElementService(this.props.spfxContext, this.props.api);
 
+    private ChildEntityName: { Plural: string, Singular: string } = { Plural: 'Recommendations', Singular: 'Recommendation' };
 
     private listColumns: IUpdatesListColumn[] = [
         //use fieldName as key
@@ -88,82 +85,32 @@ export default class RecommendationsList extends React.Component<IRecommendation
         },
         {
             key: 'Title',
-            name: 'Ref',
+            name: 'Title',
             fieldName: 'Title',
-            minWidth: 60,
-            maxWidth: 60,
-            isResizable: true,
-            headerClassName: styles.bold,
-        },
-        {
-            key: 'RecommendationDetails',
-            name: 'Recommendations/Actions',
-            fieldName: 'RecommendationDetails',
-            minWidth: 445,
-            maxWidth: 445,
+            minWidth: 370,
+            maxWidth: 370,
             isResizable: true,
             isMultiline: true,
             headerClassName: styles.bold,
         },
         {
-            key: 'Priority',
-            name: 'Priority',
-            fieldName: 'Priority',
-            minWidth: 65,
-            maxWidth: 65,
+            key: 'DefElementGroup',
+            name: 'Group',
+            fieldName: 'DefElementGroup',
+            minWidth: 370,
+            maxWidth: 370,
             isResizable: true,
             isMultiline: true,
             headerClassName: styles.bold,
         },
         {
-            key: 'TargetDate',
-            name: 'Original Date',
-            fieldName: 'TargetDate',
-            minWidth: 78,
-            maxWidth: 78,
+            key: 'Status',
+            name: 'Status',
+            fieldName: 'Status',
+            minWidth: 210,
+            maxWidth: 210,
             isResizable: true,
             isMultiline: true,
-            headerClassName: styles.bold,
-        },
-
-        {
-            key: 'RevisedDate',
-            name: 'Revised Date',
-            fieldName: 'RevisedDate',
-            minWidth: 78,
-            maxWidth: 78,
-            isResizable: true,
-            isMultiline: true,
-            headerClassName: styles.bold,
-        },
-        {
-            key: 'ActionStatus',
-            name: 'Action Status',
-            fieldName: 'ActionStatus',
-            minWidth: 78,
-            maxWidth: 78,
-            isResizable: true,
-            headerClassName: styles.bold,
-        },
-
-        {
-            key: 'UpdateStatus',
-            name: 'Update Status',
-            fieldName: 'UpdateStatus',
-            minWidth: 78,
-            maxWidth: 78,
-            isResizable: true,
-            headerClassName: styles.bold,
-        },
-
-        {
-            key: 'Owners',
-            name: 'Owners',
-            fieldName: 'Owners',
-            minWidth: 200,
-            maxWidth: 200,
-            isMultiline: true,
-            isResizable: true,
             headerClassName: styles.bold,
         },
 
@@ -173,9 +120,9 @@ export default class RecommendationsList extends React.Component<IRecommendation
     ];
 
 
-    constructor(props: IRecommendationsListProps, state: IRecommendationsListState<IEntity>) {
+    constructor(props: IMainListProps, state: IMainListState<IEntity>) {
         super(props);
-        this.state = new RecommendationsListState<IEntity>();
+        this.state = new MainListState<IEntity>();
 
         this._selection = new Selection({
             onSelectionChanged: () => {
@@ -199,16 +146,15 @@ export default class RecommendationsList extends React.Component<IRecommendation
 
     //#region Render
 
-    public render(): React.ReactElement<IRecommendationsListProps> {
+    public render(): React.ReactElement<IMainListProps> {
 
         return (
             <div className={`${styles.cr}`}>
                 <div style={{ position: 'relative' }}>
                     <CrLoadingOverlay isLoading={this.state.Loading} />
                     {this.renderList()}
-                    {this.state.ShowForm && this.renderForm()}
 
-                    <ConfirmDialog hidden={this.state.HideDeleteDialog} title={`Are you sure you want to delete ${this.getSelectedEntityName()}?`} content={`Please note, all updates and related information will also be deleted.`} confirmButtonText="Delete" handleConfirm={this.deleteRecord} handleCancel={this.toggleDeleteConfirm} />
+
                 </div>
             </div>
         );
@@ -224,52 +170,21 @@ export default class RecommendationsList extends React.Component<IRecommendation
 
 
         return (
-            <FilteredRecList
+            <FilteredMainList
                 onItemTitleClick={this.props.onItemTitleClick}
                 columns={listColumns}
                 items={items}
-
-                incompleteOnly={this.props.incompleteOnly}
-                onChangeIncompleteOnly={this.props.onChangeIncompleteOnly}
-                justMine={this.props.justMine}
-                onChangeJustMine={this.props.onChangeJustMine}
-                actionStatusTypeId={this.props.actionStatusTypeId}
-                onChangeActionStatusType={this.props.onChangeActionStatusType}
-
                 filterText={this.props.filterText}
                 onFilterChange={this.props.onChangeFilterText}
                 selection={this._selection}
 
-                onAdd={this.addItem}
-                onEdit={this.editItem}
-                onDelete={this.checkDelete}
-                editDisabled={!this.state.EnableEdit}
-                deleteDisabled={!this.state.EnableDelete}
-
-                actionStatusTypes={this.props.actionStatusTypes}
-
-
             />
         );
     }
 
-    private renderForm() {
 
 
-        return (
-            <RecommendationSaveForm
-                giaaAuditReportId={this.props.giaaAuditReportId}
-                //giaaPeriodId={this.props.giaaPeriodId}
-                showForm={this.state.ShowForm}
-                entityId={this.state.SelectedEntity}
-                onSaved={this.formSaved}
-                onCancelled={this.closePanel}
-                {...this.props}
-            />
 
-        );
-
-    }
 
     //#endregion Render
 
@@ -310,34 +225,16 @@ export default class RecommendationsList extends React.Component<IRecommendation
 
 
 
-    private closePanel = (): void => {
-        this.setState({ ShowForm: false });
-    }
 
-    private formSaved = (): void => {
-        this.loadData();
-        this.closePanel();
-    }
 
     private getSelectedEntityName = (): string => {
         let entity = this.state.Entities.filter((e) => { return e.ID === this.state.SelectedEntity; });
         return entity[0] ? entity[0].Title : null;
     }
 
-    private toggleDeleteConfirm = (): void => {
-        this.setState({ HideDeleteDialog: !this.state.HideDeleteDialog });
-    }
 
-    private deleteRecord = (): void => {
 
-        this.setState({ HideDeleteDialog: true });
-        if (this.state.SelectedEntity) {
-            this.recService.delete(this.state.SelectedEntity).then(this.loadData, (err) => {
-                if (this.props.onError) this.props.onError(`Error deleting item ${this.state.SelectedEntity}`, err.message);
-            });
-        }
 
-    }
 
     //#endregion Class Methods
 
@@ -348,7 +245,7 @@ export default class RecommendationsList extends React.Component<IRecommendation
         this.setState({ Loading: true });
 
 
-        const read: Promise<IEntity[]> = this.recService.readAllWithFilters(this.props.giaaAuditReportId, this.props.incompleteOnly, this.props.justMine, this.props.actionStatusTypeId);
+        const read: Promise<IEntity[]> = this.mainService.readAllForList(this.props.periodId, this.props.formId);
         read.then((entities: any): void => {
             this.setState({
                 Loading: false, Entities: entities,
@@ -365,8 +262,8 @@ export default class RecommendationsList extends React.Component<IRecommendation
         //console.log('web title: ', this.props.spfxContext.pageContext.web.title);
 
     }
-    public componentDidUpdate(prevProps: IRecommendationsListProps): void {
-        if (prevProps.actionStatusTypeId !== this.props.actionStatusTypeId || prevProps.justMine !== this.props.justMine || prevProps.incompleteOnly !== this.props.incompleteOnly) {
+    public componentDidUpdate(prevProps: IMainListProps): void {
+        if (prevProps.periodId !== this.props.periodId || prevProps.formId !== this.props.formId) {
             //console.log('props changed, load data again');
             this._selection.setAllSelected(false);
             this.loadData();
@@ -379,23 +276,6 @@ export default class RecommendationsList extends React.Component<IRecommendation
 
     //#region Events Handlers
 
-
-
-    private addItem = (): void => {
-        if (this.state.SelectedEntity)
-            this._selection.setKeySelected(this.state.SelectedEntity.toString(), false, false);
-        this.setState({ SelectedEntity: null, ShowForm: true });
-    }
-
-    private editItem = (): void => {
-        this.setState({ ShowForm: true });
-    }
-
-    private checkDelete = (): void => {
-
-        this.toggleDeleteConfirm();
-
-    }
 
 
     //#endregion Events Handlers

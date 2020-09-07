@@ -28,6 +28,7 @@ export class ElementUpdateForm extends BaseProgressUpdateForm<IElementUpdateForm
     private yellowIcon: string = require('../../images/Yellow4340.png');
     private greenIcon: string = require('../../images/Green4340.png');
 
+
     protected entityUpdateService: services.ElementService = new services.ElementService(this.props.spfxContext, this.props.api);
 
     constructor(props: IElementUpdateFormProps, state: ElementUpdateFormState) {

@@ -42,5 +42,40 @@ namespace ControlAssuranceAPI.Repositories
             return db.DefElements.Remove(defElement);
             //return null;
         }
+
+        public List<DefElementVew_Result> GetDefElements(int periodId, int formId)
+        {
+
+            List<DefElementVew_Result> retList = new List<DefElementVew_Result>();
+
+            var qry = from d in db.DefElements
+                      where d.PeriodId == periodId
+                      select new
+                      {
+                          d.ID,
+                          d.Title,
+                          DefElementGroup = d.DefElementGroup.Title,
+                          Element = d.Elements.FirstOrDefault(e => e.FormId == formId)
+
+                      };
+
+            //int qryCount = qry.Count();
+
+            var list = qry.ToList();
+
+            foreach(var ite in list)
+            {
+                string status = ite.Element != null ? ite.Element.Status : "";
+                DefElementVew_Result item = new DefElementVew_Result
+                {
+                    ID = ite.ID,
+                    Title = ite.Title,
+                    DefElementGroup = ite.DefElementGroup,
+                    Status = status
+                };
+                retList.Add(item);
+            }
+            return retList;
+        }
     }
 }
