@@ -93,6 +93,7 @@ export default class RecommendationsTab extends React.Component<IRecommendations
             <React.Fragment>
                 {this.renderSectionTitle()}
                 {this.renderInfoTable()}
+                {this.renderBackLink()}
                 {this.renderRecommendationsList()}
             </React.Fragment>
         );
@@ -214,6 +215,16 @@ export default class RecommendationsTab extends React.Component<IRecommendations
                     </table>
                 </div>
 
+            </React.Fragment>
+        );
+    }
+
+    private renderBackLink(){
+        return(
+            <React.Fragment>
+                <div style={{paddingTop:'20px', paddingLeft: '10px'}}>
+                    <span style={{cursor:'pointer', color:'black', textDecoration:'underline'}} onClick={this.props.onShowList} >Back to GIAA Audit Reports</span>
+                </div>
             </React.Fragment>
         );
     }

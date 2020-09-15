@@ -60,7 +60,7 @@ export class Element implements IElement {
     public ResponseA9?: string = null;
     public ResponseA10?: string = null;
     
-    public ResponseAOther?: string = null;
+    public ResponseAOther?: string = 'No'; //default value
     public ResponseAOtherText?: string = null;
     public ResponseAEffect?: string = null;
     public ResponseAEffectText?: string = null;
@@ -97,5 +97,14 @@ export enum ElementStatus {
     InProgress = "InProgress",
     Completed = "Completed",
     NotApplicable = "NotApplicable",
+    
+}
+
+export enum ResponsesA {
+    Substantial = "Substantial",
+    Unsatisfactory = "Unsatisfactory",
+    Moderate = "Moderate",
+    Limited = "Limited",
+    NA = "NA"
     
 }

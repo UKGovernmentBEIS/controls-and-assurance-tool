@@ -88,6 +88,16 @@
           <Property Name="SectionBQuestion3HelpId" Type="int" />
           <Property Name="SectionBQuestion4HelpId" Type="int" />
           <Property Name="PeriodId" Type="int" />
+          <Property Name="SectionAQ1ResponseDetails" Type="nvarchar" MaxLength="500" />
+          <Property Name="SectionAQ2ResponseDetails" Type="nvarchar" MaxLength="500" />
+          <Property Name="SectionAQ3ResponseDetails" Type="nvarchar" MaxLength="500" />
+          <Property Name="SectionAQ4ResponseDetails" Type="nvarchar" MaxLength="500" />
+          <Property Name="SectionAQ5ResponseDetails" Type="nvarchar" MaxLength="500" />
+          <Property Name="SectionAQ6ResponseDetails" Type="nvarchar" MaxLength="500" />
+          <Property Name="SectionAQ7ResponseDetails" Type="nvarchar" MaxLength="500" />
+          <Property Name="SectionAQ8ResponseDetails" Type="nvarchar" MaxLength="500" />
+          <Property Name="SectionAQ9ResponseDetails" Type="nvarchar" MaxLength="500" />
+          <Property Name="SectionAQ10ResponseDetails" Type="nvarchar" MaxLength="500" />
         </EntityType>
         <EntityType Name="DefElementGroup">
           <Key>
@@ -2215,6 +2225,16 @@
           <Property Name="SectionBQuestion3HelpId" Type="Int32" />
           <Property Name="SectionBQuestion4HelpId" Type="Int32" />
           <Property Name="PeriodId" Type="Int32" />
+          <Property Name="SectionAQ1ResponseDetails" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="SectionAQ2ResponseDetails" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="SectionAQ3ResponseDetails" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="SectionAQ4ResponseDetails" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="SectionAQ5ResponseDetails" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="SectionAQ6ResponseDetails" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="SectionAQ7ResponseDetails" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="SectionAQ8ResponseDetails" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="SectionAQ9ResponseDetails" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="SectionAQ10ResponseDetails" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="DefElementGroup" Relationship="Self.FK_DefElement_DefElementGroup" FromRole="DefElement" ToRole="DefElementGroup" />
           <NavigationProperty Name="Period" Relationship="Self.FK_DefElement_Period" FromRole="DefElement" ToRole="Period" />
           <NavigationProperty Name="Elements" Relationship="Self.FK_Element_DefElement" FromRole="DefElement" ToRole="Element" />
@@ -4615,6 +4635,16 @@
                 <ScalarProperty Name="SectionBQuestion3HelpId" ColumnName="SectionBQuestion3HelpId" />
                 <ScalarProperty Name="SectionBQuestion4HelpId" ColumnName="SectionBQuestion4HelpId" />
                 <ScalarProperty Name="PeriodId" ColumnName="PeriodId" />
+                <ScalarProperty Name="SectionAQ1ResponseDetails" ColumnName="SectionAQ1ResponseDetails" />
+                <ScalarProperty Name="SectionAQ2ResponseDetails" ColumnName="SectionAQ2ResponseDetails" />
+                <ScalarProperty Name="SectionAQ3ResponseDetails" ColumnName="SectionAQ3ResponseDetails" />
+                <ScalarProperty Name="SectionAQ4ResponseDetails" ColumnName="SectionAQ4ResponseDetails" />
+                <ScalarProperty Name="SectionAQ5ResponseDetails" ColumnName="SectionAQ5ResponseDetails" />
+                <ScalarProperty Name="SectionAQ6ResponseDetails" ColumnName="SectionAQ6ResponseDetails" />
+                <ScalarProperty Name="SectionAQ7ResponseDetails" ColumnName="SectionAQ7ResponseDetails" />
+                <ScalarProperty Name="SectionAQ8ResponseDetails" ColumnName="SectionAQ8ResponseDetails" />
+                <ScalarProperty Name="SectionAQ9ResponseDetails" ColumnName="SectionAQ9ResponseDetails" />
+                <ScalarProperty Name="SectionAQ10ResponseDetails" ColumnName="SectionAQ10ResponseDetails" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -80,6 +80,16 @@ namespace ControlAssuranceAPI.Models
         public Nullable<int> SectionBQuestion3HelpId { get; set; }
         public Nullable<int> SectionBQuestion4HelpId { get; set; }
         public Nullable<int> PeriodId { get; set; }
+        public string SectionAQ1ResponseDetails { get; set; }
+        public string SectionAQ2ResponseDetails { get; set; }
+        public string SectionAQ3ResponseDetails { get; set; }
+        public string SectionAQ4ResponseDetails { get; set; }
+        public string SectionAQ5ResponseDetails { get; set; }
+        public string SectionAQ6ResponseDetails { get; set; }
+        public string SectionAQ7ResponseDetails { get; set; }
+        public string SectionAQ8ResponseDetails { get; set; }
+        public string SectionAQ9ResponseDetails { get; set; }
+        public string SectionAQ10ResponseDetails { get; set; }
     
         public virtual DefElementGroup DefElementGroup { get; set; }
         public virtual Period Period { get; set; }

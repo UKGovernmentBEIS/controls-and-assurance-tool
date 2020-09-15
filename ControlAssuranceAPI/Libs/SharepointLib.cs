@@ -49,6 +49,7 @@ namespace ControlAssuranceAPI.Libs
                     }
 
                     clientContext.Credentials = new SharePointOnlineCredentials(UserName, securePassword);
+                    //clientContext.Credentials = System.Net.CredentialCache.DefaultCredentials;
 
                     //var cr = new System.Net.NetworkCredential();
                     //HttpContext.Current.User.Identity.

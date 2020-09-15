@@ -77,5 +77,56 @@ namespace ControlAssuranceAPI.Repositories
             }
             return retList;
         }
+
+
+        public string GetFormStatus(int periodId, int formId)
+        {
+
+            List<string> lstCompletionStatus = new List<string>();
+            string overAllStatus = "To Be Completed"; //default value
+
+
+            var qry = from d in db.DefElements
+                      where d.PeriodId == periodId
+                      select new
+                      {
+                          d.ID,
+                          d.Title,
+                          DefElementGroup = d.DefElementGroup.Title,
+                          Element = d.Elements.FirstOrDefault(e => e.FormId == formId)
+
+                      };
+
+
+
+            var list = qry.ToList();
+
+            foreach (var ite in list)
+            {
+                string status = ite.Element != null ? ite.Element.Status : "";
+                lstCompletionStatus.Add(status);
+
+            }
+
+            if (lstCompletionStatus.Count > 0)
+            {
+                int totalCount = lstCompletionStatus.Count();
+                int totalCompleted = lstCompletionStatus.Count(x => x == "Completed" || x == "NotApplicable");
+                int totalInProgress = lstCompletionStatus.Count(x => x == "InProgress");
+
+                if (totalCount == totalCompleted)
+                {
+                    overAllStatus = "Completed";
+                }
+                else if (totalInProgress > 0 || totalCompleted > 0)
+                {
+                    overAllStatus = "In Progress";
+                }
+            }
+
+
+            return overAllStatus;
+        }
+
     }
 }

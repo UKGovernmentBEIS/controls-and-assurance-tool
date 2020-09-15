@@ -29,7 +29,7 @@ export { IUser } from './User';
 export { ILog } from './Log';
 
 export { IFForm, FForm } from './FForm';
-export { IElement, Element, ElementStatus } from './Element';
+export { IElement, Element, ElementStatus, ResponsesA } from './Element';
 export { IWebPartComponentProps } from './WebPartComponentProps';
 export { IBaseComponentProps } from './BaseComponentProps';
 export { DataAPI, IDataAPI } from './DataAPI';

@@ -166,7 +166,8 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
                 txt = "Completed";
             }
             else if (fieldContent === ElementStatus.InProgress) {
-                bgColor = "rgb(242,231,2)";
+
+                bgColor = "rgb(255,191,0)";
                 txtColor = "black";
                 txt = "In Progress";
             }

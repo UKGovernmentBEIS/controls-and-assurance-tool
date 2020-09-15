@@ -48,6 +48,8 @@ export interface ICarUpdatesState<T> extends types.IUserContextWebPartState {
   Section_MainList_SelectedId: number;
   Section_MainList_SelectedTitle: string;
   Section_MainList_FilteredItems: any[];
+
+  Section1UpdateStatus: string;
 }
 export class CarUpdatesState<T> extends types.UserContextWebPartState {
   public SignOffPeriod = null;
@@ -62,6 +64,8 @@ export class CarUpdatesState<T> extends types.UserContextWebPartState {
   public Section_MainList_SelectedId: number = 0;
   public Section_MainList_SelectedTitle: string = null;
   public Section_MainList_FilteredItems = [];
+
+  public Section1UpdateStatus: string = null;
 
   constructor(formData: T) {
     super();
@@ -137,11 +141,13 @@ export default class CarUpdates extends BaseUserContextWebPartComponent<types.IW
 
               periodId={this.state.FormData.PeriodId}
               formId={this.state.FormId}
+              sectionUpdateStatus={this.state.Section1UpdateStatus}
               onItemTitleClick={this.handleSection_MainListItemTitleClick}
               section_IsOpen={this.state.Section1_IsOpen}
               onSection_toggleOpen={this.handleSection1_toggleOpen}
               listFilterText={this.state.Section1_MainList_ListFilterText}
               onChangeFilterText={this.handleSection1_ChangeFilterText}
+
 
               {...this.props}
             />
@@ -343,7 +349,7 @@ export default class CarUpdates extends BaseUserContextWebPartComponent<types.IW
 
       //following service only adds form in db if its needed
       this.formService.create(form).then((newForm: IFForm): void => {
-        this.setState({ FormData: newForm, FormId: newForm.ID });
+        this.setState({ FormData: newForm, FormId: newForm.ID }, this.loadFormUpdateStatuses);
       }, (err) => { });
 
     }
@@ -424,6 +430,16 @@ export default class CarUpdates extends BaseUserContextWebPartComponent<types.IW
       this.setState({ FormData: form });
 
     }, (err) => { if (this.onError) this.onError(`Error loading Form data`, err.message); });
+  }
+
+  private loadFormUpdateStatuses() {
+    this.formService.readFormUpdateStatus(Number(this.state.FormData.PeriodId), Number(this.state.FormId) ).then((res: string): void => {
+      console.log('loadFormUpdateStatuses', res);
+      this.setState({ Section1UpdateStatus: res });
+
+    }, (err) => { });
+
+
   }
 
   //#endregion Data Load

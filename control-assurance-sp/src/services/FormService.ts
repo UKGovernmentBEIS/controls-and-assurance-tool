@@ -12,6 +12,12 @@ export class FormService extends EntityService<IEntity> {
         super(spfxContext, api, `/Forms`);
     }
 
+    public readFormUpdateStatus(periodId: number, formId:number): Promise<string> {
+        return super.readString(`?getFormUpdateStatus=true&periodId=${periodId}&formId=${formId}`).then((result:string): string => {
+            return result;
+        });
+    }
+
 
 
 }

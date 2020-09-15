@@ -524,6 +524,19 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
 
       },
       {
+        key: 'SectionAQ1ResponseDetails',
+        columnType: ColumnType.TextBox,
+        columnDisplayType: ColumnDisplayType.FormOnly,
+        name: 'Section A: Question 1 Response Details',
+        fieldName: 'SectionAQ1ResponseDetails',
+        minWidth: 300,
+        isResizable: true,
+        isRequired: false,
+        fieldMaxLength: 1000,
+        numRows: 2
+
+      },
+      {
         key: '6',
         columnType: ColumnType.TagPicker,
         columnDisplayType: ColumnDisplayType.FormOnly,
@@ -572,6 +585,21 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         numRows: 2
 
       },
+
+      {
+        key: 'SectionAQ2ResponseDetails',
+        columnType: ColumnType.TextBox,
+        columnDisplayType: ColumnDisplayType.FormOnly,
+        name: 'Section A: Question 2 Response Details',
+        fieldName: 'SectionAQ2ResponseDetails',
+        minWidth: 300,
+        isResizable: true,
+        isRequired: false,
+        fieldMaxLength: 1000,
+        numRows: 2
+
+      },
+
       {
         key: '8',
         columnType: ColumnType.TagPicker,
@@ -604,6 +632,21 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         numRows: 2
 
       },
+
+      {
+        key: 'SectionAQ3ResponseDetails',
+        columnType: ColumnType.TextBox,
+        columnDisplayType: ColumnDisplayType.FormOnly,
+        name: 'Section A: Question 3 Response Details',
+        fieldName: 'SectionAQ3ResponseDetails',
+        minWidth: 300,
+        isResizable: true,
+        isRequired: false,
+        fieldMaxLength: 1000,
+        numRows: 2
+
+      },
+
       {
         key: '10',
         columnType: ColumnType.TagPicker,
@@ -628,6 +671,20 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         columnDisplayType: ColumnDisplayType.FormOnly,
         name: 'Section A: Question 4',
         fieldName: 'SectionAQuestion4',
+        minWidth: 300,
+        isResizable: true,
+        isRequired: false,
+        fieldMaxLength: 1000,
+        numRows: 2
+
+      },
+
+      {
+        key: 'SectionAQ4ResponseDetails',
+        columnType: ColumnType.TextBox,
+        columnDisplayType: ColumnDisplayType.FormOnly,
+        name: 'Section A: Question 4 Response Details',
+        fieldName: 'SectionAQ4ResponseDetails',
         minWidth: 300,
         isResizable: true,
         isRequired: false,
@@ -668,6 +725,19 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
 
       },
       {
+        key: 'SectionAQ5ResponseDetails',
+        columnType: ColumnType.TextBox,
+        columnDisplayType: ColumnDisplayType.FormOnly,
+        name: 'Section A: Question 5 Response Details',
+        fieldName: 'SectionAQ5ResponseDetails',
+        minWidth: 300,
+        isResizable: true,
+        isRequired: false,
+        fieldMaxLength: 1000,
+        numRows: 2
+
+      },
+      {
         key: '14',
         columnType: ColumnType.TagPicker,
         columnDisplayType: ColumnDisplayType.FormOnly,
@@ -692,6 +762,19 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         columnDisplayType: ColumnDisplayType.FormOnly,
         name: 'Section A: Question 6',
         fieldName: 'SectionAQuestion6',
+        minWidth: 300,
+        isResizable: true,
+        isRequired: false,
+        fieldMaxLength: 1000,
+        numRows: 2
+
+      },
+      {
+        key: 'SectionAQ6ResponseDetails',
+        columnType: ColumnType.TextBox,
+        columnDisplayType: ColumnDisplayType.FormOnly,
+        name: 'Section A: Question 6 Response Details',
+        fieldName: 'SectionAQ6ResponseDetails',
         minWidth: 300,
         isResizable: true,
         isRequired: false,
@@ -733,6 +816,19 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
 
       },
       {
+        key: 'SectionAQ7ResponseDetails',
+        columnType: ColumnType.TextBox,
+        columnDisplayType: ColumnDisplayType.FormOnly,
+        name: 'Section A: Question 7 Response Details',
+        fieldName: 'SectionAQ7ResponseDetails',
+        minWidth: 300,
+        isResizable: true,
+        isRequired: false,
+        fieldMaxLength: 1000,
+        numRows: 2
+
+      },
+      {
         key: '18',
         columnType: ColumnType.TagPicker,
         columnDisplayType: ColumnDisplayType.FormOnly,
@@ -757,6 +853,19 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         columnDisplayType: ColumnDisplayType.FormOnly,
         name: 'Section A: Question 8',
         fieldName: 'SectionAQuestion8',
+        minWidth: 300,
+        isResizable: true,
+        isRequired: false,
+        fieldMaxLength: 1000,
+        numRows: 2
+
+      },
+      {
+        key: 'SectionAQ8ResponseDetails',
+        columnType: ColumnType.TextBox,
+        columnDisplayType: ColumnDisplayType.FormOnly,
+        name: 'Section A: Question 8 Response Details',
+        fieldName: 'SectionAQ8ResponseDetails',
         minWidth: 300,
         isResizable: true,
         isRequired: false,
@@ -797,6 +906,19 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
 
       },
       {
+        key: 'SectionAQ9ResponseDetails',
+        columnType: ColumnType.TextBox,
+        columnDisplayType: ColumnDisplayType.FormOnly,
+        name: 'Section A: Question 9 Response Details',
+        fieldName: 'SectionAQ9ResponseDetails',
+        minWidth: 300,
+        isResizable: true,
+        isRequired: false,
+        fieldMaxLength: 1000,
+        numRows: 2
+
+      },
+      {
         key: '22',
         columnType: ColumnType.TagPicker,
         columnDisplayType: ColumnDisplayType.FormOnly,
@@ -821,6 +943,19 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         columnDisplayType: ColumnDisplayType.FormOnly,
         name: 'Section A: Question 10',
         fieldName: 'SectionAQuestion10',
+        minWidth: 300,
+        isResizable: true,
+        isRequired: false,
+        fieldMaxLength: 1000,
+        numRows: 2
+
+      },
+      {
+        key: 'SectionAQ10ResponseDetails',
+        columnType: ColumnType.TextBox,
+        columnDisplayType: ColumnDisplayType.FormOnly,
+        name: 'Section A: Question 10 Response Details',
+        fieldName: 'SectionAQ10ResponseDetails',
         minWidth: 300,
         isResizable: true,
         isRequired: false,

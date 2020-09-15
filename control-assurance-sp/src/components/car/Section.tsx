@@ -26,6 +26,8 @@ export interface ISectionProps extends IEntityFormProps {
 
     section_IsOpen: boolean;
     onSection_toggleOpen: () => void;
+
+    sectionUpdateStatus:string;
 }
 
 export class SectionState {
@@ -52,16 +54,16 @@ export default class Section extends React.Component<ISectionProps, SectionState
 
 
         const ShowForm = this.props.section_IsOpen;
+        //console.log('props.sectionUpdateStatus', this.props.sectionUpdateStatus);
 
         return (
             <div className={styles.cr}>
                 <UpdateHeader2 title={"Period Updates"} isOpen={ShowForm}
                     leadUser=""
-                    hideRagIndicator={true}
-                    //rag={ this.state.FormData.SummaryCompletionStatus === SectionStatus.Completed ? 5 : this.state.FormData.SummaryCompletionStatus === SectionStatus.InProgress ? 3 : null }
-                    rag={null}
-                    //ragLabel={ this.state.FormData.SummaryCompletionStatus === SectionStatus.Completed ? "Completed" : this.state.FormData.SummaryCompletionStatus === SectionStatus.InProgress ? "In Progress" : null }
-                    ragLabel={null}
+                    //hideRagIndicator={true}
+                    rag={ this.props.sectionUpdateStatus === "In Progress" ? 3 : this.props.sectionUpdateStatus === "Completed" ? 5 : null }                    
+                    ragLabel={this.props.sectionUpdateStatus}
+
                     onClick={this.props.onSection_toggleOpen} />
 
                 {ShowForm && <div style={{ overflowX: 'hidden' }}

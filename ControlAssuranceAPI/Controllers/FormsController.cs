@@ -32,6 +32,13 @@ namespace ControlAssuranceAPI.Controllers
             return SingleResult.Create(db.FormRepository.Forms.Where(f => f.ID == key));
         }
 
+        // GET: /odata/Forms?getFormUpdateStatus=true&periodId=20&formId=83
+        public string Get(bool getFormUpdateStatus, int periodId, int formId)
+        {
+            var res = db.DefElementRepository.GetFormStatus(periodId, formId);
+            return res;
+        }
+
         // POST: odata/Forms
         public IHttpActionResult Post(Form form)
         {

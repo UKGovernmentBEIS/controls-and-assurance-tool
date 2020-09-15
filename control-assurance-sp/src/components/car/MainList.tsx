@@ -85,7 +85,7 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
         },
         {
             key: 'Title',
-            name: 'Title',
+            name: 'Theme',
             fieldName: 'Title',
             minWidth: 370,
             maxWidth: 370,
@@ -95,7 +95,7 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
         },
         {
             key: 'DefElementGroup',
-            name: 'Group',
+            name: 'Theme Group',
             fieldName: 'DefElementGroup',
             minWidth: 370,
             maxWidth: 370,
@@ -105,7 +105,7 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
         },
         {
             key: 'Status',
-            name: 'Status',
+            name: 'Updates Status',
             fieldName: 'Status',
             minWidth: 210,
             maxWidth: 210,

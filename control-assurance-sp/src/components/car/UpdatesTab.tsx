@@ -2,6 +2,7 @@ import * as React from 'react';
 import * as types from '../../types';
 import * as services from '../../services';
 
+import { RagRatingBar } from '../cr/RagRatingBar';
 import { CrTextField } from '../cr/CrTextField';
 import { CrChoiceGroup, IChoiceGroupOption } from '../cr/CrChoiceGroup';
 import { CrDropdown, IDropdownOption } from '../cr/CrDropdown';
@@ -12,7 +13,7 @@ import { MessageDialog } from '../cr/MessageDialog';
 import { DefaultButton, PrimaryButton } from 'office-ui-fabric-react/lib/Button';
 import { Panel, PanelType } from 'office-ui-fabric-react/lib/Panel';
 import styles from '../../styles/cr.module.scss';
-import { IEntity, IGIAARecommendation, GIAAUpdate, IDefElement, IElement, Element, IUserHelp, IFForm, ElementStatus } from '../../types';
+import { IEntity, IGIAARecommendation, GIAAUpdate, IDefElement, IElement, Element, IUserHelp, IFForm, ElementStatus, ResponsesA } from '../../types';
 import { IGenColumn, ColumnType, ColumnDisplayType } from '../../types/GenColumn';
 import { ConfirmDialog } from '../cr/ConfirmDialog';
 import '../../styles/CustomFabric.scss';
@@ -71,6 +72,14 @@ export interface IUpdatesTabState {
     ShowLoadPreviousPeriodConfirmation: boolean;
     ShowSaveConfirmation: boolean;
 
+    TotalControlQuestions: number;
+
+    Controls_SubstantialPercentage: number;
+    Controls_UnsatisfactoryPercentage: number;
+    Controls_ModeratePercentage: number;
+    Controls_LimitedPercentage: number;
+    Controls_NAPercentage: number;
+
 
 }
 
@@ -93,6 +102,14 @@ export class UpdatesTabState implements IUpdatesTabState {
     public UserHelpText = "";
     public ShowLoadPreviousPeriodConfirmation = false;
     public ShowSaveConfirmation = false;
+
+    public TotalControlQuestions = 0;
+
+    public Controls_SubstantialPercentage = 0;
+    public Controls_UnsatisfactoryPercentage = 0;
+    public Controls_ModeratePercentage = 0;
+    public Controls_LimitedPercentage = 0;
+    public Controls_NAPercentage = 0;
 
     constructor(formId: number, defElementId: number) {
         this.FormData = new Element(formId, defElementId);
@@ -144,9 +161,9 @@ export default class UpdatesTab extends React.Component<IUpdatesTabProps, IUpdat
         return (
             <React.Fragment>
                 {this.state.DefElement &&
-                
+
                     this.renderFormFields()
-                    
+
                 }
 
 
@@ -178,11 +195,17 @@ export default class UpdatesTab extends React.Component<IUpdatesTabProps, IUpdat
             SectionBQuestion1, SectionBBoxText1, SectionBEffect1, SectionBNote1, SectionBQuestion1HelpId,
             SectionBQuestion2, SectionBBoxText2, SectionBEffect2, SectionBNote2, SectionBQuestion2HelpId,
             SectionBQuestion3, SectionBBoxText3, SectionBEffect3, SectionBNote3, SectionBQuestion3HelpId,
-            SectionBQuestion4, SectionBBoxText4, SectionBEffect4, SectionBNote4, SectionBQuestion4HelpId
+            SectionBQuestion4, SectionBBoxText4, SectionBEffect4, SectionBNote4, SectionBQuestion4HelpId,
+
+            SectionAQ1ResponseDetails, SectionAQ2ResponseDetails, SectionAQ3ResponseDetails, SectionAQ4ResponseDetails,
+            SectionAQ5ResponseDetails, SectionAQ6ResponseDetails, SectionAQ7ResponseDetails, SectionAQ8ResponseDetails,
+            SectionAQ9ResponseDetails, SectionAQ10ResponseDetails,
 
         } = this.state.DefElement;
 
         const { FormData: fd } = this.state;
+
+
 
         if (fd.NotApplicable === true) {
             return (
@@ -204,20 +227,22 @@ export default class UpdatesTab extends React.Component<IUpdatesTabProps, IUpdat
 
                     {this.renderSectionTitle(SectionATitle, SectionATitleHelpId)}
 
-                    {this.renderSectionAQuestion(SectionAQuestion1, fd.ResponseA1, "ResponseA1", SectionAQuestion1HelpId)}
-                    {this.renderSectionAQuestion(SectionAQuestion2, fd.ResponseA2, "ResponseA2", SectionAQuestion2HelpId)}
-                    {this.renderSectionAQuestion(SectionAQuestion3, fd.ResponseA3, "ResponseA3", SectionAQuestion3HelpId)}
-                    {this.renderSectionAQuestion(SectionAQuestion4, fd.ResponseA4, "ResponseA4", SectionAQuestion4HelpId)}
-                    {this.renderSectionAQuestion(SectionAQuestion5, fd.ResponseA5, "ResponseA5", SectionAQuestion5HelpId)}
-                    {this.renderSectionAQuestion(SectionAQuestion6, fd.ResponseA6, "ResponseA6", SectionAQuestion6HelpId)}
-                    {this.renderSectionAQuestion(SectionAQuestion7, fd.ResponseA7, "ResponseA7", SectionAQuestion7HelpId)}
-                    {this.renderSectionAQuestion(SectionAQuestion8, fd.ResponseA8, "ResponseA8", SectionAQuestion8HelpId)}
-                    {this.renderSectionAQuestion(SectionAQuestion9, fd.ResponseA9, "ResponseA9", SectionAQuestion9HelpId)}
-                    {this.renderSectionAQuestion(SectionAQuestion10, fd.ResponseA10, "ResponseA10", SectionAQuestion10HelpId)}
+                    {this.renderSectionAQuestion(SectionAQuestion1, SectionAQ1ResponseDetails, fd.ResponseA1, "ResponseA1", SectionAQuestion1HelpId)}
+                    {this.renderSectionAQuestion(SectionAQuestion2, SectionAQ2ResponseDetails, fd.ResponseA2, "ResponseA2", SectionAQuestion2HelpId)}
+                    {this.renderSectionAQuestion(SectionAQuestion3, SectionAQ3ResponseDetails, fd.ResponseA3, "ResponseA3", SectionAQuestion3HelpId)}
+                    {this.renderSectionAQuestion(SectionAQuestion4, SectionAQ4ResponseDetails, fd.ResponseA4, "ResponseA4", SectionAQuestion4HelpId)}
+                    {this.renderSectionAQuestion(SectionAQuestion5, SectionAQ5ResponseDetails, fd.ResponseA5, "ResponseA5", SectionAQuestion5HelpId)}
+                    {this.renderSectionAQuestion(SectionAQuestion6, SectionAQ6ResponseDetails, fd.ResponseA6, "ResponseA6", SectionAQuestion6HelpId)}
+                    {this.renderSectionAQuestion(SectionAQuestion7, SectionAQ7ResponseDetails, fd.ResponseA7, "ResponseA7", SectionAQuestion7HelpId)}
+                    {this.renderSectionAQuestion(SectionAQuestion8, SectionAQ8ResponseDetails, fd.ResponseA8, "ResponseA8", SectionAQuestion8HelpId)}
+                    {this.renderSectionAQuestion(SectionAQuestion9, SectionAQ9ResponseDetails, fd.ResponseA9, "ResponseA9", SectionAQuestion9HelpId)}
+                    {this.renderSectionAQuestion(SectionAQuestion10, SectionAQ10ResponseDetails, fd.ResponseA10, "ResponseA10", SectionAQuestion10HelpId)}
 
                     {this.renderSectionAOtherQuestion(SectionAOtherQuestion, fd.ResponseAOther, "ResponseAOther", SectionAOtherBoxText, fd.ResponseAOtherText, "ResponseAOtherText", SectionAOtherQuestionHelpId)}
 
-                    {this.renderSectionAEffectQuestion(SectionAEffectQuestion, fd.ResponseAEffect, "ResponseAEffect", SectionAEffectNote, SectionAEffectBoxText, fd.ResponseAEffectText, "ResponseAEffectText", SectionAEffectQuestionHelpId)}
+                    {/* {this.renderSectionAEffectQuestion(SectionAEffectQuestion, fd.ResponseAEffect, "ResponseAEffect", SectionAEffectNote, SectionAEffectBoxText, fd.ResponseAEffectText, "ResponseAEffectText", SectionAEffectQuestionHelpId)} */}
+
+                    {this.renderRagRatingsBar()}
 
                     {this.renderSectionTitle(SectionBTitle, SectionBTitleHelpId)}
                     {this.renderSectionBQuestion(SectionBQuestion1, SectionBBoxText1, SectionBEffect1, SectionBNote1, fd.ResponseB1, "ResponseB1", fd.ResponseB1Text, "ResponseB1Text", fd.ResponseB1Effect, "ResponseB1Effect", SectionBQuestion1HelpId)}
@@ -244,12 +269,12 @@ export default class UpdatesTab extends React.Component<IUpdatesTabProps, IUpdat
                     <React.Fragment>
                         {(this.state.HideNextButton === false) && <PrimaryButton text="Save &amp; Next" className={styles.formButton} style={{ marginRight: '5px' }}
                             onClick={() => this.onBeforeSave(true)}
-                            disabled={(this.props.form.LastSignOffFor === "Dir" && this.props.form.DirSignOffStatus === true) ? true: (this.props.externalUserLoggedIn === true) ? true : (this.props.isArchivedPeriod === true) ? true : false}
+                            disabled={(this.props.form.LastSignOffFor === "Dir" && this.props.form.DirSignOffStatus === true) ? true : (this.props.externalUserLoggedIn === true) ? true : (this.props.isArchivedPeriod === true) ? true : false}
                         />}
 
                         <PrimaryButton text="Save &amp; Close" className={styles.formButton} style={{ marginRight: '5px' }}
                             onClick={() => this.onBeforeSave(false)}
-                            disabled={(this.props.form.LastSignOffFor === "Dir" && this.props.form.DirSignOffStatus === true) ? true: (this.props.externalUserLoggedIn === true) ? true : (this.props.isArchivedPeriod === true) ? true : false}
+                            disabled={(this.props.form.LastSignOffFor === "Dir" && this.props.form.DirSignOffStatus === true) ? true : (this.props.externalUserLoggedIn === true) ? true : (this.props.isArchivedPeriod === true) ? true : false}
                         />
 
                         <DefaultButton text="Cancel" className={styles.formButton} style={{ marginRight: '5px' }}
@@ -329,8 +354,27 @@ export default class UpdatesTab extends React.Component<IUpdatesTabProps, IUpdat
         );
     }
 
-    private renderSectionAQuestion(question: string, val: string, formDataProperty: string, userHelpId?: number) {
+    private renderSectionAQuestion(question: string, responseDetails: string, val: string, formDataProperty: string, userHelpId?: number) {
         if (question != null && question != "") {
+            //let responseDetails:string = "Yes>Yes, No>No, N/A>NA, adnan>1, tas>2";
+            let arrResponses: string[] = responseDetails.split(',');
+            let arrR2: any[] = [];
+            arrResponses.map(x => {
+
+                //console.log(x);
+
+                let arrRValues: string[] = x.split('>');
+                //console.log(arrRValues);
+                let txt = arrRValues[0].trim();
+                let vall = arrRValues[1].trim();
+                // console.log('txt', txt);
+                // console.log('vall', vall);
+
+                arrR2.push({
+                    ID: vall, Title: txt
+                });
+            });
+
             return (
                 <React.Fragment>
                     <div className={styles.flexContainerSectionQuestion}>
@@ -343,20 +387,21 @@ export default class UpdatesTab extends React.Component<IUpdatesTabProps, IUpdat
 
                     <CrChoiceGroup
                         className="inlineflex"
-                        options={[
-                            {
-                                key: 'Yes',
-                                text: 'Yes',
-                            },
-                            {
-                                key: 'No',
-                                text: 'No'
-                            },
-                            {
-                                key: 'NA',
-                                text: 'N/A',
-                            }
-                        ]}
+                        // options={[
+                        //     {
+                        //         key: 'Yes',
+                        //         text: 'Yes',
+                        //     },
+                        //     {
+                        //         key: 'No',
+                        //         text: 'No'
+                        //     },
+                        //     {
+                        //         key: 'NA',
+                        //         text: 'N/A',
+                        //     }
+                        // ]}
+                        options={arrR2.map((o) => { return { key: o.ID, text: o.Title }; })}
                         selectedKey={val && val}
                         onChange={(ev, option) => this.changeChoiceGroup(ev, option, formDataProperty)}
                     />
@@ -462,6 +507,46 @@ export default class UpdatesTab extends React.Component<IUpdatesTabProps, IUpdat
         }
     }
 
+    private renderRagRatingsBar() {
+
+
+
+        return (
+            <React.Fragment>
+                <div style={{marginTop:'10px', borderStyle:'solid', borderWidth: '1px',borderColor: 'rgb(230,230,230)', backgroundColor: 'rgb(245,245,245)', padding:'20px 10px' }}>
+
+                    <div style={{ marginBottom: '10px'}} className={styles.sectionQuestionCol1}>Your overall ratings for these controls are as follows</div>
+                    <RagRatingBar
+                        barWidth='50%'
+                        barHeight='35px'
+                        barDefaultBackgroundColor='lightgray'
+                        color1='green'
+                        color1Percentage={this.state.Controls_SubstantialPercentage}
+                        color1Label='Substantial'
+
+                        color2='yellow'
+                        color2Percentage={this.state.Controls_ModeratePercentage}
+                        color2Label='Moderate'
+
+                        color3='orange'
+                        color3Percentage={this.state.Controls_LimitedPercentage}
+                        color3Label='Limited'
+
+                        color4='red'
+                        color4Percentage={this.state.Controls_UnsatisfactoryPercentage}
+                        color4Label='Unsatisfactory'
+
+                        color5='blue'
+                        color5Percentage={this.state.Controls_NAPercentage}
+                        color5Label='Not Applicable'
+
+                        showInfoSection={true}
+                    />
+                </div>
+            </React.Fragment>
+        );
+    }
+
     private renderSectionBQuestion(question: string, textBoxPlaceHolder: string, effectQuestion: string, note: string, responseBVal: string, responseBformDataProperty: string, responseBTextVal: string, responseBTextformDataProperty: string, responseBEffectVal: string, responseBEffectformDataProperty: string, userHelpId?: number) {
 
         if (question != null && question != "") {
@@ -550,6 +635,129 @@ export default class UpdatesTab extends React.Component<IUpdatesTabProps, IUpdat
         );
     }
 
+    private calcPercentagesControls = (): void => {
+        const { FormData: fd, DefElement: df, TotalControlQuestions } = this.state;
+
+        let totalSubstantial: number = 0;
+        let totalUnsatisfactory: number = 0;
+        let totalNA: number = 0;
+        let totalModerate: number = 0;
+        let totalLimited: number = 0;
+
+        if (df.SectionAQuestion1 != null && df.SectionAQuestion1 != "") {
+
+            if (fd.ResponseA1 === ResponsesA.Substantial) totalSubstantial++;
+            else if (fd.ResponseA1 === ResponsesA.Unsatisfactory) totalUnsatisfactory++;
+            else if (fd.ResponseA1 === ResponsesA.NA) totalNA++;
+            else if (fd.ResponseA1 === ResponsesA.Moderate) totalModerate++;
+            else if (fd.ResponseA1 === ResponsesA.Limited) totalLimited++;
+        }
+
+        if (df.SectionAQuestion2 != null && df.SectionAQuestion2 != "") {
+
+            if (fd.ResponseA2 === ResponsesA.Substantial) totalSubstantial++;
+            else if (fd.ResponseA2 === ResponsesA.Unsatisfactory) totalUnsatisfactory++;
+            else if (fd.ResponseA2 === ResponsesA.NA) totalNA++;
+            else if (fd.ResponseA2 === ResponsesA.Moderate) totalModerate++;
+            else if (fd.ResponseA2 === ResponsesA.Limited) totalLimited++;
+        }
+
+        if (df.SectionAQuestion3 != null && df.SectionAQuestion3 != "") {
+
+            if (fd.ResponseA3 === ResponsesA.Substantial) totalSubstantial++;
+            else if (fd.ResponseA3 === ResponsesA.Unsatisfactory) totalUnsatisfactory++;
+            else if (fd.ResponseA3 === ResponsesA.NA) totalNA++;
+            else if (fd.ResponseA3 === ResponsesA.Moderate) totalModerate++;
+            else if (fd.ResponseA3 === ResponsesA.Limited) totalLimited++;
+        }
+
+
+        if (df.SectionAQuestion4 != null && df.SectionAQuestion4 != "") {
+
+            if (fd.ResponseA4 === ResponsesA.Substantial) totalSubstantial++;
+            else if (fd.ResponseA4 === ResponsesA.Unsatisfactory) totalUnsatisfactory++;
+            else if (fd.ResponseA4 === ResponsesA.NA) totalNA++;
+            else if (fd.ResponseA4 === ResponsesA.Moderate) totalModerate++;
+            else if (fd.ResponseA4 === ResponsesA.Limited) totalLimited++;
+        }
+
+        if (df.SectionAQuestion5 != null && df.SectionAQuestion5 != "") {
+
+            if (fd.ResponseA5 === ResponsesA.Substantial) totalSubstantial++;
+            else if (fd.ResponseA5 === ResponsesA.Unsatisfactory) totalUnsatisfactory++;
+            else if (fd.ResponseA5 === ResponsesA.NA) totalNA++;
+            else if (fd.ResponseA5 === ResponsesA.Moderate) totalModerate++;
+            else if (fd.ResponseA5 === ResponsesA.Limited) totalLimited++;
+        }
+
+        if (df.SectionAQuestion6 != null && df.SectionAQuestion6 != "") {
+
+            if (fd.ResponseA6 === ResponsesA.Substantial) totalSubstantial++;
+            else if (fd.ResponseA6 === ResponsesA.Unsatisfactory) totalUnsatisfactory++;
+            else if (fd.ResponseA6 === ResponsesA.NA) totalNA++;
+            else if (fd.ResponseA6 === ResponsesA.Moderate) totalModerate++;
+            else if (fd.ResponseA6 === ResponsesA.Limited) totalLimited++;
+        }
+
+        if (df.SectionAQuestion7 != null && df.SectionAQuestion7 != "") {
+
+            if (fd.ResponseA7 === ResponsesA.Substantial) totalSubstantial++;
+            else if (fd.ResponseA7 === ResponsesA.Unsatisfactory) totalUnsatisfactory++;
+            else if (fd.ResponseA7 === ResponsesA.NA) totalNA++;
+            else if (fd.ResponseA7 === ResponsesA.Moderate) totalModerate++;
+            else if (fd.ResponseA7 === ResponsesA.Limited) totalLimited++;
+        }
+
+        if (df.SectionAQuestion8 != null && df.SectionAQuestion8 != "") {
+
+            if (fd.ResponseA8 === ResponsesA.Substantial) totalSubstantial++;
+            else if (fd.ResponseA8 === ResponsesA.Unsatisfactory) totalUnsatisfactory++;
+            else if (fd.ResponseA8 === ResponsesA.NA) totalNA++;
+            else if (fd.ResponseA8 === ResponsesA.Moderate) totalModerate++;
+            else if (fd.ResponseA8 === ResponsesA.Limited) totalLimited++;
+        }
+
+        if (df.SectionAQuestion9 != null && df.SectionAQuestion9 != "") {
+
+            if (fd.ResponseA9 === ResponsesA.Substantial) totalSubstantial++;
+            else if (fd.ResponseA9 === ResponsesA.Unsatisfactory) totalUnsatisfactory++;
+            else if (fd.ResponseA9 === ResponsesA.NA) totalNA++;
+            else if (fd.ResponseA9 === ResponsesA.Moderate) totalModerate++;
+            else if (fd.ResponseA9 === ResponsesA.Limited) totalLimited++;
+        }
+
+        if (df.SectionAQuestion10 != null && df.SectionAQuestion9 != "") {
+
+            if (fd.ResponseA10 === ResponsesA.Substantial) totalSubstantial++;
+            else if (fd.ResponseA10 === ResponsesA.Unsatisfactory) totalUnsatisfactory++;
+            else if (fd.ResponseA10 === ResponsesA.NA) totalNA++;
+            else if (fd.ResponseA10 === ResponsesA.Moderate) totalModerate++;
+            else if (fd.ResponseA10 === ResponsesA.Limited) totalLimited++;
+        }
+
+        let substantialPercentage: number = Math.round((totalSubstantial / TotalControlQuestions) * 100);
+        let unsatisfactoryPercentage: number = Math.round((totalUnsatisfactory / TotalControlQuestions) * 100);
+        let moderatePercentage: number = Math.round((totalModerate / TotalControlQuestions) * 100);
+        let limitedPercentage: number = Math.round((totalLimited / TotalControlQuestions) * 100);
+        let naPercentage: number = Math.round((totalNA / TotalControlQuestions) * 100);
+
+        console.log('substantialPercentage', substantialPercentage);
+        console.log('unsatisfactoryPercentage', unsatisfactoryPercentage);
+        console.log('moderatePercentage', moderatePercentage);
+        console.log('limitedPercentage', limitedPercentage);
+        console.log('naPercentage', naPercentage);
+
+        this.setState({
+            Controls_SubstantialPercentage: substantialPercentage,
+            Controls_UnsatisfactoryPercentage: unsatisfactoryPercentage,
+            Controls_ModeratePercentage: moderatePercentage,
+            Controls_LimitedPercentage: limitedPercentage,
+            Controls_NAPercentage: naPercentage
+        });
+
+
+
+    }
 
 
 
@@ -599,9 +807,23 @@ export default class UpdatesTab extends React.Component<IUpdatesTabProps, IUpdat
             }
 
 
+            let totalQuestionsSectionA: number = 0;
+            if (df.SectionAQuestion1 != null && df.SectionAQuestion1 != "") totalQuestionsSectionA++;
+            if (df.SectionAQuestion2 != null && df.SectionAQuestion2 != "") totalQuestionsSectionA++;
+            if (df.SectionAQuestion3 != null && df.SectionAQuestion3 != "") totalQuestionsSectionA++;
+            if (df.SectionAQuestion4 != null && df.SectionAQuestion4 != "") totalQuestionsSectionA++;
+            if (df.SectionAQuestion5 != null && df.SectionAQuestion5 != "") totalQuestionsSectionA++;
+            if (df.SectionAQuestion6 != null && df.SectionAQuestion6 != "") totalQuestionsSectionA++;
+            if (df.SectionAQuestion7 != null && df.SectionAQuestion7 != "") totalQuestionsSectionA++;
+            if (df.SectionAQuestion8 != null && df.SectionAQuestion8 != "") totalQuestionsSectionA++;
+            if (df.SectionAQuestion9 != null && df.SectionAQuestion9 != "") totalQuestionsSectionA++;
+            if (df.SectionAQuestion10 != null && df.SectionAQuestion10 != "") totalQuestionsSectionA++;
+
+
             this.setState({
                 DefElement: df,
-                HideNextButton: hideNextButton
+                HideNextButton: hideNextButton,
+                TotalControlQuestions: totalQuestionsSectionA
 
             }, this.loadEntityUpdate);
             return df;
@@ -614,7 +836,7 @@ export default class UpdatesTab extends React.Component<IUpdatesTabProps, IUpdat
         return this.elementService.readElement(formId, defElementId).then((eu: IElement[]) => {
             if (eu.length > 0) {
                 const formData = eu[0];
-                this.setState({ FormData: formData });
+                this.setState({ FormData: formData }, this.calcPercentagesControls);
                 return formData;
             }
             else {
@@ -826,15 +1048,15 @@ export default class UpdatesTab extends React.Component<IUpdatesTabProps, IUpdat
         if (entityUpdate.ResponseAOther === null) {
             return false;
         }
-        if (entityUpdate.ResponseAEffect === null) {
-            return false;
-        }
-        if (entityUpdate.ResponseAEffectText && entityUpdate.ResponseAEffectText.length >= 10) {
-            //true
-        }
-        else {
-            return false;
-        }
+        // if (entityUpdate.ResponseAEffect === null) {
+        //     return false;
+        // }
+        // if (entityUpdate.ResponseAEffectText && entityUpdate.ResponseAEffectText.length >= 10) {
+        //     //true
+        // }
+        // else {
+        //     return false;
+        // }
 
         //Section B
         if (SectionBQuestion1 !== null && SectionBQuestion1 !== "") {
@@ -951,7 +1173,7 @@ export default class UpdatesTab extends React.Component<IUpdatesTabProps, IUpdat
 
     protected changeChoiceGroup = (ev, option: IChoiceGroupOption, f: string): void => {
         const selectedKey = option.key;
-        this.setState({ FormData: this.cloneObject(this.state.FormData, f, selectedKey)/*, FormIsDirty: true*/ });
+        this.setState({ FormData: this.cloneObject(this.state.FormData, f, selectedKey)/*, FormIsDirty: true*/ }, this.calcPercentagesControls);
 
     }
     protected changeCheckbox = (value: boolean, f: string): void => {
