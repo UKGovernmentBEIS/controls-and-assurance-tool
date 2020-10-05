@@ -17,11 +17,14 @@
   "preconfiguredEntries": [{
     "groupId": "5c03119e-3074-46fd-976b-c60198311f70", // Other
     "group": { "default": "Other" },
-    "title": { "default": "NAOSettings" },
-    "description": { "default": "NAOSettings description" },
+    //"title": { "default": "NAOSettings" },
+    "title": { "default": "NAOProperties" },
+    //"description": { "default": "NAOSettings description" },
+    "description": { "default": "NAOProperties description" },
     "officeFabricIconFontName": "Page",
     "properties": {
-      "description": "NAOSettings"
+      //"description": "NAOSettings"
+      "description": "NAOProperties"
     }
   }]
 }

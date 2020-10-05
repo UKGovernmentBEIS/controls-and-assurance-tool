@@ -66,6 +66,8 @@ namespace ControlAssuranceAPI
             builder.EntitySet<GoElementAction>("GoElementActions");
             builder.EntitySet<GoAssignment>("GoAssignments");
             builder.EntitySet<GoElementEvidence>("GoElementEvidences");
+            builder.EntitySet<GoPeriod>("GoPeriods");
+
             builder.EntitySet<EntityPriority>("EntityPriorities");
 
             builder.EntitySet<NAODefForm>("NAODefForms");

@@ -33,6 +33,7 @@ namespace ControlAssuranceAPI.Models
         DbSet<GoForm> GoForms { get; set; }
 
         DbSet<GoDefElement> GoDefElements { get; set; }
+        DbSet<GoPeriod> GoPeriods { get; set; }
         DbSet<GoAssignment> GoAssignments { get; set; }
         DbSet<GoElement> GoElements { get; set; }
         DbSet<GoElementFeedback> GoElementFeedbacks { get; set; }

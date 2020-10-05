@@ -43,6 +43,8 @@ namespace ControlAssuranceAPI.Models
         private GoElementActionRepository goElementActionRepository;
         private GoAssignmentRepository goAssignmentRepository;
         private GoElementEvidenceRepository goElementEvidenceRepository;
+        private GoPeriodRepository goPeriodRepository;
+
         private EntityPriorityRepository entityPriorityRepository;
 
         private NAODefFormRepository naoDefFormRepository;
@@ -431,6 +433,13 @@ namespace ControlAssuranceAPI.Models
             }
         }
 
+        public GoPeriodRepository GoPeriodRepository
+        {
+            get
+            {
+                return goPeriodRepository = goPeriodRepository ?? new GoPeriodRepository(user, context);
+            }
+        }
         public EntityPriorityRepository EntityPriorityRepository
         {
             get

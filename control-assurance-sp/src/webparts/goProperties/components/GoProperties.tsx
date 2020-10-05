@@ -37,6 +37,9 @@ export default class GoProperties extends BaseUserContextWebPartComponent<types.
   public renderWebPart(): React.ReactElement<types.IWebPartComponentProps> {
     return (
       <Pivot onLinkClick={this.clearErrors}>
+        <PivotItem headerText="Periods">
+          {this.renderCustomPeriodsList()}
+        </PivotItem>
         <PivotItem headerText="Define Form">
           {this.renderGoDefForms()}
         </PivotItem>
@@ -47,6 +50,73 @@ export default class GoProperties extends BaseUserContextWebPartComponent<types.
     );
 
   }
+
+  private renderCustomPeriodsList() {
+
+    const listColumns: IGenColumn[] = [
+      {
+        key: '1',
+        columnType: ColumnType.TextBox,
+        name: 'Name',
+        fieldName: 'Title',
+        minWidth: 150,
+        isResizable: true,
+        isRequired: true,
+        fieldMaxLength: 50,
+
+      },
+      {
+        key: '2',
+        columnType: ColumnType.TextBox,
+        columnDisplayType: ColumnDisplayType.ListOnly,
+        name: 'Period Status',
+        fieldName: 'PeriodStatus',
+        minWidth: 150,
+        isResizable: true,
+        fieldMaxLength: 50,
+      },
+      {
+        key: '3',
+        columnType: ColumnType.DatePicker,
+        name: 'Start Date',
+        fieldName: 'PeriodStartDate',
+        minWidth: 150,
+        isResizable: true,
+        isRequired: true,
+        fieldMaxLength: 50,
+      },
+      {
+        key: '4',
+        columnType: ColumnType.DatePicker,
+        name: 'End Date',
+        fieldName: 'PeriodEndDate',
+        minWidth: 150,
+        isResizable: true,
+        isRequired: true,
+        fieldMaxLength: 50,
+      },
+
+    ];
+
+    return (
+      <React.Fragment>
+        <PeriodList
+          allowAdd={this.allowAdd_Periods()}
+          columns={listColumns}
+          {...this.props}
+          onError={this.onError}
+          entityService={new services.GoPeriodService(this.props.spfxContext, this.props.api)}
+          entityNamePlural="Gov Periods"
+          entityNameSingular="Period"
+          childEntityNameApi=""
+          childEntityNamePlural=""
+          childEntityNameSingular=""
+        />
+
+      </React.Fragment>
+    );
+  }
+
 
   private renderGoDefForms() {
 
@@ -235,7 +305,7 @@ export default class GoProperties extends BaseUserContextWebPartComponent<types.
         isResizable: true,
         isRequired: true,
         fieldMaxLength: 1,
-        
+
 
       },
 
@@ -277,7 +347,7 @@ export default class GoProperties extends BaseUserContextWebPartComponent<types.
 
     //super user/SysManager check
     let ups: IUserPermission[] = this.state.UserPermissions;
-    
+
     for (let i = 0; i < ups.length; i++) {
       let up: IUserPermission = ups[i];
       if (up.PermissionTypeId == 1 || up.PermissionTypeId == 2 || up.PermissionTypeId == 6) {
@@ -287,6 +357,10 @@ export default class GoProperties extends BaseUserContextWebPartComponent<types.
     }
 
     return false;
+  }
+
+  private allowAdd_Periods(): boolean {
+    return this.superUserOrSysManagerPermission();
   }
 
   //#endregion Permissions

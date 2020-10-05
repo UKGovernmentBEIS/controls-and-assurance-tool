@@ -504,6 +504,17 @@
           <Property Name="DateUploaded" Type="datetime" />
           <Property Name="UploadedByUserId" Type="int" />
         </EntityType>
+        <EntityType Name="GoPeriod">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="PeriodStatus" Type="nvarchar" MaxLength="50" />
+          <Property Name="PeriodStartDate" Type="date" />
+          <Property Name="PeriodEndDate" Type="date" />
+          <Property Name="LastPeriodId" Type="int" />
+        </EntityType>
         <EntityType Name="IAPAssignment">
           <Key>
             <PropertyRef Name="ID" />
@@ -1314,11 +1325,11 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_GoForm_Period">
-          <End Role="Period" Type="Self.Period" Multiplicity="0..1" />
+        <Association Name="FK_GoForm_GoPeriod">
+          <End Role="GoPeriod" Type="Self.GoPeriod" Multiplicity="0..1" />
           <End Role="GoForm" Type="Self.GoForm" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Period">
+            <Principal Role="GoPeriod">
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="GoForm">
@@ -1788,6 +1799,7 @@
           <EntitySet Name="GoElementFeedback" EntityType="Self.GoElementFeedback" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GoForm" EntityType="Self.GoForm" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GoMiscFiles" EntityType="Self.GoMiscFiles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GoPeriod" EntityType="Self.GoPeriod" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="IAPAssignment" EntityType="Self.IAPAssignment" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="IAPDefForm" EntityType="Self.IAPDefForm" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="IAPPriority" EntityType="Self.IAPPriority" Schema="dbo" store:Type="Tables" />
@@ -1989,8 +2001,8 @@
             <End Role="DirectorateGroup" EntitySet="DirectorateGroup" />
             <End Role="GoForm" EntitySet="GoForm" />
           </AssociationSet>
-          <AssociationSet Name="FK_GoForm_Period" Association="Self.FK_GoForm_Period">
-            <End Role="Period" EntitySet="Period" />
+          <AssociationSet Name="FK_GoForm_GoPeriod" Association="Self.FK_GoForm_GoPeriod">
+            <End Role="GoPeriod" EntitySet="GoPeriod" />
             <End Role="GoForm" EntitySet="GoForm" />
           </AssociationSet>
           <AssociationSet Name="FK_GoForm_User" Association="Self.FK_GoForm_User">
@@ -2699,7 +2711,7 @@
           <Property Name="PdfName" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="DirectorateGroup" Relationship="Self.FK_GoForm_DirectorateGroup" FromRole="GoForm" ToRole="DirectorateGroup" />
           <NavigationProperty Name="GoElements" Relationship="Self.FK_GoElement_GoForm" FromRole="GoForm" ToRole="GoElement" />
-          <NavigationProperty Name="Period" Relationship="Self.FK_GoForm_Period" FromRole="GoForm" ToRole="Period" />
+          <NavigationProperty Name="GoPeriod" Relationship="Self.FK_GoForm_GoPeriod" FromRole="GoForm" ToRole="GoPeriod" />
           <NavigationProperty Name="User" Relationship="Self.FK_GoForm_User" FromRole="GoForm" ToRole="User" />
         </EntityType>
         <EntityType Name="GoMiscFile">
@@ -2712,6 +2724,18 @@
           <Property Name="DateUploaded" Type="DateTime" Precision="3" />
           <Property Name="UploadedByUserId" Type="Int32" />
           <NavigationProperty Name="User" Relationship="Self.FK_GoMiscFiles_User" FromRole="GoMiscFiles" ToRole="User" />
+        </EntityType>
+        <EntityType Name="GoPeriod">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PeriodStatus" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PeriodStartDate" Type="DateTime" Precision="0" />
+          <Property Name="PeriodEndDate" Type="DateTime" Precision="0" />
+          <Property Name="LastPeriodId" Type="Int32" />
+          <NavigationProperty Name="GoForms" Relationship="Self.FK_GoForm_GoPeriod" FromRole="GoPeriod" ToRole="GoForm" />
         </EntityType>
         <EntityType Name="IAPAssignment">
           <Key>
@@ -2984,7 +3008,6 @@
           <NavigationProperty Name="DefElementGroups" Relationship="Self.FK_DefElementGroup_Period" FromRole="Period" ToRole="DefElementGroup" />
           <NavigationProperty Name="DefForms" Relationship="Self.FK_DefForm_Period" FromRole="Period" ToRole="DefForm" />
           <NavigationProperty Name="Forms" Relationship="Self.FK_Form_Period" FromRole="Period" ToRole="Form" />
-          <NavigationProperty Name="GoForms" Relationship="Self.FK_GoForm_Period" FromRole="Period" ToRole="GoForm" />
           <NavigationProperty Name="Logs" Relationship="Self.FK_Log_Period" FromRole="Period" ToRole="Log" />
         </EntityType>
         <EntityType Name="PermissionType">
@@ -3654,11 +3677,11 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_GoForm_Period">
-          <End Role="Period" Type="Self.Period" Multiplicity="0..1" />
+        <Association Name="FK_GoForm_GoPeriod">
+          <End Role="GoPeriod" Type="Self.GoPeriod" Multiplicity="0..1" />
           <End Role="GoForm" Type="Self.GoForm" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Period">
+            <Principal Role="GoPeriod">
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="GoForm">
@@ -4071,6 +4094,7 @@
           <EntitySet Name="GoElementFeedbacks" EntityType="Self.GoElementFeedback" />
           <EntitySet Name="GoForms" EntityType="Self.GoForm" />
           <EntitySet Name="GoMiscFiles" EntityType="Self.GoMiscFile" />
+          <EntitySet Name="GoPeriods" EntityType="Self.GoPeriod" />
           <EntitySet Name="IAPAssignments" EntityType="Self.IAPAssignment" />
           <EntitySet Name="IAPDefForms" EntityType="Self.IAPDefForm" />
           <EntitySet Name="IAPPriorities" EntityType="Self.IAPPriority" />
@@ -4288,8 +4312,8 @@
             <End Role="User" EntitySet="Users" />
             <End Role="GoElementFeedback" EntitySet="GoElementFeedbacks" />
           </AssociationSet>
-          <AssociationSet Name="FK_GoForm_Period" Association="Self.FK_GoForm_Period">
-            <End Role="Period" EntitySet="Periods" />
+          <AssociationSet Name="FK_GoForm_GoPeriod" Association="Self.FK_GoForm_GoPeriod">
+            <End Role="GoPeriod" EntitySet="GoPeriods" />
             <End Role="GoForm" EntitySet="GoForms" />
           </AssociationSet>
           <AssociationSet Name="FK_GoForm_User" Association="Self.FK_GoForm_User">
@@ -5079,6 +5103,18 @@
                 <ScalarProperty Name="Details" ColumnName="Details" />
                 <ScalarProperty Name="DateUploaded" ColumnName="DateUploaded" />
                 <ScalarProperty Name="UploadedByUserId" ColumnName="UploadedByUserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GoPeriods">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.GoPeriod">
+              <MappingFragment StoreEntitySet="GoPeriod">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="PeriodStatus" ColumnName="PeriodStatus" />
+                <ScalarProperty Name="PeriodStartDate" ColumnName="PeriodStartDate" />
+                <ScalarProperty Name="PeriodEndDate" ColumnName="PeriodEndDate" />
+                <ScalarProperty Name="LastPeriodId" ColumnName="LastPeriodId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

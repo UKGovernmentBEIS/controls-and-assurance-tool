@@ -31,8 +31,8 @@ namespace ControlAssuranceAPI.Libs
             finalEvList.Add(firstPdfPath);
 
             string dgArea = goForm.DirectorateGroup.Title;
-            DateTime periodStartDate = goForm.Period.PeriodStartDate.Value;
-            DateTime periodEndDate = goForm.Period.PeriodEndDate.Value;
+            DateTime periodStartDate = goForm.GoPeriod.PeriodStartDate.Value;
+            DateTime periodEndDate = goForm.GoPeriod.PeriodEndDate.Value;
             string summaryRagRating = goForm.SummaryRagRating;
             string summaryRagRatingLabel = goDER.getRatingLabel(summaryRagRating);
             string summaryEvidenceStatement = goForm.SummaryEvidenceStatement?.ToString() ?? "";

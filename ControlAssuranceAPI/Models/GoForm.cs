@@ -39,7 +39,7 @@ namespace ControlAssuranceAPI.Models
         public virtual DirectorateGroup DirectorateGroup { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<GoElement> GoElements { get; set; }
-        public virtual Period Period { get; set; }
+        public virtual GoPeriod GoPeriod { get; set; }
         public virtual User User { get; set; }
     }
 }

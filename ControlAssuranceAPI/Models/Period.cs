@@ -22,7 +22,6 @@ namespace ControlAssuranceAPI.Models
             this.DefElementGroups = new HashSet<DefElementGroup>();
             this.DefForms = new HashSet<DefForm>();
             this.Forms = new HashSet<Form>();
-            this.GoForms = new HashSet<GoForm>();
             this.Logs = new HashSet<Log>();
         }
     
@@ -43,8 +42,6 @@ namespace ControlAssuranceAPI.Models
         public virtual ICollection<DefForm> DefForms { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Form> Forms { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<GoForm> GoForms { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Log> Logs { get; set; }
     }

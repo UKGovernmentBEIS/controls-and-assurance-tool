@@ -46,9 +46,9 @@ export default class AppSettings extends BaseUserContextWebPartComponent<types.I
     return (
 
       <Pivot onLinkClick={this.clearErrors}>
-        <PivotItem headerText="Periods">
+        {/* <PivotItem headerText="Periods">
           {this.renderCustomPeriodsList()}
-        </PivotItem>
+        </PivotItem> */}
         <PivotItem headerText="Logs">
           {this.renderLogsList()}
         </PivotItem>
