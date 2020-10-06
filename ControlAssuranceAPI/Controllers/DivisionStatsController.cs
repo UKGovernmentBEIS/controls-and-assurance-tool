@@ -16,10 +16,16 @@ namespace ControlAssuranceAPI.Controllers
 
         public DivisionStatsController(IControlAssuranceContext context) : base(context) { }
 
-        // GET: /odata/SPDivisionStats?periodId=1
+        // GET: /odata/DivisionStats?periodId=1
         public List<Models.SPDivisionStat_Result> Get(int periodId)
         {
             return db.SPDivisionStatRepository.GetDivisionStats(periodId);
+        }
+
+        // GET: /odata/DivisionStats?periodId=20&SPDivisionStat2=
+        public List<Models.SPDivisionStat2_Result> Get(int periodId, string SPDivisionStat2)
+        {
+            return db.SPDivisionStatRepository.GetDivisionStats2(periodId);
         }
     }
 }

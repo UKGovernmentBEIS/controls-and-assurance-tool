@@ -40,6 +40,7 @@ namespace ControlAssuranceAPI.Repositories
         {
             //make the status of new period to Design Period
             period.PeriodStatus = PeriodStatuses.DesignPeriod;
+            period.SystemFlag = "B";
 
             //copy over the defs for the new period from the current period
             //get the current period

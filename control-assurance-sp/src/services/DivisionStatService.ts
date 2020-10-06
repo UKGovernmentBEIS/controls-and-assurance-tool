@@ -12,7 +12,10 @@ export class DivisionStatService extends EntityService<IDivisionStat> {
         super(spfxContext, api, `/DivisionStats`);
     }
 
-    public readAllWithArgs(periodId: number): Promise<IDivisionStat[]> {
-        return this.readAll(`?periodId=${periodId}`);
+    public readAllWithArgs(periodId: number, SPDivisionStat2: boolean): Promise<IDivisionStat[]> {
+        if(SPDivisionStat2 === true)
+            return this.readAll(`?periodId=${periodId}&SPDivisionStat2=`);
+        else
+            return this.readAll(`?periodId=${periodId}`);            
     }
 }

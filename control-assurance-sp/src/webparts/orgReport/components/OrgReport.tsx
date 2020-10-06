@@ -5,7 +5,9 @@ import BaseUserContextWebPartComponent from '../../../components/BaseUserContext
 import * as services from '../../../services';
 import { IOrgRepColumn, ColumnDisplayTypes } from '../../../types/OrgRepColumn';
 import OrgGenReport from '../../../components/report/OrgGenReport';
+import OrgGenReport2 from '../../../components/report/OrgGenReport2';
 import ThemeStatReport from '../../../components/report/ThemeStatReport';
+import ThemeStatReport2 from '../../../components/report/ThemeStatReport2';
 import '../../../styles/CustomFabric2.scss';
 import { DefaultButton } from 'office-ui-fabric-react/lib/Button';
 import { CrDropdown, IDropdownOption } from '../../../components/cr/CrDropdown';
@@ -28,9 +30,15 @@ export interface IOrgReportState extends types.IUserContextWebPartState {
   DivisionsFilter: string;
   ThemeFilter_DivisionLst: string;
 
+  DGAreaStackedBar: boolean;
+  DirectoratesStackedBar: boolean;
+  DivisionsStackedBar: boolean;
+  ThemeStackedBar: boolean;
+
   DGAreaBreakdowns: boolean;
   DirectoratesBreakdowns: boolean;
   DivisionsBreakdowns: boolean;
+  
   ThemeBreakdowns: boolean;
 
   DGAreaControls: boolean;
@@ -74,9 +82,17 @@ export class OrgReportState extends types.UserContextWebPartState {
   public ThemeFilter_DivisionLst = "";
 
 
+  public DGAreaStackedBar = false;
+  public DirectoratesStackedBar = false;
+  public DivisionsStackedBar = false;
+  public ThemeStackedBar = false;
+
   public DGAreaBreakdowns = false;
-  public DirectoratesBreakdowns = false;
-  public DivisionsBreakdowns = false;
+  public DirectoratesBreakdowns: boolean;
+  public DivisionsBreakdowns: boolean;
+
+  
+  
   public ThemeBreakdowns = false;
 
   public DGAreaControls = true;
@@ -165,7 +181,7 @@ export default class OrgReport extends BaseUserContextWebPartComponent<types.IWe
 
 
 
-  private renderDGAreasReport() {
+  private renderDGAreasReport_old() {
 
     const listColumns: IOrgRepColumn[] = [
       //use fieldName as key
@@ -354,9 +370,7 @@ export default class OrgReport extends BaseUserContextWebPartComponent<types.IWe
     );
   }
 
-
-
-  private renderDirectoratesReport() {
+  private renderDirectoratesReport_old() {
 
     const listColumns: IOrgRepColumn[] = [
       //use fieldName as key
@@ -547,8 +561,7 @@ export default class OrgReport extends BaseUserContextWebPartComponent<types.IWe
     );
   }
 
-
-  private renderDivisionsReport() {
+  private renderDivisionsReport_old() {
 
     const listColumns: IOrgRepColumn[] = [
       //use fieldName as key
@@ -746,7 +759,7 @@ export default class OrgReport extends BaseUserContextWebPartComponent<types.IWe
     );
   }
 
-  private renderThemeReport() {
+  private renderThemeReport_old() {
 
     const listColumns: IOrgRepColumn[] = [
       //use fieldName as key
@@ -932,6 +945,681 @@ export default class OrgReport extends BaseUserContextWebPartComponent<types.IWe
     );
   }
 
+  private renderDGAreasReport() {
+
+    const listColumns: IOrgRepColumn[] = [
+      //use fieldName as key
+      {
+        key: 'Title',
+        columnDisplayType: ColumnDisplayTypes.StackedBarOnAndOff,
+        name: 'DG Area',
+        fieldName: 'Title',
+        minWidth: 250,
+        maxWidth: 300,
+        isResizable: true,
+        headerClassName: "bold"
+        //isSortedDescending: false,
+        //isSorted: true
+
+      },
+      {
+        key: 'TotalAUnsatisfactory',
+        columnDisplayType: ColumnDisplayTypes.Hidden,
+        name: 'TotalAUnsatisfactory',
+        fieldName: 'TotalAUnsatisfactory',
+        minWidth: 70,
+        maxWidth: 100,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+      {
+        key: 'TotalALimited',
+        columnDisplayType: ColumnDisplayTypes.Hidden,
+        name: 'TotalALimited',
+        fieldName: 'TotalALimited',
+        minWidth: 70,
+        maxWidth: 100,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+      {
+        key: 'TotalAModerate',
+        columnDisplayType: ColumnDisplayTypes.Hidden,
+        name: 'TotalAModerate',
+        fieldName: 'TotalAModerate',
+        minWidth: 70,
+        maxWidth: 100,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+      {
+        key: 'TotalASubstantial',
+        columnDisplayType: ColumnDisplayTypes.Hidden,
+        name: 'TotalASubstantial',
+        fieldName: 'TotalASubstantial',
+        minWidth: 70,
+        maxWidth: 100,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+      {
+        key: 'TotalANotApplicable',
+        columnDisplayType: ColumnDisplayTypes.Hidden,
+        name: 'TotalANotApplicable',
+        fieldName: 'TotalANotApplicable',
+        minWidth: 70,
+        maxWidth: 100,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+
+      {
+        key: 'TotalB1Unsatisfactory',
+        columnDisplayType: ColumnDisplayTypes.Hidden,
+        name: 'TotalB1Unsatisfactory',
+        fieldName: 'TotalB1Unsatisfactory',
+        minWidth: 70,
+        maxWidth: 100,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+      {
+        key: 'TotalB1Limited',
+        columnDisplayType: ColumnDisplayTypes.Hidden,
+        name: 'TotalB1Limited',
+        fieldName: 'TotalB1Limited',
+        minWidth: 70,
+        maxWidth: 100,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+      {
+        key: 'TotalB1Moderate',
+        columnDisplayType: ColumnDisplayTypes.Hidden,
+        name: 'TotalB1Moderate',
+        fieldName: 'TotalB1Moderate',
+        minWidth: 70,
+        maxWidth: 100,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+      {
+        key: 'TotalB1Substantial',
+        columnDisplayType: ColumnDisplayTypes.Hidden,
+        name: 'TotalB1Substantial',
+        fieldName: 'TotalB1Substantial',
+        minWidth: 70,
+        maxWidth: 100,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+      {
+        key: 'TotalB1NotApplicable',
+        columnDisplayType: ColumnDisplayTypes.Hidden,
+        name: 'TotalB1NotApplicable',
+        fieldName: 'TotalB1NotApplicable',
+        minWidth: 70,
+        maxWidth: 100,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+
+
+      {
+        key: 'ControlsBar',
+        columnDisplayType: ColumnDisplayTypes.StackedBarOn,
+        name: 'Controls',
+        fieldName: 'ControlsBar',
+        minWidth: 245,
+        maxWidth: 245,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+      {
+        key: 'AssuranceBar',
+        columnDisplayType: ColumnDisplayTypes.StackedBarOn,
+        name: 'Assurance',
+        fieldName: 'AssuranceBar',
+        minWidth: 245,
+        maxWidth: 245,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+
+
+    ];
+
+    return (
+      this.state.LookupData.Periods && this.state.SelectedPeriod > 0 &&
+      <React.Fragment>
+        <OrgGenReport2
+          periodId={this.state.SelectedPeriod}
+          onItemTitleClick={this.handleItemTitleClick}
+          columns={listColumns}
+          {...this.props}
+          onError={this.onError}
+          entityService={new services.DGAreaStatService(this.props.spfxContext, this.props.api)}
+          entityNamePlural="DG Areas"
+          stackedBar={this.state.DGAreaStackedBar}
+          onChangeStackedBar={this.handleChangeStackedBar_DGAreas}
+
+
+        />
+
+      </React.Fragment>
+    );
+  }
+
+
+  private renderDirectoratesReport() {
+
+    const listColumns: IOrgRepColumn[] = [
+      //use fieldName as key
+      {
+        key: 'DGTitle',
+        columnDisplayType: ColumnDisplayTypes.Hidden,
+        name: 'DGTitle',
+        fieldName: 'DGTitle',
+        minWidth: 1,
+      },
+      {
+        key: 'Title',
+        columnDisplayType: ColumnDisplayTypes.StackedBarOnAndOff,
+        name: 'Directorate',
+        fieldName: 'Title',
+        minWidth: 250,
+        maxWidth: 300,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+      {
+        key: 'TotalAUnsatisfactory',
+        columnDisplayType: ColumnDisplayTypes.Hidden,
+        name: 'TotalAUnsatisfactory',
+        fieldName: 'TotalAUnsatisfactory',
+        minWidth: 70,
+        maxWidth: 100,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+      {
+        key: 'TotalALimited',
+        columnDisplayType: ColumnDisplayTypes.Hidden,
+        name: 'TotalALimited',
+        fieldName: 'TotalALimited',
+        minWidth: 70,
+        maxWidth: 100,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+      {
+        key: 'TotalAModerate',
+        columnDisplayType: ColumnDisplayTypes.Hidden,
+        name: 'TotalAModerate',
+        fieldName: 'TotalAModerate',
+        minWidth: 70,
+        maxWidth: 100,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+      {
+        key: 'TotalASubstantial',
+        columnDisplayType: ColumnDisplayTypes.Hidden,
+        name: 'TotalASubstantial',
+        fieldName: 'TotalASubstantial',
+        minWidth: 70,
+        maxWidth: 100,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+      {
+        key: 'TotalANotApplicable',
+        columnDisplayType: ColumnDisplayTypes.Hidden,
+        name: 'TotalANotApplicable',
+        fieldName: 'TotalANotApplicable',
+        minWidth: 70,
+        maxWidth: 100,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+
+      {
+        key: 'TotalB1Unsatisfactory',
+        columnDisplayType: ColumnDisplayTypes.Hidden,
+        name: 'TotalB1Unsatisfactory',
+        fieldName: 'TotalB1Unsatisfactory',
+        minWidth: 70,
+        maxWidth: 100,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+      {
+        key: 'TotalB1Limited',
+        columnDisplayType: ColumnDisplayTypes.Hidden,
+        name: 'TotalB1Limited',
+        fieldName: 'TotalB1Limited',
+        minWidth: 70,
+        maxWidth: 100,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+      {
+        key: 'TotalB1Moderate',
+        columnDisplayType: ColumnDisplayTypes.Hidden,
+        name: 'TotalB1Moderate',
+        fieldName: 'TotalB1Moderate',
+        minWidth: 70,
+        maxWidth: 100,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+      {
+        key: 'TotalB1Substantial',
+        columnDisplayType: ColumnDisplayTypes.Hidden,
+        name: 'TotalB1Substantial',
+        fieldName: 'TotalB1Substantial',
+        minWidth: 70,
+        maxWidth: 100,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+      {
+        key: 'TotalB1NotApplicable',
+        columnDisplayType: ColumnDisplayTypes.Hidden,
+        name: 'TotalB1NotApplicable',
+        fieldName: 'TotalB1NotApplicable',
+        minWidth: 70,
+        maxWidth: 100,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+
+
+      {
+        key: 'ControlsBar',
+        columnDisplayType: ColumnDisplayTypes.StackedBarOn,
+        name: 'Controls',
+        fieldName: 'ControlsBar',
+        minWidth: 245,
+        maxWidth: 245,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+      {
+        key: 'AssuranceBar',
+        columnDisplayType: ColumnDisplayTypes.StackedBarOn,
+        name: 'Assurance',
+        fieldName: 'AssuranceBar',
+        minWidth: 245,
+        maxWidth: 245,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+
+
+
+    ];
+
+    return (
+      <React.Fragment>
+        <OrgGenReport2
+          periodId={this.state.SelectedPeriod}
+          onItemTitleClick={this.handleItemTitleClick}
+          columns={listColumns}
+          {...this.props}
+          onError={this.onError}
+          entityService={new services.DirectorateStatService(this.props.spfxContext, this.props.api)}
+          entityNamePlural="Directorates"
+          filterText={this.state.DirectoratesFilter}
+          stackedBar={this.state.DirectoratesStackedBar}
+          onChangeStackedBar={this.handleChangeStackedBar_Directorates}
+
+
+        />
+
+      </React.Fragment>
+    );
+  }
+
+
+  private renderDivisionsReport() {
+
+    const listColumns: IOrgRepColumn[] = [
+      //use fieldName as key
+      {
+        key: 'DGTitle',
+        columnDisplayType: ColumnDisplayTypes.Hidden,
+        name: 'DGTitle',
+        fieldName: 'DGTitle',
+        minWidth: 1,
+      },
+      {
+        key: 'DirTitle',
+        columnDisplayType: ColumnDisplayTypes.Hidden,
+        name: 'DirTitle',
+        fieldName: 'DirTitle',
+        minWidth: 1,
+      },
+      {
+        key: 'Title',
+        columnDisplayType: ColumnDisplayTypes.StackedBarOnAndOff,
+        name: 'Division',
+        fieldName: 'Title',
+        minWidth: 250,
+        maxWidth: 300,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+      {
+        key: 'TotalAUnsatisfactory',
+        columnDisplayType: ColumnDisplayTypes.Hidden,
+        name: 'TotalAUnsatisfactory',
+        fieldName: 'TotalAUnsatisfactory',
+        minWidth: 70,
+        maxWidth: 100,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+      {
+        key: 'TotalALimited',
+        columnDisplayType: ColumnDisplayTypes.Hidden,
+        name: 'TotalALimited',
+        fieldName: 'TotalALimited',
+        minWidth: 70,
+        maxWidth: 100,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+      {
+        key: 'TotalAModerate',
+        columnDisplayType: ColumnDisplayTypes.Hidden,
+        name: 'TotalAModerate',
+        fieldName: 'TotalAModerate',
+        minWidth: 70,
+        maxWidth: 100,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+      {
+        key: 'TotalASubstantial',
+        columnDisplayType: ColumnDisplayTypes.Hidden,
+        name: 'TotalASubstantial',
+        fieldName: 'TotalASubstantial',
+        minWidth: 70,
+        maxWidth: 100,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+      {
+        key: 'TotalANotApplicable',
+        columnDisplayType: ColumnDisplayTypes.Hidden,
+        name: 'TotalANotApplicable',
+        fieldName: 'TotalANotApplicable',
+        minWidth: 70,
+        maxWidth: 100,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+
+      {
+        key: 'TotalB1Unsatisfactory',
+        columnDisplayType: ColumnDisplayTypes.Hidden,
+        name: 'TotalB1Unsatisfactory',
+        fieldName: 'TotalB1Unsatisfactory',
+        minWidth: 70,
+        maxWidth: 100,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+      {
+        key: 'TotalB1Limited',
+        columnDisplayType: ColumnDisplayTypes.Hidden,
+        name: 'TotalB1Limited',
+        fieldName: 'TotalB1Limited',
+        minWidth: 70,
+        maxWidth: 100,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+      {
+        key: 'TotalB1Moderate',
+        columnDisplayType: ColumnDisplayTypes.Hidden,
+        name: 'TotalB1Moderate',
+        fieldName: 'TotalB1Moderate',
+        minWidth: 70,
+        maxWidth: 100,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+      {
+        key: 'TotalB1Substantial',
+        columnDisplayType: ColumnDisplayTypes.Hidden,
+        name: 'TotalB1Substantial',
+        fieldName: 'TotalB1Substantial',
+        minWidth: 70,
+        maxWidth: 100,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+      {
+        key: 'TotalB1NotApplicable',
+        columnDisplayType: ColumnDisplayTypes.Hidden,
+        name: 'TotalB1NotApplicable',
+        fieldName: 'TotalB1NotApplicable',
+        minWidth: 70,
+        maxWidth: 100,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+
+
+      {
+        key: 'ControlsBar',
+        columnDisplayType: ColumnDisplayTypes.StackedBarOn,
+        name: 'Controls',
+        fieldName: 'ControlsBar',
+        minWidth: 245,
+        maxWidth: 245,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+      {
+        key: 'AssuranceBar',
+        columnDisplayType: ColumnDisplayTypes.StackedBarOn,
+        name: 'Assurance',
+        fieldName: 'AssuranceBar',
+        minWidth: 245,
+        maxWidth: 245,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+
+
+    ];
+
+    return (
+      <React.Fragment>
+        <OrgGenReport2
+          periodId={this.state.SelectedPeriod}
+          onItemTitleClick={this.handleItemTitleClick}
+          columns={listColumns}
+          {...this.props}
+          onError={this.onError}
+          entityService={new services.DivisionStatService(this.props.spfxContext, this.props.api)}
+          entityNamePlural="Divisions"
+          filterText={this.state.DivisionsFilter}
+          stackedBar={this.state.DivisionsStackedBar}
+          onChangeStackedBar={this.handleChangeStackedBar_Divisions}
+
+        />
+
+      </React.Fragment>
+    );
+  }
+
+  private renderThemeReport() {
+
+    const listColumns: IOrgRepColumn[] = [
+      //use fieldName as key
+      {
+        key: 'Title',
+        columnDisplayType: ColumnDisplayTypes.StackedBarOnAndOff,
+        name: 'Theme',
+        fieldName: 'Title',
+        minWidth: 250,
+        maxWidth: 300,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+      {
+        key: 'TotalAUnsatisfactory',
+        columnDisplayType: ColumnDisplayTypes.Hidden,
+        name: 'TotalAUnsatisfactory',
+        fieldName: 'TotalAUnsatisfactory',
+        minWidth: 70,
+        maxWidth: 100,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+      {
+        key: 'TotalALimited',
+        columnDisplayType: ColumnDisplayTypes.Hidden,
+        name: 'TotalALimited',
+        fieldName: 'TotalALimited',
+        minWidth: 70,
+        maxWidth: 100,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+      {
+        key: 'TotalAModerate',
+        columnDisplayType: ColumnDisplayTypes.Hidden,
+        name: 'TotalAModerate',
+        fieldName: 'TotalAModerate',
+        minWidth: 70,
+        maxWidth: 100,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+      {
+        key: 'TotalASubstantial',
+        columnDisplayType: ColumnDisplayTypes.Hidden,
+        name: 'TotalASubstantial',
+        fieldName: 'TotalASubstantial',
+        minWidth: 70,
+        maxWidth: 100,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+      {
+        key: 'TotalANotApplicable',
+        columnDisplayType: ColumnDisplayTypes.Hidden,
+        name: 'TotalANotApplicable',
+        fieldName: 'TotalANotApplicable',
+        minWidth: 70,
+        maxWidth: 100,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+
+      {
+        key: 'TotalB1Unsatisfactory',
+        columnDisplayType: ColumnDisplayTypes.Hidden,
+        name: 'TotalB1Unsatisfactory',
+        fieldName: 'TotalB1Unsatisfactory',
+        minWidth: 70,
+        maxWidth: 100,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+      {
+        key: 'TotalB1Limited',
+        columnDisplayType: ColumnDisplayTypes.Hidden,
+        name: 'TotalB1Limited',
+        fieldName: 'TotalB1Limited',
+        minWidth: 70,
+        maxWidth: 100,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+      {
+        key: 'TotalB1Moderate',
+        columnDisplayType: ColumnDisplayTypes.Hidden,
+        name: 'TotalB1Moderate',
+        fieldName: 'TotalB1Moderate',
+        minWidth: 70,
+        maxWidth: 100,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+      {
+        key: 'TotalB1Substantial',
+        columnDisplayType: ColumnDisplayTypes.Hidden,
+        name: 'TotalB1Substantial',
+        fieldName: 'TotalB1Substantial',
+        minWidth: 70,
+        maxWidth: 100,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+      {
+        key: 'TotalB1NotApplicable',
+        columnDisplayType: ColumnDisplayTypes.Hidden,
+        name: 'TotalB1NotApplicable',
+        fieldName: 'TotalB1NotApplicable',
+        minWidth: 70,
+        maxWidth: 100,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+
+
+      {
+        key: 'ControlsBar',
+        columnDisplayType: ColumnDisplayTypes.StackedBarOn,
+        name: 'Controls',
+        fieldName: 'ControlsBar',
+        minWidth: 245,
+        maxWidth: 245,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+      {
+        key: 'AssuranceBar',
+        columnDisplayType: ColumnDisplayTypes.StackedBarOn,
+        name: 'Assurance',
+        fieldName: 'AssuranceBar',
+        minWidth: 245,
+        maxWidth: 245,
+        isResizable: true,
+        headerClassName: "bold",
+      },
+
+
+    ];
+
+    return (
+      <React.Fragment>
+        <ThemeStatReport2
+          periodId={this.state.SelectedPeriod}
+          onItemTitleClick={this.handleItemTitleClick}
+          columns={listColumns}
+          {...this.props}
+          onError={this.onError}
+          entityService={new services.ThemeStatService(this.props.spfxContext, this.props.api)}
+          entityNamePlural="Themes"
+          divisionLstFilter={this.state.ThemeFilter_DivisionLst}
+
+          stackedBar={this.state.ThemeStackedBar}
+          onChangeStackedBar={this.handleChangeStackedBar_Theme}
+
+
+        />
+
+      </React.Fragment>
+    );
+  }
+
 
 
   //#endregion Render
@@ -984,6 +1672,25 @@ export default class OrgReport extends BaseUserContextWebPartComponent<types.IWe
     }
 
   }
+
+
+  private handleChangeStackedBar_DGAreas = (value: boolean): void => {
+    this.setState({ DGAreaStackedBar: value });
+  }
+  private handleChangeStackedBar_Directorates = (value: boolean): void => {
+    this.setState({ DirectoratesStackedBar: value });
+  }
+  private handleChangeStackedBar_Divisions = (value: boolean): void => {
+    this.setState({ DivisionsStackedBar : value });
+  }
+
+  private handleChangeStackedBar_Theme = (value: boolean): void => {
+    this.setState({ ThemeStackedBar : value });
+  }
+
+
+
+
 
 
 

@@ -32,6 +32,7 @@ namespace ControlAssuranceAPI.Repositories
         public DefElement Add(DefElement defElement)
         {
             //if (ApiUserIsAdmin)
+            defElement.SectionANumQuestions = this.CountTotalQuestionsSectionA(defElement);
             return db.DefElements.Add(defElement);
             //return null;
         }
@@ -126,6 +127,24 @@ namespace ControlAssuranceAPI.Repositories
 
 
             return overAllStatus;
+        }
+
+        public int CountTotalQuestionsSectionA(DefElement defElement)
+        {
+            int totalCount = 0;
+
+            if (string.IsNullOrEmpty(defElement.SectionAQuestion1) == false) totalCount++;
+            if (string.IsNullOrEmpty(defElement.SectionAQuestion2) == false) totalCount++;
+            if (string.IsNullOrEmpty(defElement.SectionAQuestion3) == false) totalCount++;
+            if (string.IsNullOrEmpty(defElement.SectionAQuestion4) == false) totalCount++;
+            if (string.IsNullOrEmpty(defElement.SectionAQuestion5) == false) totalCount++;
+            if (string.IsNullOrEmpty(defElement.SectionAQuestion6) == false) totalCount++;
+            if (string.IsNullOrEmpty(defElement.SectionAQuestion7) == false) totalCount++;
+            if (string.IsNullOrEmpty(defElement.SectionAQuestion8) == false) totalCount++;
+            if (string.IsNullOrEmpty(defElement.SectionAQuestion9) == false) totalCount++;
+            if (string.IsNullOrEmpty(defElement.SectionAQuestion10) == false) totalCount++;
+
+            return totalCount;
         }
 
     }

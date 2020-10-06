@@ -110,9 +110,13 @@ namespace ControlAssuranceAPI
 
 
             builder.EntitySet<Models.SPDGAreaStat_Result>("DGAreaStats");
+            builder.EntitySet<Models.SPDGAreaStat2_Result>("DGAreaStats2");
             builder.EntitySet<Models.SPDirectorateStat_Result>("DirectorateStats");
+            builder.EntitySet<Models.SPDirectorateStat2_Result>("DirectorateStats2");
             builder.EntitySet<Models.SPDivisionStat_Result>("DivisionStats");
+            builder.EntitySet<Models.SPDivisionStat2_Result>("DivisionStats2");
             builder.EntitySet<Models.ThemeStat_Result>("ThemeStats");
+            builder.EntitySet<Models.ThemeStat2_Result>("ThemeStats2");
 
             //register PolicyView_Result for custom display of policies
             builder.EntitySet<SpecificAreaView_Result>("SpecificAreaViewResult");

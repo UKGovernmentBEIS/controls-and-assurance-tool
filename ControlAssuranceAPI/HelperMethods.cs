@@ -16,5 +16,19 @@ namespace ControlAssuranceAPI
             return username.Replace(DomainFixFind, DomainFixReplace);
             //return username;
         }
+
+        public static int GetPercentage(int value, int total)
+        {
+            int percent = 0;
+            try
+            {
+                decimal a = (decimal)((decimal)value / (decimal)total);
+                decimal b = Math.Round((a * 100));
+                percent = (int)b;
+            }
+            catch { }
+
+            return percent;
+        }
     }
 }

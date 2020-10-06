@@ -12,7 +12,14 @@ export class DGAreaStatService extends EntityService<IDGAreaStat> {
         super(spfxContext, api, `/DGAreaStats`);
     }
 
-    public readAllWithArgs(periodId: number): Promise<IDGAreaStat[]> {
-        return this.readAll(`?periodId=${periodId}`);
+    public readAllWithArgs(periodId: number, SPDGAreaStat2:boolean): Promise<IDGAreaStat[]> {
+        if(SPDGAreaStat2 === true)
+            return this.readAll(`?periodId=${periodId}&SPDGAreaStat2=`);
+        else
+            return this.readAll(`?periodId=${periodId}`);
     }
+
+    // public readAllWithArgs(periodId: number, ss:string): Promise<IDGAreaStat[]> {
+    //     return this.readAll(`?periodId=${periodId}&SPDGAreaStat2=`);
+    // }
 }

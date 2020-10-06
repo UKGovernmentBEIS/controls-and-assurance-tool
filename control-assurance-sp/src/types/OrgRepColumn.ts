@@ -16,6 +16,9 @@ export enum ColumnDisplayTypes {
     BreakdownsOn,
     BreakdownsOff,
     BreakdownsOnAndOff,
+    StackedBarOn,
+    StackedBarOff,
+    StackedBarOnAndOff,
     Hidden,
 }
 

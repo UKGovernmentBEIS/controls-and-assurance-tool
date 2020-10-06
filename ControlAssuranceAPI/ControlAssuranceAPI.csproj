@@ -515,10 +515,19 @@
     <Compile Include="Models\PermissionType.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\SPDGAreaStat2_Result.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\SPDGAreaStat_Result.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\SPDirectorateStat2_Result.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\SPDirectorateStat_Result.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SPDivisionStat2_Result.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\SPDivisionStat_Result.cs">
@@ -551,6 +560,7 @@
     <Compile Include="Repositories\DefElementGroupRespository.cs" />
     <Compile Include="Repositories\DefElementRepository.cs" />
     <Compile Include="Repositories\EntityPriorityRepository.cs" />
+    <Compile Include="Repositories\ExtensionMethods.cs" />
     <Compile Include="Repositories\GIAAActionOwnerRepository.cs" />
     <Compile Include="Repositories\GIAAActionPriorityRepository.cs" />
     <Compile Include="Repositories\GIAAActionStatusTypeRepository.cs" />

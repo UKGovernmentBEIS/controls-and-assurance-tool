@@ -44,4 +44,26 @@ namespace ControlAssuranceAPI.Models
         public string AggregateAssurance2 { get; set; }
         public string AggregateAssurance3 { get; set; }
     }
+
+    public class ThemeStat2_Result
+    {
+        public int ID { get; set; }
+        public string Title { get; set; }
+        public int TotalAUnsatisfactory { get; set; }
+        public int TotalALimited { get; set; }
+        public int TotalAModerate { get; set; }
+        public int TotalASubstantial { get; set; }
+        public int TotalANotApplicable { get; set; }
+        public int TotalB1Unsatisfactory { get; set; }
+        public int TotalB1Limited { get; set; }
+        public int TotalB1Moderate { get; set; }
+        public int TotalB1Substantial { get; set; }
+        public int TotalB1NotApplicable { get; set; }
+
+        public Nullable<int> TotalElements { get; set; }
+        public Nullable<int> TotalQuestions { get; set; }
+
+        public string ControlsBar { get; set; }
+        public string AssuranceBar { get; set; }
+    }
 }

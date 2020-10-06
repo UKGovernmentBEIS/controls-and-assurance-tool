@@ -9,6 +9,18 @@ namespace ControlAssuranceAPI.Repositories
 {
     public class ElementRepository : BaseRepository
     {
+
+        public class ResponsesA
+        {
+            public static readonly string Substantial = "Substantial";
+            public static readonly string Unsatisfactory = "Unsatisfactory";
+            public static readonly string Moderate = "Moderate";
+            public static readonly string Limited = "Limited";
+            public static readonly string NA = "NA";
+
+        }
+
+
         public ElementRepository(IPrincipal user) : base(user) { }
 
         public ElementRepository(IPrincipal user, IControlAssuranceContext context) : base(user, context) { }
@@ -32,6 +44,7 @@ namespace ControlAssuranceAPI.Repositories
         public Element Add(Element element)
         {
             //var userId = ApiUser.ID; //may need to do this later
+            var defElement = db.DefElements.FirstOrDefault(x => x.ID == element.DefElementId);
 
             if(element.Status == "NotApplicable")
             {
@@ -52,11 +65,11 @@ namespace ControlAssuranceAPI.Repositories
 
                 element.ResponseAEffect = "5";
                 element.ResponseAEffectText = null;
-                element.ResponseAEffectNotApplicable = true;
-                element.ResponseAEffectUnsatisfactory = false;
-                element.ResponseAEffectLimited = false;
-                element.ResponseAEffectModerate = false;
-                element.ResponseAEffectSubstantial = false;
+                element.ResponseAEffectNotApplicable = defElement.SectionANumQuestions; //should be equal to total num of questions
+                element.ResponseAEffectUnsatisfactory = 0;
+                element.ResponseAEffectLimited = 0;
+                element.ResponseAEffectModerate = 0;
+                element.ResponseAEffectSubstantial = 0;
 
                 element.ResponseB1 = null;
                 element.ResponseB1Text = null;
@@ -90,11 +103,13 @@ namespace ControlAssuranceAPI.Repositories
             else
             {
                 //make all response flags to false initially
-                element.ResponseAEffectNotApplicable = false;
-                element.ResponseAEffectUnsatisfactory = false;
-                element.ResponseAEffectLimited = false;
-                element.ResponseAEffectModerate = false;
-                element.ResponseAEffectSubstantial = false;
+                element.ResponseAEffectNotApplicable = 0;
+                element.ResponseAEffectUnsatisfactory = 0;
+                element.ResponseAEffectLimited = 0;
+                element.ResponseAEffectModerate = 0;
+                element.ResponseAEffectSubstantial = 0;
+
+
 
                 element.ResponseB1EffectNotApplicable = false;
                 element.ResponseB1EffectUnsatisfactory = false;
@@ -119,17 +134,120 @@ namespace ControlAssuranceAPI.Repositories
                     element.ResponseAOtherText = null;
 
                 //A
-                if (element.ResponseAEffect == "1")
-                    element.ResponseAEffectUnsatisfactory = true;
+                int totalSubstantial = 0;
+                int totalUnsatisfactory = 0;                
+                int totalModerate = 0;
+                int totalLimited = 0;
+                int totalNA = 0;
 
-                if (element.ResponseAEffect == "2")
-                    element.ResponseAEffectLimited = true;
+                if(string.IsNullOrEmpty(defElement.SectionAQuestion1) == false)
+                {
+                    if (element.ResponseA1 == ResponsesA.Substantial) totalSubstantial++;
+                    else if (element.ResponseA1 == ResponsesA.Unsatisfactory) totalUnsatisfactory++;
+                    else if (element.ResponseA1 == ResponsesA.NA) totalNA++;
+                    else if (element.ResponseA1 == ResponsesA.Moderate) totalModerate++;
+                    else if (element.ResponseA1 == ResponsesA.Limited) totalLimited++;
+                }
 
-                if (element.ResponseAEffect == "3")
-                    element.ResponseAEffectModerate = true;
+                if (string.IsNullOrEmpty(defElement.SectionAQuestion2) == false)
+                {
+                    if (element.ResponseA2 == ResponsesA.Substantial) totalSubstantial++;
+                    else if (element.ResponseA2 == ResponsesA.Unsatisfactory) totalUnsatisfactory++;
+                    else if (element.ResponseA2 == ResponsesA.NA) totalNA++;
+                    else if (element.ResponseA2 == ResponsesA.Moderate) totalModerate++;
+                    else if (element.ResponseA2 == ResponsesA.Limited) totalLimited++;
+                }
 
-                if (element.ResponseAEffect == "4")
-                    element.ResponseAEffectSubstantial = true;
+                if (string.IsNullOrEmpty(defElement.SectionAQuestion3) == false)
+                {
+                    if (element.ResponseA3 == ResponsesA.Substantial) totalSubstantial++;
+                    else if (element.ResponseA3 == ResponsesA.Unsatisfactory) totalUnsatisfactory++;
+                    else if (element.ResponseA3 == ResponsesA.NA) totalNA++;
+                    else if (element.ResponseA3 == ResponsesA.Moderate) totalModerate++;
+                    else if (element.ResponseA3 == ResponsesA.Limited) totalLimited++;
+                }
+
+                if (string.IsNullOrEmpty(defElement.SectionAQuestion4) == false)
+                {
+                    if (element.ResponseA4 == ResponsesA.Substantial) totalSubstantial++;
+                    else if (element.ResponseA4 == ResponsesA.Unsatisfactory) totalUnsatisfactory++;
+                    else if (element.ResponseA4 == ResponsesA.NA) totalNA++;
+                    else if (element.ResponseA4 == ResponsesA.Moderate) totalModerate++;
+                    else if (element.ResponseA4 == ResponsesA.Limited) totalLimited++;
+                }
+
+                if (string.IsNullOrEmpty(defElement.SectionAQuestion5) == false)
+                {
+                    if (element.ResponseA5 == ResponsesA.Substantial) totalSubstantial++;
+                    else if (element.ResponseA5 == ResponsesA.Unsatisfactory) totalUnsatisfactory++;
+                    else if (element.ResponseA5 == ResponsesA.NA) totalNA++;
+                    else if (element.ResponseA5 == ResponsesA.Moderate) totalModerate++;
+                    else if (element.ResponseA5 == ResponsesA.Limited) totalLimited++;
+                }
+
+                if (string.IsNullOrEmpty(defElement.SectionAQuestion6) == false)
+                {
+                    if (element.ResponseA6 == ResponsesA.Substantial) totalSubstantial++;
+                    else if (element.ResponseA6 == ResponsesA.Unsatisfactory) totalUnsatisfactory++;
+                    else if (element.ResponseA6 == ResponsesA.NA) totalNA++;
+                    else if (element.ResponseA6 == ResponsesA.Moderate) totalModerate++;
+                    else if (element.ResponseA6 == ResponsesA.Limited) totalLimited++;
+                }
+
+                if (string.IsNullOrEmpty(defElement.SectionAQuestion7) == false)
+                {
+                    if (element.ResponseA7 == ResponsesA.Substantial) totalSubstantial++;
+                    else if (element.ResponseA7 == ResponsesA.Unsatisfactory) totalUnsatisfactory++;
+                    else if (element.ResponseA7 == ResponsesA.NA) totalNA++;
+                    else if (element.ResponseA7 == ResponsesA.Moderate) totalModerate++;
+                    else if (element.ResponseA7 == ResponsesA.Limited) totalLimited++;
+                }
+
+                if (string.IsNullOrEmpty(defElement.SectionAQuestion8) == false)
+                {
+                    if (element.ResponseA8 == ResponsesA.Substantial) totalSubstantial++;
+                    else if (element.ResponseA8 == ResponsesA.Unsatisfactory) totalUnsatisfactory++;
+                    else if (element.ResponseA8 == ResponsesA.NA) totalNA++;
+                    else if (element.ResponseA8 == ResponsesA.Moderate) totalModerate++;
+                    else if (element.ResponseA8 == ResponsesA.Limited) totalLimited++;
+                }
+
+                if (string.IsNullOrEmpty(defElement.SectionAQuestion9) == false)
+                {
+                    if (element.ResponseA9 == ResponsesA.Substantial) totalSubstantial++;
+                    else if (element.ResponseA9 == ResponsesA.Unsatisfactory) totalUnsatisfactory++;
+                    else if (element.ResponseA9 == ResponsesA.NA) totalNA++;
+                    else if (element.ResponseA9 == ResponsesA.Moderate) totalModerate++;
+                    else if (element.ResponseA9 == ResponsesA.Limited) totalLimited++;
+                }
+
+                if (string.IsNullOrEmpty(defElement.SectionAQuestion10) == false)
+                {
+                    if (element.ResponseA10 == ResponsesA.Substantial) totalSubstantial++;
+                    else if (element.ResponseA10 == ResponsesA.Unsatisfactory) totalUnsatisfactory++;
+                    else if (element.ResponseA10 == ResponsesA.NA) totalNA++;
+                    else if (element.ResponseA10 == ResponsesA.Moderate) totalModerate++;
+                    else if (element.ResponseA10 == ResponsesA.Limited) totalLimited++;
+                }
+
+
+                element.ResponseAEffectSubstantial = totalSubstantial;
+                element.ResponseAEffectUnsatisfactory = totalUnsatisfactory;
+                element.ResponseAEffectModerate = totalModerate;
+                element.ResponseAEffectLimited = totalLimited;
+                element.ResponseAEffectNotApplicable = totalNA;
+
+                //if (element.ResponseAEffect == "1")
+                //    element.ResponseAEffectUnsatisfactory = true;
+
+                //if (element.ResponseAEffect == "2")
+                //    element.ResponseAEffectLimited = true;
+
+                //if (element.ResponseAEffect == "3")
+                //    element.ResponseAEffectModerate = true;
+
+                //if (element.ResponseAEffect == "4")
+                //    element.ResponseAEffectSubstantial = true;
 
                 //B1
                 if (element.ResponseB1Effect == "1")

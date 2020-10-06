@@ -222,11 +222,11 @@
           <Property Name="ResponseB4Text" Type="nvarchar(max)" />
           <Property Name="ResponseB4Effect" Type="nvarchar" MaxLength="50" />
           <Property Name="NotApplicable" Type="bit" />
-          <Property Name="ResponseAEffectUnsatisfactory" Type="bit" />
-          <Property Name="ResponseAEffectLimited" Type="bit" />
-          <Property Name="ResponseAEffectModerate" Type="bit" />
-          <Property Name="ResponseAEffectSubstantial" Type="bit" />
-          <Property Name="ResponseAEffectNotApplicable" Type="bit" />
+          <Property Name="ResponseAEffectUnsatisfactory" Type="int" />
+          <Property Name="ResponseAEffectLimited" Type="int" />
+          <Property Name="ResponseAEffectModerate" Type="int" />
+          <Property Name="ResponseAEffectSubstantial" Type="int" />
+          <Property Name="ResponseAEffectNotApplicable" Type="int" />
           <Property Name="ResponseB1EffectUnsatisfactory" Type="bit" />
           <Property Name="ResponseB1EffectLimited" Type="bit" />
           <Property Name="ResponseB1EffectModerate" Type="bit" />
@@ -738,6 +738,7 @@
           <Property Name="PeriodStartDate" Type="date" />
           <Property Name="PeriodEndDate" Type="date" />
           <Property Name="LastPeriodId" Type="int" />
+          <Property Name="SystemFlag" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="PermissionType">
           <Key>
@@ -1760,10 +1761,19 @@
         <Function Name="SPDGAreaStat" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="PeriodId" Type="int" Mode="In" />
         </Function>
+        <Function Name="SPDGAreaStat2" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="PeriodId" Type="int" Mode="In" />
+        </Function>
         <Function Name="SPDirectorateStat" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="PeriodId" Type="int" Mode="In" />
         </Function>
+        <Function Name="SPDirectorateStat2" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="PeriodId" Type="int" Mode="In" />
+        </Function>
         <Function Name="SPDivisionStat" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="PeriodId" Type="int" Mode="In" />
+        </Function>
+        <Function Name="SPDivisionStat2" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="PeriodId" Type="int" Mode="In" />
         </Function>
         <EntityContainer Name="ControlAssuranceModelStoreContainer">
@@ -2396,11 +2406,11 @@
           <Property Name="ResponseB4Text" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ResponseB4Effect" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="NotApplicable" Type="Boolean" />
-          <Property Name="ResponseAEffectUnsatisfactory" Type="Boolean" />
-          <Property Name="ResponseAEffectLimited" Type="Boolean" />
-          <Property Name="ResponseAEffectModerate" Type="Boolean" />
-          <Property Name="ResponseAEffectSubstantial" Type="Boolean" />
-          <Property Name="ResponseAEffectNotApplicable" Type="Boolean" />
+          <Property Name="ResponseAEffectUnsatisfactory" Type="Int32" />
+          <Property Name="ResponseAEffectLimited" Type="Int32" />
+          <Property Name="ResponseAEffectModerate" Type="Int32" />
+          <Property Name="ResponseAEffectSubstantial" Type="Int32" />
+          <Property Name="ResponseAEffectNotApplicable" Type="Int32" />
           <Property Name="ResponseB1EffectUnsatisfactory" Type="Boolean" />
           <Property Name="ResponseB1EffectLimited" Type="Boolean" />
           <Property Name="ResponseB1EffectModerate" Type="Boolean" />
@@ -3003,6 +3013,7 @@
           <Property Name="PeriodStartDate" Type="DateTime" Precision="0" />
           <Property Name="PeriodEndDate" Type="DateTime" Precision="0" />
           <Property Name="LastPeriodId" Type="Int32" />
+          <Property Name="SystemFlag" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="AuditFeedbacks" Relationship="Self.FK_AuditFeedback_Period" FromRole="Period" ToRole="AuditFeedback" />
           <NavigationProperty Name="DefElements" Relationship="Self.FK_DefElement_Period" FromRole="Period" ToRole="DefElement" />
           <NavigationProperty Name="DefElementGroups" Relationship="Self.FK_DefElementGroup_Period" FromRole="Period" ToRole="DefElementGroup" />
@@ -4443,10 +4454,19 @@
           <FunctionImport Name="SPDGAreaStat" ReturnType="Collection(ControlAssuranceModel.SPDGAreaStat_Result)">
             <Parameter Name="PeriodId" Mode="In" Type="Int32" />
           </FunctionImport>
+          <FunctionImport Name="SPDGAreaStat2" ReturnType="Collection(ControlAssuranceModel.SPDGAreaStat2_Result)">
+            <Parameter Name="PeriodId" Mode="In" Type="Int32" />
+          </FunctionImport>
           <FunctionImport Name="SPDirectorateStat" ReturnType="Collection(ControlAssuranceModel.SPDirectorateStat_Result)">
             <Parameter Name="PeriodId" Mode="In" Type="Int32" />
           </FunctionImport>
+          <FunctionImport Name="SPDirectorateStat2" ReturnType="Collection(ControlAssuranceModel.SPDirectorateStat2_Result)">
+            <Parameter Name="PeriodId" Mode="In" Type="Int32" />
+          </FunctionImport>
           <FunctionImport Name="SPDivisionStat" ReturnType="Collection(ControlAssuranceModel.SPDivisionStat_Result)">
+            <Parameter Name="PeriodId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="SPDivisionStat2" ReturnType="Collection(ControlAssuranceModel.SPDivisionStat2_Result)">
             <Parameter Name="PeriodId" Mode="In" Type="Int32" />
           </FunctionImport>
         </EntityContainer>
@@ -4488,6 +4508,24 @@
           <Property Type="String" Name="AggregateAssurance2" Nullable="false" MaxLength="1" />
           <Property Type="String" Name="AggregateAssurance3" Nullable="false" MaxLength="1" />
         </ComplexType>
+        <ComplexType Name="SPDGAreaStat2_Result">
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="String" Name="Title" Nullable="true" MaxLength="50" />
+          <Property Type="Int32" Name="TotalAUnsatisfactory" Nullable="false" />
+          <Property Type="Int32" Name="TotalALimited" Nullable="false" />
+          <Property Type="Int32" Name="TotalAModerate" Nullable="false" />
+          <Property Type="Int32" Name="TotalASubstantial" Nullable="false" />
+          <Property Type="Int32" Name="TotalANotApplicable" Nullable="false" />
+          <Property Type="Int32" Name="TotalB1Unsatisfactory" Nullable="false" />
+          <Property Type="Int32" Name="TotalB1Limited" Nullable="false" />
+          <Property Type="Int32" Name="TotalB1Moderate" Nullable="false" />
+          <Property Type="Int32" Name="TotalB1Substantial" Nullable="false" />
+          <Property Type="Int32" Name="TotalB1NotApplicable" Nullable="false" />
+          <Property Type="Int32" Name="TotalElements" Nullable="true" />
+          <Property Type="Int32" Name="TotalQuestions" Nullable="true" />
+          <Property Type="String" Name="ControlsBar" Nullable="false" MaxLength="1" />
+          <Property Type="String" Name="AssuranceBar" Nullable="false" MaxLength="1" />
+        </ComplexType>
         <ComplexType Name="SPDirectorateStat_Result">
           <Property Type="String" Name="DGTitle" Nullable="true" MaxLength="50" />
           <Property Type="Int32" Name="ID" Nullable="false" />
@@ -4527,6 +4565,26 @@
           <Property Type="String" Name="AggregateAssurance1" Nullable="false" MaxLength="1" />
           <Property Type="String" Name="AggregateAssurance2" Nullable="false" MaxLength="1" />
           <Property Type="String" Name="AggregateAssurance3" Nullable="false" MaxLength="1" />
+        </ComplexType>
+        <ComplexType Name="SPDirectorateStat2_Result">
+          <Property Type="String" Name="DGTitle" Nullable="true" MaxLength="50" />
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="String" Name="Title" Nullable="false" MaxLength="255" />
+          <Property Type="Int32" Name="DirectorateGroupID" Nullable="false" />
+          <Property Type="Int32" Name="TotalAUnsatisfactory" Nullable="false" />
+          <Property Type="Int32" Name="TotalALimited" Nullable="false" />
+          <Property Type="Int32" Name="TotalAModerate" Nullable="false" />
+          <Property Type="Int32" Name="TotalASubstantial" Nullable="false" />
+          <Property Type="Int32" Name="TotalANotApplicable" Nullable="false" />
+          <Property Type="Int32" Name="TotalB1Unsatisfactory" Nullable="false" />
+          <Property Type="Int32" Name="TotalB1Limited" Nullable="false" />
+          <Property Type="Int32" Name="TotalB1Moderate" Nullable="false" />
+          <Property Type="Int32" Name="TotalB1Substantial" Nullable="false" />
+          <Property Type="Int32" Name="TotalB1NotApplicable" Nullable="false" />
+          <Property Type="Int32" Name="TotalElements" Nullable="true" />
+          <Property Type="Int32" Name="TotalQuestions" Nullable="true" />
+          <Property Type="String" Name="ControlsBar" Nullable="false" MaxLength="1" />
+          <Property Type="String" Name="AssuranceBar" Nullable="false" MaxLength="1" />
         </ComplexType>
         <ComplexType Name="SPDivisionStat_Result">
           <Property Type="String" Name="DGTitle" Nullable="true" MaxLength="50" />
@@ -4568,6 +4626,27 @@
           <Property Type="String" Name="AggregateAssurance1" Nullable="false" MaxLength="1" />
           <Property Type="String" Name="AggregateAssurance2" Nullable="false" MaxLength="1" />
           <Property Type="String" Name="AggregateAssurance3" Nullable="false" MaxLength="1" />
+        </ComplexType>
+        <ComplexType Name="SPDivisionStat2_Result">
+          <Property Type="String" Name="DGTitle" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="DirTitle" Nullable="false" MaxLength="255" />
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="String" Name="Title" Nullable="true" MaxLength="200" />
+          <Property Type="Int32" Name="DirectorateID" Nullable="true" />
+          <Property Type="Int32" Name="TotalAUnsatisfactory" Nullable="false" />
+          <Property Type="Int32" Name="TotalALimited" Nullable="false" />
+          <Property Type="Int32" Name="TotalAModerate" Nullable="false" />
+          <Property Type="Int32" Name="TotalASubstantial" Nullable="false" />
+          <Property Type="Int32" Name="TotalANotApplicable" Nullable="false" />
+          <Property Type="Int32" Name="TotalB1Unsatisfactory" Nullable="false" />
+          <Property Type="Int32" Name="TotalB1Limited" Nullable="false" />
+          <Property Type="Int32" Name="TotalB1Moderate" Nullable="false" />
+          <Property Type="Int32" Name="TotalB1Substantial" Nullable="false" />
+          <Property Type="Int32" Name="TotalB1NotApplicable" Nullable="false" />
+          <Property Type="Int32" Name="TotalElements" Nullable="true" />
+          <Property Type="Int32" Name="TotalQuestions" Nullable="true" />
+          <Property Type="String" Name="ControlsBar" Nullable="false" MaxLength="1" />
+          <Property Type="String" Name="AssuranceBar" Nullable="false" MaxLength="1" />
         </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
@@ -5361,6 +5440,7 @@
                 <ScalarProperty Name="PeriodStartDate" ColumnName="PeriodStartDate" />
                 <ScalarProperty Name="PeriodEndDate" ColumnName="PeriodEndDate" />
                 <ScalarProperty Name="LastPeriodId" ColumnName="LastPeriodId" />
+                <ScalarProperty Name="SystemFlag" ColumnName="SystemFlag" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -5479,6 +5559,28 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SPDGAreaStat2" FunctionName="ControlAssuranceModel.Store.SPDGAreaStat2">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ControlAssuranceModel.SPDGAreaStat2_Result">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="TotalAUnsatisfactory" ColumnName="TotalAUnsatisfactory" />
+                <ScalarProperty Name="TotalALimited" ColumnName="TotalALimited" />
+                <ScalarProperty Name="TotalAModerate" ColumnName="TotalAModerate" />
+                <ScalarProperty Name="TotalASubstantial" ColumnName="TotalASubstantial" />
+                <ScalarProperty Name="TotalANotApplicable" ColumnName="TotalANotApplicable" />
+                <ScalarProperty Name="TotalB1Unsatisfactory" ColumnName="TotalB1Unsatisfactory" />
+                <ScalarProperty Name="TotalB1Limited" ColumnName="TotalB1Limited" />
+                <ScalarProperty Name="TotalB1Moderate" ColumnName="TotalB1Moderate" />
+                <ScalarProperty Name="TotalB1Substantial" ColumnName="TotalB1Substantial" />
+                <ScalarProperty Name="TotalB1NotApplicable" ColumnName="TotalB1NotApplicable" />
+                <ScalarProperty Name="TotalElements" ColumnName="TotalElements" />
+                <ScalarProperty Name="TotalQuestions" ColumnName="TotalQuestions" />
+                <ScalarProperty Name="ControlsBar" ColumnName="ControlsBar" />
+                <ScalarProperty Name="AssuranceBar" ColumnName="AssuranceBar" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="SPDirectorateStat" FunctionName="ControlAssuranceModel.Store.SPDirectorateStat">
             <ResultMapping>
               <ComplexTypeMapping TypeName="ControlAssuranceModel.SPDirectorateStat_Result">
@@ -5520,6 +5622,30 @@
                 <ScalarProperty Name="AggregateAssurance1" ColumnName="AggregateAssurance1" />
                 <ScalarProperty Name="AggregateAssurance2" ColumnName="AggregateAssurance2" />
                 <ScalarProperty Name="AggregateAssurance3" ColumnName="AggregateAssurance3" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SPDirectorateStat2" FunctionName="ControlAssuranceModel.Store.SPDirectorateStat2">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ControlAssuranceModel.SPDirectorateStat2_Result">
+                <ScalarProperty Name="DGTitle" ColumnName="DGTitle" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="DirectorateGroupID" ColumnName="DirectorateGroupID" />
+                <ScalarProperty Name="TotalAUnsatisfactory" ColumnName="TotalAUnsatisfactory" />
+                <ScalarProperty Name="TotalALimited" ColumnName="TotalALimited" />
+                <ScalarProperty Name="TotalAModerate" ColumnName="TotalAModerate" />
+                <ScalarProperty Name="TotalASubstantial" ColumnName="TotalASubstantial" />
+                <ScalarProperty Name="TotalANotApplicable" ColumnName="TotalANotApplicable" />
+                <ScalarProperty Name="TotalB1Unsatisfactory" ColumnName="TotalB1Unsatisfactory" />
+                <ScalarProperty Name="TotalB1Limited" ColumnName="TotalB1Limited" />
+                <ScalarProperty Name="TotalB1Moderate" ColumnName="TotalB1Moderate" />
+                <ScalarProperty Name="TotalB1Substantial" ColumnName="TotalB1Substantial" />
+                <ScalarProperty Name="TotalB1NotApplicable" ColumnName="TotalB1NotApplicable" />
+                <ScalarProperty Name="TotalElements" ColumnName="TotalElements" />
+                <ScalarProperty Name="TotalQuestions" ColumnName="TotalQuestions" />
+                <ScalarProperty Name="ControlsBar" ColumnName="ControlsBar" />
+                <ScalarProperty Name="AssuranceBar" ColumnName="AssuranceBar" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
@@ -5565,6 +5691,31 @@
                 <ScalarProperty Name="AggregateAssurance1" ColumnName="AggregateAssurance1" />
                 <ScalarProperty Name="AggregateAssurance2" ColumnName="AggregateAssurance2" />
                 <ScalarProperty Name="AggregateAssurance3" ColumnName="AggregateAssurance3" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SPDivisionStat2" FunctionName="ControlAssuranceModel.Store.SPDivisionStat2">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ControlAssuranceModel.SPDivisionStat2_Result">
+                <ScalarProperty Name="DGTitle" ColumnName="DGTitle" />
+                <ScalarProperty Name="DirTitle" ColumnName="DirTitle" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="DirectorateID" ColumnName="DirectorateID" />
+                <ScalarProperty Name="TotalAUnsatisfactory" ColumnName="TotalAUnsatisfactory" />
+                <ScalarProperty Name="TotalALimited" ColumnName="TotalALimited" />
+                <ScalarProperty Name="TotalAModerate" ColumnName="TotalAModerate" />
+                <ScalarProperty Name="TotalASubstantial" ColumnName="TotalASubstantial" />
+                <ScalarProperty Name="TotalANotApplicable" ColumnName="TotalANotApplicable" />
+                <ScalarProperty Name="TotalB1Unsatisfactory" ColumnName="TotalB1Unsatisfactory" />
+                <ScalarProperty Name="TotalB1Limited" ColumnName="TotalB1Limited" />
+                <ScalarProperty Name="TotalB1Moderate" ColumnName="TotalB1Moderate" />
+                <ScalarProperty Name="TotalB1Substantial" ColumnName="TotalB1Substantial" />
+                <ScalarProperty Name="TotalB1NotApplicable" ColumnName="TotalB1NotApplicable" />
+                <ScalarProperty Name="TotalElements" ColumnName="TotalElements" />
+                <ScalarProperty Name="TotalQuestions" ColumnName="TotalQuestions" />
+                <ScalarProperty Name="ControlsBar" ColumnName="ControlsBar" />
+                <ScalarProperty Name="AssuranceBar" ColumnName="AssuranceBar" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>

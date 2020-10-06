@@ -49,11 +49,11 @@ namespace ControlAssuranceAPI.Models
         public string ResponseB4Text { get; set; }
         public string ResponseB4Effect { get; set; }
         public Nullable<bool> NotApplicable { get; set; }
-        public Nullable<bool> ResponseAEffectUnsatisfactory { get; set; }
-        public Nullable<bool> ResponseAEffectLimited { get; set; }
-        public Nullable<bool> ResponseAEffectModerate { get; set; }
-        public Nullable<bool> ResponseAEffectSubstantial { get; set; }
-        public Nullable<bool> ResponseAEffectNotApplicable { get; set; }
+        public Nullable<int> ResponseAEffectUnsatisfactory { get; set; }
+        public Nullable<int> ResponseAEffectLimited { get; set; }
+        public Nullable<int> ResponseAEffectModerate { get; set; }
+        public Nullable<int> ResponseAEffectSubstantial { get; set; }
+        public Nullable<int> ResponseAEffectNotApplicable { get; set; }
         public Nullable<bool> ResponseB1EffectUnsatisfactory { get; set; }
         public Nullable<bool> ResponseB1EffectLimited { get; set; }
         public Nullable<bool> ResponseB1EffectModerate { get; set; }

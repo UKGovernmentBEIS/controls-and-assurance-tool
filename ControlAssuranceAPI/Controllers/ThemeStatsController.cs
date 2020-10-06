@@ -22,5 +22,11 @@ namespace ControlAssuranceAPI.Controllers
         {
             return db.ViewThemeStatRepository.GetThemeStatsWithOrgFilters(teamId, directorateId, directorateGroupId, periodId);
         }
+
+        // GET: /odata/ThemeStats?teamId=0&directorateId=0&directorateGroupId=0&periodId=20&ThemeStat2=
+        public List<Models.ThemeStat2_Result> Get(int teamId, int directorateId, int directorateGroupId, int periodId, string ThemeStat2)
+        {
+            return db.ViewThemeStatRepository.GetThemeStats2_WithOrgFilters(teamId, directorateId, directorateGroupId, periodId);
+        }
     }
 }

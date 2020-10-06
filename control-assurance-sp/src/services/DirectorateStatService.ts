@@ -12,7 +12,12 @@ export class DirectorateStatService extends EntityService<IDirectorateStat> {
         super(spfxContext, api, `/DirectorateStats`);
     }
 
-    public readAllWithArgs(periodId: number): Promise<IDirectorateStat[]> {
-        return this.readAll(`?periodId=${periodId}`);
+    public readAllWithArgs(periodId: number, SPDirectorateStat2: boolean): Promise<IDirectorateStat[]> {
+        if(SPDirectorateStat2 === true)
+            return this.readAll(`?periodId=${periodId}&SPDirectorateStat2=`);
+        else
+            return this.readAll(`?periodId=${periodId}`);            
     }
+
+
 }

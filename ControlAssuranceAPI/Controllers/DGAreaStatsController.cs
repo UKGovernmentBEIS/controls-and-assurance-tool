@@ -16,10 +16,16 @@ namespace ControlAssuranceAPI.Controllers
 
         public DGAreaStatsController(IControlAssuranceContext context) : base(context) { }
 
-        // GET: /odata/SPDGAreaStats?periodId=1
+        // GET: /odata/DGAreaStats?periodId=1
         public List<Models.SPDGAreaStat_Result> Get(int periodId)
         {
             return db.SPDGAreaStatRepository.GetDGAreaStats(periodId);
+        }
+
+        // GET: /odata/DGAreaStats?periodId=20&SPDGAreaStat2=
+        public List<Models.SPDGAreaStat2_Result> Get(int periodId, string SPDGAreaStat2)
+        {
+            return db.SPDGAreaStatRepository.GetDGAreaStats2(periodId);
         }
     }
 }

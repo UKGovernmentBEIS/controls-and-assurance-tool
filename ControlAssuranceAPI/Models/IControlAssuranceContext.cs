@@ -82,8 +82,13 @@ namespace ControlAssuranceAPI.Models
         DbSet<IAPAssignment> IAPAssignments { get; set; }
 
         ObjectResult<SPDGAreaStat_Result> SPDGAreaStat(Nullable<int> periodId);
+        ObjectResult<SPDGAreaStat2_Result> SPDGAreaStat2(Nullable<int> periodId);
+
         ObjectResult<SPDirectorateStat_Result> SPDirectorateStat(Nullable<int> periodId);
+        ObjectResult<SPDirectorateStat2_Result> SPDirectorateStat2(Nullable<int> periodId);
+
         ObjectResult<SPDivisionStat_Result> SPDivisionStat(Nullable<int> periodId);
+        ObjectResult<SPDivisionStat2_Result> SPDivisionStat2(Nullable<int> periodId);
 
         DbEntityEntry Entry(object entity);
         DbEntityEntry<TEntity> Entry<TEntity>(TEntity entity) where TEntity : class;

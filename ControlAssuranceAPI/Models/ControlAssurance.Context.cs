@@ -99,6 +99,15 @@ namespace ControlAssuranceAPI.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SPDGAreaStat_Result>("SPDGAreaStat", periodIdParameter);
         }
     
+        public virtual ObjectResult<SPDGAreaStat2_Result> SPDGAreaStat2(Nullable<int> periodId)
+        {
+            var periodIdParameter = periodId.HasValue ?
+                new ObjectParameter("PeriodId", periodId) :
+                new ObjectParameter("PeriodId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SPDGAreaStat2_Result>("SPDGAreaStat2", periodIdParameter);
+        }
+    
         public virtual ObjectResult<SPDirectorateStat_Result> SPDirectorateStat(Nullable<int> periodId)
         {
             var periodIdParameter = periodId.HasValue ?
@@ -108,6 +117,15 @@ namespace ControlAssuranceAPI.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SPDirectorateStat_Result>("SPDirectorateStat", periodIdParameter);
         }
     
+        public virtual ObjectResult<SPDirectorateStat2_Result> SPDirectorateStat2(Nullable<int> periodId)
+        {
+            var periodIdParameter = periodId.HasValue ?
+                new ObjectParameter("PeriodId", periodId) :
+                new ObjectParameter("PeriodId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SPDirectorateStat2_Result>("SPDirectorateStat2", periodIdParameter);
+        }
+    
         public virtual ObjectResult<SPDivisionStat_Result> SPDivisionStat(Nullable<int> periodId)
         {
             var periodIdParameter = periodId.HasValue ?
@@ -115,6 +133,15 @@ namespace ControlAssuranceAPI.Models
                 new ObjectParameter("PeriodId", typeof(int));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SPDivisionStat_Result>("SPDivisionStat", periodIdParameter);
+        }
+    
+        public virtual ObjectResult<SPDivisionStat2_Result> SPDivisionStat2(Nullable<int> periodId)
+        {
+            var periodIdParameter = periodId.HasValue ?
+                new ObjectParameter("PeriodId", periodId) :
+                new ObjectParameter("PeriodId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SPDivisionStat2_Result>("SPDivisionStat2", periodIdParameter);
         }
     }
 }

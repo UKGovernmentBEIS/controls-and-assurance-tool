@@ -79,6 +79,8 @@ namespace ControlAssuranceAPI.Controllers
                 return NotFound();
             }
 
+            defElement.SectionANumQuestions = db.DefElementRepository.CountTotalQuestionsSectionA(defElement);
+
             patch.Patch(defElement);
 
             try

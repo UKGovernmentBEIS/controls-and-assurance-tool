@@ -17,6 +17,7 @@ import { IEntity, IGIAARecommendation, GIAAUpdate, IDefElement, IElement, Elemen
 import { IGenColumn, ColumnType, ColumnDisplayType } from '../../types/GenColumn';
 import { ConfirmDialog } from '../cr/ConfirmDialog';
 import '../../styles/CustomFabric.scss';
+import { TooltipHost } from 'office-ui-fabric-react/lib/Tooltip';
 
 
 
@@ -133,6 +134,22 @@ export default class UpdatesTab extends React.Component<IUpdatesTabProps, IUpdat
     private yellowIcon: string = require('../../images/Yellow4340.png');
     private greenIcon: string = require('../../images/Green4340.png');
 
+    private color1:string = "rgb(34,177,76)";
+    private color1Label:string = "Substantial";
+
+    private color2:string = "rgb(255,201,14)";
+    private color2Label:string = "Moderate";
+
+    private color3:string = "rgb(255,127,39)";
+    private color3Label:string = "Limited";
+
+    private color4:string = "rgb(237,28,36)";
+    private color4Label:string = "Unsatisfactory";
+
+    private color5:string = "rgb(0,162,232)";
+    private color5Label:string = "Not Applicable";
+
+    private barDefaultBackgroundColor:string = "rgb(200,200,200)";
 
     constructor(props: IUpdatesTabProps, state: IUpdatesTabState) {
         super(props);
@@ -519,28 +536,30 @@ export default class UpdatesTab extends React.Component<IUpdatesTabProps, IUpdat
                     <RagRatingBar
                         barWidth='50%'
                         barHeight='35px'
-                        barDefaultBackgroundColor='lightgray'
-                        color1='green'
+                        barDefaultBackgroundColor={this.barDefaultBackgroundColor}
+                        noDataLabel='Not Completed'
+                        color1={this.color1}
                         color1Percentage={this.state.Controls_SubstantialPercentage}
-                        color1Label='Substantial'
+                        color1Label={this.color1Label}
 
-                        color2='yellow'
+                        color2={this.color2}
                         color2Percentage={this.state.Controls_ModeratePercentage}
-                        color2Label='Moderate'
+                        color2Label={this.color2Label}
 
-                        color3='orange'
+                        color3={this.color3}
                         color3Percentage={this.state.Controls_LimitedPercentage}
-                        color3Label='Limited'
+                        color3Label={this.color3Label}
 
-                        color4='red'
+                        color4={this.color4}
                         color4Percentage={this.state.Controls_UnsatisfactoryPercentage}
-                        color4Label='Unsatisfactory'
+                        color4Label={this.color4Label}
 
-                        color5='blue'
+                        color5={this.color5}
                         color5Percentage={this.state.Controls_NAPercentage}
-                        color5Label='Not Applicable'
+                        color5Label={this.color5Label}
 
                         showInfoSection={true}
+                        displayPercentageBarView={false}
                     />
                 </div>
             </React.Fragment>
