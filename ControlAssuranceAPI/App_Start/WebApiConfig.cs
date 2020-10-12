@@ -108,6 +108,9 @@ namespace ControlAssuranceAPI
             builder.EntitySet<IAPUpdate>("IAPUpdates");
             builder.EntitySet<IAPAssignment>("IAPAssignments");
 
+            builder.EntitySet<ExportDefination>("ExportDefinations");
+            builder.EntitySet<AvailableExport>("AvailableExports");
+
 
             builder.EntitySet<Models.SPDGAreaStat_Result>("DGAreaStats");
             builder.EntitySet<Models.SPDGAreaStat2_Result>("DGAreaStats2");
@@ -145,7 +148,7 @@ namespace ControlAssuranceAPI
             //register IAPUpdateView_Result for the customer display of individual action plans list
             builder.EntitySet<IAPUpdateView_Result>("IAPUpdateViewResult");
 
-            builder.EntitySet<APIInfo>("APIInfo08Aug20");
+            builder.EntitySet<APIInfo>("APIInfo08Oct20");
 
 
 

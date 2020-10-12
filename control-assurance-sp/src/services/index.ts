@@ -77,6 +77,9 @@ export { IAPDefFormService } from './IAPDefFormService';
 export { IAPUpdateService } from './IAPUpdateService';
 export { IAPAssignmentService } from './IAPAssignmentService';
 
+export { ExportDefinationService } from './ExportDefinationService';
+export { AvailableExportService } from './AvailableExportService';
+
 export { DGAreaStatService } from './DGAreaStatService';
 export { DirectorateStatService } from './DirectorateStatService';
 export { DivisionStatService } from './DivisionStatService';

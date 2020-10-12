@@ -12,17 +12,21 @@ import '../../../styles/CustomFabric2.scss';
 import { DefaultButton } from 'office-ui-fabric-react/lib/Button';
 import { CrDropdown, IDropdownOption } from '../../../components/cr/CrDropdown';
 import { IPeriod, IUserPermission } from '../../../types';
+import GenExport from '../../../components/export/GenExport';
 
 export interface ILookupData {
   Periods: IPeriod[];
+  PeriodsOriginal: IPeriod[];
 }
 export class LookupData implements ILookupData {
   public Periods: IPeriod[] = [];
+  public PeriodsOriginal: IPeriod[] = [];
 }
 
 export interface IOrgReportState extends types.IUserContextWebPartState {
   LookupData: ILookupData;
   SelectedPeriod: string | number;
+  SelectedPeriodTxt: string;
 
   SelectedPivotKey: string;
 
@@ -74,6 +78,7 @@ export interface IOrgReportState extends types.IUserContextWebPartState {
 export class OrgReportState extends types.UserContextWebPartState {
   public LookupData = new LookupData();
   public SelectedPeriod: string | number = 0;
+  public SelectedPeriodTxt: string = "";
 
   public SelectedPivotKey = "Browse DG Areas"; //default, 1st tab selected
 
@@ -138,6 +143,7 @@ export default class OrgReport extends BaseUserContextWebPartComponent<types.IWe
   private readonly headerTxt_Directorates: string = "Browse Directorates";
   private readonly headerTxt_Divisions: string = "Browse Divisions";
   private readonly headerTxt_Theme: string = "Browse Theme";
+  private readonly headerTxt_ExportRep: string = "Export to Excel";
 
   private periodService: services.PeriodService = new services.PeriodService(this.props.spfxContext, this.props.api);
 
@@ -174,12 +180,46 @@ export default class OrgReport extends BaseUserContextWebPartComponent<types.IWe
           <PivotItem headerText={this.headerTxt_Theme} itemKey={this.headerTxt_Theme}>
             {this.renderThemeReport()}
           </PivotItem>
+
+          <PivotItem headerText={this.headerTxt_ExportRep} itemKey={this.headerTxt_ExportRep}>
+            {this.renderGenExport()}
+          </PivotItem>
+
         </Pivot>
       </React.Fragment>
     );
   }
 
 
+  private renderGenExport(): React.ReactElement<types.IWebPartComponentProps> {
+
+    if(this.state.SelectedPeriod > 0){
+
+      return (
+        <div>
+
+          <div style={{ paddingTop: "10px" }}>
+  
+            <GenExport
+              {...this.props}
+              onError={this.onError}
+              moduleName="ControlsAssurance"
+              periodId={Number(this.state.SelectedPeriod)}
+              periodTitle={this.state.SelectedPeriodTxt}
+  
+            />
+  
+  
+          </div>
+        </div>
+      );
+    }
+
+    else
+      return null;
+
+
+  }
 
   private renderDGAreasReport_old() {
 
@@ -1786,7 +1826,9 @@ export default class OrgReport extends BaseUserContextWebPartComponent<types.IWe
   }
 
   private changePeriodsDropdown = (option: IDropdownOption): void => {
-    this.setState({ SelectedPeriod: option.key });
+
+    const selectedPeriodTxt:string = this.getSelectedPeriodText(Number(option.key), this.state.LookupData.PeriodsOriginal );
+    this.setState({ SelectedPeriod: option.key, SelectedPeriodTxt: selectedPeriodTxt });
   }
 
   //#endregion Events Handlers
@@ -1795,12 +1837,16 @@ export default class OrgReport extends BaseUserContextWebPartComponent<types.IWe
 
   protected loadPeriods = (): Promise<IPeriod[]> => {
     return this.periodService.readAll().then((pArr: IPeriod[]): IPeriod[] => {
+
+      const pArrCopy = JSON.parse(JSON.stringify(pArr));
       //get the current period
       let currentPeriodId: number = 0;
       const currentPeriod = pArr.filter(p => p.PeriodStatus === "Current Period");
       if (currentPeriod && currentPeriod.length > 0) {
         currentPeriodId = currentPeriod[0].ID;
       }
+
+      const selectedPeriodTxt:string = this.getSelectedPeriodText(currentPeriodId, pArrCopy);
 
       //show status like Qtr 2 2019 ( Current Period ) in Title
       for (let i = 0; i < pArr.length; i++) {
@@ -1817,10 +1863,15 @@ export default class OrgReport extends BaseUserContextWebPartComponent<types.IWe
         pArr = pArr.filter(p => p.PeriodStatus !== "Design Period");
       }
 
+      //console.group('pArrCopy', pArrCopy);
+
+      const xx = { ...this.state.LookupData, ['Periods']: pArr, ['PeriodsOriginal']: pArrCopy };
 
       this.setState({
-        LookupData: this.cloneObject(this.state.LookupData, 'Periods', pArr),
+        //LookupData: this.cloneObject(this.state.LookupData, 'Periods', pArr),
+        LookupData: xx,
         SelectedPeriod: currentPeriodId,
+        SelectedPeriodTxt: selectedPeriodTxt
       }, () => { console.log("After set ", this.state.SelectedPeriod); });
       return pArr;
     }, (err) => { if (this.onError) this.onError(`Error loading Periods lookup data`, err.message); });
@@ -1833,6 +1884,32 @@ export default class OrgReport extends BaseUserContextWebPartComponent<types.IWe
     ]);
   }
 
+  // private getSelectedPeriodText = (periodId:number): string => {
+  //   let periodTxt:string = "";
+  //   console.log('getSelectedPeriodText - id', periodId);
+  //   var pp = this.state.LookupData.PeriodsOriginal.filter(p => p.ID === periodId);
+  //   console.log('getSelectedPeriodText - pp', pp);
+  //   if(pp[0]){
+  //     periodTxt = pp[0]["Title"];
+  //   }
+  //   console.log('selected period text', periodTxt);
+
+  //   return periodTxt;
+  // }
+
+  private getSelectedPeriodText = (periodId:number, periodsOriginal: IPeriod[]): string => {
+    let periodTxt:string = "";
+    console.log('getSelectedPeriodText - id', periodId);
+    //var pp = this.state.LookupData.PeriodsOriginal.filter(p => p.ID === periodId);
+    var pp = periodsOriginal.filter(p => p.ID === periodId);
+    console.log('getSelectedPeriodText - pp', pp);
+    if(pp[0]){
+      periodTxt = pp[0]["Title"];
+    }
+    console.log('selected period text', periodTxt);
+
+    return periodTxt;
+  }
 
   //#endregion Data Load
 

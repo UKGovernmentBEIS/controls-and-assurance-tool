@@ -24,6 +24,19 @@
           <Property Name="PeriodId" Type="int" />
           <Property Name="DateUpdated" Type="datetime" />
         </EntityType>
+        <EntityType Name="AvailableExport">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="500" />
+          <Property Name="Module" Type="nvarchar" MaxLength="50" />
+          <Property Name="Parameters" Type="nvarchar" MaxLength="1000" />
+          <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="500" />
+          <Property Name="OutputFileName" Type="nvarchar" MaxLength="4000" />
+          <Property Name="OutputFileStatus" Type="nvarchar(max)" />
+        </EntityType>
         <EntityType Name="DefElement">
           <Key>
             <PropertyRef Name="ID" />
@@ -256,6 +269,16 @@
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Title" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="ExportDefination">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="500" />
+          <Property Name="Module" Type="nvarchar" MaxLength="50" />
+          <Property Name="Type" Type="nvarchar" MaxLength="50" />
+          <Property Name="Query" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="Form">
           <Key>
@@ -1779,6 +1802,7 @@
         <EntityContainer Name="ControlAssuranceModelStoreContainer">
           <EntitySet Name="APILog" EntityType="Self.APILog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AuditFeedback" EntityType="Self.AuditFeedback" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AvailableExport" EntityType="Self.AvailableExport" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DefElement" EntityType="Self.DefElement" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DefElementGroup" EntityType="Self.DefElementGroup" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DefForm" EntityType="Self.DefForm" Schema="dbo" store:Type="Tables" />
@@ -1789,6 +1813,7 @@
           <EntitySet Name="Element" EntityType="Self.Element" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntityPriority" EntityType="Self.EntityPriority" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntityStatusType" EntityType="Self.EntityStatusType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ExportDefination" EntityType="Self.ExportDefination" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Form" EntityType="Self.Form" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GIAAActionOwner" EntityType="Self.GIAAActionOwner" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GIAAActionPriority" EntityType="Self.GIAAActionPriority" Schema="dbo" store:Type="Tables" />
@@ -2183,6 +2208,19 @@
           <NavigationProperty Name="Team" Relationship="Self.FK_AuditFeedback_Team" FromRole="AuditFeedback" ToRole="Team" />
           <NavigationProperty Name="User" Relationship="Self.FK_AuditFeedback_User" FromRole="AuditFeedback" ToRole="User" />
         </EntityType>
+        <EntityType Name="AvailableExport">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Module" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Parameters" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="CreatedBy" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="OutputFileName" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
+          <Property Name="OutputFileStatus" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
         <EntityType Name="DefElement">
           <Key>
             <PropertyRef Name="ID" />
@@ -2446,6 +2484,16 @@
           <NavigationProperty Name="Directorates" Relationship="Self.FK_Directorate_EntityStatusType" FromRole="EntityStatusType" ToRole="Directorate" />
           <NavigationProperty Name="DirectorateGroups" Relationship="Self.FK_DirectorateGroup_EntityStatusType" FromRole="EntityStatusType" ToRole="DirectorateGroup" />
           <NavigationProperty Name="Teams" Relationship="Self.FK_Team_EntityStatusType" FromRole="EntityStatusType" ToRole="Team" />
+        </EntityType>
+        <EntityType Name="ExportDefination">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Module" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Query" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Form">
           <Key>
@@ -4075,6 +4123,7 @@
         <EntityContainer Name="ControlAssuranceEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="APILogs" EntityType="Self.APILog" />
           <EntitySet Name="AuditFeedbacks" EntityType="Self.AuditFeedback" />
+          <EntitySet Name="AvailableExports" EntityType="Self.AvailableExport" />
           <EntitySet Name="DefElements" EntityType="Self.DefElement" />
           <EntitySet Name="DefElementGroups" EntityType="Self.DefElementGroup" />
           <EntitySet Name="DefForms" EntityType="Self.DefForm" />
@@ -4085,6 +4134,7 @@
           <EntitySet Name="Elements" EntityType="Self.Element" />
           <EntitySet Name="EntityPriorities" EntityType="Self.EntityPriority" />
           <EntitySet Name="EntityStatusTypes" EntityType="Self.EntityStatusType" />
+          <EntitySet Name="ExportDefinations" EntityType="Self.ExportDefination" />
           <EntitySet Name="Forms" EntityType="Self.Form" />
           <EntitySet Name="GIAAActionOwners" EntityType="Self.GIAAActionOwner" />
           <EntitySet Name="GIAAActionPriorities" EntityType="Self.GIAAActionPriority" />
@@ -4675,6 +4725,20 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="AvailableExports">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.AvailableExport">
+              <MappingFragment StoreEntitySet="AvailableExport">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Module" ColumnName="Module" />
+                <ScalarProperty Name="Parameters" ColumnName="Parameters" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="OutputFileName" ColumnName="OutputFileName" />
+                <ScalarProperty Name="OutputFileStatus" ColumnName="OutputFileStatus" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="DefElements">
             <EntityTypeMapping TypeName="ControlAssuranceModel.DefElement">
               <MappingFragment StoreEntitySet="DefElement">
@@ -4915,6 +4979,17 @@
               <MappingFragment StoreEntitySet="EntityStatusType">
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Title" ColumnName="Title" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ExportDefinations">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.ExportDefination">
+              <MappingFragment StoreEntitySet="ExportDefination">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Module" ColumnName="Module" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Query" ColumnName="Query" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

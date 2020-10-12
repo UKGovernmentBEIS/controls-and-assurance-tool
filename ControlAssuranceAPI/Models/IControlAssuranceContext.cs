@@ -81,6 +81,9 @@ namespace ControlAssuranceAPI.Models
         DbSet<IAPUpdate> IAPUpdates { get; set; }
         DbSet<IAPAssignment> IAPAssignments { get; set; }
 
+        DbSet<ExportDefination> ExportDefinations { get; set; }
+        DbSet<AvailableExport> AvailableExports { get; set; }
+
         ObjectResult<SPDGAreaStat_Result> SPDGAreaStat(Nullable<int> periodId);
         ObjectResult<SPDGAreaStat2_Result> SPDGAreaStat2(Nullable<int> periodId);
 

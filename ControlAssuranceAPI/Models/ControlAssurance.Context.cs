@@ -29,6 +29,7 @@ namespace ControlAssuranceAPI.Models
     
         public virtual DbSet<APILog> APILogs { get; set; }
         public virtual DbSet<AuditFeedback> AuditFeedbacks { get; set; }
+        public virtual DbSet<AvailableExport> AvailableExports { get; set; }
         public virtual DbSet<DefElement> DefElements { get; set; }
         public virtual DbSet<DefElementGroup> DefElementGroups { get; set; }
         public virtual DbSet<DefForm> DefForms { get; set; }
@@ -39,6 +40,7 @@ namespace ControlAssuranceAPI.Models
         public virtual DbSet<Element> Elements { get; set; }
         public virtual DbSet<EntityPriority> EntityPriorities { get; set; }
         public virtual DbSet<EntityStatusType> EntityStatusTypes { get; set; }
+        public virtual DbSet<ExportDefination> ExportDefinations { get; set; }
         public virtual DbSet<Form> Forms { get; set; }
         public virtual DbSet<GIAAActionOwner> GIAAActionOwners { get; set; }
         public virtual DbSet<GIAAActionPriority> GIAAActionPriorities { get; set; }

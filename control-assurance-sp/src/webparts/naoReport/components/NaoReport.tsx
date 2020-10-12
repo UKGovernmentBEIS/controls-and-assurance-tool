@@ -4,6 +4,7 @@ import { CrDropdown, IDropdownOption } from '../../../components/cr/CrDropdown';
 import * as types from '../../../types';
 import BaseUserContextWebPartComponent from '../../../components/BaseUserContextWebPartComponent';
 import Report1List from '../../../components/naoReport/Report1List';
+import GenExport from '../../../components/export/GenExport';
 import * as services from '../../../services';
 
 import { IGenColumn, ColumnType, ColumnDisplayType } from '../../../types/GenColumn';
@@ -78,6 +79,7 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
           </PivotItem>
 
 
+
         </Pivot>
 
 
@@ -116,6 +118,8 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
 
 
   }
+
+
 
 
 

@@ -81,6 +81,9 @@ namespace ControlAssuranceAPI.Models
         private IAPUpdateRepository iAPUpdateRepository;
         private IAPAssignmentRepository iAPAssignmentRepository;
 
+        private ExportDefinationRepository exportDefinationRepository;
+        private AvailableExportRepository availableExportRepository;
+
         private SPDGAreaStatRepository spDGAreaStatRepository;
         private SPDirectorateStatRepository spDirectorateStatRepository;
         private SPDivisionStatRepository spDivisionStatRepository;
@@ -684,6 +687,22 @@ namespace ControlAssuranceAPI.Models
             get
             {
                 return iAPAssignmentRepository = iAPAssignmentRepository ?? new IAPAssignmentRepository(user, context);
+            }
+        }
+
+        public ExportDefinationRepository ExportDefinationRepository
+        {
+            get
+            {
+                return exportDefinationRepository = exportDefinationRepository ?? new ExportDefinationRepository(user, context);
+            }
+        }
+
+        public AvailableExportRepository AvailableExportRepository
+        {
+            get
+            {
+                return availableExportRepository = availableExportRepository ?? new AvailableExportRepository(user, context);
             }
         }
 
