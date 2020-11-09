@@ -18,7 +18,8 @@ namespace ControlAssuranceAPI.Models
         public Directorate()
         {
             this.DirectorateMembers = new HashSet<DirectorateMember>();
-            this.GIAAAuditReports = new HashSet<GIAAAuditReport>();
+            this.GIAAAuditReportDirectorates = new HashSet<GIAAAuditReportDirectorate>();
+            this.IAPActionDirectorates = new HashSet<IAPActionDirectorate>();
             this.NAOPublicationDirectorates = new HashSet<NAOPublicationDirectorate>();
             this.Teams = new HashSet<Team>();
         }
@@ -41,7 +42,9 @@ namespace ControlAssuranceAPI.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DirectorateMember> DirectorateMembers { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<GIAAAuditReport> GIAAAuditReports { get; set; }
+        public virtual ICollection<GIAAAuditReportDirectorate> GIAAAuditReportDirectorates { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<IAPActionDirectorate> IAPActionDirectorates { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<NAOPublicationDirectorate> NAOPublicationDirectorates { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

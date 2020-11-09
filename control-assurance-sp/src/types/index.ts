@@ -50,6 +50,7 @@ export { INAOAssignment, NAOAssignment } from './NAOAssignment';
 export { IGIAAPeriod, GIAAPeriod } from './GIAAPeriod';
 export { IGIAADefForm } from './GIAADefForm';
 export { IGIAAAuditReport, GIAAAuditReport } from './GIAAAuditReport';
+export { IGIAAAuditReportDirectorate, GIAAAuditReportDirectorate } from './GIAAAuditReportDirectorate';
 export { IGIAAAuditReportInfo } from './GIAAAuditReportInfo';
 export { IGIAARecommendation, GIAARecommendation } from './GIAARecommendation';
 export { IGIAAUpdate, GIAAUpdate } from './GIAAUpdate';
@@ -58,8 +59,11 @@ export { IGIAAActionOwner, GIAAActionOwner } from './GIAAActionOwner';
 export { IGIAAImport, IGIAAImportInfo, GIAAImport } from './GIAAImport';
 
 export { IIAPDefForm } from './IAPDefForm';
-export { IIAPUpdate, IAPUpdate } from './IAPUpdate';
+export { IIAPAction, IAPAction } from './IAPAction';
 export { IIAPAssignment, IAPAssignment } from './IAPAssignment';
+export { IIAPActionUpdate, IAPActionUpdate } from './IAPActionUpdate';
+export { IIAPActionDirectorate, IAPActionDirectorate } from './IAPActionDirectorate';
+
 
 
 export { SaveStatus } from './SaveStatus';

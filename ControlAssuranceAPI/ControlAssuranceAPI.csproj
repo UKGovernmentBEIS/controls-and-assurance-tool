@@ -271,6 +271,7 @@
     <Compile Include="Controllers\GIAAActionPrioritiesController.cs" />
     <Compile Include="Controllers\GIAAActionStatusTypesController.cs" />
     <Compile Include="Controllers\GIAAAssurancesController.cs" />
+    <Compile Include="Controllers\GIAAAuditReportDirectoratesController.cs" />
     <Compile Include="Controllers\GIAAAuditReportsController.cs" />
     <Compile Include="Controllers\GIAADefFormsController.cs" />
     <Compile Include="Controllers\GIAAImportsController.cs" />
@@ -295,12 +296,14 @@
     <Compile Include="Controllers\GoFormsController.cs" />
     <Compile Include="Controllers\GoMiscFilesController.cs" />
     <Compile Include="Controllers\GoPeriodsController.cs" />
+    <Compile Include="Controllers\IAPActionDirectoratesController.cs" />
+    <Compile Include="Controllers\IAPActionUpdatesController.cs" />
     <Compile Include="Controllers\IAPAssignmentsController.cs" />
     <Compile Include="Controllers\IAPDefFormsController.cs" />
     <Compile Include="Controllers\IAPPrioritiesController.cs" />
     <Compile Include="Controllers\IAPStatusTypesController.cs" />
     <Compile Include="Controllers\IAPTypesController.cs" />
-    <Compile Include="Controllers\IAPUpdatesController.cs" />
+    <Compile Include="Controllers\IAPActionsController.cs" />
     <Compile Include="Controllers\LogsController.cs" />
     <Compile Include="Controllers\NAOAssignmentsController.cs" />
     <Compile Include="Controllers\NAODefFormsController.cs" />
@@ -414,6 +417,9 @@
     <Compile Include="Models\GIAAAuditReport.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\GIAAAuditReportDirectorate.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\GIAAAuditReportInfoView_Result.cs" />
     <Compile Include="Models\GIAAAuditReportView_Result.cs" />
     <Compile Include="Models\GIAADefForm.cs">
@@ -465,6 +471,17 @@
     <Compile Include="Models\GoPeriod.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\IAPAction.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\IAPActionDirectorate.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\IAPActionUpdate.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\IAPActionUpdateView_Result.cs" />
+    <Compile Include="Models\IAPActionView_Result.cs" />
     <Compile Include="Models\IAPAssignment.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
@@ -480,10 +497,6 @@
     <Compile Include="Models\IAPType.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\IAPUpdate.cs">
-      <DependentUpon>ControlAssurance.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\IAPUpdateView_Result.cs" />
     <Compile Include="Models\IControlAssuranceContext.cs" />
     <Compile Include="Models\Log.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
@@ -592,6 +605,7 @@
     <Compile Include="Repositories\GIAAActionPriorityRepository.cs" />
     <Compile Include="Repositories\GIAAActionStatusTypeRepository.cs" />
     <Compile Include="Repositories\GIAAAssuranceRepository.cs" />
+    <Compile Include="Repositories\GIAAAuditReportDirectorateRepository.cs" />
     <Compile Include="Repositories\GIAAAuditReportRepository.cs" />
     <Compile Include="Repositories\GIAADefFormRepository.cs" />
     <Compile Include="Repositories\GIAAImportRepository.cs" />
@@ -617,12 +631,14 @@
     <Compile Include="Repositories\GoFormRepository.cs" />
     <Compile Include="Repositories\GoMiscFilesRepository.cs" />
     <Compile Include="Repositories\GoPeriodRepository.cs" />
+    <Compile Include="Repositories\IAPActionDirectorateRepository.cs" />
+    <Compile Include="Repositories\IAPActionUpdateRepository.cs" />
     <Compile Include="Repositories\IAPAssignmentRepository.cs" />
     <Compile Include="Repositories\IAPDefFormRepository.cs" />
     <Compile Include="Repositories\IAPPriorityRepository.cs" />
     <Compile Include="Repositories\IAPStatusTypeRepository.cs" />
     <Compile Include="Repositories\IAPTypeRepository.cs" />
-    <Compile Include="Repositories\IAPUpdateRepository.cs" />
+    <Compile Include="Repositories\IAPActionRepository.cs" />
     <Compile Include="Repositories\LogRepository.cs" />
     <Compile Include="Repositories\AuditFeedbackRepository.cs" />
     <Compile Include="Repositories\NAOAssignmentRepository.cs" />

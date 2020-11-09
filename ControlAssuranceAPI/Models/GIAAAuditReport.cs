@@ -17,6 +17,7 @@ namespace ControlAssuranceAPI.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public GIAAAuditReport()
         {
+            this.GIAAAuditReportDirectorates = new HashSet<GIAAAuditReportDirectorate>();
             this.GIAARecommendations = new HashSet<GIAARecommendation>();
         }
     
@@ -26,12 +27,12 @@ namespace ControlAssuranceAPI.Models
         public Nullable<System.DateTime> IssueDate { get; set; }
         public string AuditYear { get; set; }
         public string Link { get; set; }
-        public Nullable<int> DirectorateId { get; set; }
         public Nullable<int> GIAAAssuranceId { get; set; }
         public Nullable<bool> IsArchive { get; set; }
     
-        public virtual Directorate Directorate { get; set; }
         public virtual GIAAAssurance GIAAAssurance { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<GIAAAuditReportDirectorate> GIAAAuditReportDirectorates { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<GIAARecommendation> GIAARecommendations { get; set; }
     }

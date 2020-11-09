@@ -93,13 +93,13 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
             isResizable: true,
             columnDisplayType: ColumnDisplayTypes.Hidden,
         },
-        {
-            key: 'Directorate',
-            name: 'Directorate',
-            fieldName: 'Directorate',
-            minWidth: 1,
-            columnDisplayType: ColumnDisplayTypes.Hidden,
-        },
+        // {
+        //     key: 'Directorate',
+        //     name: 'Directorate',
+        //     fieldName: 'Directorate',
+        //     minWidth: 1,
+        //     columnDisplayType: ColumnDisplayTypes.Hidden,
+        // },
         {
             key: 'NumberStr',
             name: 'Num',
@@ -121,9 +121,9 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
             headerClassName: styles.bold,
         },
         {
-            key: 'DGArea',
-            name: 'Area',
-            fieldName: 'DGArea',
+            key: 'Directorate',
+            name: 'Directorate(s)',
+            fieldName: 'Directorate',
             minWidth: 120,
             maxWidth: 120,
             isResizable: true,

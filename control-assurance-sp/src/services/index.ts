@@ -63,6 +63,7 @@ export { GIAAPeriodService } from './GIAAPeriodService';
 export { GIAAAssuranceService } from './GIAAAssuranceService';
 export { GIAADefFormService } from './GIAADefFormService';
 export { GIAAAuditReportService } from './GIAAAuditReportService';
+export { GIAAAuditReportDirectorateService } from './GIAAAuditReportDirectorateService';
 export { GIAARecommendationService } from './GIAARecommendationService';
 export { GIAAActionPriorityService } from './GIAAActionPriorityService';
 export { GIAAActionStatusTypeService } from './GIAAActionStatusTypeService';
@@ -74,8 +75,11 @@ export { GIAAActionOwnerService } from './GIAAActionOwnerService';
 export { GIAAImportService } from './GIAAImportService';
 
 export { IAPDefFormService } from './IAPDefFormService';
-export { IAPUpdateService } from './IAPUpdateService';
+export { IAPActionService } from './IAPActionService';
+export { IAPStatusTypeService } from './IAPStatusTypeService';
 export { IAPAssignmentService } from './IAPAssignmentService';
+export { IAPActionUpdateService } from './IAPActionUpdateService';
+export { IAPActionDirectorateService } from './IAPActionDirectorateService';
 
 export { ExportDefinationService } from './ExportDefinationService';
 export { AvailableExportService } from './AvailableExportService';

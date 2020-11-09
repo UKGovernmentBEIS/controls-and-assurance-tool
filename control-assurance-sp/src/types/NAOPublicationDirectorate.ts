@@ -1,5 +1,4 @@
 import { IEntity } from "./Entity";
-import { IIAPUpdate } from "./IAPUpdate";
 import { IUser } from "./User";
 
 export interface INAOPublicationDirectorate extends IEntity {

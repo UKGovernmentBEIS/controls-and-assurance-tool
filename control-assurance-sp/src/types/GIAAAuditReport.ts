@@ -1,4 +1,5 @@
 import { IEntity } from "./Entity";
+import { IGIAAAuditReportDirectorate } from "./GIAAAuditReportDirectorate";
 
 
 export interface IGIAAAuditReport  extends IEntity {
@@ -10,6 +11,7 @@ export interface IGIAAAuditReport  extends IEntity {
     DirectorateId?: number;
     GIAAAssuranceId?: number;
     IsArchive?:boolean;
+    GIAAAuditReportDirectorates?: IGIAAAuditReportDirectorate[];
     
 }
 
@@ -23,6 +25,7 @@ export class GIAAAuditReport implements IGIAAAuditReport{
     public DirectorateId = null;
     public GIAAAssuranceId = null;
     public IsArchive = false;
+    public GIAAAuditReportDirectorates = [];
 
 
 

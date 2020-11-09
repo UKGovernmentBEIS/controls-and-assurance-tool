@@ -49,16 +49,17 @@ namespace ControlAssuranceAPI.Repositories
                           r.NumberStr,
                           r.IssueDate,
                           r.AuditYear,
-                          DirectorateGroupID = r.Directorate != null ? r.Directorate.DirectorateGroupID : 0,
-                          
-                          r.Directorate.DirectorUserID,
-                          r.Directorate.DirectorateGroup.DirectorGeneralUserID,
-                          r.Directorate.DirectorateMembers,
-                          r.Directorate.DirectorateGroup.DirectorateGroupMembers,
+
+                          r.GIAAAuditReportDirectorates,
+                          //DirectorateGroupID = r.Directorate != null ? r.Directorate.DirectorateGroupID : 0,                          
+                          //r.Directorate.DirectorUserID,
+                          //r.Directorate.DirectorateGroup.DirectorGeneralUserID,
+                          //r.Directorate.DirectorateMembers,
+                          //r.Directorate.DirectorateGroup.DirectorateGroupMembers,
 
 
-                          DGArea = r.Directorate != null ? r.Directorate.DirectorateGroup.Title : "",
-                          Directorate = r.Directorate != null ? r.Directorate.Title : "",
+                          //DGArea = r.Directorate != null ? r.Directorate.DirectorateGroup.Title : "",
+                          //Directorate = r.Directorate != null ? r.Directorate.Title : "",
 
                           Assurance = r.GIAAAssurance != null ? r.GIAAAssurance.Title : "NoData",
                           r.GIAAAssuranceId,
@@ -74,10 +75,10 @@ namespace ControlAssuranceAPI.Repositories
 
                     qry = qry.Where(x =>
                         x.GIAARecommendations.Any(r => r.GIAAActionOwners.Any(o => o.UserId == loggedInUserID)) ||
-                        x.DirectorGeneralUserID == loggedInUserID ||
-                        x.DirectorUserID == loggedInUserID ||
-                        x.DirectorateMembers.Any(dm => dm.UserID == loggedInUserID) ||
-                        x.DirectorateGroupMembers.Any(dgm => dgm.UserID == loggedInUserID)
+                        x.GIAAAuditReportDirectorates.Any(rd => rd.Directorate.DirectorUserID == loggedInUserID) ||
+                        x.GIAAAuditReportDirectorates.Any(rd => rd.Directorate.DirectorateGroup.DirectorGeneralUserID == loggedInUserID) ||
+                        x.GIAAAuditReportDirectorates.Any(rd => rd.Directorate.DirectorateMembers.Any(dm => dm.UserID == loggedInUserID)) ||
+                        x.GIAAAuditReportDirectorates.Any(rd => rd.Directorate.DirectorateGroup.DirectorateGroupMembers.Any(dgm => dgm.UserID == loggedInUserID))
 
                     );
                 }
@@ -120,13 +121,14 @@ namespace ControlAssuranceAPI.Repositories
                 //following qry works for all the cases if user doesn't have access to view all reports, thats why above code is commented
                 //same as just mine filter
                 //DG, DGMember, Dir, DirMember, ActionOwners
-                qry = qry.Where(x => x.GIAARecommendations.Any(r => r.GIAAActionOwners.Any(o => o.UserId == loggedInUserID)) ||
-                            x.DirectorGeneralUserID == loggedInUserID ||
-                            x.DirectorUserID == loggedInUserID ||
-                            x.DirectorateMembers.Any(dm => dm.UserID == loggedInUserID) ||
-                            x.DirectorateGroupMembers.Any(dgm => dgm.UserID == loggedInUserID)
+                qry = qry.Where(x =>
+                    x.GIAARecommendations.Any(r => r.GIAAActionOwners.Any(o => o.UserId == loggedInUserID)) ||
+                    x.GIAAAuditReportDirectorates.Any(rd => rd.Directorate.DirectorUserID == loggedInUserID) ||
+                    x.GIAAAuditReportDirectorates.Any(rd => rd.Directorate.DirectorateGroup.DirectorGeneralUserID == loggedInUserID) ||
+                    x.GIAAAuditReportDirectorates.Any(rd => rd.Directorate.DirectorateMembers.Any(dm => dm.UserID == loggedInUserID)) ||
+                    x.GIAAAuditReportDirectorates.Any(rd => rd.Directorate.DirectorateGroup.DirectorateGroupMembers.Any(dgm => dgm.UserID == loggedInUserID))
 
-                    );
+                );
 
 
 
@@ -144,7 +146,21 @@ namespace ControlAssuranceAPI.Repositories
 
             if (dgAreaId > 0)
             {
-                qry = qry.Where(x => x.DirectorateGroupID == dgAreaId);
+                //qry = qry.Where(x => x.DirectorateGroupID == dgAreaId);
+
+                //there can be multiple directorates per report
+                var dirs = db.Directorates.Where(x => x.DirectorateGroupID == dgAreaId).ToList();
+                int totalDirs = dirs.Count();
+
+                int[] arrDirs = new int[totalDirs];
+                int indexD = 0;
+                foreach (var d in dirs)
+                {
+                    arrDirs[indexD] = d.ID;
+                    indexD++;
+                }
+
+                qry = qry.Where(x => x.GIAAAuditReportDirectorates.Any(d => arrDirs.Contains(d.DirectorateId.Value)));
             }
 
 
@@ -218,14 +234,25 @@ namespace ControlAssuranceAPI.Repositories
                     updateStatus = "ReqUpdate";
                 }
 
+                string directorates = "";
+                //Directorates
+                foreach (var d in iteR.GIAAAuditReportDirectorates)
+                {
+                    directorates += d.Directorate.Title + ", ";
+                }
+                if (directorates.Length > 0)
+                {
+                    directorates = directorates.Substring(0, directorates.Length - 1);
+                }
+
 
                 GIAAAuditReportView_Result item = new GIAAAuditReportView_Result
                 {
                     ID = iteR.ID,
                     Title = title,
                     NumberStr = iteR.NumberStr,
-                    DGArea = iteR.DGArea,
-                    Directorate = iteR.Directorate,
+                    //DGArea = iteR.DGArea,
+                    Directorate = directorates,
                     GIAAAssuranceId = iteR.GIAAAssuranceId != null ? iteR.GIAAAssuranceId.Value : 0,
                     Assurance = iteR.Assurance,
                     Year = iteR.AuditYear != null ? iteR.AuditYear : "",
@@ -273,15 +300,40 @@ namespace ControlAssuranceAPI.Repositories
                 catch(Exception ex) {
                     string m = ex.Message;
                 }
-                
+
+                string directorates = "";
+                string directors = "";
+                string dgs = "";
+                HashSet<DirectorateGroup> uniqueDirectorateGroups = new HashSet<DirectorateGroup>();
+
+                foreach (var d in r.GIAAAuditReportDirectorates)
+                {
+                    directorates += d.Directorate.Title + ", ";
+                    directors = d.Directorate.User.Title + ", ";
+                    uniqueDirectorateGroups.Add(d.Directorate.DirectorateGroup);
+                }
+                directorates = directorates.Trim();
+                foreach (var uniqueDirectorateGroup in uniqueDirectorateGroups)
+                {
+                    dgs += uniqueDirectorateGroup.Title + ", ";
+                }
+                if (directorates.Length > 0)
+                {
+                    directorates = directorates.Substring(0, directorates.Length - 1);
+                    directors = directors.Substring(0, directors.Length - 1);
+                    dgs = dgs.Substring(0, dgs.Length - 1);
+                }
+
+
                 ret.ID = r.ID;
                 ret.Title = r.Title;
                 ret.NumberStr = r.NumberStr;
-                ret.Directorate = r.Directorate != null ? r.Directorate.Title : "";
-                ret.Year = r.AuditYear != null ? r.AuditYear : "";
-                ret.DG = r.Directorate != null ? r.Directorate.DirectorateGroup.User.Title : "";
-                ret.IssueDate = r.IssueDate != null ? r.IssueDate.Value.ToString("dd/MM/yyyy") : "";
-                ret.Director = r.Directorate != null ? r.Directorate.User.Title : "";
+                ret.Directorate = directorates;
+                ret.Director = directors;
+                ret.DG = dgs;
+
+                ret.Year = r.AuditYear != null ? r.AuditYear : "";               
+                ret.IssueDate = r.IssueDate != null ? r.IssueDate.Value.ToString("dd/MM/yyyy") : "";              
                 ret.Stats = $"{totalRec}/{totalOpen}/{percentOpen}%";
                 ret.Assurance = r.GIAAAssurance != null ? r.GIAAAssurance.Title : "";
                 ret.Link = r.Link != null ? r.Link : "";

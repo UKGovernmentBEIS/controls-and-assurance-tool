@@ -73,13 +73,17 @@ namespace ControlAssuranceAPI.Models
         private GIAAUpdateRepository gIAAUpdateRepository;
         private GIAAActionOwnerRepository gIAAActionOwnerRepository;
         private GIAAImportRepository gIAAImportRepository;
+        private GIAAAuditReportDirectorateRepository gIAAAuditReportDirectorateRepository;
 
         private IAPDefFormRepository iAPDefFormRepository;
         private IAPTypeRepository iAPTypeRepository;
         private IAPStatusTypeRepository iAPStatusTypeRepository;
         private IAPPriorityRepository iAPPriorityRepository;
-        private IAPUpdateRepository iAPUpdateRepository;
+        private IAPActionRepository iAPUpdateRepository;
         private IAPAssignmentRepository iAPAssignmentRepository;
+        private IAPActionUpdateRepository iAPActionUpdateRepository;
+        private IAPActionDirectorateRepository iAPActionDirectorateRepository;
+            
 
         private ExportDefinationRepository exportDefinationRepository;
         private AvailableExportRepository availableExportRepository;
@@ -641,6 +645,13 @@ namespace ControlAssuranceAPI.Models
                 return gIAAImportRepository = gIAAImportRepository ?? new GIAAImportRepository(user, context);
             }
         }
+        public GIAAAuditReportDirectorateRepository GIAAAuditReportDirectorateRepository
+        {
+            get
+            {
+                return gIAAAuditReportDirectorateRepository = gIAAAuditReportDirectorateRepository ?? new GIAAAuditReportDirectorateRepository(user, context);
+            }
+        }
 
         public IAPDefFormRepository IAPDefFormRepository
         {
@@ -674,11 +685,11 @@ namespace ControlAssuranceAPI.Models
             }
         }
 
-        public IAPUpdateRepository IAPUpdateRepository
+        public IAPActionRepository IAPActionRepository
         {
             get
             {
-                return iAPUpdateRepository = iAPUpdateRepository ?? new IAPUpdateRepository(user, context);
+                return iAPUpdateRepository = iAPUpdateRepository ?? new IAPActionRepository(user, context);
             }
         }
 
@@ -687,6 +698,21 @@ namespace ControlAssuranceAPI.Models
             get
             {
                 return iAPAssignmentRepository = iAPAssignmentRepository ?? new IAPAssignmentRepository(user, context);
+            }
+        }
+        public IAPActionUpdateRepository IAPActionUpdateRepository
+        {
+            get
+            {
+                return iAPActionUpdateRepository = iAPActionUpdateRepository ?? new IAPActionUpdateRepository(user, context);
+            }
+        }
+
+        public IAPActionDirectorateRepository IAPActionDirectorateRepository
+        {
+            get
+            {
+                return iAPActionDirectorateRepository = iAPActionDirectorateRepository ?? new IAPActionDirectorateRepository(user, context);
             }
         }
 

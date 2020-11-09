@@ -47,6 +47,7 @@ namespace ControlAssuranceAPI.Models
         public virtual DbSet<GIAAActionStatusType> GIAAActionStatusTypes { get; set; }
         public virtual DbSet<GIAAAssurance> GIAAAssurances { get; set; }
         public virtual DbSet<GIAAAuditReport> GIAAAuditReports { get; set; }
+        public virtual DbSet<GIAAAuditReportDirectorate> GIAAAuditReportDirectorates { get; set; }
         public virtual DbSet<GIAADefForm> GIAADefForms { get; set; }
         public virtual DbSet<GIAAImport> GIAAImports { get; set; }
         public virtual DbSet<GIAAPeriod> GIAAPeriods { get; set; }
@@ -62,12 +63,14 @@ namespace ControlAssuranceAPI.Models
         public virtual DbSet<GoForm> GoForms { get; set; }
         public virtual DbSet<GoMiscFile> GoMiscFiles { get; set; }
         public virtual DbSet<GoPeriod> GoPeriods { get; set; }
+        public virtual DbSet<IAPAction> IAPActions { get; set; }
+        public virtual DbSet<IAPActionDirectorate> IAPActionDirectorates { get; set; }
+        public virtual DbSet<IAPActionUpdate> IAPActionUpdates { get; set; }
         public virtual DbSet<IAPAssignment> IAPAssignments { get; set; }
         public virtual DbSet<IAPDefForm> IAPDefForms { get; set; }
         public virtual DbSet<IAPPriority> IAPPriorities { get; set; }
         public virtual DbSet<IAPStatusType> IAPStatusTypes { get; set; }
         public virtual DbSet<IAPType> IAPTypes { get; set; }
-        public virtual DbSet<IAPUpdate> IAPUpdates { get; set; }
         public virtual DbSet<Log> Logs { get; set; }
         public virtual DbSet<NAOAssignment> NAOAssignments { get; set; }
         public virtual DbSet<NAODefForm> NAODefForms { get; set; }

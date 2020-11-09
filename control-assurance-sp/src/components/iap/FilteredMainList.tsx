@@ -59,7 +59,7 @@ export interface IFilteredMainListProps {
 
     onAdd: () => void;
     onEdit: () => void;
-    //onDelete: () => void;
+    onDelete: () => void;
 
     editDisabled: boolean;
     deleteDisabled: boolean;
@@ -109,6 +109,15 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
                             className={classNames.cmdBtn}
                             text="Edit"
                             onClick={props.onEdit}
+                        />}
+
+
+                    {(props.deleteDisabled === false) &&
+                        <CommandBarButton
+                            iconProps={{ iconName: 'Delete' }}
+                            className={classNames.cmdBtn}
+                            text="Delete"
+                            onClick={props.onDelete}
                         />}
 
 
@@ -180,7 +189,35 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
         let fieldContent = item[column.fieldName as keyof IEntity] as string;
 
 
-        if (column.key === "Title") {
+        if (column.key === "Update") {
+
+            let txtColor: string = "white";
+            let bgColor: string = "";
+            //let statusImg: string = "";
+
+            if (fieldContent === "Required") {
+                bgColor = "rgb(34,177,76)";
+
+                return (
+                    <span style={{ backgroundColor: bgColor, color: txtColor, width: "75px", display: "block", paddingLeft: "10px", paddingTop: "5px", paddingBottom: "5px" }}>
+                        {fieldContent}
+                    </span>
+                    // <img src={statusImg} />
+
+                );
+
+            }
+
+            else {
+                return <span>{fieldContent}</span>;
+            }
+
+
+
+
+        }
+
+        else if (column.key === "Title") {
 
             const id: number = item["ID"];
 

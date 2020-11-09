@@ -16,10 +16,10 @@ namespace ControlAssuranceAPI.Models
     {
         public int ID { get; set; }
         public string Title { get; set; }
-        public Nullable<int> IAPUpdateId { get; set; }
+        public Nullable<int> IAPActionId { get; set; }
         public Nullable<int> UserId { get; set; }
     
-        public virtual IAPUpdate IAPUpdate { get; set; }
+        public virtual IAPAction IAPAction { get; set; }
         public virtual User User { get; set; }
     }
 }

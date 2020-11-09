@@ -90,11 +90,9 @@ namespace ControlAssuranceAPI
             builder.EntitySet<GIAADefForm>("GIAADefForms");
             builder.EntitySet<GIAAAssurance>("GIAAAssurances");
             builder.EntitySet<GIAAAuditReport>("GIAAAuditReports");
+            builder.EntitySet<GIAAAuditReportDirectorate>("GIAAAuditReportDirectorates");
+
             builder.EntitySet<GIAAImport>("GIAAImports");
-
-
-
-
             builder.EntitySet<GIAAActionPriority>("GIAAActionPriorities");
             builder.EntitySet<GIAAActionStatusType>("GIAAActionStatusTypes");
             builder.EntitySet<GIAARecommendation>("GIAARecommendations");
@@ -105,8 +103,11 @@ namespace ControlAssuranceAPI
             builder.EntitySet<IAPType>("IAPTypes");
             builder.EntitySet<IAPStatusType>("IAPStatusTypes");
             builder.EntitySet<IAPPriority>("IAPPriorities");
-            builder.EntitySet<IAPUpdate>("IAPUpdates");
+            builder.EntitySet<IAPAction>("IAPActions");
             builder.EntitySet<IAPAssignment>("IAPAssignments");
+            builder.EntitySet<IAPActionUpdate>("IAPActionUpdates");
+            builder.EntitySet<IAPActionUpdateView_Result>("IAPActionUpdateViewResult");
+            builder.EntitySet<IAPActionDirectorate>("IAPActionDirectorates");
 
             builder.EntitySet<ExportDefination>("ExportDefinations");
             builder.EntitySet<AvailableExport>("AvailableExports");
@@ -145,10 +146,10 @@ namespace ControlAssuranceAPI
 
             builder.EntitySet<GIAAUpdateView_Result>("GIAAUpdateViewResult");
 
-            //register IAPUpdateView_Result for the customer display of individual action plans list
-            builder.EntitySet<IAPUpdateView_Result>("IAPUpdateViewResult");
+            //register IAPActionView_Result for the customer display of individual action plans list
+            builder.EntitySet<IAPActionView_Result>("IAPActionViewResult");
 
-            builder.EntitySet<APIInfo>("APIInfo08Oct20");
+            builder.EntitySet<APIInfo>("APIInfo06Nov20");
 
 
 

@@ -95,3 +95,9 @@ export enum GIAAUpdateTypes {
     MiscComment = "Misc Comment",
     RecChanged = "Rec Changed"
 }
+
+export enum IAPActionUpdateTypes {
+    ActionUpdate = "Action Update",
+    RevisedDate = "Revised Date",
+    MiscComment = "Misc Comment",
+}

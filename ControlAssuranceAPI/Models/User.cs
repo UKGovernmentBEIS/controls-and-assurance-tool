@@ -30,6 +30,8 @@ namespace ControlAssuranceAPI.Models
             this.GoElementFeedbacks = new HashSet<GoElementFeedback>();
             this.GoForms = new HashSet<GoForm>();
             this.GoMiscFiles = new HashSet<GoMiscFile>();
+            this.IAPActions = new HashSet<IAPAction>();
+            this.IAPActionUpdates = new HashSet<IAPActionUpdate>();
             this.IAPAssignments = new HashSet<IAPAssignment>();
             this.Logs = new HashSet<Log>();
             this.NAOAssignments = new HashSet<NAOAssignment>();
@@ -73,6 +75,10 @@ namespace ControlAssuranceAPI.Models
         public virtual ICollection<GoForm> GoForms { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<GoMiscFile> GoMiscFiles { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<IAPAction> IAPActions { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<IAPActionUpdate> IAPActionUpdates { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<IAPAssignment> IAPAssignments { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

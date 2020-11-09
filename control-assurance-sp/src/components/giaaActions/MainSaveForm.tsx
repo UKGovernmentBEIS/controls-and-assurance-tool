@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as types from '../../types';
 import * as services from '../../services';
-import { IEntity, IDirectorate, IGIAAAuditReport, GIAAAuditReport } from '../../types';
+import { IEntity, IDirectorate, IGIAAAuditReport, GIAAAuditReport, IGIAAAuditReportDirectorate, GIAAAuditReportDirectorate } from '../../types';
 import { CrTextField } from '../cr/CrTextField';
 import { CrDropdown, IDropdownOption } from '../cr/CrDropdown';
 import { FormButtons } from '../cr/FormButtons';
@@ -71,11 +71,12 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
     private directorateService: services.DirectorateService = new services.DirectorateService(this.props.spfxContext, this.props.api);
     private giaaAssuranceService: services.GIAAAssuranceService = new services.GIAAAssuranceService(this.props.spfxContext, this.props.api);
     private giaaAuditReportService: services.GIAAAuditReportService = new services.GIAAAuditReportService(this.props.spfxContext, this.props.api);
+    private giaaAuditReportDirectorateService: services.GIAAAuditReportDirectorateService = new services.GIAAAuditReportDirectorateService(this.props.spfxContext, this.props.api);
 
 
-    // private childEntities: types.IFormDataChildEntities[] = [
-    //     { ObjectParentProperty: 'GoAssignments', ParentIdProperty: 'GoElementId', ChildIdProperty: 'UserId', ChildService: this.goAssignmentService },
-    // ];
+    private childEntities: types.IFormDataChildEntities[] = [
+        { ObjectParentProperty: 'GIAAAuditReportDirectorates', ParentIdProperty: 'GIAAAuditReportId', ChildIdProperty: 'DirectorateId', ChildService: this.giaaAuditReportDirectorateService },
+    ];
 
     constructor(props: IMainSaveFormProps, state: IMainSaveFormState) {
         super(props);
@@ -106,7 +107,7 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
                 {this.renderNum()}
                 {this.renderTitle()}
                 {this.renderIssueDate()}
-                {this.renderDirectorate()}
+                {this.renderDirectorates()}
                 {this.renderYear()}
                 {this.renderAssurance()}
                 {this.renderLink()}
@@ -147,18 +148,48 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
         );
     }
 
-    private renderDirectorate() {
+    // private renderDirectorate() {
+    //     const directorates = this.state.LookupData.Directorates;
+    //     if (directorates) {
+    //         return (
+    //             <CrDropdown
+    //                 label="Directorate"
+    //                 placeholder="Select an Option"
+    //                 required={true}
+    //                 className={styles.formField}
+    //                 options={services.LookupService.entitiesToSelectableOptions(directorates)}
+    //                 selectedKey={this.state.FormData.DirectorateId}
+    //                 onChanged={(v) => this.changeDropdown(v, "DirectorateId")}
+    //                 errorMessage={this.state.ErrMessages.Directorate}
+    //             />
+    //         );
+    //     }
+    //     else
+    //         return null;
+    // }
+
+    private renderDirectorates() {
         const directorates = this.state.LookupData.Directorates;
+        const fd_dirs: IGIAAAuditReportDirectorate[] = this.state.FormData.GIAAAuditReportDirectorates;
+
         if (directorates) {
             return (
                 <CrDropdown
-                    label="Directorate"
-                    placeholder="Select an Option"
-                    required={true}
+                    label="Directorate(s)"
+                    placeholder="Select"
+                    multiSelect                    
                     className={styles.formField}
                     options={services.LookupService.entitiesToSelectableOptions(directorates)}
-                    selectedKey={this.state.FormData.DirectorateId}
-                    onChanged={(v) => this.changeDropdown(v, "DirectorateId")}
+
+
+                    selectedKeys={fd_dirs && fd_dirs.map((x) => { return x.DirectorateId; })}
+                    onChanged={(v) => this.changeMultiDropdown(v, 'GIAAAuditReportDirectorates', new GIAAAuditReportDirectorate(), 'DirectorateId')}
+
+
+                    //selectedKey={this.state.FormData.DirectorateId}
+                    //onChanged={(v) => this.changeDropdown(v, "DirectorateId")}
+
+                    required={true}
                     errorMessage={this.state.ErrMessages.Directorate}
                 />
             );
@@ -258,7 +289,7 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
 
     private loadData = (): Promise<void> => {
         console.log('loadData - Id: ', this.props.entityId);
-        let x = this.giaaAuditReportService.read(this.props.entityId).then((e: IGIAAAuditReport): void => {
+        let x = this.giaaAuditReportService.readWithExpandDirectorates(this.props.entityId).then((e: IGIAAAuditReport): void => {
 
             console.log('data ', e);
             this.setState({
@@ -325,30 +356,90 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
             let f: IGIAAAuditReport = { ...this.state.FormData };
 
             //remove all the child and parent entities before sending post/patch
-            //delete f.User; //parent entity
+            delete f.GIAAAuditReportDirectorates;
 
             if (f.ID === 0) {
 
-
-                this.giaaAuditReportService.create(f).then(x => {
-                    this.props.onSaved();
-
+                this.giaaAuditReportService.create(f).then(this.saveChildEntitiesAfterCreate).then(this.onAfterCreate).then(this.props.onSaved, (err) => {
+                    if (this.props.onError) this.props.onError(`Error creating item`, err.message);
                 });
+
 
             }
             else {
 
                 //console.log('in update');
 
-                this.giaaAuditReportService.update(f.ID, f).then(this.props.onSaved, (err) => {
+                this.giaaAuditReportService.update(f.ID, f).then(this.saveChildEntitiesAfterUpdate).then(this.onAfterUpdate).then(this.props.onSaved, (err) => {
                     if (this.props.onError) this.props.onError(`Error updating item`, err.message);
                 });
+
             }
         }
 
     }
 
+    private saveChildEntitiesAfterCreate = (parentEntity: IGIAAAuditReport): Promise<any> => {
+        let promises = [];
 
+        if (this.childEntities) {
+            this.childEntities.forEach((ce) => {
+
+
+                const assignments = this.state.FormData[ce.ObjectParentProperty];
+
+                if(assignments){
+
+                    this.state.FormData[ce.ObjectParentProperty].forEach((c) => {
+                        c[ce.ParentIdProperty] = parentEntity.ID;
+                        if (c.ID === 0){
+                            promises.push(ce.ChildService.create(c));
+                            
+                        }
+                            
+                    });
+                }
+
+
+            });
+
+            return Promise.all(promises).then(() => parentEntity);
+        
+            
+        }
+    }
+
+    private saveChildEntitiesAfterUpdate = (): Promise<any> => {
+
+        let promises = [];
+        if (this.childEntities) {
+            this.childEntities.forEach((ce) => {
+                this.state.FormData[ce.ObjectParentProperty].forEach((c) => {
+                    if (c.ID === 0) {
+                        c[ce.ParentIdProperty] = this.state.FormData.ID;
+                        promises.push(ce.ChildService.create(c));
+                    }
+                    else {
+                        //no need to update
+                    }
+                });
+
+                this.state.FormDataBeforeChanges[ce.ObjectParentProperty].forEach((c) => {
+                    if (this.state.FormData[ce.ObjectParentProperty].map(i => i[ce.ChildIdProperty]).indexOf(c[ce.ChildIdProperty]) === -1) {
+                        promises.push(ce.ChildService.delete(c.ID));
+                    }
+
+                });
+            });
+            return Promise.all(promises).then(() => this.state.FormData);
+        }
+    }
+
+    private onAfterCreate(): Promise<any>  
+    {
+        console.log('onAfterCreate');
+         return Promise.resolve(); 
+    }
 
     private onAfterUpdate(): Promise<any> { return Promise.resolve(); }
 
@@ -378,13 +469,21 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
             errMsg.Title = null;
         }
 
-        if ((this.state.FormData.DirectorateId === null)) {
-            errMsg.Directorate = "Directorate required";
+        if ((this.state.FormData.GIAAAuditReportDirectorates.length === 0)) {
+            errMsg.Directorate = "Directorate(s) required";
             returnVal = false;
         }
         else {
             errMsg.Directorate = null;
         }
+
+        // if ((this.state.FormData.DirectorateId === null)) {
+        //     errMsg.Directorate = "Directorate required";
+        //     returnVal = false;
+        // }
+        // else {
+        //     errMsg.Directorate = null;
+        // }
 
         if ((this.state.FormData.IssueDate === null)) {
             errMsg.IssueDate = "Issue Date required";
@@ -447,6 +546,28 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
     private changeCheckbox = (value: boolean, f: string): void => {
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, value), FormIsDirty: true });
     }
+    private changeMultiDropdown = (item: IDropdownOption, f: string, newEntity: object, optionIdProperty: string): void => {
+        const loadedChoices = this.cloneArray(this.state.FormDataBeforeChanges[f]);
+        const editedChoices = this.cloneArray(this.state.FormData[f]);
+
+
+        if (item.selected) {
+            let indexOfExisting = loadedChoices.map(choice => choice[optionIdProperty]).indexOf(item.key);
+            if (indexOfExisting !== -1) {
+                editedChoices.push(this.cloneObject(loadedChoices[indexOfExisting]));
+            } else {
+                let newChoice = { ...newEntity };
+                newChoice[optionIdProperty] = item.key;
+                editedChoices.push(newChoice);
+            }
+        } else {
+            let indexToRemove = editedChoices.map(choice => choice[optionIdProperty]).indexOf(item.key);
+            editedChoices.splice(indexToRemove, 1);
+        }
+
+        this.setState({ FormData: this.cloneObject(this.state.FormData, f, editedChoices), FormIsDirty: true });
+    }
+    private cloneArray(array): any[] { return [...array]; }
 
     //#endregion Form Operations
 

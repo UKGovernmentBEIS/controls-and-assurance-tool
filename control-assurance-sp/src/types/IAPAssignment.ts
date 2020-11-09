@@ -1,11 +1,11 @@
 import { IEntity } from "./Entity";
-import { IIAPUpdate } from "./IAPUpdate";
+import { IIAPAction } from "./IAPAction";
 import { IUser } from "./User";
 
 export interface IIAPAssignment extends IEntity {
-    IAPUpdateId?: number;
+    IAPActionId?: number;
     UserId?: number;
-    //IAPUpdate?: IGoElement;
+    //IAPAction?: IGoElement;
     //User?: IUser;
 
 }
@@ -13,6 +13,6 @@ export interface IIAPAssignment extends IEntity {
 export class IAPAssignment implements IIAPAssignment {
     public ID = 0;
     public Title = null;
-    public IAPUpdateId = null;
+    public IAPActionId = null;
     public UserId = null;
 }

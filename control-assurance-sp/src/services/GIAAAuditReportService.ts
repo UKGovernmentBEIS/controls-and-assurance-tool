@@ -1,6 +1,6 @@
 import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { EntityService } from './EntityService';
-import { IDataAPI, IEntity, IGIAAAuditReportInfo } from '../types';
+import { IDataAPI, IEntity, IGIAAAuditReport, IGIAAAuditReportInfo } from '../types';
 
 
 
@@ -18,6 +18,17 @@ export class GIAAAuditReportService extends EntityService<IEntity> {
 
     public getAuditReportInfo(giaaAuditReportId:number): Promise<IGIAAAuditReportInfo> {
         return this.readEntity(`?giaaAuditReportId=${giaaAuditReportId}&getInfo=true`);
+    }
+
+    public readWithExpandDirectorates(ID: number): Promise<IGIAAAuditReport> {
+        //const qry:string = `?$expand=GIAAActionOwners($expand=User)`;
+
+        let entitiesToExpand: string[] = [];
+        entitiesToExpand.push("GIAAAuditReportDirectorates($expand=Directorate)");
+
+        return this.read(ID, false, false, entitiesToExpand).then((e: IGIAAAuditReport): IGIAAAuditReport => {
+            return e;
+        });
     }
 
 

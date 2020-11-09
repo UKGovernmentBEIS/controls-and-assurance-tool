@@ -294,10 +294,10 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
 
         //     );
         // }
-        else if (column.key === "DGArea") {
-            const directorate = item["Directorate"];
-            return <span>{fieldContent} - {directorate}</span>;
-        }
+        // else if (column.key === "DGArea") {
+        //     const directorate = item["Directorate"];
+        //     return <span>{fieldContent} - {directorate}</span>;
+        // }
 
 
         else if (column.key === "Title") {

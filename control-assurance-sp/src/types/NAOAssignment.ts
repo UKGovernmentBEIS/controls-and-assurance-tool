@@ -1,5 +1,5 @@
 import { IEntity } from "./Entity";
-import { IIAPUpdate } from "./IAPUpdate";
+import { IIAPAction } from "./IAPAction";
 import { IUser } from "./User";
 
 export interface INAOAssignment extends IEntity {

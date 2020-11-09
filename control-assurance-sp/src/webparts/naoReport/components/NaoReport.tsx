@@ -13,25 +13,30 @@ import { CrLoadingOverlayWelcome } from '../../../components/cr/CrLoadingOverlay
 import styles from '../../../styles/cr.module.scss';
 import { PrimaryButton } from 'office-ui-fabric-react/lib/Button';
 
+
 //#region types defination
 
 export interface ILookupData {
   Periods: IEntity[];
+  PeriodsOriginal: IPeriod[];
 }
 
 export class LookupData implements ILookupData {
   public Periods: IPeriod[] = [];
+  public PeriodsOriginal: IPeriod[] = [];
 }
 
 export interface INaoReportState extends types.IUserContextWebPartState {
   LookupData: ILookupData;
   PeriodId: string | number;
+  SelectedPeriodTxt: string;
   IsArchivedPeriod: boolean;
   Report1_ListFilterText: string;
 }
 export class NaoReportState extends types.UserContextWebPartState implements INaoReportState {
   public LookupData = new LookupData();
   public PeriodId: string | number = 0;
+  public SelectedPeriodTxt: string = "";
   public IsArchivedPeriod = false;
   public Report1_ListFilterText: string = null;
 
@@ -78,6 +83,10 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
             {this.renderReport1()}
           </PivotItem>
 
+          <PivotItem headerText="Export to Excel" itemKey="Export to Excel">
+            {this.renderGenExport()}
+          </PivotItem>
+
 
 
         </Pivot>
@@ -119,6 +128,36 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
 
   }
 
+  private renderGenExport(): React.ReactElement<types.IWebPartComponentProps> {
+
+    if(this.state.PeriodId > 0){
+
+      return (
+        <div>
+
+          <div style={{ paddingTop: "10px" }}>
+  
+            <GenExport
+              {...this.props}
+              onError={this.onError}
+              moduleName="NAO"
+              periodId={Number(this.state.PeriodId)}
+              periodTitle={this.state.SelectedPeriodTxt}
+  
+            />
+  
+  
+          </div>
+        </div>
+      );
+    }
+
+    else
+      return null;
+
+
+  }
+
 
 
 
@@ -131,14 +170,32 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
 
 
 
+  private getSelectedPeriodText = (periodId:number, periodsOriginal: IPeriod[]): string => {
+    let periodTxt:string = "";
+    console.log('getSelectedPeriodText - id', periodId);
+    //var pp = this.state.LookupData.PeriodsOriginal.filter(p => p.ID === periodId);
+    var pp = periodsOriginal.filter(p => p.ID === periodId);
+    console.log('getSelectedPeriodText - pp', pp);
+    if(pp[0]){
+      periodTxt = pp[0]["Title"];
+    }
+    console.log('selected period text', periodTxt);
+
+    return periodTxt;
+  }
+
   private loadPeriods = (): Promise<IPeriod[]> => {
     return this.periodService.readAll().then((pArr: IPeriod[]): IPeriod[] => {
+
+      const pArrCopy = JSON.parse(JSON.stringify(pArr));
       //get the current period
       let currentPeriodId: number = 0;
       const currentPeriod = pArr.filter(p => p.PeriodStatus === "Current Period");
       if (currentPeriod && currentPeriod.length > 0) {
         currentPeriodId = currentPeriod[0].ID;
       }
+
+      const selectedPeriodTxt:string = this.getSelectedPeriodText(currentPeriodId, pArrCopy);
 
       //show status like Qtr 2 2019 ( Current Period ) in Title
       for (let i = 0; i < pArr.length; i++) {
@@ -155,10 +212,13 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
         pArr = pArr.filter(p => p.PeriodStatus !== "Design Period");
       }
 
+      const xx = { ...this.state.LookupData, ['Periods']: pArr, ['PeriodsOriginal']: pArrCopy };
 
       this.setState({
-        LookupData: this.cloneObject(this.state.LookupData, 'Periods', pArr),
-        PeriodId: currentPeriodId
+        //LookupData: this.cloneObject(this.state.LookupData, 'Periods', pArr),
+        LookupData: xx,
+        PeriodId: currentPeriodId,
+        SelectedPeriodTxt: selectedPeriodTxt
       });
       return pArr;
     }, (err) => { if (this.onError) this.onError(`Error loading Periods lookup data`, err.message); });
@@ -212,7 +272,9 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
         }
       }
 
-      this.setState({ PeriodId: option.key, IsArchivedPeriod: isArchivedPeriod },
+      const selectedPeriodTxt:string = this.getSelectedPeriodText(Number(option.key), this.state.LookupData.PeriodsOriginal );
+
+      this.setState({ PeriodId: option.key, IsArchivedPeriod: isArchivedPeriod, SelectedPeriodTxt: selectedPeriodTxt },
         //this.readOrCreateGoFormInDb
       );
     }

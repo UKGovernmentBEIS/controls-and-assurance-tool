@@ -68,6 +68,7 @@ namespace ControlAssuranceAPI.Models
         DbSet<GIAAActionOwner> GIAAActionOwners { get; set; }
         DbSet<GIAAUpdate> GIAAUpdates { get; set; }
         DbSet<GIAAImport> GIAAImports { get; set; }
+        DbSet<GIAAAuditReportDirectorate> GIAAAuditReportDirectorates { get; set; }
 
         //DbSet<GIAAUpdateFeedback> GIAAUpdateFeedbacks { get; set; }
         //DbSet<GIAAUpdateEvidence> GIAAUpdateEvidences { get; set; }
@@ -78,8 +79,10 @@ namespace ControlAssuranceAPI.Models
         DbSet<IAPPriority> IAPPriorities { get; set; }
         DbSet<IAPStatusType> IAPStatusTypes { get; set; }
         DbSet<IAPType> IAPTypes { get; set; }
-        DbSet<IAPUpdate> IAPUpdates { get; set; }
+        DbSet<IAPAction> IAPActions { get; set; }
+        DbSet<IAPActionUpdate> IAPActionUpdates { get; set; }
         DbSet<IAPAssignment> IAPAssignments { get; set; }
+        DbSet<IAPActionDirectorate> IAPActionDirectorates { get; set; }
 
         DbSet<ExportDefination> ExportDefinations { get; set; }
         DbSet<AvailableExport> AvailableExports { get; set; }

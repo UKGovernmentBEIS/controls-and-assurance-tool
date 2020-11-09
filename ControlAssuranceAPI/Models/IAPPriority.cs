@@ -17,13 +17,13 @@ namespace ControlAssuranceAPI.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public IAPPriority()
         {
-            this.IAPUpdates = new HashSet<IAPUpdate>();
+            this.IAPActions = new HashSet<IAPAction>();
         }
     
         public int ID { get; set; }
         public string Title { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<IAPUpdate> IAPUpdates { get; set; }
+        public virtual ICollection<IAPAction> IAPActions { get; set; }
     }
 }
