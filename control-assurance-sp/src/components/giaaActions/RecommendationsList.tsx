@@ -31,6 +31,8 @@ export interface IRecommendationsListProps extends types.IBaseComponentProps {
 
     actionStatusTypes: IEntity[];
 
+    superUserPermission:boolean;
+
 }
 
 export interface IRecommendationsListState<T> {
@@ -167,6 +169,15 @@ export default class RecommendationsList extends React.Component<IRecommendation
             isResizable: true,
             headerClassName: styles.bold,
         },
+        {
+            key: 'OwnerIds',
+            name: 'OwnerIds',
+            fieldName: 'OwnerIds',
+            minWidth: 1,
+            maxWidth: 1,
+            headerClassName: styles.bold,
+            columnDisplayType: ColumnDisplayTypes.Hidden,
+        },
 
 
 
@@ -248,6 +259,8 @@ export default class RecommendationsList extends React.Component<IRecommendation
                 deleteDisabled={!this.state.EnableDelete}
 
                 actionStatusTypes={this.props.actionStatusTypes}
+
+                superUserPermission={this.props.superUserPermission}
 
 
             />

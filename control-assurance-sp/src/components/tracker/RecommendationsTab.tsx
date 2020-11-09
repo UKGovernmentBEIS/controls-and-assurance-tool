@@ -27,6 +27,9 @@ export interface IRecommendationsTabProps extends types.IBaseComponentProps {
     //isViewOnly: boolean;
 
     onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
+
+    superUserPermission:boolean;
+    dgOrDGMemberPermission:boolean;
 }
 
 export interface IRecommendationsTabState {
@@ -209,6 +212,8 @@ export default class RecommendationsTab extends React.Component<IRecommendations
                             onChangeJustMine={this.handle_ChangeJustMine}
                             filterText={this.state.ListFilterText}
                             onChangeFilterText={this.handle_ChangeFilterText}
+                            superUserPermission={this.props.superUserPermission}
+                            dgOrDGMemberPermission={this.props.dgOrDGMemberPermission}
 
                         />
                     </div>

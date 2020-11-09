@@ -75,6 +75,7 @@ export interface IFilteredMainListProps {
 
     //assignDisabled: boolean;
     //deleteDisabled: boolean;
+    superUserPermission:boolean;
 }
 
 export interface IFilteredMainListState {
@@ -125,7 +126,7 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
                         onChanged={(isChecked) => props.onChangeJustMine(isChecked)}
                     />
 
-                    {props.editDisabled && props.deleteDisabled &&
+                    {props.superUserPermission && props.editDisabled && props.deleteDisabled &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Add' }}
                             className={classNames.cmdBtn}
@@ -133,7 +134,7 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
                             onClick={props.onAdd}
                         />}
 
-                    {(props.editDisabled === false) &&
+                    {props.superUserPermission && (props.editDisabled === false) &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Edit' }}
                             className={classNames.cmdBtn}

@@ -27,6 +27,9 @@ export interface IRecommendationsListProps extends types.IBaseComponentProps {
     filterText?: string;
     onChangeFilterText: (value: string) => void;
 
+    superUserPermission:boolean;
+    dgOrDGMemberPermission:boolean;
+
 }
 
 export interface IRecommendationsListState<T> {
@@ -145,6 +148,16 @@ export default class RecommendationsList extends React.Component<IRecommendation
             isResizable: true,
             headerClassName: styles.bold,
         },
+
+        {
+            key: 'AssignedToIds',
+            name: 'AssignedToIds',
+            fieldName: 'AssignedToIds',
+            minWidth: 1,
+            maxWidth: 1,
+            headerClassName: styles.bold,
+            columnDisplayType: ColumnDisplayTypes.Hidden,
+        },
     ];
 
 
@@ -219,7 +232,8 @@ export default class RecommendationsList extends React.Component<IRecommendation
                 onAssign={this.handleAssign}
                 editDisabled={!this.state.EnableEdit}
                 deleteDisabled={!this.state.EnableDelete}
-
+                superUserPermission={this.props.superUserPermission}
+                dgOrDGMemberPermission={this.props.dgOrDGMemberPermission}
                 
             />
         );

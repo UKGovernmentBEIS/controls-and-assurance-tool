@@ -75,6 +75,9 @@ export interface IFilteredRecListProps {
 
     //assignDisabled: boolean;
     //deleteDisabled: boolean;
+
+    superUserPermission:boolean;
+    dgOrDGMemberPermission:boolean;
 }
 
 export interface IFilteredRecListState {
@@ -125,7 +128,7 @@ export class FilteredRecList extends React.Component<IFilteredRecListProps, IFil
                         onChanged={(isChecked) => props.onChangeJustMine(isChecked)}
                     />
 
-                    {props.editDisabled && props.deleteDisabled &&
+                    {props.superUserPermission && props.editDisabled && props.deleteDisabled &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Add' }}
                             className={classNames.cmdBtn}
@@ -133,7 +136,7 @@ export class FilteredRecList extends React.Component<IFilteredRecListProps, IFil
                             onClick={props.onAdd}
                         />}
 
-                    {(props.editDisabled === false) &&
+                    {props.superUserPermission && (props.editDisabled === false) &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Edit' }}
                             className={classNames.cmdBtn}
@@ -143,7 +146,7 @@ export class FilteredRecList extends React.Component<IFilteredRecListProps, IFil
 
 
                     
-                    {(props.editDisabled === false) &&
+                    {(props.superUserPermission === true || props.dgOrDGMemberPermission === true) && (props.editDisabled === false) &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Assign' }}
                             className={classNames.cmdBtn}

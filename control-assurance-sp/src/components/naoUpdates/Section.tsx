@@ -37,6 +37,8 @@ export interface ISectionProps extends IEntityFormProps {
     mainListsSaveCounter:number;
 
     sectionUpdateStatus:string;
+
+    superUserPermission:boolean;
 }
 
 export class SectionState {
@@ -89,6 +91,7 @@ export default class Section extends React.Component<ISectionProps, SectionState
                             naoPeriodId={this.props.naoPeriodId}
                             filterText={this.props.listFilterText}
                             onChangeFilterText={this.props.onChangeFilterText}
+                            superUserPermission={this.props.superUserPermission}
 
                         />
                     </div>

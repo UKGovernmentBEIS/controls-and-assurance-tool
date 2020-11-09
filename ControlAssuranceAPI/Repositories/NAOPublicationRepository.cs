@@ -75,6 +75,9 @@ namespace ControlAssuranceAPI.Repositories
 
         public List<NAOPublicationView_Result> GetPublications(int naoPeriodId, int dgAreaId, bool incompleteOnly, bool justMine, bool isArchive, bool includeSummary=false)
         {
+            var loggedInUser = ApiUser;
+            int loggedInUserID = loggedInUser.ID;
+
             List<NAOPublicationView_Result> retList = new List<NAOPublicationView_Result>();
 
             var qry = from p in db.NAOPublications
@@ -88,6 +91,7 @@ namespace ControlAssuranceAPI.Repositories
                           //p.Directorate.DirectorateGroupID,                         
                           //DGArea = p.Directorate.DirectorateGroup.Title,
                           Type = p.NAOType.Title,
+                          p.NAOTypeId,
                           p.Year,
                           p.PublicationSummary,
                           p.NAORecommendations
@@ -96,12 +100,54 @@ namespace ControlAssuranceAPI.Repositories
 
                       };
 
-            if(dgAreaId > 0)
+            bool naoStaff = false;
+            bool pacStaff = false;
+            if (base.NAO_SuperUserOrStaff(loggedInUserID, out naoStaff, out pacStaff))
+            {
+                //full permission, no filter on reports
+                if(naoStaff == true && pacStaff == true)
+                {
+                    //do nothing, full permission to access both type of reports, but usually a user will not have both permissions
+                }
+                else if(naoStaff == true)
+                {
+                    qry = qry.Where(p => p.NAOTypeId == 1);//1 for nao report
+                }
+                else if(pacStaff == true)
+                {
+                    qry = qry.Where(p => p.NAOTypeId == 2); //2 for pac report
+                }
+
+                if (justMine == true)
+                {
+
+                    qry = qry.Where(p =>
+                        p.NAORecommendations.Any(r => r.NAOAssignments.Any(ass => ass.UserId == loggedInUserID)) ||
+                        p.NAOPublicationDirectorates.Any(pd => pd.Directorate.DirectorUserID == loggedInUserID) ||
+                        p.NAOPublicationDirectorates.Any(pd => pd.Directorate.DirectorateGroup.DirectorGeneralUserID == loggedInUserID) ||
+                        p.NAOPublicationDirectorates.Any(pd => pd.Directorate.DirectorateMembers.Any(dm => dm.UserID == loggedInUserID)) ||
+                        p.NAOPublicationDirectorates.Any(pd => pd.Directorate.DirectorateGroup.DirectorateGroupMembers.Any(dgm => dgm.UserID == loggedInUserID))
+                    );
+                }
+            }
+            else
+            {
+                //same as just mine filter for all other cases which are DG, DG Member, Dir, Dir Mem, Assignees
+                qry = qry.Where(p =>
+                    p.NAORecommendations.Any(r => r.NAOAssignments.Any(ass => ass.UserId == loggedInUserID)) ||
+                    p.NAOPublicationDirectorates.Any(pd => pd.Directorate.DirectorUserID == loggedInUserID) ||
+                    p.NAOPublicationDirectorates.Any(pd => pd.Directorate.DirectorateGroup.DirectorGeneralUserID == loggedInUserID) ||
+                    p.NAOPublicationDirectorates.Any(pd => pd.Directorate.DirectorateMembers.Any(dm => dm.UserID == loggedInUserID)) ||
+                    p.NAOPublicationDirectorates.Any(pd => pd.Directorate.DirectorateGroup.DirectorateGroupMembers.Any(dgm => dgm.UserID == loggedInUserID))
+                );
+            }
+
+            if (dgAreaId > 0)
             {
 
                 //qry = qry.Where(x => x.DirectorateGroupID == dgAreaId);
 
-                
+                //there can be multiple directorates per publication
                 var dirs = db.Directorates.Where(x => x.DirectorateGroupID == dgAreaId).ToList();
                 int totalDirs = dirs.Count();
 
@@ -117,17 +163,6 @@ namespace ControlAssuranceAPI.Repositories
 
             }
 
-            if (justMine == true)
-            {
-                int loggedInUserID = ApiUser.ID;
-                qry = qry.Where(p =>
-                    p.NAORecommendations.Any(r => r.NAOAssignments.Any(ass => ass.UserId == loggedInUserID)) ||
-                    p.NAOPublicationDirectorates.Any(pd => pd.Directorate.DirectorUserID == loggedInUserID) ||
-                    p.NAOPublicationDirectorates.Any(pd => pd.Directorate.DirectorateGroup.DirectorGeneralUserID == loggedInUserID) ||
-                    p.NAOPublicationDirectorates.Any(pd => pd.Directorate.DirectorateMembers.Any(dm => dm.UserID == loggedInUserID)) ||
-                    p.NAOPublicationDirectorates.Any(pd => pd.Directorate.DirectorateGroup.DirectorateGroupMembers.Any(dgm => dgm.UserID == loggedInUserID))
-                );
-            }
 
             int qryCount = qry.Count();
 

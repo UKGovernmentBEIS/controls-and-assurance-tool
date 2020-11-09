@@ -35,6 +35,8 @@ export interface IRecommendationsTabProps extends types.IBaseComponentProps {
     onChangeIncompleteOnly: (value: boolean) => void;
     onChangeJustMine: (value: boolean) => void;
     onChangeActionStatusType: (option: IDropdownOption)=> void;
+
+    superUserPermission:boolean;
 }
 
 export interface ILookupData {
@@ -264,6 +266,8 @@ export default class RecommendationsTab extends React.Component<IRecommendations
 
                             filterText={this.state.ListFilterText}
                             onChangeFilterText={this.handle_ChangeFilterText}
+
+                            superUserPermission={this.props.superUserPermission}
 
                         />
                     </div>

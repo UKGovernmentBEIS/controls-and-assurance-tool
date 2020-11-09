@@ -83,6 +83,7 @@ namespace ControlAssuranceAPI.Repositories
             foreach (var ite in list)
             {
                 string owners = "";
+                string ownerIds = "";
 
                 if(string.IsNullOrEmpty(ite.DisplayedImportedActionOwners) == false)
                 {
@@ -92,11 +93,17 @@ namespace ControlAssuranceAPI.Repositories
                 foreach (var o in ite.GIAAActionOwners)
                 {
                     owners += o.User.Title + ", ";
+
+                    ownerIds += o.UserId + ",";
                 }
                 owners = owners.Trim();
                 if(owners.Length > 0)
                 {
                     owners = owners.Substring(0, owners.Length - 1);
+                }
+                if (ownerIds.Length > 0)
+                {
+                    ownerIds = ownerIds.Substring(0, ownerIds.Length - 1);
                 }
 
                 string updateStatus = "";
@@ -120,6 +127,7 @@ namespace ControlAssuranceAPI.Repositories
                     Priority = ite.Priority,
                     ActionStatus = ite.ActionStatus,
                     Owners = owners,
+                    OwnerIds = ownerIds,
                     UpdateStatus = updateStatus
 
 

@@ -33,6 +33,9 @@ namespace ControlAssuranceAPI.Repositories
 
         public List<GIAAAuditReportView_Result> GetAuditReports(int dgAreaId, bool incompleteOnly, bool justMine, bool isArchive)
         {
+            var loggedInUser = ApiUser;
+            int loggedInUserID = loggedInUser.ID;
+
             List<GIAAAuditReportView_Result> retList = new List<GIAAAuditReportView_Result>();
 
             var qry = from r in db.GIAAAuditReports
@@ -63,23 +66,87 @@ namespace ControlAssuranceAPI.Repositories
 
                       };
 
+            if (base.GIAA_SuperUserOrGIAAStaff(loggedInUserID))
+            {
+                //full permission, no filter on reports
+                if (justMine == true)
+                {
+
+                    qry = qry.Where(x =>
+                        x.GIAARecommendations.Any(r => r.GIAAActionOwners.Any(o => o.UserId == loggedInUserID)) ||
+                        x.DirectorGeneralUserID == loggedInUserID ||
+                        x.DirectorUserID == loggedInUserID ||
+                        x.DirectorateMembers.Any(dm => dm.UserID == loggedInUserID) ||
+                        x.DirectorateGroupMembers.Any(dgm => dgm.UserID == loggedInUserID)
+
+                    );
+                }
+            }
+            else
+            {
+                ////DG check
+                //var dg = ApiUser.DirectorateGroups.FirstOrDefault();
+                //if (dg != null)
+                //{
+                //    qry = qry.Where(x => x.DirectorGeneralUserID == loggedInUserID);
+                //    goto AfterPermissions;
+                //}
+
+                ////DG Member check
+                //var dgMember = ApiUser.DirectorateGroupMembers.FirstOrDefault();
+                //if (dgMember != null)
+                //{
+                //    qry = qry.Where(x => x.DirectorateGroupMembers.Any(dgm => dgm.UserID == loggedInUserID));
+                //    goto AfterPermissions;
+                //}
+
+                ////Director Check
+                //var dir = ApiUser.Directorates.FirstOrDefault();
+                //if (dir != null)
+                //{
+                //    qry = qry.Where(x => x.DirectorUserID == loggedInUserID);
+                //    goto AfterPermissions;
+                //}
+
+                ////Director Member
+                //var dirMember = ApiUser.DirectorateMembers.FirstOrDefault();
+                //if (dirMember != null)
+                //{
+                //    qry = qry.Where(x => x.DirectorateMembers.Any(dm => dm.UserID == loggedInUserID));
+                //    goto AfterPermissions;
+                //}
+
+
+                //following qry works for all the cases if user doesn't have access to view all reports, thats why above code is commented
+                //same as just mine filter
+                //DG, DGMember, Dir, DirMember, ActionOwners
+                qry = qry.Where(x => x.GIAARecommendations.Any(r => r.GIAAActionOwners.Any(o => o.UserId == loggedInUserID)) ||
+                            x.DirectorGeneralUserID == loggedInUserID ||
+                            x.DirectorUserID == loggedInUserID ||
+                            x.DirectorateMembers.Any(dm => dm.UserID == loggedInUserID) ||
+                            x.DirectorateGroupMembers.Any(dgm => dgm.UserID == loggedInUserID)
+
+                    );
+
+
+
+
+                //by reaching here user have no permission - return 0 records
+                //qry = qry.Where(x => false);
+
+            }
+
+            
+        
+        //label
+        //AfterPermissions:
+
+
             if (dgAreaId > 0)
             {
                 qry = qry.Where(x => x.DirectorateGroupID == dgAreaId);
             }
 
-            if (justMine == true)
-            {
-                int loggedInUserID = ApiUser.ID;
-                qry = qry.Where(x =>
-                    x.GIAARecommendations.Any(r => r.GIAAActionOwners.Any(o => o.UserId == loggedInUserID)) ||
-                    x.DirectorGeneralUserID == loggedInUserID ||
-                    x.DirectorUserID == loggedInUserID ||
-                    x.DirectorateMembers.Any(dm => dm.UserID == loggedInUserID) ||
-                    x.DirectorateGroupMembers.Any(dgm => dgm.UserID == loggedInUserID)
-                    
-                );
-            }
 
             if(incompleteOnly == true)
             {

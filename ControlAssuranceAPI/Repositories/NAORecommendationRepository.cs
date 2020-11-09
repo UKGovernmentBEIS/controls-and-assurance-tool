@@ -72,6 +72,7 @@ namespace ControlAssuranceAPI.Repositories
             foreach (var ite in list)
             {
                 string assignedUsers = "";
+                string assignedUserIds = "";
                 foreach (var o in ite.NAOAssignments)
                 {
                     assignedUsers += o.User.Title + ", ";
@@ -80,6 +81,16 @@ namespace ControlAssuranceAPI.Repositories
                 if (assignedUsers.Length > 0)
                 {
                     assignedUsers = assignedUsers.Substring(0, assignedUsers.Length - 1);
+                }
+
+
+                foreach (var o in ite.NAOAssignments)
+                {
+                    assignedUserIds += o.UserId + ",";
+                }
+                if (assignedUserIds.Length > 0)
+                {
+                    assignedUserIds = assignedUserIds.Substring(0, assignedUserIds.Length - 1);
                 }
 
 
@@ -108,6 +119,7 @@ namespace ControlAssuranceAPI.Repositories
                     TargetDate = targetDate,
                     RecStatus = recStatus,
                     AssignedTo = assignedUsers,
+                    AssignedToIds = assignedUserIds,
                     //UpdateStatus = ite.NAOUpdateStatusType != null ? ite.NAOUpdateStatusType : "Not Updated"
                     UpdateStatus = updateStatus
 

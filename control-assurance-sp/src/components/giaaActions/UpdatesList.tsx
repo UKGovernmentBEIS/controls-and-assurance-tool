@@ -9,6 +9,7 @@ import { IUpdatesListColumn, ColumnDisplayTypes } from '../../types/UpdatesListC
 import { CrLoadingOverlay } from '../cr/CrLoadingOverlay';
 import { Selection } from '../cr/FilteredList';
 import { ConfirmDialog } from '../cr/ConfirmDialog';
+import { MessageDialog } from '../cr/MessageDialog';
 import { CrDropdown, IDropdownOption } from '../cr/CrDropdown';
 import { GIAAUpdateTypes } from '../../types/AppGlobals';
 import { getUploadFolder_GIAAUpdateEvidence } from '../../types/AppGlobals';
@@ -26,6 +27,10 @@ export interface IUpdatesListProps extends types.IBaseComponentProps {
 
     filterText?: string;
     onChangeFilterText: (value: string) => void;
+
+    superUserPermission:boolean;
+    giaaStaffPermission:boolean;
+    actionOwnerPermission:boolean;
 
 
 }
@@ -51,6 +56,10 @@ export interface IUpdatesListState<T> {
     Loading: boolean;
     ListFilterText?: string;
     InitDataLoaded: boolean;
+
+    HideActionUpdatePermissionDialog: boolean;
+    HideReviseImplementationDatePermissionDialogue:boolean;
+    HideGiaaCommentsPermissionDialogue:boolean;
 }
 export class UpdatesListState<T> implements IUpdatesListState<T>{
     public DefaultGIAAActionStatusTypeId:number = null;
@@ -73,6 +82,9 @@ export class UpdatesListState<T> implements IUpdatesListState<T>{
     public Loading = false;
     public ListFilterText = null;
     public InitDataLoaded = false;
+    public HideActionUpdatePermissionDialog = true;
+    public HideReviseImplementationDatePermissionDialogue = true;
+    public HideGiaaCommentsPermissionDialogue = true;
 }
 
 export default class UpdatesList extends React.Component<IUpdatesListProps, IUpdatesListState<IEntity>> {
@@ -213,6 +225,9 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
                     {this.state.ShowForm && this.renderForm()}
 
                     <ConfirmDialog hidden={this.state.HideDeleteDialog} title={`Are you sure you want to delete this record?`} content={`A deleted record cannot be un-deleted.`} confirmButtonText="Delete" handleConfirm={this.handleDelete} handleCancel={this.toggleDeleteConfirm} />
+                    <MessageDialog hidden={this.state.HideActionUpdatePermissionDialog} title={`Not Allowed!`} content='Only the Super User, GIAA Actions Super User and recommendation Action Owners can provide updates.' handleOk={this.toggle_HideActionUpdatePermissionDialog} />
+                    <MessageDialog hidden={this.state.HideReviseImplementationDatePermissionDialogue} title={`Not Allowed!`} content='Only the Super User, GIAA Actions Super User, GIAA Staff and recommendation Action Owners can revise the implementation date.' handleOk={this.toggle_HideReviseImplementationDatePermissionDialogue} />
+                    <MessageDialog hidden={this.state.HideGiaaCommentsPermissionDialogue} title={null} content='Only the Super User, GIAA Actions Super User and GIAA Staff can add GIAA Comments.' handleOk={this.toggle_HideGiaaCommentsPermissionDialogue} />
                 </div>
             </div>
         );
@@ -402,22 +417,56 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
 
 
     private handleAddActionUpdate = (): void => {
-        if (this.state.SelectedEntity)
-            this._selection.setKeySelected(this.state.SelectedEntity.toString(), false, false);
-        const formType:string = GIAAUpdateTypes.ActionUpdate;
-        this.setState({ SelectedEntity: null, ShowForm: true, FormType: formType });
+
+
+        if(this.props.superUserPermission === true || this.props.actionOwnerPermission === true){
+
+            if (this.state.SelectedEntity)
+                this._selection.setKeySelected(this.state.SelectedEntity.toString(), false, false);
+            const formType:string = GIAAUpdateTypes.ActionUpdate;
+            this.setState({ SelectedEntity: null, ShowForm: true, FormType: formType });
+
+        }
+        else{
+            this.toggle_HideActionUpdatePermissionDialog();
+            console.log('Only the Super User, GIAA Actions Super User and recommendation Action Owners can provide updates');
+        }
+
+
     }
     private handleAddRevisedDate = (): void => {
-        if (this.state.SelectedEntity)
-            this._selection.setKeySelected(this.state.SelectedEntity.toString(), false, false);
-        const formType:string = GIAAUpdateTypes.RevisedDate;
-        this.setState({ SelectedEntity: null, ShowForm: true, FormType: formType });
+
+        if(this.props.superUserPermission === true || this.props.giaaStaffPermission === true || this.props.actionOwnerPermission === true){
+
+            if (this.state.SelectedEntity)
+                this._selection.setKeySelected(this.state.SelectedEntity.toString(), false, false);
+            const formType:string = GIAAUpdateTypes.RevisedDate;
+            this.setState({ SelectedEntity: null, ShowForm: true, FormType: formType });
+
+        }
+        else{
+            this.toggle_HideReviseImplementationDatePermissionDialogue();
+            console.log('Only the Super User, GIAA Actions Super User, GIAA Staff and recommendation Action Owners can revise the implementation date');
+        }
+
+
     }
     private handleAddGIAAComments = (): void => {
-        if (this.state.SelectedEntity)
-            this._selection.setKeySelected(this.state.SelectedEntity.toString(), false, false);
-        const formType:string = GIAAUpdateTypes.GIAAComment;
-        this.setState({ SelectedEntity: null, ShowForm: true, FormType: formType });
+
+        if(this.props.superUserPermission === true || this.props.giaaStaffPermission === true){
+
+            if (this.state.SelectedEntity)
+                this._selection.setKeySelected(this.state.SelectedEntity.toString(), false, false);
+            const formType:string = GIAAUpdateTypes.GIAAComment;
+            this.setState({ SelectedEntity: null, ShowForm: true, FormType: formType });
+
+        }
+        else{
+            this.toggle_HideGiaaCommentsPermissionDialogue();
+            console.log('Only the Super User, GIAA Actions Super User and GIAA Staff can add GIAA Comments');
+        }
+
+
     }
     private handleAddMiscComments = (): void => {
         if (this.state.SelectedEntity)
@@ -518,6 +567,18 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
 
 
         }
+    }
+
+    private toggle_HideActionUpdatePermissionDialog = (): void => {
+        this.setState({ HideActionUpdatePermissionDialog: !this.state.HideActionUpdatePermissionDialog });
+    }
+
+    private toggle_HideReviseImplementationDatePermissionDialogue = (): void => {
+        this.setState({ HideReviseImplementationDatePermissionDialogue: !this.state.HideReviseImplementationDatePermissionDialogue });
+    }
+
+    private toggle_HideGiaaCommentsPermissionDialogue = (): void => {
+        this.setState({ HideGiaaCommentsPermissionDialogue: !this.state.HideGiaaCommentsPermissionDialogue });
     }
 
 

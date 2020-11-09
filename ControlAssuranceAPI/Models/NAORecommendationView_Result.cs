@@ -13,6 +13,7 @@ namespace ControlAssuranceAPI.Models
         public string TargetDate { get; set; }
         public string RecStatus { get; set; }
         public string AssignedTo { get; set; }
+        public string AssignedToIds { get; set; }
         public string UpdateStatus { get; set; }
     }
 }

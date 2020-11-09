@@ -71,6 +71,8 @@ export interface IFilteredMainListProps {
     editDisabled: boolean;
     deleteDisabled: boolean;
 
+    superUserPermission:boolean;
+
     //onAdd: () => void;
     //onAssign: () => void;
     //onDelete: () => void;
@@ -128,7 +130,7 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
                         onChanged={(isChecked) => props.onChangeJustMine(isChecked)}
                     />
 
-                    {props.editDisabled && props.deleteDisabled &&
+                    {props.superUserPermission && props.editDisabled && props.deleteDisabled &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Add' }}
                             className={classNames.cmdBtn}
@@ -136,7 +138,7 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
                             onClick={props.onAdd}
                         />}
 
-                    {props.editDisabled && props.deleteDisabled &&
+                    {props.superUserPermission && props.editDisabled && props.deleteDisabled &&
                         <CommandBarButton
                             iconProps={{ iconName: 'BuildQueueNew' }}
                             className={classNames.cmdBtn}
@@ -144,7 +146,7 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
                             onClick={props.onImport}
                         />}
 
-                    {(props.editDisabled === false) &&
+                    {props.superUserPermission && (props.editDisabled === false) &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Edit' }}
                             className={classNames.cmdBtn}
@@ -154,7 +156,7 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
 
 
 
-                    {(props.deleteDisabled === false) &&
+                    {props.superUserPermission && (props.deleteDisabled === false) &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Delete' }}
                             className={classNames.cmdBtn}

@@ -27,9 +27,12 @@ export interface IPeriodUpdateTabProps extends types.IBaseComponentProps {
     //onSavedAndClose?: () => void;
     //parentTitle: string;
     onShowList: () => void;
-    //isViewOnly: boolean;
+    isViewOnly: boolean;
 
     //onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
+
+    //superUserPermission:boolean;
+    //assigneePermission:boolean;
 }
 
 export interface ILookupData {
@@ -325,6 +328,7 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
             <div>
 
                 {
+                    (this.props.isViewOnly === false) &&
                     <React.Fragment>
                         {(this.state.HideNextButton === false) && <PrimaryButton text="Save &amp; Next" className={styles.formButton} style={{ marginRight: '5px' }}
                             onClick={() => this.saveData(true)}
@@ -342,7 +346,7 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
                     </React.Fragment>
                 }
 
-                {/* {(this.props.isViewOnly === true) &&
+                {(this.props.isViewOnly === true) &&
                     <div style={{ marginTop: '20px' }}>
                         {(this.state.HideNextButton === false) && <PrimaryButton text="Next" className={styles.formButton} style={{ marginRight: '5px' }}
                             onClick={() => this.showNext()}
@@ -352,7 +356,7 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
                             onClick={this.props.onShowList}
                         />
                     </div>
-                } */}
+                }
 
             </div>
         );

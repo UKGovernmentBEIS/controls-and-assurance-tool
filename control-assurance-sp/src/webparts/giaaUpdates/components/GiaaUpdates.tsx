@@ -62,6 +62,7 @@ export interface IGiaaUpdatesState extends types.IUserContextWebPartState {
   RecList_SelectedId: number;
   RecList_SelectedTitle: string;
   RecList_FilteredItems: any[];
+  RecList_SelectedItem_ActionOwnerPermission:boolean;
 
   RecList_IncompleteOnly: boolean;
   RecList_JustMine: boolean;
@@ -96,6 +97,7 @@ export class GiaaUpdatesState extends types.UserContextWebPartState implements I
   public RecList_SelectedId: number;
   public RecList_SelectedTitle: string;
   public RecList_FilteredItems: any[];
+  public RecList_SelectedItem_ActionOwnerPermission:boolean = false;
 
   public RecList_IncompleteOnly = false;
   public RecList_JustMine = false;
@@ -191,6 +193,7 @@ export default class GiaaUpdates extends BaseUserContextWebPartComponent<types.I
                 onChangeJustMine={this.handleSection1_ChangeJustMine}
                 onMainSaved={this.handleMainFormSaved}
                 mainListsSaveCounter={this.state.MainListsSaveCounter}
+                superUserPermission={this.isSuperUser()}
                 {...this.props}
               />
 
@@ -213,6 +216,7 @@ export default class GiaaUpdates extends BaseUserContextWebPartComponent<types.I
                 onChangeJustMine={this.handleSection2_ChangeJustMine}
                 onMainSaved={this.handleMainFormSaved}
                 mainListsSaveCounter={this.state.MainListsSaveCounter}
+                superUserPermission={this.isSuperUser()}
                 {...this.props}
               />
 
@@ -278,6 +282,8 @@ export default class GiaaUpdates extends BaseUserContextWebPartComponent<types.I
         onChangeJustMine={this.handleRecList_ChangeJustMine}
         onChangeActionStatusType={this.handleRecList_ChangeActionStatusType}
 
+        superUserPermission={this.isSuperUser()}
+
         {...this.props}
       />
 
@@ -301,6 +307,10 @@ export default class GiaaUpdates extends BaseUserContextWebPartComponent<types.I
         recListActionStatusTypeId={this.state.RecList_ActionStatusTypeId}
 
         onChangeMainListID={this.handleSection_MainListChangeSelectedID}
+
+        superUserPermission={this.isSuperUser()}
+        giaaStaffPermission={this.isGIAAStaff()}
+        actionOwnerPermission={this.state.RecList_SelectedItem_ActionOwnerPermission}
 
         {...this.props}
       />
@@ -379,13 +389,40 @@ export default class GiaaUpdates extends BaseUserContextWebPartComponent<types.I
 
   //#region Permissions
 
+  private getCurrentUserId = ():number =>{
+    let userId:number = 0;
+    if(this.state.User){
+      userId = this.state.User.ID;
+    }
+
+    return userId;
+  }
+
   private isSuperUser(): boolean {
     //super user/SysManager check
     let ups = this.state.UserPermissions;
+    //console.log('ups is: ', ups);
     for (let i = 0; i < ups.length; i++) {
+      
       let up: IUserPermission = ups[i];
-      if (up.PermissionTypeId == 1 || up.PermissionTypeId == 6) {
-        //super user or sys manager
+      console.log('in isSuperUser loop', ups);
+      if (up.PermissionTypeId == 1 || up.PermissionTypeId == 7) {
+        //super user or giaa super user
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  private isGIAAStaff(): boolean {
+
+    let ups = this.state.UserPermissions;
+    for (let i = 0; i < ups.length; i++) {
+      
+      let up: IUserPermission = ups[i];
+      if (up.PermissionTypeId == 4) {
+        //giaa staff
         return true;
       }
     }
@@ -537,11 +574,41 @@ export default class GiaaUpdates extends BaseUserContextWebPartComponent<types.I
 
   private handle_RecListItemTitleClick = (ID: number, title: string, filteredItems: any[]): void => {
 
+    const currentUderId:number = this.getCurrentUserId();
+    console.log('on rec list current user id ', currentUderId);
     console.log('on rec list item title click ', ID, title, filteredItems);
+
+    let actionOwnerPermission:boolean = false;
+
+    const currentRec = filteredItems.filter(x => x['ID'] === ID);
+    //console.log('currectRec', currentRec);
+    let ownerIdsStr:string = "";
+    if(currentRec.length > 0){
+      ownerIdsStr = currentRec[0]["OwnerIds"];
+      //console.log('ownerIdsStr', ownerIdsStr);
+      const ownerIdsArr:string[] = ownerIdsStr.split(',');
+      //console.log('ownerIdsArr', ownerIdsArr);
+
+
+      
+      for (let i = 0; i < ownerIdsArr.length; i++) {
+      
+        let ownerId:number = Number(ownerIdsArr[i]);
+        if(ownerId === currentUderId){
+          actionOwnerPermission = true;
+          break;
+        }
+      }
+    }
+
+    console.log('action owner permission', actionOwnerPermission);
+
+
     this.setState({
       SelectedPivotKey: this.headerTxt_ActionUpdatesTab,
       RecList_SelectedId: ID,
       RecList_SelectedTitle: title,
+      RecList_SelectedItem_ActionOwnerPermission: actionOwnerPermission,
       RecList_FilteredItems: filteredItems
     });
   }

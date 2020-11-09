@@ -68,6 +68,8 @@ export interface INaoUpdatesState extends types.IUserContextWebPartState {
   Section1UpdateStatus: string;
   Section2UpdateStatus: string;
 
+  RecList_SelectedItem_ViewOnly:boolean;
+
 }
 export class NaoUpdatesState extends types.UserContextWebPartState implements INaoUpdatesState {
   public LookupData = new LookupData();
@@ -102,6 +104,8 @@ export class NaoUpdatesState extends types.UserContextWebPartState implements IN
 
   public Section1UpdateStatus: string = null;
   public Section2UpdateStatus: string = null;
+
+  public RecList_SelectedItem_ViewOnly = false;
 
   constructor() {
     super();
@@ -195,6 +199,7 @@ export default class NaoUpdates extends BaseUserContextWebPartComponent<types.IW
                 onChangeJustMine={this.handleSection1_ChangeJustMine}
                 onMainSaved={this.handleMainFormSaved}
                 mainListsSaveCounter={this.state.MainListsSaveCounter}
+                superUserPermission={this.isSuperUser()}
                 {...this.props}
               />
 
@@ -215,6 +220,7 @@ export default class NaoUpdates extends BaseUserContextWebPartComponent<types.IW
                 onChangeJustMine={this.handleSection2_ChangeJustMine}
                 onMainSaved={this.handleMainFormSaved}
                 mainListsSaveCounter={this.state.MainListsSaveCounter}
+                superUserPermission={this.isSuperUser()}
                 {...this.props}
               />
 
@@ -271,6 +277,8 @@ export default class NaoUpdates extends BaseUserContextWebPartComponent<types.IW
         //isViewOnly={this.isViewOnlyGoForm()}
         onItemTitleClick={this.handleSection1_RecListItemTitleClick}
         onShowList={this.handleShowListSection1}
+        superUserPermission={this.isSuperUser()}
+        dgOrDGMemberPermission={this.isDG_Or_DGMember()}
         {...this.props}
       />
 
@@ -286,6 +294,8 @@ export default class NaoUpdates extends BaseUserContextWebPartComponent<types.IW
         naoPeriodId={this.state.PeriodId}
         filteredItems={this.state.Section1_RecList_FilteredItems}
         onShowList={this.handleShowSection1RecList}
+        
+        isViewOnly={this.state.RecList_SelectedItem_ViewOnly}
         {...this.props}
       />
 
@@ -378,19 +388,64 @@ export default class NaoUpdates extends BaseUserContextWebPartComponent<types.IW
 
   //#region Permissions
 
+  private getCurrentUserId = ():number =>{
+    let userId:number = 0;
+    if(this.state.User){
+      userId = this.state.User.ID;
+    }
+
+    return userId;
+  }
+  
+  
   private isSuperUser(): boolean {
     //super user/SysManager check
     let ups = this.state.UserPermissions;
     for (let i = 0; i < ups.length; i++) {
       let up: IUserPermission = ups[i];
-      if (up.PermissionTypeId == 1 || up.PermissionTypeId == 6) {
-        //super user or sys manager
+      if (up.PermissionTypeId == 1 || up.PermissionTypeId == 8) {
+        //super user or nao super user
         return true;
       }
     }
 
     return false;
   }
+
+
+
+  private isDG_Or_DGMember(): boolean{
+
+    //Archived Period check - dont allow if period is archived
+    // if(this.state.IsArchivedPeriod === true)
+    //   return false;
+
+    //DirectorateGroups check
+    if(this.state.DirectorateGroups.length > 0){
+      return true;
+    }
+     
+    //DirectorateGroup member check
+    let dgms = this.state.DirectorateGroupMembers;
+    for(let i=0; i<dgms.length; i++){
+      let dgm: types.IDirectorateGroupMember = dgms[i];
+      if(this.state.DirectorateGroupId === dgm.DirectorateGroupID){
+        if(dgm.ViewOnly === true){
+          return false;
+        }
+        else{
+          //may need is admin check here
+          return true;
+        }  
+      }
+
+    }
+
+    return false;
+  }
+
+
+
 
   // private isViewOnlyGoForm = () :boolean => {
 
@@ -497,11 +552,47 @@ export default class NaoUpdates extends BaseUserContextWebPartComponent<types.IW
 
   private handleSection1_RecListItemTitleClick = (ID: number, title: string, filteredItems: any[]): void => {
 
+    const currentUderId:number = this.getCurrentUserId();
+    console.log('on rec list current user id ', currentUderId);
     console.log('on rec list item title click ', ID, title, filteredItems);
+
+
+    let assigneePermission:boolean = false;
+    const currentRec = filteredItems.filter(x => x['ID'] === ID);
+    //console.log('currectRec', currentRec);
+    let assignedToIdsStr:string = "";
+    if(currentRec.length > 0){
+      assignedToIdsStr = currentRec[0]["AssignedToIds"];
+      //console.log('ownerIdsStr', ownerIdsStr);
+      const assignedToIdsArr:string[] = assignedToIdsStr.split(',');
+      //console.log('ownerIdsArr', ownerIdsArr);
+
+
+      
+      for (let i = 0; i < assignedToIdsArr.length; i++) {
+      
+        let assigneeId:number = Number(assignedToIdsArr[i]);
+        if(assigneeId === currentUderId){
+          assigneePermission = true;
+          break;
+        }
+      }
+    }
+
+    console.log('assignee permission', assigneePermission);
+
+    let recList_SelectedItem_ViewOnly:boolean = true;
+    if(this.isSuperUser() === true || assigneePermission === true){
+      recList_SelectedItem_ViewOnly = false;
+    }
+
+    console.log('recList_SelectedItem_ViewOnly', recList_SelectedItem_ViewOnly);
+
     this.setState({
       SelectedPivotKey: this.headerTxt_PeriodUpdateTab,
       Section1_RecList_SelectedId: ID,
       Section1_RecList_SelectedTitle: title,
+      RecList_SelectedItem_ViewOnly: recList_SelectedItem_ViewOnly,
       Section1_RecList_FilteredItems: filteredItems
     });
   }

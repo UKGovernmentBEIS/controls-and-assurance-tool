@@ -36,6 +36,10 @@ export interface IActionUpdatesTabProps extends types.IBaseComponentProps {
     onShowList: () => void;
     //isViewOnly: boolean;
 
+    superUserPermission:boolean;
+    giaaStaffPermission:boolean;
+    actionOwnerPermission:boolean;
+
 
 }
 
@@ -202,6 +206,9 @@ export default class ActionUpdatesTab extends React.Component<IActionUpdatesTabP
                             onError={this.props.onError}
                             filterText={this.state.ListFilterText}
                             onChangeFilterText={this.handle_ChangeFilterText}
+                            superUserPermission={this.props.superUserPermission}
+                            giaaStaffPermission={this.props.giaaStaffPermission}
+                            actionOwnerPermission={this.props.actionOwnerPermission}
 
                         />
                     </div>

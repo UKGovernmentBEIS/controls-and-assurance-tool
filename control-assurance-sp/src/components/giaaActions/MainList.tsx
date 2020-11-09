@@ -31,6 +31,8 @@ export interface IMainListProps extends types.IBaseComponentProps {
     onMainSaved: () => void;
     mainListsSaveCounter: number;
 
+    superUserPermission: boolean;
+
 }
 
 export interface IMainListState<T> {
@@ -276,6 +278,7 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
                 onDelete={this.checkDelete}
                 editDisabled={!this.state.EnableEdit}
                 deleteDisabled={!this.state.EnableDelete}
+                superUserPermission={this.props.superUserPermission}
 
 
             />

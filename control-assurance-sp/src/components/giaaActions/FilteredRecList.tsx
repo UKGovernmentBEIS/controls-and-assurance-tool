@@ -86,6 +86,8 @@ export interface IFilteredRecListProps {
     editDisabled: boolean;
     deleteDisabled: boolean;
 
+    superUserPermission:boolean;
+
     //onAdd: () => void;
     //onAssign: () => void;
     //onDelete: () => void;
@@ -153,7 +155,7 @@ export class FilteredRecList extends React.Component<IFilteredRecListProps, IFil
                         style={filterDrpsStyle}
                     />
 
-                    {props.editDisabled && props.deleteDisabled &&
+                    {props.superUserPermission && props.editDisabled && props.deleteDisabled &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Add' }}
                             className={classNames.cmdBtn}
@@ -161,7 +163,7 @@ export class FilteredRecList extends React.Component<IFilteredRecListProps, IFil
                             onClick={props.onAdd}
                         />}
 
-                    {(props.editDisabled === false) &&
+                    {props.superUserPermission && (props.editDisabled === false) &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Edit' }}
                             className={classNames.cmdBtn}
@@ -171,7 +173,7 @@ export class FilteredRecList extends React.Component<IFilteredRecListProps, IFil
 
 
 
-                    {(props.deleteDisabled === false) &&
+                    {props.superUserPermission && (props.deleteDisabled === false) &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Delete' }}
                             className={classNames.cmdBtn}

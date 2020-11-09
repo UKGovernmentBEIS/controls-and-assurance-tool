@@ -154,5 +154,72 @@ namespace ControlAssuranceAPI.Repositories
             return false;
         }
 
+        protected bool GIAA_SuperUserOrGIAAStaff(int userId)
+        {
+            bool superUser = false;
+            bool giaaSuperUser = false;
+            bool giaaStaff = false;
+            //bool externalUser = false;
+
+            var userPermissions = db.UserPermissions.Where(up => up.UserId == userId).ToList();
+            foreach (var permissioin in userPermissions)
+            {
+                if (permissioin.PermissionTypeId == 1)
+                {
+                    superUser = true;
+                }
+                if (permissioin.PermissionTypeId == 4) //Giaa Staff
+                {
+                    giaaStaff = true;
+                }
+                else if (permissioin.PermissionTypeId == 7) //Giaa Super User
+                {
+                    giaaSuperUser = true;
+                }
+
+            }
+
+            if (superUser == true || giaaStaff == true || giaaSuperUser == true)
+                return true;
+
+            return false;
+        }
+
+        protected bool NAO_SuperUserOrStaff(int userId, out bool naoStaff, out bool pacStaff)
+        {
+            bool superUser = false;
+            bool naoSuperUser = false;
+            naoStaff = false;
+            pacStaff = false;
+            //bool externalUser = false;
+
+            var userPermissions = db.UserPermissions.Where(up => up.UserId == userId).ToList();
+            foreach (var permissioin in userPermissions)
+            {
+                if (permissioin.PermissionTypeId == 1)
+                {
+                    superUser = true;
+                }
+                if (permissioin.PermissionTypeId == 8) //NAO Super user
+                {
+                    naoSuperUser = true;
+                }
+                else if (permissioin.PermissionTypeId == 9) //NAO Staff
+                {
+                    naoStaff = true;
+                }
+                else if (permissioin.PermissionTypeId == 10) //PAC Staff
+                {
+                    pacStaff = true;
+                }
+
+            }
+
+            if (superUser == true || naoSuperUser == true || naoStaff == true || pacStaff == true)
+                return true;
+
+            return false;
+        }
+
     }
 }
