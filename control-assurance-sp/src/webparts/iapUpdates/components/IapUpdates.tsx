@@ -61,7 +61,7 @@ export class IapUpdatesState extends types.UserContextWebPartState implements II
 
   public SelectedUserIds: number[] = [];
   //public DirectorateGroupId: string | number = 0;
-  public SelectedPivotKey = "Individual Action Plans"; //default, 1st tab selected
+  public SelectedPivotKey = "Management Action Plans"; //default, 1st tab selected
 
   public Section1_IsOpen: boolean = false;
   public Section1_MainList_ListFilterText: string = null;
@@ -92,7 +92,7 @@ export default class IapUpdates extends BaseUserContextWebPartComponent<types.IW
   //private userService: services.UserService = new services.UserService(this.props.spfxContext, this.props.api);
 
   //private isDefultUserSet:boolean = false;
-  private readonly headerTxt_MainTab: string = "Individual Action Plans";
+  private readonly headerTxt_MainTab: string = "Management Action Plans";
   private readonly headerTxt_ActionUpdatesTab: string = "Action Updates";
 
 
@@ -352,7 +352,7 @@ export default class IapUpdates extends BaseUserContextWebPartComponent<types.IW
     console.log('tab clicked', item);
     this.clearErrors();
     //following conditoin is to resolved bug in the users picker, so by closing a section and opening again resolves the bug
-    if(item.props.headerText === "Individual Action Plans"){
+    if(item.props.headerText === "Management Action Plans"){
       if(this.state.Section1_IsOpen === true){
         this.setState({ SelectedPivotKey: item.props.headerText, Section1_IsOpen: false }, this.handleSection1_toggleOpen);
       }
