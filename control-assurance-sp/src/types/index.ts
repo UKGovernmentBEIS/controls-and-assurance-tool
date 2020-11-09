@@ -60,6 +60,7 @@ export { IGIAAImport, IGIAAImportInfo, GIAAImport } from './GIAAImport';
 
 export { IIAPDefForm } from './IAPDefForm';
 export { IIAPAction, IAPAction } from './IAPAction';
+export { IIAPUpdate, IAPUpdate } from './IAPUpdate';
 export { IIAPAssignment, IAPAssignment } from './IAPAssignment';
 export { IIAPActionUpdate, IAPActionUpdate } from './IAPActionUpdate';
 export { IIAPActionDirectorate, IAPActionDirectorate } from './IAPActionDirectorate';
