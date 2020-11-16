@@ -18,11 +18,11 @@ export class LookupData implements ILookupData {
   //public Periods: IPeriod[] = [];
 }
 
-export interface INaoSettingsState extends types.IUserContextWebPartState {
+export interface IIapPropertiesState extends types.IUserContextWebPartState {
   LookupData: ILookupData;
 
 }
-export class NaoSettingsState extends types.UserContextWebPartState implements INaoSettingsState {
+export class IapPropertiesState extends types.UserContextWebPartState implements IIapPropertiesState {
   public LookupData = new LookupData();
   constructor() {
     super();
@@ -31,12 +31,12 @@ export class NaoSettingsState extends types.UserContextWebPartState implements I
 
 //#endregion types defination
 
-export default class NaoSettings extends BaseUserContextWebPartComponent<types.IWebPartComponentProps, NaoSettingsState> {
+export default class IapProperties extends BaseUserContextWebPartComponent<types.IWebPartComponentProps, IapPropertiesState> {
 
   private periodService: services.PeriodService = new services.PeriodService(this.props.spfxContext, this.props.api);
   constructor(props: types.IWebPartComponentProps) {
     super(props);
-    this.state = new NaoSettingsState();
+    this.state = new IapPropertiesState();
   }
 
   //#region Render
@@ -46,9 +46,7 @@ export default class NaoSettings extends BaseUserContextWebPartComponent<types.I
     return (
 
       <Pivot onLinkClick={this.clearErrors}>
-        <PivotItem headerText="Periods">
-          {this.renderCustomPeriodsList()}
-        </PivotItem>
+
         <PivotItem headerText="Define Form">
           {this.renderDefForms()}
         </PivotItem>
@@ -58,71 +56,7 @@ export default class NaoSettings extends BaseUserContextWebPartComponent<types.I
   }
 
 
-  private renderCustomPeriodsList() {
 
-    const listColumns: IGenColumn[] = [
-      {
-        key: '1',
-        columnType: ColumnType.TextBox,
-        name: 'Name',
-        fieldName: 'Title',
-        minWidth: 150,
-        isResizable: true,
-        isRequired: true,
-        fieldMaxLength: 50,
-
-      },
-      {
-        key: '2',
-        columnType: ColumnType.TextBox,
-        columnDisplayType: ColumnDisplayType.ListOnly,
-        name: 'Period Status',
-        fieldName: 'PeriodStatus',
-        minWidth: 150,
-        isResizable: true,
-        fieldMaxLength: 50,
-      },
-      {
-        key: '3',
-        columnType: ColumnType.DatePicker,
-        name: 'Start Date',
-        fieldName: 'PeriodStartDate',
-        minWidth: 150,
-        isResizable: true,
-        isRequired: true,
-        fieldMaxLength: 50,
-      },
-      {
-        key: '4',
-        columnType: ColumnType.DatePicker,
-        name: 'End Date',
-        fieldName: 'PeriodEndDate',
-        minWidth: 150,
-        isResizable: true,
-        isRequired: true,
-        fieldMaxLength: 50,
-      },
-
-    ];
-
-    return (
-      <React.Fragment>
-        <PeriodList
-          allowAdd={this.allowAdd_Periods()}
-          columns={listColumns}
-          {...this.props}
-          onError={this.onError}
-          entityService={new services.NAOPeriodService(this.props.spfxContext, this.props.api)}
-          entityNamePlural="NAO Periods"
-          entityNameSingular="Period"
-          childEntityNameApi=""
-          childEntityNamePlural=""
-          childEntityNameSingular=""
-        />
-
-      </React.Fragment>
-    );
-  }
 
   private renderDefForms() {
 
@@ -166,7 +100,7 @@ export default class NaoSettings extends BaseUserContextWebPartComponent<types.I
           columns={listColumns}
           {...this.props}
           onError={this.onError}
-          entityService={new services.NAODefFormService(this.props.spfxContext, this.props.api)}
+          entityService={new services.IAPDefFormService(this.props.spfxContext, this.props.api)}
           entityNamePlural="Define Form"
           entityNameSingular="Define Form"
           childEntityNameApi=""
@@ -198,7 +132,7 @@ export default class NaoSettings extends BaseUserContextWebPartComponent<types.I
     
     for (let i = 0; i < ups.length; i++) {
       let up: IUserPermission = ups[i];
-      if (up.PermissionTypeId == 1 || up.PermissionTypeId == 8) {
+      if (up.PermissionTypeId == 1 || up.PermissionTypeId == 11) {
         //super user or sys manager
         return true;
       }
@@ -207,9 +141,6 @@ export default class NaoSettings extends BaseUserContextWebPartComponent<types.I
     return false;
   }
 
-  private allowAdd_Periods(): boolean {
-    return this.superUserOrSysManagerPermission();
-  }
 
   //#endregion Permissions
 

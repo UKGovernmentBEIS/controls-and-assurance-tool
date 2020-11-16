@@ -157,6 +157,7 @@ export class EntityForm extends BaseForm<types.IEntityFormProps, types.ICrFormSt
     }
 
     protected renderTagPicker(c: IGenColumn) {
+
         const d = this.state.LookupData[c.parentEntityName];
         if (d) {
             return (
@@ -177,6 +178,7 @@ export class EntityForm extends BaseForm<types.IEntityFormProps, types.ICrFormSt
         }
         else
             return null;
+
     }
 
     protected renderCheckbox(c: IGenColumn) {

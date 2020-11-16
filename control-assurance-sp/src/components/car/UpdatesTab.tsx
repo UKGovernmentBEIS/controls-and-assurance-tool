@@ -374,6 +374,7 @@ export default class UpdatesTab extends React.Component<IUpdatesTabProps, IUpdat
     private renderSectionAQuestion(question: string, responseDetails: string, val: string, formDataProperty: string, userHelpId?: number) {
         if (question != null && question != "") {
             //let responseDetails:string = "Yes>Yes, No>No, N/A>NA, adnan>1, tas>2";
+            //Yes>Substantial, No>Unsatisfactory, N/A>NA, Moderate>Moderate, Limited>Limited - New System B values text can be anything but values should be 1 of these like Substantial
             let arrResponses: string[] = responseDetails.split(',');
             let arrR2: any[] = [];
             arrResponses.map(x => {

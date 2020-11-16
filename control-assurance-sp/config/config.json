@@ -177,6 +177,22 @@
           "manifest": "./src/webparts/giaaReport/GiaaReportWebPart.manifest.json"
         }
       ]
+    },
+    "giaa-properties-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/giaaProperties/GiaaPropertiesWebPart.js",
+          "manifest": "./src/webparts/giaaProperties/GiaaPropertiesWebPart.manifest.json"
+        }
+      ]
+    },
+    "iap-properties-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/iapProperties/IapPropertiesWebPart.js",
+          "manifest": "./src/webparts/iapProperties/IapPropertiesWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {},
@@ -202,6 +218,8 @@
     "NaoReportWebPartStrings": "lib/webparts/naoReport/loc/{locale}.js",
     "NaoSettingsWebPartStrings": "lib/webparts/naoSettings/loc/{locale}.js",
     "IapReportWebPartStrings": "lib/webparts/iapReport/loc/{locale}.js",
-    "GiaaReportWebPartStrings": "lib/webparts/giaaReport/loc/{locale}.js"
+    "GiaaReportWebPartStrings": "lib/webparts/giaaReport/loc/{locale}.js",
+    "GiaaPropertiesWebPartStrings": "lib/webparts/giaaProperties/loc/{locale}.js",
+    "IapPropertiesWebPartStrings": "lib/webparts/iapProperties/loc/{locale}.js"
   }
 }

@@ -51,7 +51,7 @@ export default class IAPWelcome extends BaseUserContextWebPartComponent<types.IW
     return(
   
       <Pivot onLinkClick={this.clearErrors}>
-        <PivotItem headerText="Individual Action Plans - Welcome">
+        <PivotItem headerText="Management Action Plans - Welcome">
           {this.renderWelcome()}
         </PivotItem> 
 

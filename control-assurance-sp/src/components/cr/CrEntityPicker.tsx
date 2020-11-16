@@ -57,11 +57,27 @@ export class CrEntityPicker extends React.Component<ICrEntityPickerProps, ICrEnt
     }
 
     private loadSelectedEntities(entitiyIds: number[], entities: types.IEntity[]): void {
-        let selectedEntities = entitiyIds.map((entityId) => {
+
+
+        // let selectedEntities = entitiyIds.map((entityId) => {
+        //     let entity = entities.filter((e) => { return e.ID === entityId; });
+        //     return entity.length > 0 ? this.entityToTag(entity[0]) : null;
+
+        // });
+        // this.setState({ SelectedEntities: selectedEntities });
+
+        //changed above code with the following to avoid null err
+        
+        let selectedEntities: ITag[] = [];
+        entitiyIds.map((entityId) => {
             let entity = entities.filter((e) => { return e.ID === entityId; });
-            return entity.length > 0 ? this.entityToTag(entity[0]) : null;
+            if(entity.length > 0){
+                selectedEntities.push(this.entityToTag(entity[0]));
+            }
         });
+
         this.setState({ SelectedEntities: selectedEntities });
+        
     }
 
     private resolveEntity(filterText: string, tagList: ITag[]): ITag[] {
@@ -78,6 +94,7 @@ export class CrEntityPicker extends React.Component<ICrEntityPickerProps, ICrEnt
     }
 
     private entityToTag(entity: types.IEntity): ITag {
+
         if(this.props.displayForUser === true)
         {
             return { key: entity.ID.toString(), name: `${entity.Title} (${entity["Username"]})` };
@@ -85,7 +102,9 @@ export class CrEntityPicker extends React.Component<ICrEntityPickerProps, ICrEnt
         else
         {
             return { key: entity.ID.toString(), name: entity.Title };
+            
         }
+
         
         
     }

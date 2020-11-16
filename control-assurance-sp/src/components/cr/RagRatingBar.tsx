@@ -51,7 +51,10 @@ export class RagRatingBar extends React.Component<IRagRatingBarProps, {}> {
 
 
 
-        const noDataPercent: number = 100 - (color1Percentage + color2Percentage + color3Percentage + color4Percentage + color5Percentage);
+        let noDataPercent: number = 100 - (color1Percentage + color2Percentage + color3Percentage + color4Percentage + color5Percentage);
+        if(noDataPercent < 0){
+            noDataPercent = 0;
+        }
 
         return (
             <div>

@@ -140,6 +140,18 @@ namespace ControlAssuranceAPI.Repositories
                                 SectionBQuestion2HelpId = currentDefElement.SectionBQuestion2HelpId,
                                 SectionBQuestion3HelpId = currentDefElement.SectionBQuestion3HelpId,
                                 DefElementGroupId = newDefElementGroup.ID,
+
+                                SectionAQ1ResponseDetails = currentDefElement.SectionAQ1ResponseDetails,
+                                SectionAQ2ResponseDetails = currentDefElement.SectionAQ2ResponseDetails,
+                                SectionAQ3ResponseDetails = currentDefElement.SectionAQ3ResponseDetails,
+                                SectionAQ4ResponseDetails = currentDefElement.SectionAQ4ResponseDetails,
+                                SectionAQ5ResponseDetails = currentDefElement.SectionAQ5ResponseDetails,
+                                SectionAQ6ResponseDetails = currentDefElement.SectionAQ6ResponseDetails,
+                                SectionAQ7ResponseDetails = currentDefElement.SectionAQ7ResponseDetails,
+                                SectionAQ8ResponseDetails = currentDefElement.SectionAQ8ResponseDetails,
+                                SectionAQ9ResponseDetails = currentDefElement.SectionAQ9ResponseDetails,
+                                SectionAQ10ResponseDetails = currentDefElement.SectionAQ10ResponseDetails,
+                                 
                                 PeriodId = newPeriod.ID
                             };
 
