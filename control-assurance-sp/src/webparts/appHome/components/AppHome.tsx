@@ -58,7 +58,7 @@ export default class AppHome extends BaseUserContextWebPartComponent<types.IWebP
           <div style={{ marginTop: '20px', marginRight: '20px', width: '250px' }}>
             <div style={{ textAlign: 'center', color: 'white', backgroundColor: 'rgb(122,116,117)', fontSize: '35px', height: '270px', borderBottom: '1px solid white' }}>
               <img src={this.individualActionAppHomeImg}></img>
-              <div>Individual Action Plans</div>
+              <div>Management Action Plans</div>
             </div>
             <div style={{ backgroundColor: 'rgb(122,116,117)', textAlign: 'center', padding: '10px', cursor: 'pointer' }} onClick={this.handleIndividualActionClick} >
               <a style={{ color: 'white', fontSize: '25px', textDecoration: 'none' }} >Start</a>
