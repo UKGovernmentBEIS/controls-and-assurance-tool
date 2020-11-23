@@ -216,8 +216,8 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
     let ups = this.state.UserPermissions;
     for(let i=0; i<ups.length; i++){
       let up: IUserPermission = ups[i];
-       if(up.PermissionTypeId == 1 || up.PermissionTypeId == 2){
-         //super user or sys manager
+       if(up.PermissionTypeId == 1 || up.PermissionTypeId == 5 || up.PermissionTypeId == 6 || up.PermissionTypeId == 7 || up.PermissionTypeId == 8 || up.PermissionTypeId == 11){
+         //any super user is allowed to add/edit/del users
          return true;
        }
     }
@@ -231,10 +231,10 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
     let ups = this.state.UserPermissions;
     for(let i=0; i<ups.length; i++){
       let up: IUserPermission = ups[i];
-       if(up.PermissionTypeId == 1 || up.PermissionTypeId == 2){
-         //super user or sys manager
-         return true;
-       }
+      if(up.PermissionTypeId == 1 || up.PermissionTypeId == 5 || up.PermissionTypeId == 6 || up.PermissionTypeId == 7 || up.PermissionTypeId == 8 || up.PermissionTypeId == 11){
+        //any super user is allowed to add/edit/del users
+        return true;
+      }
     }
 
     return false;

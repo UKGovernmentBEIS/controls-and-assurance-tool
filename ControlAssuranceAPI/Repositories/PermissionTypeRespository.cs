@@ -31,7 +31,7 @@ namespace ControlAssuranceAPI.Repositories
                 int userId = ApiUser.ID;
 
                 bool superUser = false;
-                bool sysManager = false;
+                bool moduleSuperUser = false;
 
                 var userPermissions = db.UserPermissions.Where(up => up.UserId == userId).ToList();
                 foreach (var permissioin in userPermissions)
@@ -40,9 +40,9 @@ namespace ControlAssuranceAPI.Repositories
                     {
                         superUser = true;
                     }
-                    else if (permissioin.PermissionTypeId == 2)
+                    else if (permissioin.PermissionTypeId == 5 || permissioin.PermissionTypeId == 6 || permissioin.PermissionTypeId == 7 || permissioin.PermissionTypeId == 8 || permissioin.PermissionTypeId == 11)
                     {
-                        sysManager = true;
+                        moduleSuperUser = true;
                     }
                 }
 
@@ -50,11 +50,11 @@ namespace ControlAssuranceAPI.Repositories
                 if (superUser == true)
                     return PermissionTypes;
 
-                //if user has sys manager permission then return all permission types apart from super user which id is 1
-                else if(sysManager == true)
+                //if user is a module super user then return all permissons apart from any super user permission
+                else if (moduleSuperUser == true)
                 {
                     return (from pt in db.PermissionTypes
-                            where pt.ID > 1
+                            where pt.ID != 1 && pt.ID != 5 && pt.ID != 6 && pt.ID != 7 && pt.ID != 8 && pt.ID != 11
                             select pt);
                 }
 
@@ -67,6 +67,50 @@ namespace ControlAssuranceAPI.Repositories
                         select pt);
             }
         }
+
+        //public IQueryable<PermissionType> PermissionTypesForUser
+        //{
+        //    get
+        //    {
+        //        int userId = ApiUser.ID;
+
+        //        bool superUser = false;
+        //        bool sysManager = false;
+
+        //        var userPermissions = db.UserPermissions.Where(up => up.UserId == userId).ToList();
+        //        foreach (var permissioin in userPermissions)
+        //        {
+        //            if (permissioin.PermissionTypeId == 1)
+        //            {
+        //                superUser = true;
+        //            }
+        //            else if (permissioin.PermissionTypeId == 2)
+        //            {
+        //                sysManager = true;
+        //            }
+        //        }
+
+        //        //if user has superUser permissoin then return all
+        //        if (superUser == true)
+        //            return PermissionTypes;
+
+        //        //if user has sys manager permission then return all permission types apart from super user which id is 1
+        //        else if(sysManager == true)
+        //        {
+        //            return (from pt in db.PermissionTypes
+        //                    where pt.ID > 1
+        //                    select pt);
+        //        }
+
+
+
+
+        //        //At the end if we reach here then return no data
+        //        return (from pt in db.PermissionTypes
+        //                where false
+        //                select pt);
+        //    }
+        //}
 
         public PermissionType Find(int keyValue)
         {

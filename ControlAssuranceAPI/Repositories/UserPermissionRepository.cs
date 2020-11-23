@@ -30,7 +30,7 @@ namespace ControlAssuranceAPI.Repositories
             int userId = ApiUser.ID;
 
             bool superUser = false;
-            bool sysManager = false;
+            bool moduleSuperUser = false;
 
             var userPermissions = db.UserPermissions.Where(up => up.UserId == userId).ToList();
             foreach (var permissioin in userPermissions)
@@ -39,29 +39,73 @@ namespace ControlAssuranceAPI.Repositories
                 {
                     superUser = true;
                 }
-                else if (permissioin.PermissionTypeId == 2)
+                else if (permissioin.PermissionTypeId == 5 || permissioin.PermissionTypeId == 6 || permissioin.PermissionTypeId == 7 || permissioin.PermissionTypeId == 8 || permissioin.PermissionTypeId == 11)
                 {
-                    sysManager = true;
+                    moduleSuperUser = true;
                 }
             }
 
             if (superUser == true)
                 return true;
 
-            else if(sysManager == true)
+            else if (moduleSuperUser == true)
             {
-                var sysManagerQry = (from up in db.UserPermissions
-                                     where up.ID == key && up.UserId == userId && up.PermissionTypeId > 1
-                                     select up);
-
-                int count = sysManagerQry.Count();
-                if (count > 0)
+                var userPermission = db.UserPermissions.FirstOrDefault(up => up.ID == key);
+                //module super user can't edit/del any UserPermission of type Super User (main super user or module super user)
+                if (userPermission.PermissionTypeId == 1 || userPermission.PermissionTypeId == 5 || userPermission.PermissionTypeId == 6 || userPermission.PermissionTypeId == 7 || userPermission.PermissionTypeId == 8 || userPermission.PermissionTypeId == 11)
+                {
+                    return false;
+                }
+                else
+                {
                     return true;
+                }
+
             }
 
             return false;
 
         }
+
+
+        //public bool CheckEditDelPermission(int key)
+        //{
+        //    //db.Database.Log = s => System.Diagnostics.Debug.WriteLine(s);
+        //    int userId = ApiUser.ID;
+
+        //    bool superUser = false;
+        //    bool sysManager = false;
+
+        //    var userPermissions = db.UserPermissions.Where(up => up.UserId == userId).ToList();
+        //    foreach (var permissioin in userPermissions)
+        //    {
+        //        if (permissioin.PermissionTypeId == 1)
+        //        {
+        //            superUser = true;
+        //        }
+        //        else if (permissioin.PermissionTypeId == 2)
+        //        {
+        //            sysManager = true;
+        //        }
+        //    }
+
+        //    if (superUser == true)
+        //        return true;
+
+        //    else if(sysManager == true)
+        //    {
+        //        var sysManagerQry = (from up in db.UserPermissions
+        //                             where up.ID == key && up.UserId == userId && up.PermissionTypeId > 1
+        //                             select up);
+
+        //        int count = sysManagerQry.Count();
+        //        if (count > 0)
+        //            return true;
+        //    }
+
+        //    return false;
+
+        //}
 
         public UserPermission Find(int keyValue)
         {
