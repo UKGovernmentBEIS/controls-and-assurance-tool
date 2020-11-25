@@ -52,7 +52,7 @@ export class GoReportState extends types.UserContextWebPartState implements IGoR
 export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWebPartComponentProps, GoReportState> {
 
   private goFormService: services.GoFormService = new services.GoFormService(this.props.spfxContext, this.props.api);
-  protected periodService: services.PeriodService = new services.PeriodService(this.props.spfxContext, this.props.api);
+  protected periodService: services.GoPeriodService = new services.GoPeriodService(this.props.spfxContext, this.props.api);
 
 
   constructor(props: types.IWebPartComponentProps) {

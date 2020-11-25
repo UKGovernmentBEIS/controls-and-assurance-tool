@@ -81,7 +81,7 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
 
   protected goDefFormService: services.GoDefFormService = new services.GoDefFormService(this.props.spfxContext, this.props.api);
   private goFormService: services.GoFormService = new services.GoFormService(this.props.spfxContext, this.props.api);
-  protected periodService: services.PeriodService = new services.PeriodService(this.props.spfxContext, this.props.api);
+  protected periodService: services.GoPeriodService = new services.GoPeriodService(this.props.spfxContext, this.props.api);
   protected deirectorateGroupService: services.DirectorateGroupService = new services.DirectorateGroupService(this.props.spfxContext, this.props.api);
 
   private readonly headerTxt_Updates: string = "Governance-Updates";

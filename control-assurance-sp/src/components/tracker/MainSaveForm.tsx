@@ -9,9 +9,9 @@ import { Panel, PanelType } from 'office-ui-fabric-react/lib/Panel';
 import { FormCommandBar } from '../cr/FormCommandBar';
 import { CrEntityPicker } from '../cr/CrEntityPicker';
 import { CrCheckbox } from '../cr/CrCheckbox';
-import { Stack, IStackProps, IStackStyles } from 'office-ui-fabric-react/lib/Stack';
+//import { Stack, IStackProps, IStackStyles } from 'office-ui-fabric-react/lib/Stack';
 import styles from '../../styles/cr.module.scss';
-import { ILink } from 'office-ui-fabric-react/lib/Link';
+//import { ILink } from 'office-ui-fabric-react/lib/Link';
 
 export interface IMainSaveFormProps extends types.IBaseComponentProps {
     //periodID: number | string;
@@ -77,13 +77,12 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
         { ObjectParentProperty: 'NAOPublicationDirectorates', ParentIdProperty: 'NAOPublicationId', ChildIdProperty: 'DirectorateId', ChildService: this.naoPublicationDirectorateService },
     ];
 
-    private stackTokens = { childrenGap: 10 };
-    //private stackStyles: Partial<IStackStyles> = { root: { width: 650 } };
-    private stackStyles: Partial<IStackStyles> = { root: { width: '100%' } };
-    private columnProps: Partial<IStackProps> = {
-        tokens: { childrenGap: 15 },
-        styles: { root: { width: 300 } },
-    };
+    // private stackTokens = { childrenGap: 10 };
+    // private stackStyles: Partial<IStackStyles> = { root: { width: '100%' } };
+    // private columnProps: Partial<IStackProps> = {
+    //     tokens: { childrenGap: 15 },
+    //     styles: { root: { width: 300 } },
+    // };
 
 
     constructor(props: IMainSaveFormProps, state: IMainSaveFormState) {
@@ -118,7 +117,7 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
                 {this.renderNAOTypes()}
                 {this.renderYear()}
                 {this.renderPublicationLink()}
-                {this.renderLinks()}
+                {/* {this.renderLinks()} */}
                 {this.renderContactDetails()}
                 {this.renderIsArchiveCheckbox()}
 
@@ -236,9 +235,22 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
     public renderLinks() {
 
 
-
         return (
             <div>
+
+                <div style={{ display: 'flex' }}>
+                    <div style={{ width: '50%', paddingRight: '5px' }}>
+                        <span>Publication Link Text</span>
+
+                    </div>
+                    <div style={{ width: '50%', paddingLeft: '5px' }}>
+                        <span>Actual URL</span>
+
+                    </div>
+
+                </div>
+
+
                 {this.state.ArrLinks.map((c, i) =>
                     this.renderLink(c, i)
                 )}
@@ -253,19 +265,22 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
     private renderLink(item: ILinkLocalType, index: number) {
 
         return (
-            <div key={`div_renderLink_${index}`}>
-                <Stack key={`stack_renderLink_${index}`} horizontal tokens={this.stackTokens} styles={this.stackStyles}>
-                    <Stack.Item key={`stackItem_renderLink_${index}`} grow={1}>
-                        <CrTextField key={`div_TextField1_${index}`} label="Publication Link Text" value={item.Description}
-                            onChanged={(v) => this.changeTextField_Link(v, index, "Description")} />
-                    </Stack.Item>
-                    <Stack.Item grow={1}>
-                        <CrTextField key={`div_TextField2_${index}`} label="Actual URL" value={item.URL}
-                             onChanged={(v) => this.changeTextField_Link(v, index, "URL")} />
-                    </Stack.Item>
 
-                </Stack>
+            <div key={`div_renderLink_${index}`} style={{ display: 'flex', marginTop:'5px' }}>
+                <div key={`divCol1_renderLink_${index}`} style={{ width: '50%', paddingRight: '5px' }}>
+                    <CrTextField key={`div_TextField1_${index}`} value={item.Description}
+                        onChanged={(v) => this.changeTextField_Link(v, index, "Description")} />
+
+                </div>
+                <div key={`divCol2_renderLink_${index}`} style={{ width: '50%', paddingLeft: '5px' }}>
+
+                    <CrTextField key={`div_TextField2_${index}`} value={item.URL}
+                        onChanged={(v) => this.changeTextField_Link(v, index, "URL")} />
+
+                </div>
+
             </div>
+
         );
     }
     private addBlankLinkItem = () => {
@@ -275,6 +290,26 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
         //const item: ILinkLocalType = { Description: 'des', URL: 'url' };
         //arrCopy.push()
     }
+
+
+    // private renderLink(item: ILinkLocalType, index: number) {
+
+    //     return (
+    //         <div key={`div_renderLink_${index}`}>
+    //             <Stack key={`stack_renderLink_${index}`} horizontal tokens={this.stackTokens} styles={this.stackStyles}>
+    //                 <Stack.Item key={`stackItem_renderLink_${index}`} grow={1}>
+    //                     <CrTextField key={`div_TextField1_${index}`} label="Publication Link Text" value={item.Description}
+    //                         onChanged={(v) => this.changeTextField_Link(v, index, "Description")} />
+    //                 </Stack.Item>
+    //                 <Stack.Item grow={1}>
+    //                     <CrTextField key={`div_TextField2_${index}`} label="Actual URL" value={item.URL}
+    //                          onChanged={(v) => this.changeTextField_Link(v, index, "URL")} />
+    //                 </Stack.Item>
+
+    //             </Stack>
+    //         </div>
+    //     );
+    // }
     // private renderLink(){
     //     return(
     //         <Stack horizontal tokens={this.stackTokens} styles={this.stackStyles}>
@@ -550,16 +585,16 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
         return { ...obj };
     }
 
-    private changeTextField_Link = (value: string, index: number, type:string): void => {
+    private changeTextField_Link = (value: string, index: number, type: string): void => {
         const arrCopy = [...this.state.ArrLinks];
         const item: ILinkLocalType = arrCopy[index];
-        if(type === "Description"){
+        if (type === "Description") {
             item.Description = value;
         }
-        else{
+        else {
             item.URL = value;
         }
-        
+
         this.setState({ ArrLinks: arrCopy });
     }
 
