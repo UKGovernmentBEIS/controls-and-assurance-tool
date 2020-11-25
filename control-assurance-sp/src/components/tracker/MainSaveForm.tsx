@@ -9,7 +9,9 @@ import { Panel, PanelType } from 'office-ui-fabric-react/lib/Panel';
 import { FormCommandBar } from '../cr/FormCommandBar';
 import { CrEntityPicker } from '../cr/CrEntityPicker';
 import { CrCheckbox } from '../cr/CrCheckbox';
+import { Stack, IStackProps, IStackStyles } from 'office-ui-fabric-react/lib/Stack';
 import styles from '../../styles/cr.module.scss';
+import { ILink } from 'office-ui-fabric-react/lib/Link';
 
 export interface IMainSaveFormProps extends types.IBaseComponentProps {
     //periodID: number | string;
@@ -39,6 +41,10 @@ export class ErrorMessage implements IErrorMessage {
     public Type = null;
     public Year = null;
 }
+export interface ILinkLocalType {
+    Description: string;
+    URL: string;
+}
 export interface IMainSaveFormState {
     Loading: boolean;
     LookupData: ILookupData;
@@ -46,6 +52,7 @@ export interface IMainSaveFormState {
     //ClearSuggestedStatus:boolean;
     FormDataBeforeChanges: INAOPublication;
     FormIsDirty: boolean;
+    ArrLinks: ILinkLocalType[];
     ErrMessages: IErrorMessage;
 }
 export class MainSaveFormState implements IMainSaveFormState {
@@ -54,6 +61,7 @@ export class MainSaveFormState implements IMainSaveFormState {
     public FormData = new NAOPublication();
     public FormDataBeforeChanges = new NAOPublication();
     public FormIsDirty = false;
+    public ArrLinks: ILinkLocalType[] = [];
     //public ClearSuggestedStatus = false;
     public ErrMessages = new ErrorMessage();
 }
@@ -68,6 +76,15 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
     private childEntities: types.IFormDataChildEntities[] = [
         { ObjectParentProperty: 'NAOPublicationDirectorates', ParentIdProperty: 'NAOPublicationId', ChildIdProperty: 'DirectorateId', ChildService: this.naoPublicationDirectorateService },
     ];
+
+    private stackTokens = { childrenGap: 10 };
+    //private stackStyles: Partial<IStackStyles> = { root: { width: 650 } };
+    private stackStyles: Partial<IStackStyles> = { root: { width: '100%' } };
+    private columnProps: Partial<IStackProps> = {
+        tokens: { childrenGap: 15 },
+        styles: { root: { width: 300 } },
+    };
+
 
     constructor(props: IMainSaveFormProps, state: IMainSaveFormState) {
         super(props);
@@ -101,6 +118,7 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
                 {this.renderNAOTypes()}
                 {this.renderYear()}
                 {this.renderPublicationLink()}
+                {this.renderLinks()}
                 {this.renderContactDetails()}
                 {this.renderIsArchiveCheckbox()}
 
@@ -133,7 +151,7 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
                 onChanged={(v) => this.changeTextField(v, "PublicationSummary")}
                 multiline={true}
                 rows={5}
-                //errorMessage={this.state.ErrMessages.Title}
+            //errorMessage={this.state.ErrMessages.Title}
             />
         );
     }
@@ -147,7 +165,7 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
                 <CrDropdown
                     label="Directorate(s)"
                     placeholder="Select"
-                    multiSelect                    
+                    multiSelect
                     className={styles.formField}
                     options={services.LookupService.entitiesToSelectableOptions(directorates)}
 
@@ -214,6 +232,66 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
             />
         );
     }
+
+    public renderLinks() {
+
+
+
+        return (
+            <div>
+                {this.state.ArrLinks.map((c, i) =>
+                    this.renderLink(c, i)
+                )}
+
+                {<div className={styles.formField}>
+                    <span style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }} onClick={this.addBlankLinkItem} >Add Fields For another link</span>
+                </div>}
+
+            </div>
+        );
+    }
+    private renderLink(item: ILinkLocalType, index: number) {
+
+        return (
+            <div key={`div_renderLink_${index}`}>
+                <Stack key={`stack_renderLink_${index}`} horizontal tokens={this.stackTokens} styles={this.stackStyles}>
+                    <Stack.Item key={`stackItem_renderLink_${index}`} grow={1}>
+                        <CrTextField key={`div_TextField1_${index}`} label="Publication Link Text" value={item.Description}
+                            onChanged={(v) => this.changeTextField_Link(v, index, "Description")} />
+                    </Stack.Item>
+                    <Stack.Item grow={1}>
+                        <CrTextField key={`div_TextField2_${index}`} label="Actual URL" value={item.URL}
+                             onChanged={(v) => this.changeTextField_Link(v, index, "URL")} />
+                    </Stack.Item>
+
+                </Stack>
+            </div>
+        );
+    }
+    private addBlankLinkItem = () => {
+        console.log('in addBlankLinkItem');
+        const arrCopy = [...this.state.ArrLinks, { Description: '', URL: '' }];
+        this.setState({ ArrLinks: arrCopy });
+        //const item: ILinkLocalType = { Description: 'des', URL: 'url' };
+        //arrCopy.push()
+    }
+    // private renderLink(){
+    //     return(
+    //         <Stack horizontal tokens={this.stackTokens} styles={this.stackStyles}>
+    //         <Stack {...this.columnProps}>
+    //           <CrTextField label="Standard" value="" />
+    //           <CrTextField label="Standard" value="" />
+    //           <CrTextField label="Standard" value="" />
+    //         </Stack>
+    //         <Stack {...this.columnProps}>
+    //         <CrTextField label="Standard" value="" />
+    //         <CrTextField label="Standard" value="" />
+    //         <CrTextField label="Standard" value="" />
+
+    //         </Stack>
+    //       </Stack>
+    //     );
+    // }
 
     private renderContactDetails() {
 
@@ -311,6 +389,8 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
     private onAfterLoad = (entity: types.IEntity): void => {
 
         //console.log('after load', this.state.LookupData.Users);
+        //const arrCopy = [...this.state.ArrLinks];
+        this.addBlankLinkItem();
 
     }
 
@@ -354,15 +434,15 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
 
                 const assignments = this.state.FormData[ce.ObjectParentProperty];
 
-                if(assignments){
+                if (assignments) {
 
                     this.state.FormData[ce.ObjectParentProperty].forEach((c) => {
                         c[ce.ParentIdProperty] = parentEntity.ID;
-                        if (c.ID === 0){
+                        if (c.ID === 0) {
                             promises.push(ce.ChildService.create(c));
-                            
+
                         }
-                            
+
                     });
                 }
 
@@ -370,8 +450,8 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
             });
 
             return Promise.all(promises).then(() => parentEntity);
-        
-            
+
+
         }
     }
 
@@ -403,10 +483,9 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
 
     private onAfterUpdate(): Promise<any> { return Promise.resolve(); }
 
-    private onAfterCreate(): Promise<any>  
-    {
+    private onAfterCreate(): Promise<any> {
         console.log('onAfterCreate');
-         return Promise.resolve(); 
+        return Promise.resolve();
     }
 
 
@@ -469,6 +548,19 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
         if (changeProp)
             return { ...obj, [changeProp]: changeValue };
         return { ...obj };
+    }
+
+    private changeTextField_Link = (value: string, index: number, type:string): void => {
+        const arrCopy = [...this.state.ArrLinks];
+        const item: ILinkLocalType = arrCopy[index];
+        if(type === "Description"){
+            item.Description = value;
+        }
+        else{
+            item.URL = value;
+        }
+        
+        this.setState({ ArrLinks: arrCopy });
     }
 
     private changeTextField = (value: string, f: string): void => {
