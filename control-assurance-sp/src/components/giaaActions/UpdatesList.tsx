@@ -539,34 +539,74 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
 
 
     private handleDelete = (): void => {
+
         if (this.props.onError) this.props.onError(null);
         this.setState({ HideDeleteDialog: true });
         if (this.state.SelectedEntity) {
 
-            const fileName: string = this.state.SelectedEntityTitle;
+            //const fileName: string = this.state.SelectedEntityTitle;
             //console.log(fileName);
 
-            if(this.isSelectedEntityALink() === true){
+            let entity = this.state.Entities.filter((e) => { return e.ID === this.state.SelectedEntity; })[0];
+            const fileName: string = entity["Evidence"];
+            console.log("FileName", fileName);
+            if (fileName !== "") {
+                if (Boolean(entity["EvIsLink"]) === true) {
+                    console.log("selected file is a link");
+                    this.updateService.delete(this.state.SelectedEntity).then(this.loadData, (err) => {
+                        if (this.props.onError) this.props.onError(`Cannot delete record. `, err.message);
+                    });
+                }
+                else {
+                    console.log("selected file is an attachment");
+                    sp.web.getFolderByServerRelativeUrl(this.UploadFolder_Evidence).files.getByName(fileName).delete().then(df => {
+                        //console.log('file deleted', df);
 
-                console.log('deleting eveidence (link)');
+                        this.updateService.delete(this.state.SelectedEntity).then(this.loadData, (err) => {
+                            if (this.props.onError) this.props.onError(`Cannot delete record. `, err.message);
+                        });
+                    });
+                }
+
+            }
+            else{
+
+                console.log("selected file has not attachment");
                 this.updateService.delete(this.state.SelectedEntity).then(this.loadData, (err) => {
                     if (this.props.onError) this.props.onError(`Cannot delete record. `, err.message);
                 });
             }
-            else{
-
-                sp.web.getFolderByServerRelativeUrl(this.UploadFolder_Evidence).files.getByName(fileName).delete().then(df => {
-                    //console.log('file deleted', df);
-    
-                    this.updateService.delete(this.state.SelectedEntity).then(this.loadData, (err) => {
-                        if (this.props.onError) this.props.onError(`Cannot delete record. `, err.message);
-                    });
-                });
-            }
-
-
 
         }
+
+        // if (this.props.onError) this.props.onError(null);
+        // this.setState({ HideDeleteDialog: true });
+        // if (this.state.SelectedEntity) {
+
+        //     const fileName: string = this.state.SelectedEntityTitle;
+        //     //console.log(fileName);
+
+        //     if(this.isSelectedEntityALink() === true){
+
+        //         console.log('deleting eveidence (link)');
+        //         this.updateService.delete(this.state.SelectedEntity).then(this.loadData, (err) => {
+        //             if (this.props.onError) this.props.onError(`Cannot delete record. `, err.message);
+        //         });
+        //     }
+        //     else{
+
+        //         sp.web.getFolderByServerRelativeUrl(this.UploadFolder_Evidence).files.getByName(fileName).delete().then(df => {
+        //             //console.log('file deleted', df);
+    
+        //             this.updateService.delete(this.state.SelectedEntity).then(this.loadData, (err) => {
+        //                 if (this.props.onError) this.props.onError(`Cannot delete record. `, err.message);
+        //             });
+        //         });
+        //     }
+
+
+
+        // }
     }
 
     private toggle_HideActionUpdatePermissionDialog = (): void => {

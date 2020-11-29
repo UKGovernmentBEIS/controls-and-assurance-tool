@@ -691,7 +691,7 @@
           <Property Name="Title" Type="nvarchar" MaxLength="2000" />
           <Property Name="NAOTypeId" Type="int" />
           <Property Name="Year" Type="nvarchar" MaxLength="50" />
-          <Property Name="PublicationLink" Type="nvarchar" MaxLength="2000" />
+          <Property Name="PublicationLink" Type="nvarchar(max)" />
           <Property Name="ContactDetails" Type="nvarchar(max)" />
           <Property Name="PublicationSummary" Type="nvarchar(max)" />
           <Property Name="IsArchive" Type="bit" />
@@ -740,7 +740,7 @@
           <Property Name="TargetDate" Type="nvarchar" MaxLength="50" />
           <Property Name="ActionsTaken" Type="nvarchar(max)" />
           <Property Name="NAOComments" Type="nvarchar(max)" />
-          <Property Name="FurtherLinks" Type="nvarchar" MaxLength="2000" />
+          <Property Name="FurtherLinks" Type="nvarchar(max)" />
           <Property Name="NAORecommendationId" Type="int" />
           <Property Name="NAOPeriodId" Type="int" />
           <Property Name="NAORecStatusTypeId" Type="int" />
@@ -3131,7 +3131,7 @@
           <Property Name="Title" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
           <Property Name="NAOTypeId" Type="Int32" />
           <Property Name="Year" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="PublicationLink" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
+          <Property Name="PublicationLink" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ContactDetails" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="PublicationSummary" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="IsArchive" Type="Boolean" />
@@ -3191,7 +3191,7 @@
           <Property Name="TargetDate" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ActionsTaken" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="NAOComments" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="FurtherLinks" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
+          <Property Name="FurtherLinks" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="NAORecommendationId" Type="Int32" />
           <Property Name="NAOPeriodId" Type="Int32" />
           <Property Name="NAORecStatusTypeId" Type="Int32" />

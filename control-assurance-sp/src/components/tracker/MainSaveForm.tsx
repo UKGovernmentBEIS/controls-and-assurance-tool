@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as types from '../../types';
 import * as services from '../../services';
-import { IDirectorate, INAOPublication, NAOPublication, INAOPublicationDirectorate, NAOPublicationDirectorate } from '../../types';
+import { IDirectorate, INAOPublication, NAOPublication, INAOPublicationDirectorate, NAOPublicationDirectorate, ILinkLocalType } from '../../types';
 import { CrTextField } from '../cr/CrTextField';
 import { CrDropdown, IDropdownOption } from '../cr/CrDropdown';
 import { FormButtons } from '../cr/FormButtons';
@@ -11,6 +11,7 @@ import { CrEntityPicker } from '../cr/CrEntityPicker';
 import { CrCheckbox } from '../cr/CrCheckbox';
 //import { Stack, IStackProps, IStackStyles } from 'office-ui-fabric-react/lib/Stack';
 import styles from '../../styles/cr.module.scss';
+import { ThemeSettingName } from 'office-ui-fabric-react/lib/Styling';
 //import { ILink } from 'office-ui-fabric-react/lib/Link';
 
 export interface IMainSaveFormProps extends types.IBaseComponentProps {
@@ -34,17 +35,16 @@ export interface IErrorMessage {
     Directorate: string;
     Type: string;
     Year: string;
+    //Link: string;
 }
 export class ErrorMessage implements IErrorMessage {
     public Title = null;
     public Directorate = null;
     public Type = null;
     public Year = null;
+    //public Link = null;
 }
-export interface ILinkLocalType {
-    Description: string;
-    URL: string;
-}
+
 export interface IMainSaveFormState {
     Loading: boolean;
     LookupData: ILookupData;
@@ -116,8 +116,8 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
                 {this.renderDirectorates()}
                 {this.renderNAOTypes()}
                 {this.renderYear()}
-                {this.renderPublicationLink()}
-                {/* {this.renderLinks()} */}
+                {/* {this.renderPublicationLink()} */}
+                {this.renderLinks()}
                 {this.renderContactDetails()}
                 {this.renderIsArchiveCheckbox()}
 
@@ -219,18 +219,18 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
         );
     }
 
-    private renderPublicationLink() {
+    // private renderPublicationLink() {
 
-        return (
-            <CrTextField
-                label="Publication Link"
-                className={styles.formField}
-                value={this.state.FormData.PublicationLink}
-                onChanged={(v) => this.changeTextField(v, "PublicationLink")}
+    //     return (
+    //         <CrTextField
+    //             label="Publication Link"
+    //             className={styles.formField}
+    //             value={this.state.FormData.PublicationLink}
+    //             onChanged={(v) => this.changeTextField(v, "PublicationLink")}
 
-            />
-        );
-    }
+    //         />
+    //     );
+    // }
 
     public renderLinks() {
 
@@ -256,7 +256,7 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
                 )}
 
                 {<div className={styles.formField}>
-                    <span style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }} onClick={this.addBlankLinkItem} >Add Fields For another link</span>
+                    <span style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }} onClick={this.addBlankLinkItem} >Add fields For another link</span>
                 </div>}
 
             </div>
@@ -372,9 +372,44 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
         let x = this.naoPublicationService.readWithExpandDirectorates(this.props.entityId).then((e: INAOPublication): void => {
 
             console.log('publication ', e);
+
+            let arrLinks: ILinkLocalType[] = [];
+
+            //unpack publication links from single value
+            if(e.PublicationLink !== null && e.PublicationLink !== '') {
+                let arr1 = e.PublicationLink.split('>');
+
+                //console.log('arr1', arr1);
+                
+                for (let i = 0; i < arr1.length; i++) {
+                    
+                    let itemStr:string = arr1[i];
+                    //console.log('arr1 Loop itemStr', itemStr);
+                    if(itemStr.trim() === ''){
+                        continue;
+                    }
+                    //console.log('after continue');
+                    let arr2 = itemStr.split('<');
+                    //console.log('after arr2 Split', arr2);
+                    let item:ILinkLocalType = { Description:'', URL: '' };
+                    item.Description = arr2[0];
+                    item.URL = arr2[1];
+
+                    //console.log('item filled with data', item);
+
+                    arrLinks.push(item);
+
+                    //console.log('item pushed to arrLinks', arrLinks);
+                    
+                  }
+            }
+            
+
+
             this.setState({
                 FormData: e,
                 FormDataBeforeChanges: e,
+                ArrLinks: arrLinks,
             });
 
         }, (err) => { if (this.props.onError) this.props.onError(`Error loading GoElement data`, err.message); });
@@ -431,6 +466,37 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
 
 
     private saveData = (): void => {
+        this.savePublicationLinksToSingleValue();
+    }
+
+    private savePublicationLinksToSingleValue = ():void => {
+
+                let singleStr:string = "";
+                const arrLinks = this.state.ArrLinks;
+
+                for (let i = 0; i < arrLinks.length; i++) {
+                    let item:ILinkLocalType = arrLinks[i];
+                    if(item.Description.trim() === '' && item.URL.trim() === ''){
+                        //ignore this item
+                    }
+                    else{
+                        if(item.URL.trim() !== ''){
+                            let description:string = item.Description !== '' ? item.Description : item.URL;
+                            //use '<' for separator between description and url, And use '>' for next item separator
+                            singleStr += `${description}<${item.URL.trim()}>`;
+                        }
+                    }                    
+                  }
+
+                  //set single value in state
+                  const fd = {...this.state.FormData};
+                  fd.PublicationLink = singleStr;
+
+                  this.setState({ FormData: fd }, this.saveDataFinal);
+
+    }
+
+    private saveDataFinal = (): void => {
 
         if (this.validateEntity()) {
             if (this.props.onError) this.props.onError(null);
@@ -568,6 +634,8 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
         else {
             errMsg.Year = null;
         }
+
+
 
 
 

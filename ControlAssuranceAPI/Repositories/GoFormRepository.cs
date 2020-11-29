@@ -33,45 +33,57 @@ namespace ControlAssuranceAPI.Repositories
 
         public GoForm Add(GoForm goForm)
         {
-            var goFormDb = db.GoForms.FirstOrDefault(x => x.PeriodId == goForm.PeriodId && x.DirectorateGroupId == goForm.DirectorateGroupId);
-            if(goFormDb != null)
+            try
             {
-                
-                if(goForm.Title == "_ADD_ONLY_IF_DOESNT_EXIST_")
+                var goFormDb = db.GoForms.FirstOrDefault(x => x.PeriodId == goForm.PeriodId && x.DirectorateGroupId == goForm.DirectorateGroupId);
+                if (goFormDb != null)
                 {
-                    //just read and return- no update required
-                    return goFormDb;
+
+                    if (goForm.Title == "_ADD_ONLY_IF_DOESNT_EXIST_")
+                    {
+                        //just read and return- no update required
+                        return goFormDb;
+                    }
+                    else
+                    {
+
+                        //update existing goForm
+                        goFormDb.Title = goForm.Title;
+                        goFormDb.SummaryRagRating = goForm.SummaryRagRating;
+                        goFormDb.SummaryEvidenceStatement = goForm.SummaryEvidenceStatement;
+                        goFormDb.SummaryCompletionStatus = goForm.SummaryCompletionStatus;
+                        goFormDb.SummaryCompletionStatus = goForm.SummaryCompletionStatus;
+                        goFormDb.SummaryMarkReadyForApproval = goForm.SummaryMarkReadyForApproval;
+
+                        //sign-off check
+                        goFormDb = this.SignOffCheck(goFormDb);
+
+                        //retGoForm = goFormDb;
+                        db.SaveChanges();
+                        return goFormDb;
+                    }
+
                 }
-                else {
-                    
-                    //update existing goForm
-                    goFormDb.Title = goForm.Title;
-                    goFormDb.SummaryRagRating = goForm.SummaryRagRating;
-                    goFormDb.SummaryEvidenceStatement = goForm.SummaryEvidenceStatement;
-                    goFormDb.SummaryCompletionStatus = goForm.SummaryCompletionStatus;
-                    goFormDb.SummaryCompletionStatus = goForm.SummaryCompletionStatus;
-                    goFormDb.SummaryMarkReadyForApproval = goForm.SummaryMarkReadyForApproval;
-
-                    //sign-off check
-                    goFormDb = this.SignOffCheck(goFormDb);
-
-                    //retGoForm = goFormDb;
+                else
+                {
+                    //add new goForm record
+                    if (goForm.Title == "_ADD_ONLY_IF_DOESNT_EXIST_")
+                    {
+                        goForm.Title = null;
+                    }
+                    var newGoForm = db.GoForms.Add(goForm);
                     db.SaveChanges();
-                    return goFormDb;
+                    return newGoForm;
                 }
-
             }
-            else
+            catch(Exception ex)
             {
-                //add new goForm record
-                if(goForm.Title == "_ADD_ONLY_IF_DOESNT_EXIST_")
-                {
-                    goForm.Title = null;
-                }
-                var newGoForm = db.GoForms.Add(goForm);
-                db.SaveChanges();
-                return newGoForm;
+                //db.APILogs.Add(new APILog { Title = $"{DateTime.Now.ToString()}-GoForm Add Error: {ex.Message}" });
+                //db.SaveChanges();
+
+                return goForm;
             }
+
 
 
         }

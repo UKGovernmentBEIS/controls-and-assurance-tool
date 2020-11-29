@@ -122,5 +122,10 @@ namespace ControlAssuranceAPI.Repositories
 
             return retList;
         }
+
+        public IAPActionUpdate Remove(IAPActionUpdate iAPActionUpdate)
+        {
+            return db.IAPActionUpdates.Remove(iAPActionUpdate);
+        }
     }
 }

@@ -38,3 +38,9 @@ export class NAOPublication implements INAOPublication{
 
 
 }
+
+export interface ILinkLocalType {
+    Description: string;
+    URL: string;
+    AddToPublication?:string;
+}

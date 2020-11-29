@@ -50,5 +50,68 @@ namespace ControlAssuranceAPI.Controllers
 
             return Created(x);
         }
+
+        // DELETE: odata/IAPActionUpdates(1)
+        public IHttpActionResult Delete([FromODataUri] int key)
+        {
+            IAPActionUpdate iAPActionUpdate = db.IAPActionUpdateRepository.Find(key);
+            if (iAPActionUpdate == null)
+            {
+                return NotFound();
+            }
+
+            var x = db.IAPActionUpdateRepository.Remove(iAPActionUpdate);
+            if (x == null) return Unauthorized();
+
+            db.SaveChanges();
+
+            return StatusCode(HttpStatusCode.NoContent);
+        }
+
+
+        // PATCH: odata/IAPActionUpdates(1)
+        [AcceptVerbs("PATCH", "MERGE")]
+        public IHttpActionResult Patch([FromODataUri] int key, Delta<IAPActionUpdate> patch)
+        {
+            //Validate(patch.GetEntity());
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            IAPActionUpdate iAPActionUpdate = db.IAPActionUpdateRepository.Find(key);
+            if (iAPActionUpdate == null)
+            {
+                return NotFound();
+            }
+
+            //patch.TrySetPropertyValue("DateUploaded", DateTime.Now);
+
+            patch.Patch(iAPActionUpdate);
+
+            try
+            {
+                db.SaveChanges();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!IAPActionUpdateExists(key))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return Updated(iAPActionUpdate);
+        }
+
+        private bool IAPActionUpdateExists(int key)
+        {
+            return db.IAPActionUpdateRepository.IAPActionUpdates.Count(e => e.ID == key) > 0;
+        }
     }
 }

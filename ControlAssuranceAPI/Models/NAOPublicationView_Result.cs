@@ -12,6 +12,7 @@ namespace ControlAssuranceAPI.Models
         public string Summary { get; set; }
         public string DGArea { get; set; }
         public string Type { get; set; }
+        public string Links { get; set; }
         public string Year { get; set; }
         public string CompletePercent { get; set; }
         public string AssignedTo { get; set; }

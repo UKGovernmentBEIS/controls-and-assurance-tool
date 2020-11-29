@@ -570,6 +570,11 @@ namespace ControlAssuranceAPI.Libs
             //normalTxt.Font.Size = 11;
             normalTxt.Font.Name = "Calibri (Body)";
 
+            Style normalTxtLink = document.Styles.AddStyle("normalTxtLink", "Normal");
+            normalTxtLink.Font.Name = "Calibri (Body)";
+            normalTxtLink.Font.Color = Color.FromRgb(0, 0, 255);
+            normalTxtLink.Font.Underline = Underline.Single;
+
             Style normalItalicTxt = document.Styles.AddStyle("normalItalicTxt", "Normal");
             //normalItalicTxt.Font.Size = 12;
             normalItalicTxt.Font.Name = "Calibri (Body)";
@@ -657,6 +662,33 @@ namespace ControlAssuranceAPI.Libs
                 paragraph.AddFormattedText($"Publication: {p.Title}", "pubHeading");
                 paragraph.AddLineBreak();
                 paragraph.AddFormattedText(p.Summary?.ToString() ?? "", "normalTxt");
+
+
+                //Links
+
+                if (string.IsNullOrEmpty(p.Links) == false)
+                {
+                    paragraph.AddLineBreak();
+                    paragraph.AddFormattedText("Links: ");
+                    var list1 = p.Links.Trim().Split('>').ToList();
+                    foreach (var ite1 in list1)
+                    {
+                        if (string.IsNullOrEmpty(ite1))
+                        {
+                            continue;
+                        }
+                        var arr2 = ite1.Split('<').ToArray();
+                        string description = arr2[0];
+                        string url = arr2[1];
+                        var h = paragraph.AddHyperlink(url, HyperlinkType.Web);
+                        h.AddFormattedText(description, "normalTxtLink");
+                        paragraph.AddFormattedText("  ");
+
+                    }
+                }
+
+
+
                 paragraph.AddLineBreak(); paragraph.AddLineBreak();
                 paragraph.AddFormattedText($"Publication Type: {p.Type}", "normalTxt");
                 paragraph.AddLineBreak();
@@ -789,6 +821,30 @@ namespace ControlAssuranceAPI.Libs
                     paragraph.AddFormattedText("Actions Taken", "recSubHeading");
                     paragraph.AddLineBreak();
                     paragraph.AddFormattedText($"{update.ActionsTaken?.ToString() ?? ""}", "normalTxt");
+
+
+                    //Links
+                    if (string.IsNullOrEmpty(update.FurtherLinks) == false)
+                    {
+                        
+                        paragraph.AddLineBreak();
+                        paragraph.AddFormattedText("Links: ");
+                        var list1 = update.FurtherLinks.Trim().Split('>').ToList();
+                        foreach (var ite1 in list1)
+                        {
+                            if (string.IsNullOrEmpty(ite1))
+                            {
+                                continue;
+                            }
+                            var arr2 = ite1.Split('<').ToArray();
+                            string description = arr2[0];
+                            string url = arr2[1];
+                            var h = paragraph.AddHyperlink(url, HyperlinkType.Web);
+                            h.AddFormattedText(description, "normalTxtLink");
+                            paragraph.AddFormattedText("  ");
+
+                        }
+                    }
 
 
                     //comments

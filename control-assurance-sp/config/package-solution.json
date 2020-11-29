@@ -3,7 +3,7 @@
   "solution": {
     "name": "Controls and Assurance Tool Web Parts",
     "id": "391ff4f6-60d0-4e79-8f23-4e1c0e0e9435",
-    "version": "3.0.21.0",
+    "version": "3.0.22.0",
     "includeClientSideAssets": true,
     "webApiPermissionRequests": [
       {

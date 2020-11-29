@@ -89,13 +89,56 @@ namespace ControlAssuranceAPI.Repositories
                     naoUpdateDb.ImplementationDate = DateTime.Now;
                 }
 
+                //Further Links checks - 
+                //format: '<' is used as separator between a line items and '>' used as separator for next line
+                //microsoft<https://www.microsoft.com/en-gb<False>
+                //List<int> TagIds = tags.Split(',').Select(int.Parse).ToList();
+                //listStrLineElements = line.Split(',').ToList();
+
+                string publicationLink = naoUpdateDb.NAORecommendation.NAOPublication.PublicationLink;
+                if (publicationLink == null)
+                {
+                    publicationLink = "";
+                }
+
+                string furtherLinks = naoUpdate.FurtherLinks.Trim();
+                string newFurtherLinks = "";
+                if(string.IsNullOrEmpty(furtherLinks) == false)
+                {
+                    var list1 = naoUpdate.FurtherLinks.Split('>').ToList();
+                    foreach(var ite1 in list1)
+                    {
+                        if (string.IsNullOrEmpty(ite1))
+                        {
+                            continue;
+                        }
+                        var arr2 = ite1.Split('<').ToArray();
+                        bool addToPublication = false;
+                        bool.TryParse(arr2[2], out addToPublication);
+                        if(addToPublication == true)
+                        {
+                            //add link to the publication, dont include in the string newFurtherLinks
+                            publicationLink += $"{arr2[0]}<{arr2[1]}>";
+                            
+                        }
+                        else
+                        {
+                            newFurtherLinks += $"{arr2[0]}<{arr2[1]}>";
+                        }
+                        
+
+                    }
+                }
+
+                naoUpdateDb.NAORecommendation.NAOPublication.PublicationLink = publicationLink;
+                naoUpdateDb.FurtherLinks = newFurtherLinks;
+
 
                 naoUpdateDb.ProvideUpdate = naoUpdate.ProvideUpdate;
                 naoUpdateDb.Title = naoUpdate.Title;
                 naoUpdateDb.TargetDate = naoUpdate.TargetDate;
                 naoUpdateDb.ActionsTaken = naoUpdate.ActionsTaken;
-                naoUpdateDb.NAOComments = naoUpdate.NAOComments;
-                naoUpdateDb.FurtherLinks = naoUpdate.FurtherLinks;
+                naoUpdateDb.NAOComments = naoUpdate.NAOComments;                
                 naoUpdateDb.NAORecStatusTypeId = naoUpdate.NAORecStatusTypeId;
                 naoUpdateDb.NAOUpdateStatusTypeId = 2; //hardcode value on every save 2 means "Saved"
 

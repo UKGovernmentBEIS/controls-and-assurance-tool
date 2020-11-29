@@ -11,7 +11,7 @@ import { MessageDialog } from '../cr/MessageDialog';
 import { DefaultButton, PrimaryButton } from 'office-ui-fabric-react/lib/Button';
 import { Panel, PanelType } from 'office-ui-fabric-react/lib/Panel';
 import styles from '../../styles/cr.module.scss';
-import { INAOPublicationInfo } from '../../types';
+import { INAOPublicationInfo, ILinkLocalType } from '../../types';
 import { IGenColumn, ColumnType, ColumnDisplayType } from '../../types/GenColumn';
 import EntityList from '../entity/EntityList';
 import TestList2 from '../entity/TestList2';
@@ -28,8 +28,8 @@ export interface IRecommendationsTabProps extends types.IBaseComponentProps {
 
     onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
 
-    superUserPermission:boolean;
-    dgOrDGMemberPermission:boolean;
+    superUserPermission: boolean;
+    dgOrDGMemberPermission: boolean;
 }
 
 export interface IRecommendationsTabState {
@@ -105,6 +105,37 @@ export default class RecommendationsTab extends React.Component<IRecommendations
         let contactDetails: string = pInfo.ContactDetails;
         contactDetails = contactDetails.split('\n').join('<br/>');
 
+        let arrLinks: ILinkLocalType[] = [];
+        //unpack publication links from single value
+        if (pInfo.Links !== null && pInfo.Links !== '') {
+            let arr1 = pInfo.Links.split('>');
+
+            //console.log('arr1', arr1);
+
+            for (let i = 0; i < arr1.length; i++) {
+
+                let itemStr: string = arr1[i];
+                //console.log('arr1 Loop itemStr', itemStr);
+                if (itemStr.trim() === '') {
+                    continue;
+                }
+                //console.log('after continue');
+                let arr2 = itemStr.split('<');
+                //console.log('after arr2 Split', arr2);
+                let item: ILinkLocalType = { Description: '', URL: '' };
+                item.Description = arr2[0];
+                item.URL = arr2[1];
+
+                //console.log('item filled with data', item);
+
+                arrLinks.push(item);
+
+                //console.log('item pushed to arrLinks', arrLinks);
+
+            }
+        }
+
+
         return (
 
             <React.Fragment>
@@ -166,7 +197,10 @@ export default class RecommendationsTab extends React.Component<IRecommendations
                                     Links
                             </td>
                                 <td colSpan={3} style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
-                                    {pInfo.Links}
+                                    {arrLinks.map((c, i) =>
+                                        <span key={`span_PubLink_${i}`}><a key={`span_Lnk_PubLink_${i}`} target="_blank" href={c.URL}>{c.Description}</a>&nbsp;&nbsp;</span>
+                                    )}
+                                    
                                 </td>
 
                             </tr>

@@ -11,7 +11,7 @@ import { MessageDialog } from '../cr/MessageDialog';
 import { DefaultButton, PrimaryButton } from 'office-ui-fabric-react/lib/Button';
 import { Panel, PanelType } from 'office-ui-fabric-react/lib/Panel';
 import styles from '../../styles/cr.module.scss';
-import { IEntity, INAOUpdate, NAOUpdate } from '../../types';
+import { IEntity, ILinkLocalType, INAOUpdate, NAOUpdate } from '../../types';
 import { IGenColumn, ColumnType, ColumnDisplayType } from '../../types/GenColumn';
 import EntityList from '../entity/EntityList';
 import EvidenceList from './EV/EvidenceList';
@@ -58,6 +58,7 @@ export interface IPeriodUpdateTabState {
     NAORecommendationId: number;
     HideNoNextMessage: boolean;
     HideNextButton: boolean;
+    ArrLinks: ILinkLocalType[];
     //FormData: IGoElement;
 
     //IncompleteOnly: boolean;
@@ -78,6 +79,7 @@ export class PeriodUpdateTabState implements IPeriodUpdateTabState {
     public NAORecommendationId: number = 0;
     public HideNoNextMessage: boolean = true;
     public HideNextButton: boolean = false;
+    public ArrLinks: ILinkLocalType[] = [];
 
     constructor(naoPeriodId: number, naoRecommendationId: number) {
         this.FormData = new NAOUpdate(naoPeriodId, naoRecommendationId);
@@ -243,71 +245,73 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
                         onChange={(ev, option) => this.changeChoiceGroup(ev, option, "ProvideUpdate")}
                     />
 
-                    { fd.ProvideUpdate === '1' &&
-                    <div>
+                    {fd.ProvideUpdate === '1' &&
+                        <div>
 
-                        <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>
-                            Proposed Recommendation Status
+                            <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>
+                                Proposed Recommendation Status
                     </div>
-                        <CrDropdown
-                            style={{ width: '350px' }}
-                            placeholder="Select an Option"
-                            className={styles.formField}
-                            options={this.state.LookupData.NAORecStatusTypes.map((p) => { return { key: p.ID, text: p.Title }; })}
-                            selectedKey={fd.NAORecStatusTypeId}
-                            onChanged={(v) => this.changeDropdown(v, "NAORecStatusTypeId")}
+                            <CrDropdown
+                                style={{ width: '350px' }}
+                                placeholder="Select an Option"
+                                className={styles.formField}
+                                options={this.state.LookupData.NAORecStatusTypes.map((p) => { return { key: p.ID, text: p.Title }; })}
+                                selectedKey={fd.NAORecStatusTypeId}
+                                onChanged={(v) => this.changeDropdown(v, "NAORecStatusTypeId")}
 
-                        />
+                            />
 
-                        <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>
-                            Target Date
+                            <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>
+                                Target Date
                     </div>
-                        <div style={{ width: '350px' }}>
+                            <div style={{ width: '350px' }}>
+
+                                <CrTextField
+                                    className={styles.formField}
+                                    onChanged={(v) => this.changeTextField(v, "TargetDate")}
+                                    value={fd.TargetDate}
+
+                                />
+                            </div>
+
+
+
+                            <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>
+                                Actions Taken (Please mention by whom if not BEIS)
+                    </div>
 
                             <CrTextField
                                 className={styles.formField}
-                                onChanged={(v) => this.changeTextField(v, "TargetDate")}
-                                value={fd.TargetDate}
+                                multiline
+                                rows={6}
+                                maxLength={6000}
+                                charCounter={true}
+                                onChanged={(v) => this.changeTextField(v, "ActionsTaken")}
+                                value={fd.ActionsTaken}
 
                             />
+
+
+
+
+                            {/* <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>
+                                Further links in format label: link ( eg: Treasury Minuites: http://bit.ly/23jgds )
+                            </div>
+
+                            <CrTextField
+                                className={styles.formField}
+                                onChanged={(v) => this.changeTextField(v, "FurtherLinks")}
+                                value={fd.FurtherLinks}
+
+                            /> */}
+
+                            {this.renderLinks()}
+
+                            <div style={{ marginBottom: '5px' }}>
+                                <span style={{ fontWeight: 'bold' }}>Update Status:&nbsp;</span><span>{fd.LastSavedInfo}</span>
+                            </div>
+
                         </div>
-
-
-
-                        <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>
-                            Actions Taken (Please mention by whom if not BEIS)
-                    </div>
-
-                        <CrTextField
-                            className={styles.formField}
-                            multiline
-                            rows={6}
-                            maxLength={6000}
-                            charCounter={true}
-                            onChanged={(v) => this.changeTextField(v, "ActionsTaken")}
-                            value={fd.ActionsTaken}
-
-                        />
-
-
-
-
-                        <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>
-                            Further links in format label: link ( eg: Treasury Minuites: http://bit.ly/23jgds )
-                    </div>
-
-                        <CrTextField
-                            className={styles.formField}
-                            onChanged={(v) => this.changeTextField(v, "FurtherLinks")}
-                            value={fd.FurtherLinks}
-
-                        />
-
-                        <div style={{ marginBottom: '5px' }}>
-                            <span style={{ fontWeight: 'bold' }}>Update Status:&nbsp;</span><span>{fd.LastSavedInfo}</span>
-                        </div>
-
-                    </div>
                     }
 
 
@@ -319,6 +323,86 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
 
 
             </div>
+        );
+    }
+
+    public renderLinks() {
+
+
+        return (
+            <div>
+
+                <div style={{ display: 'flex' }}>
+                    <div style={{ width: '40%', paddingRight: '5px', fontWeight: 'bold' }}>
+                        <span>Link (Text ie. Treasury Minutes)</span>
+
+                    </div>
+                    <div style={{ width: '40%', paddingRight: '5px', fontWeight: 'bold' }}>
+                        <span>Link (URL ie. http://bit.ly/hdydg)</span>
+
+                    </div>
+                    <div style={{ width: '20%', paddingLeft: '2px', fontWeight: 'bold' }}>
+                        <span>Add to Publication</span>
+
+                    </div>
+
+                </div>
+
+
+                {this.state.ArrLinks.map((c, i) =>
+                    this.renderLink(c, i)
+                )}
+
+                {<div className={styles.formField}>
+                    <span style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }} onClick={this.addBlankLinkItem} >Add fields For another link</span>
+                </div>}
+
+            </div>
+        );
+    }
+
+    private renderLink(item: ILinkLocalType, index: number) {
+
+        return (
+
+            <div key={`div_renderLink_${index}`} style={{ display: 'flex', marginTop: '5px' }}>
+                <div key={`divCol1_renderLink_${index}`} style={{ width: '40%', paddingRight: '5px' }}>
+                    <CrTextField key={`div_TextField1_${index}`} value={item.Description}
+                        onChanged={(v) => this.changeTextField_Link(v, index, "Description")}
+                    />
+
+                </div>
+
+                <div key={`divCol2_renderLink_${index}`} style={{ width: '40%', paddingRight: '5px' }}>
+
+                    <CrTextField key={`div_TextField2_${index}`} value={item.URL}
+                        onChanged={(v) => this.changeTextField_Link(v, index, "URL")}
+                    />
+
+                </div>
+
+                <div key={`divCol3_renderLink_${index}`} style={{ width: '20%', paddingLeft:'2px' }}>
+
+                    <CrChoiceGroup
+                        className="inlineflex"
+                        options={[
+                            {
+                                key: 'False',
+                                text: 'No',
+                            },
+                            {
+                                key: 'True',
+                                text: 'Yes'
+                            },
+                        ]}
+                        selectedKey={item.AddToPublication}
+                        onChange={(ev, option) => this.changeChoiceGroup_Link(ev, option, index)}
+                    />
+
+                </div>
+
+            </div>
+
         );
     }
 
@@ -632,6 +716,35 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
         return true;
     }
     private saveData = (showNext: boolean): void => {
+        this.saveLinksToSingleValue(showNext);
+    }
+    private saveLinksToSingleValue = (showNext: boolean):void => {
+
+        let singleStr:string = "";
+        const arrLinks = this.state.ArrLinks;
+
+        for (let i = 0; i < arrLinks.length; i++) {
+            let item:ILinkLocalType = arrLinks[i];
+            if(item.Description.trim() === '' && item.URL.trim() === ''){
+                //ignore this item
+            }
+            else{
+                if(item.URL.trim() !== ''){
+                    let description:string = item.Description !== '' ? item.Description : item.URL;
+                    //use '<' for separator between description and url, And use '>' for next item separator
+                    singleStr += `${description}<${item.URL.trim()}<${item.AddToPublication}>`;
+                }
+            }                    
+          }
+
+          //set single value in state
+          const fd = {...this.state.FormData};
+          fd.FurtherLinks = singleStr;
+
+          this.setState({ FormData: fd }, () => this.saveDataFinal(showNext) );
+
+}
+    private saveDataFinal = (showNext: boolean): void => {
         if (this.validateEntity()) {
             console.log('in save data');
             if (this.props.onError) this.props.onError(null);
@@ -745,8 +858,47 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
 
             }
 
+
+            /**************************************links************************************************************** */
+
+            let arrLinks: ILinkLocalType[] = [];
+
+            //unpack publication links from single value
+            if (u.FurtherLinks !== null && u.FurtherLinks !== '') {
+                let arr1 = u.FurtherLinks.split('>');
+
+                //console.log('arr1', arr1);
+
+                for (let i = 0; i < arr1.length; i++) {
+
+                    let itemStr: string = arr1[i];
+                    //console.log('arr1 Loop itemStr', itemStr);
+                    if (itemStr.trim() === '') {
+                        continue;
+                    }
+                    //console.log('after continue');
+                    let arr2 = itemStr.split('<');
+                    //console.log('after arr2 Split', arr2);
+                    let item: ILinkLocalType = { Description: '', URL: '' };
+                    item.Description = arr2[0];
+                    item.URL = arr2[1];
+                    item.AddToPublication = 'False'; //always False on data load
+
+                    //console.log('item filled with data', item);
+
+                    arrLinks.push(item);
+
+                    //console.log('item pushed to arrLinks', arrLinks);
+
+                }
+            }
+
+
+            /************************************links end***************************************************************** */
+
             this.setState({
                 FormData: u,
+                ArrLinks: arrLinks,
                 HideNextButton: hideNextButton
             }, this.loadRecInfo);
 
@@ -760,6 +912,7 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
     private loadRecInfo = (): void => {
         if (this.state.FormData.ID > 0) {
 
+            this.addBlankLinkItem();
             this.naoUpdateService.getRecInfo(this.state.FormData.ID).then((u: INAOUpdate) => {
                 console.log('Rec Info', u);
 
@@ -773,6 +926,14 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
             });
         }
 
+    }
+
+    private addBlankLinkItem = () => {
+        console.log('in addBlankLinkItem');
+        const arrCopy = [...this.state.ArrLinks, { Description: '', URL: '', AddToPublication: 'False' }];
+        this.setState({ ArrLinks: arrCopy });
+        //const item: ILinkLocalType = { Description: 'des', URL: 'url' };
+        //arrCopy.push()
     }
 
     protected loadLookups(): Promise<any> {
@@ -823,6 +984,28 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
     protected changeTextField = (value: string, f: string): void => {
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, value)/*, FormIsDirty: true*/ });
     }
+    private changeTextField_Link = (value: string, index: number, type: string): void => {
+        const arrCopy = [...this.state.ArrLinks];
+        const item: ILinkLocalType = arrCopy[index];
+        if (type === "Description") {
+            item.Description = value;
+        }
+        else {
+            item.URL = value;
+        }
+
+        this.setState({ ArrLinks: arrCopy });
+    }
+    private changeChoiceGroup_Link = (ev, option: IChoiceGroupOption, index: number): void => {
+        const selectedKey = option.key;
+        const arrCopy = [...this.state.ArrLinks];
+        const item: ILinkLocalType = arrCopy[index];
+        item.AddToPublication = selectedKey;
+
+        this.setState({ ArrLinks: arrCopy });
+
+    }
+
     protected changeCheckbox = (value: boolean, f: string): void => {
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, value)/*, FormIsDirty: true*/ });
     }
