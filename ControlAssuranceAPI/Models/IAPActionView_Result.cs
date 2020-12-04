@@ -22,5 +22,7 @@ namespace ControlAssuranceAPI.Models
         public int IAPTypeId { get; set; }
         public string Type { get; set; }
 
+        public string CompletionDate { get; set; }
+
     }
 }

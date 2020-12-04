@@ -78,6 +78,10 @@ export class EntityService<T> extends DataService<T> {
         });
     }
 
+    public updatePut(entityId: number, entity: T): Promise<void> {
+        return this.putEntity(entity, `${this.entityUrl}(${entityId})`);
+    }
+
     public update(entityId: number, entity: Partial<T>): Promise<void> {
         return this.patchEntity(entity, `${this.entityUrl}(${entityId})`);
     }

@@ -4,7 +4,7 @@ import { CrDropdown, IDropdownOption } from '../../../components/cr/CrDropdown';
 import Section from '../../../components/iap/Section';
 import Section2 from '../../../components/iap/Section2';
 import ActionUpdatesTab from '../../../components/iap/ActionUpdatesTab';
-
+import GroupActionsTab from '../../../components/iap/GroupActionsTab';
 
 import * as types from '../../../types';
 import BaseUserContextWebPartComponent from '../../../components/BaseUserContextWebPartComponent';
@@ -54,6 +54,8 @@ export interface IIapUpdatesState extends types.IUserContextWebPartState {
 
   MainListsSaveCounter: number;
 
+  ShowingGroupUpdates:boolean;
+
 
 }
 export class IapUpdatesState extends types.UserContextWebPartState implements IIapUpdatesState {
@@ -79,6 +81,8 @@ export class IapUpdatesState extends types.UserContextWebPartState implements II
   //public MainTabReloadCounter = 0;
   public MainListsSaveCounter: number = 0;
 
+  public ShowingGroupUpdates:boolean = false;
+
   constructor() {
     super();
   }
@@ -93,6 +97,7 @@ export default class IapUpdates extends BaseUserContextWebPartComponent<types.IW
 
   //private isDefultUserSet:boolean = false;
   private readonly headerTxt_MainTab: string = "Management Action Plans";
+  private readonly headerTxt_GroupActionsTab: string = "Group Actions";
   private readonly headerTxt_ActionUpdatesTab: string = "Action Updates";
 
 
@@ -121,6 +126,7 @@ export default class IapUpdates extends BaseUserContextWebPartComponent<types.IW
         <PivotItem headerText={this.headerTxt_MainTab} itemKey={this.headerTxt_MainTab}>
           {this.renderMainTab()}
         </PivotItem>
+        {this.renderGroupActionsTab()}
         {this.renderActionUpdatesTab()}
 
 
@@ -210,6 +216,19 @@ export default class IapUpdates extends BaseUserContextWebPartComponent<types.IW
     );
   }
 
+  private renderGroupActionsTab() {
+    if (this.state.SelectedPivotKey === this.headerTxt_GroupActionsTab) {
+      return (
+
+        <PivotItem headerText={this.headerTxt_GroupActionsTab} itemKey={this.headerTxt_GroupActionsTab}>
+          {this.renderGroupActions()}
+        </PivotItem>
+
+      );
+    }
+    else
+      return <React.Fragment></React.Fragment>;
+  }
 
   private renderActionUpdatesTab() {
     if (this.state.SelectedPivotKey === this.headerTxt_ActionUpdatesTab) {
@@ -226,6 +245,23 @@ export default class IapUpdates extends BaseUserContextWebPartComponent<types.IW
   }
 
 
+  private renderGroupActions(): React.ReactElement<types.IWebPartComponentProps> {
+
+    return(
+      <GroupActionsTab
+        iapActionId={this.state.Section_MainList_SelectedId}
+        filteredItemsMainList={this.state.Section_MainList_FilteredItems}
+        onShowList={this.handleShowListSection1}
+        superUserPermission={this.isSuperUser()}
+        actionOwnerPermission={this.state.Section_MainList_SelectedItem_ActionOwnerPermission}
+        currentUserId={this.getCurrentUserId()}
+        onItemTitleClick={this.handle_GroupsListItemTitleClick}
+        {...this.props}
+      />
+    );
+
+  }
+
   private renderActionUpdates(): React.ReactElement<types.IWebPartComponentProps> {
 
     return (
@@ -236,6 +272,7 @@ export default class IapUpdates extends BaseUserContextWebPartComponent<types.IW
         superUserPermission={this.isSuperUser()}
         actionOwnerPermission={this.state.Section_MainList_SelectedItem_ActionOwnerPermission}
         currentUserId={this.getCurrentUserId()}
+        showingGroupUpdates={this.state.ShowingGroupUpdates}
         {...this.props}
       />
 
@@ -351,8 +388,8 @@ export default class IapUpdates extends BaseUserContextWebPartComponent<types.IW
   private handlePivotClick = (item: PivotItem): void => {
     console.log('tab clicked', item);
     this.clearErrors();
-    //following conditoin is to resolved bug in the users picker, so by closing a section and opening again resolves the bug
-    if(item.props.headerText === "Management Action Plans"){
+    //following conditoin is to resolve bug in the users picker, so by closing a section and opening again resolves the bug
+    if(item.props.headerText === this.headerTxt_MainTab){
       if(this.state.Section1_IsOpen === true){
         this.setState({ SelectedPivotKey: item.props.headerText, Section1_IsOpen: false }, this.handleSection1_toggleOpen);
       }
@@ -381,6 +418,7 @@ export default class IapUpdates extends BaseUserContextWebPartComponent<types.IW
     const currentAction = filteredItems.filter(x => x['ID'] === ID);
 
     let ownerIdsStr:string = "";
+    let iapTypeId: number = 0;
     if(currentAction.length > 0){
       ownerIdsStr = currentAction[0]["OwnerIds"];
       //console.log('ownerIdsStr', ownerIdsStr);
@@ -397,14 +435,20 @@ export default class IapUpdates extends BaseUserContextWebPartComponent<types.IW
           break;
         }
       }
+
+      iapTypeId = Number(currentAction[0]["IAPTypeId"]);
+      
+
     }
 
     console.log('action owner permission', actionOwnerPermission);
+    console.log('IAPTypeId', iapTypeId);
 
 
 
     this.setState({
-      SelectedPivotKey: this.headerTxt_ActionUpdatesTab,
+      ShowingGroupUpdates: false,
+      SelectedPivotKey: (iapTypeId === 2) ? this.headerTxt_GroupActionsTab : this.headerTxt_ActionUpdatesTab,
       Section_MainList_SelectedId: ID,
       Section_MainList_SelectedTitle: title,
       Section_MainList_SelectedItem_ActionOwnerPermission: actionOwnerPermission,
@@ -460,6 +504,52 @@ export default class IapUpdates extends BaseUserContextWebPartComponent<types.IW
   }
 
 
+  private handle_GroupsListItemTitleClick = (ID: number, title: string, filteredItems: any[]): void => {
+    
+    console.log('on main list item title click ', ID, title, filteredItems);
+
+
+    const currentUderId:number = this.getCurrentUserId();
+    console.log('on rec list current user id ', currentUderId);
+
+    let actionOwnerPermission:boolean = false;
+
+    const currentAction = filteredItems.filter(x => x['ID'] === ID);
+
+    let ownerIdsStr:string = "";
+    if(currentAction.length > 0){
+      ownerIdsStr = currentAction[0]["OwnerIds"];
+      //console.log('ownerIdsStr', ownerIdsStr);
+      const ownerIdsArr:string[] = ownerIdsStr.split(',');
+      //console.log('ownerIdsArr', ownerIdsArr);
+
+
+      
+      for (let i = 0; i < ownerIdsArr.length; i++) {
+      
+        let ownerId:number = Number(ownerIdsArr[i]);
+        if(ownerId === currentUderId){
+          actionOwnerPermission = true;
+          break;
+        }
+      }
+
+
+      
+
+    }
+
+    console.log('action owner permission', actionOwnerPermission);
+
+    this.setState({
+      ShowingGroupUpdates: true,
+      SelectedPivotKey: this.headerTxt_ActionUpdatesTab,
+      Section_MainList_SelectedId: ID,
+      Section_MainList_SelectedTitle: title,
+      Section_MainList_SelectedItem_ActionOwnerPermission: actionOwnerPermission,
+      Section_MainList_FilteredItems: filteredItems
+    });
+  }
 
 
 

@@ -31,14 +31,319 @@ namespace ControlAssuranceAPI.Repositories
             return IAPActions.Where(x => x.ID == keyValue).FirstOrDefault();
         }
 
-        public IAPAction Add(IAPAction iapUpdate)
+        public IAPAction Add(IAPAction iapInput)
         {
             var apiUser = ApiUser;
-            iapUpdate.CreatedOn = DateTime.Now;
-            iapUpdate.OriginalCompletionDate = iapUpdate.CompletionDate;
-            iapUpdate.CreatedById = apiUser.ID;
+            iapInput.CreatedOn = DateTime.Now;
+            iapInput.OriginalCompletionDate = iapInput.CompletionDate;
+            iapInput.CreatedById = apiUser.ID;
+            if(iapInput.IAPTypeId == 1)
+            {
+                var ret = db.IAPActions.Add(iapInput);
+                db.SaveChanges();
+                return ret;
+            }
+            else if(iapInput.IAPTypeId == 2)
+            {
+                //IAPTypeId is Group Actions, so create parent action and then create child actions
+                IAPAction iapAction = new IAPAction();
+                iapAction.Title = iapInput.Title;
+                iapAction.Details = iapInput.Details;
+                iapAction.IAPPriorityId = iapInput.IAPPriorityId;
+                iapAction.IAPStatusTypeId = iapInput.IAPStatusTypeId;
+                iapAction.IAPTypeId = iapInput.IAPTypeId;
+                iapAction.CreatedById = iapInput.CreatedById;
+                iapAction.CreatedOn = iapInput.CreatedOn;
+                iapAction.OriginalCompletionDate = iapInput.OriginalCompletionDate;
+                iapAction.CompletionDate = iapInput.CompletionDate;
+                iapAction.MonthlyUpdateRequired = iapInput.MonthlyUpdateRequired;
+                iapAction.MonthlyUpdateRequiredIfNotCompleted = iapInput.MonthlyUpdateRequiredIfNotCompleted;
+                iapAction.IsArchive = iapInput.IsArchive;
+                db.IAPActions.Add(iapAction);
+                db.SaveChanges();
 
-            return db.IAPActions.Add(iapUpdate);
+                //parent is created
+                //now add directorates
+                foreach (var dir in iapInput.IAPActionDirectorates)
+                {
+                    IAPActionDirectorate iapActionDirectorate = new IAPActionDirectorate();
+                    iapActionDirectorate.IAPActionId = iapAction.ID;
+                    iapActionDirectorate.DirectorateId = dir.DirectorateId;
+                    db.IAPActionDirectorates.Add(iapActionDirectorate);
+
+                }
+
+                //now create child actions which is equal to the num of groups
+                //get groups
+                HashSet<int> uniqueGroups = new HashSet<int>();
+                foreach (var ite in iapInput.IAPAssignments)
+                {
+                    uniqueGroups.Add(ite.GroupNum.Value);
+                }
+
+                foreach(var groupNum in uniqueGroups)
+                {
+                    var owners = iapInput.IAPAssignments.Where(x => x.GroupNum == groupNum).ToList();
+
+                    //add child action
+                    IAPAction iapChildAction = new IAPAction();
+                    iapChildAction.IAPTypeId = 3; //3 is Action Group ie. without 's'
+                    iapChildAction.ParentId = iapAction.ID;
+                    iapChildAction.GroupNum = groupNum;
+
+                    iapChildAction.Title = iapInput.Title;
+                    iapChildAction.Details = iapInput.Details;
+                    iapChildAction.IAPPriorityId = iapInput.IAPPriorityId;
+                    iapChildAction.IAPStatusTypeId = iapInput.IAPStatusTypeId;                    
+                    iapChildAction.CreatedById = iapInput.CreatedById;
+                    iapChildAction.CreatedOn = iapInput.CreatedOn;
+                    iapChildAction.OriginalCompletionDate = iapInput.OriginalCompletionDate;
+                    iapChildAction.CompletionDate = iapInput.CompletionDate;
+                    iapChildAction.MonthlyUpdateRequired = iapInput.MonthlyUpdateRequired;
+                    iapChildAction.MonthlyUpdateRequiredIfNotCompleted = iapInput.MonthlyUpdateRequiredIfNotCompleted;
+                    iapChildAction.IsArchive = iapInput.IsArchive;
+                    db.IAPActions.Add(iapChildAction);
+                    db.SaveChanges();
+
+                    //child action is created, now add users
+                    foreach(var owner in owners)
+                    {
+                        IAPAssignment iapAssignment = new IAPAssignment();
+                        iapAssignment.GroupNum = owner.GroupNum;
+                        //iapAssignment.Title = owner.Title; //no need its null
+                        iapAssignment.UserId = owner.UserId;
+                        iapAssignment.IAPActionId = iapChildAction.ID;
+                        
+                        db.IAPAssignments.Add(iapAssignment);
+                    }
+                    
+
+                    //now add directorates
+                    foreach(var dir in iapInput.IAPActionDirectorates)
+                    {
+                        IAPActionDirectorate iapActionDirectorate = new IAPActionDirectorate();
+                        iapActionDirectorate.IAPActionId = iapChildAction.ID;
+                        iapActionDirectorate.DirectorateId = dir.DirectorateId;
+                        db.IAPActionDirectorates.Add(iapActionDirectorate);
+
+                    }
+
+                    db.SaveChanges();
+
+
+                }
+
+                return iapAction;
+            }
+            else
+            {
+                //this will not happen
+                return new IAPAction();
+            }
+
+            
+        }
+
+        public IAPAction Update(IAPAction iapInput)
+        {
+            var iapAction = db.IAPActions.FirstOrDefault(x => x.ID == iapInput.ID);
+            iapAction.Title = iapInput.Title;
+            iapAction.Details = iapInput.Details;
+            iapAction.IAPPriorityId = iapInput.IAPPriorityId;
+            iapAction.IAPStatusTypeId = iapInput.IAPStatusTypeId;
+            iapAction.IAPTypeId = iapInput.IAPTypeId;
+            iapAction.CreatedById = iapInput.CreatedById;
+            iapAction.CreatedOn = iapInput.CreatedOn;
+            iapAction.OriginalCompletionDate = iapInput.OriginalCompletionDate;
+            iapAction.CompletionDate = iapInput.CompletionDate;
+            iapAction.MonthlyUpdateRequired = iapInput.MonthlyUpdateRequired;
+            iapAction.MonthlyUpdateRequiredIfNotCompleted = iapInput.MonthlyUpdateRequiredIfNotCompleted;
+            iapAction.IsArchive = iapInput.IsArchive;
+
+            //check for deletion of directorates
+            var actionDiectorates = iapAction.IAPActionDirectorates.ToList();
+            foreach (var d in actionDiectorates)
+            {
+                var i_d = iapInput.IAPActionDirectorates.FirstOrDefault(x => x.DirectorateId == d.DirectorateId);
+                if (i_d == null)
+                {
+                    //delete this directorate cause it doenst exist in the input
+                    db.IAPActionDirectorates.Remove(d);
+                    //db.SaveChanges();
+                }
+
+            }
+
+            //check for adding new directorates
+            foreach(var nd in iapInput.IAPActionDirectorates)
+            {
+                var dExist = actionDiectorates.FirstOrDefault(x => x.DirectorateId == nd.DirectorateId);
+                if(dExist != null)
+                {
+                    //no need to add cause its already exist in the db
+                }
+                else
+                {
+                    IAPActionDirectorate iapActionDirectorate = new IAPActionDirectorate();
+                    iapActionDirectorate.IAPActionId = iapAction.ID;
+                    iapActionDirectorate.DirectorateId = nd.DirectorateId;
+                    db.IAPActionDirectorates.Add(iapActionDirectorate);
+                }
+            }
+
+            //get groups
+            HashSet<int> uniqueGroupsUnOrdered = new HashSet<int>();
+            foreach (var ite in iapInput.IAPAssignments)
+            {
+                uniqueGroupsUnOrdered.Add(ite.GroupNum.Value);
+            }
+            var uniqueGroups = uniqueGroupsUnOrdered.OrderBy(i => i);
+            
+            var existingChildActions = db.IAPActions.Where(x => x.ParentId == iapAction.ID).ToList();
+            
+            //check for deletion of child action
+            foreach(var existingChildAction in existingChildActions)
+            {
+                if (uniqueGroups.Contains(existingChildAction.GroupNum.Value))
+                {
+
+                }
+                else
+                {
+                    //delete child action and its children
+                    db.IAPActionDirectorates.RemoveRange(db.IAPActionDirectorates.Where(x => x.IAPActionId == existingChildAction.ID));
+                    db.IAPAssignments.RemoveRange(db.IAPAssignments.Where(x => x.IAPActionId == existingChildAction.ID));
+                    db.IAPActionUpdates.RemoveRange(db.IAPActionUpdates.Where(x => x.IAPActionId == existingChildAction.ID));
+                    db.IAPActions.Remove(existingChildAction);
+                    //db.SaveChanges();
+                }
+            }
+            //db.SaveChanges();
+            
+            foreach (var groupNum in uniqueGroups)
+            {
+                var owners = iapInput.IAPAssignments.Where(x => x.GroupNum == groupNum).ToList();
+                bool isNewChildAction = false;
+                var iapChildAction = db.IAPActions.FirstOrDefault(x => x.ParentId == iapAction.ID && x.GroupNum == groupNum);
+                if(iapChildAction == null)
+                {
+                    iapChildAction = new IAPAction();
+                    db.IAPActions.Add(iapChildAction);
+                    
+                    iapChildAction.OriginalCompletionDate = iapInput.OriginalCompletionDate;
+                    iapChildAction.CompletionDate = iapInput.CompletionDate;
+
+                    isNewChildAction = true;
+                }
+                else
+                {
+                    //existing child action
+                    if(iapChildAction.CompletionDate == iapChildAction.OriginalCompletionDate)
+                    {
+                        //in this case update child action competion date
+                        iapChildAction.CompletionDate = iapInput.CompletionDate;
+                    }
+                }
+                iapChildAction.IAPTypeId = 3; //3 is Action Group ie. without 's'
+                iapChildAction.ParentId = iapAction.ID;
+                iapChildAction.GroupNum = groupNum;
+
+                iapChildAction.Title = iapInput.Title;
+                iapChildAction.Details = iapInput.Details;
+                iapChildAction.IAPPriorityId = iapInput.IAPPriorityId;
+                iapChildAction.IAPStatusTypeId = iapInput.IAPStatusTypeId;
+                iapChildAction.CreatedById = iapInput.CreatedById;
+                iapChildAction.CreatedOn = iapInput.CreatedOn;
+                iapChildAction.MonthlyUpdateRequired = iapInput.MonthlyUpdateRequired;
+                iapChildAction.MonthlyUpdateRequiredIfNotCompleted = iapInput.MonthlyUpdateRequiredIfNotCompleted;
+                iapChildAction.IsArchive = iapInput.IsArchive;
+
+
+                
+                List<IAPActionDirectorate> childActionDiectorates = new List<IAPActionDirectorate>();
+                if (isNewChildAction == false)
+                {
+                    childActionDiectorates = iapChildAction.IAPActionDirectorates.ToList(); //get directorates in the list
+                    //check for delete the assignments for an existing child action
+                    foreach (var ass in iapChildAction.IAPAssignments.ToList())
+                    {
+                        var i_ass = iapInput.IAPAssignments.FirstOrDefault(x => x.ID == ass.ID);
+                        if(i_ass == null)
+                        {
+                            //delete this assignment cause it doenst exist in the input
+                            db.IAPAssignments.Remove(ass);
+                            //db.SaveChanges();
+                        }
+
+                    }
+                    //check for deletion of directorates
+                    foreach (var d in iapChildAction.IAPActionDirectorates.ToList())
+                    {
+                        var i_d = iapInput.IAPActionDirectorates.FirstOrDefault(x => x.DirectorateId == d.DirectorateId);
+                        
+                        if (i_d == null)
+                        {
+                            //delete this directorate cause it doenst exist in the input
+                            db.IAPActionDirectorates.Remove(d);
+                            //db.SaveChanges();
+                        }
+
+                    }
+
+
+                }
+                else
+                {
+                    //cause we want ID of new child action
+                    db.SaveChanges();
+                }
+
+
+                
+                //now create new assignments for this child action if needed
+                foreach (var owner in owners)
+                {
+                    if(owner.ID > 0)
+                    {
+                        //already exist in db, no change
+                    }
+                    else
+                    {
+                        IAPAssignment iapAssignment = new IAPAssignment();
+                        iapAssignment.GroupNum = owner.GroupNum;
+                        //iapAssignment.Title = owner.Title; //no need its null
+                        iapAssignment.UserId = owner.UserId;
+                        iapAssignment.IAPActionId = iapChildAction.ID;
+
+                        db.IAPAssignments.Add(iapAssignment);
+                    }
+
+                }
+
+
+                //check for adding new directorates
+                
+                foreach (var nd in iapInput.IAPActionDirectorates)
+                {
+                    var dExist = childActionDiectorates.FirstOrDefault(x => x.DirectorateId == nd.DirectorateId);
+                    if (dExist != null)
+                    {
+                        //no need to add cause its already exist in the db
+                    }
+                    else
+                    {
+                        IAPActionDirectorate iapActionDirectorate = new IAPActionDirectorate();
+                        iapActionDirectorate.IAPActionId = iapChildAction.ID;
+                        iapActionDirectorate.DirectorateId = nd.DirectorateId;
+                        db.IAPActionDirectorates.Add(iapActionDirectorate);
+                    }
+                }
+
+
+            }
+            db.SaveChanges();
+
+            return iapAction;
         }
 
         public IAPAction Remove(IAPAction iapAction)
@@ -65,9 +370,11 @@ namespace ControlAssuranceAPI.Repositories
             //var userIds = new[] { 1, 2 };
             //var test = db.IAPActions.Where(u => u.IAPAssignments.Any(a => userIds.Contains(a.UserId.Value))).ToList();
 
+            
 
             var loggedInUser = ApiUser;
             int loggedInUserID = loggedInUser.ID;
+            bool isSuperUser = base.IAP_SuperUser(loggedInUserID);
 
             List<int> lstUserIds = new List<int>();
 
@@ -139,6 +446,20 @@ namespace ControlAssuranceAPI.Repositories
 
             foreach (var ite in list)
             {
+                if(ite.IAPTypeId == 3 && (ite.CreatedById.Value == loggedInUserID || (isSuperUser == true)))
+                {
+                    //its a Group Action (child) action, so dont show to its owner or super user, owner can only see the parent action
+                    continue;
+                }
+                if(ite.IAPTypeId == 2 && ite.CreatedById.Value != loggedInUserID)
+                {
+                    if(isSuperUser == false)
+                    {
+                        //its a Group Actions (parent) action, dont show to anyone apart from creator and super user
+                        continue;
+                    }
+                    
+                }
                 string owners = "";
                 string ownerIds = "";
                 string directorates = "";
@@ -237,5 +558,53 @@ namespace ControlAssuranceAPI.Repositories
 
             return retList;
         }
+
+
+        public List<IAPActionView_Result> GetActionGroups(int parentActionId)
+        {
+            List<IAPActionView_Result> retList = new List<IAPActionView_Result>();
+            var childActions = db.IAPActions.Where(x => x.ParentId == parentActionId).OrderBy(i => i.GroupNum);
+
+            int index = 0;
+            foreach(var ite in childActions)
+            {
+                string owners = "";
+                string ownerIds = "";
+
+                foreach (var o in ite.IAPAssignments)
+                {
+                    owners += o.User.Title + ", ";
+                    ownerIds += o.UserId + ",";
+                }
+                owners = owners.Trim();
+                if (owners.Length > 0)
+                {
+                    owners = owners.Substring(0, owners.Length - 1);
+                }
+                if (ownerIds.Length > 0)
+                {
+                    ownerIds = ownerIds.Substring(0, ownerIds.Length - 1);
+                }
+
+                IAPActionView_Result item = new IAPActionView_Result
+                {
+                    ID = ite.ID,
+                    Title = $"Group {index+1}",
+                    Status = ite.IAPStatusType.Title,
+                    CreatedById = ite.CreatedById.Value,
+                    ActionOwners = owners,
+                    OwnerIds = ownerIds,
+                    CompletionDate = ite.CompletionDate.Value.ToString("dd MMM yyyy")
+
+                };
+
+                retList.Add(item);
+
+                index++;
+            }
+
+            return retList;
+        }
+
     }
 }

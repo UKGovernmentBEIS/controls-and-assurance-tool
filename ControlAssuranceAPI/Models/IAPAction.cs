@@ -37,6 +37,8 @@ namespace ControlAssuranceAPI.Models
         public Nullable<bool> MonthlyUpdateRequired { get; set; }
         public Nullable<bool> MonthlyUpdateRequiredIfNotCompleted { get; set; }
         public Nullable<bool> IsArchive { get; set; }
+        public Nullable<int> ParentId { get; set; }
+        public Nullable<int> GroupNum { get; set; }
     
         public virtual IAPPriority IAPPriority { get; set; }
         public virtual IAPStatusType IAPStatusType { get; set; }

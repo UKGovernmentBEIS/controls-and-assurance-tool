@@ -5,6 +5,7 @@ import { IUser } from "./User";
 export interface IIAPAssignment extends IEntity {
     IAPActionId?: number;
     UserId?: number;
+    GroupNum?: number;
     //IAPAction?: IGoElement;
     //User?: IUser;
 
@@ -15,4 +16,5 @@ export class IAPAssignment implements IIAPAssignment {
     public Title = null;
     public IAPActionId = null;
     public UserId = null;
+    public GroupNum = null;
 }

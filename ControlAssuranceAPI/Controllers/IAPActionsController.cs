@@ -44,6 +44,12 @@ namespace ControlAssuranceAPI.Controllers
             return db.IAPActionRepository.GetActions(userIds, isArchive);
         }
 
+        // GET: /odata/IAPActions?parentActionId=1&getGroups
+        public List<IAPActionView_Result> Get(int parentActionId, string getGroups)
+        {
+            return db.IAPActionRepository.GetActionGroups(parentActionId);
+        }
+
         // POST: odata/IAPActions
         public IHttpActionResult Post(IAPAction iapUpdate)
         {
@@ -55,9 +61,24 @@ namespace ControlAssuranceAPI.Controllers
             var x = db.IAPActionRepository.Add(iapUpdate);
             if (x == null) return Unauthorized();
 
-            db.SaveChanges();
+            //db.SaveChanges();
 
             return Created(x);
+        }
+
+        // PATCH: odata/IAPActions(1)
+        [AcceptVerbs("PUT")]
+        public IHttpActionResult Put([FromODataUri] int key, IAPAction iapUpdate)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            db.IAPActionRepository.Update(iapUpdate);
+
+            return Updated(iapUpdate);
         }
 
 

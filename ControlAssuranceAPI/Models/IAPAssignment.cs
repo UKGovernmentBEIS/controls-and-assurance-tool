@@ -18,6 +18,7 @@ namespace ControlAssuranceAPI.Models
         public string Title { get; set; }
         public Nullable<int> IAPActionId { get; set; }
         public Nullable<int> UserId { get; set; }
+        public Nullable<int> GroupNum { get; set; }
     
         public virtual IAPAction IAPAction { get; set; }
         public virtual User User { get; set; }

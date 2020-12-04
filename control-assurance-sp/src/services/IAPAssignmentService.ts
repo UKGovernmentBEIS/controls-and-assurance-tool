@@ -18,4 +18,8 @@ export class IAPAssignmentService extends EntityService<IAPAssignment> {
         return super.create(entity);
     }
 
+    public readAllAssignmentsForParentAction(parentIAPActionId: number): Promise<IAPAssignment[]> {
+        return this.readAll(`?parentIAPActionId=${parentIAPActionId}&getAllAssignmentsForParentAction=`);
+    }
+
 }

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as types from '../../types';
 import * as services from '../../services';
-import UpdatesList from './UpdatesList';
+import GroupsList from './GroupsList';
 import { CrTextField } from '../cr/CrTextField';
 import { CrChoiceGroup, IChoiceGroupOption } from '../cr/CrChoiceGroup';
 import { CrDropdown, IDropdownOption } from '../cr/CrDropdown';
@@ -20,8 +20,9 @@ import EntityList from '../entity/EntityList';
 
 
 
-export interface IActionUpdatesTabProps extends types.IBaseComponentProps {
+export interface IGroupActionsTabProps extends types.IBaseComponentProps {
 
+    onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
     filteredItemsMainList: any[];
     iapActionId: any;
 
@@ -32,7 +33,6 @@ export interface IActionUpdatesTabProps extends types.IBaseComponentProps {
     actionOwnerPermission:boolean;
     currentUserId: number;
 
-    showingGroupUpdates:boolean;        
 
 }
 
@@ -48,7 +48,7 @@ export class LookupData implements ILookupData {
 
 
 
-export interface IActionUpdatesTabState {
+export interface IGroupActionsTabState {
     Loading: boolean;
     LookupData: ILookupData;
     IAPInfo: IIAPAction;
@@ -59,11 +59,10 @@ export interface IActionUpdatesTabState {
     HideNextButton: boolean;
     ListFilterText: string;
 
-    GroupTitle:string;
 
 }
 
-export class ActionUpdatesTabState implements IActionUpdatesTabState {
+export class GroupActionsTabState implements IGroupActionsTabState {
     public Loading = false;
     public LookupData = new LookupData();
     public IAPInfo = null;
@@ -73,16 +72,15 @@ export class ActionUpdatesTabState implements IActionUpdatesTabState {
     public HideNextButton: boolean = false;
 
     public ListFilterText: string = null;
-    public GroupTitle:string  = "";
 
 
 }
 
-export default class ActionUpdatesTab extends React.Component<IActionUpdatesTabProps, IActionUpdatesTabState> {
+export default class GroupActionsTab extends React.Component<IGroupActionsTabProps, IGroupActionsTabState> {
 
     private iapUpdateService: services.IAPActionService = new services.IAPActionService(this.props.spfxContext, this.props.api);
 
-    constructor(props: IActionUpdatesTabProps, state: IActionUpdatesTabState) {
+    constructor(props: IGroupActionsTabProps, state: IGroupActionsTabState) {
         super(props);
         // console.log("Rec Id", props.giaaRecommendationId);
         // console.log("filteredItemsRecList", props.filteredItemsRecList);
@@ -92,11 +90,11 @@ export default class ActionUpdatesTab extends React.Component<IActionUpdatesTabP
         // console.log("recListJustMine", props.recListJustMine);
         // console.log("recListActionStatusTypeId", props.recListActionStatusTypeId);
 
-        this.state = new ActionUpdatesTabState();
+        this.state = new GroupActionsTabState();
 
     }
 
-    public render(): React.ReactElement<IActionUpdatesTabProps> {
+    public render(): React.ReactElement<IGroupActionsTabProps> {
 
 
 
@@ -104,8 +102,8 @@ export default class ActionUpdatesTab extends React.Component<IActionUpdatesTabP
             <React.Fragment>
                 {this.renderSectionTitle()}
                 {this.renderInfoTable()}
+                {this.renderGroupsList()}
                 {this.renderFormButtons()}
-                {this.renderUpdatesList()}
 
 
             </React.Fragment>
@@ -115,7 +113,7 @@ export default class ActionUpdatesTab extends React.Component<IActionUpdatesTabP
     private renderSectionTitle() {
         return (
             <React.Fragment>
-                <h1 style={{ fontFamily: 'Calibri', fontSize: '36px' }}>Action Updates</h1>
+                <h1 style={{ fontFamily: 'Calibri', fontSize: '36px' }}>Manage Group Actions</h1>
 
             </React.Fragment>
         );
@@ -147,7 +145,7 @@ export default class ActionUpdatesTab extends React.Component<IActionUpdatesTabP
                                     Title
                                 </td>
                                 <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
-                                    {iapTitle}{this.state.GroupTitle}
+                                    {iapTitle}
                                 </td>
 
 
@@ -173,7 +171,7 @@ export default class ActionUpdatesTab extends React.Component<IActionUpdatesTabP
         );
     }
 
-    private renderUpdatesList() {
+    private renderGroupsList() {
         const iapInfo = this.state.IAPInfo;
         if (iapInfo === null) return;
 
@@ -184,22 +182,22 @@ export default class ActionUpdatesTab extends React.Component<IActionUpdatesTabP
 
         return (
             <React.Fragment>
-                <div style={{ marginBottom: '20px', marginTop: '20px' }} className={styles.sectionATitle}>Updates, Feedback, Evidence</div>
+                <div style={{ marginBottom: '20px', marginTop: '20px' }} className={styles.sectionATitle}>Groups</div>
 
 
                 {<div style={{ overflowX: 'hidden' }}
                 >
                     <div style={{ width: '98%', minHeight: '120px', border: '1px solid rgb(166,166,166)', marginTop: '10px', marginLeft: 'auto', marginRight: 'auto', paddingRight: '5px', overflowX: 'hidden' }}>
-                        <UpdatesList
+                        <GroupsList
                             {...this.props}
-                            iapUpdateId={this.state.IAPActionId}
-                            defaultIAPStatusTypeId={iAPStatusTypeId}
-                            defaultCompletionDate={completionDate}
+                            parentActionId={Number(this.props.iapActionId)}
+                            onItemTitleClick={this.props.onItemTitleClick}
+
                             onError={this.props.onError}
                             filterText={this.state.ListFilterText}
                             onChangeFilterText={this.handle_ChangeFilterText}
                             superUserPermission={this.props.superUserPermission}
-                            actionOwnerPermission={this.state.ActionOwnerPermission}
+
 
                         />
                     </div>
@@ -213,6 +211,7 @@ export default class ActionUpdatesTab extends React.Component<IActionUpdatesTabP
         );
     }
 
+
     private renderFormButtons() {
         const iapInfo = this.state.IAPInfo;
         if (iapInfo === null) return;
@@ -222,10 +221,7 @@ export default class ActionUpdatesTab extends React.Component<IActionUpdatesTabP
 
                 {
                     <React.Fragment>
-                        {(this.state.HideNextButton === false) &&
-                            <PrimaryButton text="Next" className={styles.formButton} style={{ marginRight: '5px' }}
-                                onClick={() => this.showNext()}
-                            />}
+
 
                         <DefaultButton text="Close" className={styles.formButton} style={{ marginRight: '5px' }}
                             onClick={this.props.onShowList}
@@ -242,59 +238,6 @@ export default class ActionUpdatesTab extends React.Component<IActionUpdatesTabP
     }
 
 
-
-
-    private showNext = (): void => {
-
-        console.log('in showNext');
-
-        const currentIAPActionId: number = Number(this.state.IAPActionId);
-        let currentIDFound: boolean = false;
-        let nextIAPActionID: number = 0;
-        let actionOwnerPermission:boolean = false;
-
-        for (let i = 0; i < this.state.FilteredItemsMainList.length; i++) {
-
-            let e: any = this.state.FilteredItemsMainList[i];
-            const id: number = Number(e["ID"]);
-
-            if (id === currentIAPActionId) {
-                currentIDFound = true;
-                continue;
-            }
-            if (currentIDFound === true) {
-                nextIAPActionID = id;
-                const ownerIdsStr:string = e["OwnerIds"];
-                //console.log('ownerIdsStr', ownerIdsStr);
-
-                const ownerIdsArr:string[] = ownerIdsStr.split(',');
-
-                for (let j = 0; j < ownerIdsArr.length; j++) {
-      
-                    let ownerId:number = Number(ownerIdsArr[j]);
-                    if(ownerId === this.props.currentUserId){
-                      actionOwnerPermission = true;
-                      break;
-                    }
-                  }
-
-
-
-
-                //console.log("nextRecID", nextRecID);
-                break;
-            }
-
-        }
-
-        if (nextIAPActionID > 0) {
-            this.setState({
-                IAPActionId: nextIAPActionID,
-                ActionOwnerPermission: actionOwnerPermission,
-            }, () => this.loadIAPInfo());
-        }
-
-    }
 
     private loadIAPInfo = (): void => {
 
@@ -315,24 +258,8 @@ export default class ActionUpdatesTab extends React.Component<IActionUpdatesTabP
 
             }
 
-            
-            let groupTitle:string = "";
-            if(this.props.showingGroupUpdates === true){
-
-                //console.log('FilteredItemsMainList', this.state.FilteredItemsMainList);
-                var currentItemInFiltered = this.state.FilteredItemsMainList.filter(x => Number(x.ID) === Number(this.state.IAPActionId));
-                //console.log('currentItemInFiltered-1', currentItemInFiltered);
-                if(currentItemInFiltered.length > 0){
-                    //console.log('currentItemInFiltered-2', currentItemInFiltered);
-                    groupTitle = ` (${currentItemInFiltered[0]["Title"]})`;
-                }
-
-            }
-
-
             this.setState({
                 IAPInfo: u,
-                GroupTitle: groupTitle,
                 HideNextButton: hideNextButton
             });
 

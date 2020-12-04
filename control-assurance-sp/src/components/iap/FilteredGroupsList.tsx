@@ -46,7 +46,7 @@ const controlStyles2 = {
     //}
 };
 
-export interface IFilteredMainListProps {
+export interface IFilteredGroupsListProps {
     className?: string;
     columns: IColumn[];
     items: any[];
@@ -57,26 +57,19 @@ export interface IFilteredMainListProps {
 
     selection?: ISelection;
 
-    onAdd: () => void;
-    onAddGroupActions: () => void;
-    onEdit: () => void;
-    onDelete: () => void;
-
-    editDisabled: boolean;
-    deleteDisabled: boolean;
 
 }
 
-export interface IFilteredMainListState {
+export interface IFilteredGroupsListState {
     Columns: IColumn[];
     FilteredItems: any[];
 }
 
-export class FilteredMainList extends React.Component<IFilteredMainListProps, IFilteredMainListState> {
+export class FilteredGroupsList extends React.Component<IFilteredGroupsListProps, IFilteredGroupsListState> {
 
 
 
-    constructor(props: IFilteredMainListProps) {
+    constructor(props: IFilteredGroupsListProps) {
         super(props);
 
         props.columns.forEach((c) => { c.onColumnClick = this._onColumnClick; });
@@ -96,47 +89,7 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
                 <div className={classNames.controlWrapper}>
 
 
-                    {props.editDisabled && props.deleteDisabled &&
-                        <CommandBarButton
-                            iconProps={{ iconName: 'Add' }}
-                            className={classNames.cmdBtn}
-                            text="Add Action"
-                            onClick={props.onAdd}
-                        />}
 
-                    {props.editDisabled && props.deleteDisabled &&
-                        <CommandBarButton
-                            iconProps={{ iconName: 'Add' }}
-                            className={classNames.cmdBtn}
-                            text="Add Group Actions"
-                            onClick={props.onAddGroupActions}
-                        />}
-
-                    {(props.editDisabled === false) &&
-                        <CommandBarButton
-                            iconProps={{ iconName: 'Edit' }}
-                            className={classNames.cmdBtn}
-                            text="Edit"
-                            onClick={props.onEdit}
-                        />}
-
-
-                    {(props.deleteDisabled === false) &&
-                        <CommandBarButton
-                            iconProps={{ iconName: 'Delete' }}
-                            className={classNames.cmdBtn}
-                            text="Delete"
-                            onClick={props.onDelete}
-                        />}
-
-
-                    {/* 
-                    {(props.assignDisabled === false) &&
-                        <CommandBarButton
-                            iconProps={{ iconName: 'Assign' }}
-                            text="Assign"
-                            onClick={props.onAssign}
-                        />} */}
 
                     <span style={controlStyles2}>
 
@@ -176,7 +129,7 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
 
     }
 
-    public componentDidUpdate(prevProps: IFilteredMainListProps): void {
+    public componentDidUpdate(prevProps: IFilteredGroupsListProps): void {
 
         if (prevProps.columns !== this.props.columns) {
             this.props.columns.forEach((c) => { c.onColumnClick = this._onColumnClick; });
@@ -198,35 +151,7 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
         let fieldContent = item[column.fieldName as keyof IEntity] as string;
 
 
-        if (column.key === "Update") {
-
-            let txtColor: string = "white";
-            let bgColor: string = "";
-            //let statusImg: string = "";
-
-            if (fieldContent === "Required") {
-                bgColor = "rgb(34,177,76)";
-
-                return (
-                    <span style={{ backgroundColor: bgColor, color: txtColor, width: "75px", display: "block", paddingLeft: "10px", paddingTop: "5px", paddingBottom: "5px" }}>
-                        {fieldContent}
-                    </span>
-                    // <img src={statusImg} />
-
-                );
-
-            }
-
-            else {
-                return <span>{fieldContent}</span>;
-            }
-
-
-
-
-        }
-
-        else if (column.key === "Title") {
+        if (column.key === "Title") {
 
             const id: number = item["ID"];
 

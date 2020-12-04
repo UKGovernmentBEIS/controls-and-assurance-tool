@@ -14,7 +14,7 @@ import { getUploadFolder_IAPFiles, getFolder_Help } from '../../types/AppGlobals
 import { sp, ChunkedFileUploadProgressData } from '@pnp/sp';
 import styles from '../../styles/cr.module.scss';
 
-export interface IMainSaveFormProps extends types.IBaseComponentProps {
+export interface IMainSaveFormGroupActionsProps extends types.IBaseComponentProps {
     //periodID: number | string;
     entityId: number;
     showForm: boolean;
@@ -46,7 +46,7 @@ export class ErrorMessage implements IErrorMessage {
     public Status = null;
 
 }
-export interface IMainSaveFormState {
+export interface IMainSaveFormGroupActionsState {
     Loading: boolean;
     LookupData: ILookupData;
     FormData: IIAPAction;
@@ -61,13 +61,13 @@ export interface IMainSaveFormState {
     EditRequest: boolean;
 
     ErrMessages: IErrorMessage;
-
+    ArrAOGroups: number[];
 }
-export class MainSaveFormState implements IMainSaveFormState {
+export class MainSaveFormGroupActionsState implements IMainSaveFormGroupActionsState {
     public Loading = false;
     public LookupData = new LookupData();
-    public FormData = new IAPAction(1, 1, 1);
-    public FormDataBeforeChanges = new IAPAction(1, 1, 1);
+    public FormData = new IAPAction(1, 1, 2); //IAPTypeId 2 is Group Actions
+    public FormDataBeforeChanges = new IAPAction(1, 1, 2); //IAPTypeId 2 is Group Actions
     public FormIsDirty = false;
     //public ClearSuggestedStatus = false;
 
@@ -80,14 +80,15 @@ export class MainSaveFormState implements IMainSaveFormState {
 
     public ErrMessages = new ErrorMessage();
 
+    public ArrAOGroups: number[] = [];
 }
 
-export default class MainSaveForm extends React.Component<IMainSaveFormProps, IMainSaveFormState> {
+export default class MainSaveFormGroupActions extends React.Component<IMainSaveFormGroupActionsProps, IMainSaveFormGroupActionsState> {
     private userService: services.UserService = new services.UserService(this.props.spfxContext, this.props.api);
     private directorateService: services.DirectorateService = new services.DirectorateService(this.props.spfxContext, this.props.api);
     private iapUpdateService: services.IAPActionService = new services.IAPActionService(this.props.spfxContext, this.props.api);
     private iapStatusTypeService: services.IAPStatusTypeService = new services.IAPStatusTypeService(this.props.spfxContext, this.props.api);
-    private aipAssignmentService: services.IAPAssignmentService = new services.IAPAssignmentService(this.props.spfxContext, this.props.api);
+    private iapAssignmentService: services.IAPAssignmentService = new services.IAPAssignmentService(this.props.spfxContext, this.props.api);
     private iapActionDirectorateService: services.IAPActionDirectorateService = new services.IAPActionDirectorateService(this.props.spfxContext, this.props.api);
 
     private UploadFolder_Files: string = "";
@@ -95,24 +96,24 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
 
 
     private childEntities: types.IFormDataChildEntities[] = [
-        { ObjectParentProperty: 'IAPAssignments', ParentIdProperty: 'IAPActionId', ChildIdProperty: 'UserId', ChildService: this.aipAssignmentService },
+        { ObjectParentProperty: 'IAPAssignments', ParentIdProperty: 'IAPActionId', ChildIdProperty: 'UserId', ChildService: this.iapAssignmentService },
         { ObjectParentProperty: 'IAPActionDirectorates', ParentIdProperty: 'IAPActionId', ChildIdProperty: 'DirectorateId', ChildService: this.iapActionDirectorateService },
     ];
 
-    constructor(props: IMainSaveFormProps, state: IMainSaveFormState) {
+    constructor(props: IMainSaveFormGroupActionsProps, state: IMainSaveFormGroupActionsState) {
         super(props);
         this.UploadFolder_Files = getUploadFolder_IAPFiles(props.spfxContext);
         this.Folder_Help = getFolder_Help(props.spfxContext);
 
-        this.state = new MainSaveFormState();
+        this.state = new MainSaveFormGroupActionsState();
     }
 
     //#region Render
 
-    public render(): React.ReactElement<IMainSaveFormProps> {
+    public render(): React.ReactElement<IMainSaveFormGroupActionsProps> {
         //const errors = this.state.ValidationErrors;
         return (
-            <Panel isOpen={this.props.showForm} headerText={"Action"} type={PanelType.medium} onRenderNavigation={() => <FormCommandBar onSave={this.saveData} onCancel={this.props.onCancelled} />}>
+            <Panel isOpen={this.props.showForm} headerText={"Group Actions"} type={PanelType.medium} onRenderNavigation={() => <FormCommandBar onSave={this.saveData} onCancel={this.props.onCancelled} />}>
                 <div className={styles.cr}>
                     {this.renderFormFields()}
                     <FormButtons
@@ -136,7 +137,8 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
                 {this.renderMonthlyUpdateRequiredCheckbox()}
                 {this.renderMonthlyUpdateRequiredIfNotCompletedCheckbox()}
                 {this.renderIAPStatusTypes()}
-                {this.renderUsers()}
+                {/* {this.renderUsers()} */}
+                {this.renderAOGroups()}
                 {this.renderDirectorates()}
                 {this.renderIsArchiveCheckbox()}
                 {/* {this.renderIsLinkCheckbox()}
@@ -223,6 +225,7 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
                     selectedKey={this.state.FormData.IAPStatusTypeId}
                     onChanged={(v) => this.changeDropdown(v, "IAPStatusTypeId")}
                     errorMessage={this.state.ErrMessages.Status}
+                    disabled={this.state.EditRequest}
                 />
             );
         }
@@ -256,27 +259,90 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
             return null;
     }
 
-    private renderUsers() {
+    // private renderUsers() {
+    //     const users = this.state.LookupData.Users;
+    //     const fd_users: IIAPAssignment[] = this.state.FormData['IAPAssignments'];
+    //     //console.log('fd_users', fd_users);
+    //     if (users) {
+    //         return (
+    //             <CrEntityPicker
+    //                 label="Action Owners"
+    //                 className={styles.formField}
+    //                 displayForUser={true}
+    //                 entities={this.state.LookupData.Users}
+    //                 itemLimit={10}
+    //                 selectedEntities={fd_users && fd_users.map((ass) => { return ass.UserId; })}
+    //                 onChange={(v) => this.changeMultiUserPicker(v, 'IAPAssignments', new IAPAssignment(), 'UserId')}
+    //             />
+    //         );
+    //     }
+    //     else
+    //         return null;
+    // }
+
+    public renderAOGroups() {
+
         const users = this.state.LookupData.Users;
-        const fd_users: IIAPAssignment[] = this.state.FormData['IAPAssignments'];
-        //console.log('fd_users', fd_users);
         if (users) {
+
             return (
-                <CrEntityPicker
-                    label="Action Owners"
-                    className={styles.formField}
-                    displayForUser={true}
-                    entities={this.state.LookupData.Users}
-                    itemLimit={10}
-                    selectedEntities={fd_users && fd_users.map((ass) => { return ass.UserId; })}
-                    onChange={(v) => this.changeMultiUserPicker(v, 'IAPAssignments', new IAPAssignment(), 'UserId')}
-                />
+                <div>
+
+                    <div style={{ display: 'flex' }}>
+                        <div style={{ width: '100%' }}>
+                            <span>Action Owners per Group</span>
+
+                        </div>
+                    </div>
+
+
+                    {this.state.ArrAOGroups.map((c, i) =>
+                        this.renderAOGroup(c, i)
+                    )}
+
+                    {<div className={styles.formField}>
+                        <span style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }} onClick={this.addBlankItemInArrAOGroups} >Add another group</span>
+                    </div>}
+
+                </div>
             );
+
         }
         else
             return null;
+
+
     }
 
+    private renderAOGroup(item: number, index: number) {
+
+        console.log('renderAOGroup-item', item);
+        let fd_users: IIAPAssignment[] = this.state.FormData['IAPAssignments'];
+        if (fd_users) {
+            fd_users = fd_users.filter(x => x.GroupNum === item);
+        }
+
+        return (
+
+            <div key={`div_renderLink_${index}`} style={{ display: 'flex', marginTop: '5px' }}>
+                <div key={`divCol1_renderLink_${index}`} style={{ width: '100%', }}>
+
+                    <CrEntityPicker
+                        //label="Action Owners"
+                        //className={styles.formField}
+                        displayForUser={true}
+                        entities={this.state.LookupData.Users}
+                        itemLimit={10}
+                        selectedEntities={fd_users && fd_users.map((ass) => { return ass.UserId; })}
+                        onChange={(v) => this.changeMultiUserPicker(v, item)}
+                    />
+
+                </div>
+
+            </div>
+
+        );
+    }
 
     private renderMonthlyUpdateRequiredCheckbox() {
 
@@ -452,10 +518,43 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
         let x = this.iapUpdateService.readWithExpandAssignments(this.props.entityId).then((e: IIAPAction): void => {
 
             console.log('data ', e);
-            this.setState({
-                FormData: e,
-                FormDataBeforeChanges: e,
+
+            this.iapAssignmentService.readAllAssignmentsForParentAction(e.ID).then((ass: IAPAssignment[]): void => {
+                console.log('ass', ass);
+
+                const newFD = this.cloneObject(e, 'IAPAssignments', ass);
+                console.log('newFD', newFD);
+
+                //make unique group arr
+                let groupNumArr: number[] = ass.map(a => Number(a['GroupNum']));
+                console.log('groupNumArr', groupNumArr);
+
+
+                const uniqueGroupNumArr = groupNumArr.filter((item, pos) => {
+                    //console.log('groupNumArr.indexOf(item)', groupNumArr.indexOf(item));
+                    return groupNumArr.indexOf(item) == pos;
+                });
+
+                console.log('uniqueGroupNumArr', uniqueGroupNumArr);
+
+
+                this.setState({
+                    ArrAOGroups: uniqueGroupNumArr,
+                }, () => {
+                    console.log('after setting ArrAOGroups');
+                    this.setState({
+                        FormData: newFD,
+                        FormDataBeforeChanges: newFD,
+                    }, this.addBlankItemInArrAOGroups);
+                });
+
+
+                //this.setState({ FormData: this.cloneObject(this.state.FormData, 'IAPAssignments', new_fd_users), FormIsDirty: true });
+
             });
+
+
+
 
         }, (err) => { if (this.props.onError) this.props.onError(`Error individual action plan loading data`, err.message); });
         return x;
@@ -511,6 +610,10 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
     private onAfterLoad = (entity: types.IEntity): void => {
 
         //console.log('after load', this.state.LookupData.Users);
+        if (this.props.entityId === null) {
+            this.addBlankItemInArrAOGroups();
+        }
+        
 
     }
 
@@ -524,8 +627,8 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
             let f: IIAPAction = { ...this.state.FormData };
 
             //remove all the child and parent entities before sending post/patch
-            delete f['IAPAssignments']; //chile entity
-            delete f.IAPActionDirectorates;
+            //delete f['IAPAssignments']; //chile entity
+            //delete f.IAPActionDirectorates;
 
             if (f.ID === 0) {
 
@@ -539,51 +642,59 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
 
                 //console.log('in update');
 
-                this.iapUpdateService.update(f.ID, f).then(this.saveChildEntitiesAfterUpdate).then(this.onAfterUpdate).then(this.props.onSaved, (err) => {
+                this.iapUpdateService.updatePut(f.ID, f).then(this.props.onSaved, (err) => {
                     if (this.props.onError) this.props.onError(`Error updating item`, err.message);
                 });
+
+                // this.iapUpdateService.update(f.ID, f).then(this.saveChildEntitiesAfterUpdate).then(this.onAfterUpdate).then(this.props.onSaved, (err) => {
+                //     if (this.props.onError) this.props.onError(`Error updating item`, err.message);
+                // });
             }
         }
 
     }
 
     private saveChildEntitiesAfterCreate = (parentEntity: IIAPAction): Promise<any> => {
-        let promises = [];
-        if (this.childEntities) {
-            this.childEntities.forEach((ce) => {
-                this.state.FormData[ce.ObjectParentProperty].forEach((c) => {
-                    c[ce.ParentIdProperty] = parentEntity.ID;
-                    if (c.ID === 0)
-                        promises.push(ce.ChildService.create(c));
-                });
-            });
-            return Promise.all(promises).then(() => parentEntity);
-        }
+        return Promise.resolve();
+
+        // let promises = [];
+        // if (this.childEntities) {
+        //     this.childEntities.forEach((ce) => {
+        //         this.state.FormData[ce.ObjectParentProperty].forEach((c) => {
+        //             c[ce.ParentIdProperty] = parentEntity.ID;
+        //             if (c.ID === 0)
+        //                 promises.push(ce.ChildService.create(c));
+        //         });
+        //     });
+        //     return Promise.all(promises).then(() => parentEntity);
+        // }
     }
     private saveChildEntitiesAfterUpdate = (): Promise<any> => {
 
-        let promises = [];
-        if (this.childEntities) {
-            this.childEntities.forEach((ce) => {
-                this.state.FormData[ce.ObjectParentProperty].forEach((c) => {
-                    if (c.ID === 0) {
-                        c[ce.ParentIdProperty] = this.state.FormData.ID;
-                        promises.push(ce.ChildService.create(c));
-                    }
-                    else {
-                        //no need to update
-                    }
-                });
+        return Promise.resolve();
 
-                this.state.FormDataBeforeChanges[ce.ObjectParentProperty].forEach((c) => {
-                    if (this.state.FormData[ce.ObjectParentProperty].map(i => i[ce.ChildIdProperty]).indexOf(c[ce.ChildIdProperty]) === -1) {
-                        promises.push(ce.ChildService.delete(c.ID));
-                    }
+        // let promises = [];
+        // if (this.childEntities) {
+        //     this.childEntities.forEach((ce) => {
+        //         this.state.FormData[ce.ObjectParentProperty].forEach((c) => {
+        //             if (c.ID === 0) {
+        //                 c[ce.ParentIdProperty] = this.state.FormData.ID;
+        //                 promises.push(ce.ChildService.create(c));
+        //             }
+        //             else {
+        //                 //no need to update
+        //             }
+        //         });
 
-                });
-            });
-            return Promise.all(promises).then(() => this.state.FormData);
-        }
+        //         this.state.FormDataBeforeChanges[ce.ObjectParentProperty].forEach((c) => {
+        //             if (this.state.FormData[ce.ObjectParentProperty].map(i => i[ce.ChildIdProperty]).indexOf(c[ce.ChildIdProperty]) === -1) {
+        //                 promises.push(ce.ChildService.delete(c.ID));
+        //             }
+
+        //         });
+        //     });
+        //     return Promise.all(promises).then(() => this.state.FormData);
+        // }
     }
 
 
@@ -645,7 +756,24 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
 
     }
 
+    private addBlankItemInArrAOGroups = () => {
+        console.log('in addBlankItemInArrAOGroups');
+        let newItem:number = 0;
+        if(this.state.ArrAOGroups.length > 0){
+            const lastItem:number = this.state.ArrAOGroups[this.state.ArrAOGroups.length-1];
+            newItem = lastItem+1;
+        }
+        else{
+            newItem = 1;
+        }
 
+        console.log('newItem', newItem);
+
+        //const newItem: number = this.state.ArrAOGroups.length + 1;
+        const arrCopy = [...this.state.ArrAOGroups, newItem];
+        this.setState({ ArrAOGroups: arrCopy });
+
+    }
 
     private cloneObject(obj, changeProp?, changeValue?) {
         if (changeProp)
@@ -723,43 +851,64 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
     private cloneArray(array): any[] { return [...array]; }
 
 
-    private changeMultiUserPicker = (value: number[], f: string, newEntity: object, userIdProperty: string): void => {
+    private changeMultiUserPicker = (values: number[], groupNum: number): void => {
 
-        console.log('value', value);
+        console.log('groupNum', groupNum);
+        console.log('value', values);
         //to avoid same user to add multiple times
-        const valuesUnique = value.filter((item, pos) => {
-            console.log('value.indexOf(item)', value.indexOf(item));
-            return value.indexOf(item) == pos;
+        const valuesUnique = values.filter((item, pos) => {
+            console.log('value.indexOf(item)', values.indexOf(item));
+            return values.indexOf(item) == pos;
         });
         console.log('valuesUnique', valuesUnique);
-        value = valuesUnique;
+        values = valuesUnique;
 
 
 
         const loadedUsers = this.cloneObject(this.state.FormDataBeforeChanges);
         let newUsers = [];
-        value.forEach((userId) => {
+        values.forEach((userId) => {
 
             console.log('test1', loadedUsers['IAPAssignments']);
             //console.log('test2', loadedUsers['IAPAssignments'].map(ass => ass['UserId']) );
             //console.log('test3', loadedUsers['IAPAssignments'].map(ass => ass['UserId']).indexOf(userId) );
 
-            let existingUser = loadedUsers[f] ? loadedUsers[f].map(user => user[userIdProperty]).indexOf(userId) : -1;
+            let existingUser = loadedUsers['IAPAssignments'] ? loadedUsers['IAPAssignments'].map(user => user['UserId']).indexOf(userId) : -1;
             console.log('existingUser', existingUser);
             if (existingUser !== -1) {
                 //existing user which is saved in db
-                console.log('test4', loadedUsers['IAPAssignments'][existingUser]  );
-                newUsers.push(loadedUsers[f][existingUser]);
+                console.log('test4', loadedUsers['IAPAssignments'][existingUser]);
+                newUsers.push(loadedUsers['IAPAssignments'][existingUser]);
             }
             else {
                 //-1
-                let newUser = { ...newEntity };
-                newUser[userIdProperty] = userId;
+                const newUser = new IAPAssignment();
+                //let newUser = { ...newEntity };
+                newUser['UserId'] = userId;
+                newUser['GroupNum'] = groupNum;
                 newUsers.push(newUser);
             }
         });
-        console.log('newUsers', newUsers);
-        this.setState({ FormData: this.cloneObject(this.state.FormData, f, newUsers), FormIsDirty: true });
+        const fd_users: IAPAssignment[] = this.state.FormData['IAPAssignments'];
+        console.log('fd_users', fd_users);
+        if (fd_users) {
+            const fd_users_not_g: IAPAssignment[] = fd_users.filter(x => x.GroupNum !== groupNum);
+            console.log('fd_users_not_g', fd_users_not_g);
+            let new_fd_users = [...fd_users_not_g, ...newUsers];
+            console.log('new_fd_users', new_fd_users);
+
+            this.setState({ FormData: this.cloneObject(this.state.FormData, 'IAPAssignments', new_fd_users), FormIsDirty: true });
+        }
+        else {
+
+            console.log('newUsers', newUsers);
+            this.setState({ FormData: this.cloneObject(this.state.FormData, 'IAPAssignments', newUsers), FormIsDirty: true });
+        }
+
+
+
+
+
     }
 
     //#endregion Form Operations

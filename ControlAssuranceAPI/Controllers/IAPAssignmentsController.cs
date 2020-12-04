@@ -30,6 +30,12 @@ namespace ControlAssuranceAPI.Controllers
             return SingleResult.Create(db.IAPAssignmentRepository.IAPAssignments.Where(x => x.ID == key));
         }
 
+        // GET: /odata/IAPAssignments?parentIAPActionId=1&getAllAssignmentsForParentAction=
+        public List<IAPAssignment> Get(int parentIAPActionId, string getAllAssignmentsForParentAction)
+        {
+            return db.IAPAssignmentRepository.GetAllAssignmentsForParentAction(parentIAPActionId);
+        }
+
         // POST: odata/IAPAssignments
         public IHttpActionResult Post(IAPAssignment iapAssignment)
         {

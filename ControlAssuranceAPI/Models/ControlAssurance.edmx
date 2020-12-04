@@ -565,6 +565,8 @@
           <Property Name="MonthlyUpdateRequired" Type="bit" />
           <Property Name="MonthlyUpdateRequiredIfNotCompleted" Type="bit" />
           <Property Name="IsArchive" Type="bit" />
+          <Property Name="ParentId" Type="int" />
+          <Property Name="GroupNum" Type="int" />
         </EntityType>
         <EntityType Name="IAPActionDirectorate">
           <Key>
@@ -599,6 +601,7 @@
           <Property Name="Title" Type="nvarchar" MaxLength="50" />
           <Property Name="IAPActionId" Type="int" />
           <Property Name="UserId" Type="int" />
+          <Property Name="GroupNum" Type="int" />
         </EntityType>
         <EntityType Name="IAPDefForm">
           <Key>
@@ -2978,6 +2981,8 @@
           <Property Name="MonthlyUpdateRequired" Type="Boolean" />
           <Property Name="MonthlyUpdateRequiredIfNotCompleted" Type="Boolean" />
           <Property Name="IsArchive" Type="Boolean" />
+          <Property Name="ParentId" Type="Int32" />
+          <Property Name="GroupNum" Type="Int32" />
           <NavigationProperty Name="IAPPriority" Relationship="Self.FK_IAPAction_IAPPriority" FromRole="IAPAction" ToRole="IAPPriority" />
           <NavigationProperty Name="IAPStatusType" Relationship="Self.FK_IAPAction_IAPStatusType" FromRole="IAPAction" ToRole="IAPStatusType" />
           <NavigationProperty Name="IAPType" Relationship="Self.FK_IAPAction_IAPType" FromRole="IAPAction" ToRole="IAPType" />
@@ -3024,6 +3029,7 @@
           <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="IAPActionId" Type="Int32" />
           <Property Name="UserId" Type="Int32" />
+          <Property Name="GroupNum" Type="Int32" />
           <NavigationProperty Name="IAPAction" Relationship="Self.FK_IAPAssignment_IAPAction" FromRole="IAPAssignment" ToRole="IAPAction" />
           <NavigationProperty Name="User" Relationship="Self.FK_IAPAssignment_User" FromRole="IAPAssignment" ToRole="User" />
         </EntityType>
@@ -5619,6 +5625,8 @@
                 <ScalarProperty Name="MonthlyUpdateRequired" ColumnName="MonthlyUpdateRequired" />
                 <ScalarProperty Name="MonthlyUpdateRequiredIfNotCompleted" ColumnName="MonthlyUpdateRequiredIfNotCompleted" />
                 <ScalarProperty Name="IsArchive" ColumnName="IsArchive" />
+                <ScalarProperty Name="ParentId" ColumnName="ParentId" />
+                <ScalarProperty Name="GroupNum" ColumnName="GroupNum" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -5656,6 +5664,7 @@
                 <ScalarProperty Name="Title" ColumnName="Title" />
                 <ScalarProperty Name="IAPActionId" ColumnName="IAPActionId" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="GroupNum" ColumnName="GroupNum" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

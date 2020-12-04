@@ -221,5 +221,22 @@ namespace ControlAssuranceAPI.Repositories
             return false;
         }
 
+        protected bool IAP_SuperUser(int userId)
+        {
+            bool superUser = false;
+
+            var userPermissions = db.UserPermissions.Where(up => up.UserId == userId).ToList();
+            foreach (var permissioin in userPermissions)
+            {
+                if (permissioin.PermissionTypeId == 1 || permissioin.PermissionTypeId ==11)
+                {
+                    superUser = true;
+                }
+
+            }
+
+            return superUser;
+        }
+
     }
 }

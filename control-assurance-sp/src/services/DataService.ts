@@ -51,6 +51,16 @@ export abstract class DataService<T> extends BaseService<T> {
         });
     }
 
+    protected putEntity(entity: T, url: string): Promise<void> {
+        let requestHeaders: Headers = new Headers();
+        requestHeaders.append("Content-Type", "application/json");
+
+        //let request = this.Api.ApiClient.post(url, this.Api.getConfig(), { method: 'POST', headers: requestHeaders, body: JSON.stringify(entity) });
+        //return this.makeRequest(request);
+
+        return this.makeRequest(this.Api.ApiClient.fetch(url, this.Api.getConfig(), { method: 'PUT', headers: requestHeaders, body: JSON.stringify(entity) }));
+    }
+
     protected patchEntity(entity: Partial<T>, url: string): Promise<void> {
         let requestHeaders: Headers = new Headers();
         requestHeaders.append("Content-Type", "application/json");

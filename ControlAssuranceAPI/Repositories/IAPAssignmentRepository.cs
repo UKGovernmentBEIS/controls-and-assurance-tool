@@ -38,5 +38,40 @@ namespace ControlAssuranceAPI.Repositories
         {
             return db.IAPAssignments.Remove(iapAssignment);
         }
+
+        public List<IAPAssignment> GetAllAssignmentsForParentAction(int parentIAPActionId)
+        {
+            //get all child actions for the input parent and use child actions ids as "in" statement
+
+            var childActions = db.IAPActions.Where(x => x.ParentId == parentIAPActionId).ToList();
+
+            string childActionIds = "";
+            foreach(var ite in childActions)
+            {
+                childActionIds += $"{ite.ID},";
+            }
+
+            List<int> lstChildActionIds = new List<int>();
+            if (childActionIds.Length > 0)
+            {
+                childActionIds = childActionIds.Substring(0, childActionIds.Length - 1);
+                lstChildActionIds = childActionIds.Split(',').Select(int.Parse).ToList();
+            }
+
+            
+            
+
+
+            var qry = from a in db.IAPAssignments
+                      //where a.IAPActionId == iapActionId
+                      where lstChildActionIds.Contains(a.IAPActionId.Value)
+                      orderby a.GroupNum, a.IAPActionId
+                      select a;
+
+            var retList = qry.ToList();
+
+            return retList;
+
+        }
     }
 }
