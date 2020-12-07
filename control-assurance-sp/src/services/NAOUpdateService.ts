@@ -20,6 +20,11 @@ export class NAOUpdateService extends EntityService<INAOUpdate> {
     public readByPeriodAndRec(naoRecommendationId:number, naoPeriodId:number): Promise<INAOUpdate> {
         return this.readEntity(`?naoRecommendationId=${naoRecommendationId}&naoPeriodId=${naoPeriodId}&findCreate=true`);
     }
+    public getLastPeriodActionsTaken(naoRecommendationId:number, naoPeriodId:number): Promise<string> {
+        return super.readString(`?naoRecommendationId=${naoRecommendationId}&naoPeriodId=${naoPeriodId}&getLastPeriodActionsTaken=`).then((result:string): string => {
+            return result;
+        });
+    }
 
     public getRecInfo(naoUpdateId: number): Promise<INAOUpdate> {
         //const qry:string = `?$expand=NAORecommendation,NAOPeriod`;

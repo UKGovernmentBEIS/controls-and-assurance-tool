@@ -48,6 +48,23 @@ namespace ControlAssuranceAPI.Repositories
             db.SaveChanges();
         }
 
+        public string GetLastPeriodActionsTaken(int naoRecommendationId, int naoPeriodId)
+        {
+            string lastPeriodActions = "";
+            var period = db.NAOPeriods.FirstOrDefault(x => x.ID == naoPeriodId);
+            if(period.LastPeriodId != null)
+            {
+                var naoUpdate = db.NAOUpdates.FirstOrDefault(x => x.NAOPeriodId == period.LastPeriodId && x.NAORecommendationId == naoRecommendationId);
+                if(naoUpdate != null)
+                {
+                    lastPeriodActions = naoUpdate.ActionsTaken;
+                }
+            }
+
+
+            return lastPeriodActions;
+        }
+
         public NAOUpdate FindCreate(int naoRecommendationId, int naoPeriodId)
         {
             var naoUpdateDb = db.NAOUpdates.FirstOrDefault(x => x.NAOPeriodId == naoPeriodId && x.NAORecommendationId == naoRecommendationId);

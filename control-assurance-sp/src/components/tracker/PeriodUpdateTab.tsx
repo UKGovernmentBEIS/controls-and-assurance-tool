@@ -59,6 +59,7 @@ export interface IPeriodUpdateTabState {
     HideNoNextMessage: boolean;
     HideNextButton: boolean;
     ArrLinks: ILinkLocalType[];
+    LastPeriodActions: string;
     //FormData: IGoElement;
 
     //IncompleteOnly: boolean;
@@ -80,6 +81,7 @@ export class PeriodUpdateTabState implements IPeriodUpdateTabState {
     public HideNoNextMessage: boolean = true;
     public HideNextButton: boolean = false;
     public ArrLinks: ILinkLocalType[] = [];
+    public LastPeriodActions: string = "";
 
     constructor(naoPeriodId: number, naoRecommendationId: number) {
         this.FormData = new NAOUpdate(naoPeriodId, naoRecommendationId);
@@ -278,7 +280,7 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
 
                             <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>
                                 Actions Taken (Please mention by whom if not BEIS)
-                    </div>
+                            </div>
 
                             <CrTextField
                                 className={styles.formField}
@@ -290,6 +292,12 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
                                 value={fd.ActionsTaken}
 
                             />
+                            <div style={{ fontWeight: 'bold', fontStyle:'italic', marginBottom: '5px' }}>
+                                Actions Taken Previous Period:
+                            </div>
+                            <div style={{fontStyle:'italic', marginBottom:'30px'}}>
+                                {this.state.LastPeriodActions}
+                            </div>
 
 
 
@@ -334,11 +342,11 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
 
                 <div style={{ display: 'flex' }}>
                     <div style={{ width: '40%', paddingRight: '5px', fontWeight: 'bold' }}>
-                        <span>Link (Text ie. Treasury Minutes)</span>
+                        <span>Link Text (ie. Treasury Minutes)</span>
 
                     </div>
                     <div style={{ width: '40%', paddingRight: '5px', fontWeight: 'bold' }}>
-                        <span>Link (URL ie. http://bit.ly/hdydg)</span>
+                        <span>Link URL (ie. http://bit.ly/hdydg)</span>
 
                     </div>
                     <div style={{ width: '20%', paddingLeft: '2px', fontWeight: 'bold' }}>
@@ -381,7 +389,7 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
 
                 </div>
 
-                <div key={`divCol3_renderLink_${index}`} style={{ width: '20%', paddingLeft:'2px' }}>
+                <div key={`divCol3_renderLink_${index}`} style={{ width: '20%', paddingLeft: '2px' }}>
 
                     <CrChoiceGroup
                         className="inlineflex"
@@ -718,32 +726,32 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
     private saveData = (showNext: boolean): void => {
         this.saveLinksToSingleValue(showNext);
     }
-    private saveLinksToSingleValue = (showNext: boolean):void => {
+    private saveLinksToSingleValue = (showNext: boolean): void => {
 
-        let singleStr:string = "";
+        let singleStr: string = "";
         const arrLinks = this.state.ArrLinks;
 
         for (let i = 0; i < arrLinks.length; i++) {
-            let item:ILinkLocalType = arrLinks[i];
-            if(item.Description.trim() === '' && item.URL.trim() === ''){
+            let item: ILinkLocalType = arrLinks[i];
+            if (item.Description.trim() === '' && item.URL.trim() === '') {
                 //ignore this item
             }
-            else{
-                if(item.URL.trim() !== ''){
-                    let description:string = item.Description !== '' ? item.Description : item.URL;
+            else {
+                if (item.URL.trim() !== '') {
+                    let description: string = item.Description !== '' ? item.Description : item.URL;
                     //use '<' for separator between description and url, And use '>' for next item separator
                     singleStr += `${description}<${item.URL.trim()}<${item.AddToPublication}>`;
                 }
-            }                    
-          }
+            }
+        }
 
-          //set single value in state
-          const fd = {...this.state.FormData};
-          fd.FurtherLinks = singleStr;
+        //set single value in state
+        const fd = { ...this.state.FormData };
+        fd.FurtherLinks = singleStr;
 
-          this.setState({ FormData: fd }, () => this.saveDataFinal(showNext) );
+        this.setState({ FormData: fd }, () => this.saveDataFinal(showNext));
 
-}
+    }
     private saveDataFinal = (showNext: boolean): void => {
         if (this.validateEntity()) {
             console.log('in save data');
@@ -905,6 +913,17 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
 
         }, (err) => {
             if (this.props.onError) this.props.onError(`Error loading update`, err.message);
+        });
+
+        this.naoUpdateService.getLastPeriodActionsTaken(this.state.NAORecommendationId, this.props.naoPeriodId).then((res: string): void => {
+
+            console.log('last Period Actions', res);
+            this.setState({
+                LastPeriodActions: res,
+            });
+
+        }, (err) => {
+
         });
 
 

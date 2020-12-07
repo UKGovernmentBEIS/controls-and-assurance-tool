@@ -36,6 +36,13 @@ namespace ControlAssuranceAPI.Controllers
             return r;
         }
 
+        // GET: odata/NAOUpdates?naoRecommendationId=1&naoPeriodId=5&getLastPeriodActionsTaken=
+        public string Get(int naoRecommendationId, int naoPeriodId, string getLastPeriodActionsTaken)
+        {
+            var actionsLastPeriod = db.NAOUpdateRepository.GetLastPeriodActionsTaken(naoRecommendationId, naoPeriodId);
+            return actionsLastPeriod;
+        }
+
         // POST: odata/NAOUpdates
         public IHttpActionResult Post(NAOUpdate naoUpdate)
         {
