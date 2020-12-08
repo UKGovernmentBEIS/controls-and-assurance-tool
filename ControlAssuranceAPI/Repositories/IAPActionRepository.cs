@@ -446,10 +446,17 @@ namespace ControlAssuranceAPI.Repositories
 
             foreach (var ite in list)
             {
-                if(ite.IAPTypeId == 3 && (ite.CreatedById.Value == loggedInUserID || (isSuperUser == true)))
+                if (ite.IAPTypeId == 3 && (ite.CreatedById.Value == loggedInUserID || (isSuperUser == true)))
                 {
                     //its a Group Action (child) action, so dont show to its owner or super user, owner can only see the parent action
-                    continue;
+                    //but if any input user is assigne then show
+                    var anyInputUserIsAssigne = ite.IAPAssignments.Any(ass => lstUserIds.Contains(ass.UserId.Value));
+                    if(anyInputUserIsAssigne == false)
+                    {
+                        continue;
+                    }
+                    
+                    
                 }
                 if(ite.IAPTypeId == 2 && ite.CreatedById.Value != loggedInUserID)
                 {
