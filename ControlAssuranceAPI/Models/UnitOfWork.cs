@@ -12,6 +12,7 @@ namespace ControlAssuranceAPI.Models
 
         private IPrincipal user;
         private IControlAssuranceContext context;
+        private AutomationOptionRepository automationOptionRepository;
         private DefFormRepository defFormRepository;
         private DefElementRepository defElementRepository;        
         private DefElementGroupRepository defElementGroupRepository;
@@ -105,6 +106,14 @@ namespace ControlAssuranceAPI.Models
         {
             this.user = user;
             this.context = context;
+        }
+
+        public AutomationOptionRepository AutomationOptionRepository
+        {
+            get
+            {
+                return automationOptionRepository = automationOptionRepository ?? new AutomationOptionRepository(user, context);
+            }
         }
 
         public DefFormRepository DefFormRepository

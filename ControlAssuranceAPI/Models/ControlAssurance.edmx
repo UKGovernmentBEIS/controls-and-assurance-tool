@@ -24,6 +24,16 @@
           <Property Name="PeriodId" Type="int" />
           <Property Name="DateUpdated" Type="datetime" />
         </EntityType>
+        <EntityType Name="AutomationOption">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="Module" Type="nvarchar" MaxLength="50" />
+          <Property Name="Active" Type="bit" Nullable="false" />
+        </EntityType>
         <EntityType Name="AvailableExport">
           <Key>
             <PropertyRef Name="ID" />
@@ -1927,6 +1937,7 @@
         <EntityContainer Name="ControlAssuranceModelStoreContainer">
           <EntitySet Name="APILog" EntityType="Self.APILog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AuditFeedback" EntityType="Self.AuditFeedback" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AutomationOption" EntityType="Self.AutomationOption" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AvailableExport" EntityType="Self.AvailableExport" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DefElement" EntityType="Self.DefElement" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DefElementGroup" EntityType="Self.DefElementGroup" Schema="dbo" store:Type="Tables" />
@@ -2363,6 +2374,16 @@
           <NavigationProperty Name="Period" Relationship="Self.FK_AuditFeedback_Period" FromRole="AuditFeedback" ToRole="Period" />
           <NavigationProperty Name="Team" Relationship="Self.FK_AuditFeedback_Team" FromRole="AuditFeedback" ToRole="Team" />
           <NavigationProperty Name="User" Relationship="Self.FK_AuditFeedback_User" FromRole="AuditFeedback" ToRole="User" />
+        </EntityType>
+        <EntityType Name="AutomationOption">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Module" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Active" Type="Boolean" Nullable="false" />
         </EntityType>
         <EntityType Name="AvailableExport">
           <Key>
@@ -4418,6 +4439,7 @@
         <EntityContainer Name="ControlAssuranceEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="APILogs" EntityType="Self.APILog" />
           <EntitySet Name="AuditFeedbacks" EntityType="Self.AuditFeedback" />
+          <EntitySet Name="AutomationOptions" EntityType="Self.AutomationOption" />
           <EntitySet Name="AvailableExports" EntityType="Self.AvailableExport" />
           <EntitySet Name="DefElements" EntityType="Self.DefElement" />
           <EntitySet Name="DefElementGroups" EntityType="Self.DefElementGroup" />
@@ -5048,6 +5070,17 @@
                 <ScalarProperty Name="TeamId" ColumnName="TeamId" />
                 <ScalarProperty Name="PeriodId" ColumnName="PeriodId" />
                 <ScalarProperty Name="DateUpdated" ColumnName="DateUpdated" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AutomationOptions">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.AutomationOption">
+              <MappingFragment StoreEntitySet="AutomationOption">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Module" ColumnName="Module" />
+                <ScalarProperty Name="Active" ColumnName="Active" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

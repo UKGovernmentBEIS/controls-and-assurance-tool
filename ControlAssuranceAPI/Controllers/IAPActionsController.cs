@@ -30,11 +30,19 @@ namespace ControlAssuranceAPI.Controllers
             return SingleResult.Create(db.IAPActionRepository.IAPActions.Where(x => x.ID == key));
         }
 
-        // GET: odata/IAPActions(1)/IAPActionUpdates
+        //// GET: odata/IAPActions(1)/IAPActionUpdates
+        //[EnableQuery]
+        //public IQueryable<IAPActionUpdate> GetIAPActionUpdates([FromODataUri] int key)
+        //{            
+        //    return db.IAPActionRepository.IAPActions.Where(x => x.ID == key).SelectMany(x => x.IAPActionUpdates);
+        //}
+
+        //GET: odata/IAPActions?actionId=1&countUpdatesForAction=&extraP=
         [EnableQuery]
-        public IQueryable<IAPActionUpdate> GetIAPActionUpdates([FromODataUri] int key)
+        public string Get(int actionId, string countUpdatesForAction, string extraP)
         {
-            return db.IAPActionRepository.IAPActions.Where(x => x.ID == key).SelectMany(x => x.IAPActionUpdates);
+            int totalUpdates = db.IAPActionRepository.CountUpdatesForAction(actionId);
+            return totalUpdates.ToString();
         }
 
 

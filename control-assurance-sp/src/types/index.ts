@@ -1,3 +1,4 @@
+export { IAutomationOption } from './AutomationOption';
 export { IUserHelp } from './UserHelp';
 export { IPeriod, Period } from './Period';
 export { IEntityStatusType } from './EntityStatusType';

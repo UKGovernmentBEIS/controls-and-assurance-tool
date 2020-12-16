@@ -261,6 +261,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="AuthFilters\ControlAssuranceAuthorization.cs" />
     <Compile Include="Controllers\AuditFeedbacksController.cs" />
+    <Compile Include="Controllers\AutomationOptionsController.cs" />
     <Compile Include="Controllers\AvailableExportsController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\DefElementGroupsController.cs" />
@@ -345,6 +346,9 @@
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\AuditFeedback.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\AutomationOption.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\AvailableExport.cs">
@@ -594,6 +598,7 @@
     </Compile>
     <Compile Include="Models\XmlDetail.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\AutomationOptionRepository.cs" />
     <Compile Include="Repositories\AvailableExportRepository.cs" />
     <Compile Include="Repositories\BaseRepository.cs" />
     <Compile Include="Repositories\DefElementGroupRespository.cs" />

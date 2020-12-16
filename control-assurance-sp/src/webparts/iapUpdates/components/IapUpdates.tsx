@@ -31,7 +31,6 @@ export class LookupData implements ILookupData {
 
 export interface IIapUpdatesState extends types.IUserContextWebPartState {
   LookupData: ILookupData;
-  //DirectorateGroupId: string | number;
   SelectedUserIds: number[];
 
 
@@ -45,16 +44,14 @@ export interface IIapUpdatesState extends types.IUserContextWebPartState {
 
   //common for both sections
   Section_MainList_SelectedId: number;
-  Section_MainList_SelectedTitle: string;
   Section_MainList_FilteredItems: any[];
   Section_MainList_SelectedItem_ActionOwnerPermission:boolean;
-
-  //IsDefultUserSet:boolean;
-  //MainTabReloadCounter: number;
 
   MainListsSaveCounter: number;
 
   ShowingGroupUpdates:boolean;
+
+  GroupsList_SelectedId: number;
 
 
 }
@@ -62,7 +59,6 @@ export class IapUpdatesState extends types.UserContextWebPartState implements II
   public LookupData = new LookupData();
 
   public SelectedUserIds: number[] = [];
-  //public DirectorateGroupId: string | number = 0;
   public SelectedPivotKey = "Management Action Plans"; //default, 1st tab selected
 
   public Section1_IsOpen: boolean = false;
@@ -73,15 +69,13 @@ export class IapUpdatesState extends types.UserContextWebPartState implements II
 
   //common for both sections
   public Section_MainList_SelectedId: number = 0;
-  public Section_MainList_SelectedTitle: string = null;
   public Section_MainList_FilteredItems = [];
   public Section_MainList_SelectedItem_ActionOwnerPermission = false;
 
-  //public IsDefultUserSet:boolean = false;
-  //public MainTabReloadCounter = 0;
   public MainListsSaveCounter: number = 0;
 
   public ShowingGroupUpdates:boolean = false;
+  public GroupsList_SelectedId:number = 0;
 
   constructor() {
     super();
@@ -111,14 +105,6 @@ export default class IapUpdates extends BaseUserContextWebPartComponent<types.IW
   public renderWebPart(): React.ReactElement<types.IWebPartComponentProps> {
 
 
-    // if(this.state.User){
-
-    //   if(this.state.IsDefultUserSet === false){
-    //     console.log('default user loaded');
-    //     this.setDefaultUser();
-    //   }
-
-    // }
 
     return (
 
@@ -137,8 +123,6 @@ export default class IapUpdates extends BaseUserContextWebPartComponent<types.IW
   private renderMainTab(): React.ReactElement<types.IWebPartComponentProps> {
     const { LookupData: lookups } = this.state;
 
-    //console.log('selected users', this.state.SelectedUserIds);
-    //const usersPickerKey = `users_picker_${this.state.MainTabReloadCounter}`;
 
     const viewOtherActionOwnersPermission: boolean = this.viewOtherActionOwnersPermission();
 
@@ -217,7 +201,7 @@ export default class IapUpdates extends BaseUserContextWebPartComponent<types.IW
   }
 
   private renderGroupActionsTab() {
-    if (this.state.SelectedPivotKey === this.headerTxt_GroupActionsTab) {
+    if (this.state.ShowingGroupUpdates === true && (this.state.SelectedPivotKey === this.headerTxt_GroupActionsTab || this.state.SelectedPivotKey === this.headerTxt_ActionUpdatesTab)) {
       return (
 
         <PivotItem headerText={this.headerTxt_GroupActionsTab} itemKey={this.headerTxt_GroupActionsTab}>
@@ -250,11 +234,7 @@ export default class IapUpdates extends BaseUserContextWebPartComponent<types.IW
     return(
       <GroupActionsTab
         iapActionId={this.state.Section_MainList_SelectedId}
-        filteredItemsMainList={this.state.Section_MainList_FilteredItems}
-        onShowList={this.handleShowListSection1}
-        superUserPermission={this.isSuperUser()}
-        actionOwnerPermission={this.state.Section_MainList_SelectedItem_ActionOwnerPermission}
-        currentUserId={this.getCurrentUserId()}
+        onShowList={this.handleShowListSection1_fromGroup}
         onItemTitleClick={this.handle_GroupsListItemTitleClick}
         {...this.props}
       />
@@ -264,9 +244,11 @@ export default class IapUpdates extends BaseUserContextWebPartComponent<types.IW
 
   private renderActionUpdates(): React.ReactElement<types.IWebPartComponentProps> {
 
+    const iapActionId:number = this.state.ShowingGroupUpdates === true ? this.state.GroupsList_SelectedId : this.state.Section_MainList_SelectedId;
+
     return (
       <ActionUpdatesTab
-        iapActionId={this.state.Section_MainList_SelectedId}
+        iapActionId={iapActionId}
         filteredItemsMainList={this.state.Section_MainList_FilteredItems}
         onShowList={this.handleShowListSection1}
         superUserPermission={this.isSuperUser()}
@@ -303,23 +285,6 @@ export default class IapUpdates extends BaseUserContextWebPartComponent<types.IW
     }, (err) => { if (this.onError) this.onError(`Error loading Users lookup data`, err.message); });
   }
 
-  // private setDefaultUser = (): void => {
-  //   const defaultUserId = this.state.User.ID;
-  //   const newArr:number[] = [];
-  //   newArr.push(defaultUserId);
-
-  //   console.log('defaultUserId', defaultUserId);
-
-  //   //let s:number[] = {...this.state.SelectedUserIds};
-  //   //console.log('s arr', s);
-
-
-
-
-  //   //s.push(defaultUserId);
-
-  //   this.setState({ SelectedUserIds: newArr, IsDefultUserSet:true });
-  // }
 
 
   protected loadLookups(): Promise<any> {
@@ -421,9 +386,7 @@ export default class IapUpdates extends BaseUserContextWebPartComponent<types.IW
     let iapTypeId: number = 0;
     if(currentAction.length > 0){
       ownerIdsStr = currentAction[0]["OwnerIds"];
-      //console.log('ownerIdsStr', ownerIdsStr);
       const ownerIdsArr:string[] = ownerIdsStr.split(',');
-      //console.log('ownerIdsArr', ownerIdsArr);
 
 
       
@@ -444,15 +407,14 @@ export default class IapUpdates extends BaseUserContextWebPartComponent<types.IW
     console.log('action owner permission', actionOwnerPermission);
     console.log('IAPTypeId', iapTypeId);
 
-
+    const filteredItemWithoutGroupActions = filteredItems.filter(x => Number(x["IAPTypeId"]) !== 2);
 
     this.setState({
-      ShowingGroupUpdates: false,
+      ShowingGroupUpdates: (iapTypeId === 2) ? true : false,
       SelectedPivotKey: (iapTypeId === 2) ? this.headerTxt_GroupActionsTab : this.headerTxt_ActionUpdatesTab,
       Section_MainList_SelectedId: ID,
-      Section_MainList_SelectedTitle: title,
       Section_MainList_SelectedItem_ActionOwnerPermission: actionOwnerPermission,
-      Section_MainList_FilteredItems: filteredItems
+      Section_MainList_FilteredItems: filteredItemWithoutGroupActions,
     });
   }
 
@@ -475,11 +437,9 @@ export default class IapUpdates extends BaseUserContextWebPartComponent<types.IW
   }
 
 
-
-  private handleShowListSection1 = (): void => {
+  private handleShowListSection1_fromGroup = (): void => {
     console.log('in handleShowListSection1');
     this.clearErrors();
-    //let c: number = this.state.MainTabReloadCounter + 1;
 
     //following conditoin is to resolved bug in the users picker, so by closing a section and opening again resolves the bug
     if(this.state.Section1_IsOpen === true){
@@ -495,6 +455,35 @@ export default class IapUpdates extends BaseUserContextWebPartComponent<types.IW
     this.changeMultiUserPicker(this.state.SelectedUserIds);
   }
 
+  private handleShowListSection1 = (): void => {
+    console.log('in handleShowListSection1');
+    this.clearErrors();
+
+    if(this.state.ShowingGroupUpdates === true){
+      this.setState({
+        SelectedPivotKey: this.headerTxt_GroupActionsTab
+      });
+    }
+    else{
+
+          //following conditoin is to resolved bug in the users picker, so by closing a section and opening again resolves the bug
+    if(this.state.Section1_IsOpen === true){
+      this.setState({ SelectedPivotKey: this.headerTxt_MainTab, Section1_IsOpen: false }, this.handleSection1_toggleOpen);
+    }
+    else if(this.state.Section2_IsOpen === true){
+      this.setState({ SelectedPivotKey: this.headerTxt_MainTab, Section2_IsOpen: false }, this.handleSection2_toggleOpen);
+    }
+
+
+
+    
+    this.changeMultiUserPicker(this.state.SelectedUserIds);
+
+    }
+
+
+  }
+
   private handleMainFormSaved = (): void => {
 
     const x: number = this.state.MainListsSaveCounter + 1;
@@ -506,7 +495,7 @@ export default class IapUpdates extends BaseUserContextWebPartComponent<types.IW
 
   private handle_GroupsListItemTitleClick = (ID: number, title: string, filteredItems: any[]): void => {
     
-    console.log('on main list item title click ', ID, title, filteredItems);
+    console.log('handle_GroupsListItemTitleClick', ID, title, filteredItems);
 
 
     const currentUderId:number = this.getCurrentUserId();
@@ -544,8 +533,7 @@ export default class IapUpdates extends BaseUserContextWebPartComponent<types.IW
     this.setState({
       ShowingGroupUpdates: true,
       SelectedPivotKey: this.headerTxt_ActionUpdatesTab,
-      Section_MainList_SelectedId: ID,
-      Section_MainList_SelectedTitle: title,
+      GroupsList_SelectedId: ID,
       Section_MainList_SelectedItem_ActionOwnerPermission: actionOwnerPermission,
       Section_MainList_FilteredItems: filteredItems
     });

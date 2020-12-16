@@ -20,15 +20,12 @@ export interface IGroupsListProps extends types.IBaseComponentProps {
 
     filterText?: string;
     onChangeFilterText: (value: string) => void;
-    superUserPermission: boolean;
-    currentUserId: number;
 
 }
 
 export interface IGroupsListState<T> {
     SelectedEntity: number;
     SelectedEntityTitle: string;
-    //SelectedGoElementId:number;
 
     SelectedEntityChildren: number;
     ShowForm: boolean;
@@ -51,7 +48,6 @@ export interface IGroupsListState<T> {
 export class GroupsListState<T> implements IGroupsListState<T>{
     public SelectedEntity = null;
     public SelectedEntityTitle: string = null;
-    //public SelectedGoElementId = null;
 
     public SelectedEntityChildren = null;
     public ShowForm = false;

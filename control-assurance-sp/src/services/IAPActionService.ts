@@ -36,6 +36,12 @@ export class IAPActionService extends EntityService<IEntity> {
         });
     }
 
+    public countUpdatesForAction(actionId: number): Promise<string> {
+        return super.readString(`?actionId=${actionId}&countUpdatesForAction=&extraP=`).then((result:string): string => {
+            return result;
+        });
+    }
+
 
 
 

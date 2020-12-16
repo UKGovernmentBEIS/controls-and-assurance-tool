@@ -551,11 +551,17 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
         let promises = [];
         if (this.childEntities) {
             this.childEntities.forEach((ce) => {
-                this.state.FormData[ce.ObjectParentProperty].forEach((c) => {
-                    c[ce.ParentIdProperty] = parentEntity.ID;
-                    if (c.ID === 0)
-                        promises.push(ce.ChildService.create(c));
-                });
+                console.log('ce', ce);
+                console.log('this.state.FormData[ce.ObjectParentProperty]', this.state.FormData[ce.ObjectParentProperty]);
+                if(this.state.FormData[ce.ObjectParentProperty]){
+                    this.state.FormData[ce.ObjectParentProperty].forEach((c) => {
+                        console.log('c', c);
+                        c[ce.ParentIdProperty] = parentEntity.ID;
+                        if (c.ID === 0)
+                            promises.push(ce.ChildService.create(c));
+                    });
+                }
+
             });
             return Promise.all(promises).then(() => parentEntity);
         }

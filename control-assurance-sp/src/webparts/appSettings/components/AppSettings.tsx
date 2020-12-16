@@ -4,6 +4,7 @@ import * as types from '../../../types';
 import BaseUserContextWebPartComponent from '../../../components/BaseUserContextWebPartComponent';
 import * as services from '../../../services';
 import EntityList from '../../../components/entity/EntityList';
+import AutomationOptionsList from '../../../components/automationOptions/AutomationOptionsList';
 import PeriodList from '../../../components/period/PeriodList';
 import { IGenColumn, ColumnType, ColumnDisplayType } from '../../../types/GenColumn';
 import { IUserPermission, IPeriod } from '../../../types';
@@ -46,9 +47,10 @@ export default class AppSettings extends BaseUserContextWebPartComponent<types.I
     return (
 
       <Pivot onLinkClick={this.clearErrors}>
-        {/* <PivotItem headerText="Periods">
-          {this.renderCustomPeriodsList()}
-        </PivotItem> */}
+
+        <PivotItem headerText="Automation Options">
+          {this.renderAutomationOptions()}
+        </PivotItem>
         <PivotItem headerText="Logs">
           {this.renderLogsList()}
         </PivotItem>
@@ -57,69 +59,18 @@ export default class AppSettings extends BaseUserContextWebPartComponent<types.I
   }
 
 
-  private renderCustomPeriodsList() {
 
-    const listColumns: IGenColumn[] = [
-      {
-        key: '1',
-        columnType: ColumnType.TextBox,
-        name: 'Name',
-        fieldName: 'Title',
-        minWidth: 150,
-        isResizable: true,
-        isRequired: true,
-        fieldMaxLength: 50,
-
-      },
-      {
-        key: '2',
-        columnType: ColumnType.TextBox,
-        columnDisplayType: ColumnDisplayType.ListOnly,
-        name: 'Period Status',
-        fieldName: 'PeriodStatus',
-        minWidth: 150,
-        isResizable: true,
-        fieldMaxLength: 50,
-      },
-      {
-        key: '3',
-        columnType: ColumnType.DatePicker,
-        name: 'Start Date',
-        fieldName: 'PeriodStartDate',
-        minWidth: 150,
-        isResizable: true,
-        isRequired: true,
-        fieldMaxLength: 50,
-      },
-      {
-        key: '4',
-        columnType: ColumnType.DatePicker,
-        name: 'End Date',
-        fieldName: 'PeriodEndDate',
-        minWidth: 150,
-        isResizable: true,
-        isRequired: true,
-        fieldMaxLength: 50,
-      },
-
-    ];
-
+  private renderAutomationOptions() {
     return (
-      <React.Fragment>
-        <PeriodList
-          allowAdd={this.allowAdd_Periods()}
-          columns={listColumns}
-          {...this.props}
-          onError={this.onError}
-          entityService={new services.PeriodService(this.props.spfxContext, this.props.api)}
-          entityNamePlural="Periods"
-          entityNameSingular="Period"
-          childEntityNameApi=""
-          childEntityNamePlural=""
-          childEntityNameSingular=""
-        />
+      <AutomationOptionsList
+        disabled={!this.superUserPermission()}
+        {...this.props}
 
-      </React.Fragment>
+      />
+
+
+
+
     );
   }
 
@@ -256,14 +207,14 @@ export default class AppSettings extends BaseUserContextWebPartComponent<types.I
   //#region Permissions
 
 
-  private superUserOrSysManagerPermission(): boolean {
+  private superUserPermission(): boolean {
 
     //super user/SysManager check
     let ups: IUserPermission[] = this.state.UserPermissions;
-    
+
     for (let i = 0; i < ups.length; i++) {
       let up: IUserPermission = ups[i];
-      if (up.PermissionTypeId == 1 || up.PermissionTypeId == 2 || up.PermissionTypeId == 5) {
+      if (up.PermissionTypeId == 1) {
         //super user or sys manager
         return true;
       }
@@ -272,9 +223,7 @@ export default class AppSettings extends BaseUserContextWebPartComponent<types.I
     return false;
   }
 
-  private allowAdd_Periods(): boolean {
-    return this.superUserOrSysManagerPermission();
-  }
+
 
   //#endregion Permissions
 
@@ -285,7 +234,7 @@ export default class AppSettings extends BaseUserContextWebPartComponent<types.I
   protected loadLookups(): Promise<any> {
 
     return Promise.all([
-      
+
     ]);
   }
 

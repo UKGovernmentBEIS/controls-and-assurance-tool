@@ -8,6 +8,8 @@ namespace ControlAssuranceAPI.Models
     public interface IControlAssuranceContext : IDisposable
     {
         Database Database { get; }
+        DbSet<AutomationOption> AutomationOptions { get; set; }
+
         DbSet<DefElement> DefElements { get; set; }
         DbSet<DefElementGroup> DefElementGroups { get; set; }
         DbSet<DefForm> DefForms { get; set; }

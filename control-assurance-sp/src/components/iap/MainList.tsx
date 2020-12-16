@@ -37,6 +37,7 @@ export interface IMainListState<T> {
     //SelectedGoElementId:number;
 
     SelectedEntityChildren: number;
+    SelectedEntityNotDelMsg:string;
     ShowForm: boolean;
     ShowFormGroupActions: boolean;
     EnableEdit?: boolean;
@@ -60,6 +61,7 @@ export class MainListState<T> implements IMainListState<T>{
     //public SelectedGoElementId = null;
 
     public SelectedEntityChildren = null;
+    public SelectedEntityNotDelMsg = "";
     public ShowForm = false;
     public ShowFormGroupActions = false;
     public HideDeleteDialog = true;
@@ -263,7 +265,7 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
                     {this.state.ShowForm && this.renderForm()}
                     {this.state.ShowFormGroupActions && this.renderFormGroupActions()}
 
-                    <MessageDialog hidden={this.state.HideDeleteDisallowed} title={`This action cannot be deleted`} content={`Action '${this.getSelectedEntityName()}' has ${this.state.SelectedEntityChildren} ${this.state.SelectedEntityChildren === 1 ? this.ChildEntityName.Singular.toLowerCase() : this.ChildEntityName.Plural.toLowerCase()} belonging to it.`} handleOk={this.toggleDeleteDisallowed} />
+                    <MessageDialog hidden={this.state.HideDeleteDisallowed} title={`This action cannot be deleted`} content={this.state.SelectedEntityNotDelMsg} handleOk={this.toggleDeleteDisallowed} />
                     <ConfirmDialog hidden={this.state.HideDeleteDialog} title={`Are you sure you want to delete ${this.getSelectedEntityName()}?`} content={`A deleted record cannot be un-deleted.`} confirmButtonText="Delete" handleConfirm={this.deleteRecord} handleCancel={this.toggleDeleteConfirm} />
                 </div>
             </div>
@@ -461,17 +463,45 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
 
     private checkDelete = (): void => {
 
-        this.mainService.numberOfChildren(this.state.SelectedEntity, 'IAPActionUpdates').then((numberOfChildren: number) => {
-            //console.log(numberOfChildren);
+        this.mainService.countUpdatesForAction(this.state.SelectedEntity).then((res: string): void => {
+            let numberOfChildren:number = Number(res);
             if (numberOfChildren > 0) {
-                this.setState({ SelectedEntityChildren: numberOfChildren }, this.toggleDeleteDisallowed);
+
+                const sel = this._selection.getSelection()[0];
+                const iapTypeId: number = Number(sel["IAPTypeId"]);
+                let msgNotDelete:string = "";
+                if(iapTypeId === 2){
+                    //group actoins (parent)
+                    msgNotDelete = `Group has at least one action with updates. These must be deleted first.`;
+                }
+                else{
+                    msgNotDelete = `Action '${this.getSelectedEntityName()}' has ${numberOfChildren} ${numberOfChildren === 1 ? this.ChildEntityName.Singular.toLowerCase() : this.ChildEntityName.Plural.toLowerCase()} belonging to it.`;
+                }
+                
+
+                
+                this.setState({ SelectedEntityChildren: numberOfChildren, SelectedEntityNotDelMsg: msgNotDelete }, this.toggleDeleteDisallowed);
+
 
             }
             else {
                 this.toggleDeleteConfirm();
             }
+            
+      
+        }, (err) => {  });
 
-        });
+        // this.mainService.numberOfChildren(this.state.SelectedEntity, 'IAPActionUpdates').then((numberOfChildren: number) => {
+        //     //console.log(numberOfChildren);
+        //     if (numberOfChildren > 0) {
+        //         this.setState({ SelectedEntityChildren: numberOfChildren }, this.toggleDeleteDisallowed);
+
+        //     }
+        //     else {
+        //         this.toggleDeleteConfirm();
+        //     }
+
+        // });
 
     }
 

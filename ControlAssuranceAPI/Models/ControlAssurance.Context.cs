@@ -29,6 +29,7 @@ namespace ControlAssuranceAPI.Models
     
         public virtual DbSet<APILog> APILogs { get; set; }
         public virtual DbSet<AuditFeedback> AuditFeedbacks { get; set; }
+        public virtual DbSet<AutomationOption> AutomationOptions { get; set; }
         public virtual DbSet<AvailableExport> AvailableExports { get; set; }
         public virtual DbSet<DefElement> DefElements { get; set; }
         public virtual DbSet<DefElementGroup> DefElementGroups { get; set; }

@@ -34,6 +34,7 @@ namespace ControlAssuranceAPI
             ODataConventionModelBuilder builder = new ODataConventionModelBuilder();
             config.Count().Filter().OrderBy().Expand().Select().MaxTop(null); //new line
 
+            builder.EntitySet<Models.AutomationOption>("AutomationOptions");
             builder.EntitySet<DefForm>("DefForms");
             builder.EntitySet<Models.DefElementGroup>("DefElementGroups");
             builder.EntitySet<Models.DefElement>("DefElements");
@@ -149,7 +150,7 @@ namespace ControlAssuranceAPI
             //register IAPActionView_Result for the customer display of individual action plans list
             builder.EntitySet<IAPActionView_Result>("IAPActionViewResult");
 
-            builder.EntitySet<APIInfo>("APIInfo27Nov20");
+            builder.EntitySet<APIInfo>("APIInfo09Dec20");
 
 
 

@@ -31,6 +31,28 @@ namespace ControlAssuranceAPI.Repositories
             return IAPActions.Where(x => x.ID == keyValue).FirstOrDefault();
         }
 
+        public int CountUpdatesForAction(int actionId)
+        {
+            int totalUpdates = 0;
+
+            var action = db.IAPActions.FirstOrDefault(x => x.ID == actionId);
+            if(action.IAPTypeId == 2)
+            {
+                //parent action
+                var childActions = db.IAPActions.Where(x => x.ParentId == actionId);
+                foreach(var ite in childActions)
+                {
+                    totalUpdates += ite.IAPActionUpdates.Count;
+                }
+            }
+            else
+            {
+                totalUpdates = action.IAPActionUpdates.Count();
+            }
+
+            return totalUpdates;
+        }
+
         public IAPAction Add(IAPAction iapInput)
         {
             var apiUser = ApiUser;
@@ -348,6 +370,23 @@ namespace ControlAssuranceAPI.Repositories
 
         public IAPAction Remove(IAPAction iapAction)
         {
+            if(iapAction.IAPTypeId.Value == 2)
+            {
+                //group action
+                //delete all children
+                var existingChildActions = db.IAPActions.Where(x => x.ParentId == iapAction.ID).ToList();
+
+                //check for deletion of child action
+                foreach (var existingChildAction in existingChildActions)
+                {
+
+                    db.IAPActionDirectorates.RemoveRange(db.IAPActionDirectorates.Where(x => x.IAPActionId == existingChildAction.ID));
+                    db.IAPAssignments.RemoveRange(db.IAPAssignments.Where(x => x.IAPActionId == existingChildAction.ID));
+                    db.IAPActions.Remove(existingChildAction);
+                }
+
+            } //end if
+
             //delete directorates and assignments then delete action, but if action have any update attached then dont delete (exception will be thrown in that case)
             db.IAPActionDirectorates.RemoveRange(db.IAPActionDirectorates.Where(x => x.IAPActionId == iapAction.ID));
             db.IAPAssignments.RemoveRange(db.IAPAssignments.Where(x => x.IAPActionId == iapAction.ID));

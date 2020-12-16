@@ -23,15 +23,11 @@ import EntityList from '../entity/EntityList';
 export interface IGroupActionsTabProps extends types.IBaseComponentProps {
 
     onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
-    filteredItemsMainList: any[];
+
     iapActionId: any;
 
     onShowList: () => void;
-    //isViewOnly: boolean;
 
-    superUserPermission:boolean;
-    actionOwnerPermission:boolean;
-    currentUserId: number;
 
 
 }
@@ -52,11 +48,9 @@ export interface IGroupActionsTabState {
     Loading: boolean;
     LookupData: ILookupData;
     IAPInfo: IIAPAction;
-    IAPActionId: number;
-    ActionOwnerPermission:boolean;
+
     FilteredItemsMainList: any[];
 
-    HideNextButton: boolean;
     ListFilterText: string;
 
 
@@ -82,13 +76,7 @@ export default class GroupActionsTab extends React.Component<IGroupActionsTabPro
 
     constructor(props: IGroupActionsTabProps, state: IGroupActionsTabState) {
         super(props);
-        // console.log("Rec Id", props.giaaRecommendationId);
-        // console.log("filteredItemsRecList", props.filteredItemsRecList);
-        // console.log("filteredItemsMainList", props.filteredItemsMainList);
 
-        // console.log("recListIncompleteOnly", props.recListIncompleteOnly);
-        // console.log("recListJustMine", props.recListJustMine);
-        // console.log("recListActionStatusTypeId", props.recListActionStatusTypeId);
 
         this.state = new GroupActionsTabState();
 
@@ -177,7 +165,7 @@ export default class GroupActionsTab extends React.Component<IGroupActionsTabPro
 
         const completionDate = iapInfo.CompletionDate;
         const iAPStatusTypeId = iapInfo.IAPStatusTypeId;
-        console.log('CompletionDate', completionDate, 'IAPStatusTypeId', iAPStatusTypeId);
+        console.log('in renderGroupsList - CompletionDate', completionDate, 'IAPStatusTypeId', iAPStatusTypeId);
 
 
         return (
@@ -196,7 +184,7 @@ export default class GroupActionsTab extends React.Component<IGroupActionsTabPro
                             onError={this.props.onError}
                             filterText={this.state.ListFilterText}
                             onChangeFilterText={this.handle_ChangeFilterText}
-                            superUserPermission={this.props.superUserPermission}
+
 
 
                         />
@@ -243,24 +231,13 @@ export default class GroupActionsTab extends React.Component<IGroupActionsTabPro
 
         console.log('in loadIAPInfo');
 
-        this.iapUpdateService.read(this.state.IAPActionId).then((u: IIAPAction) => {
+        this.iapUpdateService.read(this.props.iapActionId).then((u: IIAPAction) => {
             console.log('Rec Info', u);
 
-            //check if this is the last record or not in the props.filteredItems
-            const lastMainId_FilteredItems: number = Number(this.state.FilteredItemsMainList[this.state.FilteredItemsMainList.length - 1]["ID"]);
-            const mainId_Current: number = Number(this.state.IAPActionId);
-
-
-            let hideNextButton: boolean = false;
-            if (mainId_Current === lastMainId_FilteredItems) {
-                //console.log("This is the last one...");
-                hideNextButton = true;
-
-            }
 
             this.setState({
                 IAPInfo: u,
-                HideNextButton: hideNextButton
+
             });
 
 
@@ -284,9 +261,6 @@ export default class GroupActionsTab extends React.Component<IGroupActionsTabPro
 
         this.setState({
             Loading: true,
-            IAPActionId: Number(this.props.iapActionId),
-            ActionOwnerPermission: this.props.actionOwnerPermission,
-            FilteredItemsMainList: this.props.filteredItemsMainList
         }, this.callBackFirstLoad
 
         );
