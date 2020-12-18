@@ -348,6 +348,9 @@
     <Compile Include="Models\AuditFeedback.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\AutoFunctionsLog.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\AutomationOption.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>

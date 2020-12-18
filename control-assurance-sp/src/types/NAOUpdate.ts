@@ -14,6 +14,9 @@ export interface INAOUpdate  extends IEntity {
     NAOUpdateStatusTypeId?: number;
     UpdateChangeLog?: string;
     LastSavedInfo?: string;
+    ApprovedById?: number;
+    ApprovedByPosition?: string;
+
 
 }
 
@@ -31,6 +34,8 @@ export class NAOUpdate implements INAOUpdate{
     public NAOUpdateStatusTypeId = null;
     public UpdateChangeLog = null;
     public LastSavedInfo = null;
+    public ApprovedById = null;
+    public ApprovedByPosition = 'Blank'; //default value
 
     constructor(naoPeriodId: number, naoRecommendationId: number) {
         this.NAOPeriodId = naoPeriodId;

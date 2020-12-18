@@ -1,5 +1,6 @@
 import { IEntity } from "./Entity";
 import { INAOPublicationDirectorate } from "./NAOPublicationDirectorate";
+import { INAOPeriod, NAOPeriod } from "./NAOPeriod";
 
 
 export interface INAOPublication  extends IEntity {
@@ -13,7 +14,15 @@ export interface INAOPublication  extends IEntity {
     NAOTypeId?: number;
 
     IsArchive?:boolean;
+
+
+    CurrentPeriodId?: number;
+    CurrentPeriodTitle?: string;
+    CurrentPeriodStartDate?: Date;
+    CurrentPeriodEndDate?: Date;
+
     NAOPublicationDirectorates?: INAOPublicationDirectorate[];
+    NAOPeriods?: INAOPeriod[];
     
 }
 
@@ -28,13 +37,20 @@ export class NAOPublication implements INAOPublication{
     public NAOTypeId = null;
 
     public IsArchive = false;
+
+
+    public CurrentPeriodId = null;
+    public CurrentPeriodTitle = null;
+    public CurrentPeriodStartDate = null;
+    public CurrentPeriodEndDate = null;
+
     public NAOPublicationDirectorates = [];
+    public NAOPeriods = [];
 
 
+    constructor() {
 
-    // constructor(goElementId: number) {
-    //     this.GoElementId = goElementId;
-    // }
+    }
 
 
 }

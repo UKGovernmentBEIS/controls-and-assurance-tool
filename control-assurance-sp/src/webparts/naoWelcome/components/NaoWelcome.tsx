@@ -5,7 +5,7 @@ import BaseUserContextWebPartComponent from '../../../components/BaseUserContext
 import * as services from '../../../services';
 import EntityList from '../../../components/entity/EntityList';
 import { IGenColumn, ColumnType, ColumnDisplayType } from '../../../types/GenColumn';
-import { IUserPermission, INAODefForm, INAOPeriod } from '../../../types';
+import { IUserPermission, INAODefForm,  } from '../../../types';
 import { CrLoadingOverlayWelcome } from '../../../components/cr/CrLoadingOverlayWelcome';
 import styles from '../../../styles/cr.module.scss';
 import { PrimaryButton } from 'office-ui-fabric-react/lib/Button';
@@ -14,12 +14,11 @@ import { PrimaryButton } from 'office-ui-fabric-react/lib/Button';
 
 export interface ILookupData{
   NAODefForm: INAODefForm;
-  CurrentPeriod: INAOPeriod;
 }
 
 export class LookupData implements ILookupData{
   public NAODefForm: INAODefForm;
-  public CurrentPeriod: INAOPeriod;
+
 }
 
 export interface INAOWelcomeState extends types.IUserContextWebPartState {
@@ -61,11 +60,8 @@ export default class NAOWelcome extends BaseUserContextWebPartComponent<types.IW
 
   private renderWelcome(): React.ReactElement<types.IWebPartComponentProps> {
     const { LookupData:lookups } = this.state;
-    let periodEndDate:string="";
-    if(lookups.CurrentPeriod){
-      const endDate = lookups.CurrentPeriod.PeriodEndDate;
-      periodEndDate = services.DateService.dateToUkDate(endDate);
-    }
+
+
     //const pageUrl = this.props.spfxContext.pageContext.web.absoluteUrl;
     //console.log("page absoluteUrl url", pageUrl);
 
@@ -80,9 +76,7 @@ export default class NAOWelcome extends BaseUserContextWebPartComponent<types.IW
           onClick={this.handleUpdatesClick}
         />
         <br /><br />
-        <div>
-          Current period ends on the {periodEndDate}
-        </div>
+
           
 
         
@@ -113,23 +107,13 @@ export default class NAOWelcome extends BaseUserContextWebPartComponent<types.IW
     }, (err) => { if (this.onError) this.onError(`Error loading DefForm lookup data`, err.message); });
   }
 
-  protected loadCurrentPeriod = (): Promise<INAOPeriod> => {
-    return this.periodService.readAll("?$filter=PeriodStatus eq 'Current Period'").then((pArr: INAOPeriod[]): INAOPeriod => {
-      if(pArr.length>0){
-        const period: INAOPeriod = pArr[0];
-        this.setState({ LookupData: this.cloneObject(this.state.LookupData, 'CurrentPeriod', period) });
-        return period;
-      }
-      return null;
-    }, (err) => { if (this.onError) this.onError(`Error loading Current Period lookup data`, err.message); });
-  }
+
 
   protected loadLookups(): Promise<any> {
     
     return Promise.all([
         this.welcomeAccess(),
         this.loadDefForm(),
-        this.loadCurrentPeriod(),
     ]);
   }
 

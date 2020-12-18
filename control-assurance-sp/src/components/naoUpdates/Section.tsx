@@ -20,7 +20,7 @@ export interface ISectionProps extends IEntityFormProps {
     isArchive: boolean;
     sectionTitle: string;
 
-    naoPeriodId: number | string;
+    
     dgAreaId: number | string;
     onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
     incompleteOnly:boolean;
@@ -35,8 +35,6 @@ export interface ISectionProps extends IEntityFormProps {
 
     onMainSaved: () => void;
     mainListsSaveCounter:number;
-
-    sectionUpdateStatus:string;
 
     superUserPermission:boolean;
 }
@@ -70,10 +68,8 @@ export default class Section extends React.Component<ISectionProps, SectionState
             <div className={styles.cr}>
                 <UpdateHeader2 title={this.props.sectionTitle} isOpen={ShowForm}
                     leadUser=""
-                    //rag={ this.state.FormData.SummaryCompletionStatus === SectionStatus.Completed ? 5 : this.state.FormData.SummaryCompletionStatus === SectionStatus.InProgress ? 3 : null }
-                    rag={ this.props.sectionUpdateStatus === "Partly Updated" ? 3 : this.props.sectionUpdateStatus === "Updated" ? 5 : null }
-                    //ragLabel={ this.state.FormData.SummaryCompletionStatus === SectionStatus.Completed ? "Completed" : this.state.FormData.SummaryCompletionStatus === SectionStatus.InProgress ? "In Progress" : null }
-                    ragLabel={this.props.sectionUpdateStatus}
+                    rag={null}
+                    hideRagIndicator={true}
                     onClick={this.props.onSection_toggleOpen} />
 
                 {ShowForm && <div style={{ overflowX: 'hidden' }}
@@ -88,7 +84,6 @@ export default class Section extends React.Component<ISectionProps, SectionState
                             justMine={this.props.justMine}
                             onChangeJustMine={this.props.onChangeJustMine}
                             dgAreaId={this.props.dgAreaId}
-                            naoPeriodId={this.props.naoPeriodId}
                             filterText={this.props.listFilterText}
                             onChangeFilterText={this.props.onChangeFilterText}
                             superUserPermission={this.props.superUserPermission}

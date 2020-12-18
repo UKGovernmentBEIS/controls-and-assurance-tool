@@ -63,6 +63,7 @@ export interface IFilteredMainListProps {
 
     onAdd: () => void;
     onEdit: () => void;
+    onManagePeriod: () => void;
     //onDelete: () => void;
 
     editDisabled: boolean;
@@ -75,7 +76,7 @@ export interface IFilteredMainListProps {
 
     //assignDisabled: boolean;
     //deleteDisabled: boolean;
-    superUserPermission:boolean;
+    superUserPermission: boolean;
 }
 
 export interface IFilteredMainListState {
@@ -142,14 +143,16 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
                             onClick={props.onEdit}
                         />}
 
-
-                    {/* 
-                    {(props.assignDisabled === false) &&
+                    {props.superUserPermission && (props.editDisabled === false) &&
                         <CommandBarButton
-                            iconProps={{ iconName: 'Assign' }}
-                            text="Assign"
-                            onClick={props.onAssign}
-                        />} */}
+                            iconProps={{ iconName: 'RenewalCurrent' }}
+                            className={classNames.cmdBtn}
+                            text="Manage Period"
+                            onClick={props.onManagePeriod}
+                        />}
+
+
+
 
                     <span style={controlStyles2}>
 

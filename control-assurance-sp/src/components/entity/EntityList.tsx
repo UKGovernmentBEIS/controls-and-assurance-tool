@@ -55,17 +55,38 @@ export default class EntityList extends BaseList<IEntityListProps, IEntityListSt
 
             if (c.isParent === true) {
 
-                item = {
-                    //key: e["ID"],
-                    //[c.fieldName]: e[c.fieldName],
-                    //[c.fieldName]: e["DefForm"]["Title"],
-                    //[c.fieldName]: e[c.parentEntityName][c.parentColumnName],
-                    [c.fieldName]: (e[c.parentEntityName]) ? e[c.parentEntityName][c.parentColumnName] : null,
-                    ...item
-                    //...e
-                };
+                if (c.columnType === ColumnType.DatePicker) {
+                    if (c.showDateAndTimeInList === true) {
 
-                //console.log(item);
+                        item = {
+                            [c.fieldName]: (e[c.parentEntityName]) ? DateService.dateToUkDateTime(e[c.parentEntityName][c.parentColumnName]) : null,
+                            ...item
+                        };
+                    }
+                    else {
+                        item = {
+                            [c.fieldName]: (e[c.parentEntityName]) ? DateService.dateToUkDate(e[c.parentEntityName][c.parentColumnName]) : null,
+                            ...item
+                        };
+                    }
+
+                }
+                else{
+
+                    item = {
+                        //key: e["ID"],
+                        //[c.fieldName]: e[c.fieldName],
+                        //[c.fieldName]: e["DefForm"]["Title"],
+                        //[c.fieldName]: e[c.parentEntityName][c.parentColumnName],
+                        [c.fieldName]: (e[c.parentEntityName]) ? e[c.parentEntityName][c.parentColumnName] : null,
+                        ...item
+                        //...e
+                    };
+    
+                    //console.log(item);
+                }
+
+
             }
             else {
                 if (c.columnType === ColumnType.Checkbox) {

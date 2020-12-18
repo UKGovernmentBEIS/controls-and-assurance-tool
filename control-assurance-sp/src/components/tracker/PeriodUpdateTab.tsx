@@ -11,9 +11,10 @@ import { MessageDialog } from '../cr/MessageDialog';
 import { DefaultButton, PrimaryButton } from 'office-ui-fabric-react/lib/Button';
 import { Panel, PanelType } from 'office-ui-fabric-react/lib/Panel';
 import styles from '../../styles/cr.module.scss';
-import { IEntity, ILinkLocalType, INAOUpdate, NAOUpdate } from '../../types';
+import { IEntity, ILinkLocalType, INAOUpdate, IUser, NAOUpdate } from '../../types';
 import { IGenColumn, ColumnType, ColumnDisplayType } from '../../types/GenColumn';
 import EntityList from '../entity/EntityList';
+import { CrEntityPicker } from '../cr/CrEntityPicker';
 import EvidenceList from './EV/EvidenceList';
 import '../../styles/CustomFabric.scss';
 
@@ -38,12 +39,14 @@ export interface IPeriodUpdateTabProps extends types.IBaseComponentProps {
 export interface ILookupData {
     NAOUpdateStatusTypes: IEntity[];
     NAORecStatusTypes: IEntity[];
+    Users: IUser[];
 }
 
 export class LookupData implements ILookupData {
 
     public NAOUpdateStatusTypes: IEntity[] = [];
     public NAORecStatusTypes: IEntity[] = [];
+    public Users = null;
 
 }
 
@@ -104,6 +107,7 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
     private naoRecStatusTypeService: services.NAORecStatusTypeService = new services.NAORecStatusTypeService(this.props.spfxContext, this.props.api);
     private naoUpdateStatusTypeService: services.NAOUpdateStatusTypeService = new services.NAOUpdateStatusTypeService(this.props.spfxContext, this.props.api);
     private naoUpdateService: services.NAOUpdateService = new services.NAOUpdateService(this.props.spfxContext, this.props.api);
+    private userService: services.UserService = new services.UserService(this.props.spfxContext, this.props.api);
 
     constructor(props: IPeriodUpdateTabProps, state: IPeriodUpdateTabState) {
         super(props);
@@ -147,6 +151,12 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
         const recInfo = this.state.RecInfo;
         if (recInfo === null) return;
 
+        const periodStartDate = new Date(String(recInfo["NAOPeriod"]["PeriodStartDate"]));
+        const periodEndDate = new Date(String(recInfo["NAOPeriod"]["PeriodEndDate"]));
+        const periodTitle: string = recInfo["NAOPeriod"]["Title"];
+
+        const periodStartDateStr: string = services.DateService.dateToUkDate(periodStartDate);
+        const periodEndDateStr: string = services.DateService.dateToUkDate(periodEndDate);
 
         let recDetails: string = recInfo["NAORecommendation"]["RecommendationDetails"];
         if (recDetails !== null)
@@ -173,10 +183,10 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
                         <tbody>
                             <tr>
                                 <td style={{ width: '150px', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
-                                    Period
+                                    Update Period
                             </td>
                                 <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)' }}>
-                                    {recInfo["NAOPeriod"]["Title"]}
+                                    {`${periodTitle} ( ${periodStartDateStr} to ${periodEndDateStr} )`}
                                 </td>
                                 <td style={{ width: '150px', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
                                     Rec Ref
@@ -292,10 +302,10 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
                                 value={fd.ActionsTaken}
 
                             />
-                            <div style={{ fontWeight: 'bold', fontStyle:'italic', marginBottom: '5px' }}>
+                            <div style={{ fontWeight: 'bold', fontStyle: 'italic', marginBottom: '5px' }}>
                                 Actions Taken Previous Period:
                             </div>
-                            <div style={{fontStyle:'italic', marginBottom:'30px'}}>
+                            <div style={{ fontStyle: 'italic', marginBottom: '30px' }}>
                                 {this.state.LastPeriodActions}
                             </div>
 
@@ -314,6 +324,7 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
                             /> */}
 
                             {this.renderLinks()}
+                            {this.renderApprovalSection()}
 
                             <div style={{ marginBottom: '5px' }}>
                                 <span style={{ fontWeight: 'bold' }}>Update Status:&nbsp;</span><span>{fd.LastSavedInfo}</span>
@@ -411,6 +422,71 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
 
             </div>
 
+        );
+    }
+
+    private renderApprovalSection() {
+
+        const users = this.state.LookupData.Users;
+        if (users === null) return null;
+
+        const drpOptions: IDropdownOption[] = [
+            { key: 'Blank', text: '' },
+            { key: 'Deputy Director', text: 'Deputy Director' },
+            { key: 'Director', text: 'Director' },
+            { key: 'Director General', text: 'Director General' },
+            { key: 'Permanent Secretary', text: 'Permanent Secretary' },
+        ];
+
+        return (
+
+            <div className={styles.formField}>
+
+                <div style={{ display: 'flex' }}>
+                    <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
+                        <span>Approved By</span>
+
+                    </div>
+                    <div style={{ width: '50%', fontWeight: 'bold' }}>
+                        <span>Position</span>
+
+                    </div>
+
+
+                </div>
+                <div style={{ display: 'flex', marginTop: '5px' }}>
+                    <div style={{ width: '50%', paddingRight: '5px' }}>
+                        <CrEntityPicker
+                            //label="Assigned To"
+                            //className={styles.formField}
+                            displayForUser={true}
+                            entities={this.state.LookupData.Users}
+                            itemLimit={1}
+                            //selectedEntities={users.map((u) => { return u..UserId; })}
+                            selectedEntities={this.state.FormData.ApprovedById && [this.state.FormData.ApprovedById]}
+                            onChange={(v) => this.changeUserPicker(v, 'ApprovedById')}
+                        //onChange={(v) => this.changeMultiUserPicker(v, 'NAOAssignments', new NAOAssignment(), 'UserId')}
+                        />
+
+
+
+                    </div>
+
+                    <div style={{ width: '50%', }}>
+                        <CrDropdown
+                            placeholder="Select an Option"
+                            options={drpOptions}
+                            selectedKey={this.state.FormData.ApprovedByPosition}
+                            onChanged={(v) => this.changeDropdown(v, "ApprovedByPosition")}
+                        />
+
+                    </div>
+
+
+
+
+                </div>
+            </div>
         );
     }
 
@@ -599,14 +675,42 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
 
             {
                 key: 'NAOPeriodTitle',
-                columnType: ColumnType.DisplayInListOnly,
-                name: 'Period',
+                columnType: ColumnType.TextBox,
+                name: 'Period Title',
                 fieldName: 'NAOPeriodTitle',
                 isParent: true,
                 parentEntityName: 'NAOPeriod',
                 parentColumnName: 'Title',
-                minWidth: 120,
-                maxWidth: 120,
+                minWidth: 100,
+                maxWidth: 100,
+                isResizable: true,
+                isRequired: true,
+                headerClassName: styles.bold,
+            },
+            {
+                key: 'NAOPeriodStartDate',
+                columnType: ColumnType.DatePicker,
+                name: 'Period From',
+                fieldName: 'NAOPeriodStartDate',
+                isParent: true,
+                parentEntityName: 'NAOPeriod',
+                parentColumnName: 'PeriodStartDate',
+                minWidth: 70,
+                maxWidth: 70,
+                isResizable: true,
+                isRequired: true,
+                headerClassName: styles.bold,
+            },
+            {
+                key: 'NAOPeriodEndDate',
+                columnType: ColumnType.DatePicker,
+                name: 'Period To',
+                fieldName: 'NAOPeriodEndDate',
+                isParent: true,
+                parentEntityName: 'NAOPeriod',
+                parentColumnName: 'PeriodEndDate',
+                minWidth: 70,
+                maxWidth: 70,
                 isResizable: true,
                 isRequired: true,
                 headerClassName: styles.bold,
@@ -619,8 +723,8 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
                 isParent: true,
                 parentEntityName: 'NAORecStatusType',
                 parentColumnName: 'Title',
-                minWidth: 120,
-                maxWidth: 120,
+                minWidth: 88,
+                maxWidth: 88,
                 isResizable: true,
                 isRequired: true,
                 headerClassName: styles.bold,
@@ -658,7 +762,7 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
                 columnType: ColumnType.TextBox,
                 name: 'Target Date',
                 fieldName: 'TargetDate',
-                minWidth: 150,
+                minWidth: 100,
                 isResizable: true,
                 isRequired: true,
                 headerClassName: styles.bold,
@@ -674,7 +778,7 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
                 <div style={{ minHeight: '120px', border: '1px solid rgb(166,166,166)' }}>
                     <EntityList
                         entityReadAllWithArg1={this.state.NAORecommendationId}
-                        //entityReadAllWithArg2={this.props.naoPeriodId}
+                        entityReadAllWithArg2={this.props.naoPeriodId}
                         allowAdd={false}
                         columns={listColumns}
                         {...this.props}
@@ -955,11 +1059,19 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
         //arrCopy.push()
     }
 
+    private loadUsers = (): void => {
+        this.userService.readAll().then((data: IUser[]): IUser[] => {
+            this.setState({ LookupData: this.cloneObject(this.state.LookupData, "Users", data) });
+            return data;
+        }, (err) => { if (this.props.onError) this.props.onError(`Error loading Users lookup data`, err.message); });
+    }
+
     protected loadLookups(): Promise<any> {
 
         return Promise.all([
             this.loadNAORecStatusTypes(),
             this.loadNAOUpdateStatusTypes(),
+            this.loadUsers(),
             this.loadUpdate(true),
 
         ]);
@@ -1035,6 +1147,9 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
         const selectedKey = option.key;
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, selectedKey)/*, FormIsDirty: true*/ });
 
+    }
+    private changeUserPicker = (value: number[], f: string): void => {
+        this.setState({ FormData: this.cloneObject(this.state.FormData, f, value.length === 1 ? value[0] : null), });
     }
 
     //#endregion Event Handlers

@@ -43,9 +43,10 @@ export class NAOUpdateService extends EntityService<INAOUpdate> {
     //     return this.readAll(`?$filter=NAORecommendationId eq ${naoRecommendationId} and NAOPeriodId lt ${naoPeriodId}&$expand=NAORecStatusType,NAOPeriod`);
     // }
 
-    public readAllWithArgs(naoRecommendationId:number): Promise<INAOUpdate[]> {
-        //console.log('historic update - rec id', naoRecommendationId, 'period id', naoPeriodId);
-        return this.readAll(`?$filter=NAORecommendationId eq ${naoRecommendationId} and NAOPeriod/PeriodStatus eq 'Archived Period'&$expand=NAORecStatusType,NAOPeriod`);
+    public readAllWithArgs(naoRecommendationId:number, naoPeriodId:number): Promise<INAOUpdate[]> {
+        console.log('historic update - rec id', naoRecommendationId, 'period id', naoPeriodId);
+        //return this.readAll(`?$filter=NAORecommendationId eq ${naoRecommendationId} and NAOPeriod/PeriodStatus eq 'Archived Period'&$expand=NAORecStatusType,NAOPeriod`);
+        return this.readAll(`?$filter=NAORecommendationId eq ${naoRecommendationId} and NAOPeriodId ne ${naoPeriodId}&$expand=NAORecStatusType,NAOPeriod`);
     }
 
 

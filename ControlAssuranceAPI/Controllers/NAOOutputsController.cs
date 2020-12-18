@@ -30,9 +30,9 @@ namespace ControlAssuranceAPI.Controllers
         }
 
         // GET: /odata/NAOOutputs?naoPeriodId=2&report1=
-        public List<NAOOutput_Result> Get(int naoPeriodId, string report1)
+        public List<NAOOutput_Result> Get(string report1)
         {
-            return db.NAOOutputRepository.GetReport(naoPeriodId);
+            return db.NAOOutputRepository.GetReport();
         }
 
         //GET: odata/NAOOutputs?key=1&createPdf=&spSiteUrl=[url]

@@ -24,6 +24,14 @@
           <Property Name="PeriodId" Type="int" />
           <Property Name="DateUpdated" Type="datetime" />
         </EntityType>
+        <EntityType Name="AutoFunctionsLog">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar(max)" />
+          <Property Name="EntryDate" Type="datetime" />
+        </EntityType>
         <EntityType Name="AutomationOption">
           <Key>
             <PropertyRef Name="ID" />
@@ -690,11 +698,12 @@
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Title" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="100" />
           <Property Name="PeriodStatus" Type="nvarchar" MaxLength="50" />
           <Property Name="PeriodStartDate" Type="date" />
           <Property Name="PeriodEndDate" Type="date" />
           <Property Name="LastPeriodId" Type="int" />
+          <Property Name="NAOPublicationId" Type="int" />
         </EntityType>
         <EntityType Name="NAOPublication">
           <Key>
@@ -708,6 +717,10 @@
           <Property Name="ContactDetails" Type="nvarchar(max)" />
           <Property Name="PublicationSummary" Type="nvarchar(max)" />
           <Property Name="IsArchive" Type="bit" />
+          <Property Name="CurrentPeriodId" Type="int" />
+          <Property Name="CurrentPeriodTitle" Type="nvarchar" MaxLength="100" />
+          <Property Name="CurrentPeriodStartDate" Type="date" />
+          <Property Name="CurrentPeriodEndDate" Type="date" />
         </EntityType>
         <EntityType Name="NAOPublicationDirectorate">
           <Key>
@@ -762,6 +775,8 @@
           <Property Name="LastSavedInfo" Type="nvarchar" MaxLength="2000" />
           <Property Name="ProvideUpdate" Type="nvarchar" MaxLength="10" />
           <Property Name="ImplementationDate" Type="datetime" />
+          <Property Name="ApprovedById" Type="int" />
+          <Property Name="ApprovedByPosition" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="NAOUpdateEvidence">
           <Key>
@@ -1652,15 +1667,15 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_NAOOutput_NAOPeriod">
-          <End Role="NAOPeriod" Type="Self.NAOPeriod" Multiplicity="0..1" />
-          <End Role="NAOOutput" Type="Self.NAOOutput" Multiplicity="*" />
+        <Association Name="FK_NAOPeriod_NAOPublication">
+          <End Role="NAOPublication" Type="Self.NAOPublication" Multiplicity="0..1" />
+          <End Role="NAOPeriod" Type="Self.NAOPeriod" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="NAOPeriod">
+            <Principal Role="NAOPublication">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="NAOOutput">
-              <PropertyRef Name="NAOPeriodId" />
+            <Dependent Role="NAOPeriod">
+              <PropertyRef Name="NAOPublicationId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1769,6 +1784,18 @@
             </Principal>
             <Dependent Role="NAOUpdate">
               <PropertyRef Name="NAOUpdateStatusTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_NAOUpdate_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="NAOUpdate" Type="Self.NAOUpdate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="NAOUpdate">
+              <PropertyRef Name="ApprovedById" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1937,6 +1964,7 @@
         <EntityContainer Name="ControlAssuranceModelStoreContainer">
           <EntitySet Name="APILog" EntityType="Self.APILog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AuditFeedback" EntityType="Self.AuditFeedback" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AutoFunctionsLog" EntityType="Self.AutoFunctionsLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AutomationOption" EntityType="Self.AutomationOption" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AvailableExport" EntityType="Self.AvailableExport" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DefElement" EntityType="Self.DefElement" Schema="dbo" store:Type="Tables" />
@@ -2259,9 +2287,9 @@
             <End Role="DirectorateGroup" EntitySet="DirectorateGroup" />
             <End Role="NAOOutput" EntitySet="NAOOutput" />
           </AssociationSet>
-          <AssociationSet Name="FK_NAOOutput_NAOPeriod" Association="Self.FK_NAOOutput_NAOPeriod">
+          <AssociationSet Name="FK_NAOPeriod_NAOPublication" Association="Self.FK_NAOPeriod_NAOPublication">
+            <End Role="NAOPublication" EntitySet="NAOPublication" />
             <End Role="NAOPeriod" EntitySet="NAOPeriod" />
-            <End Role="NAOOutput" EntitySet="NAOOutput" />
           </AssociationSet>
           <AssociationSet Name="FK_NAOPublication_NAOType" Association="Self.FK_NAOPublication_NAOType">
             <End Role="NAOType" EntitySet="NAOType" />
@@ -2297,6 +2325,10 @@
           </AssociationSet>
           <AssociationSet Name="FK_NAOUpdate_NAOUpdateStatusType" Association="Self.FK_NAOUpdate_NAOUpdateStatusType">
             <End Role="NAOUpdateStatusType" EntitySet="NAOUpdateStatusType" />
+            <End Role="NAOUpdate" EntitySet="NAOUpdate" />
+          </AssociationSet>
+          <AssociationSet Name="FK_NAOUpdate_User" Association="Self.FK_NAOUpdate_User">
+            <End Role="User" EntitySet="User" />
             <End Role="NAOUpdate" EntitySet="NAOUpdate" />
           </AssociationSet>
           <AssociationSet Name="FK_NAOUpdateEvidence_NAOUpdate" Association="Self.FK_NAOUpdateEvidence_NAOUpdate">
@@ -2374,6 +2406,14 @@
           <NavigationProperty Name="Period" Relationship="Self.FK_AuditFeedback_Period" FromRole="AuditFeedback" ToRole="Period" />
           <NavigationProperty Name="Team" Relationship="Self.FK_AuditFeedback_Team" FromRole="AuditFeedback" ToRole="Team" />
           <NavigationProperty Name="User" Relationship="Self.FK_AuditFeedback_User" FromRole="AuditFeedback" ToRole="User" />
+        </EntityType>
+        <EntityType Name="AutoFunctionsLog">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="EntryDate" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="AutomationOption">
           <Key>
@@ -3135,19 +3175,19 @@
           <Property Name="PdfName" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
           <Property Name="PeriodUpdateStatus" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="DirectorateGroup" Relationship="Self.FK_NAOOutput_DirectorateGroup" FromRole="NAOOutput" ToRole="DirectorateGroup" />
-          <NavigationProperty Name="NAOPeriod" Relationship="Self.FK_NAOOutput_NAOPeriod" FromRole="NAOOutput" ToRole="NAOPeriod" />
         </EntityType>
         <EntityType Name="NAOPeriod">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Title" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="PeriodStatus" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="PeriodStartDate" Type="DateTime" Precision="0" />
           <Property Name="PeriodEndDate" Type="DateTime" Precision="0" />
           <Property Name="LastPeriodId" Type="Int32" />
-          <NavigationProperty Name="NAOOutputs" Relationship="Self.FK_NAOOutput_NAOPeriod" FromRole="NAOPeriod" ToRole="NAOOutput" />
+          <Property Name="NAOPublicationId" Type="Int32" />
+          <NavigationProperty Name="NAOPublication" Relationship="Self.FK_NAOPeriod_NAOPublication" FromRole="NAOPeriod" ToRole="NAOPublication" />
           <NavigationProperty Name="NAOUpdates" Relationship="Self.FK_NAOUpdate_NAOPeriod" FromRole="NAOPeriod" ToRole="NAOUpdate" />
         </EntityType>
         <EntityType Name="NAOPublication">
@@ -3162,6 +3202,11 @@
           <Property Name="ContactDetails" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="PublicationSummary" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="IsArchive" Type="Boolean" />
+          <Property Name="CurrentPeriodId" Type="Int32" />
+          <Property Name="CurrentPeriodTitle" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CurrentPeriodStartDate" Type="DateTime" Precision="0" />
+          <Property Name="CurrentPeriodEndDate" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="NAOPeriods" Relationship="Self.FK_NAOPeriod_NAOPublication" FromRole="NAOPublication" ToRole="NAOPeriod" />
           <NavigationProperty Name="NAOType" Relationship="Self.FK_NAOPublication_NAOType" FromRole="NAOPublication" ToRole="NAOType" />
           <NavigationProperty Name="NAOPublicationDirectorates" Relationship="Self.FK_NAOPublicationDirectorate_NAOPublication" FromRole="NAOPublication" ToRole="NAOPublicationDirectorate" />
           <NavigationProperty Name="NAORecommendations" Relationship="Self.FK_NAORecommendation_NAOPublication" FromRole="NAOPublication" ToRole="NAORecommendation" />
@@ -3227,10 +3272,13 @@
           <Property Name="LastSavedInfo" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
           <Property Name="ProvideUpdate" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="ImplementationDate" Type="DateTime" Precision="3" />
+          <Property Name="ApprovedById" Type="Int32" />
+          <Property Name="ApprovedByPosition" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="NAOPeriod" Relationship="Self.FK_NAOUpdate_NAOPeriod" FromRole="NAOUpdate" ToRole="NAOPeriod" />
           <NavigationProperty Name="NAORecommendation" Relationship="Self.FK_NAOUpdate_NAORecommendation" FromRole="NAOUpdate" ToRole="NAORecommendation" />
           <NavigationProperty Name="NAORecStatusType" Relationship="Self.FK_NAOUpdate_NAORecStatusType" FromRole="NAOUpdate" ToRole="NAORecStatusType" />
           <NavigationProperty Name="NAOUpdateStatusType" Relationship="Self.FK_NAOUpdate_NAOUpdateStatusType" FromRole="NAOUpdate" ToRole="NAOUpdateStatusType" />
+          <NavigationProperty Name="User" Relationship="Self.FK_NAOUpdate_User" FromRole="NAOUpdate" ToRole="User" />
           <NavigationProperty Name="NAOUpdateEvidences" Relationship="Self.FK_NAOUpdateEvidence_NAOUpdate" FromRole="NAOUpdate" ToRole="NAOUpdateEvidence" />
           <NavigationProperty Name="NAOUpdateFeedbacks" Relationship="Self.FK_NAOUpdateFeedback_NAOUpdate" FromRole="NAOUpdate" ToRole="NAOUpdateFeedback" />
         </EntityType>
@@ -3375,6 +3423,7 @@
           <NavigationProperty Name="IAPAssignments" Relationship="Self.FK_IAPAssignment_User" FromRole="User" ToRole="IAPAssignment" />
           <NavigationProperty Name="Logs" Relationship="Self.FK_Log_User" FromRole="User" ToRole="Log" />
           <NavigationProperty Name="NAOAssignments" Relationship="Self.FK_NAOAssignment_User" FromRole="User" ToRole="NAOAssignment" />
+          <NavigationProperty Name="NAOUpdates" Relationship="Self.FK_NAOUpdate_User" FromRole="User" ToRole="NAOUpdate" />
           <NavigationProperty Name="NAOUpdateEvidences" Relationship="Self.FK_NAOUpdateEvidence_User" FromRole="User" ToRole="NAOUpdateEvidence" />
           <NavigationProperty Name="NAOUpdateFeedbacks" Relationship="Self.FK_NAOUpdateFeedback_User" FromRole="User" ToRole="NAOUpdateFeedback" />
           <NavigationProperty Name="Teams" Relationship="Self.FK_Team_User" FromRole="User" ToRole="Team" />
@@ -4208,15 +4257,15 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_NAOOutput_NAOPeriod">
-          <End Role="NAOPeriod" Type="Self.NAOPeriod" Multiplicity="0..1" />
-          <End Role="NAOOutput" Type="Self.NAOOutput" Multiplicity="*" />
+        <Association Name="FK_NAOPeriod_NAOPublication">
+          <End Role="NAOPublication" Type="Self.NAOPublication" Multiplicity="0..1" />
+          <End Role="NAOPeriod" Type="Self.NAOPeriod" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="NAOPeriod">
+            <Principal Role="NAOPublication">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="NAOOutput">
-              <PropertyRef Name="NAOPeriodId" />
+            <Dependent Role="NAOPeriod">
+              <PropertyRef Name="NAOPublicationId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -4313,6 +4362,18 @@
             </Principal>
             <Dependent Role="NAOUpdate">
               <PropertyRef Name="NAOUpdateStatusTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_NAOUpdate_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="NAOUpdate" Type="Self.NAOUpdate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="NAOUpdate">
+              <PropertyRef Name="ApprovedById" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -4439,6 +4500,7 @@
         <EntityContainer Name="ControlAssuranceEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="APILogs" EntityType="Self.APILog" />
           <EntitySet Name="AuditFeedbacks" EntityType="Self.AuditFeedback" />
+          <EntitySet Name="AutoFunctionsLogs" EntityType="Self.AutoFunctionsLog" />
           <EntitySet Name="AutomationOptions" EntityType="Self.AutomationOption" />
           <EntitySet Name="AvailableExports" EntityType="Self.AvailableExport" />
           <EntitySet Name="DefElements" EntityType="Self.DefElement" />
@@ -4773,9 +4835,9 @@
             <End Role="User" EntitySet="Users" />
             <End Role="NAOAssignment" EntitySet="NAOAssignments" />
           </AssociationSet>
-          <AssociationSet Name="FK_NAOOutput_NAOPeriod" Association="Self.FK_NAOOutput_NAOPeriod">
+          <AssociationSet Name="FK_NAOPeriod_NAOPublication" Association="Self.FK_NAOPeriod_NAOPublication">
+            <End Role="NAOPublication" EntitySet="NAOPublications" />
             <End Role="NAOPeriod" EntitySet="NAOPeriods" />
-            <End Role="NAOOutput" EntitySet="NAOOutputs" />
           </AssociationSet>
           <AssociationSet Name="FK_NAOUpdate_NAOPeriod" Association="Self.FK_NAOUpdate_NAOPeriod">
             <End Role="NAOPeriod" EntitySet="NAOPeriods" />
@@ -4807,6 +4869,10 @@
           </AssociationSet>
           <AssociationSet Name="FK_NAOUpdate_NAOUpdateStatusType" Association="Self.FK_NAOUpdate_NAOUpdateStatusType">
             <End Role="NAOUpdateStatusType" EntitySet="NAOUpdateStatusTypes" />
+            <End Role="NAOUpdate" EntitySet="NAOUpdates" />
+          </AssociationSet>
+          <AssociationSet Name="FK_NAOUpdate_User" Association="Self.FK_NAOUpdate_User">
+            <End Role="User" EntitySet="Users" />
             <End Role="NAOUpdate" EntitySet="NAOUpdates" />
           </AssociationSet>
           <AssociationSet Name="FK_NAOUpdateEvidence_NAOUpdate" Association="Self.FK_NAOUpdateEvidence_NAOUpdate">
@@ -5070,6 +5136,15 @@
                 <ScalarProperty Name="TeamId" ColumnName="TeamId" />
                 <ScalarProperty Name="PeriodId" ColumnName="PeriodId" />
                 <ScalarProperty Name="DateUpdated" ColumnName="DateUpdated" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AutoFunctionsLogs">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.AutoFunctionsLog">
+              <MappingFragment StoreEntitySet="AutoFunctionsLog">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="EntryDate" ColumnName="EntryDate" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -5790,6 +5865,7 @@
                 <ScalarProperty Name="PeriodStartDate" ColumnName="PeriodStartDate" />
                 <ScalarProperty Name="PeriodEndDate" ColumnName="PeriodEndDate" />
                 <ScalarProperty Name="LastPeriodId" ColumnName="LastPeriodId" />
+                <ScalarProperty Name="NAOPublicationId" ColumnName="NAOPublicationId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -5804,6 +5880,10 @@
                 <ScalarProperty Name="ContactDetails" ColumnName="ContactDetails" />
                 <ScalarProperty Name="PublicationSummary" ColumnName="PublicationSummary" />
                 <ScalarProperty Name="IsArchive" ColumnName="IsArchive" />
+                <ScalarProperty Name="CurrentPeriodId" ColumnName="CurrentPeriodId" />
+                <ScalarProperty Name="CurrentPeriodTitle" ColumnName="CurrentPeriodTitle" />
+                <ScalarProperty Name="CurrentPeriodStartDate" ColumnName="CurrentPeriodStartDate" />
+                <ScalarProperty Name="CurrentPeriodEndDate" ColumnName="CurrentPeriodEndDate" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -5863,6 +5943,8 @@
                 <ScalarProperty Name="LastSavedInfo" ColumnName="LastSavedInfo" />
                 <ScalarProperty Name="ProvideUpdate" ColumnName="ProvideUpdate" />
                 <ScalarProperty Name="ImplementationDate" ColumnName="ImplementationDate" />
+                <ScalarProperty Name="ApprovedById" ColumnName="ApprovedById" />
+                <ScalarProperty Name="ApprovedByPosition" ColumnName="ApprovedByPosition" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

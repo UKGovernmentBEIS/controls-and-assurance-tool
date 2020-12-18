@@ -11,7 +11,6 @@ namespace ControlAssuranceAPI.Models
         public string Title { get; set; }
         public string PdfStatus { get; set; }
         public string PdfName { get; set; }
-        public string PeriodUpdateStatus { get; set; }
 
     }
 }

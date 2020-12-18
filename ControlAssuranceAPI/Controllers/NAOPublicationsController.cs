@@ -30,10 +30,10 @@ namespace ControlAssuranceAPI.Controllers
             return SingleResult.Create(db.NAOPublicationRepository.NAOPublications.Where(x => x.ID == key));
         }
 
-        // GET: /odata/NAOPublications?naoPeriodId=1&dgAreaId=1&incompleteOnly=true&justMine=false
-        public List<NAOPublicationView_Result> Get(int naoPeriodId, int dgAreaId, bool incompleteOnly, bool justMine, bool isArchive)
+        // GET: /odata/NAOPublications?dgAreaId=1&incompleteOnly=true&justMine=false
+        public List<NAOPublicationView_Result> Get(int dgAreaId, bool incompleteOnly, bool justMine, bool isArchive)
         {
-            return db.NAOPublicationRepository.GetPublications(naoPeriodId, dgAreaId, incompleteOnly, justMine, isArchive);
+            return db.NAOPublicationRepository.GetPublications(dgAreaId, incompleteOnly, justMine, isArchive);
         }
 
         // GET: /odata/NAOPublications?naoPublicationId=1&getInfo=true
@@ -61,14 +61,12 @@ namespace ControlAssuranceAPI.Controllers
             var x = db.NAOPublicationRepository.Add(naoPublication);
             if (x == null) return Unauthorized();
 
-            db.SaveChanges();
-
             return Created(x);
         }
 
         // PATCH: odata/NAOPublications(1)
-        [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] int key, Delta<NAOPublication> patch)
+        [AcceptVerbs("PUT")]
+        public IHttpActionResult Put([FromODataUri] int key, NAOPublication nAOPublication)
         {
 
             if (!ModelState.IsValid)
@@ -76,32 +74,47 @@ namespace ControlAssuranceAPI.Controllers
                 return BadRequest(ModelState);
             }
 
-            NAOPublication naoPublication = db.NAOPublicationRepository.Find(key);
-            if (naoPublication == null)
-            {
-                return NotFound();
-            }
+            db.NAOPublicationRepository.Update(nAOPublication);
 
-            patch.Patch(naoPublication);
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!NAOPublicationExists(key))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return Updated(naoPublication);
+            return Updated(nAOPublication);
         }
+
+        //// PATCH: odata/NAOPublications(1)
+        //[AcceptVerbs("PATCH", "MERGE")]
+        //public IHttpActionResult Patch([FromODataUri] int key, Delta<NAOPublication> patch)
+        //{
+
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
+
+        //    NAOPublication naoPublication = db.NAOPublicationRepository.Find(key);
+        //    if (naoPublication == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    patch.Patch(naoPublication);
+
+        //    try
+        //    {
+        //        db.SaveChanges();
+        //    }
+        //    catch (DbUpdateConcurrencyException)
+        //    {
+        //        if (!NAOPublicationExists(key))
+        //        {
+        //            return NotFound();
+        //        }
+        //        else
+        //        {
+        //            throw;
+        //        }
+        //    }
+
+        //    return Updated(naoPublication);
+        //}
 
         // DELETE: odata/NAOPublications(1)
         public IHttpActionResult Delete([FromODataUri] int key)

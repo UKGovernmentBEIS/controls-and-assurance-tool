@@ -12,17 +12,10 @@ namespace ControlAssuranceAPI.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class NAOOutput
+    public partial class AutoFunctionsLog
     {
-        public int ID { get; set; }
+        public long ID { get; set; }
         public string Title { get; set; }
-        public Nullable<int> NAOPeriodId { get; set; }
-        public Nullable<int> DirectorateGroupId { get; set; }
-        public string PdfStatus { get; set; }
-        public Nullable<System.DateTime> PdfDate { get; set; }
-        public string PdfName { get; set; }
-        public string PeriodUpdateStatus { get; set; }
-    
-        public virtual DirectorateGroup DirectorateGroup { get; set; }
+        public Nullable<System.DateTime> EntryDate { get; set; }
     }
 }

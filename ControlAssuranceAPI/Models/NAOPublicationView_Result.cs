@@ -17,5 +17,8 @@ namespace ControlAssuranceAPI.Models
         public string CompletePercent { get; set; }
         public string AssignedTo { get; set; }
         public string UpdateStatus { get; set; }
+        public int CurrentPeriodId { get; set; }
+        public string PeriodStart { get; set; }
+        public string PeriodEnd { get; set; }
     }
 }

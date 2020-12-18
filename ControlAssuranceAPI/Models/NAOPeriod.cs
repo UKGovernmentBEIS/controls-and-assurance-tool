@@ -17,7 +17,6 @@ namespace ControlAssuranceAPI.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public NAOPeriod()
         {
-            this.NAOOutputs = new HashSet<NAOOutput>();
             this.NAOUpdates = new HashSet<NAOUpdate>();
         }
     
@@ -27,9 +26,9 @@ namespace ControlAssuranceAPI.Models
         public Nullable<System.DateTime> PeriodStartDate { get; set; }
         public Nullable<System.DateTime> PeriodEndDate { get; set; }
         public Nullable<int> LastPeriodId { get; set; }
+        public Nullable<int> NAOPublicationId { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<NAOOutput> NAOOutputs { get; set; }
+        public virtual NAOPublication NAOPublication { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<NAOUpdate> NAOUpdates { get; set; }
     }

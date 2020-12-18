@@ -62,6 +62,7 @@ namespace ControlAssuranceAPI.Repositories
                     newUpdate.UpdateChangeLog = "";
                     newUpdate.LastSavedInfo = "Not Started"; //default value
                     newUpdate.ProvideUpdate = "1";
+                    newUpdate.ApprovedByPosition = "Blank";
 
                     db.NAOUpdates.Add(newUpdate);
                 }
@@ -96,6 +97,21 @@ namespace ControlAssuranceAPI.Repositories
 
 
             return period;
+        }
+
+        public NAOPeriod GetLastPeriod(int periodId)
+        {
+            var period = db.NAOPeriods.FirstOrDefault(x => x.ID == periodId);
+            if(period != null)
+            {
+                if(period.LastPeriodId != null)
+                {
+                    var lastPeriod = db.NAOPeriods.FirstOrDefault(x => x.ID == period.LastPeriodId);
+                    return lastPeriod;
+                }
+            }
+
+            return null;
         }
 
         public NAOPeriod Remove(NAOPeriod period)

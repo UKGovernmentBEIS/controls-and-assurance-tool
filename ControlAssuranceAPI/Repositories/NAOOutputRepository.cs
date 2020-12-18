@@ -31,24 +31,22 @@ namespace ControlAssuranceAPI.Repositories
             return NAOOutputs.Where(f => f.ID == keyValue).FirstOrDefault();
         }
 
-        public List<NAOOutput_Result> GetReport(int naoPeriodId)
+        public List<NAOOutput_Result> GetReport()
         {
             //create/update records against all the dg areas
             var dgAreas = db.DirectorateGroups.Where(x => x.EntityStatusID == 1).ToList();
-            NAOPublicationRepository naoPublicationRepository = new NAOPublicationRepository(base.user);
+            //NAOPublicationRepository naoPublicationRepository = new NAOPublicationRepository(base.user);
             foreach(var dgArea in dgAreas)
             {
-                string periodUpdateStatus = naoPublicationRepository.GetOverallPublicationsUpdateStatus(dgArea.ID, naoPeriodId, false);
-                NAOOutput naoOutput = db.NAOOutputs.FirstOrDefault(x => x.NAOPeriodId == naoPeriodId && x.DirectorateGroupId == dgArea.ID);
+                NAOOutput naoOutput = db.NAOOutputs.FirstOrDefault(x => x.DirectorateGroupId == dgArea.ID);
                 if(naoOutput == null)
                 {
                     naoOutput = new NAOOutput();
-                    naoOutput.NAOPeriodId = naoPeriodId;
                     naoOutput.DirectorateGroupId = dgArea.ID;
                     naoOutput = db.NAOOutputs.Add(naoOutput);
                     
                 }
-                naoOutput.PeriodUpdateStatus = periodUpdateStatus;
+
                 db.SaveChanges();
             }
 
@@ -56,7 +54,7 @@ namespace ControlAssuranceAPI.Repositories
             //get data for return
 
             List<NAOOutput_Result> lstReturn = new List<NAOOutput_Result>();
-            var naoOutputs = db.NAOOutputs.Where(x => x.NAOPeriodId == naoPeriodId);
+            var naoOutputs = db.NAOOutputs;
             foreach(var output in naoOutputs)
             {
                 NAOOutput_Result item = new NAOOutput_Result();
@@ -75,7 +73,6 @@ namespace ControlAssuranceAPI.Repositories
                 }
 
                 item.PdfStatus = pdfStatus;
-                item.PeriodUpdateStatus = output.PeriodUpdateStatus;
                 lstReturn.Add(item);
 
             }
@@ -130,6 +127,7 @@ namespace ControlAssuranceAPI.Repositories
 
 
                     NAOPublicationRepository nAOPublicationRepository = new NAOPublicationRepository(base.user);
+                    NAOPeriodRepository nAOPeriodRepository = new NAOPeriodRepository(base.user);
 
                     GoDefFormRepository goDFR = new GoDefFormRepository(base.user);
                     string spAccessDetails = goDFR.GoDefForms.FirstOrDefault(x => x.ID == 1).Access;
@@ -139,7 +137,7 @@ namespace ControlAssuranceAPI.Repositories
 
 
                     Libs.PdfLib pdfLib = new Libs.PdfLib();
-                    pdfLib.CreatetNaoPdf(output, nAOPublicationRepository, tempLocation, outputPdfName, spSiteUrl, spAccessDetails);
+                    pdfLib.CreatetNaoPdf(output, nAOPublicationRepository, nAOPeriodRepository, tempLocation, outputPdfName, spSiteUrl, spAccessDetails);
 
                     Thread.Sleep(500);
                     //delete temp folder which we created earlier

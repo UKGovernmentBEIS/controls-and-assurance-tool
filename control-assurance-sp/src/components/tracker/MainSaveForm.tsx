@@ -9,6 +9,7 @@ import { Panel, PanelType } from 'office-ui-fabric-react/lib/Panel';
 import { FormCommandBar } from '../cr/FormCommandBar';
 import { CrEntityPicker } from '../cr/CrEntityPicker';
 import { CrCheckbox } from '../cr/CrCheckbox';
+import { CrDatePicker } from '../cr/CrDatePicker';
 //import { Stack, IStackProps, IStackStyles } from 'office-ui-fabric-react/lib/Stack';
 import styles from '../../styles/cr.module.scss';
 import { ThemeSettingName } from 'office-ui-fabric-react/lib/Styling';
@@ -35,6 +36,9 @@ export interface IErrorMessage {
     Directorate: string;
     Type: string;
     Year: string;
+    CurrentPeriodTitle: string;
+    CurrentPeriodStartDate: string;
+    CurrentPeriodEndDate: string;
     //Link: string;
 }
 export class ErrorMessage implements IErrorMessage {
@@ -42,7 +46,9 @@ export class ErrorMessage implements IErrorMessage {
     public Directorate = null;
     public Type = null;
     public Year = null;
-    //public Link = null;
+    public CurrentPeriodTitle = null;
+    public CurrentPeriodStartDate = null;
+    public CurrentPeriodEndDate = null;
 }
 
 export interface IMainSaveFormState {
@@ -116,8 +122,11 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
                 {this.renderDirectorates()}
                 {this.renderNAOTypes()}
                 {this.renderYear()}
-                {/* {this.renderPublicationLink()} */}
+
                 {this.renderLinks()}
+
+                {this.renderPeriodTitle()}
+                {this.renderCurrentPeriodDates()}
                 {this.renderContactDetails()}
                 {this.renderIsArchiveCheckbox()}
 
@@ -219,18 +228,8 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
         );
     }
 
-    // private renderPublicationLink() {
 
-    //     return (
-    //         <CrTextField
-    //             label="Publication Link"
-    //             className={styles.formField}
-    //             value={this.state.FormData.PublicationLink}
-    //             onChanged={(v) => this.changeTextField(v, "PublicationLink")}
 
-    //         />
-    //     );
-    // }
 
     public renderLinks() {
 
@@ -266,7 +265,7 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
 
         return (
 
-            <div key={`div_renderLink_${index}`} style={{ display: 'flex', marginTop:'5px' }}>
+            <div key={`div_renderLink_${index}`} style={{ display: 'flex', marginTop: '5px' }}>
                 <div key={`divCol1_renderLink_${index}`} style={{ width: '50%', paddingRight: '5px' }}>
                     <CrTextField key={`div_TextField1_${index}`} value={item.Description}
                         onChanged={(v) => this.changeTextField_Link(v, index, "Description")} />
@@ -283,6 +282,57 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
 
         );
     }
+
+    private renderPeriodTitle() {
+
+        return (
+            <CrTextField
+                label="Period Title"
+                required={true}
+                className={styles.formField}
+                value={this.state.FormData.CurrentPeriodTitle}
+                onChanged={(v) => this.changeTextField(v, "CurrentPeriodTitle")}
+                errorMessage={this.state.ErrMessages.CurrentPeriodTitle}
+            />
+        );
+    }
+
+    private renderCurrentPeriodDates() {
+
+        return (
+
+            <div style={{ display: 'flex', marginTop: '5px' }}>
+                <div style={{ width: '50%', paddingRight: '5px' }}>
+                    <CrDatePicker
+                        label="Period Start Date"
+                        className={styles.formField}
+                        value={this.state.FormData.CurrentPeriodStartDate}
+                        onSelectDate={(v) => this.changeDatePicker(v, "CurrentPeriodStartDate")}
+                        required={true}
+                        errorMessage={this.state.ErrMessages.CurrentPeriodStartDate}
+                    />
+
+                </div>
+                <div style={{ width: '50%', paddingLeft: '5px' }}>
+
+                    <CrDatePicker
+                        label="Period End Date"
+                        className={styles.formField}
+                        value={this.state.FormData.CurrentPeriodEndDate}
+                        onSelectDate={(v) => this.changeDatePicker(v, "CurrentPeriodEndDate")}
+                        required={true}
+                        errorMessage={this.state.ErrMessages.CurrentPeriodEndDate}
+                    />
+
+                </div>
+
+            </div>
+
+        );
+    }
+
+
+
     private addBlankLinkItem = () => {
         console.log('in addBlankLinkItem');
         const arrCopy = [...this.state.ArrLinks, { Description: '', URL: '' }];
@@ -376,22 +426,22 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
             let arrLinks: ILinkLocalType[] = [];
 
             //unpack publication links from single value
-            if(e.PublicationLink !== null && e.PublicationLink !== '') {
+            if (e.PublicationLink !== null && e.PublicationLink !== '') {
                 let arr1 = e.PublicationLink.split('>');
 
                 //console.log('arr1', arr1);
-                
+
                 for (let i = 0; i < arr1.length; i++) {
-                    
-                    let itemStr:string = arr1[i];
+
+                    let itemStr: string = arr1[i];
                     //console.log('arr1 Loop itemStr', itemStr);
-                    if(itemStr.trim() === ''){
+                    if (itemStr.trim() === '') {
                         continue;
                     }
                     //console.log('after continue');
                     let arr2 = itemStr.split('<');
                     //console.log('after arr2 Split', arr2);
-                    let item:ILinkLocalType = { Description:'', URL: '' };
+                    let item: ILinkLocalType = { Description: '', URL: '' };
                     item.Description = arr2[0];
                     item.URL = arr2[1];
 
@@ -400,10 +450,10 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
                     arrLinks.push(item);
 
                     //console.log('item pushed to arrLinks', arrLinks);
-                    
-                  }
+
+                }
             }
-            
+
 
 
             this.setState({
@@ -469,30 +519,30 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
         this.savePublicationLinksToSingleValue();
     }
 
-    private savePublicationLinksToSingleValue = ():void => {
+    private savePublicationLinksToSingleValue = (): void => {
 
-                let singleStr:string = "";
-                const arrLinks = this.state.ArrLinks;
+        let singleStr: string = "";
+        const arrLinks = this.state.ArrLinks;
 
-                for (let i = 0; i < arrLinks.length; i++) {
-                    let item:ILinkLocalType = arrLinks[i];
-                    if(item.Description.trim() === '' && item.URL.trim() === ''){
-                        //ignore this item
-                    }
-                    else{
-                        if(item.URL.trim() !== ''){
-                            let description:string = item.Description !== '' ? item.Description : item.URL;
-                            //use '<' for separator between description and url, And use '>' for next item separator
-                            singleStr += `${description}<${item.URL.trim()}>`;
-                        }
-                    }                    
-                  }
+        for (let i = 0; i < arrLinks.length; i++) {
+            let item: ILinkLocalType = arrLinks[i];
+            if (item.Description.trim() === '' && item.URL.trim() === '') {
+                //ignore this item
+            }
+            else {
+                if (item.URL.trim() !== '') {
+                    let description: string = item.Description !== '' ? item.Description : item.URL;
+                    //use '<' for separator between description and url, And use '>' for next item separator
+                    singleStr += `${description}<${item.URL.trim()}>`;
+                }
+            }
+        }
 
-                  //set single value in state
-                  const fd = {...this.state.FormData};
-                  fd.PublicationLink = singleStr;
+        //set single value in state
+        const fd = { ...this.state.FormData };
+        fd.PublicationLink = singleStr;
 
-                  this.setState({ FormData: fd }, this.saveDataFinal);
+        this.setState({ FormData: fd }, this.saveDataFinal);
 
     }
 
@@ -505,6 +555,7 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
 
             //remove all the child and parent entities before sending post/patch
             delete f.NAOPublicationDirectorates;
+            delete f.NAOPeriods;
 
             if (f.ID === 0) {
 
@@ -517,7 +568,7 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
             else {
 
 
-                this.naoPublicationService.update(f.ID, f).then(this.saveChildEntitiesAfterUpdate).then(this.onAfterUpdate).then(this.props.onSaved, (err) => {
+                this.naoPublicationService.updatePut(f.ID, f).then(this.saveChildEntitiesAfterUpdate).then(this.onAfterUpdate).then(this.props.onSaved, (err) => {
                     if (this.props.onError) this.props.onError(`Error updating item`, err.message);
                 });
 
@@ -630,12 +681,35 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
         if ((this.state.FormData.Year === null) || (this.state.FormData.Year === '')) {
             errMsg.Year = "Year required";
             returnVal = false;
+            console.log('Year required');
         }
         else {
             errMsg.Year = null;
         }
 
+        if ((this.state.FormData.CurrentPeriodTitle === null) || (this.state.FormData.CurrentPeriodTitle === '')) {
+            errMsg.CurrentPeriodTitle = "Period Title required";
+            returnVal = false;
+        }
+        else {
+            errMsg.CurrentPeriodTitle = null;
+        }
 
+        if ((this.state.FormData.CurrentPeriodStartDate === null)) {
+            errMsg.CurrentPeriodStartDate = "Period Start Date required";
+            returnVal = false;
+        }
+        else {
+            errMsg.CurrentPeriodStartDate = null;
+        }
+
+        if ((this.state.FormData.CurrentPeriodEndDate === null)) {
+            errMsg.CurrentPeriodEndDate = "Period End Date required";
+            returnVal = false;
+        }
+        else {
+            errMsg.CurrentPeriodEndDate = null;
+        }
 
 
 
@@ -702,6 +776,9 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, value), FormIsDirty: true });
     }
 
+    private changeDatePicker = (date: Date, f: string): void => {
+        this.setState({ FormData: this.cloneObject(this.state.FormData, f, date), FormIsDirty: true });
+    }
     //#endregion Form Operations
 
 }

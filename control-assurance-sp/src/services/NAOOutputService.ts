@@ -14,8 +14,8 @@ export class NAOOutputService extends EntityService<IGoForm> {
 
 
 
-    public readAllReport1(naoPeriodId: number | string): Promise<IEntity[]> {
-        return this.readAll(`?naoPeriodId=${naoPeriodId}&report1=`);
+    public readAllReport1(): Promise<IEntity[]> {
+        return this.readAll(`?report1=`);
     }
 
     public createPDF(outputId: number, spSiteUrl): Promise<string> {

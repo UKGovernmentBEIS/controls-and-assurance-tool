@@ -65,7 +65,99 @@ namespace ControlAssuranceAPI.Repositories
 
         public NAOPublication Add(NAOPublication naoPublication)
         {
-            return db.NAOPublications.Add(naoPublication);
+            var publication = db.NAOPublications.Add(naoPublication);
+            db.SaveChanges();
+            //now add NAOPeriod
+            NAOPeriod nAOPeriod = new NAOPeriod();
+            nAOPeriod.NAOPublicationId = publication.ID;
+            nAOPeriod.Title = publication.CurrentPeriodTitle;
+            nAOPeriod.PeriodStartDate = publication.CurrentPeriodStartDate;
+            nAOPeriod.PeriodEndDate = publication.CurrentPeriodEndDate;
+            nAOPeriod.PeriodStatus = NAOPeriodRepository.PeriodStatuses.CurrentPeriod;
+            db.NAOPeriods.Add(nAOPeriod);
+            db.SaveChanges();
+
+            publication.CurrentPeriodId = nAOPeriod.ID;
+            db.SaveChanges();
+            
+            return publication;
+        }
+
+        public NAOPublication Update(NAOPublication inputPublication)
+        {
+            var publication = db.NAOPublications.FirstOrDefault(x => x.ID == inputPublication.ID);
+
+            if(inputPublication.Title == "__NEW_PERIOD_REQUEST__")
+            {
+                publication.CurrentPeriodTitle = inputPublication.CurrentPeriodTitle;
+                publication.CurrentPeriodStartDate = inputPublication.CurrentPeriodStartDate;
+                publication.CurrentPeriodEndDate = inputPublication.CurrentPeriodEndDate;
+
+                int currentPeriodId = publication.CurrentPeriodId.Value;
+                //make current period to archived
+                var currentPeriod = db.NAOPeriods.FirstOrDefault(x => x.ID == currentPeriodId);
+                currentPeriod.PeriodStatus = NAOPeriodRepository.PeriodStatuses.ArchivedPeriod;
+
+                //now add NAOPeriod
+                NAOPeriod newPeriod = new NAOPeriod();
+                newPeriod.NAOPublicationId = publication.ID;
+                newPeriod.Title = inputPublication.CurrentPeriodTitle;
+                newPeriod.PeriodStartDate = inputPublication.CurrentPeriodStartDate;
+                newPeriod.PeriodEndDate = inputPublication.CurrentPeriodEndDate;
+                newPeriod.PeriodStatus = NAOPeriodRepository.PeriodStatuses.CurrentPeriod;
+                newPeriod.LastPeriodId = currentPeriodId;
+                db.NAOPeriods.Add(newPeriod);
+                db.SaveChanges();
+
+                publication.CurrentPeriodId = newPeriod.ID;
+                db.SaveChanges();
+
+                //copy all the updates from current period to the new period
+                foreach (var currentPeriodUpdate in currentPeriod.NAOUpdates)
+                {
+                    NAOUpdate newUpdate = new NAOUpdate();
+                    newUpdate.TargetDate = currentPeriodUpdate.TargetDate; //need from previous period
+                    newUpdate.ActionsTaken = "";
+                    newUpdate.FurtherLinks = "";
+                    newUpdate.NAORecommendationId = currentPeriodUpdate.NAORecommendationId; //need from previous period
+                    newUpdate.NAOPeriodId = newPeriod.ID; //need this for new period
+                    newUpdate.NAORecStatusTypeId = currentPeriodUpdate.NAORecStatusTypeId; //need from previous period
+                    newUpdate.NAOUpdateStatusTypeId = 1; //default value
+                    newUpdate.UpdateChangeLog = "";
+                    newUpdate.LastSavedInfo = "Not Started"; //default value
+                    newUpdate.ProvideUpdate = "1";
+                    newUpdate.ApprovedByPosition = "Blank";
+
+                    db.NAOUpdates.Add(newUpdate);
+                }
+                db.SaveChanges();
+            }
+            else
+            {
+                //normal publication edit/update
+                publication.Title = inputPublication.Title;
+                publication.NAOTypeId = inputPublication.NAOTypeId;
+                publication.Year = inputPublication.Year;
+                publication.PublicationLink = inputPublication.PublicationLink;
+                publication.ContactDetails = inputPublication.ContactDetails;
+                publication.PublicationSummary = inputPublication.PublicationSummary;
+                publication.IsArchive = inputPublication.IsArchive;
+                publication.CurrentPeriodTitle = inputPublication.CurrentPeriodTitle;
+                publication.CurrentPeriodStartDate = inputPublication.CurrentPeriodStartDate;
+                publication.CurrentPeriodEndDate = inputPublication.CurrentPeriodEndDate;
+
+                //now update period dates
+                var publicationCurrentPeriod = publication.NAOPeriods.FirstOrDefault(x => x.ID == publication.CurrentPeriodId);
+                publicationCurrentPeriod.Title = inputPublication.CurrentPeriodTitle;
+                publicationCurrentPeriod.PeriodStartDate = inputPublication.CurrentPeriodStartDate;
+                publicationCurrentPeriod.PeriodEndDate = inputPublication.CurrentPeriodEndDate;
+
+                db.SaveChanges();
+            }
+
+
+
+            return publication;
         }
 
         public NAOPublication Remove(NAOPublication naoPublication)
@@ -73,7 +165,7 @@ namespace ControlAssuranceAPI.Repositories
             return db.NAOPublications.Remove(naoPublication);
         }
 
-        public List<NAOPublicationView_Result> GetPublications(int naoPeriodId, int dgAreaId, bool incompleteOnly, bool justMine, bool isArchive, bool includeSummary=false)
+        public List<NAOPublicationView_Result> GetPublications(int dgAreaId, bool incompleteOnly, bool justMine, bool isArchive, bool includeSummary=false)
         {
             var loggedInUser = ApiUser;
             int loggedInUserID = loggedInUser.ID;
@@ -95,7 +187,11 @@ namespace ControlAssuranceAPI.Repositories
                           p.NAOTypeId,
                           p.Year,
                           p.PublicationSummary,
-                          p.NAORecommendations
+                          p.NAORecommendations,
+                          p.NAOPeriods,
+                          p.CurrentPeriodId,
+                          p.CurrentPeriodStartDate,
+                          p.CurrentPeriodEndDate
                           
 
 
@@ -176,15 +272,13 @@ namespace ControlAssuranceAPI.Repositories
                 string users = "";
                 string dgAreas = "";
 
+                var currentPeriod = iteP.NAOPeriods.FirstOrDefault(x => x.PeriodStatus == NAOPeriodRepository.PeriodStatuses.CurrentPeriod);
+
                 int completedPercentage = 0;
                 int totalRecs = iteP.NAORecommendations.Count();
-                //int updatedRecs = iteP.NAORecommendations.Count(x => x.NAOUpdateStatusTypeId == 2);
-                //int updatedRecs = iteP.NAORecommendations.Count(x => x.NAOUpdateStatusTypeId == 2 && x.NAOUpdates.Any(u => u.NAOPeriodId == naoPeriodId));
-                int updatedRecs = iteP.NAORecommendations.Count(x => x.NAOUpdates.Any(u => u.NAOPeriodId == naoPeriodId && u.NAOUpdateStatusTypeId == 2));
+                int updatedRecs = iteP.NAORecommendations.Count(x => x.NAOUpdates.Any(u => u.NAOPeriodId == currentPeriod.ID && u.NAOUpdateStatusTypeId == 2));
 
-
-                //int totalImplementedRecs = iteP.NAORecommendations.Count(x => x.NAORecStatusTypeId == 3);
-                int totalImplementedRecs = iteP.NAORecommendations.Count(x => x.NAOUpdates.Any(u => u.NAOPeriodId == naoPeriodId && u.NAORecStatusTypeId == 3));
+                int totalImplementedRecs = iteP.NAORecommendations.Count(x => x.NAOUpdates.Any(u => u.NAOPeriodId == currentPeriod.ID && u.NAORecStatusTypeId == 3));
 
 
 
@@ -271,7 +365,10 @@ namespace ControlAssuranceAPI.Repositories
                     CompletePercent = $"{completedPercentage}%",
                     AssignedTo = users,
                     UpdateStatus = completionStatus,
-                    Summary = (includeSummary == true) ? iteP.PublicationSummary != null ? iteP.PublicationSummary : "" : ""
+                    Summary = (includeSummary == true) ? iteP.PublicationSummary != null ? iteP.PublicationSummary : "" : "",
+                    CurrentPeriodId = iteP.CurrentPeriodId.Value,
+                    PeriodStart = iteP.CurrentPeriodStartDate.Value.ToString("dd/MM/yyyy"),
+                    PeriodEnd = iteP.CurrentPeriodEndDate.Value.ToString("dd/MM/yyyy")
 
                 };
 

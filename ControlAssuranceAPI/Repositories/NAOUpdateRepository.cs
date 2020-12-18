@@ -85,6 +85,7 @@ namespace ControlAssuranceAPI.Repositories
                 newR.TargetDate = "";
                 newR.UpdateChangeLog = "";
                 newR.ProvideUpdate = "1";
+                newR.ApprovedByPosition = "Blank";
 
                 ret = db.NAOUpdates.Add(newR);
                 db.SaveChanges();
@@ -158,6 +159,9 @@ namespace ControlAssuranceAPI.Repositories
                 naoUpdateDb.NAOComments = naoUpdate.NAOComments;                
                 naoUpdateDb.NAORecStatusTypeId = naoUpdate.NAORecStatusTypeId;
                 naoUpdateDb.NAOUpdateStatusTypeId = 2; //hardcode value on every save 2 means "Saved"
+
+                naoUpdateDb.ApprovedById = naoUpdate.ApprovedById;
+                naoUpdateDb.ApprovedByPosition = naoUpdate.ApprovedByPosition;
 
                 //naoUpdateDb.NAORecommendation.TargetDate = naoUpdate.TargetDate;
                 //naoUpdateDb.NAORecommendation.NAORecStatusTypeId = naoUpdate.NAORecStatusTypeId;

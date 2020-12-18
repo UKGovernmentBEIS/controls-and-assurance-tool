@@ -35,11 +35,14 @@ namespace ControlAssuranceAPI.Models
         public string LastSavedInfo { get; set; }
         public string ProvideUpdate { get; set; }
         public Nullable<System.DateTime> ImplementationDate { get; set; }
+        public Nullable<int> ApprovedById { get; set; }
+        public string ApprovedByPosition { get; set; }
     
         public virtual NAOPeriod NAOPeriod { get; set; }
         public virtual NAORecommendation NAORecommendation { get; set; }
         public virtual NAORecStatusType NAORecStatusType { get; set; }
         public virtual NAOUpdateStatusType NAOUpdateStatusType { get; set; }
+        public virtual User User { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<NAOUpdateEvidence> NAOUpdateEvidences { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

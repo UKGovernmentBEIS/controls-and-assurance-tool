@@ -23,8 +23,8 @@ export class NAOPublicationService extends EntityService<IEntity> {
         });
     }
 
-    public readAllWithFilters(naoPeriodId: number | string, dgAreaId: number | string, incompleteOnly: boolean, justMine: boolean, isArchive: boolean): Promise<IEntity[]> {
-        return this.readAll(`?naoPeriodId=${naoPeriodId}&dgAreaId=${dgAreaId}&incompleteOnly=${incompleteOnly}&justMine=${justMine}&isArchive=${isArchive}`);
+    public readAllWithFilters(dgAreaId: number | string, incompleteOnly: boolean, justMine: boolean, isArchive: boolean): Promise<IEntity[]> {
+        return this.readAll(`?dgAreaId=${dgAreaId}&incompleteOnly=${incompleteOnly}&justMine=${justMine}&isArchive=${isArchive}`);
     }
 
     public getPublicationInfo(naoPublicationId: number): Promise<INAOPublicationInfo> {

@@ -14,7 +14,7 @@ import BaseUserContextWebPartComponent from '../../../components/BaseUserContext
 import * as services from '../../../services';
 import EntityList from '../../../components/entity/EntityList';
 import { IGenColumn, ColumnType, ColumnDisplayType } from '../../../types/GenColumn';
-import { IUserPermission, IDefForm, IPeriod, IEntity, IDirectorateGroup, IGoDefForm, GoForm, IGoForm } from '../../../types';
+import { IUserPermission, IDefForm, IEntity, IDirectorateGroup, IGoDefForm, GoForm, IGoForm } from '../../../types';
 import { CrLoadingOverlayWelcome } from '../../../components/cr/CrLoadingOverlayWelcome';
 import styles from '../../../styles/cr.module.scss';
 import { PrimaryButton } from 'office-ui-fabric-react/lib/Button';
@@ -22,14 +22,11 @@ import { PrimaryButton } from 'office-ui-fabric-react/lib/Button';
 //#region types defination
 
 export interface ILookupData {
-  //GoDefForm: IGoDefForm;
-  Periods: IEntity[];
+
   DGAreas: IDirectorateGroup[];
 }
 
 export class LookupData implements ILookupData {
-  //public GoDefForm: IGoDefForm;
-  public Periods: IPeriod[] = [];
   public DGAreas: IDirectorateGroup[] = [];
 
 }
@@ -65,8 +62,6 @@ export interface INaoUpdatesState extends types.IUserContextWebPartState {
   Section1_RecList_SelectedTitle: string;
   Section1_RecList_FilteredItems: any[];
 
-  Section1UpdateStatus: string;
-  Section2UpdateStatus: string;
 
   RecList_SelectedItem_ViewOnly:boolean;
 
@@ -102,8 +97,6 @@ export class NaoUpdatesState extends types.UserContextWebPartState implements IN
   public Section1_RecList_SelectedTitle: string;
   public Section1_RecList_FilteredItems: any[];
 
-  public Section1UpdateStatus: string = null;
-  public Section2UpdateStatus: string = null;
 
   public RecList_SelectedItem_ViewOnly = false;
 
@@ -118,7 +111,7 @@ export default class NaoUpdates extends BaseUserContextWebPartComponent<types.IW
 
   //protected goDefFormService: services.GoDefFormService = new services.GoDefFormService(this.props.spfxContext, this.props.api);
   //private goFormService: services.GoFormService = new services.GoFormService(this.props.spfxContext, this.props.api);
-  protected periodService: services.NAOPeriodService = new services.NAOPeriodService(this.props.spfxContext, this.props.api);
+  //protected periodService: services.NAOPeriodService = new services.NAOPeriodService(this.props.spfxContext, this.props.api);
   protected deirectorateGroupService: services.DirectorateGroupService = new services.DirectorateGroupService(this.props.spfxContext, this.props.api);
   protected naoPublicationService: services.NAOPublicationService = new services.NAOPublicationService(this.props.spfxContext, this.props.api);
 
@@ -155,7 +148,7 @@ export default class NaoUpdates extends BaseUserContextWebPartComponent<types.IW
     dgAreasDrpOptions = [{ key: 0, text: "All DGAreas" }, ...dgAreasDrpOptions];
 
 
-    const periodId = Number(this.state.PeriodId);
+    //const periodId = Number(this.state.PeriodId);
     const directorateGroupId = Number(this.state.DirectorateGroupId);
 
 
@@ -163,13 +156,6 @@ export default class NaoUpdates extends BaseUserContextWebPartComponent<types.IW
       <div>
         <CrLoadingOverlayWelcome isLoading={this.state.Loading} />
         <div style={{ paddingTop: "10px" }}>
-          <CrDropdown
-            placeholder="Select an Option"
-            label="Which period do you want to view or report on?"
-            options={lookups.Periods.map((p) => { return { key: p.ID, text: p.Title }; })}
-            onChanged={(v) => this.changeDropdown(v, 'PeriodId')}
-            selectedKey={this.state.PeriodId}
-          />
           <CrDropdown
             //placeholder="Select an Option"
             label="Which DGArea?"
@@ -180,14 +166,12 @@ export default class NaoUpdates extends BaseUserContextWebPartComponent<types.IW
 
           <br />
 
-          {this.state.PeriodId > 0 &&
+          {
             <div>
               <Section
                 isArchive={false}
                 sectionTitle="Active NAO/PAC Publications"
-                naoPeriodId={this.state.PeriodId}
                 dgAreaId={this.state.DirectorateGroupId}
-                sectionUpdateStatus={this.state.Section1UpdateStatus}
                 onItemTitleClick={this.handleSection_MainListItemTitleClick}
                 section_IsOpen={this.state.Section1_IsOpen}
                 onSection_toggleOpen={this.handleSection1_toggleOpen}
@@ -206,9 +190,7 @@ export default class NaoUpdates extends BaseUserContextWebPartComponent<types.IW
               <Section
                 isArchive={true}
                 sectionTitle="Archived NAO/PAC Publications"
-                naoPeriodId={this.state.PeriodId}
                 dgAreaId={this.state.DirectorateGroupId}
-                sectionUpdateStatus={this.state.Section2UpdateStatus}
                 onItemTitleClick={this.handleSection_MainListItemTitleClick}
                 section_IsOpen={this.state.Section2_IsOpen}
                 onSection_toggleOpen={this.handleSection2_toggleOpen}
@@ -311,46 +293,6 @@ export default class NaoUpdates extends BaseUserContextWebPartComponent<types.IW
 
   //#region Data Load
 
-  // protected loadDefForm = (): Promise<IGoDefForm> => {
-  //   return this.goDefFormService.read(1).then((df: IGoDefForm): IGoDefForm => {
-  //     this.setState({ LookupData: this.cloneObject(this.state.LookupData, 'GoDefForm', df) });
-  //     return df;
-  //   }, (err) => { if (this.onError) this.onError(`Error loading DefForm lookup data`, err.message); });
-  // }
-
-  private loadPeriods = (): Promise<IPeriod[]> => {
-    return this.periodService.readAll().then((pArr: IPeriod[]): IPeriod[] => {
-      //get the current period
-      let currentPeriodId: number = 0;
-      const currentPeriod = pArr.filter(p => p.PeriodStatus === "Current Period");
-      if (currentPeriod && currentPeriod.length > 0) {
-        currentPeriodId = currentPeriod[0].ID;
-      }
-
-      //show status like Qtr 2 2019 ( Current Period ) in Title
-      for (let i = 0; i < pArr.length; i++) {
-        let p: IPeriod = pArr[i];
-        pArr[i].Title = `${p.Title} ( ${p.PeriodStatus} )`;
-      }
-
-
-      //check user permissions
-      if (this.isSuperUser() === true) {
-      }
-      else {
-        //dont show design periods
-        pArr = pArr.filter(p => p.PeriodStatus !== "Design Period");
-      }
-
-
-      this.setState({
-        LookupData: this.cloneObject(this.state.LookupData, 'Periods', pArr),
-        PeriodId: currentPeriodId
-      }, this.loadOverallUpdateStatuses );
-      return pArr;
-    }, (err) => { if (this.onError) this.onError(`Error loading Periods lookup data`, err.message); });
-  }
-
   protected loadDGAreas = (): Promise<IEntity[]> => {
     return this.deirectorateGroupService.readAll(`?$orderby=Title`).then((data: IEntity[]): IEntity[] => {
       this.setState({ LookupData: this.cloneObject(this.state.LookupData, 'DGAreas', data) });
@@ -358,28 +300,26 @@ export default class NaoUpdates extends BaseUserContextWebPartComponent<types.IW
     }, (err) => { if (this.onError) this.onError(`Error loading Teams lookup data`, err.message); });
   }
 
-  private loadOverallUpdateStatuses() {
-    this.naoPublicationService.readOverAllUpdateStatus(false, Number(this.state.DirectorateGroupId), Number(this.state.PeriodId) ).then((res: string): void => {
-      console.log('loadOverallUpdateStatuses active', res);
-      this.setState({ Section1UpdateStatus: res });
+  // private loadOverallUpdateStatuses() {
+  //   this.naoPublicationService.readOverAllUpdateStatus(false, Number(this.state.DirectorateGroupId), Number(this.state.PeriodId) ).then((res: string): void => {
+  //     console.log('loadOverallUpdateStatuses active', res);
+  //     this.setState({ Section1UpdateStatus: res });
 
-    }, (err) => { });
+  //   }, (err) => { });
 
-    this.naoPublicationService.readOverAllUpdateStatus(true, Number(this.state.DirectorateGroupId), Number(this.state.PeriodId) ).then((res: string): void => {
-      console.log('loadOverallUpdateStatuses archived', res);
+  //   this.naoPublicationService.readOverAllUpdateStatus(true, Number(this.state.DirectorateGroupId), Number(this.state.PeriodId) ).then((res: string): void => {
+  //     console.log('loadOverallUpdateStatuses archived', res);
 
-      this.setState({ Section2UpdateStatus: res });
+  //     this.setState({ Section2UpdateStatus: res });
 
-    }, (err) => { });
-  }
+  //   }, (err) => { });
+  // }
 
 
   protected loadLookups(): Promise<any> {
 
     return Promise.all([
-      this.loadPeriods(),
       this.loadDGAreas(),
-      //this.loadOverallUpdateStatuses(),
 
     ]);
   }
@@ -447,91 +387,22 @@ export default class NaoUpdates extends BaseUserContextWebPartComponent<types.IW
 
 
 
-  // private isViewOnlyGoForm = () :boolean => {
-
-  //   if(this.state.GoForm && this.state.GoForm.DGSignOffStatus === "Completed") {
-  //     return true;   
-  //   }
-
-  //   //DirectorateGroup member check
-  //   let dgms = this.state.DirectorateGroupMembers;
-  //   for(let i=0; i<dgms.length; i++){
-  //     let dgm: types.IDirectorateGroupMember = dgms[i];
-  //     if(dgm.ViewOnly === true){
-  //       if(this.state.DirectorateGroupId === dgm.DirectorateGroupID){
-  //         return true; 
-  //       }
-
-  //     }
-
-  //   }
-
-  //   return false;
-
-  // }
-
-
 
   //#endregion Permissions
 
   //#region event handlers
 
   protected changeDropdown = (option: IDropdownOption, f: string, index?: number): void => {
-    if (f === "PeriodId") {
-      if (option.key !== this.state.PeriodId) {
-        const pArrTemp: IPeriod[] = this.state.LookupData.Periods.filter(p => p.ID === option.key);
-        let isArchivedPeriod: boolean = false;
-        if (pArrTemp.length > 0) {
-          if (pArrTemp[0].PeriodStatus === "Archived Period") {
-            isArchivedPeriod = true;
-          }
-        }
 
-        this.setState({ PeriodId: option.key, IsArchivedPeriod: isArchivedPeriod },
-          this.loadOverallUpdateStatuses
-        );
-      }
-    }
-    else {
-      //f === "DirectorateGroupId"
-      this.setState({ DirectorateGroupId: option.key },
-        this.loadOverallUpdateStatuses
-      );
-    }
+          //f === "DirectorateGroupId"
+          this.setState({ DirectorateGroupId: option.key },
+            //this.loadOverallUpdateStatuses
+          );
+
 
   }
 
-  // private readOrCreateGoFormInDb = (): void => {
 
-  //   if (this.state.PeriodId > 0 && this.state.DirectorateGroupId > 0) {
-
-  //     const goForm = new GoForm(Number(this.state.PeriodId), Number(this.state.DirectorateGroupId));
-
-  //     goForm.Title = "_ADD_ONLY_IF_DOESNT_EXIST_"; //send this msg to api, so it doesnt do any change if goForm already exist in the db
-
-  //     delete goForm.ID;
-  //     //delete goForm.Title;
-  //     delete goForm.SummaryRagRating;
-  //     delete goForm.SummaryEvidenceStatement;
-  //     delete goForm.SummaryCompletionStatus;
-  //     delete goForm.SummaryMarkReadyForApproval;
-  //     delete goForm.SpecificAreasCompletionStatus;
-  //     delete goForm.DGSignOffStatus;
-  //     delete goForm.DGSignOffUserId;
-  //     delete goForm.DGSignOffDate;
-
-
-
-  //     //following service only adds form in db if its needed
-  //     this.goFormService.create(goForm).then((newForm: IGoForm): void => {
-  //       //this.setState({ GoFormId: newForm.ID });
-  //       this.setState({ GoForm: newForm });
-  //       //console.log('goForm created ', newForm);
-  //     }, (err) => { });
-
-  //   }
-
-  // }
 
 
   private handlePivotClick = (item: PivotItem): void => {
@@ -542,11 +413,16 @@ export default class NaoUpdates extends BaseUserContextWebPartComponent<types.IW
   private handleSection_MainListItemTitleClick = (ID: number, title: string, filteredItems: any[]): void => {
 
     console.log('on main list item title click ', ID, title, filteredItems);
+    const currentPublication = filteredItems.filter(x => x['ID'] === ID);
+    const currentPeriodId:number = Number(currentPublication[0]["CurrentPeriodId"]);
+    console.log('currentPeriodId', currentPeriodId);
+
     this.setState({
       SelectedPivotKey: this.headerTxt_RecommendationsTab,
       Section_MainList_SelectedId: ID,
       Section_MainList_SelectedTitle: title,
-      Section_MainList_FilteredItems: filteredItems
+      Section_MainList_FilteredItems: filteredItems,
+      PeriodId: currentPeriodId,
     });
   }
 
@@ -627,7 +503,7 @@ export default class NaoUpdates extends BaseUserContextWebPartComponent<types.IW
 
   private handleMainFormSaved = (): void => {
 
-    this.loadOverallUpdateStatuses();
+    //this.loadOverallUpdateStatuses();
     const x: number = this.state.MainListsSaveCounter + 1;
     console.log('in handleMainFormSaved', x);
     this.setState({ MainListsSaveCounter: x });

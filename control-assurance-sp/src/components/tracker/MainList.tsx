@@ -4,6 +4,7 @@ import * as services from '../../services';
 import { sp } from '@pnp/sp';
 //import MiscFileSaveForm from './MiscFileSaveForm';
 import MainSaveForm from './MainSaveForm';
+import ManagePeriodForm from './ManagePeriodForm';
 import { FilteredMainList, IObjectWithKey } from './FilteredMainList';
 import { IEntity } from '../../types';
 import { IUpdatesListColumn, ColumnDisplayTypes } from '../../types/UpdatesListColumn';
@@ -17,7 +18,6 @@ export interface IMainListProps extends types.IBaseComponentProps {
 
     isArchive: boolean;
     onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
-    naoPeriodId: number | string;
     dgAreaId: number | string;
     incompleteOnly: boolean;
     onChangeIncompleteOnly: (value: boolean) => void;
@@ -41,6 +41,7 @@ export interface IMainListState<T> {
 
     SelectedEntityChildren: number;
     ShowForm: boolean;
+    ShowManagePeriodForm: boolean;
     EnableEdit?: boolean;
     EnableDelete?: boolean;
     HideDeleteDialog: boolean;
@@ -59,6 +60,7 @@ export class MainListState<T> implements IMainListState<T>{
 
     public SelectedEntityChildren = null;
     public ShowForm = false;
+    public ShowManagePeriodForm = false;
     public HideDeleteDialog = true;
     public EnableEdit = false;
     public EnableDelete = false;
@@ -91,8 +93,8 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
             key: 'Title',
             name: 'Title',
             fieldName: 'Title',
-            minWidth: 370,
-            maxWidth: 370,
+            minWidth: 330,
+            maxWidth: 330,
             isResizable: true,
             isMultiline:true,
             headerClassName: styles.bold,
@@ -101,8 +103,8 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
             key: 'DGArea',
             name: 'DGArea(s)',
             fieldName: 'DGArea',
-            minWidth: 150,
-            maxWidth: 150,
+            minWidth: 145,
+            maxWidth: 145,
             isResizable: true,
             isMultiline: true,
             headerClassName: styles.bold,
@@ -121,8 +123,8 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
             key: 'Year',
             name: 'Year',
             fieldName: 'Year',
-            minWidth: 60,
-            maxWidth: 60,
+            minWidth: 50,
+            maxWidth: 50,
             isResizable: true,
             headerClassName: styles.bold,
         },
@@ -131,8 +133,8 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
             key: 'CompletePercent',
             name: 'Completed',
             fieldName: 'CompletePercent',
-            minWidth: 80,
-            maxWidth: 80,
+            minWidth: 70,
+            maxWidth: 70,
             isResizable: true,
             headerClassName: styles.bold,
         },
@@ -149,6 +151,16 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
         },
 
         {
+            key: 'PeriodEnd',
+            name: 'Period End',
+            fieldName: 'PeriodEnd',
+            minWidth: 70,
+            maxWidth: 70,
+            isResizable: true,
+            headerClassName: styles.bold,
+        },
+
+        {
             key: 'UpdateStatus',
             name: 'Period Update Status',
             fieldName: 'UpdateStatus',
@@ -156,6 +168,15 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
             maxWidth: 150,
             isResizable: true,
             headerClassName: styles.bold,
+        },
+
+        {
+            key: 'CurrentPeriodId',
+            name: 'CurrentPeriodId',
+            fieldName: 'CurrentPeriodId',
+            minWidth: 1,
+            isResizable: true,
+            columnDisplayType: ColumnDisplayTypes.Hidden,
         },
     ];
 
@@ -194,6 +215,7 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
                     <CrLoadingOverlay isLoading={this.state.Loading} />
                     {this.renderList()}
                     {this.state.ShowForm && this.renderForm()}
+                    {this.state.ShowManagePeriodForm && this.renderManagePeriodForm()}
 
                     <ConfirmDialog hidden={this.state.HideDeleteDialog} title={`Are you sure you want to delete ${this.getSelectedEntityName()}?`} content={`A deleted record cannot be un-deleted.`} confirmButtonText="Delete" handleConfirm={this.deleteRecord} handleCancel={this.toggleDeleteConfirm} />
                 </div>
@@ -227,6 +249,7 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
 
                 onAdd={this.addItem}
                 onEdit={this.editItem}
+                onManagePeriod={this.managePeriod}
                 editDisabled={!this.state.EnableEdit}
                 deleteDisabled={!this.state.EnableDelete}
 
@@ -242,6 +265,21 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
         return (
             <MainSaveForm
                 showForm={this.state.ShowForm}
+                entityId={this.state.SelectedEntity}
+                onSaved={this.formSaved}
+                onCancelled={this.closePanel}
+                {...this.props}
+            />
+
+        );
+
+    }
+
+    private renderManagePeriodForm() {
+
+        return (
+            <ManagePeriodForm
+                showForm={this.state.ShowManagePeriodForm}
                 entityId={this.state.SelectedEntity}
                 onSaved={this.formSaved}
                 onCancelled={this.closePanel}
@@ -292,13 +330,13 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
 
 
     private closePanel = (): void => {
-        this.setState({ ShowForm: false });
+        this.setState({ ShowForm: false, ShowManagePeriodForm: false });
     }
 
     private formSaved = (): void => {
         //this.loadData();
         //this.closePanel();
-        this.setState({ ShowForm: false, }, this.props.onMainSaved);
+        this.setState({ ShowForm: false, ShowManagePeriodForm: false }, this.props.onMainSaved);
     }
 
     private getSelectedEntityName = (): string => {
@@ -323,7 +361,7 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
         this.setState({ Loading: true });
 
 
-        const read: Promise<IEntity[]> = this.mainService.readAllWithFilters(this.props.naoPeriodId, this.props.dgAreaId, this.props.incompleteOnly, this.props.justMine, this.props.isArchive);
+        const read: Promise<IEntity[]> = this.mainService.readAllWithFilters(this.props.dgAreaId, this.props.incompleteOnly, this.props.justMine, this.props.isArchive);
         read.then((entities: any): void => {
             this.setState({
                 Loading: false, Entities: entities,
@@ -341,7 +379,7 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
 
     }
     public componentDidUpdate(prevProps: IMainListProps): void {
-        if (prevProps.naoPeriodId !== this.props.naoPeriodId || prevProps.dgAreaId !== this.props.dgAreaId || prevProps.justMine !== this.props.justMine || prevProps.incompleteOnly !== this.props.incompleteOnly || prevProps.mainListsSaveCounter !== this.props.mainListsSaveCounter) {
+        if (prevProps.dgAreaId !== this.props.dgAreaId || prevProps.justMine !== this.props.justMine || prevProps.incompleteOnly !== this.props.incompleteOnly || prevProps.mainListsSaveCounter !== this.props.mainListsSaveCounter) {
             //console.log('props changed, load data again');
             this._selection.setAllSelected(false);
             this.loadData();
@@ -364,6 +402,9 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
 
     private editItem = (): void => {
         this.setState({ ShowForm: true });
+    }
+    private managePeriod = (): void => {
+        this.setState({ ShowManagePeriodForm: true });
     }
 
 

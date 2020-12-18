@@ -16,7 +16,7 @@ import styles from '../../styles/cr.module.scss';
 export interface IReport1ListProps extends types.IBaseComponentProps {
 
     //onItemTitleClick: (ID: number, goElementId:number, title: string, filteredItems: any[]) => void;
-    periodId: number | string;
+
     filterText?: string;
     onChangeFilterText: (value: string) => void;
 
@@ -99,15 +99,7 @@ export default class Report1List extends React.Component<IReport1ListProps, IRep
             minWidth: 1,
             columnDisplayType: ColumnDisplayTypes.Hidden,
         },
-        {
-            key: 'PeriodUpdateStatus',
-            name: 'Period Update Status',
-            fieldName: 'PeriodUpdateStatus',
-            minWidth: 300,
-            maxWidth: 300,
-            isResizable: true,
-            headerClassName: styles.bold,
-        },
+
 
 
     ];
@@ -368,7 +360,7 @@ export default class Report1List extends React.Component<IReport1ListProps, IRep
 
     private loadData = (): void => {
         this.setState({ Loading: true });
-        const read: Promise<IEntity[]> = this.naoOutputService.readAllReport1(this.props.periodId);
+        const read: Promise<IEntity[]> = this.naoOutputService.readAllReport1();
         read.then((entities: any): void => {
             this.setState({
                 Loading: false, Entities: entities,
@@ -386,11 +378,7 @@ export default class Report1List extends React.Component<IReport1ListProps, IRep
 
     }
     public componentDidUpdate(prevProps: IReport1ListProps): void {
-        if (prevProps.periodId !== this.props.periodId) {
-            //console.log('props changed, load data again');
-            this._selection.setAllSelected(false);
-            this.loadData();
-        }
+
     }
 
 
