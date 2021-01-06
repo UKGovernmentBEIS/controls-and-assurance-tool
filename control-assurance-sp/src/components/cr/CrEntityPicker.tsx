@@ -69,7 +69,7 @@ export class CrEntityPicker extends React.Component<ICrEntityPickerProps, ICrEnt
         //changed above code with the following to avoid null err
         
         let selectedEntities: ITag[] = [];
-        entitiyIds.map((entityId) => {
+        let temp = entitiyIds.map((entityId) => {
             let entity = entities.filter((e) => { return e.ID === entityId; });
             if(entity.length > 0){
                 selectedEntities.push(this.entityToTag(entity[0]));
