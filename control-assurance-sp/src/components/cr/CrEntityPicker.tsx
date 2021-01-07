@@ -25,16 +25,25 @@ export interface ICrEntityPickerState {
 export class CrEntityPicker extends React.Component<ICrEntityPickerProps, ICrEntityPickerState> {
     constructor(props) {
         super(props);
+        console.log('CrEntityPicker - constructor start');
         this.resolveEntity = this.resolveEntity.bind(this);
         this.loadSelectedEntities = this.loadSelectedEntities.bind(this);
         this.entitiesChanged = this.entitiesChanged.bind(this);
 
         this.state = { SelectedEntities: [] };
+
+        console.log('CrEntityPicker - constructor end');
     }
 
     public componentWillReceiveProps(nextProps: ICrEntityPickerProps) {
-        if (nextProps.entities && nextProps.entities.length > 0 && nextProps.selectedEntities && nextProps.selectedEntities.length > 0)
+        console.log('CrEntityPicker - componentWillReceiveProps 1');
+        console.log('CrEntityPicker - componentWillReceiveProps 2.1', nextProps.entities);
+        console.log('CrEntityPicker - componentWillReceiveProps 2.2', nextProps.selectedEntities);
+        if (nextProps.entities && nextProps.entities.length > 0 && nextProps.selectedEntities && nextProps.selectedEntities.length > 0){
+            console.log('CrEntityPicker - componentWillReceiveProps 3');
             this.loadSelectedEntities(nextProps.selectedEntities, nextProps.entities);
+        }
+            
     }
 
     public render(): JSX.Element {
@@ -58,6 +67,7 @@ export class CrEntityPicker extends React.Component<ICrEntityPickerProps, ICrEnt
 
     private loadSelectedEntities(entitiyIds: number[], entities: types.IEntity[]): void {
 
+        console.log('CrEntityPicker - loadSelectedEntities - start');
 
         // let selectedEntities = entitiyIds.map((entityId) => {
         //     let entity = entities.filter((e) => { return e.ID === entityId; });
@@ -88,7 +98,7 @@ export class CrEntityPicker extends React.Component<ICrEntityPickerProps, ICrEnt
 
         }
 
-        console.log('loadSelectedEntities - selectedEntities', selectedEntities);
+        console.log('CrEntityPicker - loadSelectedEntities - selectedEntities', selectedEntities);
 
         this.setState({ SelectedEntities: selectedEntities });
         
