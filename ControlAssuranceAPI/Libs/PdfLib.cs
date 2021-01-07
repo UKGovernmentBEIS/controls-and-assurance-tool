@@ -4,11 +4,13 @@ using Microsoft.OData.Edm;
 using MigraDoc.DocumentObjectModel;
 using MigraDoc.DocumentObjectModel.Tables;
 using MigraDoc.Rendering;
+using PdfSharp.Fonts;
 using PdfSharp.Pdf;
 using PdfSharp.Pdf.IO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Web;
 
 namespace ControlAssuranceAPI.Libs
@@ -44,36 +46,36 @@ namespace ControlAssuranceAPI.Libs
 
             Style heading1 = document.Styles.AddStyle("heading1", "Normal");
             heading1.Font.Size = 36;
-            heading1.Font.Name = "Calibri (Body)";
+            //heading1.Font.Name = "Calibri (Body)";
 
             Style heading2 = document.Styles.AddStyle("heading2", "Normal");
             heading2.Font.Size = 20;
-            heading2.Font.Name = "Calibri (Body)";
+            //heading2.Font.Name = "Calibri (Body)";
 
             Style heading3 = document.Styles.AddStyle("heading3", "Normal");
             heading3.Font.Size = 16;
-            heading3.Font.Name = "Calibri (Body)";
+            //heading3.Font.Name = "Calibri (Body)";
 
             Style subHeading1 = document.Styles.AddStyle("subHeading1", "Normal");
             subHeading1.Font.Size = 14;
             //subHeading1.Font.Underline = Underline.Single;
             subHeading1.Font.Bold = true;
-            subHeading1.Font.Name = "Calibri (Body)";
+            //subHeading1.Font.Name = "Calibri (Body)";
 
             Style subHeading2 = document.Styles.AddStyle("subHeading2", "Normal");
             subHeading2.Font.Size = 12;
             subHeading2.Font.Bold = true;
             subHeading2.Font.Italic = true;
-            subHeading2.Font.Name = "Calibri (Body)";
+            //subHeading2.Font.Name = "Calibri (Body)";
 
             Style subHeading3 = document.Styles.AddStyle("subHeading3", "Normal");
             subHeading3.Font.Size = 12;
             subHeading3.Font.Bold = true;
-            subHeading3.Font.Name = "Calibri (Body)";
+            //subHeading3.Font.Name = "Calibri (Body)";
 
             Style normalTxt = document.Styles.AddStyle("normalTxt", "Normal");
             normalTxt.Font.Size = 12;
-            normalTxt.Font.Name = "Calibri (Body)";
+            //normalTxt.Font.Name = "Calibri (Body)";
 
 
 
@@ -385,36 +387,36 @@ namespace ControlAssuranceAPI.Libs
 
             Style coverDGArea = document.Styles.AddStyle("coverDGArea", "Normal");
             coverDGArea.Font.Size = 18;
-            coverDGArea.Font.Name = "Calibri (Body)";
+            //coverDGArea.Font.Name = "Calibri (Body)";
 
             Style coverEVNo = document.Styles.AddStyle("coverEVNo", "Normal");
             coverEVNo.Font.Size = 22;
-            coverEVNo.Font.Name = "Calibri (Body)";
+            //coverEVNo.Font.Name = "Calibri (Body)";
 
             Style coverEvDetails = document.Styles.AddStyle("coverEvDetails", "Normal");
             coverEvDetails.Font.Size = 14;
-            coverEvDetails.Font.Name = "Calibri (Body)";
+            //coverEvDetails.Font.Name = "Calibri (Body)";
             coverEvDetails.Font.Italic = true;
 
             Style subHeading1 = document.Styles.AddStyle("subHeading1", "Normal");
             subHeading1.Font.Size = 14;
             subHeading1.Font.Underline = Underline.Single;
-            subHeading1.Font.Name = "Calibri (Body)";
+            //subHeading1.Font.Name = "Calibri (Body)";
 
             Style subHeading2 = document.Styles.AddStyle("subHeading2", "Normal");
             subHeading2.Font.Size = 12;
             subHeading2.Font.Bold = true;
             subHeading2.Font.Italic = true;
-            subHeading2.Font.Name = "Calibri (Body)";
+            //subHeading2.Font.Name = "Calibri (Body)";
 
             Style subHeading3 = document.Styles.AddStyle("subHeading3", "Normal");
             subHeading3.Font.Size = 12;
             subHeading3.Font.Bold = true;
-            subHeading3.Font.Name = "Calibri (Body)";
+            //subHeading3.Font.Name = "Calibri (Body)";
 
             Style normalTxt = document.Styles.AddStyle("normalTxt", "Normal");
             normalTxt.Font.Size = 12;
-            normalTxt.Font.Name = "Calibri (Body)";
+            //normalTxt.Font.Name = "Calibri (Body)";
 
 
 
@@ -533,49 +535,49 @@ namespace ControlAssuranceAPI.Libs
 
             Style heading1 = document.Styles.AddStyle("heading1", "Normal");
             heading1.Font.Size = 48;
-            heading1.Font.Name = "Calibri (Body)";
+            //heading1.Font.Name = "Calibri (Body)";
             heading1.Font.Color = Color.FromRgb(0, 126, 192);
 
             Style heading2 = document.Styles.AddStyle("heading2", "Normal");
             heading2.Font.Size = 26;
-            heading2.Font.Name = "Calibri (Body)";
+            //heading2.Font.Name = "Calibri (Body)";
             heading2.Font.Color = Color.FromRgb(196, 89, 17);
 
             Style heading3 = document.Styles.AddStyle("heading3", "Normal");
             heading3.Font.Size = 14;
-            heading3.Font.Name = "Calibri (Body)";
+            //heading3.Font.Name = "Calibri (Body)";
             heading3.Font.Color = Color.FromRgb(0, 0, 0);
 
             Style pubHeading = document.Styles.AddStyle("pubHeading", "Normal");
             pubHeading.Font.Size = 20;
-            pubHeading.Font.Name = "Calibri Light (Headings)";
+            //pubHeading.Font.Name = "Calibri Light (Headings)";
             pubHeading.Font.Bold = true;
             pubHeading.Font.Color = Color.FromRgb(0, 126, 192);
 
             Style recHeading = document.Styles.AddStyle("recHeading", "Normal");
             recHeading.Font.Size = 14;
-            recHeading.Font.Name = "Calibri Light (Headings)";
+            //recHeading.Font.Name = "Calibri Light (Headings)";
             recHeading.Font.Bold = true;
             recHeading.Font.Color = Color.FromRgb(0, 126, 192);
 
             Style recSubHeading = document.Styles.AddStyle("recSubHeading", "Normal");
             //recSubHeading.Font.Size = 14;
-            recSubHeading.Font.Name = "Calibri (Body)";
+            //recSubHeading.Font.Name = "Calibri (Body)";
             recSubHeading.Font.Bold = true;
             recSubHeading.Font.Color = Color.FromRgb(196, 89, 17);
 
             Style normalTxt = document.Styles.AddStyle("normalTxt", "Normal");
             //normalTxt.Font.Size = 11;
-            normalTxt.Font.Name = "Calibri (Body)";
+            //normalTxt.Font.Name = "Calibri (Body)";
 
             Style normalTxtLink = document.Styles.AddStyle("normalTxtLink", "Normal");
-            normalTxtLink.Font.Name = "Calibri (Body)";
+            //normalTxtLink.Font.Name = "Calibri (Body)";
             normalTxtLink.Font.Color = Color.FromRgb(0, 0, 255);
             normalTxtLink.Font.Underline = Underline.Single;
 
             Style normalItalicTxt = document.Styles.AddStyle("normalItalicTxt", "Normal");
             //normalItalicTxt.Font.Size = 12;
-            normalItalicTxt.Font.Name = "Calibri (Body)";
+            //normalItalicTxt.Font.Name = "Calibri (Body)";
             normalItalicTxt.Font.Italic = true;
 
             #endregion styles
@@ -998,5 +1000,98 @@ namespace ControlAssuranceAPI.Libs
                     return $"{day}th";
             }
         }
+
+
+        
     }
+
+    #region Font resolver
+
+    class MyFontResolver : IFontResolver
+    {
+        public FontResolverInfo ResolveTypeface(string familyName, bool isBold, bool isItalic)
+        {
+            // Ignore case of font names.
+            var name = familyName.ToLower().TrimEnd('#');
+
+            // Deal with the fonts we know.
+            switch (name)
+            {
+                case "arial":
+                    if (isBold)
+                    {
+                        if (isItalic)
+                            return new FontResolverInfo("Arial#bi");
+                        return new FontResolverInfo("Arial#b");
+                    }
+                    if (isItalic)
+                        return new FontResolverInfo("Arial#i");
+                    return new FontResolverInfo("Arial#");
+            }
+
+            // We pass all other font requests to the default handler.
+            // When running on a web server without sufficient permission, you can return a default font at this stage.
+            return PlatformFontResolver.ResolveTypeface(familyName, isBold, isItalic);
+        }
+
+        public byte[] GetFont(string faceName)
+        {
+            switch (faceName)
+            {
+                case "Arial#":
+                    return LoadFontData("MyProject.fonts.arial.arial.ttf"); ;
+
+                case "Arial#b":
+                    return LoadFontData("MyProject.fonts.arial.arialbd.ttf"); ;
+
+                case "Arial#i":
+                    return LoadFontData("MyProject.fonts.arial.ariali.ttf");
+
+                case "Arial#bi":
+                    return LoadFontData("MyProject.fonts.arial.arialbi.ttf");
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Returns the specified font from an embedded resource.
+        /// </summary>
+        private byte[] LoadFontData(string name)
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+
+            // Test code to find the names of embedded fonts - put a watch on "ourResources"
+            //var ourResources = assembly.GetManifestResourceNames();
+
+            using (System.IO.Stream stream = assembly.GetManifestResourceStream(name))
+            {
+                if (stream == null)
+                    throw new ArgumentException("No resource with name " + name);
+
+                int count = (int)stream.Length;
+                byte[] data = new byte[count];
+                stream.Read(data, 0, count);
+                return data;
+            }
+        }
+
+        internal static MyFontResolver OurGlobalFontResolver = null;
+
+        /// <summary>
+        /// Ensure the font resolver is only applied once (or an exception is thrown)
+        /// </summary>
+        internal static void Apply()
+        {
+            if (OurGlobalFontResolver == null || GlobalFontSettings.FontResolver == null)
+            {
+                if (OurGlobalFontResolver == null)
+                    OurGlobalFontResolver = new MyFontResolver();
+
+                GlobalFontSettings.FontResolver = OurGlobalFontResolver;
+            }
+        }
+    }
+
+    #endregion Font resolver
 }
