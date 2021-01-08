@@ -34,6 +34,7 @@ export interface IRecommendationAssignFormState {
     FormData: INAORecommendation;
     FormDataBeforeChanges: INAORecommendation;
     FormIsDirty: boolean;
+    PickerTemp1: number;
 
 }
 export class RecommendationAssignFormState implements IRecommendationAssignFormState {
@@ -42,6 +43,7 @@ export class RecommendationAssignFormState implements IRecommendationAssignFormS
     public FormData = new NAORecommendation();
     public FormDataBeforeChanges = new NAORecommendation();
     public FormIsDirty = false;
+    public PickerTemp1 = null;
 
 }
 
@@ -119,6 +121,7 @@ export default class RecommendationAssignForm extends React.Component<IRecommend
                     itemLimit={10}
                     selectedEntities={fd_users && fd_users.map((owner) => { return owner.UserId; })}
                     onChange={(v) => this.changeMultiUserPicker(v, 'NAOAssignments', new NAOAssignment(), 'UserId')}
+                    temp1={this.state.PickerTemp1}
                 />
             );
         }
@@ -141,6 +144,7 @@ export default class RecommendationAssignForm extends React.Component<IRecommend
             this.setState({
                 FormData: e,
                 FormDataBeforeChanges: e,
+                PickerTemp1: 1,
             });
 
         }, (err) => { if (this.props.onError) this.props.onError(`Error loading Rec data`, err.message); });

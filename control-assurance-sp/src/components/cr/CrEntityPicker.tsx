@@ -16,6 +16,8 @@ export interface ICrEntityPickerProps {
     errorMessage?: string;
     displayForUser?: boolean;
     onChange?: (users?: number[]) => void;
+
+    temp1?:number;
 }
 
 export interface ICrEntityPickerState {
@@ -46,27 +48,27 @@ export class CrEntityPicker extends React.Component<ICrEntityPickerProps, ICrEnt
             
     // }
 
-    // public componentDidMount(): void {
-    //     console.log('CrEntityPicker - componentDidMount 1');
-    //     console.log('CrEntityPicker - componentDidMount 2.1', this.props.entities);
-    //     console.log('CrEntityPicker - componentDidMount 2.2', this.props.selectedEntities);
+    public componentDidMount(): void {
+        console.log('CrEntityPicker - componentDidMount 1');
+        console.log('CrEntityPicker - componentDidMount 2.1', this.props.entities);
+        console.log('CrEntityPicker - componentDidMount 2.2', this.props.selectedEntities);
         
 
-    //     if(this.props.entities && this.props.entities.length > 0 && this.props.selectedEntities && this.props.selectedEntities.length > 0){
+        if(this.props.entities && this.props.entities.length > 0 && this.props.selectedEntities && this.props.selectedEntities.length > 0){
 
-    //         console.log('CrEntityPicker - componentDidMount 3');
-    //         this.loadSelectedEntities(this.props.selectedEntities, this.props.entities);
+            console.log('CrEntityPicker - componentDidMount 3');
+            this.loadSelectedEntities(this.props.selectedEntities, this.props.entities);
             
 
-    //     }
+        }
 
 
-    // }
+    }
     public componentDidUpdate(prevProps: ICrEntityPickerProps): void {
         console.log('CrEntityPicker - componentDidUpdate 1');
         console.log('CrEntityPicker - componentDidUpdate 2.1', this.props.entities, prevProps.entities);
         console.log('CrEntityPicker - componentDidUpdate 2.2', this.props.selectedEntities,  prevProps.selectedEntities);
-        if(prevProps.entities != this.props.entities || prevProps.selectedEntities != this.props.selectedEntities){
+        if(prevProps.entities != this.props.entities || prevProps.selectedEntities != this.props.selectedEntities || prevProps.temp1 != this.props.temp1){
             if(this.props.entities && this.props.entities.length > 0 && this.props.selectedEntities && this.props.selectedEntities.length > 0){
 
                 console.log('CrEntityPicker - componentDidUpdate 3');

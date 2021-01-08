@@ -44,37 +44,39 @@ namespace ControlAssuranceAPI.Libs
 
             Document document = new Document();
 
+            Style normalStyle = document.Styles.AddStyle("normalStyle", "Normal");
+            normalStyle.Font.Name = "calibri";
 
-            Style heading1 = document.Styles.AddStyle("heading1", "Normal");
+            Style heading1 = document.Styles.AddStyle("heading1", "normalStyle");
             heading1.Font.Size = 36;
             //heading1.Font.Name = "Calibri (Body)";
 
-            Style heading2 = document.Styles.AddStyle("heading2", "Normal");
+            Style heading2 = document.Styles.AddStyle("heading2", "normalStyle");
             heading2.Font.Size = 20;
             //heading2.Font.Name = "Calibri (Body)";
 
-            Style heading3 = document.Styles.AddStyle("heading3", "Normal");
+            Style heading3 = document.Styles.AddStyle("heading3", "normalStyle");
             heading3.Font.Size = 16;
             //heading3.Font.Name = "Calibri (Body)";
 
-            Style subHeading1 = document.Styles.AddStyle("subHeading1", "Normal");
+            Style subHeading1 = document.Styles.AddStyle("subHeading1", "normalStyle");
             subHeading1.Font.Size = 14;
             //subHeading1.Font.Underline = Underline.Single;
             subHeading1.Font.Bold = true;
             //subHeading1.Font.Name = "Calibri (Body)";
 
-            Style subHeading2 = document.Styles.AddStyle("subHeading2", "Normal");
+            Style subHeading2 = document.Styles.AddStyle("subHeading2", "normalStyle");
             subHeading2.Font.Size = 12;
             subHeading2.Font.Bold = true;
             subHeading2.Font.Italic = true;
             //subHeading2.Font.Name = "Calibri (Body)";
 
-            Style subHeading3 = document.Styles.AddStyle("subHeading3", "Normal");
+            Style subHeading3 = document.Styles.AddStyle("subHeading3", "normalStyle");
             subHeading3.Font.Size = 12;
             subHeading3.Font.Bold = true;
             //subHeading3.Font.Name = "Calibri (Body)";
 
-            Style normalTxt = document.Styles.AddStyle("normalTxt", "Normal");
+            Style normalTxt = document.Styles.AddStyle("normalTxt", "normalStyle");
             normalTxt.Font.Size = 12;
             //normalTxt.Font.Name = "Calibri (Body)";
 
@@ -385,37 +387,39 @@ namespace ControlAssuranceAPI.Libs
 
             Document document = new Document();
 
+            Style normalStyle = document.Styles.AddStyle("normalStyle", "Normal");
+            normalStyle.Font.Name = "calibri";
 
-            Style coverDGArea = document.Styles.AddStyle("coverDGArea", "Normal");
+            Style coverDGArea = document.Styles.AddStyle("coverDGArea", "normalStyle");
             coverDGArea.Font.Size = 18;
             //coverDGArea.Font.Name = "Calibri (Body)";
 
-            Style coverEVNo = document.Styles.AddStyle("coverEVNo", "Normal");
+            Style coverEVNo = document.Styles.AddStyle("coverEVNo", "normalStyle");
             coverEVNo.Font.Size = 22;
             //coverEVNo.Font.Name = "Calibri (Body)";
 
-            Style coverEvDetails = document.Styles.AddStyle("coverEvDetails", "Normal");
+            Style coverEvDetails = document.Styles.AddStyle("coverEvDetails", "normalStyle");
             coverEvDetails.Font.Size = 14;
             //coverEvDetails.Font.Name = "Calibri (Body)";
             coverEvDetails.Font.Italic = true;
 
-            Style subHeading1 = document.Styles.AddStyle("subHeading1", "Normal");
+            Style subHeading1 = document.Styles.AddStyle("subHeading1", "normalStyle");
             subHeading1.Font.Size = 14;
             subHeading1.Font.Underline = Underline.Single;
             //subHeading1.Font.Name = "Calibri (Body)";
 
-            Style subHeading2 = document.Styles.AddStyle("subHeading2", "Normal");
+            Style subHeading2 = document.Styles.AddStyle("subHeading2", "normalStyle");
             subHeading2.Font.Size = 12;
             subHeading2.Font.Bold = true;
             subHeading2.Font.Italic = true;
             //subHeading2.Font.Name = "Calibri (Body)";
 
-            Style subHeading3 = document.Styles.AddStyle("subHeading3", "Normal");
+            Style subHeading3 = document.Styles.AddStyle("subHeading3", "normalStyle");
             subHeading3.Font.Size = 12;
             subHeading3.Font.Bold = true;
             //subHeading3.Font.Name = "Calibri (Body)";
 
-            Style normalTxt = document.Styles.AddStyle("normalTxt", "Normal");
+            Style normalTxt = document.Styles.AddStyle("normalTxt", "normalStyle");
             normalTxt.Font.Size = 12;
             //normalTxt.Font.Name = "Calibri (Body)";
 
@@ -970,7 +974,7 @@ namespace ControlAssuranceAPI.Libs
 
         public void CreateTestPdf(string tempLocation, string outputPdfName)
         {
-            Libs.PdfFontResolver.Apply(); // Ensures it's only applied once
+            //Libs.PdfFontResolver.Apply(); // Ensures it's only applied once
 
             Document document = new Document();
             Section section = document.AddSection();
