@@ -34,7 +34,7 @@ export class AppSettingsState extends types.UserContextWebPartState implements I
 
 export default class AppSettings extends BaseUserContextWebPartComponent<types.IWebPartComponentProps, AppSettingsState> {
 
-  private periodService: services.PeriodService = new services.PeriodService(this.props.spfxContext, this.props.api);
+  private automationOptionService: services.AutomationOptionService = new services.AutomationOptionService(this.props.spfxContext, this.props.api);
   constructor(props: types.IWebPartComponentProps) {
     super(props);
     this.state = new AppSettingsState();
@@ -62,13 +62,17 @@ export default class AppSettings extends BaseUserContextWebPartComponent<types.I
 
   private renderAutomationOptions() {
     return (
-      <AutomationOptionsList
-        disabled={!this.superUserPermission()}
-        {...this.props}
+      <div>
+        <AutomationOptionsList
+          disabled={!this.superUserPermission()}
+          {...this.props}
 
-      />
+        />
 
-
+      <div style={{paddingTop: '30px'}}>
+        <span style={{cursor: 'pointer', textDecoration: 'underline', color: 'blue'}} onClick={this.handleProcessLnk}>Process</span>
+      </div>
+      </div>
 
 
     );
@@ -200,6 +204,19 @@ export default class AppSettings extends BaseUserContextWebPartComponent<types.I
   }
 
 
+  private handleProcessLnk = () : void =>{
+    console.log('In Process');
+
+    this.automationOptionService.processAsAutoFunction().then((res: string): void => {
+    
+      console.log('Result', res);
+
+  }, (err) => {
+
+  });
+
+
+  }
 
   //#endregion Render
 

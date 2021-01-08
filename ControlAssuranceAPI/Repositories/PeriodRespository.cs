@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Principal;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace ControlAssuranceAPI.Repositories
@@ -170,6 +172,29 @@ namespace ControlAssuranceAPI.Repositories
             return newPeriod;
         }
 
+        public Period Remove(Period period)
+        {
+            if (period.PeriodStatus == PeriodStatuses.DesignPeriod)
+            {
+                //only a design period can be removed, remove all the children
+                var requestedPeriodForms = db.Forms.Where(f => f.PeriodId == period.ID);
+                foreach (var requestedPeriodForm in requestedPeriodForms)
+                {
+                    db.Elements.RemoveRange(db.Elements.Where(e => e.FormId == requestedPeriodForm.ID));
+                }
+
+                db.Forms.RemoveRange(db.Forms.Where(f => f.PeriodId == period.ID));
+                db.AuditFeedbacks.RemoveRange(db.AuditFeedbacks.Where(a => a.PeriodId == period.ID));
+                db.Logs.RemoveRange(db.Logs.Where(l => l.PeriodId == period.ID));
+                db.DefElements.RemoveRange(db.DefElements.Where(d => d.PeriodId == period.ID));
+                db.DefElementGroups.RemoveRange(db.DefElementGroups.Where(d => d.PeriodId == period.ID));
+                db.DefForms.RemoveRange(db.DefForms.Where(d => d.PeriodId == period.ID));
+                return db.Periods.Remove(period);
+            }
+
+            return period;
+        }
+
         public Period MakeCurrentPeriod(Period period)
         {
             //check if the requested period is design period, then only make that current
@@ -197,33 +222,151 @@ namespace ControlAssuranceAPI.Repositories
 
                 //save both
                 db.SaveChanges();
+                this.NotificationsOnPeriodLive(period);
             }
 
 
             return period;
         }
 
-        public Period Remove(Period period)
+        public void NotificationsOnPeriodLive(Period period)
         {
-            if(period.PeriodStatus == PeriodStatuses.DesignPeriod)
+            string periodStartDateStr = period.PeriodStartDate.Value.ToString("dd/MM/yyyy");
+            string periodEndDateStr = period.PeriodEndDate.Value.ToString("dd/MM/yyyy");
+
+            Task.Run(() =>
             {
-                //only a design period can be removed, remove all the children
-                var requestedPeriodForms = db.Forms.Where(f => f.PeriodId == period.ID);
-                foreach (var requestedPeriodForm in requestedPeriodForms)
+                var dbThread = new ControlAssuranceEntities();
+
+                //IC-NewPeriodToDD
+                var teams = dbThread.Teams.Where(x => x.EntityStatusId == 1).ToList();
+                foreach(var team in teams)
                 {
-                    db.Elements.RemoveRange(db.Elements.Where(e => e.FormId == requestedPeriodForm.ID));
+                    string ddEmail = team.User.Username;
+                    string ddName = team.User.Title;
+
+                    string ddMembers = "";
+                    foreach(var ddM in team.TeamMembers)
+                    {
+                        ddMembers += $"{ddM.User.Title}, ";
+                    }
+                    if (ddMembers.Length > 0)
+                    {
+                        ddMembers = ddMembers.Substring(0, ddMembers.Length - 2);
+                    }
+
+                    //loop again cause we wanted to build ddMembers before
+                    foreach (var ddM in team.TeamMembers)
+                    {
+                        //IC-NewPeriodToDDDelegate - custom fileds are: DelegateName, DDName, DDDelegateList , DivisionTitle,  PeriodStartDate, PeriodEndDate
+                        //email to each dd delegate
+                        EmailQueue emailQueue_D = new EmailQueue
+                        {
+                            Title = "IC-NewPeriodToDDDelegate",
+                            PersonName = ddM.User.Title,
+                            EmailTo = ddM.User.Username,
+                            emailCC = "",
+                            Custom1 = ddM.User.Title,
+                            Custom2 = ddName,
+                            Custom3 = ddMembers,
+                            Custom4 = team.Title,
+                            Custom5 = periodStartDateStr,
+                            Custom6 = periodEndDateStr,
+
+                        };
+                        dbThread.EmailQueues.Add(emailQueue_D);
+
+                    }
+
+                    //custom fields are: DDName, DDDelegateList, DivisionTitle, PeriodStartDate, PeriodEndDate
+                    EmailQueue emailQueue = new EmailQueue
+                    {
+                        Title = "IC-NewPeriodToDD",
+                        PersonName = ddName,
+                        EmailTo = ddEmail,
+                        emailCC = "",
+                        Custom1 = ddName,
+                        Custom2 = ddMembers,
+                        Custom3 = team.Title,
+                        Custom4 = periodStartDateStr,
+                        Custom5 = periodEndDateStr,
+
+                    };
+                    dbThread.EmailQueues.Add(emailQueue);
+                    //dbThread.SaveChanges();
                 }
 
-                db.Forms.RemoveRange(db.Forms.Where(f => f.PeriodId == period.ID));
-                db.AuditFeedbacks.RemoveRange(db.AuditFeedbacks.Where(a => a.PeriodId == period.ID));
-                db.Logs.RemoveRange(db.Logs.Where(l => l.PeriodId == period.ID));
-                db.DefElements.RemoveRange(db.DefElements.Where(d => d.PeriodId == period.ID));
-                db.DefElementGroups.RemoveRange(db.DefElementGroups.Where(d => d.PeriodId == period.ID));
-                db.DefForms.RemoveRange(db.DefForms.Where(d => d.PeriodId == period.ID));
-                return db.Periods.Remove(period);
-            }
+                //IC-NewPeriodToDirector
+                var directorates = dbThread.Directorates.Where(x => x.EntityStatusID == 1).ToList();
+                foreach (var directorate in directorates)
+                {
+                    string dirEmail = directorate.User.Username;
+                    string dirName = directorate.User.Title;
 
-            return period;
+                    string dirMembers = "";
+                    foreach (var dM in directorate.DirectorateMembers)
+                    {
+                        dirMembers += $"{dM.User.Title}, ";
+                    }
+                    if (dirMembers.Length > 0)
+                    {
+                        dirMembers = dirMembers.Substring(0, dirMembers.Length - 2);
+                    }
+
+                    //loop again cause we wanted to build dirMembers before
+                    foreach (var dM in directorate.DirectorateMembers)
+                    {
+                        //IC-NewPeriodToDirectorDelegate, custom fields are: DelegateName, DirectorName, DirectorDelegateList, DirectorateTitle, PeriodStartDate, PeriodEndDate
+                        //email to each dd delegate
+                        EmailQueue emailQueue_D = new EmailQueue
+                        {
+                            Title = "IC-NewPeriodToDirectorDelegate",
+                            PersonName = dM.User.Title,
+                            EmailTo = dM.User.Username,
+                            emailCC = "",
+                            Custom1 = dM.User.Title,
+                            Custom2 = dirName,
+                            Custom3 = dirMembers,
+                            Custom4 = directorate.Title,
+                            Custom5 = periodStartDateStr,
+                            Custom6 = periodEndDateStr,
+
+                        };
+                        dbThread.EmailQueues.Add(emailQueue_D);
+                    }
+
+                    //custom fields are: DirectorName, DirectorDelegateList, DirectorateTitle, PeriodStartDate, PeriodEndDate
+                    EmailQueue emailQueue = new EmailQueue
+                    {
+                        Title = "IC-NewPeriodToDirector",
+                        PersonName = dirName,
+                        EmailTo = dirEmail,
+                        emailCC = "",
+                        Custom1 = dirName,
+                        Custom2 = dirMembers,
+                        Custom3 = directorate.Title,
+                        Custom4 = periodStartDateStr,
+                        Custom5 = periodEndDateStr,
+
+                    };
+                    dbThread.EmailQueues.Add(emailQueue);
+                    //dbThread.SaveChanges();
+                }
+
+
+
+                //save all - at the end
+                dbThread.SaveChanges();
+
+
+
+
+            });
+
+
         }
+
+        
+
     }
 }

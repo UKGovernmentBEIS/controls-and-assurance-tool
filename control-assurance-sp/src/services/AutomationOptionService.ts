@@ -12,6 +12,12 @@ export class AutomationOptionService extends EntityService<IEntity> {
         super(spfxContext, api, `/AutomationOptions`);
     }
 
+    public processAsAutoFunction(): Promise<string> {
+        return super.readString(`?processAsAutoFunction=`).then((result:string): string => {
+            return result;
+        });
+    }
+
 
 
 }

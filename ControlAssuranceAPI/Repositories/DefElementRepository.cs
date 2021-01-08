@@ -82,7 +82,7 @@ namespace ControlAssuranceAPI.Repositories
 
         public string GetFormStatus(int periodId, int formId)
         {
-
+            
             List<string> lstCompletionStatus = new List<string>();
             string overAllStatus = "To Be Completed"; //default value
 

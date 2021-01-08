@@ -336,6 +336,7 @@
     </Compile>
     <Compile Include="HelperMethods.cs" />
     <Compile Include="Libs\ExportLib.cs" />
+    <Compile Include="Libs\PdfFontResolver.cs" />
     <Compile Include="Libs\PdfLib.cs" />
     <Compile Include="Libs\PdfLibOld.cs" />
     <Compile Include="Libs\SharepointLib.cs" />
@@ -395,6 +396,9 @@
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Element.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\EmailQueue.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\EntityPriority.cs">
@@ -606,6 +610,7 @@
     <Compile Include="Repositories\BaseRepository.cs" />
     <Compile Include="Repositories\DefElementGroupRespository.cs" />
     <Compile Include="Repositories\DefElementRepository.cs" />
+    <Compile Include="Repositories\EmailQueueRepository.cs" />
     <Compile Include="Repositories\EntityPriorityRepository.cs" />
     <Compile Include="Repositories\ExportDefinationRepository.cs" />
     <Compile Include="Repositories\ExtensionMethods.cs" />
@@ -685,6 +690,13 @@
     <Content Include="Models\ControlAssurance.edmx.diagram">
       <DependentUpon>ControlAssurance.edmx</DependentUpon>
     </Content>
+    <EmbeddedResource Include="fonts\arial\arial.ttf" />
+    <EmbeddedResource Include="fonts\calibri\calibri.ttf" />
+    <EmbeddedResource Include="fonts\calibri\calibrib.ttf" />
+    <EmbeddedResource Include="fonts\calibri\calibrii.ttf" />
+    <EmbeddedResource Include="fonts\calibri\calibril.ttf" />
+    <EmbeddedResource Include="fonts\calibri\calibrili.ttf" />
+    <EmbeddedResource Include="fonts\calibri\calibriz.ttf" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

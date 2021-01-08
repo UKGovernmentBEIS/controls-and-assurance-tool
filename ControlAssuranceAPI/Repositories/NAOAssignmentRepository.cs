@@ -32,6 +32,7 @@ namespace ControlAssuranceAPI.Repositories
 
         public NAOAssignment Add(NAOAssignment nAOAssignment)
         {
+            nAOAssignment.DateAssigned = DateTime.Today;
             return db.NAOAssignments.Add(nAOAssignment);
         }
 

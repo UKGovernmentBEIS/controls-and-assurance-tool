@@ -10,6 +10,8 @@ namespace ControlAssuranceAPI.Models
         Database Database { get; }
         DbSet<AutomationOption> AutomationOptions { get; set; }
 
+        DbSet<EmailQueue> EmailQueues { get; set; }
+
         DbSet<DefElement> DefElements { get; set; }
         DbSet<DefElementGroup> DefElementGroups { get; set; }
         DbSet<DefForm> DefForms { get; set; }

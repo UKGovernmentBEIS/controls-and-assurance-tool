@@ -18,6 +18,7 @@ namespace ControlAssuranceAPI.Models
         public string Title { get; set; }
         public Nullable<int> NAORecommendationId { get; set; }
         public Nullable<int> UserId { get; set; }
+        public Nullable<System.DateTime> DateAssigned { get; set; }
     
         public virtual NAORecommendation NAORecommendation { get; set; }
         public virtual User User { get; set; }

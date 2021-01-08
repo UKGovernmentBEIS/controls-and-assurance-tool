@@ -13,6 +13,8 @@ namespace ControlAssuranceAPI
         {
 
             GlobalConfiguration.Configure(WebApiConfig.Register);
+
+            //Libs.PdfFontResolver.Apply(); // Ensures it's only applied once
         }
     }
 }

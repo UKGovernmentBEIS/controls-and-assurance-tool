@@ -36,6 +36,7 @@ namespace ControlAssuranceAPI.Repositories
             return NAOPeriods.Where(kwa => kwa.ID == keyValue).FirstOrDefault();
         }
 
+        //this is not used
         public NAOPeriod Add(NAOPeriod period)
         {
             //make the status of new period to Design Period
@@ -75,6 +76,7 @@ namespace ControlAssuranceAPI.Repositories
             return newPeriod;
         }
 
+        //this is not used
         public NAOPeriod MakeCurrentPeriod(NAOPeriod period)
         {
             //check if the requested period is design period, then only make that current

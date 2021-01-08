@@ -35,15 +35,47 @@ export class CrEntityPicker extends React.Component<ICrEntityPickerProps, ICrEnt
         console.log('CrEntityPicker - constructor end');
     }
 
-    public componentWillReceiveProps(nextProps: ICrEntityPickerProps) {
-        console.log('CrEntityPicker - componentWillReceiveProps 1');
-        console.log('CrEntityPicker - componentWillReceiveProps 2.1', nextProps.entities);
-        console.log('CrEntityPicker - componentWillReceiveProps 2.2', nextProps.selectedEntities);
-        if (nextProps.entities && nextProps.entities.length > 0 && nextProps.selectedEntities && nextProps.selectedEntities.length > 0){
-            console.log('CrEntityPicker - componentWillReceiveProps 3');
-            this.loadSelectedEntities(nextProps.selectedEntities, nextProps.entities);
-        }
+    // public componentWillReceiveProps(nextProps: ICrEntityPickerProps) {
+    //     console.log('CrEntityPicker - componentWillReceiveProps 1');
+    //     console.log('CrEntityPicker - componentWillReceiveProps 2.1', nextProps.entities);
+    //     console.log('CrEntityPicker - componentWillReceiveProps 2.2', nextProps.selectedEntities);
+    //     if (nextProps.entities && nextProps.entities.length > 0 && nextProps.selectedEntities && nextProps.selectedEntities.length > 0){
+    //         console.log('CrEntityPicker - componentWillReceiveProps 3');
+    //         this.loadSelectedEntities(nextProps.selectedEntities, nextProps.entities);
+    //     }
             
+    // }
+
+    // public componentDidMount(): void {
+    //     console.log('CrEntityPicker - componentDidMount 1');
+    //     console.log('CrEntityPicker - componentDidMount 2.1', this.props.entities);
+    //     console.log('CrEntityPicker - componentDidMount 2.2', this.props.selectedEntities);
+        
+
+    //     if(this.props.entities && this.props.entities.length > 0 && this.props.selectedEntities && this.props.selectedEntities.length > 0){
+
+    //         console.log('CrEntityPicker - componentDidMount 3');
+    //         this.loadSelectedEntities(this.props.selectedEntities, this.props.entities);
+            
+
+    //     }
+
+
+    // }
+    public componentDidUpdate(prevProps: ICrEntityPickerProps): void {
+        console.log('CrEntityPicker - componentDidUpdate 1');
+        console.log('CrEntityPicker - componentDidUpdate 2.1', this.props.entities, prevProps.entities);
+        console.log('CrEntityPicker - componentDidUpdate 2.2', this.props.selectedEntities,  prevProps.selectedEntities);
+        if(prevProps.entities != this.props.entities || prevProps.selectedEntities != this.props.selectedEntities){
+            if(this.props.entities && this.props.entities.length > 0 && this.props.selectedEntities && this.props.selectedEntities.length > 0){
+
+                console.log('CrEntityPicker - componentDidUpdate 3');
+                this.loadSelectedEntities(this.props.selectedEntities, this.props.entities);
+
+            }
+
+        }
+
     }
 
     public render(): JSX.Element {

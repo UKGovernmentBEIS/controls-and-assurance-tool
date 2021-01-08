@@ -72,6 +72,14 @@ namespace ControlAssuranceAPI.Controllers
             return db.AutomationOptionRepository.AutomationOptions.Count(x => x.ID == key) > 0;
         }
 
+        //GET: odata/AutomationOptions?processAsAutoFunction=
+        [EnableQuery]
+        public string Get(string processAsAutoFunction)
+        {
+            var msg = db.AutomationOptionRepository.ProcessAsAutoFunction();
+            return msg;
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

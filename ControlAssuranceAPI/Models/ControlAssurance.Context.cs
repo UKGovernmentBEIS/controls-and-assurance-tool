@@ -40,6 +40,7 @@ namespace ControlAssuranceAPI.Models
         public virtual DbSet<DirectorateGroupMember> DirectorateGroupMembers { get; set; }
         public virtual DbSet<DirectorateMember> DirectorateMembers { get; set; }
         public virtual DbSet<Element> Elements { get; set; }
+        public virtual DbSet<EmailQueue> EmailQueues { get; set; }
         public virtual DbSet<EntityPriority> EntityPriorities { get; set; }
         public virtual DbSet<EntityStatusType> EntityStatusTypes { get; set; }
         public virtual DbSet<ExportDefination> ExportDefinations { get; set; }

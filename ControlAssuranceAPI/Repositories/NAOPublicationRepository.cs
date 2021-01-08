@@ -452,5 +452,139 @@ namespace ControlAssuranceAPI.Repositories
 
             return overAllStatus;
         }
+
+
+        //NP-NewPeriod
+        public void EmailsOnNewPeriod(NAOPublication nAOPublication)
+        {
+            //send email to Each DG, DG Delegate, Director, Director Delegate, Assignee
+
+            //NP-NewPeriod: Custom fields are:
+            //Name, PublicationTitle, PeriodTitle, PeriodStartDate, PeriodEndDate
+
+            string publicationTitle = nAOPublication.Title;
+            string periodTitle = nAOPublication.CurrentPeriodTitle;
+            string periodStartDate = nAOPublication.CurrentPeriodStartDate.Value.ToString("dd/MM/yyyy");
+            string periodEndDate = nAOPublication.CurrentPeriodEndDate.Value.ToString("dd/MM/yyyy");
+           
+            HashSet<DirectorateGroup> uniqueDirectorateGroups = new HashSet<DirectorateGroup>();
+            HashSet<User> uniqueAssignees = new HashSet<User>();
+            foreach (var rec in nAOPublication.NAORecommendations)
+            {
+                foreach (var ass in rec.NAOAssignments)
+                {
+                    uniqueAssignees.Add(ass.User);
+                }
+            }
+
+
+            foreach (var dir in nAOPublication.NAOPublicationDirectorates)
+            {
+                uniqueDirectorateGroups.Add(dir.Directorate.DirectorateGroup);
+
+                EmailQueue emailQueue = new EmailQueue
+                {
+                    Title = "NP-NewPeriod",
+                    PersonName = dir.Directorate.User.Title,
+                    EmailTo = dir.Directorate.User.Username,
+                    emailCC = "",
+                    Custom1 = dir.Directorate.User.Title,
+                    Custom2 = publicationTitle,
+                    Custom3 = periodTitle,
+                    Custom4 = periodStartDate,
+                    Custom5 = periodEndDate,
+
+
+                };
+                db.EmailQueues.Add(emailQueue);
+
+                foreach(var directorateMember in dir.Directorate.DirectorateMembers)
+                {
+                    EmailQueue emailQueue_DM = new EmailQueue
+                    {
+                        Title = "NP-NewPeriod",
+                        PersonName = directorateMember.User.Title,
+                        EmailTo = directorateMember.User.Username,
+                        emailCC = "",
+                        Custom1 = directorateMember.User.Title,
+                        Custom2 = publicationTitle,
+                        Custom3 = periodTitle,
+                        Custom4 = periodStartDate,
+                        Custom5 = periodEndDate,
+
+
+                    };
+                    db.EmailQueues.Add(emailQueue_DM);
+                }
+
+            }
+
+
+            foreach(var directorateGroup in uniqueDirectorateGroups)
+            {
+                string dgName = directorateGroup.User.Title;
+                string dgEmail = directorateGroup.User.Username;
+
+                EmailQueue emailQueue = new EmailQueue
+                {
+                    Title = "NP-NewPeriod",
+                    PersonName = dgName,
+                    EmailTo = dgEmail,
+                    emailCC = "",
+                    Custom1 = dgName,
+                    Custom2 = publicationTitle,
+                    Custom3 = periodTitle,
+                    Custom4 = periodStartDate,
+                    Custom5 = periodEndDate,
+
+
+                };
+                db.EmailQueues.Add(emailQueue);
+
+                //DG Delegates
+                foreach(var directorateGroupMember in directorateGroup.DirectorateGroupMembers)
+                {
+                    EmailQueue emailQueue_DGM = new EmailQueue
+                    {
+                        Title = "NP-NewPeriod",
+                        PersonName = directorateGroupMember.User.Title,
+                        EmailTo = directorateGroupMember.User.Username,
+                        emailCC = "",
+                        Custom1 = directorateGroupMember.User.Title,
+                        Custom2 = publicationTitle,
+                        Custom3 = periodTitle,
+                        Custom4 = periodStartDate,
+                        Custom5 = periodEndDate,
+                    };
+                    db.EmailQueues.Add(emailQueue_DGM);
+                }
+
+            }
+
+
+            foreach(var assignee in uniqueAssignees)
+            {
+                EmailQueue emailQueue = new EmailQueue
+                {
+                    Title = "NP-NewPeriod",
+                    PersonName = assignee.Title,
+                    EmailTo = assignee.Username,
+                    emailCC = "",
+                    Custom1 = assignee.Title,
+                    Custom2 = publicationTitle,
+                    Custom3 = periodTitle,
+                    Custom4 = periodStartDate,
+                    Custom5 = periodEndDate,
+
+
+                };
+                db.EmailQueues.Add(emailQueue);
+            }
+
+
+            //at the end save changes
+            db.SaveChanges();
+
+        }
     }
 }
