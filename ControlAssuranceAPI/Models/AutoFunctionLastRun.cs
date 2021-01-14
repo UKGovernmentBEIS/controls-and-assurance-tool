@@ -12,16 +12,10 @@ namespace ControlAssuranceAPI.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class IAPAssignment
+    public partial class AutoFunctionLastRun
     {
         public int ID { get; set; }
         public string Title { get; set; }
-        public Nullable<int> IAPActionId { get; set; }
-        public Nullable<int> UserId { get; set; }
-        public Nullable<int> GroupNum { get; set; }
-        public Nullable<System.DateTime> DateAssigned { get; set; }
-    
-        public virtual IAPAction IAPAction { get; set; }
-        public virtual User User { get; set; }
+        public System.DateTime LastRunDate { get; set; }
     }
 }

@@ -58,12 +58,12 @@ namespace ControlAssuranceAPI.Repositories
             if(category.Value == LogCategory.FormChange.Value)
             {
                 //Let DD know that a Director has made some changes.
-                var form = db.Forms.FirstOrDefault(f => f.PeriodId == periodId && f.TeamId == teamId);
-                if(form != null)
-                {
-                    EmailRepository emailRepository = new EmailRepository(base.user);
-                    emailRepository.GovUkNotifyFormCancelledOrChanged(form, details);
-                }
+                //var form = db.Forms.FirstOrDefault(f => f.PeriodId == periodId && f.TeamId == teamId);
+                //if(form != null)
+                //{
+                //    EmailRepository emailRepository = new EmailRepository(base.user);
+                //    emailRepository.GovUkNotifyFormCancelledOrChanged(form, details);
+                //}
             }
             //UKGovNotify uKGovNotify = new UKGovNotify();
             //string emailSendTo = "tas.tasniem@beis.gov.uk";

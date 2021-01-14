@@ -5,9 +5,10 @@ import BaseUserContextWebPartComponent from '../../../components/BaseUserContext
 import * as services from '../../../services';
 import EntityList from '../../../components/entity/EntityList';
 import AutomationOptionsList from '../../../components/automationOptions/AutomationOptionsList';
+import { PrimaryButton } from 'office-ui-fabric-react/lib/Button';
 import PeriodList from '../../../components/period/PeriodList';
 import { IGenColumn, ColumnType, ColumnDisplayType } from '../../../types/GenColumn';
-import { IUserPermission, IPeriod } from '../../../types';
+import { IUserPermission, IPeriod, IEntity } from '../../../types';
 import { CrDropdown, IDropdownOption } from '../../../components/cr/CrDropdown';
 
 //#region types defination
@@ -21,10 +22,12 @@ export class LookupData implements ILookupData {
 
 export interface IAppSettingsState extends types.IUserContextWebPartState {
   LookupData: ILookupData;
+  LastRunMsg: string;
 
 }
 export class AppSettingsState extends types.UserContextWebPartState implements IAppSettingsState {
   public LookupData = new LookupData();
+  public LastRunMsg = "";
   constructor() {
     super();
   }
@@ -35,6 +38,8 @@ export class AppSettingsState extends types.UserContextWebPartState implements I
 export default class AppSettings extends BaseUserContextWebPartComponent<types.IWebPartComponentProps, AppSettingsState> {
 
   private automationOptionService: services.AutomationOptionService = new services.AutomationOptionService(this.props.spfxContext, this.props.api);
+  private autoFunctionLastRunService: services.AutoFunctionLastRunService = new services.AutoFunctionLastRunService(this.props.spfxContext, this.props.api);
+
   constructor(props: types.IWebPartComponentProps) {
     super(props);
     this.state = new AppSettingsState();
@@ -61,17 +66,31 @@ export default class AppSettings extends BaseUserContextWebPartComponent<types.I
 
 
   private renderAutomationOptions() {
+
+    const superUserPermission = this.superUserPermission();
     return (
       <div>
         <AutomationOptionsList
-          disabled={!this.superUserPermission()}
+          disabled={!superUserPermission}
           {...this.props}
 
         />
 
-      <div style={{paddingTop: '30px'}}>
-        <span style={{cursor: 'pointer', textDecoration: 'underline', color: 'blue'}} onClick={this.handleProcessLnk}>Process</span>
-      </div>
+        {
+          (superUserPermission === true) &&
+
+          <div style={{ paddingTop: '30px' }}>
+            <div style={{ paddingBottom: '10px' }}>
+              Note: {this.state.LastRunMsg}
+            </div>
+            <PrimaryButton
+              text="Send Emails Now"
+              onClick={this.handleProcessLnk}
+            />
+
+          </div>
+        }
+
       </div>
 
 
@@ -204,16 +223,17 @@ export default class AppSettings extends BaseUserContextWebPartComponent<types.I
   }
 
 
-  private handleProcessLnk = () : void =>{
+  private handleProcessLnk = (): void => {
     console.log('In Process');
 
     this.automationOptionService.processAsAutoFunction().then((res: string): void => {
-    
+
       console.log('Result', res);
+      this.loadAutoFunctionLastRun();
 
-  }, (err) => {
+    }, (err) => {
 
-  });
+    });
 
 
   }
@@ -246,12 +266,25 @@ export default class AppSettings extends BaseUserContextWebPartComponent<types.I
 
   //#region Load Data
 
+  private loadAutoFunctionLastRun = (): void => {
+    this.autoFunctionLastRunService.getLastRunMsg().then((res: string): void => {
+
+      console.log('Last Run Msg', res);
+      this.setState({
+        LastRunMsg: res,
+      });
+
+    }, (err) => {
+
+    });
+
+  }
 
 
   protected loadLookups(): Promise<any> {
 
     return Promise.all([
-
+      this.loadAutoFunctionLastRun(),
     ]);
   }
 

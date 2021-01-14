@@ -13,6 +13,7 @@ namespace ControlAssuranceAPI.Models
         private IPrincipal user;
         private IControlAssuranceContext context;
         private AutomationOptionRepository automationOptionRepository;
+        private AutoFunctionLastRunRepository autoFunctionLastRunRepository;
         private DefFormRepository defFormRepository;
         private DefElementRepository defElementRepository;        
         private DefElementGroupRepository defElementGroupRepository;
@@ -113,6 +114,14 @@ namespace ControlAssuranceAPI.Models
             get
             {
                 return automationOptionRepository = automationOptionRepository ?? new AutomationOptionRepository(user, context);
+            }
+        }
+
+        public AutoFunctionLastRunRepository AutoFunctionLastRunRepository
+        {
+            get
+            {
+                return autoFunctionLastRunRepository = autoFunctionLastRunRepository ?? new AutoFunctionLastRunRepository(user, context);
             }
         }
 

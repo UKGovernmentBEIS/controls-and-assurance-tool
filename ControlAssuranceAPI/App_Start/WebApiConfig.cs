@@ -35,6 +35,7 @@ namespace ControlAssuranceAPI
             config.Count().Filter().OrderBy().Expand().Select().MaxTop(null); //new line
 
             builder.EntitySet<Models.AutomationOption>("AutomationOptions");
+            builder.EntitySet<Models.AutoFunctionLastRun>("AutoFunctionLastRuns");
             builder.EntitySet<DefForm>("DefForms");
             builder.EntitySet<Models.DefElementGroup>("DefElementGroups");
             builder.EntitySet<Models.DefElement>("DefElements");

@@ -31,6 +31,7 @@ namespace ControlAssuranceAPI.Repositories
 
         public IAPAssignment Add(IAPAssignment iapAssignment)
         {
+            iapAssignment.DateAssigned = DateTime.Today;
             return db.IAPAssignments.Add(iapAssignment);
         }
 

@@ -32,6 +32,7 @@ namespace ControlAssuranceAPI.Repositories
 
         public GIAAActionOwner Add(GIAAActionOwner giaaActionOwner)
         {
+            giaaActionOwner.DateAssigned = DateTime.Today;
             return db.GIAAActionOwners.Add(giaaActionOwner);
         }
 

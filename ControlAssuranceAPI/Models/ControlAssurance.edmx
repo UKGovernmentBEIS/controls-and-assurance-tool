@@ -24,6 +24,14 @@
           <Property Name="PeriodId" Type="int" />
           <Property Name="DateUpdated" Type="datetime" />
         </EntityType>
+        <EntityType Name="AutoFunctionLastRun">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" />
+          <Property Name="LastRunDate" Type="datetime" Nullable="false" />
+        </EntityType>
         <EntityType Name="AutoFunctionsLog">
           <Key>
             <PropertyRef Name="ID" />
@@ -36,11 +44,12 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ID" Type="int" Nullable="false" />
           <Property Name="Title" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Description" Type="nvarchar(max)" />
           <Property Name="Module" Type="nvarchar" MaxLength="50" />
           <Property Name="Active" Type="bit" Nullable="false" />
+          <Property Name="NotifyTemplateId" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="AvailableExport">
           <Key>
@@ -303,6 +312,7 @@
           <Property Name="Custom18" Type="nvarchar(max)" />
           <Property Name="Custom19" Type="nvarchar(max)" />
           <Property Name="Custom20" Type="nvarchar(max)" />
+          <Property Name="MainEntityId" Type="int" />
         </EntityType>
         <EntityType Name="EntityPriority">
           <Key>
@@ -354,6 +364,7 @@
           <Property Name="Title" Type="nvarchar" MaxLength="50" />
           <Property Name="GIAARecommendationId" Type="int" />
           <Property Name="UserId" Type="int" />
+          <Property Name="DateAssigned" Type="datetime" />
         </EntityType>
         <EntityType Name="GIAAActionPriority">
           <Key>
@@ -650,6 +661,7 @@
           <Property Name="IAPActionId" Type="int" />
           <Property Name="UserId" Type="int" />
           <Property Name="GroupNum" Type="int" />
+          <Property Name="DateAssigned" Type="datetime" />
         </EntityType>
         <EntityType Name="IAPDefForm">
           <Key>
@@ -1995,6 +2007,7 @@
         <EntityContainer Name="ControlAssuranceModelStoreContainer">
           <EntitySet Name="APILog" EntityType="Self.APILog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AuditFeedback" EntityType="Self.AuditFeedback" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AutoFunctionLastRun" EntityType="Self.AutoFunctionLastRun" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AutoFunctionsLog" EntityType="Self.AutoFunctionsLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AutomationOption" EntityType="Self.AutomationOption" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AvailableExport" EntityType="Self.AvailableExport" Schema="dbo" store:Type="Tables" />
@@ -2439,6 +2452,14 @@
           <NavigationProperty Name="Team" Relationship="Self.FK_AuditFeedback_Team" FromRole="AuditFeedback" ToRole="Team" />
           <NavigationProperty Name="User" Relationship="Self.FK_AuditFeedback_User" FromRole="AuditFeedback" ToRole="User" />
         </EntityType>
+        <EntityType Name="AutoFunctionLastRun">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LastRunDate" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
         <EntityType Name="AutoFunctionsLog">
           <Key>
             <PropertyRef Name="ID" />
@@ -2451,11 +2472,12 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ID" Type="Int32" Nullable="false" />
           <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Module" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Active" Type="Boolean" Nullable="false" />
+          <Property Name="NotifyTemplateId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="AvailableExport">
           <Key>
@@ -2746,6 +2768,7 @@
           <Property Name="Custom18" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Custom19" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Custom20" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="MainEntityId" Type="Int32" />
         </EntityType>
         <EntityType Name="EntityPriority">
           <Key>
@@ -2804,6 +2827,7 @@
           <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="GIAARecommendationId" Type="Int32" />
           <Property Name="UserId" Type="Int32" />
+          <Property Name="DateAssigned" Type="DateTime" Precision="3" />
           <NavigationProperty Name="GIAARecommendation" Relationship="Self.FK_GIAAActionOwner_GIAARecommendation" FromRole="GIAAActionOwner" ToRole="GIAARecommendation" />
           <NavigationProperty Name="User" Relationship="Self.FK_GIAAActionOwner_User" FromRole="GIAAActionOwner" ToRole="User" />
         </EntityType>
@@ -3153,6 +3177,7 @@
           <Property Name="IAPActionId" Type="Int32" />
           <Property Name="UserId" Type="Int32" />
           <Property Name="GroupNum" Type="Int32" />
+          <Property Name="DateAssigned" Type="DateTime" Precision="3" />
           <NavigationProperty Name="IAPAction" Relationship="Self.FK_IAPAssignment_IAPAction" FromRole="IAPAssignment" ToRole="IAPAction" />
           <NavigationProperty Name="User" Relationship="Self.FK_IAPAssignment_User" FromRole="IAPAssignment" ToRole="User" />
         </EntityType>
@@ -4563,6 +4588,7 @@
         <EntityContainer Name="ControlAssuranceEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="APILogs" EntityType="Self.APILog" />
           <EntitySet Name="AuditFeedbacks" EntityType="Self.AuditFeedback" />
+          <EntitySet Name="AutoFunctionLastRuns" EntityType="Self.AutoFunctionLastRun" />
           <EntitySet Name="AutoFunctionsLogs" EntityType="Self.AutoFunctionsLog" />
           <EntitySet Name="AutomationOptions" EntityType="Self.AutomationOption" />
           <EntitySet Name="AvailableExports" EntityType="Self.AvailableExport" />
@@ -5203,6 +5229,15 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="AutoFunctionLastRuns">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.AutoFunctionLastRun">
+              <MappingFragment StoreEntitySet="AutoFunctionLastRun">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="LastRunDate" ColumnName="LastRunDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="AutoFunctionsLogs">
             <EntityTypeMapping TypeName="ControlAssuranceModel.AutoFunctionsLog">
               <MappingFragment StoreEntitySet="AutoFunctionsLog">
@@ -5220,6 +5255,7 @@
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="Module" ColumnName="Module" />
                 <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="NotifyTemplateId" ColumnName="NotifyTemplateId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -5492,6 +5528,7 @@
                 <ScalarProperty Name="Custom18" ColumnName="Custom18" />
                 <ScalarProperty Name="Custom19" ColumnName="Custom19" />
                 <ScalarProperty Name="Custom20" ColumnName="Custom20" />
+                <ScalarProperty Name="MainEntityId" ColumnName="MainEntityId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -5548,6 +5585,7 @@
                 <ScalarProperty Name="Title" ColumnName="Title" />
                 <ScalarProperty Name="GIAARecommendationId" ColumnName="GIAARecommendationId" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="DateAssigned" ColumnName="DateAssigned" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -5868,6 +5906,7 @@
                 <ScalarProperty Name="IAPActionId" ColumnName="IAPActionId" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="GroupNum" ColumnName="GroupNum" />
+                <ScalarProperty Name="DateAssigned" ColumnName="DateAssigned" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

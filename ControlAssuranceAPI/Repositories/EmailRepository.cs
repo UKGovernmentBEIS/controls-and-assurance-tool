@@ -19,89 +19,89 @@ namespace ControlAssuranceAPI.Repositories
         public EmailRepository(IControlAssuranceContext context) : base(context) { }
 
 
-        public void GovUkNotifyFormSigned(Form form, bool ddSigned)
-        {
-            // This sends out emails to DD, Dir and Super Users.
-            // We need DivisionName, PeriodTitle, DDName, DirectorName and SignedBy name, plus who the email is going to.
+        //public void GovUkNotifyFormSigned(Form form, bool ddSigned)
+        //{
+        //    // This sends out emails to DD, Dir and Super Users.
+        //    // We need DivisionName, PeriodTitle, DDName, DirectorName and SignedBy name, plus who the email is going to.
 
-            string divisionName = "";
-            string directorateName = "";
-            string periodTitle = "";
-            string deputyDirectorName = "";
-            string directorName = "";
-            string signedBy = "";
-            string emailToName = "";
-            string toEmail = "";
+        //    string divisionName = "";
+        //    string directorateName = "";
+        //    string periodTitle = "";
+        //    string deputyDirectorName = "";
+        //    string directorName = "";
+        //    string signedBy = "";
+        //    string emailToName = "";
+        //    string toEmail = "";
 
-            string emailTemplate = "";
+        //    string emailTemplate = "";
 
-            // signed off by this user
-            if (ddSigned)
-            {
-                var user = db.Users.FirstOrDefault(u => u.ID == form.DDSignOffUserId);
-                signedBy = user.Title;
-                toEmail = user.Username;
-                emailTemplate = ConfigurationManager.AppSettings["GovUkNotify_DDSigned_TemplateID"];
-            }
-            else
-            {
-                var user = db.Users.FirstOrDefault(u => u.ID == form.DirSignOffUserId);
-                signedBy = user.Title;
-                toEmail = user.Username;
-                emailTemplate = ConfigurationManager.AppSettings["GovUkNotify_DirectorSigned_TemplateID"];
-            }
+        //    // signed off by this user
+        //    if (ddSigned)
+        //    {
+        //        var user = db.Users.FirstOrDefault(u => u.ID == form.DDSignOffUserId);
+        //        signedBy = user.Title;
+        //        toEmail = user.Username;
+        //        emailTemplate = ConfigurationManager.AppSettings["GovUkNotify_DDSigned_TemplateID"];
+        //    }
+        //    else
+        //    {
+        //        var user = db.Users.FirstOrDefault(u => u.ID == form.DirSignOffUserId);
+        //        signedBy = user.Title;
+        //        toEmail = user.Username;
+        //        emailTemplate = ConfigurationManager.AppSettings["GovUkNotify_DirectorSigned_TemplateID"];
+        //    }
 
-            // Main Details
-            divisionName = form.Team.Title;
-            directorateName = form.Team.Directorate.Title;
-            periodTitle = form.Period.Title;
-            deputyDirectorName = form.Team.User.Title;
-            directorName = form.Team.Directorate.User.Title;
+        //    // Main Details
+        //    divisionName = form.Team.Title;
+        //    directorateName = form.Team.Directorate.Title;
+        //    periodTitle = form.Period.Title;
+        //    deputyDirectorName = form.Team.User.Title;
+        //    directorName = form.Team.Directorate.User.Title;
 
-            var templatePersonalisations = new Dictionary<string, dynamic>() {
-                { "DivisionName", divisionName },
-                { "DirectorateName", directorateName },
-                { "PeriodTitle", periodTitle },
-                { "DDName", deputyDirectorName },
-                { "DirectorName", directorName },
-                { "SignedBy", signedBy },
-                { "EmailToName", emailToName },
-            };
+        //    var templatePersonalisations = new Dictionary<string, dynamic>() {
+        //        { "DivisionName", divisionName },
+        //        { "DirectorateName", directorateName },
+        //        { "PeriodTitle", periodTitle },
+        //        { "DDName", deputyDirectorName },
+        //        { "DirectorName", directorName },
+        //        { "SignedBy", signedBy },
+        //        { "EmailToName", emailToName },
+        //    };
 
-            UKGovNotify uKGovNotify = new UKGovNotify();
+        //    UKGovNotify uKGovNotify = new UKGovNotify();
 
-            // 1) Send 1st email to person who signed 
-            var sd = db.Users.FirstOrDefault(u => u.ID == form.DDSignOffUserId);
-            if (sd != null)
-            {
-                templatePersonalisations["EmailToName"] = sd.Title;
-                toEmail = sd.Username;
-                uKGovNotify.SendEmail(toEmail, emailTemplate, templatePersonalisations);
-            }
+        //    // 1) Send 1st email to person who signed 
+        //    var sd = db.Users.FirstOrDefault(u => u.ID == form.DDSignOffUserId);
+        //    if (sd != null)
+        //    {
+        //        templatePersonalisations["EmailToName"] = sd.Title;
+        //        toEmail = sd.Username;
+        //        uKGovNotify.SendEmail(toEmail, emailTemplate, templatePersonalisations);
+        //    }
 
-            // 2) Send 2nd email to DD if he is not the person that signed off
-            if (signedBy != deputyDirectorName)
-            {
-                templatePersonalisations["EmailToName"] = deputyDirectorName;
-                uKGovNotify.SendEmail(form.Team.User.Username, emailTemplate, templatePersonalisations);
-            }
+        //    // 2) Send 2nd email to DD if he is not the person that signed off
+        //    if (signedBy != deputyDirectorName)
+        //    {
+        //        templatePersonalisations["EmailToName"] = deputyDirectorName;
+        //        uKGovNotify.SendEmail(form.Team.User.Username, emailTemplate, templatePersonalisations);
+        //    }
 
-            // 3) Send 3rd email to Director
-            templatePersonalisations["EmailToName"] = directorName;
-            uKGovNotify.SendEmail(form.Team.Directorate.User.Username, emailTemplate, templatePersonalisations);
+        //    // 3) Send 3rd email to Director
+        //    templatePersonalisations["EmailToName"] = directorName;
+        //    uKGovNotify.SendEmail(form.Team.Directorate.User.Username, emailTemplate, templatePersonalisations);
 
-            // 4) Send emails to all Superusers
-            //get all super users
-            var superUsers = from suser in db.Users
-                             where suser.UserPermissions.Any(up => up.PermissionTypeId == 1)
-                             select suser;
+        //    // 4) Send emails to all Superusers
+        //    //get all super users
+        //    var superUsers = from suser in db.Users
+        //                     where suser.UserPermissions.Any(up => up.PermissionTypeId == 1)
+        //                     select suser;
 
-            foreach (var superUser in superUsers)
-            {
-                templatePersonalisations["EmailToName"] = superUser.Title;
-                uKGovNotify.SendEmail(superUser.Username, emailTemplate, templatePersonalisations);
-            }
-        }
+        //    foreach (var superUser in superUsers)
+        //    {
+        //        templatePersonalisations["EmailToName"] = superUser.Title;
+        //        uKGovNotify.SendEmail(superUser.Username, emailTemplate, templatePersonalisations);
+        //    }
+        //}
 
         //public void GovUkNotifyDDSignedToDD(Form form)
         //{
@@ -332,81 +332,81 @@ namespace ControlAssuranceAPI.Repositories
         //    }
         //}
 
-        public void GovUkNotifyFormCancelledOrChanged(Form form, string formChangeDetails)
-        {
-            // When a form is cancelled or  signed off we should send out emails to DD, Dir and Super Users.
+        //public void GovUkNotifyFormCancelledOrChanged(Form form, string formChangeDetails)
+        //{
+        //    // When a form is cancelled or  signed off we should send out emails to DD, Dir and Super Users.
             
-            // setup values to be passed to email system.
-            string divisionName = form.Team.Title;
-            string directorateName = form.Team.Directorate.Title;
-            string periodTitle = form.Period.Title;           
-            string deputyDirectorName = form.Team.User.Title;
-            string directorName = form.Team.Directorate.User.Title;
-            string ddSignitureBy = "";
-            var dd = db.Users.FirstOrDefault(u => u.ID == form.DDSignOffUserId);
-            if (dd != null)
-            {
-                ddSignitureBy = dd.Title;
-            }
-            string directorSignituredBy = "";
-            var dir = db.Users.FirstOrDefault(u => u.ID == form.DDSignOffUserId);
-            if (dir != null)
-            {
-                directorSignituredBy = dir.Title;
-            }
-            string cancelledBy = "";
-            string emailToName = "";
-            string toEmail = "";
-            string emailTemplate = "";
+        //    // setup values to be passed to email system.
+        //    string divisionName = form.Team.Title;
+        //    string directorateName = form.Team.Directorate.Title;
+        //    string periodTitle = form.Period.Title;           
+        //    string deputyDirectorName = form.Team.User.Title;
+        //    string directorName = form.Team.Directorate.User.Title;
+        //    string ddSignitureBy = "";
+        //    var dd = db.Users.FirstOrDefault(u => u.ID == form.DDSignOffUserId);
+        //    if (dd != null)
+        //    {
+        //        ddSignitureBy = dd.Title;
+        //    }
+        //    string directorSignituredBy = "";
+        //    var dir = db.Users.FirstOrDefault(u => u.ID == form.DDSignOffUserId);
+        //    if (dir != null)
+        //    {
+        //        directorSignituredBy = dir.Title;
+        //    }
+        //    string cancelledBy = "";
+        //    string emailToName = "";
+        //    string toEmail = "";
+        //    string emailTemplate = "";
 
-            // called with a form so its a form change. otherwise its a cancel
-            if (formChangeDetails.Length == 0)
-            {
-                cancelledBy = ApiUser.Title;
-                emailTemplate = ConfigurationManager.AppSettings["GovUkNotify_SignCancelled_TemplateID"];
-            }
-            else
-            {
-                emailTemplate = ConfigurationManager.AppSettings["GovUkNotify_FormChanged_TemplateID"];
-            }
+        //    // called with a form so its a form change. otherwise its a cancel
+        //    if (formChangeDetails.Length == 0)
+        //    {
+        //        cancelledBy = ApiUser.Title;
+        //        emailTemplate = ConfigurationManager.AppSettings["GovUkNotify_SignCancelled_TemplateID"];
+        //    }
+        //    else
+        //    {
+        //        emailTemplate = ConfigurationManager.AppSettings["GovUkNotify_FormChanged_TemplateID"];
+        //    }
 
 
-            var templatePersonalisations = new Dictionary<string, dynamic>() {
-                { "DivisionName", divisionName },
-                { "DirectorateName", directorateName },
-                { "PeriodTitle", periodTitle },
-                { "DDName", deputyDirectorName },
-                { "DirectorName", directorName },
-                { "DDSignitureBy", ddSignitureBy },
-                { "DirectorSignitureBy", directorSignituredBy },
-                { "CancelledBy", cancelledBy },
-                { "FormChangeDetails", formChangeDetails },
-                { "EmailToName", emailToName }
-            };
+        //    var templatePersonalisations = new Dictionary<string, dynamic>() {
+        //        { "DivisionName", divisionName },
+        //        { "DirectorateName", directorateName },
+        //        { "PeriodTitle", periodTitle },
+        //        { "DDName", deputyDirectorName },
+        //        { "DirectorName", directorName },
+        //        { "DDSignitureBy", ddSignitureBy },
+        //        { "DirectorSignitureBy", directorSignituredBy },
+        //        { "CancelledBy", cancelledBy },
+        //        { "FormChangeDetails", formChangeDetails },
+        //        { "EmailToName", emailToName }
+        //    };
 
-            UKGovNotify uKGovNotify = new UKGovNotify();
+        //    UKGovNotify uKGovNotify = new UKGovNotify();
 
-            // 1. Send to dd
-            templatePersonalisations["EmailToName"] = deputyDirectorName;
-            toEmail = form.Team.User.Username;
-            uKGovNotify.SendEmail(toEmail, emailTemplate, templatePersonalisations);
+        //    // 1. Send to dd
+        //    templatePersonalisations["EmailToName"] = deputyDirectorName;
+        //    toEmail = form.Team.User.Username;
+        //    uKGovNotify.SendEmail(toEmail, emailTemplate, templatePersonalisations);
 
-            // 2. Send to dir
-            templatePersonalisations["EmailToName"] = directorName;
-            toEmail = form.Team.Directorate.User.Username;
-            uKGovNotify.SendEmail(toEmail, emailTemplate, templatePersonalisations);
+        //    // 2. Send to dir
+        //    templatePersonalisations["EmailToName"] = directorName;
+        //    toEmail = form.Team.Directorate.User.Username;
+        //    uKGovNotify.SendEmail(toEmail, emailTemplate, templatePersonalisations);
 
-            // 3. Send to Superusers
-            var superUsers = from suser in db.Users
-                             where suser.UserPermissions.Any(up => up.PermissionTypeId == 1)
-                             select suser;
+        //    // 3. Send to Superusers
+        //    var superUsers = from suser in db.Users
+        //                     where suser.UserPermissions.Any(up => up.PermissionTypeId == 1)
+        //                     select suser;
 
-            foreach (var superUser in superUsers)
-            {
-                templatePersonalisations["EmailToName"] = superUser.Title;
-                uKGovNotify.SendEmail(superUser.Username, emailTemplate, templatePersonalisations);
-            }
-        }
+        //    foreach (var superUser in superUsers)
+        //    {
+        //        templatePersonalisations["EmailToName"] = superUser.Title;
+        //        uKGovNotify.SendEmail(superUser.Username, emailTemplate, templatePersonalisations);
+        //    }
+        //}
 
 
 

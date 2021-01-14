@@ -135,6 +135,7 @@ namespace ControlAssuranceAPI.Repositories
                         //iapAssignment.Title = owner.Title; //no need its null
                         iapAssignment.UserId = owner.UserId;
                         iapAssignment.IAPActionId = iapChildAction.ID;
+                        iapAssignment.DateAssigned = DateTime.Today;
                         
                         db.IAPAssignments.Add(iapAssignment);
                     }
@@ -336,6 +337,7 @@ namespace ControlAssuranceAPI.Repositories
                         //iapAssignment.Title = owner.Title; //no need its null
                         iapAssignment.UserId = owner.UserId;
                         iapAssignment.IAPActionId = iapChildAction.ID;
+                        iapAssignment.DateAssigned = DateTime.Today;
 
                         db.IAPAssignments.Add(iapAssignment);
                     }

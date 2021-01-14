@@ -101,7 +101,7 @@ namespace ControlAssuranceAPI.Controllers
                 //in this case we need to first send emails before saving data, because emails need data before saving.
 
                 // Let everyone know that a super user has cancelled a form
-                db.EmailRepository.GovUkNotifyFormCancelledOrChanged(form, "");
+                //db.EmailRepository.GovUkNotifyFormCancelledOrChanged(form, "");
 
                 //update data now
                 patch.TrySetPropertyValue("DDSignOffUserId", null);
@@ -126,12 +126,12 @@ namespace ControlAssuranceAPI.Controllers
                 if (signoffFor.ToString() == "DD")
                 {
                     // DD or a DD delegate signed. Send emails.
-                    db.EmailRepository.GovUkNotifyFormSigned(form, true);
+                    //db.EmailRepository.GovUkNotifyFormSigned(form, true);
                 }
                 else if (signoffFor.ToString() == "Dir")
                 {
                     // Director or a Director delegate signed. Send emails.
-                    db.EmailRepository.GovUkNotifyFormSigned(form, false);
+                    //db.EmailRepository.GovUkNotifyFormSigned(form, false);
                 }
             }
             catch (DbUpdateConcurrencyException)

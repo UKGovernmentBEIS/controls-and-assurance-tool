@@ -1,4 +1,5 @@
-﻿using ControlAssuranceAPI.Models;
+﻿using ControlAssuranceAPI.Libs;
+using ControlAssuranceAPI.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,33 +38,73 @@ namespace ControlAssuranceAPI.Repositories
 
         public string ProcessAsAutoFunction()
         {
-            try
-            {
-                string tempFolder = @"c:\local\temp\";
-                string guid = System.Guid.NewGuid().ToString();
-                string tempLocation = System.IO.Path.Combine(tempFolder, guid);
-                System.IO.Directory.CreateDirectory(tempLocation);
+            #region Commented
 
-                Libs.PdfLib pdfLib = new Libs.PdfLib();
-                pdfLib.CreateTestPdf(tempLocation, "Test.pdf");
+            //try
+            //{
+            //    string tempFolder = @"c:\local\temp\";
+            //    string guid = System.Guid.NewGuid().ToString();
+            //    string tempLocation = System.IO.Path.Combine(tempFolder, guid);
+            //    System.IO.Directory.CreateDirectory(tempLocation);
 
-                //delete temp folder which we created earlier
-                System.Threading.Thread.Sleep(500);
-                System.IO.Directory.Delete(tempLocation, true);
+            //    Libs.PdfLib pdfLib = new Libs.PdfLib();
+            //    pdfLib.CreateTestPdf(tempLocation, "Test.pdf");
 
-                return "Done";
-            }
-            catch(Exception ex)
-            {
-                return "Err: " + ex.Message;
-            }
+            //    //delete temp folder which we created earlier
+            //    System.Threading.Thread.Sleep(500);
+            //    System.IO.Directory.Delete(tempLocation, true);
+
+            //    return "Done";
+            //}
+            //catch(Exception ex)
+            //{
+            //    return "Err: " + ex.Message;
+            //}
 
             //this.IC_Reminders();
             //this.NP_Reminders();
+
+            #endregion
+
+            DateTime yesterdaysDate = DateTime.Today.Subtract(new TimeSpan(1, 0, 0, 0));
+
+            var autoFunctionLastRun = db.AutoFunctionLastRuns.FirstOrDefault(x => x.ID == 1);
+            if(autoFunctionLastRun == null)
+            {
+                autoFunctionLastRun = new AutoFunctionLastRun();
+                autoFunctionLastRun.ID = 1;
+                autoFunctionLastRun.LastRunDate = yesterdaysDate.Subtract(new TimeSpan(1, 0, 0, 0)); //last day before yesterday
+                db.AutoFunctionLastRuns.Add(autoFunctionLastRun);
+                //db.SaveChanges();
+            }
+
+            
+
+            while(autoFunctionLastRun.LastRunDate < yesterdaysDate)
+            {
+                autoFunctionLastRun.LastRunDate = autoFunctionLastRun.LastRunDate.AddDays(1);
+
+                //call function
+                this.IC_Reminders(autoFunctionLastRun.LastRunDate);
+                this.NP_Reminders(autoFunctionLastRun.LastRunDate);
+                this.GIAA_Reminders(autoFunctionLastRun.LastRunDate);
+                this.MA_Reminders(autoFunctionLastRun.LastRunDate);
+
+                this.SendQueueToNotify();
+            }
+
+
+            db.SaveChanges();
+
+
+            return "Done";
         }
 
-        private void IC_Reminders()
+        //Internal Controls
+        private void IC_Reminders(DateTime runDate)
         {
+            DateTime todaysDate = runDate;
+
             //Remind DDs that they have not yet completed their self assessments. Remind them of completion date.
             //DefElementRepository defElementRepository = new DefElementRepository(base.user);
 
@@ -72,11 +113,11 @@ namespace ControlAssuranceAPI.Repositories
 
             string periodStartDateStr = currentPeriod.PeriodStartDate.Value.ToString("dd/MM/yyyy");
             string periodEndDateStr = currentPeriod.PeriodEndDate.Value.ToString("dd/MM/yyyy");
-            var daysLeft = (int)currentPeriod.PeriodEndDate.Value.Subtract(DateTime.Today).TotalDays;
+            var daysLeft = (int)currentPeriod.PeriodEndDate.Value.Subtract(todaysDate).TotalDays;
 
             //send emails daily in the last week but only on friday before last week
 
-            if(daysLeft > 7 && DateTime.Now.DayOfWeek != DayOfWeek.Friday)
+            if(daysLeft > 7 && todaysDate.DayOfWeek != DayOfWeek.Friday)
             {
                 return;
             }
@@ -158,7 +199,7 @@ namespace ControlAssuranceAPI.Repositories
                             Custom7 = daysLeft.ToString(),
                             Custom8 = formAssessmentCompleted == true ? "Yes" : "No",
                             Custom9 = signedByDD == true ?  "Yes" : "No",
-
+                            MainEntityId = team.ID,
 
                             
                         };
@@ -184,6 +225,7 @@ namespace ControlAssuranceAPI.Repositories
                         Custom6 = daysLeft.ToString(),
                         Custom7 = formAssessmentCompleted == true ? "Yes" : "No",
                         Custom8 = signedByDD == true ? "Yes" : "No",
+                        MainEntityId = team.ID,
 
 
                     };
@@ -309,6 +351,7 @@ namespace ControlAssuranceAPI.Repositories
                             Custom10 = numSingedByDD.ToString(),
                             Custom11 = numSignedByDir.ToString(),
                             Custom12 = numReqDirSign.ToString(),
+                            MainEntityId = directorate.ID,
 
                         };
                         db.EmailQueues.Add(emailQueue_D);
@@ -338,6 +381,7 @@ namespace ControlAssuranceAPI.Repositories
                         Custom9 = numSingedByDD.ToString(),
                         Custom10 = numSignedByDir.ToString(),
                         Custom11 = numReqDirSign.ToString(),
+                        MainEntityId = directorate.ID,
 
                     };
                     db.EmailQueues.Add(emailQueue);
@@ -355,10 +399,15 @@ namespace ControlAssuranceAPI.Repositories
         }
 
         //NAO
-        private void NP_Reminders()
+        private void NP_Reminders(DateTime runDate)
         {
-            DateTime todaysDate = DateTime.Today;
+            DateTime todaysDate = runDate;
+            
+                                                        
+
+            //NP-NewAssignee
             var todaysAssignees = db.NAOAssignments.Where(x => x.DateAssigned == todaysDate).ToList();
+            //use HashSet to get following list with unique items
             HashSet<PubAssignee> pubAssignees = new HashSet<PubAssignee>();
             HashSet<int> pubIds = new HashSet<int>();
 
@@ -378,12 +427,6 @@ namespace ControlAssuranceAPI.Repositories
                 var publication = db.NAOPublications.FirstOrDefault(x => x.ID == pubId);
                 string publicationTitle = publication.Title;
                 
-                //following two wrong calcs, dont need
-                //int totalAssignees = db.NAOAssignments.Count(x => x.NAORecommendation.NAOPublicationId == pubId);               
-                //int totalNewAssignees = db.NAOAssignments.Count(x => x.NAORecommendation.NAOPublicationId == pubId && x.DateAssigned == todaysDate);
-
-                
-
                 var thisPubAssignees = pubAssignees.Where(x => x.PublicationId == pubId).ToList();
                 foreach(var thisPubAssignee in thisPubAssignees)
                 {
@@ -423,6 +466,756 @@ namespace ControlAssuranceAPI.Repositories
 
 
 
+            //NP-UpdateReminder
+            var allPublications = db.NAOPublications.ToList();
+            foreach(var p in allPublications)
+            {
+                var daysBeforeDate = p.CurrentPeriodEndDate.Value.Subtract(todaysDate);
+                if(daysBeforeDate.TotalDays == 5 || daysBeforeDate.TotalDays == 2)
+                {
+                    //send email - 5 working days before period end date and 2 working days before end if not yet completed
+                    HashSet<PubAssignee> pAssignees = new HashSet<PubAssignee>();
+                    foreach (var r in p.NAORecommendations)
+                    {
+                        foreach(var ass in r.NAOAssignments)
+                        {
+                            PubAssignee pubAssignee = new PubAssignee();
+                            pubAssignee.PublicationId = p.ID;
+                            pubAssignee.UserId = ass.UserId.Value;
+
+                            pAssignees.Add(pubAssignee);
+                        }
+                    }
+
+                    //
+                    foreach(var thisPubAssignee in pAssignees)
+                    {
+                        //total recs for this user of that publication
+                        var user = db.Users.FirstOrDefault(x => x.ID == thisPubAssignee.UserId);
+                        int totalNotCompletedAssignments = p.NAORecommendations.Count(x => x.NAOUpdateStatusTypeId != 2 && x.NAOAssignments.Any(a => a.UserId == user.ID));
+                        if(totalNotCompletedAssignments > 0)
+                        {
+                            int totalAssignments = p.NAORecommendations.Count(x => x.NAOAssignments.Any(a => a.UserId == user.ID));
+                            //send email - NP-UpdateReminder
+                            //PeriodStartDate, PeriodEndDate, DaysLeft, PublicationTitle, Total ( Total assignments for publication), TotalNotComplete (Total assignments for publication not completed)
+
+                            EmailQueue emailQueue = new EmailQueue
+                            {
+                                Title = "NP-UpdateReminder",
+                                PersonName = user.Title,
+                                EmailTo = user.Username,
+                                emailCC = "",
+                                Custom1 = p.CurrentPeriodStartDate.Value.ToString("dd/MM/yyyy"),
+                                Custom2 = p.CurrentPeriodEndDate.Value.ToString("dd/MM/yyyy"),
+                                Custom3 = daysBeforeDate.TotalDays.ToString(),
+                                Custom4 = p.Title,
+                                Custom5 = totalAssignments.ToString(),
+                                Custom6 = totalNotCompletedAssignments.ToString(),
+                                MainEntityId = p.ID,
+
+
+                            };
+                            db.EmailQueues.Add(emailQueue);
+                        }
+
+                    }
+
+
+                }
+
+            }
+
+            db.SaveChanges();
+
+
+
+        }
+
+        //GIAA
+        private void GIAA_Reminders(DateTime runDate)
+        {
+            DateTime todaysDate = runDate;
+
+
+
+            //GIAA-NewActionOwner
+            var todaysActionOwners = db.GIAAActionOwners.Where(x => x.DateAssigned == todaysDate).ToList();
+            //use HashSet to get following list with unique items
+            HashSet<PubAssignee> repActionOwners = new HashSet<PubAssignee>();
+            HashSet<int> repIds = new HashSet<int>();
+
+            foreach (var actionOwner in todaysActionOwners)
+            {
+                PubAssignee repActionOwner = new PubAssignee();
+                int reportId = actionOwner.GIAARecommendation.GIAAAuditReportId.Value;
+                repActionOwner.PublicationId = reportId;
+                repActionOwner.UserId = actionOwner.UserId.Value;
+
+                repActionOwners.Add(repActionOwner);
+                repIds.Add(reportId);
+            }
+
+            foreach (var repId in repIds)
+            {
+                var report = db.GIAAAuditReports.FirstOrDefault(x => x.ID == repId);
+                string reportTitle = report.Title;
+
+                var thisRepActionOwners = repActionOwners.Where(x => x.PublicationId == repId).ToList();
+                foreach (var thisRepActionOwner in thisRepActionOwners)
+                {
+                    var user = db.Users.FirstOrDefault(x => x.ID == thisRepActionOwner.UserId);
+                    string actionOwnerName = user.Title;
+
+                    //total recs for this user of that publication
+                    int totalAssignments = report.GIAARecommendations.Count(x => x.GIAAActionOwners.Any(a => a.UserId == user.ID));
+
+                    //total recs for this user assgined today
+                    int totalNewAssignments = report.GIAARecommendations.Count(x => x.GIAAActionOwners.Any(a => a.UserId == user.ID && a.DateAssigned == todaysDate));
+
+                    //GIAA-NewActionOwner
+                    //At the point when a user is assigned
+                    //Sends only one email per day per report and only if action owner has new assignments today.
+                    //Custom Fields are: ActionOwnerName, ReportTitle, Total (Total recommendations for report for this action owner), TotalNew (Total New recommendations for this action  today)
+
+                    EmailQueue emailQueue = new EmailQueue
+                    {
+                        Title = "GIAA-NewActionOwner",
+                        PersonName = actionOwnerName,
+                        EmailTo = user.Username,
+                        emailCC = "",
+                        Custom1 = actionOwnerName,
+                        Custom2 = reportTitle,
+                        Custom3 = totalAssignments.ToString(),
+                        Custom4 = totalNewAssignments.ToString(),
+
+
+                    };
+                    db.EmailQueues.Add(emailQueue);
+
+                }
+            }
+
+            db.SaveChanges();
+
+
+
+            //GIAA-UpdateReminder
+            int daysInCurrentMonth = DateTime.DaysInMonth(todaysDate.Year, todaysDate.Month);
+            int dateForSend = daysInCurrentMonth - 5;
+            int dayOfMonth = todaysDate.Day;
+
+            //send email - Each day in last 5 days of month if TotalUpdatesReq is > 0
+            if (dayOfMonth >= dateForSend)
+            {
+                var allReports = db.GIAAAuditReports.ToList();
+                foreach (var r in allReports)
+                {
+
+                    
+                    HashSet<PubAssignee> rActionOwners = new HashSet<PubAssignee>();
+                    foreach (var rec in r.GIAARecommendations)
+                    {
+                        foreach (var o in rec.GIAAActionOwners)
+                        {
+                            PubAssignee repAO = new PubAssignee();
+                            repAO.PublicationId = r.ID;
+                            repAO.UserId = o.UserId.Value;
+
+                            rActionOwners.Add(repAO);
+                        }
+                    }
+
+                    //
+                    foreach (var thisRepActionOwner in rActionOwners)
+                    {
+                        //total recs for this user of that report
+                        var user = db.Users.FirstOrDefault(x => x.ID == thisRepActionOwner.UserId);
+                        int totalUpdatesReq = r.GIAARecommendations.Count(x => x.UpdateStatus == "ReqUpdate" && x.GIAAActionOwners.Any(a => a.UserId == user.ID));
+                        if (totalUpdatesReq > 0)
+                        {
+                            //int totalAssignments = r.GIAARecommendations.Count(x => x.GIAAActionOwners.Any(a => a.UserId == user.ID));
+                            //send email - GIAA-UpdateReminder
+                            //ActionOwnerName, ReportTitle, TotalUpdatesReq (Total recommendations for this report for this action owner for which update status is “UpdateReq”)
+
+                            EmailQueue emailQueue = new EmailQueue
+                            {
+                                Title = "GIAA-UpdateReminder",
+                                PersonName = user.Title,
+                                EmailTo = user.Username,
+                                emailCC = "",
+                                Custom1 = user.Title,
+                                Custom2 = r.Title,
+                                Custom3 = totalUpdatesReq.ToString(),
+                                MainEntityId = r.ID,
+
+
+                            };
+                            db.EmailQueues.Add(emailQueue);
+                        }
+
+                    }
+
+
+
+
+                }
+
+                db.SaveChanges();
+            }
+
+
+
+
+        }
+
+        //MA
+        private void MA_Reminders(DateTime runDate)
+        {
+            DateTime todaysDate = runDate;
+            //GIAA-NewActionOwner
+            var todaysActionOwners = db.IAPAssignments.Where(x => x.DateAssigned == todaysDate).ToList();
+            foreach (var actionOwner in todaysActionOwners)
+            {
+                //MA-NewAction - custom fields are:
+                //ActionOwnerName, ActionTitle
+
+                EmailQueue emailQueue = new EmailQueue
+                {
+                    Title = "MA-NewAction",
+                    PersonName = actionOwner.User.Title,
+                    EmailTo = actionOwner.User.Username,
+                    emailCC = "",
+                    Custom1 = actionOwner.User.Title,
+                    Custom2 = actionOwner.IAPAction.Title,
+                    MainEntityId = actionOwner.IAPAction.ID,
+
+                };
+                db.EmailQueues.Add(emailQueue);
+
+            }
+            db.SaveChanges();
+
+
+            //MA-UpdateReminder
+            int daysInCurrentMonth = DateTime.DaysInMonth(todaysDate.Year, todaysDate.Month);
+            int dateForSend = daysInCurrentMonth - 5;
+            int dayOfMonth = todaysDate.Day;
+
+            //send email - Each day in last 5 days of month if TotalUpdatesReq is > 0
+            if (dayOfMonth >= dateForSend)
+            {
+                var actions = db.IAPActions.Where(x => x.IAPTypeId != 2 && x.IAPStatusTypeId != 3).ToList(); //get all actions apart from groups(parents) and completed
+                foreach(var ite in actions)
+                {
+                    if (ite.CreatedOn.Value.Month == DateTime.Now.Month && ite.CreatedOn.Value.Year == DateTime.Now.Year)
+                    {
+                        //action created on current month, so no update required
+                    }
+                    else
+                    {
+                        //check if there is an update for the current month
+                        var actionUpdate = ite.IAPActionUpdates.FirstOrDefault(x => x.UpdateType == IAPActionUpdateRepository.IAPActionUpdateTypes.ActionUpdate && x.UpdateDate.Value.Month == DateTime.Now.Month && x.UpdateDate.Value.Year == DateTime.Now.Year);
+                        if (actionUpdate == null)
+                        {
+                            //there is no update provided for current month, so updateStatus is Required
+
+                            //send email to all the action owners
+
+                            foreach(var actionOwner in ite.IAPAssignments)
+                            {
+                                //MA-UpdateReminder - custom fields are:
+                                //ActionOwnerName, ActionTitle
+
+                                EmailQueue emailQueue = new EmailQueue
+                                {
+                                    Title = "MA-UpdateReminder",
+                                    PersonName = actionOwner.User.Title,
+                                    EmailTo = actionOwner.User.Username,
+                                    emailCC = "",
+                                    Custom1 = actionOwner.User.Title,
+                                    Custom2 = actionOwner.IAPAction.Title,
+                                    MainEntityId = ite.ID,
+
+
+                                };
+                                db.EmailQueues.Add(emailQueue);
+                            }
+
+                        }
+                    }
+                }
+                db.SaveChanges();
+            }
+
+
+
+
+        }
+
+        private void SendQueueToNotify()
+        {
+            UKGovNotify uKGovNotify = new UKGovNotify();
+            var emailQueue = db.EmailQueues.OrderByDescending(x => x.ID).ToList();
+            
+            if (emailQueue.Count == 0) return;
+
+            //
+            var automationOptions = db.AutomationOptions.ToList();
+
+
+            foreach(var emailQueueItem in emailQueue)
+            {
+                
+                string templateName = emailQueueItem.Title; //like IC-NewPeriodToDD
+                var automationOption = automationOptions.FirstOrDefault(x => x.Title == templateName);
+                string templateId = automationOption.NotifyTemplateId;
+
+                switch (templateName)
+                {
+                    
+
+                    case "IC-NewPeriodToDD":
+                        {
+                            if(automationOption.Active == true)
+                            {
+                                var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                    { "DDName", emailQueueItem.Custom1 },
+                                    { "DDDelegateList", emailQueueItem.Custom2 },
+                                    { "DivisionTitle", emailQueueItem.Custom3 },
+                                    { "PeriodStartDate", emailQueueItem.Custom4 },
+                                    { "PeriodEndDate", emailQueueItem.Custom5 },
+
+                                };
+
+
+                                templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+                                uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations);
+                            }
+
+                            db.EmailQueues.Remove(emailQueueItem);
+                            break;
+                        }
+
+
+                    case "IC-NewPeriodToDirector":
+                        {
+                            if (automationOption.Active == true)
+                            {
+                                var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                    { "DirectorName", emailQueueItem.Custom1 },
+                                    { "DirectorDelegateList", emailQueueItem.Custom2 },
+                                    { "DirectorateTitle", emailQueueItem.Custom3 },
+                                    { "PeriodStartDate", emailQueueItem.Custom4 },
+                                    { "PeriodEndDate", emailQueueItem.Custom5 },
+
+                                };
+
+
+                                templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+                                uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations);
+                            }
+                                
+                            db.EmailQueues.Remove(emailQueueItem);
+                            break;
+                        }
+
+
+                    case "IC-NewPeriodToDDDelegate":
+                        {
+                            if (automationOption.Active == true)
+                            {
+                                var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                    { "DelegateName", emailQueueItem.Custom1 },
+                                    { "DDName", emailQueueItem.Custom2 },
+                                    { "DDDelegateList", emailQueueItem.Custom3 },
+                                    { "DivisionTitle", emailQueueItem.Custom4 },
+                                    { "PeriodStartDate", emailQueueItem.Custom5 },
+                                    { "PeriodEndDate", emailQueueItem.Custom6 },
+
+                                };
+
+
+                                templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+                                uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations);
+                            }
+
+                            db.EmailQueues.Remove(emailQueueItem);
+                            break;
+                        }
+
+
+                    case "IC-NewPeriodToDirectorDelegate":
+                        {
+                            if (automationOption.Active == true)
+                            {
+                                var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                    { "DelegateName", emailQueueItem.Custom1 },
+                                    { "DirectorName", emailQueueItem.Custom2 },
+                                    { "DirectorDelegateList", emailQueueItem.Custom3 },
+                                    { "DirectorateTitle", emailQueueItem.Custom4 },
+                                    { "PeriodStartDate", emailQueueItem.Custom5 },
+                                    { "PeriodEndDate", emailQueueItem.Custom6 },
+
+                                };
+
+
+                                templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+                                uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations);
+                            }
+
+                            db.EmailQueues.Remove(emailQueueItem);
+                            break;
+                        }
+
+
+                    case "IC-UpdateToSuperUsers":
+                        {
+                            if (automationOption.Active == true)
+                            {
+                                var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                    { "SuperUserName", emailQueueItem.Custom1 },
+                                    { "PeriodStartDate", emailQueueItem.Custom2 },
+                                    { "PeriodEndDate", emailQueueItem.Custom3 },
+                                    { "NumTotal", emailQueueItem.Custom4 },
+                                    { "NumCompleted", emailQueueItem.Custom5 },
+                                    { "NumSignedByDD", emailQueueItem.Custom6 },
+                                    { "NumSignedByDir", emailQueueItem.Custom7 },
+
+
+                                };
+
+
+                                templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+                                uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations);
+                            }
+
+                            db.EmailQueues.Remove(emailQueueItem);
+                            break;
+                        }
+
+
+                    case "IC-ReminderToDD":
+                        {
+                            
+                            if (automationOption.Active == true)
+                            {
+                                var emailQueueItemAgain = db.EmailQueues.FirstOrDefault(x => x.ID == emailQueueItem.ID);
+                                if (emailQueueItemAgain != null)
+                                {
+                                    var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                    { "DDName", emailQueueItem.Custom1 },
+                                    { "DDDelegateList", emailQueueItem.Custom2 },
+                                    { "DivisionTitle ", emailQueueItem.Custom3 },
+                                    { "PeriodStartDate ", emailQueueItem.Custom4 },
+                                    { "PeriodEndDate ", emailQueueItem.Custom5 },
+                                    { "DaysLeft ", emailQueueItem.Custom6 },
+                                    { "Completed  ", emailQueueItem.Custom7 },
+                                    { "Signed  ", emailQueueItem.Custom8 },
+
+                                };
+                                    templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+                                    uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations);
+
+
+                                    db.EmailQueues.RemoveRange(db.EmailQueues.Where(x => x.Title == emailQueueItem.Title && x.EmailTo == emailQueueItem.EmailTo && x.MainEntityId == emailQueueItem.MainEntityId));
+                                    db.SaveChanges();
+                                }
+                            }
+                            
+
+
+                            break;
+                        }
+
+
+
+                    case "IC-ReminderToDirector":
+                        {
+                            if (automationOption.Active == true)
+                            {
+                                var emailQueueItemAgain = db.EmailQueues.FirstOrDefault(x => x.ID == emailQueueItem.ID);
+
+                                if (emailQueueItemAgain != null)
+                                {
+                                    var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                    { "DirectorName", emailQueueItem.Custom1 },
+                                    { "DirectorDelegateList", emailQueueItem.Custom2 },
+                                    { "DirectorateTitle ", emailQueueItem.Custom3 },
+                                    { "PeriodStartDate ", emailQueueItem.Custom4 },
+                                    { "PeriodEndDate ", emailQueueItem.Custom5 },
+                                    { "DaysLeft ", emailQueueItem.Custom6 },
+                                    { "NumTotal  ", emailQueueItem.Custom7 },
+                                    { "NumCompleted  ", emailQueueItem.Custom8 },
+                                    { "NumSignedByDD  ", emailQueueItem.Custom9 },
+                                    { "NumSignedByDir  ", emailQueueItem.Custom10 },
+                                    { "NumReqDirSig  ", emailQueueItem.Custom11 },
+
+                                };
+                                    templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+                                    uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations);
+
+
+                                    db.EmailQueues.RemoveRange(db.EmailQueues.Where(x => x.Title == emailQueueItem.Title && x.EmailTo == emailQueueItem.EmailTo && x.MainEntityId == emailQueueItem.MainEntityId));
+                                    db.SaveChanges();
+                                }
+                            }
+
+                            break;
+                        }
+
+
+
+                    case "IC-ReminderToDDDelegate":
+                        {
+                            if (automationOption.Active == true)
+                            {
+                                var emailQueueItemAgain = db.EmailQueues.FirstOrDefault(x => x.ID == emailQueueItem.ID);
+
+                                if (emailQueueItemAgain != null)
+                                {
+                                    var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                    { "DelegateName", emailQueueItem.Custom1 },
+                                    { "DDName", emailQueueItem.Custom2 },
+                                    { "DDDelegateList", emailQueueItem.Custom3 },
+                                    { "DivisionTitle ", emailQueueItem.Custom4 },
+                                    { "PeriodStartDate ", emailQueueItem.Custom5 },
+                                    { "PeriodEndDate ", emailQueueItem.Custom6 },
+                                    { "DaysLeft ", emailQueueItem.Custom7 },
+                                    { "Completed  ", emailQueueItem.Custom8 },
+                                    { "Signed  ", emailQueueItem.Custom9 },
+
+                                };
+                                    templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+                                    uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations);
+
+
+                                    db.EmailQueues.RemoveRange(db.EmailQueues.Where(x => x.Title == emailQueueItem.Title && x.EmailTo == emailQueueItem.EmailTo && x.MainEntityId == emailQueueItem.MainEntityId));
+                                    db.SaveChanges();
+                                }
+                            }
+
+                            break;
+                        }
+
+
+
+                    case "IC-ReminderToDirectorDelegate":
+                        {
+                            if (automationOption.Active == true)
+                            {
+                                var emailQueueItemAgain = db.EmailQueues.FirstOrDefault(x => x.ID == emailQueueItem.ID);
+
+                                if (emailQueueItemAgain != null)
+                                {
+                                    var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                    { "DelegateName", emailQueueItem.Custom1 },
+                                    { "DirectorName", emailQueueItem.Custom2 },
+                                    { "DirectorDelegateList", emailQueueItem.Custom3 },
+                                    { "DirectorateTitle ", emailQueueItem.Custom4 },
+                                    { "PeriodStartDate ", emailQueueItem.Custom5 },
+                                    { "PeriodEndDate ", emailQueueItem.Custom6 },
+                                    { "DaysLeft ", emailQueueItem.Custom7 },
+                                    { "NumTotal  ", emailQueueItem.Custom8 },
+                                    { "NumCompleted  ", emailQueueItem.Custom9 },
+                                    { "NumSignedByDD  ", emailQueueItem.Custom10 },
+                                    { "NumSignedByDir  ", emailQueueItem.Custom11 },
+                                    { "NumReqDirSig  ", emailQueueItem.Custom12 },
+
+                                };
+                                    templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+                                    uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations);
+
+
+                                    db.EmailQueues.RemoveRange(db.EmailQueues.Where(x => x.Title == emailQueueItem.Title && x.EmailTo == emailQueueItem.EmailTo && x.MainEntityId == emailQueueItem.MainEntityId));
+                                    db.SaveChanges();
+                                }
+                            }
+                                
+                            break;
+                        }
+
+
+
+                    case "NP-NewPeriod":
+                        {
+                            if (automationOption.Active == true)
+                            {
+                                var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                    { "Name", emailQueueItem.Custom1 },
+                                    { "PublicationTitle", emailQueueItem.Custom2 },
+                                    { "PeriodTitle", emailQueueItem.Custom3 },
+                                    { "PeriodStartDate", emailQueueItem.Custom4 },
+                                    { "PeriodEndDate", emailQueueItem.Custom5 },
+
+                                };
+
+
+                                templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+                                uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations);
+                            }
+
+                            db.EmailQueues.Remove(emailQueueItem);
+                            break;
+                        }
+
+
+                    case "NP-NewAssignee":
+                        {
+                            if (automationOption.Active == true)
+                            {
+                                var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                    { "AssigneeName", emailQueueItem.Custom1 },
+                                    { "PublicationTitle", emailQueueItem.Custom2 },
+                                    { "Total", emailQueueItem.Custom3 },
+                                    { "TotalNew", emailQueueItem.Custom4 },
+
+                                };
+                                templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+                                uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations);
+                            }
+
+                            db.EmailQueues.Remove(emailQueueItem);
+                            break;
+                        }
+
+
+
+                    case "NP-UpdateReminder":
+                        {
+                            if (automationOption.Active == true)
+                            {
+                                var emailQueueItemAgain = db.EmailQueues.FirstOrDefault(x => x.ID == emailQueueItem.ID);
+
+                                if (emailQueueItemAgain != null)
+                                {
+                                    var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                    { "PeriodStartDate", emailQueueItem.Custom1 },
+                                    { "PeriodEndDate", emailQueueItem.Custom2 },
+                                    { "DaysLeft", emailQueueItem.Custom3 },
+                                    { "PublicationTitle", emailQueueItem.Custom4 },
+                                    { "Total", emailQueueItem.Custom5 },
+                                    { "TotalNotComplete", emailQueueItem.Custom6 },
+
+                                };
+                                    templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+                                    uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations);
+
+
+                                    db.EmailQueues.RemoveRange(db.EmailQueues.Where(x => x.Title == emailQueueItem.Title && x.EmailTo == emailQueueItem.EmailTo && x.MainEntityId == emailQueueItem.MainEntityId));
+                                    db.SaveChanges();
+                                }
+                            }
+
+                            break;
+                        }
+
+
+
+
+                    case "GIAA-NewActionOwner":
+                        {
+                            if (automationOption.Active == true)
+                            {
+                                var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                    { "ActionOwnerName", emailQueueItem.Custom1 },
+                                    { "ReportTitle", emailQueueItem.Custom2 },
+                                    { "Total", emailQueueItem.Custom3 },
+                                    { "TotalNew", emailQueueItem.Custom4 },
+
+                                };
+                                templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+                                uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations);
+                            }
+
+                            db.EmailQueues.Remove(emailQueueItem);
+                            break;
+                        }
+
+
+
+
+                    case "GIAA-UpdateReminder":
+                        {
+                            if (automationOption.Active == true)
+                            {
+                                var emailQueueItemAgain = db.EmailQueues.FirstOrDefault(x => x.ID == emailQueueItem.ID);
+
+                                if (emailQueueItemAgain != null)
+                                {
+                                    var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                        { "ActionOwnerName", emailQueueItem.Custom1 },
+                                        { "ReportTitle", emailQueueItem.Custom2 },
+                                        { "TotalUpdatesReq ", emailQueueItem.Custom3 },
+
+                                    };
+                                    templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+                                    uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations);
+
+
+                                    db.EmailQueues.RemoveRange(db.EmailQueues.Where(x => x.Title == emailQueueItem.Title && x.EmailTo == emailQueueItem.EmailTo && x.MainEntityId == emailQueueItem.MainEntityId));
+                                    db.SaveChanges();
+                                }
+                            }
+
+                            break;
+                        }
+
+
+
+
+                    case "MA-NewAction":
+                        {
+                            if (automationOption.Active == true)
+                            {
+                                var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                    { "ActionOwnerName", emailQueueItem.Custom1 },
+                                    { "ActionTitle", emailQueueItem.Custom2 },
+
+                                };
+                                templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+                                uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations);
+                            }
+
+                            db.EmailQueues.Remove(emailQueueItem);
+                            break;
+                        }
+
+
+
+
+                    case "MA-UpdateReminder":
+                        {
+                            if (automationOption.Active == true)
+                            {
+                                var emailQueueItemAgain = db.EmailQueues.FirstOrDefault(x => x.ID == emailQueueItem.ID);
+
+                                if (emailQueueItemAgain != null)
+                                {
+                                    var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                        { "ActionOwnerName", emailQueueItem.Custom1 },
+                                        { "ActionTitle", emailQueueItem.Custom2 },
+
+                                    };
+                                    templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+                                    uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations);
+
+
+                                    db.EmailQueues.RemoveRange(db.EmailQueues.Where(x => x.Title == emailQueueItem.Title && x.EmailTo == emailQueueItem.EmailTo && x.MainEntityId == emailQueueItem.MainEntityId));
+                                    db.SaveChanges();
+                                }
+                            }
+
+                            break;
+                        }
+
+
+                }
+
+
+            }
+            //at the end remove if any entry left
+            db.EmailQueues.RemoveRange(db.EmailQueues);
+            db.SaveChanges();
         }
 
         public class PubAssignee

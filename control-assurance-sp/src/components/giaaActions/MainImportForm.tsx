@@ -188,6 +188,9 @@ export default class MainImportForm extends React.Component<IMainImportFormProps
                 <div>
                     <span>Last Import By:</span>&nbsp;<span>{info.LastImportBy}</span>
                 </div>
+                <div>
+                    <span>Log Details:</span>&nbsp;<span>{info.LogDetails}</span>
+                </div>
             </div>
         );
     }

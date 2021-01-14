@@ -7,6 +7,7 @@ export { EntityUpdateService } from './EntityUpdateService';
 export { LookupService } from './LookupService';
 
 export { AutomationOptionService } from './AutomationOptionService';
+export { AutoFunctionLastRunService } from './AutoFunctionLastRunService';
 export { DefFormService } from './DefFormService';
 export { GoDefFormService } from './GoDefFormService';
 export { GoMiscFileService } from './GoMiscFileService';

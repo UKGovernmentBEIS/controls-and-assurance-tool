@@ -14,12 +14,10 @@ import { PrimaryButton } from 'office-ui-fabric-react/lib/Button';
 
 export interface ILookupData{
   GIAADefForm: IGIAADefForm;
-  CurrentPeriod: IGIAAPeriod;
 }
 
 export class LookupData implements ILookupData{
   public GIAADefForm: IGIAADefForm;
-  public CurrentPeriod: IGIAAPeriod;
 }
 
 export interface IGIAAWelcomeState extends types.IUserContextWebPartState {
@@ -61,13 +59,7 @@ export default class GIAAWelcome extends BaseUserContextWebPartComponent<types.I
 
   private renderWelcome(): React.ReactElement<types.IWebPartComponentProps> {
     const { LookupData:lookups } = this.state;
-    let periodEndDate:string="";
-    if(lookups.CurrentPeriod){
-      const endDate = lookups.CurrentPeriod.PeriodEndDate;
-      periodEndDate = services.DateService.dateToUkDate(endDate);
-    }
-    //const pageUrl = this.props.spfxContext.pageContext.web.absoluteUrl;
-    //console.log("page absoluteUrl url", pageUrl);
+
 
     return (
       <div>
@@ -79,10 +71,8 @@ export default class GIAAWelcome extends BaseUserContextWebPartComponent<types.I
           text="Start / View Updates"
           onClick={this.handleUpdatesClick}
         />
-        <br /><br />
-        <div>
-          Current period ends on the {periodEndDate}
-        </div>
+
+
           
 
         
@@ -113,23 +103,12 @@ export default class GIAAWelcome extends BaseUserContextWebPartComponent<types.I
     }, (err) => { if (this.onError) this.onError(`Error loading DefForm lookup data`, err.message); });
   }
 
-  protected loadCurrentPeriod = (): Promise<IGIAAPeriod> => {
-    return this.periodService.readAll("?$filter=PeriodStatus eq 'Current Period'").then((pArr: IGIAAPeriod[]): IGIAAPeriod => {
-      if(pArr.length>0){
-        const period: IGIAAPeriod = pArr[0];
-        this.setState({ LookupData: this.cloneObject(this.state.LookupData, 'CurrentPeriod', period) });
-        return period;
-      }
-      return null;
-    }, (err) => { if (this.onError) this.onError(`Error loading Current Period lookup data`, err.message); });
-  }
 
   protected loadLookups(): Promise<any> {
     
     return Promise.all([
         this.welcomeAccess(),
         this.loadDefForm(),
-        this.loadCurrentPeriod(),
     ]);
   }
 

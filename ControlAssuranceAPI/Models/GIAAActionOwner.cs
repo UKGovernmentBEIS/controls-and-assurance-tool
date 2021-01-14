@@ -18,6 +18,7 @@ namespace ControlAssuranceAPI.Models
         public string Title { get; set; }
         public Nullable<int> GIAARecommendationId { get; set; }
         public Nullable<int> UserId { get; set; }
+        public Nullable<System.DateTime> DateAssigned { get; set; }
     
         public virtual GIAARecommendation GIAARecommendation { get; set; }
         public virtual User User { get; set; }

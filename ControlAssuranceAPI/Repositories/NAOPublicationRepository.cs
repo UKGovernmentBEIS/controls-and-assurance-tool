@@ -79,7 +79,9 @@ namespace ControlAssuranceAPI.Repositories
 
             publication.CurrentPeriodId = nAOPeriod.ID;
             db.SaveChanges();
-            
+
+            this.EmailsOnNewPeriod(publication);
+
             return publication;
         }
 
@@ -131,6 +133,8 @@ namespace ControlAssuranceAPI.Repositories
                     db.NAOUpdates.Add(newUpdate);
                 }
                 db.SaveChanges();
+
+                this.EmailsOnNewPeriod(publication);
             }
             else
             {

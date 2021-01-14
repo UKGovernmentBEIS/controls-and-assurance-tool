@@ -19,5 +19,6 @@ namespace ControlAssuranceAPI.Models
         public string Description { get; set; }
         public string Module { get; set; }
         public bool Active { get; set; }
+        public string NotifyTemplateId { get; set; }
     }
 }

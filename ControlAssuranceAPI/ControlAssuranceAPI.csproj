@@ -261,6 +261,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="AuthFilters\ControlAssuranceAuthorization.cs" />
     <Compile Include="Controllers\AuditFeedbacksController.cs" />
+    <Compile Include="Controllers\AutoFunctionLastRunsController.cs" />
     <Compile Include="Controllers\AutomationOptionsController.cs" />
     <Compile Include="Controllers\AvailableExportsController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
@@ -347,6 +348,9 @@
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\AuditFeedback.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\AutoFunctionLastRun.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\AutoFunctionsLog.cs">
@@ -605,6 +609,7 @@
     </Compile>
     <Compile Include="Models\XmlDetail.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\AutoFunctionLastRunRepository.cs" />
     <Compile Include="Repositories\AutomationOptionRepository.cs" />
     <Compile Include="Repositories\AvailableExportRepository.cs" />
     <Compile Include="Repositories\BaseRepository.cs" />
@@ -683,13 +688,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\Startup.Auth.cs" />
-    <EntityDeploy Include="Models\ControlAssurance.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>ControlAssurance.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="Models\ControlAssurance.edmx.diagram">
-      <DependentUpon>ControlAssurance.edmx</DependentUpon>
-    </Content>
     <EmbeddedResource Include="fonts\arial\arial.ttf" />
     <EmbeddedResource Include="fonts\calibri\calibri.ttf" />
     <EmbeddedResource Include="fonts\calibri\calibrib.ttf" />
@@ -697,6 +695,13 @@
     <EmbeddedResource Include="fonts\calibri\calibril.ttf" />
     <EmbeddedResource Include="fonts\calibri\calibrili.ttf" />
     <EmbeddedResource Include="fonts\calibri\calibriz.ttf" />
+    <EntityDeploy Include="Models\ControlAssurance.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>ControlAssurance.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\ControlAssurance.edmx.diagram">
+      <DependentUpon>ControlAssurance.edmx</DependentUpon>
+    </Content>
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

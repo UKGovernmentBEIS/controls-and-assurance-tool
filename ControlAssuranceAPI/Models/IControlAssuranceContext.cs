@@ -9,6 +9,7 @@ namespace ControlAssuranceAPI.Models
     {
         Database Database { get; }
         DbSet<AutomationOption> AutomationOptions { get; set; }
+        DbSet<AutoFunctionLastRun> AutoFunctionLastRuns { get; set; }
 
         DbSet<EmailQueue> EmailQueues { get; set; }
 

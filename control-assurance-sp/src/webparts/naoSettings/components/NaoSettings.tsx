@@ -46,9 +46,9 @@ export default class NaoSettings extends BaseUserContextWebPartComponent<types.I
     return (
 
       <Pivot onLinkClick={this.clearErrors}>
-        <PivotItem headerText="Periods">
+        {/* <PivotItem headerText="Periods">
           {this.renderCustomPeriodsList()}
-        </PivotItem>
+        </PivotItem> */}
         <PivotItem headerText="Define Form">
           {this.renderDefForms()}
         </PivotItem>

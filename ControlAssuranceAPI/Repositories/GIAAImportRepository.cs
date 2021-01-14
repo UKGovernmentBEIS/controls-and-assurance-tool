@@ -124,6 +124,23 @@ namespace ControlAssuranceAPI.Repositories
                     int statusUpdate_cellIndex = 0;
                     int actionOwner_cellIndex = 0;
 
+                    //validations for columns
+                    bool reportCodeFound = false;
+                    bool reportTitleFound = false;
+                    bool managerNameFound = false;
+                    bool leadNameFound = false;
+                    bool recTitleFound = false;
+                    bool recDetailsFound = false;
+                    bool recPriorityFound = false;
+                    bool recStatusFound = false;
+                    bool recOriginalDateFound = false;
+                    bool recRevisedDateFound = false;
+                    bool responseDetailFound = false;
+                    bool statusUpdateFound = false;
+                    bool actionOwnerFound = false;
+
+                    int totalColumnsFound = 0; //should be 13
+
                     var gIAAActionPriorities = dbThread.GIAAActionPriorities.ToList();
                     var gIAAActionStatusTypes = dbThread.GIAAActionStatusTypes.ToList();
                     
@@ -145,54 +162,80 @@ namespace ControlAssuranceAPI.Repositories
                                 {
                                     case "Code":
                                         reportCode_cellIndex = cellIndex;
+                                        reportCodeFound = true;
+                                        totalColumnsFound++;
                                         break;
 
                                     case "Engagement Title":
                                         reportTitle_cellIndex = cellIndex;
+                                        reportTitleFound = true;
+                                        totalColumnsFound++;
                                         break;
                                     
                                     case "Manager Name":
                                         managerName_cellIndex = cellIndex;
+                                        managerNameFound = true;
+                                        totalColumnsFound++;
                                         break;
 
                                     case "Lead Name":
                                         leadName_cellIndex = cellIndex;
+                                        leadNameFound = true;
+                                        totalColumnsFound++;
                                         break;
 
                                     case "Recommendation Title":
                                         recTitle_cellIndex = cellIndex;
+                                        recTitleFound = true;
+                                        totalColumnsFound++;
                                         break;
 
                                     case "Recommendation Detail":
                                         recDetails_cellIndex = cellIndex;
+                                        recDetailsFound = true;
+                                        totalColumnsFound++;
                                         break;
 
                                     case "Priority":
                                         recPriority_cellIndex = cellIndex;
+                                        recPriorityFound = true;
+                                        totalColumnsFound++;
                                         break;
 
                                     case "Recommendation Status":
                                         recStatus_cellIndex = cellIndex;
+                                        recStatusFound = true;
+                                        totalColumnsFound++;
                                         break;
 
                                     case "Estimated Imp Date":
                                         recOrginalDate_cellIndex = cellIndex;
+                                        recOriginalDateFound = true;
+                                        totalColumnsFound++;
                                         break;
 
                                     case "Revised Imp Date":
                                         recRevisedDate_cellIndex = cellIndex;
+                                        recRevisedDateFound = true;
+                                        totalColumnsFound++;
                                         break;
 
                                     case "Response Detail":
                                         responseDetail_cellIndex = cellIndex;
+                                        responseDetailFound = true;
+                                        totalColumnsFound++;
                                         break;
 
                                     case "Action Owner":
                                         actionOwner_cellIndex = cellIndex;
+                                        actionOwnerFound = true;
+                                        totalColumnsFound++;
                                         break;
 
                                     case "Status Update":
                                         statusUpdate_cellIndex = cellIndex;
+                                        statusUpdateFound = true;
+                                        totalColumnsFound++;
                                         break;
                                 }
 
@@ -203,6 +246,37 @@ namespace ControlAssuranceAPI.Repositories
                         }
                         else
                         {
+                            //check for column validations
+                            if(rowIndex == 1)
+                            {
+                                if(totalColumnsFound < 13) //should be 13 columns
+                                {
+                                    string columnsNotFound = "";
+                                    if (reportCodeFound == false) columnsNotFound += "Report Code, ";
+                                    if (reportTitleFound == false) columnsNotFound += "Report Title, ";
+                                    if (managerNameFound == false) columnsNotFound += "Manager Name, ";
+                                    if (leadNameFound == false) columnsNotFound += "Lead Name, ";
+                                    if (recTitleFound == false) columnsNotFound += "Recommendation Title, ";
+                                    if (recDetailsFound == false) columnsNotFound += "Recommendation Detail, ";
+                                    if (recPriorityFound == false) columnsNotFound += "Priority, ";
+                                    if (recStatusFound == false) columnsNotFound += "Recommendation Status, ";
+                                    if (recOriginalDateFound == false) columnsNotFound += "Estimated Imp Date, ";
+                                    if (recRevisedDateFound == false) columnsNotFound += "Revised Imp Date, ";
+                                    if (responseDetailFound == false) columnsNotFound += "Response Detail, ";
+                                    if (actionOwnerFound == false) columnsNotFound += "Action Owner, ";
+                                    if (statusUpdateFound == false) columnsNotFound += "Status Update, ";
+
+
+                                    if (columnsNotFound.Length > 0)
+                                    {
+                                        columnsNotFound = columnsNotFound.Substring(0, columnsNotFound.Length - 2);
+                                    }
+
+                                    string errMsg = $"Import rejected because it does not have all of the required columns which are: {columnsNotFound}";
+                                    throw new Exception(errMsg);
+                                }
+                            }
+
                             //data row(s)
                             string reportCode = "";
                             string auditYear = "";
