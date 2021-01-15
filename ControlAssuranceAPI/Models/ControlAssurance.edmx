@@ -313,6 +313,7 @@
           <Property Name="Custom19" Type="nvarchar(max)" />
           <Property Name="Custom20" Type="nvarchar(max)" />
           <Property Name="MainEntityId" Type="int" />
+          <Property Name="EmailToUserId" Type="int" />
         </EntityType>
         <EntityType Name="EntityPriority">
           <Key>
@@ -2769,6 +2770,7 @@
           <Property Name="Custom19" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Custom20" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="MainEntityId" Type="Int32" />
+          <Property Name="EmailToUserId" Type="Int32" />
         </EntityType>
         <EntityType Name="EntityPriority">
           <Key>
@@ -5529,6 +5531,7 @@
                 <ScalarProperty Name="Custom19" ColumnName="Custom19" />
                 <ScalarProperty Name="Custom20" ColumnName="Custom20" />
                 <ScalarProperty Name="MainEntityId" ColumnName="MainEntityId" />
+                <ScalarProperty Name="EmailToUserId" ColumnName="EmailToUserId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -189,6 +189,7 @@ namespace ControlAssuranceAPI.Repositories
                             Title = "IC-ReminderToDDDelegate",
                             PersonName = ddM.User.Title,
                             EmailTo = ddM.User.Username,
+                            EmailToUserId = ddM.User.ID,
                             emailCC = "",
                             Custom1 = ddM.User.Title,
                             Custom2 = ddName,
@@ -216,6 +217,7 @@ namespace ControlAssuranceAPI.Repositories
                         Title = "IC-ReminderToDD",
                         PersonName = ddName,
                         EmailTo = team.User.Username,
+                        EmailToUserId = team.User.ID,
                         emailCC = "",
                         Custom1 = ddName,
                         Custom2 = ddMembers,
@@ -254,6 +256,7 @@ namespace ControlAssuranceAPI.Repositories
                     Title = "IC-UpdateToSuperUsers",
                     PersonName = superUser_IC.Title,
                     EmailTo = superUser_IC.Username,
+                    EmailToUserId = superUser_IC.ID,
                     emailCC = "",
                     Custom1 = superUser_IC.Title,
                     Custom2 = periodStartDateStr,
@@ -338,6 +341,7 @@ namespace ControlAssuranceAPI.Repositories
                             Title = "IC-ReminderToDirectorDelegate",
                             PersonName = dirM.User.Title,
                             EmailTo = dirM.User.Username,
+                            EmailToUserId = dirM.User.ID,
                             emailCC = "",
                             Custom1 = dirM.User.Title,
                             Custom2 = dirName,
@@ -369,6 +373,7 @@ namespace ControlAssuranceAPI.Repositories
                         Title = "IC-ReminderToDirector",
                         PersonName = dirName,
                         EmailTo = directorate.User.Username,
+                        EmailToUserId = directorate.User.ID,
                         emailCC = "",
                         Custom1 = dirName,
                         Custom2 = dirMembers,
@@ -449,6 +454,7 @@ namespace ControlAssuranceAPI.Repositories
                         Title = "NP-NewAssignee",
                         PersonName = assigneeName,
                         EmailTo = user.Username,
+                        EmailToUserId = user.ID,
                         emailCC = "",
                         Custom1 = assigneeName,
                         Custom2 = publicationTitle,
@@ -504,6 +510,7 @@ namespace ControlAssuranceAPI.Repositories
                                 Title = "NP-UpdateReminder",
                                 PersonName = user.Title,
                                 EmailTo = user.Username,
+                                EmailToUserId = user.ID,
                                 emailCC = "",
                                 Custom1 = p.CurrentPeriodStartDate.Value.ToString("dd/MM/yyyy"),
                                 Custom2 = p.CurrentPeriodEndDate.Value.ToString("dd/MM/yyyy"),
@@ -582,6 +589,7 @@ namespace ControlAssuranceAPI.Repositories
                         Title = "GIAA-NewActionOwner",
                         PersonName = actionOwnerName,
                         EmailTo = user.Username,
+                        EmailToUserId = user.ID,
                         emailCC = "",
                         Custom1 = actionOwnerName,
                         Custom2 = reportTitle,
@@ -642,6 +650,7 @@ namespace ControlAssuranceAPI.Repositories
                                 Title = "GIAA-UpdateReminder",
                                 PersonName = user.Title,
                                 EmailTo = user.Username,
+                                EmailToUserId = user.ID,
                                 emailCC = "",
                                 Custom1 = user.Title,
                                 Custom2 = r.Title,
@@ -684,6 +693,7 @@ namespace ControlAssuranceAPI.Repositories
                     Title = "MA-NewAction",
                     PersonName = actionOwner.User.Title,
                     EmailTo = actionOwner.User.Username,
+                    EmailToUserId = actionOwner.User.ID,
                     emailCC = "",
                     Custom1 = actionOwner.User.Title,
                     Custom2 = actionOwner.IAPAction.Title,
@@ -731,6 +741,7 @@ namespace ControlAssuranceAPI.Repositories
                                     Title = "MA-UpdateReminder",
                                     PersonName = actionOwner.User.Title,
                                     EmailTo = actionOwner.User.Username,
+                                    EmailToUserId = actionOwner.User.ID,
                                     emailCC = "",
                                     Custom1 = actionOwner.User.Title,
                                     Custom2 = actionOwner.IAPAction.Title,
@@ -761,14 +772,14 @@ namespace ControlAssuranceAPI.Repositories
 
             //
             var automationOptions = db.AutomationOptions.ToList();
+            LogRepository logRepository = new LogRepository(base.user);
 
-
-            foreach(var emailQueueItem in emailQueue)
-            {
-                
+            foreach (var emailQueueItem in emailQueue)
+            {               
                 string templateName = emailQueueItem.Title; //like IC-NewPeriodToDD
                 var automationOption = automationOptions.FirstOrDefault(x => x.Title == templateName);
                 string templateId = automationOption.NotifyTemplateId;
+                
 
                 switch (templateName)
                 {
@@ -789,7 +800,7 @@ namespace ControlAssuranceAPI.Repositories
 
 
                                 templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
-                                uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations);
+                                uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
                             }
 
                             db.EmailQueues.Remove(emailQueueItem);
@@ -812,7 +823,7 @@ namespace ControlAssuranceAPI.Repositories
 
 
                                 templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
-                                uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations);
+                                uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
                             }
                                 
                             db.EmailQueues.Remove(emailQueueItem);
@@ -836,7 +847,7 @@ namespace ControlAssuranceAPI.Repositories
 
 
                                 templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
-                                uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations);
+                                uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
                             }
 
                             db.EmailQueues.Remove(emailQueueItem);
@@ -860,7 +871,7 @@ namespace ControlAssuranceAPI.Repositories
 
 
                                 templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
-                                uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations);
+                                uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
                             }
 
                             db.EmailQueues.Remove(emailQueueItem);
@@ -886,7 +897,7 @@ namespace ControlAssuranceAPI.Repositories
 
 
                                 templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
-                                uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations);
+                                uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
                             }
 
                             db.EmailQueues.Remove(emailQueueItem);
@@ -914,7 +925,7 @@ namespace ControlAssuranceAPI.Repositories
 
                                 };
                                     templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
-                                    uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations);
+                                    uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
 
 
                                     db.EmailQueues.RemoveRange(db.EmailQueues.Where(x => x.Title == emailQueueItem.Title && x.EmailTo == emailQueueItem.EmailTo && x.MainEntityId == emailQueueItem.MainEntityId));
@@ -952,7 +963,7 @@ namespace ControlAssuranceAPI.Repositories
 
                                 };
                                     templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
-                                    uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations);
+                                    uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
 
 
                                     db.EmailQueues.RemoveRange(db.EmailQueues.Where(x => x.Title == emailQueueItem.Title && x.EmailTo == emailQueueItem.EmailTo && x.MainEntityId == emailQueueItem.MainEntityId));
@@ -986,7 +997,7 @@ namespace ControlAssuranceAPI.Repositories
 
                                 };
                                     templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
-                                    uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations);
+                                    uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
 
 
                                     db.EmailQueues.RemoveRange(db.EmailQueues.Where(x => x.Title == emailQueueItem.Title && x.EmailTo == emailQueueItem.EmailTo && x.MainEntityId == emailQueueItem.MainEntityId));
@@ -1023,7 +1034,7 @@ namespace ControlAssuranceAPI.Repositories
 
                                 };
                                     templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
-                                    uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations);
+                                    uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
 
 
                                     db.EmailQueues.RemoveRange(db.EmailQueues.Where(x => x.Title == emailQueueItem.Title && x.EmailTo == emailQueueItem.EmailTo && x.MainEntityId == emailQueueItem.MainEntityId));
@@ -1051,7 +1062,7 @@ namespace ControlAssuranceAPI.Repositories
 
 
                                 templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
-                                uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations);
+                                uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
                             }
 
                             db.EmailQueues.Remove(emailQueueItem);
@@ -1071,7 +1082,7 @@ namespace ControlAssuranceAPI.Repositories
 
                                 };
                                 templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
-                                uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations);
+                                uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
                             }
 
                             db.EmailQueues.Remove(emailQueueItem);
@@ -1098,7 +1109,7 @@ namespace ControlAssuranceAPI.Repositories
 
                                 };
                                     templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
-                                    uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations);
+                                    uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
 
 
                                     db.EmailQueues.RemoveRange(db.EmailQueues.Where(x => x.Title == emailQueueItem.Title && x.EmailTo == emailQueueItem.EmailTo && x.MainEntityId == emailQueueItem.MainEntityId));
@@ -1124,7 +1135,7 @@ namespace ControlAssuranceAPI.Repositories
 
                                 };
                                 templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
-                                uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations);
+                                uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
                             }
 
                             db.EmailQueues.Remove(emailQueueItem);
@@ -1149,7 +1160,7 @@ namespace ControlAssuranceAPI.Repositories
 
                                     };
                                     templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
-                                    uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations);
+                                    uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
 
 
                                     db.EmailQueues.RemoveRange(db.EmailQueues.Where(x => x.Title == emailQueueItem.Title && x.EmailTo == emailQueueItem.EmailTo && x.MainEntityId == emailQueueItem.MainEntityId));
@@ -1173,7 +1184,7 @@ namespace ControlAssuranceAPI.Repositories
 
                                 };
                                 templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
-                                uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations);
+                                uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
                             }
 
                             db.EmailQueues.Remove(emailQueueItem);
@@ -1197,7 +1208,7 @@ namespace ControlAssuranceAPI.Repositories
 
                                     };
                                     templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
-                                    uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations);
+                                    uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
 
 
                                     db.EmailQueues.RemoveRange(db.EmailQueues.Where(x => x.Title == emailQueueItem.Title && x.EmailTo == emailQueueItem.EmailTo && x.MainEntityId == emailQueueItem.MainEntityId));

@@ -28,6 +28,8 @@ namespace ControlAssuranceAPI.Repositories
             public static LogCategory DDSignOff { get { return new LogCategory("DD Sign-Off"); } }
             public static LogCategory DirSignOff { get { return new LogCategory("Director Sign-Off"); } }
             public static LogCategory CancelSignOffs { get { return new LogCategory("Cancel Sign-Offs"); } }
+            public static LogCategory EmailSuccessful { get { return new LogCategory("EmailSuccessful"); } }
+            public static LogCategory EmailFailed { get { return new LogCategory("EmailFailed"); } }
         }
 
         public IQueryable<Log> Logs
@@ -85,6 +87,19 @@ namespace ControlAssuranceAPI.Repositories
             var x = db.Logs.Add(log);
             db.SaveChanges();
             return x;
+        }
+
+        public void Write(string title, LogCategory category, string details, int userId)
+        {
+            Log log = new Log();
+            log.Title = title;
+            log.Module = category.Value;
+            log.UserId = userId;
+            log.Details = details;
+            log.LogDate = DateTime.Now;
+
+            var x = db.Logs.Add(log);
+            db.SaveChanges();
         }
     }
 }

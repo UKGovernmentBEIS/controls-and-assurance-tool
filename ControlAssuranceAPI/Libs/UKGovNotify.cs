@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ControlAssuranceAPI.Repositories;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 //using Notify.Client;
@@ -20,7 +21,7 @@ namespace ControlAssuranceAPI.Libs
 
         }
 
-        public void SendEmail(string emailSendTo, string emailTemplate, Dictionary<string, dynamic> templatePersonalisations)
+        public void SendEmail(string emailSendTo, string emailTemplateId, Dictionary<string, dynamic> templatePersonalisations, LogRepository logRepository, string emailTemplateName, int emailToUserId)
         //public void SendEmail()
         {
 
@@ -35,10 +36,19 @@ namespace ControlAssuranceAPI.Libs
             try
             {
                 //client.SendEmailAsync(emailSendTo, emailTemplate, templatePersonalisations, null, null);
+
+                string details = $"";
+                foreach(var tp in templatePersonalisations)
+                {
+                    details += $"{tp.Key}: {tp.Value}, ";
+                }
+                logRepository.Write(emailTemplateName, LogRepository.LogCategory.EmailSuccessful, details, emailToUserId);
+
             }
             catch (Exception ex)
             {
                 string details = ex.Message;
+                logRepository.Write(emailTemplateName, LogRepository.LogCategory.EmailFailed, details, emailToUserId);
             }
         }
     }
