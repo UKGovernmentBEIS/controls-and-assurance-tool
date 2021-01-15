@@ -90,7 +90,7 @@ namespace ControlAssuranceAPI.Repositories
                 this.GIAA_Reminders(autoFunctionLastRun.LastRunDate);
                 this.MA_Reminders(autoFunctionLastRun.LastRunDate);
 
-                //this.SendQueueToNotify();
+                this.SendQueueToNotify();
             }
 
 
