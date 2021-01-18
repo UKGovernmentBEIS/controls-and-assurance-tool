@@ -12,7 +12,7 @@ import { MessageDialog } from '../cr/MessageDialog';
 import { DefaultButton, PrimaryButton } from 'office-ui-fabric-react/lib/Button';
 import { Panel, PanelType } from 'office-ui-fabric-react/lib/Panel';
 import styles from '../../styles/cr.module.scss';
-import { IEntity, IIAPAction } from '../../types';
+import { IEntity, IIAPAction, ILinkLocalType } from '../../types';
 import { IGenColumn, ColumnType, ColumnDisplayType } from '../../types/GenColumn';
 import EntityList from '../entity/EntityList';
 //import EvidenceList from './EV/EvidenceList';
@@ -28,11 +28,11 @@ export interface IActionUpdatesTabProps extends types.IBaseComponentProps {
     onShowList: () => void;
     //isViewOnly: boolean;
 
-    superUserPermission:boolean;
-    actionOwnerPermission:boolean;
+    superUserPermission: boolean;
+    actionOwnerPermission: boolean;
     currentUserId: number;
 
-    showingGroupUpdates:boolean;        
+    showingGroupUpdates: boolean;
 
 }
 
@@ -53,13 +53,13 @@ export interface IActionUpdatesTabState {
     LookupData: ILookupData;
     IAPInfo: IIAPAction;
     IAPActionId: number;
-    ActionOwnerPermission:boolean;
+    ActionOwnerPermission: boolean;
     FilteredItemsMainList: any[];
 
     HideNextButton: boolean;
     ListFilterText: string;
 
-    GroupTitle:string;
+    GroupTitle: string;
 
 }
 
@@ -73,7 +73,7 @@ export class ActionUpdatesTabState implements IActionUpdatesTabState {
     public HideNextButton: boolean = false;
 
     public ListFilterText: string = null;
-    public GroupTitle:string  = "";
+    public GroupTitle: string = "";
 
 
 }
@@ -131,6 +131,36 @@ export default class ActionUpdatesTab extends React.Component<IActionUpdatesTabP
         //replace all
         iapDetails = iapDetails.split('\n').join('<br/>');
 
+        let arrLinks: ILinkLocalType[] = [];
+        //unpack publication links from single value
+        if (iapInfo.ActionLinks !== null && iapInfo.ActionLinks !== '') {
+            let arr1 = iapInfo.ActionLinks.split('>');
+
+            //console.log('arr1', arr1);
+
+            for (let i = 0; i < arr1.length; i++) {
+
+                let itemStr: string = arr1[i];
+                //console.log('arr1 Loop itemStr', itemStr);
+                if (itemStr.trim() === '') {
+                    continue;
+                }
+                //console.log('after continue');
+                let arr2 = itemStr.split('<');
+                //console.log('after arr2 Split', arr2);
+                let item: ILinkLocalType = { Description: '', URL: '' };
+                item.Description = arr2[0];
+                item.URL = arr2[1];
+
+                //console.log('item filled with data', item);
+
+                arrLinks.push(item);
+
+                //console.log('item pushed to arrLinks', arrLinks);
+
+            }
+        }
+
         return (
 
             <React.Fragment>
@@ -155,14 +185,29 @@ export default class ActionUpdatesTab extends React.Component<IActionUpdatesTabP
 
 
                             <tr>
-                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
                                     Action
-                            </td>
-                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
                                     <div dangerouslySetInnerHTML={{ __html: iapDetails }} ></div>
                                 </td>
 
                             </tr>
+
+                            <tr>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Links
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+
+                                    {arrLinks.map((c, i) =>
+                                        <span key={`span_ActionLink_${i}`}><a key={`span_Lnk_ActionLink_${i}`} target="_blank" href={c.URL}>{c.Description}</a>&nbsp;&nbsp;</span>
+                                    )}
+
+                                </td>
+
+                            </tr>
+
                         </tbody>
 
 
@@ -251,7 +296,7 @@ export default class ActionUpdatesTab extends React.Component<IActionUpdatesTabP
         const currentIAPActionId: number = Number(this.state.IAPActionId);
         let currentIDFound: boolean = false;
         let nextIAPActionID: number = 0;
-        let actionOwnerPermission:boolean = false;
+        let actionOwnerPermission: boolean = false;
 
         for (let i = 0; i < this.state.FilteredItemsMainList.length; i++) {
 
@@ -264,19 +309,19 @@ export default class ActionUpdatesTab extends React.Component<IActionUpdatesTabP
             }
             if (currentIDFound === true) {
                 nextIAPActionID = id;
-                const ownerIdsStr:string = e["OwnerIds"];
+                const ownerIdsStr: string = e["OwnerIds"];
                 //console.log('ownerIdsStr', ownerIdsStr);
 
-                const ownerIdsArr:string[] = ownerIdsStr.split(',');
+                const ownerIdsArr: string[] = ownerIdsStr.split(',');
 
                 for (let j = 0; j < ownerIdsArr.length; j++) {
-      
-                    let ownerId:number = Number(ownerIdsArr[j]);
-                    if(ownerId === this.props.currentUserId){
-                      actionOwnerPermission = true;
-                      break;
+
+                    let ownerId: number = Number(ownerIdsArr[j]);
+                    if (ownerId === this.props.currentUserId) {
+                        actionOwnerPermission = true;
+                        break;
                     }
-                  }
+                }
 
 
 
@@ -301,7 +346,7 @@ export default class ActionUpdatesTab extends React.Component<IActionUpdatesTabP
         console.log('in loadIAPInfo');
 
         this.iapUpdateService.read(this.state.IAPActionId).then((u: IIAPAction) => {
-            console.log('Rec Info', u);
+            console.log('Action Info', u);
 
             //check if this is the last record or not in the props.filteredItems
             const lastMainId_FilteredItems: number = Number(this.state.FilteredItemsMainList[this.state.FilteredItemsMainList.length - 1]["ID"]);
@@ -315,14 +360,14 @@ export default class ActionUpdatesTab extends React.Component<IActionUpdatesTabP
 
             }
 
-            
-            let groupTitle:string = "";
-            if(this.props.showingGroupUpdates === true){
+
+            let groupTitle: string = "";
+            if (this.props.showingGroupUpdates === true) {
 
                 //console.log('FilteredItemsMainList', this.state.FilteredItemsMainList);
                 var currentItemInFiltered = this.state.FilteredItemsMainList.filter(x => Number(x.ID) === Number(this.state.IAPActionId));
                 //console.log('currentItemInFiltered-1', currentItemInFiltered);
-                if(currentItemInFiltered.length > 0){
+                if (currentItemInFiltered.length > 0) {
                     //console.log('currentItemInFiltered-2', currentItemInFiltered);
                     groupTitle = ` (${currentItemInFiltered[0]["Title"]})`;
                 }

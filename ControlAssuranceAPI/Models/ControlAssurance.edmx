@@ -627,6 +627,7 @@
           <Property Name="IsArchive" Type="bit" />
           <Property Name="ParentId" Type="int" />
           <Property Name="GroupNum" Type="int" />
+          <Property Name="ActionLinks" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="IAPActionDirectorate">
           <Key>
@@ -3132,6 +3133,7 @@
           <Property Name="IsArchive" Type="Boolean" />
           <Property Name="ParentId" Type="Int32" />
           <Property Name="GroupNum" Type="Int32" />
+          <Property Name="ActionLinks" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="IAPPriority" Relationship="Self.FK_IAPAction_IAPPriority" FromRole="IAPAction" ToRole="IAPPriority" />
           <NavigationProperty Name="IAPStatusType" Relationship="Self.FK_IAPAction_IAPStatusType" FromRole="IAPAction" ToRole="IAPStatusType" />
           <NavigationProperty Name="IAPType" Relationship="Self.FK_IAPAction_IAPType" FromRole="IAPAction" ToRole="IAPType" />
@@ -5871,6 +5873,7 @@
                 <ScalarProperty Name="IsArchive" ColumnName="IsArchive" />
                 <ScalarProperty Name="ParentId" ColumnName="ParentId" />
                 <ScalarProperty Name="GroupNum" ColumnName="GroupNum" />
+                <ScalarProperty Name="ActionLinks" ColumnName="ActionLinks" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -3,6 +3,7 @@ import * as types from '../../types';
 import * as services from '../../services';
 import { sp } from '@pnp/sp';
 import MainSaveForm from './MainSaveForm';
+import EditActionOwners from './EditActionOwners';
 import MainSaveFormGroupActions from './MainSaveFormGroupActions';
 import { FilteredMainList, IObjectWithKey } from './FilteredMainList';
 import { IEntity } from '../../types';
@@ -18,13 +19,13 @@ export interface IMainListProps extends types.IBaseComponentProps {
 
     isArchive: boolean;
     onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
-    userIdsArr:number[];
+    userIdsArr: number[];
 
     filterText?: string;
     onChangeFilterText: (value: string) => void;
 
     onMainSaved: () => void;
-    mainListsSaveCounter:number;
+    mainListsSaveCounter: number;
 
     superUserPermission: boolean;
     currentUserId: number;
@@ -37,10 +38,12 @@ export interface IMainListState<T> {
     //SelectedGoElementId:number;
 
     SelectedEntityChildren: number;
-    SelectedEntityNotDelMsg:string;
+    SelectedEntityNotDelMsg: string;
     ShowForm: boolean;
+    ShowAssignForm: boolean;
     ShowFormGroupActions: boolean;
     EnableEdit?: boolean;
+    EnableAssign?: boolean;
     EnableDelete?: boolean;
     HideDeleteDisallowed: boolean;
     HideDeleteDialog: boolean;
@@ -52,8 +55,8 @@ export interface IMainListState<T> {
     ListFilterText?: string;
     InitDataLoaded: boolean;
 
-    
-    
+
+
 }
 export class MainListState<T> implements IMainListState<T>{
     public SelectedEntity = null;
@@ -63,10 +66,12 @@ export class MainListState<T> implements IMainListState<T>{
     public SelectedEntityChildren = null;
     public SelectedEntityNotDelMsg = "";
     public ShowForm = false;
+    public ShowAssignForm = false;
     public ShowFormGroupActions = false;
     public HideDeleteDialog = true;
     public HideDeleteDisallowed = true;
     public EnableEdit = false;
+    public EnableAssign = false;
     public EnableDelete = false;
     public ShowChildForm = false;
     public CurrentPage = 1;
@@ -76,8 +81,8 @@ export class MainListState<T> implements IMainListState<T>{
     public ListFilterText = null;
     public InitDataLoaded = false;
 
-    
-    
+
+
 }
 
 export default class MainList extends React.Component<IMainListProps, IMainListState<IEntity>> {
@@ -124,7 +129,7 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
             minWidth: 400,
             maxWidth: 400,
             isResizable: true,
-            isMultiline:true,
+            isMultiline: true,
             headerClassName: styles.bold,
         },
         {
@@ -134,7 +139,7 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
             minWidth: 90,
             maxWidth: 90,
             isResizable: true,
-            isMultiline:true,
+            isMultiline: true,
             headerClassName: styles.bold,
         },
         // {
@@ -214,7 +219,7 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
     constructor(props: IMainListProps, state: IMainListState<IEntity>) {
         super(props);
         this.state = new MainListState<IEntity>();
-        
+
         this._selection = new Selection({
             onSelectionChanged: () => {
                 if (this._selection.getSelectedCount() === 1) {
@@ -224,30 +229,61 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
                     const key = Number(sel.key);
                     const title: string = sel["Title"];
                     const iapTypeId: number = Number(sel["IAPTypeId"]);
-                    const createdById:number = Number(sel["CreatedById"]);
+                    const createdById: number = Number(sel["CreatedById"]);
 
-                    
 
-                    if(iapTypeId === 1 || iapTypeId === 2){
-                        
-                        if(this.props.superUserPermission === true || (this.props.currentUserId === createdById)){
-                            this.setState({ SelectedEntity: key, SelectedEntityTitle: title, EnableEdit:true, EnableDelete: true });
+
+                    if (iapTypeId === 1 || iapTypeId === 2) {
+
+                        if (this.props.superUserPermission === true || (this.props.currentUserId === createdById)) {
+                            this.setState({ SelectedEntity: key, SelectedEntityTitle: title, EnableEdit: true, EnableDelete: true });
+                        }
+                        else {
+                            //no edit/del permission
+                            this.setState({ SelectedEntity: key, SelectedEntityTitle: title, EnableEdit: false, EnableDelete: false });
+                        }
+
+                    }
+                    else {
+                        this.setState({ SelectedEntity: key, SelectedEntityTitle: title, EnableEdit: false, EnableDelete: false });
+                    }
+
+                    //for action owner permission (to enable assign)
+                    if (iapTypeId === 1 || iapTypeId === 3) {
+
+                        let actionOwnerPermission: boolean = false;
+                        const ownerIdsStr: string = sel["OwnerIds"];
+                        const ownerIdsArr: string[] = ownerIdsStr.split(',');
+
+                        for (let i = 0; i < ownerIdsArr.length; i++) {
+
+                            let ownerId: number = Number(ownerIdsArr[i]);
+                            if (ownerId === this.props.currentUserId) {
+                                actionOwnerPermission = true;
+                                break;
+                            }
+                        }
+
+                        console.log('actionOwnerPermission', actionOwnerPermission);
+
+                        if(actionOwnerPermission === true || this.props.superUserPermission === true){
+                            console.log('allow assign');
+                            this.setState({ EnableAssign: true });
                         }
                         else{
-                            //no edit/del permission
-                            this.setState({ SelectedEntity: key, SelectedEntityTitle: title, EnableEdit:false, EnableDelete: false });    
+                            this.setState({ EnableAssign: false });
                         }
-                        
+
                     }
                     else{
-                        this.setState({ SelectedEntity: key, SelectedEntityTitle: title, EnableEdit:false, EnableDelete: false });
+                        this.setState({ EnableAssign: false });
                     }
-                    
 
-                    
+
+
                 }
                 else {
-                    this.setState({ SelectedEntity: null, SelectedEntityTitle: null, EnableEdit:false, EnableDelete: false });
+                    this.setState({ SelectedEntity: null, SelectedEntityTitle: null, EnableEdit: false, EnableDelete: false, EnableAssign: false });
                 }
             }
         });
@@ -263,6 +299,7 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
                     <CrLoadingOverlay isLoading={this.state.Loading} />
                     {this.renderList()}
                     {this.state.ShowForm && this.renderForm()}
+                    {this.state.ShowAssignForm && this.renderAssignForm()}
                     {this.state.ShowFormGroupActions && this.renderFormGroupActions()}
 
                     <MessageDialog hidden={this.state.HideDeleteDisallowed} title={`This action cannot be deleted`} content={this.state.SelectedEntityNotDelMsg} handleOk={this.toggleDeleteDisallowed} />
@@ -298,7 +335,10 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
                 editDisabled={!this.state.EnableEdit}
                 deleteDisabled={!this.state.EnableDelete}
 
-                
+                onAssign={this.handleAssign}
+                assignDisabled={!this.state.EnableAssign}
+
+
             />
         );
     }
@@ -316,6 +356,21 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
 
         );
     }
+
+    private renderAssignForm() {
+
+        return (
+            <EditActionOwners
+                showForm={this.state.ShowAssignForm}
+                entityId={this.state.SelectedEntity}
+                onSaved={this.formSaved}
+                onCancelled={this.closePanel}
+                {...this.props}
+            />
+
+        );
+    }
+
     private renderFormGroupActions() {
 
         return (
@@ -370,11 +425,11 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
 
 
     private closePanel = (): void => {
-        this.setState({ ShowForm: false, ShowFormGroupActions: false });
+        this.setState({ ShowForm: false, ShowFormGroupActions: false, ShowAssignForm: false });
     }
 
     private formSaved = (): void => {
-        this.setState({ ShowForm: false, ShowFormGroupActions: false }, this.props.onMainSaved);
+        this.setState({ ShowForm: false, ShowFormGroupActions: false, ShowAssignForm: false }, this.props.onMainSaved);
         //this.loadData();
         //this.closePanel();
     }
@@ -402,7 +457,7 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
     private loadData = (): void => {
         this.setState({ Loading: true });
 
-        const userIds:string = this.props.userIdsArr.join(',');
+        const userIds: string = this.props.userIdsArr.join(',');
 
         const read: Promise<IEntity[]> = this.mainService.readAllWithFilters(userIds, this.props.isArchive);
         read.then((entities: any): void => {
@@ -451,35 +506,39 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
     private editItem = (): void => {
         const sel = this._selection.getSelection()[0];
         const iapTypeId: number = Number(sel["IAPTypeId"]);
-        if(iapTypeId === 2){
+        if (iapTypeId === 2) {
             this.setState({ ShowFormGroupActions: true });
         }
-        else{
+        else {
             this.setState({ ShowForm: true });
         }
 
-        
+
+    }
+
+    private handleAssign = (): void => {
+        this.setState({ ShowAssignForm: true });
     }
 
     private checkDelete = (): void => {
 
         this.mainService.countUpdatesForAction(this.state.SelectedEntity).then((res: string): void => {
-            let numberOfChildren:number = Number(res);
+            let numberOfChildren: number = Number(res);
             if (numberOfChildren > 0) {
 
                 const sel = this._selection.getSelection()[0];
                 const iapTypeId: number = Number(sel["IAPTypeId"]);
-                let msgNotDelete:string = "";
-                if(iapTypeId === 2){
+                let msgNotDelete: string = "";
+                if (iapTypeId === 2) {
                     //group actoins (parent)
                     msgNotDelete = `Group has at least one action with updates. These must be deleted first.`;
                 }
-                else{
+                else {
                     msgNotDelete = `Action '${this.getSelectedEntityName()}' has ${numberOfChildren} ${numberOfChildren === 1 ? this.ChildEntityName.Singular.toLowerCase() : this.ChildEntityName.Plural.toLowerCase()} belonging to it.`;
                 }
-                
 
-                
+
+
                 this.setState({ SelectedEntityChildren: numberOfChildren, SelectedEntityNotDelMsg: msgNotDelete }, this.toggleDeleteDisallowed);
 
 
@@ -487,9 +546,9 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
             else {
                 this.toggleDeleteConfirm();
             }
-            
-      
-        }, (err) => {  });
+
+
+        }, (err) => { });
 
         // this.mainService.numberOfChildren(this.state.SelectedEntity, 'IAPActionUpdates').then((numberOfChildren: number) => {
         //     //console.log(numberOfChildren);

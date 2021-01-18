@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as types from '../../types';
 import * as services from '../../services';
-import { IEntity, IUser, IIAPAction, IAPAction, IIAPAssignment, IAPAssignment, IDirectorate, IIAPActionDirectorate, IAPActionDirectorate } from '../../types';
+import { IEntity, IUser, IIAPAction, IAPAction, IIAPAssignment, IAPAssignment, IDirectorate, IIAPActionDirectorate, IAPActionDirectorate, ILinkLocalType } from '../../types';
 import { CrTextField } from '../cr/CrTextField';
 import { CrDropdown, IDropdownOption } from '../cr/CrDropdown';
 import { FormButtons } from '../cr/FormButtons';
@@ -54,6 +54,7 @@ export interface IMainSaveFormGroupActionsState {
     FormDataBeforeChanges: IIAPAction;
     FormIsDirty: boolean;
 
+    ArrLinks: ILinkLocalType[];
     UploadStatus: string;
     UploadProgress: number;
     ShowUploadProgress: boolean;
@@ -70,6 +71,7 @@ export class MainSaveFormGroupActionsState implements IMainSaveFormGroupActionsS
     public FormDataBeforeChanges = new IAPAction(1, 1, 2); //IAPTypeId 2 is Group Actions
     public FormIsDirty = false;
     //public ClearSuggestedStatus = false;
+    public ArrLinks: ILinkLocalType[] = [];
 
     public UploadStatus = "";
     public UploadProgress: number = 0;
@@ -132,6 +134,7 @@ export default class MainSaveFormGroupActions extends React.Component<IMainSaveF
 
                 {this.renderTitle()}
                 {this.renderDetails()}
+                {this.renderLinks()}
                 {this.renderCompletionDate()}
                 {this.renderOriginalCompletionDate()}
                 {this.renderMonthlyUpdateRequiredCheckbox()}
@@ -179,6 +182,59 @@ export default class MainSaveFormGroupActions extends React.Component<IMainSaveF
                 onChanged={(v) => this.changeTextField(v, "Details")}
                 errorMessage={this.state.ErrMessages.Details}
             />
+        );
+    }
+
+    public renderLinks() {
+
+
+        return (
+            <div>
+
+                <div style={{ display: 'flex' }}>
+                    <div style={{ width: '50%', paddingRight: '5px' }}>
+                        <span>Link Text</span>
+
+                    </div>
+                    <div style={{ width: '50%', paddingLeft: '5px' }}>
+                        <span>Actual URL</span>
+
+                    </div>
+
+                </div>
+
+
+                {this.state.ArrLinks.map((c, i) =>
+                    this.renderLink(c, i)
+                )}
+
+                {<div className={styles.formField}>
+                    <span style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }} onClick={this.addBlankLinkItem} >Add fields For another link</span>
+                </div>}
+
+            </div>
+        );
+    }
+
+    private renderLink(item: ILinkLocalType, index: number) {
+
+        return (
+
+            <div key={`div_renderLink_${index}`} style={{ display: 'flex', marginTop: '5px' }}>
+                <div key={`divCol1_renderLink_${index}`} style={{ width: '50%', paddingRight: '5px' }}>
+                    <CrTextField key={`div_TextField1_${index}`} value={item.Description}
+                        onChanged={(v) => this.changeTextField_Link(v, index, "Description")} />
+
+                </div>
+                <div key={`divCol2_renderLink_${index}`} style={{ width: '50%', paddingLeft: '5px' }}>
+
+                    <CrTextField key={`div_TextField2_${index}`} value={item.URL}
+                        onChanged={(v) => this.changeTextField_Link(v, index, "URL")} />
+
+                </div>
+
+            </div>
+
         );
     }
 
@@ -519,6 +575,39 @@ export default class MainSaveFormGroupActions extends React.Component<IMainSaveF
 
             console.log('data ', e);
 
+            let arrLinks: ILinkLocalType[] = [];
+
+            //unpack links from single value
+            if (e.ActionLinks !== null && e.ActionLinks !== '') {
+                let arr1 = e.ActionLinks.split('>');
+
+                //console.log('arr1', arr1);
+
+                for (let i = 0; i < arr1.length; i++) {
+
+                    let itemStr: string = arr1[i];
+                    //console.log('arr1 Loop itemStr', itemStr);
+                    if (itemStr.trim() === '') {
+                        continue;
+                    }
+                    //console.log('after continue');
+                    let arr2 = itemStr.split('<');
+                    //console.log('after arr2 Split', arr2);
+                    let item: ILinkLocalType = { Description: '', URL: '' };
+                    item.Description = arr2[0];
+                    item.URL = arr2[1];
+
+                    //console.log('item filled with data', item);
+
+                    arrLinks.push(item);
+
+                    //console.log('item pushed to arrLinks', arrLinks);
+
+                }
+            }
+
+
+
             this.iapAssignmentService.readAllAssignmentsForParentAction(e.ID).then((ass: IAPAssignment[]): void => {
                 console.log('ass', ass);
 
@@ -545,7 +634,8 @@ export default class MainSaveFormGroupActions extends React.Component<IMainSaveF
                     this.setState({
                         FormData: newFD,
                         FormDataBeforeChanges: newFD,
-                    }, this.addBlankItemInArrAOGroups);
+                        ArrLinks: arrLinks,
+                    }, this.addBlankItems_Links_And_Groups);
                 });
 
 
@@ -611,15 +701,49 @@ export default class MainSaveFormGroupActions extends React.Component<IMainSaveF
 
         //console.log('after load', this.state.LookupData.Users);
         if (this.props.entityId === null) {
-            this.addBlankItemInArrAOGroups();
+            this.addBlankItems_Links_And_Groups();
         }
         
 
     }
 
 
-
     private saveData = (): void => {
+
+
+        this.saveActionLinksToSingleValue();
+
+    }
+
+    private saveActionLinksToSingleValue = (): void => {
+
+        let singleStr: string = "";
+        const arrLinks = this.state.ArrLinks;
+
+        for (let i = 0; i < arrLinks.length; i++) {
+            let item: ILinkLocalType = arrLinks[i];
+            if (item.Description.trim() === '' && item.URL.trim() === '') {
+                //ignore this item
+            }
+            else {
+                if (item.URL.trim() !== '') {
+                    let description: string = item.Description !== '' ? item.Description : item.URL;
+                    //use '<' for separator between description and url, And use '>' for next item separator
+                    singleStr += `${description}<${item.URL.trim()}>`;
+                }
+            }
+        }
+
+        //set single value in state
+        const fd = { ...this.state.FormData };
+        fd.ActionLinks = singleStr;
+
+        this.setState({ FormData: fd }, this.saveDataFinal);
+
+    }
+
+
+    private saveDataFinal = (): void => {
 
         if (this.validateEntity()) {
             if (this.props.onError) this.props.onError(null);
@@ -756,6 +880,17 @@ export default class MainSaveFormGroupActions extends React.Component<IMainSaveF
 
     }
 
+    private addBlankItems_Links_And_Groups =  () => {
+        this.addBlankLinkItem();
+        this.addBlankItemInArrAOGroups();
+    }
+    private addBlankLinkItem = () => {
+        console.log('in addBlankLinkItem');
+        const arrCopy = [...this.state.ArrLinks, { Description: '', URL: '' }];
+        this.setState({ ArrLinks: arrCopy });
+        //const item: ILinkLocalType = { Description: 'des', URL: 'url' };
+        //arrCopy.push()
+    }
     private addBlankItemInArrAOGroups = () => {
         console.log('in addBlankItemInArrAOGroups');
         let newItem:number = 0;
@@ -783,6 +918,18 @@ export default class MainSaveFormGroupActions extends React.Component<IMainSaveF
 
     private changeTextField = (value: string, f: string): void => {
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, value), FormIsDirty: true });
+    }
+    private changeTextField_Link = (value: string, index: number, type: string): void => {
+        const arrCopy = [...this.state.ArrLinks];
+        const item: ILinkLocalType = arrCopy[index];
+        if (type === "Description") {
+            item.Description = value;
+        }
+        else {
+            item.URL = value;
+        }
+
+        this.setState({ ArrLinks: arrCopy });
     }
     protected changeDatePicker = (date: Date, f: string): void => {
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, date), FormIsDirty: true });

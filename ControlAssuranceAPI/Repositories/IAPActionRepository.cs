@@ -81,6 +81,7 @@ namespace ControlAssuranceAPI.Repositories
                 iapAction.MonthlyUpdateRequired = iapInput.MonthlyUpdateRequired;
                 iapAction.MonthlyUpdateRequiredIfNotCompleted = iapInput.MonthlyUpdateRequiredIfNotCompleted;
                 iapAction.IsArchive = iapInput.IsArchive;
+                iapAction.ActionLinks = iapInput.ActionLinks;
                 db.IAPActions.Add(iapAction);
                 db.SaveChanges();
 
@@ -124,6 +125,7 @@ namespace ControlAssuranceAPI.Repositories
                     iapChildAction.MonthlyUpdateRequired = iapInput.MonthlyUpdateRequired;
                     iapChildAction.MonthlyUpdateRequiredIfNotCompleted = iapInput.MonthlyUpdateRequiredIfNotCompleted;
                     iapChildAction.IsArchive = iapInput.IsArchive;
+                    iapChildAction.ActionLinks = iapInput.ActionLinks;
                     db.IAPActions.Add(iapChildAction);
                     db.SaveChanges();
 
@@ -181,6 +183,7 @@ namespace ControlAssuranceAPI.Repositories
             iapAction.CompletionDate = iapInput.CompletionDate;
             iapAction.MonthlyUpdateRequired = iapInput.MonthlyUpdateRequired;
             iapAction.MonthlyUpdateRequiredIfNotCompleted = iapInput.MonthlyUpdateRequiredIfNotCompleted;
+            iapAction.ActionLinks = iapInput.ActionLinks;
             iapAction.IsArchive = iapInput.IsArchive;
 
             //check for deletion of directorates
@@ -280,6 +283,7 @@ namespace ControlAssuranceAPI.Repositories
                 iapChildAction.MonthlyUpdateRequired = iapInput.MonthlyUpdateRequired;
                 iapChildAction.MonthlyUpdateRequiredIfNotCompleted = iapInput.MonthlyUpdateRequiredIfNotCompleted;
                 iapChildAction.IsArchive = iapInput.IsArchive;
+                iapChildAction.ActionLinks = iapInput.ActionLinks;
 
 
                 

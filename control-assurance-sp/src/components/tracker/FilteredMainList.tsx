@@ -239,7 +239,7 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
 
 
             return (
-                <span style={{ backgroundColor: bgColor, color: txtColor, width: "140px", display: "block", paddingLeft: "10px", paddingTop: "5px", paddingBottom: "5px" }}>
+                <span style={{ backgroundColor: bgColor, color: txtColor, width: "110px", display: "block", paddingLeft: "10px", paddingTop: "5px", paddingBottom: "5px" }}>
                     {fieldContent}
                 </span>
                 // <img src={statusImg} />

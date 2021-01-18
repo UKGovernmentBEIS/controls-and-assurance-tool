@@ -268,10 +268,10 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
         return (
             <div style={{ marginTop: '20px', marginBottom: '20px' }}>
                 <div>
-                    <input type="file" name="fileUpload" id="fileUpload" accept="application/pdf"></input>
+                    <input type="file" name="fileUpload" id="fileUpload" accept=".pdf,.msg"></input>
                     {this.state.ErrMessages.FileUpload && <FieldErrorMessage value={this.state.ErrMessages.FileUpload} />}
                     <div style={{ paddingTop: '10px' }}>
-                        Please upload all evidence files as PDFs. For guidance on savings documents as PDFs, please click <span onClick={this.viewHelpPDF} style={{ textDecoration: 'underline', cursor: 'pointer' }}>here</span>.
+                    Please upload documents as Outlook mail .msg or .pdf. For guidelines on saving documents as .msg or .pdf, please click <span onClick={this.viewHelpPDF} style={{ textDecoration: 'underline', cursor: 'pointer' }}>here</span>.
                     </div>
                 </div>
                 {this.state.ShowUploadProgress && <div style={{ minHeight: '80px', marginTop: '15px' }}>

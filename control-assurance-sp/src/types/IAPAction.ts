@@ -16,6 +16,7 @@ export interface IIAPAction  extends IEntity {
     OriginalCompletionDate?:Date;
     MonthlyUpdateRequired?:boolean;
     MonthlyUpdateRequiredIfNotCompleted?:boolean;
+    ActionLinks?: string;
     IsArchive?:boolean;
     IAPActionDirectorates?: IIAPActionDirectorate[];
 }
@@ -35,6 +36,7 @@ export class IAPAction implements IIAPAction{
     public OriginalCompletionDate = null;
     public MonthlyUpdateRequired = false;
     public MonthlyUpdateRequiredIfNotCompleted = false;
+    public ActionLinks = null;
     public IsArchive?:boolean = false;
     public IAPActionDirectorates = [];
 

@@ -709,7 +709,7 @@ namespace ControlAssuranceAPI.Libs
                 paragraph.AddLineBreak(); paragraph.AddLineBreak();
 
 
-                var recs = nAOPublicationRepository.Find(p.ID).NAORecommendations;
+
                 var lastPeriod = nAOPeriodRepository.GetLastPeriod(p.CurrentPeriodId);
                 int lastPeriodId = 0;
                 if(lastPeriod != null)
@@ -722,7 +722,9 @@ namespace ControlAssuranceAPI.Libs
                     continue;
                 }
 
-
+                //var recs = nAOPublicationRepository.Find(p.ID).NAORecommendations;
+                //changing following cause we only want recs of last period ie which recs have updates for the last period and not get archived recs (NAORecStatusTypeId is 4)
+                var recs = nAOPublicationRepository.Find(p.ID).NAORecommendations.Where(x => x.NAOUpdates.Any(u => u.NAOPeriodId == lastPeriodId && u.NAORecStatusTypeId != 4));
 
                 #region rec stats table
 
@@ -730,8 +732,8 @@ namespace ControlAssuranceAPI.Libs
                 //rec stats table
                 //calculate stats
 
-                int totalRecs = recs.Count;
-                
+                int totalRecs = recs.Count();
+
                 //calculations are for the last archived period
                 int openRecs = recs.Count(x => x.NAOUpdates.Any(u => u.NAOPeriodId == lastPeriodId && u.NAORecStatusTypeId < 3));
                 int closedRecs = recs.Count(x => x.NAOUpdates.Any(u => u.NAOPeriodId == lastPeriodId && u.NAORecStatusTypeId == 3));
@@ -848,65 +850,32 @@ namespace ControlAssuranceAPI.Libs
                     paragraph.AddLineBreak(); paragraph.AddLineBreak();
                     paragraph.AddFormattedText("Actions Taken", "recSubHeading");
                     paragraph.AddLineBreak();
-                    //paragraph.AddFormattedText($"{p.PeriodStart?.ToString() ?? ""} to {p.PeriodEnd?.ToString() ?? ""}", "normalTxt");
-                    //paragraph.AddLineBreak();
-                    //paragraph.AddFormattedText($"{update.ActionsTaken?.ToString() ?? ""}", "normalTxt");
 
-                    ////Links
-                    //if (string.IsNullOrEmpty(update.FurtherLinks) == false)
-                    //{
-                        
-                    //    paragraph.AddLineBreak();
-                    //    paragraph.AddFormattedText("Links: ");
-                    //    var list1 = update.FurtherLinks.Trim().Split('>').ToList();
-                    //    foreach (var ite1 in list1)
-                    //    {
-                    //        if (string.IsNullOrEmpty(ite1))
-                    //        {
-                    //            continue;
-                    //        }
-                    //        var arr2 = ite1.Split('<').ToArray();
-                    //        string description = arr2[0];
-                    //        string url = arr2[1];
-                    //        var h = paragraph.AddHyperlink(url, HyperlinkType.Web);
-                    //        h.AddFormattedText(description, "normalTxtLink");
-                    //        paragraph.AddFormattedText("  ");
 
-                    //    }
-                    //}
+                    paragraph.AddFormattedText($"{lastPeriod.PeriodStartDate.Value.ToString("dd/MM/yyyy")} to {lastPeriod.PeriodEndDate.Value.ToString("dd/MM/yyyy")}", "normalTxt");
+                    paragraph.AddLineBreak();
+                    paragraph.AddFormattedText($"{update.ActionsTaken?.ToString() ?? ""}", "normalTxt");
 
-                    //Last Period Actions + Links
-                    
-                    //following condition will be alway true cause of check on publication level for the last period
-                    if (lastPeriod != null)
+                    //Links - Last Period
+                    if (string.IsNullOrEmpty(update.FurtherLinks) == false)
                     {
-                        //var updateLastPeriod = rec.NAOUpdates.FirstOrDefault(u => u.NAOPeriodId == lastPeriod.ID);
-                        //paragraph.AddLineBreak(); paragraph.AddLineBreak();
-                        paragraph.AddFormattedText($"{lastPeriod.PeriodStartDate.Value.ToString("dd/MM/yyyy")} to {lastPeriod.PeriodEndDate.Value.ToString("dd/MM/yyyy")}", "normalTxt");
+
                         paragraph.AddLineBreak();
-                        paragraph.AddFormattedText($"{update.ActionsTaken?.ToString() ?? ""}", "normalTxt");
-
-                        //Links - Last Period
-                        if (string.IsNullOrEmpty(update.FurtherLinks) == false)
+                        paragraph.AddFormattedText("Links: ");
+                        var list1 = update.FurtherLinks.Trim().Split('>').ToList();
+                        foreach (var ite1 in list1)
                         {
-
-                            paragraph.AddLineBreak();
-                            paragraph.AddFormattedText("Links: ");
-                            var list1 = update.FurtherLinks.Trim().Split('>').ToList();
-                            foreach (var ite1 in list1)
+                            if (string.IsNullOrEmpty(ite1))
                             {
-                                if (string.IsNullOrEmpty(ite1))
-                                {
-                                    continue;
-                                }
-                                var arr2 = ite1.Split('<').ToArray();
-                                string description = arr2[0];
-                                string url = arr2[1];
-                                var h = paragraph.AddHyperlink(url, HyperlinkType.Web);
-                                h.AddFormattedText(description, "normalTxtLink");
-                                paragraph.AddFormattedText("  ");
-
+                                continue;
                             }
+                            var arr2 = ite1.Split('<').ToArray();
+                            string description = arr2[0];
+                            string url = arr2[1];
+                            var h = paragraph.AddHyperlink(url, HyperlinkType.Web);
+                            h.AddFormattedText(description, "normalTxtLink");
+                            paragraph.AddFormattedText("  ");
+
                         }
                     }
 
@@ -972,6 +941,7 @@ namespace ControlAssuranceAPI.Libs
 
         #endregion Nao
 
+        #region Test PDF
         public void CreateTestPdf(string tempLocation, string outputPdfName)
         {
             //Libs.PdfFontResolver.Apply(); // Ensures it's only applied once
@@ -1001,6 +971,8 @@ namespace ControlAssuranceAPI.Libs
             pdfRenderer.PdfDocument.Save(outputPdfPath);
 
         }
+
+        #endregion
 
 
         private void MergePDFs(string targetPath, List<string> pdfs)

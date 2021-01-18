@@ -61,8 +61,10 @@ export interface IFilteredMainListProps {
     onAddGroupActions: () => void;
     onEdit: () => void;
     onDelete: () => void;
+    onAssign: () => void;
 
     editDisabled: boolean;
+    assignDisabled: boolean;
     deleteDisabled: boolean;
 
 }
@@ -129,6 +131,13 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
                             onClick={props.onDelete}
                         />}
 
+                    {(props.assignDisabled === false) &&
+                        <CommandBarButton
+                            iconProps={{ iconName: 'Assign' }}
+                            className={classNames.cmdBtn}
+                            text="Assign"
+                            onClick={props.onAssign}
+                        />}
 
                     {/* 
                     {(props.assignDisabled === false) &&
