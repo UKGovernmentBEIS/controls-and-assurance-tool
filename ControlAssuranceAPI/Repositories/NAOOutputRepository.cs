@@ -109,8 +109,8 @@ namespace ControlAssuranceAPI.Repositories
 
         public bool CreatePdf(int key, string spSiteUrl)
         {
-
-            this.ChangePdfStatus(key, "Working... Please Wait", null);
+            string initialReturnStatus = "Working... Please Wait";
+            this.ChangePdfStatus(key, initialReturnStatus, null);
             Task.Run(() =>
             {
                 NAOOutputRepository outputRepository = new NAOOutputRepository(base.user);

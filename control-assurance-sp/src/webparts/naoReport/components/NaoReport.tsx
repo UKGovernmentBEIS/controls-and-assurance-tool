@@ -4,6 +4,7 @@ import { CrDropdown, IDropdownOption } from '../../../components/cr/CrDropdown';
 import * as types from '../../../types';
 import BaseUserContextWebPartComponent from '../../../components/BaseUserContextWebPartComponent';
 import Report1List from '../../../components/naoReport/Report1List';
+import Report2List from '../../../components/naoReport/Report2List';
 import GenExport from '../../../components/export/GenExport';
 import * as services from '../../../services';
 
@@ -26,10 +27,12 @@ export class LookupData implements ILookupData {
 export interface INaoReportState extends types.IUserContextWebPartState {
   LookupData: ILookupData;
   Report1_ListFilterText: string;
+  Report2_ListFilterText: string;
 }
 export class NaoReportState extends types.UserContextWebPartState implements INaoReportState {
   public LookupData = new LookupData();
   public Report1_ListFilterText: string = null;
+  public Report2_ListFilterText: string = null;
 
 
   public FilteredItems = [];
@@ -61,8 +64,12 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
 
 
         <Pivot onLinkClick={this.clearErrors}>
-          <PivotItem headerText="DG Areas">
+          <PivotItem headerText="Output PDF by DG Areas">
             {this.renderReport1()}
+          </PivotItem>
+
+          <PivotItem headerText="Output PDF by Publication">
+            {this.renderReport2()}
           </PivotItem>
 
           <PivotItem headerText="Export to Excel" itemKey="Export to Excel">
@@ -93,6 +100,30 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
             onError={this.onError}
             filterText={this.state.Report1_ListFilterText}
             onChangeFilterText={this.handleReport1_ChangeFilterText}
+
+          />
+
+
+        </div>
+      </div>
+    );
+
+
+  }
+
+  private renderReport2(): React.ReactElement<types.IWebPartComponentProps> {
+
+
+    return (
+      <div>
+        <CrLoadingOverlayWelcome isLoading={this.state.Loading} />
+        <div style={{ paddingTop: "10px" }}>
+
+          <Report2List
+            {...this.props}
+            onError={this.onError}
+            filterText={this.state.Report2_ListFilterText}
+            onChangeFilterText={this.handleReport2_ChangeFilterText}
 
           />
 
@@ -180,6 +211,9 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
 
   private handleReport1_ChangeFilterText = (value: string): void => {
     this.setState({ Report1_ListFilterText: value });
+  }
+  private handleReport2_ChangeFilterText = (value: string): void => {
+    this.setState({ Report2_ListFilterText: value });
   }
 
 

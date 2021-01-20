@@ -63,7 +63,8 @@ namespace ControlAssuranceAPI.Models
         private NAOUpdateFeedbackTypeRepository naoUpdateFeedbackTypeRepository;
         private NAOAssignmentRepository nAOAssignmentRepository;
         private NAOOutputRepository nAOOutputRepository;
-        
+        private NAOOutput2Repository nAOOutput2Repository;
+
 
         private GIAAAssuranceRepository gIAAAssuranceRepository;
         private GIAAPeriodRepository gIAAPeriodRepository;
@@ -579,6 +580,14 @@ namespace ControlAssuranceAPI.Models
             get
             {
                 return nAOOutputRepository = nAOOutputRepository ?? new NAOOutputRepository(user, context);
+            }
+        }
+
+        public NAOOutput2Repository NAOOutput2Repository
+        {
+            get
+            {
+                return nAOOutput2Repository = nAOOutput2Repository ?? new NAOOutput2Repository(user, context);
             }
         }
 

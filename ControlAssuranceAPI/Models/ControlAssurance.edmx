@@ -738,6 +738,18 @@
           <Property Name="PdfName" Type="nvarchar" MaxLength="4000" />
           <Property Name="PeriodUpdateStatus" Type="nvarchar" MaxLength="50" />
         </EntityType>
+        <EntityType Name="NAOOutput2">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" />
+          <Property Name="PdfStatus" Type="nvarchar(max)" />
+          <Property Name="PdfDate" Type="datetime" />
+          <Property Name="PdfName" Type="nvarchar" MaxLength="4000" />
+          <Property Name="LastActionUser" Type="nvarchar" MaxLength="500" />
+          <Property Name="LastActionDetails" Type="nvarchar(max)" />
+        </EntityType>
         <EntityType Name="NAOPeriod">
           <Key>
             <PropertyRef Name="ID" />
@@ -2059,6 +2071,7 @@
           <EntitySet Name="NAOAssignment" EntityType="Self.NAOAssignment" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="NAODefForm" EntityType="Self.NAODefForm" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="NAOOutput" EntityType="Self.NAOOutput" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="NAOOutput2" EntityType="Self.NAOOutput2" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="NAOPeriod" EntityType="Self.NAOPeriod" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="NAOPublication" EntityType="Self.NAOPublication" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="NAOPublicationDirectorate" EntityType="Self.NAOPublicationDirectorate" Schema="dbo" store:Type="Tables" />
@@ -3267,6 +3280,18 @@
           <Property Name="PdfName" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
           <Property Name="PeriodUpdateStatus" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="DirectorateGroup" Relationship="Self.FK_NAOOutput_DirectorateGroup" FromRole="NAOOutput" ToRole="DirectorateGroup" />
+        </EntityType>
+        <EntityType Name="NAOOutput2">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PdfStatus" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PdfDate" Type="DateTime" Precision="3" />
+          <Property Name="PdfName" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
+          <Property Name="LastActionUser" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="LastActionDetails" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="NAOPeriod">
           <Key>
@@ -4642,6 +4667,7 @@
           <EntitySet Name="NAOAssignments" EntityType="Self.NAOAssignment" />
           <EntitySet Name="NAODefForms" EntityType="Self.NAODefForm" />
           <EntitySet Name="NAOOutputs" EntityType="Self.NAOOutput" />
+          <EntitySet Name="NAOOutput2" EntityType="Self.NAOOutput2" />
           <EntitySet Name="NAOPeriods" EntityType="Self.NAOPeriod" />
           <EntitySet Name="NAOPublications" EntityType="Self.NAOPublication" />
           <EntitySet Name="NAOPublicationDirectorates" EntityType="Self.NAOPublicationDirectorate" />
@@ -5994,6 +6020,19 @@
                 <ScalarProperty Name="PdfDate" ColumnName="PdfDate" />
                 <ScalarProperty Name="PdfName" ColumnName="PdfName" />
                 <ScalarProperty Name="PeriodUpdateStatus" ColumnName="PeriodUpdateStatus" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="NAOOutput2">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.NAOOutput2">
+              <MappingFragment StoreEntitySet="NAOOutput2">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="PdfStatus" ColumnName="PdfStatus" />
+                <ScalarProperty Name="PdfDate" ColumnName="PdfDate" />
+                <ScalarProperty Name="PdfName" ColumnName="PdfName" />
+                <ScalarProperty Name="LastActionUser" ColumnName="LastActionUser" />
+                <ScalarProperty Name="LastActionDetails" ColumnName="LastActionDetails" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

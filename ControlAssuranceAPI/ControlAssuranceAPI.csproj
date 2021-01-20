@@ -309,6 +309,7 @@
     <Compile Include="Controllers\LogsController.cs" />
     <Compile Include="Controllers\NAOAssignmentsController.cs" />
     <Compile Include="Controllers\NAODefFormsController.cs" />
+    <Compile Include="Controllers\NAOOutput2Controller.cs" />
     <Compile Include="Controllers\NAOOutputsController.cs" />
     <Compile Include="Controllers\NAOPeriodsController.cs" />
     <Compile Include="Controllers\NAOPublicationDirectoratesController.cs" />
@@ -525,6 +526,9 @@
     <Compile Include="Models\NAOOutput.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\NAOOutput2.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\NAOOutput_Result.cs" />
     <Compile Include="Models\NAOPeriod.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
@@ -661,6 +665,7 @@
     <Compile Include="Repositories\AuditFeedbackRepository.cs" />
     <Compile Include="Repositories\NAOAssignmentRepository.cs" />
     <Compile Include="Repositories\NAODefFormRepository.cs" />
+    <Compile Include="Repositories\NAOOutput2Repository.cs" />
     <Compile Include="Repositories\NAOOutputRepository.cs" />
     <Compile Include="Repositories\NAOPeriodRepository.cs" />
     <Compile Include="Repositories\NAOPublicationDirectorateRepository.cs" />

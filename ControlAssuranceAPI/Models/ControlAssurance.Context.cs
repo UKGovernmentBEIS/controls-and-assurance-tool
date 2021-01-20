@@ -79,6 +79,7 @@ namespace ControlAssuranceAPI.Models
         public virtual DbSet<NAOAssignment> NAOAssignments { get; set; }
         public virtual DbSet<NAODefForm> NAODefForms { get; set; }
         public virtual DbSet<NAOOutput> NAOOutputs { get; set; }
+        public virtual DbSet<NAOOutput2> NAOOutput2 { get; set; }
         public virtual DbSet<NAOPeriod> NAOPeriods { get; set; }
         public virtual DbSet<NAOPublication> NAOPublications { get; set; }
         public virtual DbSet<NAOPublicationDirectorate> NAOPublicationDirectorates { get; set; }

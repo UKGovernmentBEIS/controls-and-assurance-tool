@@ -666,6 +666,13 @@ namespace ControlAssuranceAPI.Libs
             //next page, publications loop will start containing all info in publication + recs loop
             foreach (var p in publications)
             {
+                var lastPeriod = nAOPeriodRepository.GetLastPeriod(p.CurrentPeriodId);
+                int lastPeriodId = 0;
+                if (lastPeriod != null)
+                {
+                    lastPeriodId = lastPeriod.ID;
+                }
+
                 //need page break before starting of any publication contents
                 section.AddPageBreak();
 
@@ -705,22 +712,26 @@ namespace ControlAssuranceAPI.Libs
                 paragraph.AddLineBreak();
                 paragraph.AddFormattedText($"Publication Year: {p.Year?.ToString() ?? ""}", "normalTxt");
                 paragraph.AddLineBreak();
-                paragraph.AddFormattedText($"Period: {p.PeriodStart?.ToString() ?? ""} to {p.PeriodEnd?.ToString() ?? ""}", "normalTxt");
-                paragraph.AddLineBreak(); paragraph.AddLineBreak();
 
 
 
-                var lastPeriod = nAOPeriodRepository.GetLastPeriod(p.CurrentPeriodId);
-                int lastPeriodId = 0;
-                if(lastPeriod != null)
+                if (lastPeriodId > 0)
                 {
-                    lastPeriodId = lastPeriod.ID;
+                    paragraph.AddFormattedText($"Period: {lastPeriod.PeriodStartDate?.ToString("dd/MM/yyyy") ?? ""} to {lastPeriod.PeriodEndDate?.ToString("dd/MM/yyyy") ?? ""}", "normalTxt");
+                    paragraph.AddLineBreak(); paragraph.AddLineBreak();
                 }
-                if(lastPeriodId == 0)
+                else
                 {
+                    //lastPeriodId=0
+                    paragraph.AddFormattedText($"Period: {p.PeriodStart?.ToString() ?? ""} to {p.PeriodEnd?.ToString() ?? ""}", "normalTxt");
+                    paragraph.AddLineBreak();
+                    paragraph.AddFormattedText("This is the first period and is currently in progress. No updates are available.", "normalTxt");
+                    paragraph.AddLineBreak(); paragraph.AddLineBreak();
                     //we only show further details for most recent archived period, if there is no recent archived period then skip and go to the next publication
                     continue;
                 }
+
+
 
                 //var recs = nAOPublicationRepository.Find(p.ID).NAORecommendations;
                 //changing following cause we only want recs of last period ie which recs have updates for the last period and not get archived recs (NAORecStatusTypeId is 4)
@@ -735,11 +746,11 @@ namespace ControlAssuranceAPI.Libs
                 int totalRecs = recs.Count();
 
                 //calculations are for the last archived period
-                int openRecs = recs.Count(x => x.NAOUpdates.Any(u => u.NAOPeriodId == lastPeriodId && u.NAORecStatusTypeId < 3));
-                int closedRecs = recs.Count(x => x.NAOUpdates.Any(u => u.NAOPeriodId == lastPeriodId && u.NAORecStatusTypeId == 3));
+                int openRecs = recs.Count(x => x.NAOUpdates.Any(u => u.NAORecStatusTypeId < 3));
+                int closedRecs = recs.Count(x => x.NAOUpdates.Any(u => u.NAORecStatusTypeId == 3));
 
                 DateTime threeMonthsOlderDate = DateTime.Now.AddMonths(-3);
-                int closedRecsLast3Months = recs.Count(x => x.NAOUpdates.Any(u => u.NAOPeriodId == lastPeriodId && u.NAORecStatusTypeId == 3 && u.ImplementationDate >= threeMonthsOlderDate));
+                int closedRecsLast3Months = recs.Count(x => x.NAOUpdates.Any(u => u.NAORecStatusTypeId == 3 && u.ImplementationDate >= threeMonthsOlderDate));
 
                 int percentClosed = 0;
                 try
@@ -936,6 +947,520 @@ namespace ControlAssuranceAPI.Libs
             //then upload final out final to the sharepoint
             sharepointLib.UploadFinalReport1(outputPdfPath, outputPdfName);
 
+
+        }
+
+        public void CreatetNaoPdf2(string publicationIds, NAOPublicationRepository nAOPublicationRepository, NAOPeriodRepository nAOPeriodRepository, string tempLocation, string outputPdfName, string spSiteUrl, string spAccessDetails)
+        {
+            SharepointLib sharepointLib = new SharepointLib(spSiteUrl, spAccessDetails);
+
+            List<int> lstPublicationIds = new List<int>();
+            lstPublicationIds = publicationIds.Split(',').Select(int.Parse).ToList();
+            var publications = nAOPublicationRepository.NAOPublications.Where(x => lstPublicationIds.Contains(x.ID)).ToList();
+
+            Document document = new Document();
+            Section section = document.AddSection();
+
+            Paragraph paragraph = new Paragraph();
+            paragraph.AddTab();
+            paragraph.AddText("Page ");
+            paragraph.AddPageField();
+            paragraph.AddText(" of ");
+            paragraph.AddNumPagesField();
+
+            section.Footers.Primary.Add(paragraph);
+
+            #region styles
+
+
+            Style normalStyle = document.Styles.AddStyle("normalStyle", "Normal");
+            normalStyle.Font.Name = "calibri";
+
+            Style styleFooter = document.Styles[StyleNames.Footer];
+            styleFooter.Font.Name = "calibri";
+            styleFooter.ParagraphFormat.AddTabStop("8cm", TabAlignment.Center);
+
+
+            Style heading1 = document.Styles.AddStyle("heading1", "normalStyle");
+            heading1.Font.Size = 48;
+            //heading1.Font.Name = "Calibri (Body)";
+            heading1.Font.Color = Color.FromRgb(0, 126, 192);
+
+            Style heading2 = document.Styles.AddStyle("heading2", "normalStyle");
+            heading2.Font.Size = 26;
+            //heading2.Font.Name = "Calibri (Body)";
+            heading2.Font.Color = Color.FromRgb(196, 89, 17);
+
+            Style heading3 = document.Styles.AddStyle("heading3", "normalStyle");
+            heading3.Font.Size = 14;
+            //heading3.Font.Name = "Calibri (Body)";
+            heading3.Font.Color = Color.FromRgb(0, 0, 0);
+
+            Style pubHeading = document.Styles.AddStyle("pubHeading", "normalStyle");
+            pubHeading.Font.Size = 20;
+            //pubHeading.Font.Name = "Calibri Light (Headings)";
+            pubHeading.Font.Bold = true;
+            pubHeading.Font.Color = Color.FromRgb(0, 126, 192);
+
+            Style recHeading = document.Styles.AddStyle("recHeading", "normalStyle");
+            recHeading.Font.Size = 14;
+            //recHeading.Font.Name = "Calibri Light (Headings)";
+            recHeading.Font.Bold = true;
+            recHeading.Font.Color = Color.FromRgb(0, 126, 192);
+
+            Style recSubHeading = document.Styles.AddStyle("recSubHeading", "normalStyle");
+            //recSubHeading.Font.Size = 14;
+            //recSubHeading.Font.Name = "Calibri (Body)";
+            recSubHeading.Font.Bold = true;
+            recSubHeading.Font.Color = Color.FromRgb(196, 89, 17);
+
+            Style normalTxt = document.Styles.AddStyle("normalTxt", "normalStyle");
+            //normalTxt.Font.Size = 11;
+            //normalTxt.Font.Name = "Calibri (Body)";
+
+            Style normalTxtLink = document.Styles.AddStyle("normalTxtLink", "normalStyle");
+            //normalTxtLink.Font.Name = "Calibri (Body)";
+            normalTxtLink.Font.Color = Color.FromRgb(0, 0, 255);
+            normalTxtLink.Font.Underline = Underline.Single;
+
+            Style normalItalicTxt = document.Styles.AddStyle("normalItalicTxt", "normalStyle");
+            //normalItalicTxt.Font.Size = 12;
+            //normalItalicTxt.Font.Name = "Calibri (Body)";
+            normalItalicTxt.Font.Italic = true;
+
+            #endregion styles
+
+            #region Page1(cover page)
+
+            //page 1(cover page)
+            paragraph = section.AddParagraph();
+            paragraph.Format.Alignment = ParagraphAlignment.Center;
+
+
+            paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak();
+            paragraph.AddFormattedText("NAO & PAC", "heading1");
+
+
+            paragraph.AddLineBreak();
+            paragraph.AddLineBreak();
+            paragraph.AddFormattedText("Publication Updates", "heading2");
+
+
+            paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak();
+            paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak();
+
+
+
+            //list of publications
+
+            MigraDoc.DocumentObjectModel.Tables.Table table = section.AddTable();
+
+            //table.Style = "Table";
+            table.Borders.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(127, 127, 127); //TableBorder;
+            table.Borders.Width = 0.25;
+            table.LeftPadding = 10;
+            table.RightPadding = 10;
+            table.TopPadding = 5;
+            table.BottomPadding = 5;
+            //table.Borders.Left.Width = 0.5;
+            //table.Borders.Right.Width = 0.5;
+            table.Rows.LeftIndent = 0;
+
+            // Before you can add a row, you must define the columns
+            Column column = table.AddColumn("6cm");
+            column.Format.Alignment = ParagraphAlignment.Left;
+
+            column = table.AddColumn("5cm");
+            column.Format.Alignment = ParagraphAlignment.Left;
+
+            column = table.AddColumn("5cm");
+            column.Format.Alignment = ParagraphAlignment.Left;
+
+
+            // Create the header of the table
+            Row row = table.AddRow();
+            row.HeadingFormat = true;
+            row.Format.Alignment = ParagraphAlignment.Left;
+            //row.Format.Font.Bold = true;
+
+            row.Shading.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(0, 126, 192);
+            row.Format.Font.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(255, 255, 255);
+
+            row.Cells[0].AddParagraph("Publications");
+            row.Cells[0].Format.Alignment = ParagraphAlignment.Left;
+
+            row.Cells[1].AddParagraph("DGArea(s)");
+            row.Cells[1].Format.Alignment = ParagraphAlignment.Left;
+
+            row.Cells[2].AddParagraph("Directorate(s)");
+            row.Cells[2].Format.Alignment = ParagraphAlignment.Left;
+
+
+
+
+            foreach (var p in publications)
+            {
+                //get DGAreas and Directorates for the publication
+                string dgAreas = "";
+                string directorates = "";
+
+                HashSet<DirectorateGroup> uniqueDgAreas = new HashSet<DirectorateGroup>();
+                foreach (var d in p.NAOPublicationDirectorates)
+                {
+                    var dgArea = d.Directorate.DirectorateGroup;
+                    uniqueDgAreas.Add(dgArea);
+
+                    directorates += d.Directorate.Title + ", ";
+                }
+
+                foreach (var uniqueDgArea in uniqueDgAreas)
+                {
+                    dgAreas += uniqueDgArea.Title + ", ";
+                }
+
+
+                dgAreas = dgAreas.Trim();
+                directorates = directorates.Trim();
+                if (dgAreas.Length > 0)
+                {
+                    dgAreas = dgAreas.Substring(0, dgAreas.Length - 1);
+                    directorates = directorates.Substring(0, directorates.Length - 1);
+                }
+
+                row = table.AddRow();
+                row.Cells[0].AddParagraph(p.Title);
+                row.Cells[1].AddParagraph(dgAreas);
+                row.Cells[2].AddParagraph(directorates);
+            }
+
+            #endregion Page1(cover page)
+
+
+            //next page, publications loop will start containing all info in publication + recs loop
+            foreach (var p in publications)
+            {
+                var lastPeriod = nAOPeriodRepository.GetLastPeriod(p.CurrentPeriodId.Value);
+                int lastPeriodId = 0;
+                if (lastPeriod != null)
+                {
+                    lastPeriodId = lastPeriod.ID;
+                }
+
+                //need page break before starting of any publication contents
+                section.AddPageBreak();
+
+                paragraph = section.AddParagraph();
+                paragraph.AddFormattedText($"Publication: {p.Title}", "pubHeading");
+                paragraph.AddLineBreak();
+
+                //get DGAreas and Directorates for the publication
+                string dgAreas = "";
+                string directorates = "";
+
+                HashSet<DirectorateGroup> uniqueDgAreas = new HashSet<DirectorateGroup>();
+                foreach (var d in p.NAOPublicationDirectorates)
+                {
+                    var dgArea = d.Directorate.DirectorateGroup;
+                    uniqueDgAreas.Add(dgArea);
+
+                    directorates += d.Directorate.Title + ", ";
+                }
+
+                foreach (var uniqueDgArea in uniqueDgAreas)
+                {
+                    dgAreas += uniqueDgArea.Title + ", ";
+                }
+
+
+                dgAreas = dgAreas.Trim();
+                directorates = directorates.Trim();
+                if (dgAreas.Length > 0)
+                {
+                    dgAreas = dgAreas.Substring(0, dgAreas.Length - 1);
+                    directorates = directorates.Substring(0, directorates.Length - 1);
+                }
+
+
+
+
+                paragraph.AddFormattedText($"DG Area(s): {dgAreas}", "normalTxt");
+                paragraph.AddLineBreak();
+                paragraph.AddFormattedText($"Directorate(s): {directorates}", "normalTxt");
+                paragraph.AddLineBreak(); paragraph.AddLineBreak();
+
+                paragraph.AddFormattedText(p.PublicationSummary?.ToString() ?? "", "normalTxt");
+
+
+                //Links
+
+                if (string.IsNullOrEmpty(p.PublicationLink) == false)
+                {
+                    paragraph.AddLineBreak();
+                    paragraph.AddFormattedText("Links: ");
+                    var list1 = p.PublicationLink.Trim().Split('>').ToList();
+                    foreach (var ite1 in list1)
+                    {
+                        if (string.IsNullOrEmpty(ite1))
+                        {
+                            continue;
+                        }
+                        var arr2 = ite1.Split('<').ToArray();
+                        string description = arr2[0];
+                        string url = arr2[1];
+                        var h = paragraph.AddHyperlink(url, HyperlinkType.Web);
+                        h.AddFormattedText(description, "normalTxtLink");
+                        paragraph.AddFormattedText("  ");
+
+                    }
+                }
+
+
+
+                paragraph.AddLineBreak(); paragraph.AddLineBreak();
+                paragraph.AddFormattedText($"Publication Type: {p.NAOType.Title}", "normalTxt");
+                paragraph.AddLineBreak();
+                paragraph.AddFormattedText($"Publication Year: {p.Year?.ToString() ?? ""}", "normalTxt");
+                paragraph.AddLineBreak();
+
+
+
+                if (lastPeriodId > 0)
+                {
+                    paragraph.AddFormattedText($"Period: {lastPeriod.PeriodStartDate?.ToString("dd/MM/yyyy") ?? ""} to {lastPeriod.PeriodEndDate?.ToString("dd/MM/yyyy") ?? ""}", "normalTxt");
+                    paragraph.AddLineBreak(); paragraph.AddLineBreak();
+                }
+                else
+                {
+                    //lastPeriodId=0
+                    paragraph.AddFormattedText($"Period: {p.CurrentPeriodStartDate?.ToString("dd/MM/yyyy") ?? ""} to {p.CurrentPeriodEndDate?.ToString("dd/MM/yyyy") ?? ""}", "normalTxt");
+                    paragraph.AddLineBreak();
+                    paragraph.AddFormattedText("This is the first period and is currently in progress. No updates are available.", "normalTxt");
+                    paragraph.AddLineBreak(); paragraph.AddLineBreak();
+                    //we only show further details for most recent archived period, if there is no recent archived period then skip and go to the next publication
+                    continue;
+                }
+
+
+                //var recs = nAOPublicationRepository.Find(p.ID).NAORecommendations;
+                //changing following cause we only want recs of last period ie which recs have updates for the last period and not get archived recs (NAORecStatusTypeId is 4)
+                var recs = nAOPublicationRepository.Find(p.ID).NAORecommendations.Where(x => x.NAOUpdates.Any(u => u.NAOPeriodId == lastPeriodId && u.NAORecStatusTypeId != 4));
+
+                #region rec stats table
+
+
+                //rec stats table
+                //calculate stats
+
+                int totalRecs = recs.Count();
+
+                //calculations are for the last archived period
+                int openRecs = recs.Count(x => x.NAOUpdates.Any(u => u.NAORecStatusTypeId < 3));
+                int closedRecs = recs.Count(x => x.NAOUpdates.Any(u => u.NAORecStatusTypeId == 3));
+
+                DateTime threeMonthsOlderDate = DateTime.Now.AddMonths(-3);
+                int closedRecsLast3Months = recs.Count(x => x.NAOUpdates.Any(u => u.NAORecStatusTypeId == 3 && u.ImplementationDate >= threeMonthsOlderDate));
+
+                int percentClosed = 0;
+                try
+                {
+                    decimal a = (decimal)((decimal)closedRecs / (decimal)totalRecs);
+                    decimal b = Math.Round((a * 100));
+                    percentClosed = (int)b;
+                }
+                catch (Exception ex)
+                {
+                    string m = ex.Message;
+                }
+
+
+                table = section.AddTable();
+
+                table.Borders.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(127, 127, 127); //TableBorder;
+                table.Borders.Width = 0.25;
+                table.LeftPadding = 10;
+                table.RightPadding = 10;
+                table.TopPadding = 5;
+                table.BottomPadding = 5;
+                //table.Borders.Left.Width = 0.5;
+                //table.Borders.Right.Width = 0.5;
+                table.Rows.LeftIndent = 0;
+
+                // Before you can add a row, you must define the columns
+                column = table.AddColumn("5cm");
+                column.Format.Alignment = ParagraphAlignment.Left;
+
+                column = table.AddColumn("2cm");
+                column.Format.Alignment = ParagraphAlignment.Left;
+
+                column = table.AddColumn("2cm");
+                column.Format.Alignment = ParagraphAlignment.Left;
+
+                column = table.AddColumn("4cm");
+                column.Format.Alignment = ParagraphAlignment.Left;
+
+                column = table.AddColumn("3cm");
+                column.Format.Alignment = ParagraphAlignment.Left;
+
+
+                // Create the header of the table
+                row = table.AddRow();
+                row.HeadingFormat = true;
+                row.Format.Alignment = ParagraphAlignment.Left;
+                //row.Format.Font.Bold = true;
+
+                row.Shading.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(0, 126, 192);
+                row.Format.Font.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(255, 255, 255);
+
+                row.Cells[0].AddParagraph("Number of recommendations");
+                row.Cells[1].AddParagraph("Open");
+                row.Cells[2].AddParagraph("Closed");
+                row.Cells[3].AddParagraph("Closed in last 3 months");
+                row.Cells[4].AddParagraph("% Closed");
+
+                //data row
+                row = table.AddRow();
+                row.HeadingFormat = true;
+                row.Format.Alignment = ParagraphAlignment.Left;
+
+                //row.Shading.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(0, 126, 192);
+                //row.Format.Font.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(255, 255, 255);
+
+                row.Cells[0].AddParagraph($"{totalRecs}");
+                row.Cells[1].AddParagraph($"{openRecs}");
+                row.Cells[2].AddParagraph($"{closedRecs}");
+                row.Cells[3].AddParagraph($"{closedRecsLast3Months}");
+                row.Cells[4].AddParagraph($"{percentClosed}%");
+
+                #endregion rec stats table
+
+                paragraph = section.AddParagraph();
+
+
+                //recs loop to show each rec contents
+                foreach (var rec in recs)
+                {
+                    paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak();
+                    paragraph.AddFormattedText($"Recommendation: {rec.Title?.ToString() ?? ""}", "recHeading");
+                    paragraph.AddLineBreak(); paragraph.AddLineBreak();
+                    paragraph.AddFormattedText("Status and Target Dates", "recSubHeading");
+                    paragraph.AddLineBreak();
+
+                    var update = rec.NAOUpdates.FirstOrDefault(u => u.NAOPeriodId == lastPeriodId);
+                    string recStatus = update.NAORecStatusType.Title?.ToString() ?? "";
+                    string orgTargetDate = rec.OriginalTargetDate?.ToString() ?? "";
+                    string targetDate = update.TargetDate?.ToString() ?? "";
+
+                    paragraph.AddFormattedText($"Recommendation Status: {recStatus}", "normalTxt");
+                    paragraph.AddLineBreak();
+                    paragraph.AddFormattedText($"Initial Target Implementation Date: {orgTargetDate}", "normalTxt");
+                    paragraph.AddLineBreak();
+                    paragraph.AddFormattedText($"Current Target Implementation Date: {targetDate}", "normalTxt");
+
+                    paragraph.AddLineBreak(); paragraph.AddLineBreak();
+                    paragraph.AddFormattedText("Conclusion", "recSubHeading");
+                    paragraph.AddLineBreak();
+                    paragraph.AddFormattedText($"{rec.Conclusion?.ToString() ?? ""}", "normalTxt");
+
+                    paragraph.AddLineBreak(); paragraph.AddLineBreak();
+                    paragraph.AddFormattedText("Recommendation", "recSubHeading");
+                    paragraph.AddLineBreak();
+                    paragraph.AddFormattedText($"{rec.RecommendationDetails?.ToString() ?? ""}", "normalTxt");
+
+                    paragraph.AddLineBreak(); paragraph.AddLineBreak();
+                    paragraph.AddFormattedText("Actions Taken", "recSubHeading");
+                    paragraph.AddLineBreak();
+
+
+                    paragraph.AddFormattedText($"{lastPeriod.PeriodStartDate.Value.ToString("dd/MM/yyyy")} to {lastPeriod.PeriodEndDate.Value.ToString("dd/MM/yyyy")}", "normalTxt");
+                    paragraph.AddLineBreak();
+                    paragraph.AddFormattedText($"{update.ActionsTaken?.ToString() ?? ""}", "normalTxt");
+
+                    //Links - Last Period
+                    if (string.IsNullOrEmpty(update.FurtherLinks) == false)
+                    {
+
+                        paragraph.AddLineBreak();
+                        paragraph.AddFormattedText("Links: ");
+                        var list1 = update.FurtherLinks.Trim().Split('>').ToList();
+                        foreach (var ite1 in list1)
+                        {
+                            if (string.IsNullOrEmpty(ite1))
+                            {
+                                continue;
+                            }
+                            var arr2 = ite1.Split('<').ToArray();
+                            string description = arr2[0];
+                            string url = arr2[1];
+                            var h = paragraph.AddHyperlink(url, HyperlinkType.Web);
+                            h.AddFormattedText(description, "normalTxtLink");
+                            paragraph.AddFormattedText("  ");
+
+                        }
+                    }
+
+
+                    //comments
+                    string commentsHeading = "";
+                    int naoUpdateFeedbackTypeId = 0;
+                    if (p.NAOType.Title.Contains("PAC"))
+                    {
+                        //PAC Comments
+                        commentsHeading = "PAC Comments";
+                        naoUpdateFeedbackTypeId = 3;
+                    }
+                    else
+                    {
+                        //NAO Comments
+                        commentsHeading = "NAO Comments";
+                        naoUpdateFeedbackTypeId = 2;
+                    }
+
+                    paragraph.AddLineBreak(); paragraph.AddLineBreak();
+                    paragraph.AddFormattedText(commentsHeading, "recSubHeading");
+                    paragraph.AddLineBreak();
+
+                    var comments = update.NAOUpdateFeedbacks.Where(c => c.NAOUpdateFeedbackTypeId == naoUpdateFeedbackTypeId);
+
+                    foreach (var comment in comments)
+                    {
+                        paragraph.AddFormattedText(comment.Comment?.ToString() ?? "", "normalTxt");
+                        paragraph.AddFormattedText($" Date: {comment.CommentDate.Value.ToString("dd MMM yyyy")} By: {comment.User.Title}", "normalItalicTxt");
+                        paragraph.AddLineBreak();
+                        //string commentTxt = $"{comment.Comment} Date: {comment.CommentDate.Value.ToString("dd MMM yyyy")} By: Tas";
+                    }
+
+
+
+
+                }
+
+
+            }
+
+
+
+
+
+
+
+
+
+
+            //final creation steps
+            document.UseCmykColor = true;
+            const bool unicode = false;
+            const PdfFontEmbedding embedding = PdfFontEmbedding.Always;
+            PdfDocumentRenderer pdfRenderer = new PdfDocumentRenderer(unicode, embedding);
+            pdfRenderer.Document = document;
+            pdfRenderer.RenderDocument();
+
+
+            string outputPdfPath = System.IO.Path.Combine(tempLocation, outputPdfName);
+            pdfRenderer.PdfDocument.Save(outputPdfPath);
+
+
+            //then upload final out final to the sharepoint
+            sharepointLib.UploadFinalReport1(outputPdfPath, outputPdfName);
 
         }
 

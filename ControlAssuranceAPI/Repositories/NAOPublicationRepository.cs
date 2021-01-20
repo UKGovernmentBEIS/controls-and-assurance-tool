@@ -98,6 +98,7 @@ namespace ControlAssuranceAPI.Repositories
                 int currentPeriodId = publication.CurrentPeriodId.Value;
                 //make current period to archived
                 var currentPeriod = db.NAOPeriods.FirstOrDefault(x => x.ID == currentPeriodId);
+
                 currentPeriod.PeriodStatus = NAOPeriodRepository.PeriodStatuses.ArchivedPeriod;
 
                 //now add NAOPeriod
@@ -115,8 +116,39 @@ namespace ControlAssuranceAPI.Repositories
                 db.SaveChanges();
 
                 //copy all the updates from current period to the new period
-                foreach (var currentPeriodUpdate in currentPeriod.NAOUpdates)
+                foreach (var currentPeriodUpdate in currentPeriod.NAOUpdates.ToList())
                 {
+                    if(currentPeriodUpdate.ProvideUpdate == "0")
+                    {
+                        //update not provided so copy from last period update
+                        if(currentPeriod.LastPeriodId != null)
+                        {
+                            var lastPeriodUpdate = db.NAOUpdates.FirstOrDefault(x => x.NAOPeriodId == currentPeriod.LastPeriodId && x.NAORecommendationId == currentPeriodUpdate.NAORecommendationId);
+                            if(lastPeriodUpdate != null)
+                            {
+                                if(lastPeriodUpdate.ActionsTaken.StartsWith("Last update as follows was for period"))
+                                {
+                                    currentPeriodUpdate.ActionsTaken = lastPeriodUpdate.ActionsTaken;
+                                }
+                                else
+                                {
+                                    currentPeriodUpdate.ActionsTaken = $"Last update as follows was for period {lastPeriodUpdate.NAOPeriod.Title}{Environment.NewLine}{Environment.NewLine}{lastPeriodUpdate.ActionsTaken}";
+                                }
+                                
+                            }
+                            else
+                            {
+                                currentPeriodUpdate.ActionsTaken = "No prior period defined.";
+                            }
+                        }
+                        else
+                        {
+                            currentPeriodUpdate.ActionsTaken = "No prior period defined.";
+                        }
+
+                        db.SaveChanges();
+                    }
+
                     NAOUpdate newUpdate = new NAOUpdate();
                     newUpdate.TargetDate = currentPeriodUpdate.TargetDate; //need from previous period
                     newUpdate.ActionsTaken = "";
