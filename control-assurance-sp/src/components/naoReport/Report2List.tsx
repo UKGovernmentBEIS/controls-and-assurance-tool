@@ -8,6 +8,7 @@ import { IUpdatesListColumn, ColumnDisplayTypes } from '../../types/UpdatesListC
 import { CrLoadingOverlay } from '../cr/CrLoadingOverlay';
 import { Selection } from '../cr/FilteredList';
 import { ConfirmDialog } from '../cr/ConfirmDialog';
+import { getUploadFolder_Report } from '../../types/AppGlobals';
 import styles from '../../styles/cr.module.scss';
 
 
@@ -172,7 +173,7 @@ export default class Report2List extends React.Component<IReport2ListProps, IRep
     constructor(props: IReport2ListProps, state: IReport2ListState<IEntity>) {
         super(props);
         this.state = new Report2ListState<IEntity>();
-
+        this.UploadFolder_Report = getUploadFolder_Report(props.spfxContext);
         this._selection = new Selection({
             onSelectionChanged: () => {
 
