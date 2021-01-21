@@ -81,11 +81,22 @@ export default class AppSettings extends BaseUserContextWebPartComponent<types.I
 
           <div style={{ paddingTop: '30px' }}>
             <div style={{ paddingBottom: '10px' }}>
-              Note: {this.state.LastRunMsg}
+              {
+                this.state.LastRunMsg !== "Working" &&
+                <span>Note: {this.state.LastRunMsg}</span>
+              }
+              {this.state.LastRunMsg === "Working" &&
+                <div>
+                  <span>Working... Please Wait</span><br />
+                  <span style={{ textDecoration: 'underline', color: 'blue', cursor: 'pointer' }} onClick={this.loadAutoFunctionLastRun} >Click to Refresh Status</span>
+                </div>
+              }
+
             </div>
             <PrimaryButton
               text="Send Emails Now"
               onClick={this.handleProcessLnk}
+              disabled={this.state.LastRunMsg === "Working" ? true : false}
             />
 
           </div>
@@ -229,7 +240,10 @@ export default class AppSettings extends BaseUserContextWebPartComponent<types.I
     this.automationOptionService.processAsAutoFunction().then((res: string): void => {
 
       console.log('Result', res);
-      this.loadAutoFunctionLastRun();
+      //this.loadAutoFunctionLastRun();
+      this.setState({
+        LastRunMsg: res, //res = "Working" at this stage
+      });
 
     }, (err) => {
 

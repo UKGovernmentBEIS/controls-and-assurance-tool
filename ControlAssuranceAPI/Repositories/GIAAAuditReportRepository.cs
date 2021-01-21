@@ -36,9 +36,14 @@ namespace ControlAssuranceAPI.Repositories
             var loggedInUser = ApiUser;
             int loggedInUserID = loggedInUser.ID;
 
+            //added join with GIAAAssurances to resolve filter issue in case of null values for assurance, after import there are null values
+            //https://docs.microsoft.com/en-us/dotnet/csharp/linq/perform-left-outer-joins
+
             List<GIAAAuditReportView_Result> retList = new List<GIAAAuditReportView_Result>();
 
             var qry = from r in db.GIAAAuditReports
+                          join a in db.GIAAAssurances on r.GIAAAssuranceId equals a.ID into aj
+                      from ajx in aj.DefaultIfEmpty()
                       orderby r.ID
                       where r.IsArchive == isArchive
                           //where p.NAORecommendations.Any(x => x.NAOUpdates.Any (y => y.NAOPeriodId == naoPeriodId))
@@ -61,8 +66,9 @@ namespace ControlAssuranceAPI.Repositories
                           //DGArea = r.Directorate != null ? r.Directorate.DirectorateGroup.Title : "",
                           //Directorate = r.Directorate != null ? r.Directorate.Title : "",
 
-                          Assurance = r.GIAAAssurance != null ? r.GIAAAssurance.Title : "NoData",
-                          r.GIAAAssuranceId,
+                          //Assurance = r.GIAAAssurance != null ? r.GIAAAssurance.Title : "NoData",
+                          Assurance = ajx.ID != null ? ajx.Title : "NoData",
+                          //r.GIAAAssuranceId,
                           r.GIAARecommendations
 
                       };
@@ -253,7 +259,7 @@ namespace ControlAssuranceAPI.Repositories
                     NumberStr = iteR.NumberStr,
                     //DGArea = iteR.DGArea,
                     Directorate = directorates,
-                    GIAAAssuranceId = iteR.GIAAAssuranceId != null ? iteR.GIAAAssuranceId.Value : 0,
+                    //GIAAAssuranceId = iteR.GIAAAssuranceId != null ? iteR.GIAAAssuranceId.Value : 0,
                     Assurance = iteR.Assurance,
                     Year = iteR.AuditYear != null ? iteR.AuditYear : "",
                     IssueDateStr = (iteR.IssueDate != null) ? iteR.IssueDate.Value.ToString("dd/MM/yyyy") : "",

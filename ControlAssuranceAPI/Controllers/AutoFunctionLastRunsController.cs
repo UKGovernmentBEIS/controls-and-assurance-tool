@@ -42,6 +42,10 @@ namespace ControlAssuranceAPI.Controllers
             string msg = "";
             if(lastRun != null)
             {
+                if(lastRun.Title == "Working")
+                {
+                    return "Working"; //immediate return if working
+                }
                 if(lastRun.LastRunDate == yesterdaysDate)
                 {
                     msg = "Necessary email already sent. Please try again tomorrow";

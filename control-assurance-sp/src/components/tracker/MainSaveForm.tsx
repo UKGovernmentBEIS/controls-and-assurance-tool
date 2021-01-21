@@ -78,6 +78,7 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
     private naoPublicationService: services.NAOPublicationService = new services.NAOPublicationService(this.props.spfxContext, this.props.api);
     private naoPublicationDirectorateService: services.NAOPublicationDirectorateService = new services.NAOPublicationDirectorateService(this.props.spfxContext, this.props.api);
 
+    private saveInProgress:boolean = false;
 
     private childEntities: types.IFormDataChildEntities[] = [
         { ObjectParentProperty: 'NAOPublicationDirectorates', ParentIdProperty: 'NAOPublicationId', ChildIdProperty: 'DirectorateId', ChildService: this.naoPublicationDirectorateService },
@@ -516,7 +517,14 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
 
 
     private saveData = (): void => {
-        this.savePublicationLinksToSingleValue();
+        if(this.saveInProgress === false){
+            this.saveInProgress = true;
+            this.savePublicationLinksToSingleValue();    
+        }
+
+        
+        //console.log('after savePublicationLinksToSingleValue');
+        
     }
 
     private savePublicationLinksToSingleValue = (): void => {
@@ -561,7 +569,10 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
 
 
                 this.naoPublicationService.create(f).then(this.saveChildEntitiesAfterCreate).then(this.onAfterCreate).then(this.props.onSaved, (err) => {
-                    if (this.props.onError) this.props.onError(`Error creating item`, err.message);
+                    if (this.props.onError){
+                        this.saveInProgress = false;
+                        this.props.onError(`Error creating item`, err.message);
+                    } 
                 });
 
             }
@@ -569,7 +580,10 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
 
 
                 this.naoPublicationService.updatePut(f.ID, f).then(this.saveChildEntitiesAfterUpdate).then(this.onAfterUpdate).then(this.props.onSaved, (err) => {
-                    if (this.props.onError) this.props.onError(`Error updating item`, err.message);
+                    if (this.props.onError){
+                        this.saveInProgress = false;
+                        this.props.onError(`Error updating item`, err.message);
+                    }
                 });
 
             }
@@ -715,6 +729,10 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
 
         //at the end set state
         this.setState({ ErrMessages: errMsg });
+
+        if(returnVal === false){
+            this.saveInProgress = false;
+        }
 
         return returnVal;
 

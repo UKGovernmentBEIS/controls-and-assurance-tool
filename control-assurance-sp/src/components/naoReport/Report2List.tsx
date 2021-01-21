@@ -303,11 +303,11 @@ export default class Report2List extends React.Component<IReport2ListProps, IRep
             //const sel = this._selection.getSelection();
             //console.log(sel);
 
-            if (this.state.PDFStatus.search("Last PDF ") === 0) {
-                this.setState({ EnableCreatePdf: true });
+            if (this.state.PDFStatus.search("Working... Please Wait") === 0) {
+                this.setState({ EnableCreatePdf: false });
             }
             else {
-                this.setState({ EnableCreatePdf: false });
+                this.setState({ EnableCreatePdf: true });
             }
 
 
