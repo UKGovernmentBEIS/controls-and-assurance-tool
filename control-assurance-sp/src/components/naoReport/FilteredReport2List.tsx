@@ -160,7 +160,7 @@ export class FilteredReport2List extends React.Component<IFilteredReport2ListPro
                     columns={state.Columns}
                     items={state.FilteredItems}
                     onRenderItemColumn={this.renderItemColumn}
-                    selectionPreservedOnEmptyClick={true} 
+                    selectionPreservedOnEmptyClick={true}
 
                 />
             </Fabric>

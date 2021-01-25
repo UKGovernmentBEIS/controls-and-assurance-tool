@@ -19,7 +19,6 @@ import EvidenceList from './EV/EvidenceList';
 
 
 
-
 export interface IActionUpdatesTabProps extends types.IBaseComponentProps {
 
     filteredItemsRecList: any[];
@@ -314,7 +313,7 @@ export default class ActionUpdatesTab extends React.Component<IActionUpdatesTabP
             for (let i = 0; i < this.props.filteredItemsMainList.length; i++) {
 
                 let ee: any = this.props.filteredItemsMainList[i];
-                const idd: number = Number(ee["ID"]);
+                const idd: number = Number( String(ee["ID"]).replace('GIAA_', '') ); //remove GIAA_ from ID if this component is used in the management actions
 
                 if (idd === currentMainId) {
                     currentMainIDFound = true;
@@ -381,7 +380,7 @@ export default class ActionUpdatesTab extends React.Component<IActionUpdatesTabP
             const lastRecId_FilteredItems: number = Number(this.state.FilteredItemsRecList[this.state.FilteredItemsRecList.length - 1]["ID"]);
             const recId_Current: number = Number(this.state.GIAARecommendationId);
 
-            const lastReportId_FilteredItems: number = Number(this.props.filteredItemsMainList[this.props.filteredItemsMainList.length - 1]["ID"]);
+            const lastReportId_FilteredItems: number = Number( String(this.props.filteredItemsMainList[this.props.filteredItemsMainList.length - 1]["ID"]).replace('GIAA_', '') ); ////remove GIAA_ from ID if this component is used in the management actions
             const reportId_Current: number = Number(this.state.GIAAAuditReportId);
 
 

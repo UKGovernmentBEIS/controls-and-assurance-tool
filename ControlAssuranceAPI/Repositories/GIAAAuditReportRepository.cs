@@ -76,18 +76,18 @@ namespace ControlAssuranceAPI.Repositories
             if (base.GIAA_SuperUserOrGIAAStaff(loggedInUserID))
             {
                 //full permission, no filter on reports
-                if (justMine == true)
-                {
+                //if (justMine == true)
+                //{
 
-                    qry = qry.Where(x =>
-                        x.GIAARecommendations.Any(r => r.GIAAActionOwners.Any(o => o.UserId == loggedInUserID)) ||
-                        x.GIAAAuditReportDirectorates.Any(rd => rd.Directorate.DirectorUserID == loggedInUserID) ||
-                        x.GIAAAuditReportDirectorates.Any(rd => rd.Directorate.DirectorateGroup.DirectorGeneralUserID == loggedInUserID) ||
-                        x.GIAAAuditReportDirectorates.Any(rd => rd.Directorate.DirectorateMembers.Any(dm => dm.UserID == loggedInUserID)) ||
-                        x.GIAAAuditReportDirectorates.Any(rd => rd.Directorate.DirectorateGroup.DirectorateGroupMembers.Any(dgm => dgm.UserID == loggedInUserID))
+                //    qry = qry.Where(x =>
+                //        x.GIAARecommendations.Any(r => r.GIAAActionOwners.Any(o => o.UserId == loggedInUserID)) ||
+                //        x.GIAAAuditReportDirectorates.Any(rd => rd.Directorate.DirectorUserID == loggedInUserID) ||
+                //        x.GIAAAuditReportDirectorates.Any(rd => rd.Directorate.DirectorateGroup.DirectorGeneralUserID == loggedInUserID) ||
+                //        x.GIAAAuditReportDirectorates.Any(rd => rd.Directorate.DirectorateMembers.Any(dm => dm.UserID == loggedInUserID)) ||
+                //        x.GIAAAuditReportDirectorates.Any(rd => rd.Directorate.DirectorateGroup.DirectorateGroupMembers.Any(dgm => dgm.UserID == loggedInUserID))
 
-                    );
-                }
+                //    );
+                //}
             }
             else
             {
@@ -124,8 +124,7 @@ namespace ControlAssuranceAPI.Repositories
                 //}
 
 
-                //following qry works for all the cases if user doesn't have access to view all reports, thats why above code is commented
-                //same as just mine filter
+
                 //DG, DGMember, Dir, DirMember, ActionOwners
                 qry = qry.Where(x =>
                     x.GIAARecommendations.Any(r => r.GIAAActionOwners.Any(o => o.UserId == loggedInUserID)) ||
@@ -169,8 +168,20 @@ namespace ControlAssuranceAPI.Repositories
                 qry = qry.Where(x => x.GIAAAuditReportDirectorates.Any(d => arrDirs.Contains(d.DirectorateId.Value)));
             }
 
+            
+            
+            if(justMine == true && incompleteOnly == true)
+            {
+                qry = qry.Where(x => x.GIAARecommendations.Any(r => r.UpdateStatus == "ReqUpdate" && r.GIAAActionOwners.Any(o => o.UserId == loggedInUserID)));
+            }
+            else if (justMine == true)
+            {
 
-            if(incompleteOnly == true)
+                qry = qry.Where(x =>
+                    x.GIAARecommendations.Any(r => r.GIAAActionOwners.Any(o => o.UserId == loggedInUserID))
+                );
+            }
+            else if (incompleteOnly == true)
             {
                 qry = qry.Where(x => x.GIAARecommendations.Any(r => r.UpdateStatus == "ReqUpdate"));
             }

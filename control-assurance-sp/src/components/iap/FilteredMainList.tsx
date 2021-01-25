@@ -53,7 +53,7 @@ export interface IFilteredMainListProps {
     filterText?: string;
 
     onFilterChange: (value: string) => void;
-    onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
+    onItemTitleClick: (ID: any, title: string, filteredItems: any[]) => void;
 
     selection?: ISelection;
 
@@ -237,7 +237,7 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
 
         else if (column.key === "Title") {
 
-            const id: number = item["ID"];
+            let id:number = item["ID"];            
             const filteredItem = this.state.FilteredItems;
             //const filteredItem = this.state.FilteredItems.filter(x => Number(x["IAPTypeId"]) !== 2);
             //console.log('FilteredMainList', this.state.FilteredItems);

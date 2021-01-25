@@ -5,6 +5,8 @@ import Section from '../../../components/iap/Section';
 import Section2 from '../../../components/iap/Section2';
 import ActionUpdatesTab from '../../../components/iap/ActionUpdatesTab';
 import GroupActionsTab from '../../../components/iap/GroupActionsTab';
+import {default as GIAARecommendationsTab} from '../../../components/giaaActions/RecommendationsTab';//rename to avoid conflict
+import {default as GIAAActionUpdatesTab} from '../../../components/giaaActions/ActionUpdatesTab';//rename to avoid conflict
 
 import * as types from '../../../types';
 import BaseUserContextWebPartComponent from '../../../components/BaseUserContextWebPartComponent';
@@ -44,14 +46,22 @@ export interface IIapUpdatesState extends types.IUserContextWebPartState {
 
   //common for both sections
   Section_MainList_SelectedId: number;
+  Section_MainList_SelectedTitle: string;
   Section_MainList_FilteredItems: any[];
-  Section_MainList_SelectedItem_ActionOwnerPermission:boolean;
+  Section_MainList_SelectedItem_ActionOwnerPermission: boolean;
 
   MainListsSaveCounter: number;
 
-  ShowingGroupUpdates:boolean;
+  ShowingGroupUpdates: boolean;
 
   GroupsList_SelectedId: number;
+
+  //GIAA or NAP recs
+    //Rec Tab
+    RecList_SelectedId: number;
+    RecList_SelectedTitle: string;
+    RecList_FilteredItems: any[];
+    RecList_SelectedItem_ActionOwnerPermission:boolean;
 
 
 }
@@ -69,13 +79,20 @@ export class IapUpdatesState extends types.UserContextWebPartState implements II
 
   //common for both sections
   public Section_MainList_SelectedId: number = 0;
+  public Section_MainList_SelectedTitle: string = null;
   public Section_MainList_FilteredItems = [];
   public Section_MainList_SelectedItem_ActionOwnerPermission = false;
 
   public MainListsSaveCounter: number = 0;
 
-  public ShowingGroupUpdates:boolean = false;
-  public GroupsList_SelectedId:number = 0;
+  public ShowingGroupUpdates: boolean = false;
+  public GroupsList_SelectedId: number = 0;
+
+    //Rec Tab
+    public RecList_SelectedId: number;
+    public RecList_SelectedTitle: string;
+    public RecList_FilteredItems: any[];
+    public RecList_SelectedItem_ActionOwnerPermission:boolean = false;
 
   constructor() {
     super();
@@ -93,6 +110,9 @@ export default class IapUpdates extends BaseUserContextWebPartComponent<types.IW
   private readonly headerTxt_MainTab: string = "Management Action Plans";
   private readonly headerTxt_GroupActionsTab: string = "Group Actions";
   private readonly headerTxt_ActionUpdatesTab: string = "Action Updates";
+
+  private readonly headerTxt_GIAA_RecommendationsTab: string = "GIAA Recommendations";
+  private readonly headerTxt_GIAA_ActionUpdatesTab: string = "GIAA Action Updates";
 
 
   constructor(props: types.IWebPartComponentProps) {
@@ -115,6 +135,8 @@ export default class IapUpdates extends BaseUserContextWebPartComponent<types.IW
         {this.renderGroupActionsTab()}
         {this.renderActionUpdatesTab()}
 
+        {this.renderGIAARecommendationsTab()}
+        {this.renderGIAAActionUpdatesTab()}
 
       </Pivot>
     );
@@ -133,7 +155,7 @@ export default class IapUpdates extends BaseUserContextWebPartComponent<types.IW
         <CrLoadingOverlayWelcome isLoading={this.state.Loading} />
 
         {this.state.User && <div>
-          
+
           {viewOtherActionOwnersPermission && <div>
             <div style={{ marginTop: '15px' }}>
               Select other Action Owners to view their Action Plans
@@ -231,7 +253,7 @@ export default class IapUpdates extends BaseUserContextWebPartComponent<types.IW
 
   private renderGroupActions(): React.ReactElement<types.IWebPartComponentProps> {
 
-    return(
+    return (
       <GroupActionsTab
         iapActionId={this.state.Section_MainList_SelectedId}
         onShowList={this.handleShowListSection1_fromGroup}
@@ -244,7 +266,7 @@ export default class IapUpdates extends BaseUserContextWebPartComponent<types.IW
 
   private renderActionUpdates(): React.ReactElement<types.IWebPartComponentProps> {
 
-    const iapActionId:number = this.state.ShowingGroupUpdates === true ? this.state.GroupsList_SelectedId : this.state.Section_MainList_SelectedId;
+    const iapActionId: number = this.state.ShowingGroupUpdates === true ? this.state.GroupsList_SelectedId : this.state.Section_MainList_SelectedId;
 
     return (
       <ActionUpdatesTab
@@ -263,8 +285,87 @@ export default class IapUpdates extends BaseUserContextWebPartComponent<types.IW
   }
 
 
+  private renderGIAARecommendationsTab() {
+    if (this.state.SelectedPivotKey === this.headerTxt_GIAA_RecommendationsTab || this.state.SelectedPivotKey === this.headerTxt_GIAA_ActionUpdatesTab) {
+      return (
+
+        <PivotItem headerText={this.headerTxt_GIAA_RecommendationsTab} itemKey={this.headerTxt_GIAA_RecommendationsTab}>
+          {this.renderGIAARecommendations()}
+        </PivotItem>
+
+      );
+    }
+    else
+      return <React.Fragment></React.Fragment>;
+  }
+  private renderGIAARecommendations(): React.ReactElement<types.IWebPartComponentProps> {
+
+    return (
+
+      <GIAARecommendationsTab
+        parentId={this.state.Section_MainList_SelectedId}
+        parentTitle={this.state.Section_MainList_SelectedTitle}
+        onItemTitleClick={this.handle_GIAA_RecListItemTitleClick}
+        onShowList={this.handleShowListSection1_fromGroup}
+
+        incompleteOnly={true}
+        justMine={true}
+        actionStatusTypeId={0}
+
+        onChangeIncompleteOnly={null}
+        onChangeJustMine={null}
+        onChangeActionStatusType={null}
+
+        superUserPermission={this.isGiaaSuperUser()}
+        consumerName="Management Actions"
+
+        {...this.props}
+      />
 
 
+    );
+
+  }
+
+  private renderGIAAActionUpdatesTab() {
+    if (this.state.SelectedPivotKey === this.headerTxt_GIAA_ActionUpdatesTab) {
+      return (
+
+        <PivotItem headerText={this.headerTxt_GIAA_ActionUpdatesTab} itemKey={this.headerTxt_GIAA_ActionUpdatesTab}>
+          {this.renderGIAAActionUpdates()}
+        </PivotItem>
+
+      );
+    }
+    else
+      return <React.Fragment></React.Fragment>;
+  }
+
+  private renderGIAAActionUpdates(): React.ReactElement<types.IWebPartComponentProps> {
+    return (
+      <GIAAActionUpdatesTab
+        giaaRecommendationId={this.state.RecList_SelectedId}
+        giaaAuditReportId={this.state.Section_MainList_SelectedId}
+        filteredItemsRecList={this.state.RecList_FilteredItems}
+        filteredItemsMainList={this.state.Section_MainList_FilteredItems}
+        onShowList={this.handleShowGIAARecList}
+
+        recListIncompleteOnly={true}
+        recListJustMine={true}
+        recListActionStatusTypeId={0}
+
+        onChangeMainListID={this.handleSection_MainListChangeSelectedID}
+
+        superUserPermission={this.isGiaaSuperUser()}
+        giaaStaffPermission={this.isGIAAStaff()}
+        actionOwnerPermission={this.state.RecList_SelectedItem_ActionOwnerPermission}
+
+        {...this.props}
+      />
+
+
+    );
+  }
 
 
 
@@ -315,6 +416,35 @@ export default class IapUpdates extends BaseUserContextWebPartComponent<types.IW
     return false;
   }
 
+  private isGiaaSuperUser(): boolean {
+
+    let ups = this.state.UserPermissions;
+    for (let i = 0; i < ups.length; i++) {
+      let up: IUserPermission = ups[i];
+      if (up.PermissionTypeId == 1 || up.PermissionTypeId == 7) {
+        //super user or giaa super user
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  private isGIAAStaff(): boolean {
+
+    let ups = this.state.UserPermissions;
+    for (let i = 0; i < ups.length; i++) {
+      
+      let up: IUserPermission = ups[i];
+      if (up.PermissionTypeId == 4) {
+        //giaa staff
+        return true;
+      }
+    }
+
+    return false;
+  }
+  
   private viewOtherActionOwnersPermission(): boolean {
 
     let ups = this.state.UserPermissions;
@@ -329,9 +459,9 @@ export default class IapUpdates extends BaseUserContextWebPartComponent<types.IW
     return false;
   }
 
-  private getCurrentUserId = ():number =>{
-    let userId:number = 0;
-    if(this.state.User){
+  private getCurrentUserId = (): number => {
+    let userId: number = 0;
+    if (this.state.User) {
       userId = this.state.User.ID;
     }
 
@@ -354,70 +484,150 @@ export default class IapUpdates extends BaseUserContextWebPartComponent<types.IW
     console.log('tab clicked', item);
     this.clearErrors();
     //following conditoin is to resolve bug in the users picker, so by closing a section and opening again resolves the bug
-    if(item.props.headerText === this.headerTxt_MainTab){
-      if(this.state.Section1_IsOpen === true){
+    if (item.props.headerText === this.headerTxt_MainTab) {
+      if (this.state.Section1_IsOpen === true) {
         this.setState({ SelectedPivotKey: item.props.headerText, Section1_IsOpen: false }, this.handleSection1_toggleOpen);
       }
-      else if(this.state.Section2_IsOpen === true){
+      else if (this.state.Section2_IsOpen === true) {
         this.setState({ SelectedPivotKey: item.props.headerText, Section2_IsOpen: false }, this.handleSection2_toggleOpen);
       }
-      
+
     }
-    else{
+    else {
       this.setState({ SelectedPivotKey: item.props.headerText });
     }
-    
+
 
   }
 
-  private handleSection_MainListItemTitleClick = (ID: number, title: string, filteredItems: any[]): void => {
-    
-    console.log('on main list item title click ', ID, title, filteredItems);
+  private handleSection_MainListItemTitleClick = (ID_any: any, title: string, filteredItems: any[]): void => {
+
+    console.log('on main list item title click ', ID_any, title, filteredItems);
+
+    if (String(ID_any).search("GIAA_") === 0) {
+      //giaa action
+      console.log('giaa action');
+      let numID = Number(String(ID_any).replace('GIAA_', ''));
+      console.log('numID', numID);
+
+      const giaaFilteredItems = filteredItems.filter(x => Number(x["IAPTypeId"]) === 4);
+      console.log('giaaFilteredItems', giaaFilteredItems);
+
+      this.setState({
+        SelectedPivotKey: this.headerTxt_GIAA_RecommendationsTab,
+        Section_MainList_SelectedId: numID,
+        Section_MainList_SelectedTitle: title,
+        Section_MainList_FilteredItems: giaaFilteredItems
+      });
+
+    }
+    else {
+
+      //IAP Actions
+      const filteredItem_IAPActions = filteredItems.filter(x => Number(x["IAPTypeId"]) === 1 || Number(x["IAPTypeId"]) === 2 || Number(x["IAPTypeId"]) === 3);
+      console.log('filteredItem_IAPActions', filteredItem_IAPActions);
+
+      const ID:number = Number(ID_any);
+      const currentUderId: number = this.getCurrentUserId();
+      console.log('on rec list current user id ', currentUderId);
+
+      let actionOwnerPermission: boolean = false;
+
+      const currentAction = filteredItem_IAPActions.filter(x => Number(x['ID']) === ID);
+
+      let ownerIdsStr: string = "";
+      let iapTypeId: number = 0;
+      if (currentAction.length > 0) {
+        ownerIdsStr = currentAction[0]["OwnerIds"];
+        const ownerIdsArr: string[] = ownerIdsStr.split(',');
 
 
-    const currentUderId:number = this.getCurrentUserId();
+
+        for (let i = 0; i < ownerIdsArr.length; i++) {
+
+          let ownerId: number = Number(ownerIdsArr[i]);
+          if (ownerId === currentUderId) {
+            actionOwnerPermission = true;
+            break;
+          }
+        }
+
+        iapTypeId = Number(currentAction[0]["IAPTypeId"]);
+
+
+      }
+
+      console.log('action owner permission', actionOwnerPermission);
+      console.log('IAPTypeId', iapTypeId);
+
+      //const filteredItemWithoutGroupActions = filteredItems.filter(x => Number(x["IAPTypeId"]) !== 2);
+      const filteredItem_Type_1_3 = filteredItem_IAPActions.filter(x => Number(x["IAPTypeId"]) === 1 || Number(x["IAPTypeId"]) === 3);
+      console.log('filteredItem_Type_1_3', filteredItem_Type_1_3);
+
+
+      this.setState({
+        ShowingGroupUpdates: (iapTypeId === 2) ? true : false,
+        SelectedPivotKey: (iapTypeId === 2) ? this.headerTxt_GroupActionsTab : this.headerTxt_ActionUpdatesTab,
+        Section_MainList_SelectedId: ID,
+        Section_MainList_SelectedItem_ActionOwnerPermission: actionOwnerPermission,
+        Section_MainList_FilteredItems: filteredItem_Type_1_3,
+      });
+
+
+    }
+
+
+  }
+
+  private handleSection_MainListChangeSelectedID = (ID: number): void => {
+
+    console.log('on handleSection_MainListSelectedID', ID);
+    this.setState({
+      Section_MainList_SelectedId: ID,
+      
+    });
+  }
+
+  private handle_GIAA_RecListItemTitleClick = (ID: number, title: string, filteredItems: any[]): void => {
+
+    const currentUderId: number = this.getCurrentUserId();
     console.log('on rec list current user id ', currentUderId);
+    console.log('on rec list item title click ', ID, title, filteredItems);
 
-    let actionOwnerPermission:boolean = false;
+    let actionOwnerPermission: boolean = false;
 
-    const currentAction = filteredItems.filter(x => x['ID'] === ID);
+    const currentRec = filteredItems.filter(x => x['ID'] === ID);
+    //console.log('currectRec', currentRec);
+    let ownerIdsStr: string = "";
+    if (currentRec.length > 0) {
+      ownerIdsStr = currentRec[0]["OwnerIds"];
+      //console.log('ownerIdsStr', ownerIdsStr);
+      const ownerIdsArr: string[] = ownerIdsStr.split(',');
+      //console.log('ownerIdsArr', ownerIdsArr);
 
-    let ownerIdsStr:string = "";
-    let iapTypeId: number = 0;
-    if(currentAction.length > 0){
-      ownerIdsStr = currentAction[0]["OwnerIds"];
-      const ownerIdsArr:string[] = ownerIdsStr.split(',');
 
 
-      
       for (let i = 0; i < ownerIdsArr.length; i++) {
-      
-        let ownerId:number = Number(ownerIdsArr[i]);
-        if(ownerId === currentUderId){
+
+        let ownerId: number = Number(ownerIdsArr[i]);
+        if (ownerId === currentUderId) {
           actionOwnerPermission = true;
           break;
         }
       }
-
-      iapTypeId = Number(currentAction[0]["IAPTypeId"]);
-      
-
     }
 
     console.log('action owner permission', actionOwnerPermission);
-    console.log('IAPTypeId', iapTypeId);
 
-    const filteredItemWithoutGroupActions = filteredItems.filter(x => Number(x["IAPTypeId"]) !== 2);
 
     this.setState({
-      ShowingGroupUpdates: (iapTypeId === 2) ? true : false,
-      SelectedPivotKey: (iapTypeId === 2) ? this.headerTxt_GroupActionsTab : this.headerTxt_ActionUpdatesTab,
-      Section_MainList_SelectedId: ID,
-      Section_MainList_SelectedItem_ActionOwnerPermission: actionOwnerPermission,
-      Section_MainList_FilteredItems: filteredItemWithoutGroupActions,
+      SelectedPivotKey: this.headerTxt_GIAA_ActionUpdatesTab,
+      RecList_SelectedId: ID,
+      RecList_SelectedTitle: title,
+      RecList_SelectedItem_ActionOwnerPermission: actionOwnerPermission,
+      RecList_FilteredItems: filteredItems
     });
   }
-
 
 
   private handleSection1_toggleOpen = (): void => {
@@ -442,16 +652,16 @@ export default class IapUpdates extends BaseUserContextWebPartComponent<types.IW
     this.clearErrors();
 
     //following conditoin is to resolved bug in the users picker, so by closing a section and opening again resolves the bug
-    if(this.state.Section1_IsOpen === true){
+    if (this.state.Section1_IsOpen === true) {
       this.setState({ SelectedPivotKey: this.headerTxt_MainTab, Section1_IsOpen: false }, this.handleSection1_toggleOpen);
     }
-    else if(this.state.Section2_IsOpen === true){
+    else if (this.state.Section2_IsOpen === true) {
       this.setState({ SelectedPivotKey: this.headerTxt_MainTab, Section2_IsOpen: false }, this.handleSection2_toggleOpen);
     }
 
 
 
-    
+
     this.changeMultiUserPicker(this.state.SelectedUserIds);
   }
 
@@ -459,29 +669,35 @@ export default class IapUpdates extends BaseUserContextWebPartComponent<types.IW
     console.log('in handleShowListSection1');
     this.clearErrors();
 
-    if(this.state.ShowingGroupUpdates === true){
+    if (this.state.ShowingGroupUpdates === true) {
       this.setState({
         SelectedPivotKey: this.headerTxt_GroupActionsTab
       });
     }
-    else{
+    else {
 
-          //following conditoin is to resolved bug in the users picker, so by closing a section and opening again resolves the bug
-    if(this.state.Section1_IsOpen === true){
-      this.setState({ SelectedPivotKey: this.headerTxt_MainTab, Section1_IsOpen: false }, this.handleSection1_toggleOpen);
+      //following conditoin is to resolved bug in the users picker, so by closing a section and opening again resolves the bug
+      if (this.state.Section1_IsOpen === true) {
+        this.setState({ SelectedPivotKey: this.headerTxt_MainTab, Section1_IsOpen: false }, this.handleSection1_toggleOpen);
+      }
+      else if (this.state.Section2_IsOpen === true) {
+        this.setState({ SelectedPivotKey: this.headerTxt_MainTab, Section2_IsOpen: false }, this.handleSection2_toggleOpen);
+      }
+
+
+
+
+      this.changeMultiUserPicker(this.state.SelectedUserIds);
+
     }
-    else if(this.state.Section2_IsOpen === true){
-      this.setState({ SelectedPivotKey: this.headerTxt_MainTab, Section2_IsOpen: false }, this.handleSection2_toggleOpen);
-    }
 
 
-
-    
-    this.changeMultiUserPicker(this.state.SelectedUserIds);
-
-    }
-
-
+  }
+  
+  private handleShowGIAARecList = (): void => {
+    console.log('in handleShowSection1RecList');
+    this.clearErrors();
+    this.setState({ SelectedPivotKey: this.headerTxt_GIAA_RecommendationsTab });
   }
 
   private handleMainFormSaved = (): void => {
@@ -494,37 +710,37 @@ export default class IapUpdates extends BaseUserContextWebPartComponent<types.IW
 
 
   private handle_GroupsListItemTitleClick = (ID: number, title: string, filteredItems: any[]): void => {
-    
+
     console.log('handle_GroupsListItemTitleClick', ID, title, filteredItems);
 
 
-    const currentUderId:number = this.getCurrentUserId();
+    const currentUderId: number = this.getCurrentUserId();
     console.log('on rec list current user id ', currentUderId);
 
-    let actionOwnerPermission:boolean = false;
+    let actionOwnerPermission: boolean = false;
 
     const currentAction = filteredItems.filter(x => x['ID'] === ID);
 
-    let ownerIdsStr:string = "";
-    if(currentAction.length > 0){
+    let ownerIdsStr: string = "";
+    if (currentAction.length > 0) {
       ownerIdsStr = currentAction[0]["OwnerIds"];
       //console.log('ownerIdsStr', ownerIdsStr);
-      const ownerIdsArr:string[] = ownerIdsStr.split(',');
+      const ownerIdsArr: string[] = ownerIdsStr.split(',');
       //console.log('ownerIdsArr', ownerIdsArr);
 
 
-      
+
       for (let i = 0; i < ownerIdsArr.length; i++) {
-      
-        let ownerId:number = Number(ownerIdsArr[i]);
-        if(ownerId === currentUderId){
+
+        let ownerId: number = Number(ownerIdsArr[i]);
+        if (ownerId === currentUderId) {
           actionOwnerPermission = true;
           break;
         }
       }
 
 
-      
+
 
     }
 

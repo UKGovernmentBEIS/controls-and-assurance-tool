@@ -418,6 +418,7 @@ namespace ControlAssuranceAPI.Repositories
             
 
             var loggedInUser = ApiUser;
+            string loggedInUserTitle = loggedInUser.Title;
             int loggedInUserID = loggedInUser.ID;
             bool isSuperUser = base.IAP_SuperUser(loggedInUserID);
 
@@ -586,7 +587,7 @@ namespace ControlAssuranceAPI.Repositories
 
                 IAPActionView_Result item = new IAPActionView_Result
                 {
-                    ID = ite.ID,
+                    ID = ite.ID.ToString(),
                     Title = ite.Title,
                     Priority = ite.Priority,
                     Status = ite.Status,
@@ -607,6 +608,37 @@ namespace ControlAssuranceAPI.Repositories
 
             }
 
+            var iapTypeGIAAAction = db.IAPTypes.FirstOrDefault(x => x.ID == 4);
+
+            //get giaa reports for the current user and add to actions
+            GIAAAuditReportRepository gIAAAuditReportRepository = new GIAAAuditReportRepository(base.user);
+            var giaaAuditReports = gIAAAuditReportRepository.GetAuditReports(0, true, true, isArchive);
+
+            foreach(var ite in giaaAuditReports)
+            {
+                int.TryParse(ite.CompletePercent.Replace("%", ""), out int completePercent);
+
+                IAPActionView_Result item = new IAPActionView_Result
+                {
+                    ID = $"GIAA_{ite.ID.ToString()}",
+                    Title = ite.Title,
+                    Priority = "",
+                    Status = completePercent == 0 ? "Not Started": completePercent == 100 ? "Completed" : "In Progress",
+                    CreatedBy = "GIAA Actions",
+                    CreatedById = 0,
+                    CreatedOn = ite.IssueDateStr,
+                    IAPTypeId = 4, // ite.IAPTypeId.Value,
+                    Type = iapTypeGIAAAction.Title,// ite.Type,
+                    ActionOwners = ite.AssignedTo,
+                    OwnerIds = "",
+                    Directorates = ite.Directorate,
+                    Update = "Required"
+
+
+                };
+
+                retList.Add(item);
+            }
 
             return retList;
         }
@@ -640,7 +672,7 @@ namespace ControlAssuranceAPI.Repositories
 
                 IAPActionView_Result item = new IAPActionView_Result
                 {
-                    ID = ite.ID,
+                    ID = ite.ID.ToString(),
                     Title = $"Group {index+1}",
                     Status = ite.IAPStatusType.Title,
                     CreatedById = ite.CreatedById.Value,

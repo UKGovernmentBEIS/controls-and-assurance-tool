@@ -27,14 +27,14 @@ export interface ICrEntityPickerState {
 export class CrEntityPicker extends React.Component<ICrEntityPickerProps, ICrEntityPickerState> {
     constructor(props) {
         super(props);
-        console.log('CrEntityPicker - constructor start');
+        //console.log('CrEntityPicker - constructor start');
         this.resolveEntity = this.resolveEntity.bind(this);
         this.loadSelectedEntities = this.loadSelectedEntities.bind(this);
         this.entitiesChanged = this.entitiesChanged.bind(this);
 
         this.state = { SelectedEntities: [] };
 
-        console.log('CrEntityPicker - constructor end');
+        //console.log('CrEntityPicker - constructor end');
     }
 
     // public componentWillReceiveProps(nextProps: ICrEntityPickerProps) {
@@ -49,14 +49,14 @@ export class CrEntityPicker extends React.Component<ICrEntityPickerProps, ICrEnt
     // }
 
     public componentDidMount(): void {
-        console.log('CrEntityPicker - componentDidMount 1');
-        console.log('CrEntityPicker - componentDidMount 2.1', this.props.entities);
-        console.log('CrEntityPicker - componentDidMount 2.2', this.props.selectedEntities);
+        //console.log('CrEntityPicker - componentDidMount 1');
+        //console.log('CrEntityPicker - componentDidMount 2.1', this.props.entities);
+        //console.log('CrEntityPicker - componentDidMount 2.2', this.props.selectedEntities);
         
 
         if(this.props.entities && this.props.entities.length > 0 && this.props.selectedEntities && this.props.selectedEntities.length > 0){
 
-            console.log('CrEntityPicker - componentDidMount 3');
+            //console.log('CrEntityPicker - componentDidMount 3');
             this.loadSelectedEntities(this.props.selectedEntities, this.props.entities);
             
 
@@ -65,13 +65,13 @@ export class CrEntityPicker extends React.Component<ICrEntityPickerProps, ICrEnt
 
     }
     public componentDidUpdate(prevProps: ICrEntityPickerProps): void {
-        console.log('CrEntityPicker - componentDidUpdate 1');
-        console.log('CrEntityPicker - componentDidUpdate 2.1', this.props.entities, prevProps.entities);
-        console.log('CrEntityPicker - componentDidUpdate 2.2', this.props.selectedEntities,  prevProps.selectedEntities);
+        //console.log('CrEntityPicker - componentDidUpdate 1');
+        //console.log('CrEntityPicker - componentDidUpdate 2.1', this.props.entities, prevProps.entities);
+        //console.log('CrEntityPicker - componentDidUpdate 2.2', this.props.selectedEntities,  prevProps.selectedEntities);
         if(prevProps.entities != this.props.entities || prevProps.selectedEntities != this.props.selectedEntities || prevProps.temp1 != this.props.temp1){
             if(this.props.entities && this.props.entities.length > 0 && this.props.selectedEntities && this.props.selectedEntities.length > 0){
 
-                console.log('CrEntityPicker - componentDidUpdate 3');
+                //console.log('CrEntityPicker - componentDidUpdate 3');
                 this.loadSelectedEntities(this.props.selectedEntities, this.props.entities);
 
             }
@@ -101,7 +101,7 @@ export class CrEntityPicker extends React.Component<ICrEntityPickerProps, ICrEnt
 
     private loadSelectedEntities(entitiyIds: number[], entities: types.IEntity[]): void {
 
-        console.log('CrEntityPicker - loadSelectedEntities - start');
+        //console.log('CrEntityPicker - loadSelectedEntities - start');
 
         // let selectedEntities = entitiyIds.map((entityId) => {
         //     let entity = entities.filter((e) => { return e.ID === entityId; });
@@ -132,7 +132,7 @@ export class CrEntityPicker extends React.Component<ICrEntityPickerProps, ICrEnt
 
         }
 
-        console.log('CrEntityPicker - loadSelectedEntities - selectedEntities', selectedEntities);
+        //console.log('CrEntityPicker - loadSelectedEntities - selectedEntities', selectedEntities);
 
         this.setState({ SelectedEntities: selectedEntities });
         

@@ -7,7 +7,7 @@ namespace ControlAssuranceAPI.Models
 {
     public class IAPActionView_Result
     {
-        public int ID { get; set; }
+        public string ID { get; set; }
         public string Title { get; set; }
         public string Priority { get; set; }
         public string Status { get; set; }

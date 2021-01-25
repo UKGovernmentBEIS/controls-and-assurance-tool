@@ -37,6 +37,8 @@ export interface IRecommendationsTabProps extends types.IBaseComponentProps {
     onChangeActionStatusType: (option: IDropdownOption)=> void;
 
     superUserPermission:boolean;
+
+    consumerName: string;
 }
 
 export interface ILookupData {
@@ -225,7 +227,7 @@ export default class RecommendationsTab extends React.Component<IRecommendations
         return(
             <React.Fragment>
                 <div style={{paddingTop:'20px', paddingLeft: '10px'}}>
-                    <span style={{cursor:'pointer', color:'black', textDecoration:'underline'}} onClick={this.props.onShowList} >Back to GIAA Audit Reports</span>
+                    <span style={{cursor:'pointer', color:'black', textDecoration:'underline'}} onClick={this.props.onShowList} >Back to {this.props.consumerName}</span>
                 </div>
             </React.Fragment>
         );

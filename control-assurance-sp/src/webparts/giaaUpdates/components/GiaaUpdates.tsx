@@ -283,6 +283,7 @@ export default class GiaaUpdates extends BaseUserContextWebPartComponent<types.I
         onChangeActionStatusType={this.handleRecList_ChangeActionStatusType}
 
         superUserPermission={this.isSuperUser()}
+        consumerName="GIAA Audit Reports"
 
         {...this.props}
       />

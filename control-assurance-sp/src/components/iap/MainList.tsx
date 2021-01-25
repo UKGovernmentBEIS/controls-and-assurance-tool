@@ -18,7 +18,7 @@ import styles from '../../styles/cr.module.scss';
 export interface IMainListProps extends types.IBaseComponentProps {
 
     isArchive: boolean;
-    onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
+    onItemTitleClick: (ID: any, title: string, filteredItems: any[]) => void;
     userIdsArr: number[];
 
     filterText?: string;

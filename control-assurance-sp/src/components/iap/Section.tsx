@@ -21,7 +21,7 @@ export interface ISectionProps extends IEntityFormProps {
     isArchive: boolean;
     sectionTitle: string;
     userIdsArr:number[];
-    onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
+    onItemTitleClick: (any: number, title: string, filteredItems: any[]) => void;
     listFilterText:string;
     onChangeFilterText: (value: string) => void;
 

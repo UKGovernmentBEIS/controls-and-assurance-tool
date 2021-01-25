@@ -251,21 +251,11 @@ namespace ControlAssuranceAPI.Repositories
                     qry = qry.Where(p => p.NAOTypeId == 2); //2 for pac report
                 }
 
-                if (justMine == true)
-                {
 
-                    qry = qry.Where(p =>
-                        p.NAORecommendations.Any(r => r.NAOAssignments.Any(ass => ass.UserId == loggedInUserID)) ||
-                        p.NAOPublicationDirectorates.Any(pd => pd.Directorate.DirectorUserID == loggedInUserID) ||
-                        p.NAOPublicationDirectorates.Any(pd => pd.Directorate.DirectorateGroup.DirectorGeneralUserID == loggedInUserID) ||
-                        p.NAOPublicationDirectorates.Any(pd => pd.Directorate.DirectorateMembers.Any(dm => dm.UserID == loggedInUserID)) ||
-                        p.NAOPublicationDirectorates.Any(pd => pd.Directorate.DirectorateGroup.DirectorateGroupMembers.Any(dgm => dgm.UserID == loggedInUserID))
-                    );
-                }
             }
             else
             {
-                //same as just mine filter for all other cases which are DG, DG Member, Dir, Dir Mem, Assignees
+                //DG, DG Member, Dir, Dir Mem, Assignees
                 qry = qry.Where(p =>
                     p.NAORecommendations.Any(r => r.NAOAssignments.Any(ass => ass.UserId == loggedInUserID)) ||
                     p.NAOPublicationDirectorates.Any(pd => pd.Directorate.DirectorUserID == loggedInUserID) ||
@@ -296,6 +286,13 @@ namespace ControlAssuranceAPI.Repositories
 
             }
 
+            if (justMine == true)
+            {
+
+                qry = qry.Where(p =>
+                    p.NAORecommendations.Any(r => r.NAOAssignments.Any(ass => ass.UserId == loggedInUserID))
+                );
+            }
 
             int qryCount = qry.Count();
 
