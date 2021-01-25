@@ -2,9 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-//using Notify.Client;
-//using Notify.Models;
-//using Notify.Models.Responses;
+using Notify.Client;
+using Notify.Models;
+using Notify.Models.Responses;
 
 
 
@@ -31,11 +31,11 @@ namespace ControlAssuranceAPI.Libs
                 return;
             }
 
-            //NotificationClient client = new NotificationClient(apiKey);
+            NotificationClient client = new NotificationClient(apiKey);
 
             try
             {
-                //client.SendEmailAsync(emailSendTo, emailTemplate, templatePersonalisations, null, null);
+                client.SendEmailAsync(emailSendTo, emailTemplateId, templatePersonalisations, null, null);
 
                 string details = $"";
                 foreach(var tp in templatePersonalisations)
