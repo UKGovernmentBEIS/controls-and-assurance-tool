@@ -21,6 +21,9 @@ namespace ControlAssuranceAPI.Models
 
         public int IAPTypeId { get; set; }
         public string Type { get; set; }
+        
+        //mostly need for to show nao publications in the management actions list
+        public int CurrentPeriodId { get; set; }
 
         public string CompletionDate { get; set; }
 

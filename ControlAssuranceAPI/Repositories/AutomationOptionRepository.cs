@@ -573,7 +573,8 @@ namespace ControlAssuranceAPI.Repositories
                         {
                             //total recs for this user of that publication
                             var user = db.Users.FirstOrDefault(x => x.ID == thisPubAssignee.UserId);
-                            int totalNotCompletedAssignments = p.NAORecommendations.Count(x => x.NAOUpdateStatusTypeId != 2 && x.NAOAssignments.Any(a => a.UserId == user.ID));
+                            //int totalNotCompletedAssignments = p.NAORecommendations.Count(x => x.NAOUpdateStatusTypeId != 2 && x.NAOAssignments.Any(a => a.UserId == user.ID));
+                            int totalNotCompletedAssignments = p.NAORecommendations.Count(x => x.NAOUpdates.Any(u => u.NAOUpdateStatusTypeId != 2 && u.NAOPeriodId == p.CurrentPeriodId) && x.NAOAssignments.Any(a => a.UserId == user.ID));
                             if (totalNotCompletedAssignments > 0)
                             {
                                 int totalAssignments = p.NAORecommendations.Count(x => x.NAOAssignments.Any(a => a.UserId == user.ID));

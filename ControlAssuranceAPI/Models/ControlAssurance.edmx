@@ -693,6 +693,7 @@
           </Key>
           <Property Name="ID" Type="int" Nullable="false" />
           <Property Name="Title" Type="nvarchar" MaxLength="50" />
+          <Property Name="InternalDescription" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="Log">
           <Key>
@@ -3229,6 +3230,7 @@
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" />
           <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="InternalDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="IAPActions" Relationship="Self.FK_IAPAction_IAPType" FromRole="IAPType" ToRole="IAPAction" />
         </EntityType>
         <EntityType Name="Log">
@@ -5972,6 +5974,7 @@
               <MappingFragment StoreEntitySet="IAPType">
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="InternalDescription" ColumnName="InternalDescription" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

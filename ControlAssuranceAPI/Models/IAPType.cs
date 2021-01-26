@@ -22,6 +22,7 @@ namespace ControlAssuranceAPI.Models
     
         public int ID { get; set; }
         public string Title { get; set; }
+        public string InternalDescription { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<IAPAction> IAPActions { get; set; }

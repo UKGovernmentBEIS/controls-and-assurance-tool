@@ -11,6 +11,7 @@ namespace ControlAssuranceAPI.Models
         public string Title { get; set; }
         public string Summary { get; set; }
         public string DGArea { get; set; }
+        public string Directorate { get; set; }
         public string Type { get; set; }
         public string Links { get; set; }
         public string Year { get; set; }

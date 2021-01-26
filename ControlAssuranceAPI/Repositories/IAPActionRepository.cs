@@ -640,6 +640,36 @@ namespace ControlAssuranceAPI.Repositories
                 retList.Add(item);
             }
 
+            //get NAO Publications and add to the actions list
+            var iapTypeNAO = db.IAPTypes.FirstOrDefault(x => x.ID == 5);
+            NAOPublicationRepository nAOPublicationRepository = new NAOPublicationRepository(base.user);
+            var publications = nAOPublicationRepository.GetPublications(0, true, true, isArchive);
+            foreach(var ite in publications)
+            {
+                int.TryParse(ite.CompletePercent.Replace("%", ""), out int completePercent);
+                IAPActionView_Result item = new IAPActionView_Result
+                {
+                    ID = $"NAO_{ite.ID.ToString()}",
+                    Title = ite.Title,
+                    Priority = "",
+                    Status = completePercent == 0 ? "Not Started" : completePercent == 100 ? "Completed" : "In Progress",
+                    CreatedBy = "NAO/PAC Tracker",
+                    CreatedById = 0,
+                    CurrentPeriodId = ite.CurrentPeriodId,
+                    CreatedOn = "",
+                    IAPTypeId = 5, // ite.IAPTypeId.Value,
+                    Type = iapTypeNAO.Title,// ite.Type,
+                    ActionOwners = ite.AssignedTo,
+                    OwnerIds = "",
+                    Directorates = ite.Directorate,
+                    Update = "Required"
+
+
+                };
+
+                retList.Add(item);
+            }
+
             return retList;
         }
 

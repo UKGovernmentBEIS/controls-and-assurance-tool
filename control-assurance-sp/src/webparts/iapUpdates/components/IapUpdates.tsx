@@ -8,6 +8,9 @@ import GroupActionsTab from '../../../components/iap/GroupActionsTab';
 import {default as GIAARecommendationsTab} from '../../../components/giaaActions/RecommendationsTab';//rename to avoid conflict
 import {default as GIAAActionUpdatesTab} from '../../../components/giaaActions/ActionUpdatesTab';//rename to avoid conflict
 
+import {default as NAORecommendationsTab } from '../../../components/tracker/RecommendationsTab';
+import {default as NAOPeriodUpdateTab} from '../../../components/tracker/PeriodUpdateTab';
+
 import * as types from '../../../types';
 import BaseUserContextWebPartComponent from '../../../components/BaseUserContextWebPartComponent';
 import * as services from '../../../services';
@@ -62,6 +65,8 @@ export interface IIapUpdatesState extends types.IUserContextWebPartState {
     RecList_SelectedTitle: string;
     RecList_FilteredItems: any[];
     RecList_SelectedItem_ActionOwnerPermission:boolean;
+    RecList_SelectedItem_ViewOnly:boolean;
+    PeriodId: number;
 
 
 }
@@ -93,6 +98,8 @@ export class IapUpdatesState extends types.UserContextWebPartState implements II
     public RecList_SelectedTitle: string;
     public RecList_FilteredItems: any[];
     public RecList_SelectedItem_ActionOwnerPermission:boolean = false;
+    public RecList_SelectedItem_ViewOnly = true;
+    public PeriodId: number = 0;
 
   constructor() {
     super();
@@ -113,6 +120,9 @@ export default class IapUpdates extends BaseUserContextWebPartComponent<types.IW
 
   private readonly headerTxt_GIAA_RecommendationsTab: string = "GIAA Recommendations";
   private readonly headerTxt_GIAA_ActionUpdatesTab: string = "GIAA Action Updates";
+
+  private readonly headerTxt_NAO_RecommendationsTab: string = "NAO/PAC Recommendations";
+  private readonly headerTxt_NAO_ActionUpdatesTab: string = "NAO/PAC Period Update";
 
 
   constructor(props: types.IWebPartComponentProps) {
@@ -137,6 +147,9 @@ export default class IapUpdates extends BaseUserContextWebPartComponent<types.IW
 
         {this.renderGIAARecommendationsTab()}
         {this.renderGIAAActionUpdatesTab()}
+
+        {this.renderNAORecommendationsTab()}
+        {this.renderNAOPeriodUpdateTab()}
 
       </Pivot>
     );
@@ -368,6 +381,70 @@ export default class IapUpdates extends BaseUserContextWebPartComponent<types.IW
   }
 
 
+  private renderNAORecommendationsTab() {
+    if (this.state.SelectedPivotKey === this.headerTxt_NAO_RecommendationsTab || this.state.SelectedPivotKey === this.headerTxt_NAO_ActionUpdatesTab) {
+      return (
+
+        <PivotItem headerText={this.headerTxt_NAO_RecommendationsTab} itemKey={this.headerTxt_NAO_RecommendationsTab}>
+          {this.renderNAORecommendations()}
+        </PivotItem>
+
+      );
+    }
+    else
+      return <React.Fragment></React.Fragment>;
+  }
+
+  private renderNAORecommendations(): React.ReactElement<types.IWebPartComponentProps> {
+
+    return (
+
+      <NAORecommendationsTab
+        filteredItems={this.state.Section_MainList_FilteredItems}
+        parentId={this.state.Section_MainList_SelectedId}
+        periodId={this.state.PeriodId}
+        parentTitle={this.state.Section_MainList_SelectedTitle}
+        onItemTitleClick={this.handle_NAO_RecListItemTitleClick}
+        onShowList={this.handleShowListSection1_fromGroup}
+        superUserPermission={this.isSuperUser()}
+        dgOrDGMemberPermission={false}
+        {...this.props}
+      />
+
+
+    );
+
+  }
+
+  private renderNAOPeriodUpdateTab() {
+    if (this.state.SelectedPivotKey === this.headerTxt_NAO_ActionUpdatesTab) {
+      return (
+
+        <PivotItem headerText={this.headerTxt_NAO_ActionUpdatesTab} itemKey={this.headerTxt_NAO_ActionUpdatesTab}>
+          {this.renderNAOPeriodUpdate()}
+        </PivotItem>
+
+      );
+    }
+    else
+      return <React.Fragment></React.Fragment>;
+  }
+
+  private renderNAOPeriodUpdate(): React.ReactElement<types.IWebPartComponentProps> {
+    return (
+      <NAOPeriodUpdateTab
+        naoRecommendationId={this.state.RecList_SelectedId}
+        naoPeriodId={this.state.PeriodId}
+        filteredItems={this.state.RecList_FilteredItems}
+        onShowList={this.handleShowNAORecList}
+        
+        isViewOnly={this.state.RecList_SelectedItem_ViewOnly}
+        {...this.props}
+      />
+
+
+    );
+  }
 
 
 
@@ -444,6 +521,22 @@ export default class IapUpdates extends BaseUserContextWebPartComponent<types.IW
 
     return false;
   }
+
+  private isNAOSuperUser(): boolean {
+    //super user/SysManager check
+    let ups = this.state.UserPermissions;
+    for (let i = 0; i < ups.length; i++) {
+      let up: IUserPermission = ups[i];
+      if (up.PermissionTypeId == 1 || up.PermissionTypeId == 8) {
+        //super user or nao super user
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+
   
   private viewOtherActionOwnersPermission(): boolean {
 
@@ -518,6 +611,28 @@ export default class IapUpdates extends BaseUserContextWebPartComponent<types.IW
         Section_MainList_SelectedId: numID,
         Section_MainList_SelectedTitle: title,
         Section_MainList_FilteredItems: giaaFilteredItems
+      });
+
+    }
+    else if (String(ID_any).search("NAO_") === 0){
+
+      console.log('nao publication');
+      let numID = Number(String(ID_any).replace('NAO_', ''));
+      console.log('numID', numID);
+
+      const naoFilteredItems = filteredItems.filter(x => Number(x["IAPTypeId"]) === 5);
+      console.log('naoFilteredItems', naoFilteredItems);
+
+      const currentPublication = naoFilteredItems.filter(x => x['ID'] === ID_any);
+      const currentPeriodId:number = Number(currentPublication[0]["CurrentPeriodId"]);
+      console.log('currentPeriodId', currentPeriodId);
+
+      this.setState({
+        SelectedPivotKey: this.headerTxt_NAO_RecommendationsTab,
+        Section_MainList_SelectedId: numID,
+        Section_MainList_SelectedTitle: title,
+        PeriodId: currentPeriodId,
+        Section_MainList_FilteredItems: naoFilteredItems
       });
 
     }
@@ -629,6 +744,51 @@ export default class IapUpdates extends BaseUserContextWebPartComponent<types.IW
     });
   }
 
+  private handle_NAO_RecListItemTitleClick = (ID: number, title: string, filteredItems: any[]): void => {
+    const currentUderId:number = this.getCurrentUserId();
+    console.log('on rec list current user id ', currentUderId);
+    console.log('on rec list item title click ', ID, title, filteredItems);
+
+
+    let assigneePermission:boolean = false;
+    const currentRec = filteredItems.filter(x => x['ID'] === ID);
+    //console.log('currectRec', currentRec);
+    let assignedToIdsStr:string = "";
+    if(currentRec.length > 0){
+      assignedToIdsStr = currentRec[0]["AssignedToIds"];
+      //console.log('ownerIdsStr', ownerIdsStr);
+      const assignedToIdsArr:string[] = assignedToIdsStr.split(',');
+      //console.log('ownerIdsArr', ownerIdsArr);
+
+
+      
+      for (let i = 0; i < assignedToIdsArr.length; i++) {
+      
+        let assigneeId:number = Number(assignedToIdsArr[i]);
+        if(assigneeId === currentUderId){
+          assigneePermission = true;
+          break;
+        }
+      }
+    }
+
+    console.log('assignee permission', assigneePermission);
+
+    let recList_SelectedItem_ViewOnly:boolean = true;
+    if(this.isNAOSuperUser() === true || assigneePermission === true){
+      recList_SelectedItem_ViewOnly = false;
+    }
+
+    console.log('recList_SelectedItem_ViewOnly', recList_SelectedItem_ViewOnly);
+
+    this.setState({
+      SelectedPivotKey: this.headerTxt_NAO_ActionUpdatesTab,
+      RecList_SelectedId: ID,
+      RecList_SelectedTitle: title,
+      RecList_SelectedItem_ViewOnly: recList_SelectedItem_ViewOnly,
+      RecList_FilteredItems: filteredItems
+    });
+  }
 
   private handleSection1_toggleOpen = (): void => {
     this.setState({ Section1_IsOpen: !this.state.Section1_IsOpen });
@@ -698,6 +858,11 @@ export default class IapUpdates extends BaseUserContextWebPartComponent<types.IW
     console.log('in handleShowSection1RecList');
     this.clearErrors();
     this.setState({ SelectedPivotKey: this.headerTxt_GIAA_RecommendationsTab });
+  }
+  private handleShowNAORecList = (): void => {
+    console.log('in handleShowNAORecList');
+    this.clearErrors();
+    this.setState({ SelectedPivotKey: this.headerTxt_NAO_RecommendationsTab });
   }
 
   private handleMainFormSaved = (): void => {

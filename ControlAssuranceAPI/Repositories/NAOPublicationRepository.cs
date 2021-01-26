@@ -367,17 +367,22 @@ namespace ControlAssuranceAPI.Repositories
 
 
 
-
+                string directorates = "";
                 HashSet<DirectorateGroup> uniqueDgAreas = new HashSet<DirectorateGroup>();
                 foreach (var d in iteP.NAOPublicationDirectorates)
                 {
                     var dgArea = d.Directorate.DirectorateGroup;
                     uniqueDgAreas.Add(dgArea);
+                    directorates += d.Directorate.Title + ", ";
                 }
 
                 foreach (var uniqueDgArea in uniqueDgAreas)
                 {
                     dgAreas += uniqueDgArea.Title + ", ";
+                }
+                if (directorates.Length > 0)
+                {
+                    directorates = directorates.Substring(0, directorates.Length - 1);
                 }
 
 
@@ -392,6 +397,7 @@ namespace ControlAssuranceAPI.Repositories
                     ID = iteP.ID,
                     Title = title,
                     DGArea = dgAreas,
+                    Directorate = directorates,
                     Type = iteP.Type,
                     Year = iteP.Year,
                     Links = iteP.PublicationLink,

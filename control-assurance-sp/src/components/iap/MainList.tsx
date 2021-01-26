@@ -213,6 +213,15 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
             headerClassName: styles.bold,
         },
 
+        {
+            key: 'CurrentPeriodId',
+            name: 'CurrentPeriodId',
+            fieldName: 'CurrentPeriodId',
+            minWidth: 1,
+            isResizable: true,
+            columnDisplayType: ColumnDisplayTypes.Hidden,
+        },
+
     ];
 
 
