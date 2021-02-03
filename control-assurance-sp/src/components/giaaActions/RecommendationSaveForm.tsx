@@ -560,13 +560,24 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
     protected changeDatePicker = (date: Date, f: string): void => {
         console.log('original date', date);
         if(date != null){
-            console.log('date offset', date.getTimezoneOffset());
-            //let date2 = new Date(date.getTime()); //copy value of date
-            date.setTime( date.getTime() - date.getTimezoneOffset() * 60 * 1000 );
-            console.log('date minus offset', date);
+            const is_dst = this.isDST(date);
+            console.log('is_dst', is_dst);
+            if(is_dst === true){
+                console.log('date offset', date.getTimezoneOffset());
+                //let date2 = new Date(date.getTime()); //copy value of date
+                date.setTime( date.getTime() - date.getTimezoneOffset() * 60 * 1000 );
+                console.log('date minus offset', date);
+            }
+
         }
 
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, date), FormIsDirty: true });
+    }
+    
+    private isDST = (d: Date) : boolean => {
+        let jan = new Date(d.getFullYear(), 0, 1).getTimezoneOffset();
+        let jul = new Date(d.getFullYear(), 6, 1).getTimezoneOffset();
+        return Math.max(jan, jul) != d.getTimezoneOffset(); 
     }
 
     private changeMultiUserPicker = (value: number[], f: string, newEntity: object, userIdProperty: string): void => {
