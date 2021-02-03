@@ -172,6 +172,13 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
 
     private renderTargetDate() {
 
+        // if(this.state.FormData.TargetDate !== null){
+        //     let x = this.state.FormData.TargetDate;
+        //     x.setTime( x.getTime() + x.getTimezoneOffset() * 60 * 1000 );
+        //     console.log('x date', x);
+        // }
+
+
         return (
             <CrDatePicker
                 label="Original Implementation Date"
@@ -185,6 +192,7 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
     }
 
     private renderRevisedDate() {
+
 
         return (
             <CrDatePicker
@@ -550,6 +558,14 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, option.key), FormIsDirty: true });
     }
     protected changeDatePicker = (date: Date, f: string): void => {
+        console.log('original date', date);
+        if(date != null){
+            console.log('date offset', date.getTimezoneOffset());
+            //let date2 = new Date(date.getTime()); //copy value of date
+            date.setTime( date.getTime() - date.getTimezoneOffset() * 60 * 1000 );
+            console.log('date minus offset', date);
+        }
+
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, date), FormIsDirty: true });
     }
 
