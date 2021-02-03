@@ -38,6 +38,17 @@ namespace ControlAssuranceAPI.Controllers
             return "";
         }
 
+        // GET: /odata/GIAADefForms?getTestDateTime=&p2=
+        public TestDateTime Get(string getTestDateTime, string p2)
+        {
+            TestDateTime ret = new TestDateTime();
+            ret.DateTimeAsDateTime = DateTime.Now;
+            ret.DateTimeAsString = DateTime.Now.ToString();
+
+
+            return ret;
+        }
+
         // POST: odata/GIAADefForms
         public IHttpActionResult Post(GIAADefForm giaaDefForm)
         {

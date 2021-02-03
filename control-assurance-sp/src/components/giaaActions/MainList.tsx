@@ -5,7 +5,7 @@ import { sp } from '@pnp/sp';
 import MainSaveForm from './MainSaveForm';
 import MainImportForm from './MainImportForm';
 import { FilteredMainList, IObjectWithKey } from './FilteredMainList';
-import { IEntity } from '../../types';
+import { GIAAImport, IEntity } from '../../types';
 import { IUpdatesListColumn, ColumnDisplayTypes } from '../../types/UpdatesListColumn';
 import { CrLoadingOverlay } from '../cr/CrLoadingOverlay';
 import { Selection } from '../cr/FilteredList';
@@ -30,8 +30,10 @@ export interface IMainListProps extends types.IBaseComponentProps {
     onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
     onMainSaved: () => void;
     mainListsSaveCounter: number;
+    onCheckUpdatesReq: () => void;
 
     superUserPermission: boolean;
+    updatesReqInProgress:boolean;
 
 }
 
@@ -79,6 +81,7 @@ export class MainListState<T> implements IMainListState<T>{
 export default class MainList extends React.Component<IMainListProps, IMainListState<IEntity>> {
     private _selection: Selection;
     private mainService: services.GIAAAuditReportService = new services.GIAAAuditReportService(this.props.spfxContext, this.props.api);
+    private gIAAImportService: services.GIAAImportService = new services.GIAAImportService(this.props.spfxContext, this.props.api);
 
     private ChildEntityName: { Plural: string, Singular: string } = { Plural: 'Recommendations', Singular: 'Recommendation' };
 
@@ -274,11 +277,13 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
 
                 onAdd={this.addItem}
                 onImport={this.importItems}
+                onCheckUpdatesReq={this.props.onCheckUpdatesReq}
                 onEdit={this.editItem}
                 onDelete={this.checkDelete}
                 editDisabled={!this.state.EnableEdit}
                 deleteDisabled={!this.state.EnableDelete}
                 superUserPermission={this.props.superUserPermission}
+                updatesReqInProgress={this.props.updatesReqInProgress}
 
 
             />
@@ -438,6 +443,8 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
             this._selection.setKeySelected(this.state.SelectedEntity.toString(), false, false);
         this.setState({ SelectedEntity: null, ShowImportForm: true });
     }
+
+
 
     private editItem = (): void => {
         this.setState({ ShowForm: true });

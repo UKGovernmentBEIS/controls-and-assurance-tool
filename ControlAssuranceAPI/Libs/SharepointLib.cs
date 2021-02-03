@@ -7,6 +7,10 @@ using System.Security;
 
 using ClientOM = Microsoft.SharePoint.Client;
 
+using Newtonsoft.Json;
+using Google.Apis.Auth.OAuth2;
+using Microsoft.IdentityModel.Clients.ActiveDirectory;
+
 namespace ControlAssuranceAPI.Libs
 {
     public class SharepointLib
@@ -33,15 +37,47 @@ namespace ControlAssuranceAPI.Libs
 
             this.Connect();
 
-            
-        }
 
+        }
+        public void Context_ExecutingWebRequest(object sender, WebRequestEventArgs e)
+        {
+            //e.WebRequestExecutor.RequestHeaders["Authorization"] = "Bearer " + GetAccessToken();
+            e.WebRequestExecutor.RequestHeaders["Authorization"] = "Bearer " + HelperMethods.AccessToken;
+
+        }
+        //public string GetAccessToken()
+        //{
+        //    //https://stackoverflow.com/questions/58800178/get-sharepoint-list-data-from-outside-sharepoint-online-using-c-sharp?rq=1
+        //    try
+        //    {
+        //        #region Get Access token for Azure AD access              
+        //        var client = new RestClient("https://accounts.accesscontrol.windows.net/" + "65f001db-6210-493d-acda-2251c3d224ca" + "/tokens/OAuth/2");
+        //        var request = new RestRequest(Method.POST);
+        //        request.AddParameter("grant_type", "client_credentials");
+        //        request.AddParameter("client_id", "1aa8fc44-056e-4567-a8f1-2ae9fef2ba37");
+        //        //request.AddParameter("client_secret", "ClientSecret");
+        //        //request.AddParameter("resource", "00000003-0000-0ff1-ce00-000000000000/SharePointSite@TenantID");
+        //        IRestResponse restClientResponse = client.Execute(request);
+        //        var DeserializeObject = JsonConvert.DeserializeObject<BearerToken>(restClientResponse.Content.ToString());
+        //        string accessToken = DeserializeObject.AccessToken;
+        //        #endregion           
+
+        //        return accessToken;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+        //}
         public void Connect()
         {
             try
             {
                 using (clientContext = new ClientContext(ServerSiteUrl))
                 {
+                    //clientContext.AuthenticationMode = ClientAuthenticationMode.Anonymous;
+                    //clientContext.FormDigestHandlingEnabled = false;
+                    //clientContext.ExecutingWebRequest += Context_ExecutingWebRequest;
                     var securePassword = new SecureString();
                     foreach (char c in Password)
                     {
@@ -49,7 +85,7 @@ namespace ControlAssuranceAPI.Libs
                     }
 
                     clientContext.Credentials = new SharePointOnlineCredentials(UserName, securePassword);
-                    //clientContext.Credentials = System.Net.CredentialCache.DefaultCredentials;
+
 
                     //var cr = new System.Net.NetworkCredential();
                     //HttpContext.Current.User.Identity.
@@ -63,7 +99,7 @@ namespace ControlAssuranceAPI.Libs
         }
 
 
-        
+
 
 
         public void DownloadEvidence(string fileName, string downloadLoction)
@@ -94,7 +130,7 @@ namespace ControlAssuranceAPI.Libs
             }
         }
 
-        
+
 
         public Microsoft.SharePoint.Client.File UploadFinalReport1(string filePathToUpload, string uniqueFileName)
         {

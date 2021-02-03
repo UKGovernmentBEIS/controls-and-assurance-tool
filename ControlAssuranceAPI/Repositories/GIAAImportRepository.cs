@@ -86,16 +86,35 @@ namespace ControlAssuranceAPI.Repositories
 
         public void ProcessImportXML(GIAAImport gIAAImport)
         {
-            this.ChangeStatus("InProgress", "Parsing xml");
+            if (gIAAImport.XMLContents == "Check Updates Req")
+            {
+                this.ChangeStatus("InProgress", "Checking Updates Required");
+            }
+            else
+            {
+                this.ChangeStatus("InProgress", "Parsing xml");
+            }
+            
             int apiUserId = ApiUser.ID;
             Task.Run(() =>
             {
                 GIAAImportRepository gIAAImportRepository = new GIAAImportRepository(base.user);
                 var dbThread = new ControlAssuranceEntities();
 
+
+
                 try
                 {
                     System.Threading.Thread.Sleep(2000);
+
+                    if (gIAAImport.XMLContents == "Check Updates Req")
+                    {
+                        goto AfterImport;
+                    }
+
+                    #region Import Work
+
+
 
                     System.IO.TextReader textReader = new StringReader(gIAAImport.XMLContents);
 
@@ -470,6 +489,13 @@ namespace ControlAssuranceAPI.Repositories
                                     gIAARecommendation.RevisedDate = recRevisedDate_date;
                                 }
 
+                                //1. If import status is 'Pending' save as 'Open'
+                                //2. If import status is from 'Implemented', 'Verified', 'Not Verified' and 'No Longer Applicable' save as 'Closed'.
+                                if (recStatus == "Pending")
+                                    recStatus = "Open";
+                                else if (recStatus == "Implemented" || recStatus == "Verified" || recStatus == "Not Verified" || recStatus == "No Longer Applicable")
+                                    recStatus = "Closed";
+
                                 GIAAActionStatusType gIAAActionStatusType = gIAAActionStatusTypes.FirstOrDefault(x => x.Title == recStatus);
                                 if (gIAAActionStatusType != null)
                                 {
@@ -526,6 +552,12 @@ namespace ControlAssuranceAPI.Repositories
                         rowIndex++;
                     }
 
+
+                    #endregion Import Work
+
+
+                    AfterImport:
+
                     //after import
                     //loop through all the recs and set UpdateStatus
                     //- if overdue and no updates this month than set ReqUpdate
@@ -534,38 +566,66 @@ namespace ControlAssuranceAPI.Repositories
                     DateTime todaysDate = DateTime.Now;
                     foreach(var r in dbThread.GIAARecommendations)
                     {
-                        if(r.TargetDate != null)
-                        {
-                            bool overdue = r.TargetDate < todaysDate ? true : false;
-                            int totalUpdatesThisMonth = 0;
-                            try
-                            {
-                                totalUpdatesThisMonth = r.GIAAUpdates.Count(x => (x.UpdateType == "Action Update" || x.UpdateType == "GIAA Update") && x.UpdateDate.Value.Month == todaysDate.Month && x.UpdateDate.Value.Year == todaysDate.Year);
-                            }
-                            catch { }
-                            
-                            if(overdue == true && totalUpdatesThisMonth == 0)
-                            {
-                                r.UpdateStatus = "ReqUpdate";
-                            }
-                            else
-                            {
-                                r.UpdateStatus = "Blank";
-                            }
 
+                        //1. If Revised Target date is null and Target Date is > today then set Recommendation status to 'Overdue'
+                        if(r.RevisedDate == null && r.TargetDate > todaysDate)
+                        {
+                            r.GIAAActionStatusTypeId = 3; //Overdue
                         }
+                        //2. If revised Target Date is not null and its > today date then then set Recommendation status to 'Overdue'
+                        else if (r.RevisedDate != null && r.RevisedDate > todaysDate)
+                        {
+                            r.GIAAActionStatusTypeId = 3; //Overdue
+                        }
+
+                        int totalUpdatesThisMonth = 0;
+                        try
+                        {
+                            totalUpdatesThisMonth = r.GIAAUpdates.Count(x => (x.UpdateType == "Action Update") && x.UpdateDate.Value.Month == todaysDate.Month && x.UpdateDate.Value.Year == todaysDate.Year);
+                        }
+                        catch { }
+
+                        //If status is overdue and no 'Action Updates' found for this month then set updates to 'Req Updates'.
+                        if (r.GIAAActionStatusTypeId == 3 && totalUpdatesThisMonth == 0)
+                        {
+                            r.UpdateStatus = "ReqUpdate";
+                        }
+                        else
+                        {
+                            r.UpdateStatus = "Blank";
+                        }
+
                     }
 
                     dbThread.SaveChanges();
 
+                    if (gIAAImport.XMLContents == "Check Updates Req")
+                    {
+                        //in this case we dont want to update Last Import Date etc
+                        gIAAImportRepository.ChangeStatus("Success", "");
+                    }
+                    else
+                    {
+                        //full import
+                        gIAAImportRepository.ChangeStatusAfterParsing("Success", "");
+                    }
 
-
-                    gIAAImportRepository.ChangeStatusAfterParsing("Success", "");
+                    
                 }
                 catch (Exception ex)
                 {
                     string msg = ex.Message;
                     gIAAImportRepository.ChangeStatusAfterParsing("Fail", ex.Message);
+                    if (gIAAImport.XMLContents == "Check Updates Req")
+                    {
+                        //in this case we dont want to update Last Import Date etc
+                        gIAAImportRepository.ChangeStatus("Fail", "");
+                    }
+                    else
+                    {
+                        //full import
+                        gIAAImportRepository.ChangeStatusAfterParsing("Fail", ex.Message);
+                    }
                 }
             });
 

@@ -11,6 +11,8 @@ namespace ControlAssuranceAPI
         protected static string DomainFixFind = ConfigurationManager.AppSettings["DomainFixFind"];
         protected static string DomainFixReplace = ConfigurationManager.AppSettings["DomainFixReplace"];
 
+        public static string AccessToken = "";
+
         public static string HackUsername(string username)
         {
             return username.Replace(DomainFixFind, DomainFixReplace);

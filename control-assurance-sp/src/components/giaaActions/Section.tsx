@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { IEntityFormProps, IUser, IGoDefForm, GoForm, IGoForm, SectionStatus } from '../../types';
+import { IEntityFormProps, IUser, IGoDefForm, GoForm, IGoForm, SectionStatus, IGIAAImportInfo, GIAAImport } from '../../types';
 import * as services from '../../services';
 import styles from '../../styles/cr.module.scss';
 import { FormButtons } from '../cr/FormButtons';
@@ -33,13 +33,16 @@ export interface ISectionProps extends IEntityFormProps {
     onSection_toggleOpen: () => void;
 
     onMainSaved: () => void;
-    mainListsSaveCounter:number;
+    mainListsSaveCounter: number;
     superUserPermission: boolean;
 }
 
 export class SectionState {
 
     public Loading: boolean = false;
+    public UpdatesReqInProgress: boolean = false;
+    public CheckUpdatesReqPressed: boolean = false;
+
 
 
     constructor() {
@@ -52,6 +55,8 @@ export class SectionState {
 export default class Section extends React.Component<ISectionProps, SectionState> {
 
 
+    private gIAAImportService: services.GIAAImportService = new services.GIAAImportService(this.props.spfxContext, this.props.api);
+
     constructor(props: ISectionProps, state: SectionState) {
         super(props);
         this.state = new SectionState();
@@ -61,6 +66,7 @@ export default class Section extends React.Component<ISectionProps, SectionState
 
 
         const ShowForm = this.props.section_IsOpen;
+        const currentDateTime: string = services.DateService.dateToUkDateTime(new Date());
 
         return (
             <div className={styles.cr}>
@@ -93,11 +99,25 @@ export default class Section extends React.Component<ISectionProps, SectionState
                             onMainSaved={this.props.onMainSaved}
                             mainListsSaveCounter={this.props.mainListsSaveCounter}
                             superUserPermission={this.props.superUserPermission}
+                            onCheckUpdatesReq={this.handleUpdatesReq}
+                            updatesReqInProgress={this.state.UpdatesReqInProgress}
 
                         />
                     </div>
-                    <div style={{ paddingTop: "10px", paddingLeft: "10px", fontStyle: "italic" }}>
-                        Please click on a Title to view or update recommendations.
+                    <div style={{ paddingTop: "10px", paddingLeft: "10px", }}>
+                        <div style={{ fontStyle: "italic", paddingBottom: '10px', }}>Please click on a Title to view or update recommendations.</div>
+
+
+                        {this.state.CheckUpdatesReqPressed && this.state.UpdatesReqInProgress === true && <div>{currentDateTime}: Working....Please wait.<br />
+                        All recommendations will now be checked and if necessary, will set the status to 'Overdue' and updates fields to 'Req Updates'.<br />
+                            <span style={{ cursor: 'pointer', color: 'blue' }} onClick={() => this.loadImporInProgressInfo()} >Refresh</span></div>
+                        }
+
+                        {this.state.CheckUpdatesReqPressed && this.state.UpdatesReqInProgress === false && <div>{currentDateTime}: Completed<br />
+                        All recommendations have been checked and where necessary, the status has been set to 'Overdue' and update field to 'Req Updates'</div>
+                        }
+
+
                     </div>
                     <br /><br />
 
@@ -114,9 +134,49 @@ export default class Section extends React.Component<ISectionProps, SectionState
 
     //#region Form initialisation
 
-    // public componentDidMount(): void {
+    public componentDidMount(): void {
+        this.loadImporInProgressInfo();
 
-    // }
+    }
+
+    private handleUpdatesReq = (): void => {
+        console.log('on checkUpdatesReq');
+
+        const giaaImport = new GIAAImport();
+        giaaImport.XMLContents = "Check Updates Req";
+
+        this.gIAAImportService.create(giaaImport).then(x => {
+            //console.log(x);
+
+            //this.loadData();
+            this.setState({ UpdatesReqInProgress: true, CheckUpdatesReqPressed: true });
+
+
+
+        });
+
+
+    }
+
+    private loadImporInProgressInfo = (): Promise<void> => {
+        //console.log('loadData - Id: ', this.props.entityId);
+        let x = this.gIAAImportService.getImportInfo().then((e: IGIAAImportInfo): void => {
+
+            console.log('data ', e);
+            let inProgress: boolean = false;
+            if (e.Status == "InProgress") {
+                inProgress = true;
+            }
+            else{
+                this.props.onMainSaved();
+            }
+            this.setState({
+                UpdatesReqInProgress: inProgress
+            });
+
+        }, (err) => { if (this.props.onError) this.props.onError(`Error loading data`, err.message); });
+        return x;
+    }
 
     // public componentDidUpdate(prevProps: ISectionProps): void {
 

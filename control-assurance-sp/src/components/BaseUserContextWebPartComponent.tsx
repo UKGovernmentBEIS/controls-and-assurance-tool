@@ -56,6 +56,7 @@ export default abstract class BaseUserContextWebPartComponent<P extends types.IW
             }
         }, (err) => {
             // if we got here it means we could not connect to API
+            console.log('api_connect_error', err);
             this.onFirstAPIRequestError("api_connect_error");
         });
     }

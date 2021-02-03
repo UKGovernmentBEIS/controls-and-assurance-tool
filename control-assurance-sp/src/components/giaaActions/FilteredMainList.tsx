@@ -65,13 +65,15 @@ export interface IFilteredMainListProps {
 
     onAdd: () => void;
     onImport: () => void;
+    onCheckUpdatesReq: () => void;
     onEdit: () => void;
     onDelete: () => void;
 
     editDisabled: boolean;
     deleteDisabled: boolean;
 
-    superUserPermission:boolean;
+    superUserPermission: boolean;
+    updatesReqInProgress:boolean;
 
     //onAdd: () => void;
     //onAssign: () => void;
@@ -144,6 +146,15 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
                             className={classNames.cmdBtn}
                             text="Import"
                             onClick={props.onImport}
+                        />}
+
+                    {props.superUserPermission && props.editDisabled && props.deleteDisabled &&
+                        <CommandBarButton
+                            iconProps={{ iconName: 'WorkFlow' }}
+                            className={classNames.cmdBtn}
+                            text="Check Updates Req"
+                            onClick={props.onCheckUpdatesReq}
+                            disabled={props.updatesReqInProgress}
                         />}
 
                     {props.superUserPermission && (props.editDisabled === false) &&
@@ -248,7 +259,7 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
                 txtColor = "white";
                 txt = "Substantial";
             }
-            else{
+            else {
                 bgColor = "rgb(166,166,166)";
                 txtColor = "white";
                 txt = "NoData";

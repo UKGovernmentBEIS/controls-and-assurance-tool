@@ -23,5 +23,11 @@
     "properties": {
       "description": "NAOReport"
     }
-  }]
+  }]//,
+  // "webApiPermissionRequests": [
+  //   {
+  //     "resource": "control assurance api",
+  //     "scope": "user_impersonation"
+  //   }
+  // ]
 }

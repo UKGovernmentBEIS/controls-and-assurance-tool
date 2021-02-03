@@ -31,7 +31,7 @@ export class LookupData implements ILookupData {
 
 }
 export interface IErrorMessage {
-    FileUpload:string;
+    FileUpload: string;
 
 }
 export class ErrorMessage implements IErrorMessage {
@@ -155,9 +155,14 @@ export default class MainImportForm extends React.Component<IMainImportFormProps
             <React.Fragment>
 
                 {info.Status !== "InProgress" &&
-                    <PrimaryButton text="Import" className={styles.formButton} style={{ marginRight: '5px' }}
-                        onClick={() => this.importData()}
-                    />
+                    <React.Fragment>
+                        <PrimaryButton text="Import" className={styles.formButton} style={{ marginRight: '5px' }}
+                            onClick={() => this.importData()}
+                        />
+                        {/* <PrimaryButton text="Check Updates Req" className={styles.formButton} style={{ marginRight: '5px' }}
+                            onClick={() => this.sendImportRequest("Check Updates Req")}
+                        /> */}
+                    </React.Fragment>
                 }
 
                 <DefaultButton text="Close" className={styles.formButton} style={{ marginRight: '5px' }}
@@ -221,6 +226,19 @@ export default class MainImportForm extends React.Component<IMainImportFormProps
         return x;
     }
 
+    private sendImportRequest = (xmlContents: string): void => {
+        console.log('in sendImportRequest');
+        const giaaImport = new GIAAImport();
+        giaaImport.XMLContents = xmlContents;
+
+        this.gIAAImportService.create(giaaImport).then(x => {
+            //console.log(x);
+
+            this.loadData();
+
+
+        });
+    }
     private importData = (): void => {
 
         if (this.validateEntity()) {
@@ -241,16 +259,17 @@ export default class MainImportForm extends React.Component<IMainImportFormProps
             reader.onload = (e) => {
                 // e.target.result should contain the text
                 const xmlContents: string = String(e.target['result']);
-                const giaaImport = new GIAAImport();
-                giaaImport.XMLContents = xmlContents;
+                this.sendImportRequest(xmlContents);
+                // const giaaImport = new GIAAImport();
+                // giaaImport.XMLContents = xmlContents;
 
-                this.gIAAImportService.create(giaaImport).then(x => {
-                    //console.log(x);
+                // this.gIAAImportService.create(giaaImport).then(x => {
+                //     //console.log(x);
 
-                    this.loadData();
+                //     this.loadData();
 
 
-                });
+                // });
 
                 console.log('xml', xmlContents);
 

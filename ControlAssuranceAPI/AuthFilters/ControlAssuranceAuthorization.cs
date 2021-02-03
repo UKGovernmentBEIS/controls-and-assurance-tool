@@ -24,6 +24,7 @@ namespace ControlAssuranceAPI.AuthFilters
             {
                 //user is authenticated with AD
                 var authToken = actionContext.Request.Headers.Authorization.Parameter;
+                HelperMethods.AccessToken = authToken;
                 
                 //var decodeauthToken = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(authToken));
                 //var arrUserNameandPassword = decodeauthToken.Split(':');

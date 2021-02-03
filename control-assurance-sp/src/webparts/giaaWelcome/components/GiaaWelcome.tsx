@@ -5,7 +5,7 @@ import BaseUserContextWebPartComponent from '../../../components/BaseUserContext
 import * as services from '../../../services';
 import EntityList from '../../../components/entity/EntityList';
 import { IGenColumn, ColumnType, ColumnDisplayType } from '../../../types/GenColumn';
-import { IUserPermission, IGIAADefForm, IGIAAPeriod } from '../../../types';
+import { IUserPermission, IGIAADefForm, IGIAAPeriod, IEntity } from '../../../types';
 import { CrLoadingOverlayWelcome } from '../../../components/cr/CrLoadingOverlayWelcome';
 import styles from '../../../styles/cr.module.scss';
 import { PrimaryButton } from 'office-ui-fabric-react/lib/Button';
@@ -96,6 +96,20 @@ export default class GIAAWelcome extends BaseUserContextWebPartComponent<types.I
   });
 
   }
+  private getTestDateTime = (): void => {
+
+    this.giaaDefFormService.getTestDateTime().then((x: IEntity) => {
+        console.log('DateTime Info', x);
+
+
+    }, (err) => {
+        
+    });
+
+
+}
+
+
   protected loadDefForm = (): Promise<IGIAADefForm> => {
     return this.giaaDefFormService.read(1).then((df: IGIAADefForm): IGIAADefForm => {
         this.setState({ LookupData: this.cloneObject(this.state.LookupData, 'GIAADefForm', df) });
@@ -109,6 +123,7 @@ export default class GIAAWelcome extends BaseUserContextWebPartComponent<types.I
     return Promise.all([
         this.welcomeAccess(),
         this.loadDefForm(),
+        this.getTestDateTime(),
     ]);
   }
 

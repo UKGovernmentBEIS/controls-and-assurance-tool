@@ -153,6 +153,7 @@ namespace ControlAssuranceAPI
             builder.EntitySet<IAPActionView_Result>("IAPActionViewResult");
 
             builder.EntitySet<APIInfo>("APIInfo26Jan21");
+            builder.EntitySet<TestDateTime>("TestDateTime");
 
 
 
