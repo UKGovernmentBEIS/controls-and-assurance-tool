@@ -7,7 +7,6 @@ import { CrChoiceGroup, IChoiceGroupOption } from '../cr/CrChoiceGroup';
 import { CrDropdown, IDropdownOption } from '../cr/CrDropdown';
 import { CrCheckbox } from '../cr/CrCheckbox';
 import { FormButtons } from '../cr/FormButtons';
-import { CrDatePicker } from '../cr/CrDatePicker';
 import { MessageDialog } from '../cr/MessageDialog';
 import { DefaultButton, PrimaryButton } from 'office-ui-fabric-react/lib/Button';
 import { Panel, PanelType } from 'office-ui-fabric-react/lib/Panel';

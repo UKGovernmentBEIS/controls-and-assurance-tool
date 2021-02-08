@@ -9,13 +9,15 @@ import { FormButtons } from '../cr/FormButtons';
 import { Panel, PanelType } from 'office-ui-fabric-react/lib/Panel';
 import { FormCommandBar } from '../cr/FormCommandBar';
 import { CrDatePicker } from '../cr/CrDatePicker';
+
 import { CrEntityPicker } from '../cr/CrEntityPicker';
 import { FieldErrorMessage } from '../cr/FieldDecorators';
 import { GIAAUpdateTypes } from '../../types/AppGlobals';
 import styles from '../../styles/cr.module.scss';
 import GiaaUpdates from '../../webparts/giaaUpdates/components/GiaaUpdates';
 import { sp, ChunkedFileUploadProgressData } from '@pnp/sp';
-import { getUploadFolder_IAPFiles, getFolder_Help } from '../../types/AppGlobals';
+import { getUploadFolder_IAPFiles, getFolder_Help, changeDatePicker } from '../../types/AppGlobals';
+
 
 
 export interface IUpdatesSaveFormProps extends types.IBaseComponentProps {
@@ -164,7 +166,7 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
                 className={styles.formField}
                 required={true}
                 value={this.state.FormData.RevisedDate}
-                onSelectDate={(v) => this.changeDatePicker(v, "RevisedDate")}
+                onSelectDate={(v) => changeDatePicker(this, v, "RevisedDate")}
                 errorMessage={this.state.ErrMessages.RevisedDate}
             />
         );
@@ -627,9 +629,9 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
     private changeDropdown = (option: IDropdownOption, f: string, index?: number): void => {
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, option.key), FormIsDirty: true });
     }
-    protected changeDatePicker = (date: Date, f: string): void => {
-        this.setState({ FormData: this.cloneObject(this.state.FormData, f, date), FormIsDirty: true });
-    }
+    // protected changeDatePicker = (date: Date, f: string): void => {
+    //     this.setState({ FormData: this.cloneObject(this.state.FormData, f, date), FormIsDirty: true });
+    // }
     protected changeCheckboxIsLink = (value: boolean, f: string): void => {
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, value), /*ShowFileUpload: !value , FormIsDirty: true*/ });
     }

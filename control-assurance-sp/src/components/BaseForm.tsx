@@ -102,9 +102,9 @@ export abstract class BaseForm<P extends types.IEntityFormProps, S extends IEnti
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, value), FormIsDirty: true });
     }
 
-    protected changeDatePicker = (date: Date, f: string): void => {
-        this.setState({ FormData: this.cloneObject(this.state.FormData, f, date), FormIsDirty: true });
-    }
+    // protected changeDatePicker = (date: Date, f: string): void => {
+    //     this.setState({ FormData: this.cloneObject(this.state.FormData, f, date), FormIsDirty: true });
+    // }
 
     protected changeDropdown = (option: IDropdownOption, f: string, index?: number): void => {
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, option.key), FormIsDirty: true });

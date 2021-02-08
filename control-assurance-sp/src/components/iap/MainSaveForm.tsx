@@ -11,6 +11,7 @@ import { CrEntityPicker } from '../cr/CrEntityPicker';
 import { CrCheckbox } from '../cr/CrCheckbox';
 import { CrDatePicker } from '../cr/CrDatePicker';
 import { getUploadFolder_IAPFiles, getFolder_Help } from '../../types/AppGlobals';
+import { changeDatePicker } from '../../types/AppGlobals';
 import { sp, ChunkedFileUploadProgressData } from '@pnp/sp';
 import styles from '../../styles/cr.module.scss';
 
@@ -244,7 +245,7 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
                 label="To Be Completed By"
                 className={styles.formField}
                 value={this.state.FormData.CompletionDate}
-                onSelectDate={(v) => this.changeDatePicker(v, "CompletionDate")}
+                onSelectDate={(v) => changeDatePicker(this, v, "CompletionDate")}
                 required={true}
                 errorMessage={this.state.ErrMessages.CompletionDate}
             />
@@ -260,7 +261,7 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
                 label="Original Completion Date"
                 className={styles.formField}
                 value={this.state.FormData.OriginalCompletionDate}
-                onSelectDate={(v) => this.changeDatePicker(v, "OriginalCompletionDate")}
+                onSelectDate={(v) => changeDatePicker(this, v, "OriginalCompletionDate")}
                 disabled={true}
             //errorMessage={this.state.ErrMessages.TargetDate}
             />
@@ -809,9 +810,9 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
         this.setState({ ArrLinks: arrCopy });
     }
 
-    protected changeDatePicker = (date: Date, f: string): void => {
-        this.setState({ FormData: this.cloneObject(this.state.FormData, f, date), FormIsDirty: true });
-    }
+    // protected changeDatePicker = (date: Date, f: string): void => {
+    //     this.setState({ FormData: this.cloneObject(this.state.FormData, f, date), FormIsDirty: true });
+    // }
 
     private changeDropdown = (option: IDropdownOption, f: string, index?: number): void => {
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, option.key), FormIsDirty: true });

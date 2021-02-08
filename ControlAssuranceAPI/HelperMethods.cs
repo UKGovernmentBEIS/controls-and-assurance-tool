@@ -32,5 +32,16 @@ namespace ControlAssuranceAPI
 
             return percent;
         }
+
+        public static DateTime? DateToMidDayDate(DateTime? date)
+        {
+            DateTime? retDate = null;
+            if (date != null)
+            {
+                retDate = new DateTime(date.Value.Year, date.Value.Month, date.Value.Day, 12, 0, 0);
+            }
+
+            return retDate;
+        }
     }
 }

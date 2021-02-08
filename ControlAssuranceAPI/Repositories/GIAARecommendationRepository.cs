@@ -29,8 +29,11 @@ namespace ControlAssuranceAPI.Repositories
             return GIAARecommendations.Where(x => x.ID == keyValue).FirstOrDefault();
         }
 
+
         public GIAARecommendation Add(GIAARecommendation gIAARecommendation)
         {
+            //gIAARecommendation.TargetDate = HelperMethods.DateToMidDayDate(gIAARecommendation.TargetDate);
+            //gIAARecommendation.RevisedDate = HelperMethods.DateToMidDayDate(gIAARecommendation.RevisedDate);
             return db.GIAARecommendations.Add(gIAARecommendation);
         }
 

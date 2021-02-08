@@ -9,6 +9,7 @@ import { Panel, PanelType } from 'office-ui-fabric-react/lib/Panel';
 import { FormCommandBar } from '../cr/FormCommandBar';
 import { CrDatePicker } from '../cr/CrDatePicker';
 import { CrEntityPicker } from '../cr/CrEntityPicker';
+import { changeDatePicker } from '../../types/AppGlobals';
 import styles from '../../styles/cr.module.scss';
 
 export interface IRecommendationSaveFormProps extends types.IBaseComponentProps {
@@ -184,7 +185,7 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
                 label="Original Implementation Date"
                 className={styles.formField}
                 value={this.state.FormData.TargetDate}
-                onSelectDate={(v) => this.changeDatePicker(v, "TargetDate")}
+                onSelectDate={(v) => changeDatePicker(this, v, "TargetDate")}
                 required={true}
                 errorMessage={this.state.ErrMessages.TargetDate}
             />
@@ -199,7 +200,7 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
                 label="Revised Implementation Date"
                 className={styles.formField}
                 value={this.state.FormData.RevisedDate}
-                onSelectDate={(v) => this.changeDatePicker(v, "RevisedDate")}
+                onSelectDate={(v) => changeDatePicker(this, v, "RevisedDate")}
             />
         );
     }
@@ -557,28 +558,28 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
     private changeDropdown = (option: IDropdownOption, f: string, index?: number): void => {
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, option.key), FormIsDirty: true });
     }
-    protected changeDatePicker = (date: Date, f: string): void => {
-        console.log('original date', date);
-        if(date != null){
-            const is_dst = this.isDST(date);
-            console.log('is_dst', is_dst);
-            if(is_dst === true){
-                console.log('date offset', date.getTimezoneOffset());
-                //let date2 = new Date(date.getTime()); //copy value of date
-                date.setTime( date.getTime() - date.getTimezoneOffset() * 60 * 1000 );
-                console.log('date minus offset', date);
-            }
+    // protected changeDatePicker = (date: Date, f: string): void => {
+    //     console.log('original date', date);
+    //     if(date != null){
+    //         const is_dst = this.isDST(date);
+    //         console.log('is_dst', is_dst);
+    //         if(is_dst === true){
+    //             console.log('date offset', date.getTimezoneOffset());
+    //             //let date2 = new Date(date.getTime()); //copy value of date
+    //             date.setTime( date.getTime() - date.getTimezoneOffset() * 60 * 1000 );
+    //             console.log('date minus offset', date);
+    //         }
 
-        }
+    //     }
 
-        this.setState({ FormData: this.cloneObject(this.state.FormData, f, date), FormIsDirty: true });
-    }
+    //     this.setState({ FormData: this.cloneObject(this.state.FormData, f, date), FormIsDirty: true });
+    // }
     
-    private isDST = (d: Date) : boolean => {
-        let jan = new Date(d.getFullYear(), 0, 1).getTimezoneOffset();
-        let jul = new Date(d.getFullYear(), 6, 1).getTimezoneOffset();
-        return Math.max(jan, jul) != d.getTimezoneOffset(); 
-    }
+    // private isDST = (d: Date) : boolean => {
+    //     let jan = new Date(d.getFullYear(), 0, 1).getTimezoneOffset();
+    //     let jul = new Date(d.getFullYear(), 6, 1).getTimezoneOffset();
+    //     return Math.max(jan, jul) != d.getTimezoneOffset(); 
+    // }
 
     private changeMultiUserPicker = (value: number[], f: string, newEntity: object, userIdProperty: string): void => {
 

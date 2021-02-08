@@ -42,8 +42,16 @@ namespace ControlAssuranceAPI.Controllers
         public TestDateTime Get(string getTestDateTime, string p2)
         {
             TestDateTime ret = new TestDateTime();
-            ret.DateTimeAsDateTime = DateTime.Now;
-            ret.DateTimeAsString = DateTime.Now.ToString();
+
+            DateTime dtWinter = new DateTime(2021, 2, 20, 23, 0, 0);
+            ret.WinterDateTimeAsDateTime = dtWinter;
+            ret.WinterDateTimeAsString = dtWinter.ToString();
+
+            DateTime dtSummer = new DateTime(2021, 4, 20, 23, 0, 0);
+            ret.SummerDateTimeAsDateTime = dtSummer;
+            ret.SummerDateTimeAsString = dtSummer.ToString();
+
+
 
 
             return ret;

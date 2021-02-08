@@ -9,7 +9,6 @@ import { Panel, PanelType } from 'office-ui-fabric-react/lib/Panel';
 import { FormCommandBar } from '../cr/FormCommandBar';
 import { CrEntityPicker } from '../cr/CrEntityPicker';
 import { CrCheckbox } from '../cr/CrCheckbox';
-import { CrDatePicker } from '../cr/CrDatePicker';
 import { getUploadFolder_IAPFiles, getFolder_Help } from '../../types/AppGlobals';
 import { sp, ChunkedFileUploadProgressData } from '@pnp/sp';
 import styles from '../../styles/cr.module.scss';

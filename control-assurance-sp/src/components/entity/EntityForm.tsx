@@ -10,6 +10,7 @@ import { EntityService } from '../../services';
 import { CrDropdown } from '../cr/CrDropdown';
 import { CrEntityPicker } from '../cr/CrEntityPicker';
 import { CrCheckbox } from '../cr/CrCheckbox';
+import { changeDatePicker } from '../../types/AppGlobals';
 import styles from '../../styles/cr.module.scss';
 
 
@@ -98,7 +99,7 @@ export class EntityForm extends BaseForm<types.IEntityFormProps, types.ICrFormSt
                     label={c.name}
                     className={styles.formField}
                     value={this.state.FormData[c.fieldName]}
-                    onSelectDate={(v) => this.changeDatePicker(v, c.fieldName)}
+                    onSelectDate={(v) => changeDatePicker(this, v, c.fieldName)}
                     required={c.isRequired}
                 />
 

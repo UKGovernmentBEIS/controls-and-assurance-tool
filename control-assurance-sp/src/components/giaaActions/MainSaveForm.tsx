@@ -8,6 +8,7 @@ import { FormButtons } from '../cr/FormButtons';
 import { CrCheckbox } from '../cr/CrCheckbox';
 import { Panel, PanelType } from 'office-ui-fabric-react/lib/Panel';
 import { FormCommandBar } from '../cr/FormCommandBar';
+import { changeDatePicker } from '../../types/AppGlobals';
 import { CrEntityPicker } from '../cr/CrEntityPicker';
 
 
@@ -255,7 +256,7 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
                 label="Issue Date"
                 className={styles.formField}
                 value={this.state.FormData.IssueDate}
-                onSelectDate={(v) => this.changeDatePicker(v, "IssueDate")}
+                onSelectDate={(v) => changeDatePicker(this, v, "IssueDate")}
                 required={true}
                 errorMessage={this.state.ErrMessages.IssueDate}
             />
@@ -536,9 +537,9 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
     private changeTextField = (value: string, f: string): void => {
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, value), FormIsDirty: true });
     }
-    protected changeDatePicker = (date: Date, f: string): void => {
-        this.setState({ FormData: this.cloneObject(this.state.FormData, f, date), FormIsDirty: true });
-    }
+    // protected changeDatePicker = (date: Date, f: string): void => {
+    //     this.setState({ FormData: this.cloneObject(this.state.FormData, f, date), FormIsDirty: true });
+    // }
 
     private changeDropdown = (option: IDropdownOption, f: string, index?: number): void => {
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, option.key), FormIsDirty: true });

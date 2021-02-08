@@ -16,6 +16,7 @@ import styles from '../../styles/cr.module.scss';
 import GiaaUpdates from '../../webparts/giaaUpdates/components/GiaaUpdates';
 import { sp, ChunkedFileUploadProgressData } from '@pnp/sp';
 import { getUploadFolder_GIAAUpdateEvidence, getFolder_Help } from '../../types/AppGlobals';
+import { changeDatePicker } from '../../types/AppGlobals';
 
 
 export interface IUpdatesSaveFormProps extends types.IBaseComponentProps {
@@ -165,7 +166,7 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
                 className={styles.formField}
                 required={true}
                 value={this.state.FormData.RevisedDate}
-                onSelectDate={(v) => this.changeDatePicker(v, "RevisedDate")}
+                onSelectDate={(v) => changeDatePicker(this, v, "RevisedDate")}
                 errorMessage={this.state.ErrMessages.RevisedDate}
             />
         );
@@ -640,9 +641,9 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
     private changeDropdown = (option: IDropdownOption, f: string, index?: number): void => {
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, option.key), FormIsDirty: true });
     }
-    protected changeDatePicker = (date: Date, f: string): void => {
-        this.setState({ FormData: this.cloneObject(this.state.FormData, f, date), FormIsDirty: true });
-    }
+    // protected changeDatePicker = (date: Date, f: string): void => {
+    //     this.setState({ FormData: this.cloneObject(this.state.FormData, f, date), FormIsDirty: true });
+    // }
     protected changeCheckboxIsLink = (value: boolean, f: string): void => {
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, value), /*ShowFileUpload: !value , FormIsDirty: true*/ });
     }

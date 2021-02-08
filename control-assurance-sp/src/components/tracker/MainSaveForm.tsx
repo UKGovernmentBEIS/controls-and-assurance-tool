@@ -10,6 +10,7 @@ import { FormCommandBar } from '../cr/FormCommandBar';
 import { CrEntityPicker } from '../cr/CrEntityPicker';
 import { CrCheckbox } from '../cr/CrCheckbox';
 import { CrDatePicker } from '../cr/CrDatePicker';
+import { changeDatePicker } from '../../types/AppGlobals';
 //import { Stack, IStackProps, IStackStyles } from 'office-ui-fabric-react/lib/Stack';
 import styles from '../../styles/cr.module.scss';
 import { ThemeSettingName } from 'office-ui-fabric-react/lib/Styling';
@@ -308,7 +309,7 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
                         label="Period Start Date"
                         className={styles.formField}
                         value={this.state.FormData.CurrentPeriodStartDate}
-                        onSelectDate={(v) => this.changeDatePicker(v, "CurrentPeriodStartDate")}
+                        onSelectDate={(v) => changeDatePicker(this, v, "CurrentPeriodStartDate")}
                         required={true}
                         errorMessage={this.state.ErrMessages.CurrentPeriodStartDate}
                     />
@@ -320,7 +321,7 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
                         label="Period End Date"
                         className={styles.formField}
                         value={this.state.FormData.CurrentPeriodEndDate}
-                        onSelectDate={(v) => this.changeDatePicker(v, "CurrentPeriodEndDate")}
+                        onSelectDate={(v) => changeDatePicker(this, v, "CurrentPeriodEndDate")}
                         required={true}
                         errorMessage={this.state.ErrMessages.CurrentPeriodEndDate}
                     />
@@ -794,9 +795,9 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, value), FormIsDirty: true });
     }
 
-    private changeDatePicker = (date: Date, f: string): void => {
-        this.setState({ FormData: this.cloneObject(this.state.FormData, f, date), FormIsDirty: true });
-    }
+    // private changeDatePicker = (date: Date, f: string): void => {
+    //     this.setState({ FormData: this.cloneObject(this.state.FormData, f, date), FormIsDirty: true });
+    // }
     //#endregion Form Operations
 
 }
