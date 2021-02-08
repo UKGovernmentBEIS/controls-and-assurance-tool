@@ -101,7 +101,7 @@ namespace ControlAssuranceAPI.Repositories
             }
         }
 
-        public IQueryable<Team> TeamsForUser_OpenTeams
+        public IQueryable<Team> TeamsForUser_OpenTeams_ControlsAssurance
         {
             get
             {
@@ -109,7 +109,7 @@ namespace ControlAssuranceAPI.Repositories
 
 
                 //if user has superUser permissoin or sysManager permission then return all the teams
-                if (base.SuperUserOrSysManagerOrExternalUser(userId) == true)
+                if (base.ControlAssurance_SuperUserOrExternalUser(userId) == true)
                     return (from t in db.Teams
                             where t.EntityStatusId == 1
                             select t);

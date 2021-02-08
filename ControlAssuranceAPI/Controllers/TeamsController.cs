@@ -26,10 +26,11 @@ namespace ControlAssuranceAPI.Controllers
             return db.TeamRepository.Teams;
         }
 
+        //user=&openTeams=&forControlAssurance=&$orderby=Title
         [EnableQuery]
-        public IQueryable<Team> Get(string user, string openTeams)
+        public IQueryable<Team> Get(string user, string openTeams, string forControlAssurance)
         {
-            return db.TeamRepository.TeamsForUser_OpenTeams;
+            return db.TeamRepository.TeamsForUser_OpenTeams_ControlsAssurance;
         }
 
         [EnableQuery]

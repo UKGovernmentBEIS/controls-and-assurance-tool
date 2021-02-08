@@ -1460,14 +1460,14 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
   //#region Permissions
 
 
-  private superUserOrSysManagerPermission(): boolean {
+  private superUserPermission(): boolean {
 
     //super user/SysManager check
     let ups: IUserPermission[] = this.state.UserPermissions;
     
     for (let i = 0; i < ups.length; i++) {
       let up: IUserPermission = ups[i];
-      if (up.PermissionTypeId == 1 || up.PermissionTypeId == 2 || up.PermissionTypeId == 5) {
+      if (up.PermissionTypeId == 1 || up.PermissionTypeId == 5) {
         //super user or sys manager
         return true;
       }
@@ -1477,13 +1477,13 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
   }
 
   private allowAdd_Periods(): boolean {
-    return this.superUserOrSysManagerPermission();
+    return this.superUserPermission();
   }
 
   private allowAdd_DefForms(): boolean {
 
     if (this.state.IsArchivedPeriodDefForms === false) {
-      return this.superUserOrSysManagerPermission();
+      return this.superUserPermission();
     }
     return false;
   }
@@ -1491,7 +1491,7 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
   private allowAdd_DefElementGroups(): boolean {
 
     if (this.state.IsArchivedPeriodDefElementGroups === false) {
-      return this.superUserOrSysManagerPermission();
+      return this.superUserPermission();
     }
     return false;
   }
@@ -1499,7 +1499,7 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
   private allowAdd_DefElements(): boolean {
 
     if (this.state.IsArchivedPeriodDefElements === false) {
-      return this.superUserOrSysManagerPermission();
+      return this.superUserPermission();
     }
     return false;
   }

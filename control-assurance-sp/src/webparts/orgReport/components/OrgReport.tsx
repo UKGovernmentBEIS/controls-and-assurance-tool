@@ -1856,7 +1856,7 @@ export default class OrgReport extends BaseUserContextWebPartComponent<types.IWe
 
 
       //check user permissions
-      if (this.superUserOrSysManagerLoggedIn() === true) {
+      if (this.superUserLoggedIn() === true) {
       }
       else {
         //dont show design periods
@@ -1916,12 +1916,12 @@ export default class OrgReport extends BaseUserContextWebPartComponent<types.IWe
 
   //#region Permissions
 
-  private superUserOrSysManagerLoggedIn(): boolean {
+  private superUserLoggedIn(): boolean {
     //super user/SysManager check
     let ups = this.state.UserPermissions;
     for (let i = 0; i < ups.length; i++) {
       let up: IUserPermission = ups[i];
-      if (up.PermissionTypeId == 1 || up.PermissionTypeId == 2) {
+      if (up.PermissionTypeId == 1 || up.PermissionTypeId == 5) {
         //super user or sys manager
         return true;
       }

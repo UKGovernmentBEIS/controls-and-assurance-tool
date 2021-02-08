@@ -88,10 +88,10 @@ namespace ControlAssuranceAPI.Repositories
             return false;
         }
 
-        protected bool SuperUserOrSysManagerOrExternalUser(int userId)
+        protected bool ControlAssurance_SuperUserOrExternalUser(int userId)
         {
             bool superUser = false;
-            bool sysManager = false;
+            bool car_superUser = false;
             bool externalUser = false;
 
             var userPermissions = db.UserPermissions.Where(up => up.UserId == userId).ToList();
@@ -101,9 +101,9 @@ namespace ControlAssuranceAPI.Repositories
                 {
                     superUser = true;
                 }
-                else if (permissioin.PermissionTypeId == 2)
+                else if (permissioin.PermissionTypeId == 5)
                 {
-                    sysManager = true;
+                    car_superUser = true;
                 }
                 else if(permissioin.PermissionTypeId == 3)
                 {
@@ -111,7 +111,7 @@ namespace ControlAssuranceAPI.Repositories
                 }
             }
 
-            if (sysManager == true || superUser == true || externalUser == true)
+            if (car_superUser == true || superUser == true || externalUser == true)
                 return true;
 
             return false;
@@ -135,18 +135,10 @@ namespace ControlAssuranceAPI.Repositories
                 {
                     goSuperUser = true;
                 }
-                //else if (permissioin.PermissionTypeId == 2)
-                //{
-                //    sysManager = true;
-                //}
-                //else if (permissioin.PermissionTypeId == 3)
-                //{
-                //    externalUser = true;
-                //}
+
             }
 
-            //if (sysManager == true || superUser == true || externalUser == true)
-            //    return true;
+
 
             if (superUser == true || goSuperUser == true)
                 return true;

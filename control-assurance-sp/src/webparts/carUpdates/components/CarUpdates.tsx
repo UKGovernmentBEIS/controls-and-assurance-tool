@@ -377,7 +377,7 @@ export default class CarUpdates extends BaseUserContextWebPartComponent<types.IW
 
 
       //check user permissions
-      if (this.superUserOrSysManagerLoggedIn() === true) {
+      if (this.superUserLoggedIn() === true) {
       }
       else {
         //dont show design periods
@@ -396,7 +396,7 @@ export default class CarUpdates extends BaseUserContextWebPartComponent<types.IW
   protected loadTeams = (): Promise<IEntity[]> => {
     //const username = services.ContextService.Username(this.props.spfxContext);
     //console.log("Username from SP: ", `'${username}'`);
-    return this.teamService.readAllOpenTeamsForUser().then((t: IEntity[]): IEntity[] => {
+    return this.teamService.readAllOpenTeamsForUser_ControlsAssurance().then((t: IEntity[]): IEntity[] => {
       this.setState({ LookupData: this.cloneObject(this.state.LookupData, 'Teams', t) });
       return t;
     }, (err) => { if (this.onError) this.onError(`Error loading Teams lookup data`, err.message); });
@@ -546,13 +546,13 @@ export default class CarUpdates extends BaseUserContextWebPartComponent<types.IW
     return false;
   }
 
-  private superUserOrSysManagerLoggedIn(): boolean {
-    //super user/SysManager check
+  private superUserLoggedIn(): boolean {
+    //super user
     let ups = this.state.UserPermissions;
     for (let i = 0; i < ups.length; i++) {
       let up: IUserPermission = ups[i];
-      if (up.PermissionTypeId == 1 || up.PermissionTypeId == 2) {
-        //super user or sys manager
+      if (up.PermissionTypeId == 1 || up.PermissionTypeId == 5) {
+        //super user
         return true;
       }
     }
@@ -565,7 +565,7 @@ export default class CarUpdates extends BaseUserContextWebPartComponent<types.IW
     if (this.state.IsArchivedPeriod === true)
       return false;
 
-    return this.superUserOrSysManagerLoggedIn();
+    return this.superUserLoggedIn();
   }
 
   private externalUserLoggedIn(): boolean {

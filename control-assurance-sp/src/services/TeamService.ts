@@ -15,9 +15,8 @@ export class TeamService extends EntityService<ITeam> {
         return this.readAll(`?$orderby=User/Title&$expand=User,EntityStatusType,Directorate`);
     }
 
-    public readAllOpenTeamsForUser(): Promise<ITeam[]> {
-        //reads all teams for current user, just need to send "?user=&openTeams=" with request.
-        return this.readAll(`?user=&openTeams=&$orderby=Title`);
+    public readAllOpenTeamsForUser_ControlsAssurance(): Promise<ITeam[]> {
+        return this.readAll(`?user=&openTeams=&forControlAssurance=&$orderby=Title`);
     }
 
     public readAllForUser(): Promise<ITeam[]> {

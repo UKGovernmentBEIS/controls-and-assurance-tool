@@ -235,7 +235,7 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
     for (let i = 0; i < ups.length; i++) {
       let up: IUserPermission = ups[i];
       if (up.PermissionTypeId == 1 || up.PermissionTypeId == 6) {
-        //super user or sys manager
+        //super user
         return true;
       }
     }
