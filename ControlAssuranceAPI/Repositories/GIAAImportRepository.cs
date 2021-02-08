@@ -567,13 +567,13 @@ namespace ControlAssuranceAPI.Repositories
                     foreach(var r in dbThread.GIAARecommendations)
                     {
 
-                        //1. If Revised Target date is null and Target Date is > today then set Recommendation status to 'Overdue'
-                        if(r.RevisedDate == null && r.TargetDate > todaysDate)
+                        //1. If Revised Target date is null and Target Date is < today then set Recommendation status to 'Overdue'
+                        if(r.RevisedDate == null && r.TargetDate < todaysDate)
                         {
                             r.GIAAActionStatusTypeId = 3; //Overdue
                         }
                         //2. If revised Target Date is not null and its > today date then then set Recommendation status to 'Overdue'
-                        else if (r.RevisedDate != null && r.RevisedDate > todaysDate)
+                        else if (r.RevisedDate != null && r.RevisedDate < todaysDate)
                         {
                             r.GIAAActionStatusTypeId = 3; //Overdue
                         }
