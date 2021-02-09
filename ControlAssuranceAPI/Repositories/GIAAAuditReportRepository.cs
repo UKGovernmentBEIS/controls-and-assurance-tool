@@ -200,14 +200,14 @@ namespace ControlAssuranceAPI.Repositories
 
 
                 int totalRecs = iteR.GIAARecommendations.Count;
-                int totalImplementedRecs = iteR.GIAARecommendations.Count(x => x.GIAAActionStatusTypeId == 3 || x.GIAAActionStatusTypeId == 6);
+                int totalClosedRecs = iteR.GIAARecommendations.Count(x => x.GIAAActionStatusTypeId == 2 );
 
 
                 int reqUpdateRecs = iteR.GIAARecommendations.Count(r => r.UpdateStatus == "ReqUpdate");
 
                 try
                 {
-                    var completedPercentageD = (decimal)((decimal)(decimal)totalImplementedRecs / (decimal)totalRecs) * 100;
+                    var completedPercentageD = (decimal)((decimal)(decimal)totalClosedRecs / (decimal)totalRecs) * 100;
                     completedPercentage = (int)Math.Round(completedPercentageD);
                 }
                 catch { }
@@ -305,14 +305,14 @@ namespace ControlAssuranceAPI.Repositories
             if (r != null)
             {
                 int totalRec = r.GIAARecommendations.Count();
-                int totalOpen = r.GIAARecommendations.Count(x => x.GIAAActionStatusTypeId == 1); //open
-                int percentOpen = 0;
+                int totalClosed = r.GIAARecommendations.Count(x => x.GIAAActionStatusTypeId == 2 ); //closed=2
+                int percentClosed = 0;
                 try
                 {
-                    decimal a = (decimal)((decimal)totalOpen / (decimal)totalRec);
+                    decimal a = (decimal)((decimal)totalClosed / (decimal)totalRec);
                     decimal b = Math.Round((a * 100));
-                    percentOpen = (int)b;
-                    //percentOpen = (int)(((decimal)(totalOpen / totalRec)) * (decimal)100);
+                    percentClosed = (int)b;
+                    //percentClosed = (int)(((decimal)(totalClosed / totalRec)) * (decimal)100);
                 }
                 catch(Exception ex) {
                     string m = ex.Message;
@@ -351,7 +351,7 @@ namespace ControlAssuranceAPI.Repositories
 
                 ret.Year = r.AuditYear != null ? r.AuditYear : "";               
                 ret.IssueDate = r.IssueDate != null ? r.IssueDate.Value.ToString("dd/MM/yyyy") : "";              
-                ret.Stats = $"{totalRec}/{totalOpen}/{percentOpen}%";
+                ret.Stats = $"Total:{totalRec} NumClosed: {totalClosed} %Closed:{percentClosed}%";
                 ret.Assurance = r.GIAAAssurance != null ? r.GIAAAssurance.Title : "";
                 ret.Link = r.Link != null ? r.Link : "";
 
