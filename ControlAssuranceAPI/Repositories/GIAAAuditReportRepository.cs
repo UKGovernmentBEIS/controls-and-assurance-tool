@@ -351,7 +351,8 @@ namespace ControlAssuranceAPI.Repositories
 
                 ret.Year = r.AuditYear != null ? r.AuditYear : "";               
                 ret.IssueDate = r.IssueDate != null ? r.IssueDate.Value.ToString("dd/MM/yyyy") : "";              
-                ret.Stats = $"Total:{totalRec} NumClosed: {totalClosed} %Closed:{percentClosed}%";
+                ret.Stats = $"Total={totalRec} , Closed={totalClosed} , PercentClosed={percentClosed}%";
+                //Total=5 , Closed=1 , PercentClosed=20%
                 ret.Assurance = r.GIAAAssurance != null ? r.GIAAAssurance.Title : "";
                 ret.Link = r.Link != null ? r.Link : "";
 
