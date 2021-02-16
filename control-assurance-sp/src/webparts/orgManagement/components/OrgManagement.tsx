@@ -60,9 +60,9 @@ export default class OrgManagement extends BaseUserContextWebPartComponent<types
         <PivotItem headerText="Division Delegates">
           {this.renderTeamMembers()}
         </PivotItem> 
-        <PivotItem headerText="Test List">
+        {/* <PivotItem headerText="Test List">
           {this.renderTestList()}
-        </PivotItem> 
+        </PivotItem>  */}
 
 
       </Pivot>

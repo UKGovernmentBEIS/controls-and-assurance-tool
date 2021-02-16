@@ -86,7 +86,16 @@ namespace ControlAssuranceAPI.Models
         private IAPAssignmentRepository iAPAssignmentRepository;
         private IAPActionUpdateRepository iAPActionUpdateRepository;
         private IAPActionDirectorateRepository iAPActionDirectorateRepository;
-            
+
+        private CLDefFormRepository cLDefFormRepository;
+        private CLCaseRepository cLCaseRepository;
+        private CLComFrameworkRepository cLComFrameworkRepository;
+        private CLIR35ScopeRepository cLIR35ScopeRepository;
+        private CLProfessionalCatRepository cLProfessionalCatRepository;
+        private CLStaffGradeRepository cLStaffGradeRepository;
+        private CLVacancyTypeRepository cLVacancyTypeRepository;
+        private CLWorkLocationRepository cLWorkLocationRepository;
+        private CLWorkerRepository cLWorkerRepository;
 
         private ExportDefinationRepository exportDefinationRepository;
         private AvailableExportRepository availableExportRepository;
@@ -740,6 +749,78 @@ namespace ControlAssuranceAPI.Models
             get
             {
                 return iAPActionDirectorateRepository = iAPActionDirectorateRepository ?? new IAPActionDirectorateRepository(user, context);
+            }
+        }
+
+        public CLDefFormRepository CLDefFormRepository
+        {
+            get
+            {
+                return cLDefFormRepository = cLDefFormRepository ?? new CLDefFormRepository(user, context);
+            }
+        }
+
+        public CLCaseRepository CLCaseRepository
+        {
+            get
+            {
+                return cLCaseRepository = cLCaseRepository ?? new CLCaseRepository(user, context);
+            }
+        }
+
+        public CLComFrameworkRepository CLComFrameworkRepository
+        {
+            get
+            {
+                return cLComFrameworkRepository = cLComFrameworkRepository ?? new CLComFrameworkRepository(user, context);
+            }
+        }
+
+        public CLIR35ScopeRepository CLIR35ScopeRepository
+        {
+            get
+            {
+                return cLIR35ScopeRepository = cLIR35ScopeRepository ?? new CLIR35ScopeRepository(user, context);
+            }
+        }
+
+        public CLProfessionalCatRepository CLProfessionalCatRepository
+        {
+            get
+            {
+                return cLProfessionalCatRepository = cLProfessionalCatRepository ?? new CLProfessionalCatRepository(user, context);
+            }
+        }
+
+        public CLStaffGradeRepository CLStaffGradeRepository
+        {
+            get
+            {
+                return cLStaffGradeRepository = cLStaffGradeRepository ?? new CLStaffGradeRepository(user, context);
+            }
+        }
+
+        public CLVacancyTypeRepository CLVacancyTypeRepository
+        {
+            get
+            {
+                return cLVacancyTypeRepository = cLVacancyTypeRepository ?? new CLVacancyTypeRepository(user, context);
+            }
+        }
+
+        public CLWorkLocationRepository CLWorkLocationRepository
+        {
+            get
+            {
+                return cLWorkLocationRepository = cLWorkLocationRepository ?? new CLWorkLocationRepository(user, context);
+            }
+        }
+
+        public CLWorkerRepository CLWorkerRepository
+        {
+            get
+            {
+                return cLWorkerRepository = cLWorkerRepository ?? new CLWorkerRepository(user, context);
             }
         }
 

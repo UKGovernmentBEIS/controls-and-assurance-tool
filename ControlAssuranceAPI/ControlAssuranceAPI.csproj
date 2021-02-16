@@ -327,6 +327,15 @@
     <Compile Include="Controllers\AutomationOptionsController.cs" />
     <Compile Include="Controllers\AvailableExportsController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\CLCasesController.cs" />
+    <Compile Include="Controllers\CLComFrameworksController.cs" />
+    <Compile Include="Controllers\CLDefFormsController.cs" />
+    <Compile Include="Controllers\CLIR35ScopesController.cs" />
+    <Compile Include="Controllers\CLProfessionalCatsController.cs" />
+    <Compile Include="Controllers\CLStaffGradesController.cs" />
+    <Compile Include="Controllers\CLVacancyTypesController.cs" />
+    <Compile Include="Controllers\CLWorkersController.cs" />
+    <Compile Include="Controllers\CLWorkLocationsController.cs" />
     <Compile Include="Controllers\DefElementGroupsController.cs" />
     <Compile Include="Controllers\DefElementsController.cs" />
     <Compile Include="Controllers\EntityPrioritiesController.cs" />
@@ -423,6 +432,34 @@
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\AvailableExport.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CLCase.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CLCaseView_Result.cs" />
+    <Compile Include="Models\CLComFramework.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CLDefForm.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CLIR35Scope.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CLProfessionalCat.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CLStaffGrade.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CLVacancyType.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CLWorker.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CLWorkLocation.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ControlAssurance.Context.cs">
@@ -680,6 +717,15 @@
     <Compile Include="Repositories\AutomationOptionRepository.cs" />
     <Compile Include="Repositories\AvailableExportRepository.cs" />
     <Compile Include="Repositories\BaseRepository.cs" />
+    <Compile Include="Repositories\CLCaseRepository.cs" />
+    <Compile Include="Repositories\CLComFrameworkRepository.cs" />
+    <Compile Include="Repositories\CLDefFormRepository.cs" />
+    <Compile Include="Repositories\CLIR35ScopeRepository.cs" />
+    <Compile Include="Repositories\CLProfessionalCatRepository.cs" />
+    <Compile Include="Repositories\CLStaffGradeRepository.cs" />
+    <Compile Include="Repositories\CLVacancyTypeRepository.cs" />
+    <Compile Include="Repositories\CLWorkerRepository.cs" />
+    <Compile Include="Repositories\CLWorkLocationRepository.cs" />
     <Compile Include="Repositories\DefElementGroupRespository.cs" />
     <Compile Include="Repositories\DefElementRepository.cs" />
     <Compile Include="Repositories\EmailQueueRepository.cs" />

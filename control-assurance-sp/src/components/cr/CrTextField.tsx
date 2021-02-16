@@ -52,9 +52,9 @@ export class CrTextField extends React.Component<ICrTextFieldProps, {}> {
     private renderTextField(val: string): JSX.Element{
         let x: JSX.Element;
         if(this.props.numbersOnly === true){
-            //x = this.renderMaskedTextFieldNumbersOnly(val);
+            x = this.renderMaskedTextFieldNumbersOnly2(val);
             //bug in masked field, could not use
-            x = this.renderStdTextField(val);
+            //x = this.renderStdTextField(val);
         }
         else
             x = this.renderStdTextField(val);
@@ -62,6 +62,12 @@ export class CrTextField extends React.Component<ICrTextFieldProps, {}> {
     }
 
     private renderStdTextField(val: string): JSX.Element{
+        
+
+
+
+
+
         return(
             <TextField
             label={this.props.label}
@@ -75,26 +81,32 @@ export class CrTextField extends React.Component<ICrTextFieldProps, {}> {
             value={val}
             onChanged={this.props.onChanged}
             suffix={this.props.suffix}
+            
             />
         );
     }
 
     private renderMaskedTextFieldNumbersOnly2(val: string): JSX.Element{
+        const maskFormat: { [key: string]: RegExp } = {
+            '*': /[0-9]/,
+          };
+
+
         let maskVal: string = "";
         if(this.props.maxLength){
             for (let i = 0; i < this.props.maxLength; i++) { 
-                maskVal += "9";
+                maskVal += "*";
               }
         }
         else{
             //just a default value to allow to enter enough digits
-            maskVal = "999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999";
+            maskVal = "****************************************************************";
         }
 
         let vv = String(val);
         return(
             <MaskedTextField
-            key={ this.generateKey("textfield")}
+            //key={ this.generateKey("textfield")}
             label={this.props.label}
             className={this.props.errorMessage && styles.textFieldInvalid}
             required={this.props.required}
@@ -109,6 +121,8 @@ export class CrTextField extends React.Component<ICrTextFieldProps, {}> {
             suffix={this.props.suffix}
             maskChar=""
             mask={maskVal}
+            maskFormat={maskFormat}
+            
             />
         );
 

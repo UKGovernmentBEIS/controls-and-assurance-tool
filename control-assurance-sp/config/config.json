@@ -193,6 +193,38 @@
           "manifest": "./src/webparts/iapProperties/IapPropertiesWebPart.manifest.json"
         }
       ]
+    },
+    "cl-welcome-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/clWelcome/ClWelcomeWebPart.js",
+          "manifest": "./src/webparts/clWelcome/ClWelcomeWebPart.manifest.json"
+        }
+      ]
+    },
+    "cl-properties-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/clProperties/ClPropertiesWebPart.js",
+          "manifest": "./src/webparts/clProperties/ClPropertiesWebPart.manifest.json"
+        }
+      ]
+    },
+    "cl-report-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/clReport/ClReportWebPart.js",
+          "manifest": "./src/webparts/clReport/ClReportWebPart.manifest.json"
+        }
+      ]
+    },
+    "cl-updates-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/clUpdates/ClUpdatesWebPart.js",
+          "manifest": "./src/webparts/clUpdates/ClUpdatesWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {},
@@ -220,6 +252,10 @@
     "IapReportWebPartStrings": "lib/webparts/iapReport/loc/{locale}.js",
     "GiaaReportWebPartStrings": "lib/webparts/giaaReport/loc/{locale}.js",
     "GiaaPropertiesWebPartStrings": "lib/webparts/giaaProperties/loc/{locale}.js",
-    "IapPropertiesWebPartStrings": "lib/webparts/iapProperties/loc/{locale}.js"
+    "IapPropertiesWebPartStrings": "lib/webparts/iapProperties/loc/{locale}.js",
+    "ClWelcomeWebPartStrings": "lib/webparts/clWelcome/loc/{locale}.js",
+    "ClPropertiesWebPartStrings": "lib/webparts/clProperties/loc/{locale}.js",
+    "ClReportWebPartStrings": "lib/webparts/clReport/loc/{locale}.js",
+    "ClUpdatesWebPartStrings": "lib/webparts/clUpdates/loc/{locale}.js"
   }
 }

@@ -112,6 +112,20 @@ namespace ControlAssuranceAPI
             builder.EntitySet<IAPActionUpdateView_Result>("IAPActionUpdateViewResult");
             builder.EntitySet<IAPActionDirectorate>("IAPActionDirectorates");
 
+            builder.EntitySet<CLDefForm>("CLDefForms");
+            builder.EntitySet<CLCase>("CLCases");
+            builder.EntitySet<CLComFramework>("CLComFrameworks");
+            builder.EntitySet<CLIR35Scope>("CLIR35Scopes");
+            builder.EntitySet<CLProfessionalCat>("CLProfessionalCats");
+            builder.EntitySet<CLStaffGrade>("CLStaffGrades");
+            builder.EntitySet<CLVacancyType>("CLVacancyTypes");
+            builder.EntitySet<CLWorkLocation>("CLWorkLocations");
+            builder.EntitySet<CLWorker>("CLWorkers");
+
+            builder.EntitySet<CLCaseView_Result>("CLCaseViewResult");
+            
+
+
             builder.EntitySet<ExportDefination>("ExportDefinations");
             builder.EntitySet<AvailableExport>("AvailableExports");
 

@@ -84,6 +84,14 @@ export { IAPAssignmentService } from './IAPAssignmentService';
 export { IAPActionUpdateService } from './IAPActionUpdateService';
 export { IAPActionDirectorateService } from './IAPActionDirectorateService';
 
+export { CLDefFormService } from './CLDefFormService';
+export { CLCaseService } from './CLCaseService';
+export { CLStaffGradeService } from './CLStaffGradeService';
+export { CLProfessionalCatService } from './CLProfessionalCatService';
+export { CLWorkLocationService } from './CLWorkLocationService';
+export { CLComFrameworkService } from './CLComFrameworkService';
+export { CLIR35ScopeService } from './CLIR35ScopeService';
+
 export { ExportDefinationService } from './ExportDefinationService';
 export { AvailableExportService } from './AvailableExportService';
 

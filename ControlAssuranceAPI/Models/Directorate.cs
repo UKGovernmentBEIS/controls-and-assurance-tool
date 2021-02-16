@@ -17,6 +17,7 @@ namespace ControlAssuranceAPI.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Directorate()
         {
+            this.CLCases = new HashSet<CLCase>();
             this.DirectorateMembers = new HashSet<DirectorateMember>();
             this.GIAAAuditReportDirectorates = new HashSet<GIAAAuditReportDirectorate>();
             this.IAPActionDirectorates = new HashSet<IAPActionDirectorate>();
@@ -36,6 +37,8 @@ namespace ControlAssuranceAPI.Models
         public Nullable<int> ModifiedByUserID { get; set; }
         public Nullable<int> ReportApproverUserID { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CLCase> CLCases { get; set; }
         public virtual DirectorateGroup DirectorateGroup { get; set; }
         public virtual EntityStatusType EntityStatusType { get; set; }
         public virtual User User { get; set; }

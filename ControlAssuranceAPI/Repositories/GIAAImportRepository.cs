@@ -35,7 +35,7 @@ namespace ControlAssuranceAPI.Repositories
 
         public GIAAImportInfoView_Result GetImportInfo()
         {
-            
+
             GIAAImportInfoView_Result ret = new GIAAImportInfoView_Result();
             var imp = db.GIAAImports.FirstOrDefault(x => x.ID == 1);
             if (imp != null)
@@ -55,7 +55,7 @@ namespace ControlAssuranceAPI.Repositories
         {
             var imp = db.GIAAImports.FirstOrDefault(x => x.ID == 1);
 
-            if(imp == null)
+            if (imp == null)
             {
                 imp = new GIAAImport();
                 imp.ID = 1;
@@ -71,7 +71,7 @@ namespace ControlAssuranceAPI.Repositories
         private void ChangeStatusAfterParsing(string lastImportStatus, string logDetails)
         {
 
-            var imp = db.GIAAImports.FirstOrDefault(x => x.ID == 1);           
+            var imp = db.GIAAImports.FirstOrDefault(x => x.ID == 1);
             if (imp != null)
             {
                 imp.Status = "";
@@ -94,7 +94,7 @@ namespace ControlAssuranceAPI.Repositories
             {
                 this.ChangeStatus("InProgress", "Parsing xml");
             }
-            
+
             int apiUserId = ApiUser.ID;
             Task.Run(() =>
             {
@@ -162,7 +162,7 @@ namespace ControlAssuranceAPI.Repositories
 
                     var gIAAActionPriorities = dbThread.GIAAActionPriorities.ToList();
                     var gIAAActionStatusTypes = dbThread.GIAAActionStatusTypes.ToList();
-                    
+
 
                     foreach (XmlNode row in rows)
                     {
@@ -190,7 +190,7 @@ namespace ControlAssuranceAPI.Repositories
                                         reportTitleFound = true;
                                         totalColumnsFound++;
                                         break;
-                                    
+
                                     case "Manager Name":
                                         managerName_cellIndex = cellIndex;
                                         managerNameFound = true;
@@ -266,9 +266,9 @@ namespace ControlAssuranceAPI.Repositories
                         else
                         {
                             //check for column validations
-                            if(rowIndex == 1)
+                            if (rowIndex == 1)
                             {
-                                if(totalColumnsFound < 13) //should be 13 columns
+                                if (totalColumnsFound < 13) //should be 13 columns
                                 {
                                     string columnsNotFound = "";
                                     if (reportCodeFound == false) columnsNotFound += "Report Code, ";
@@ -441,7 +441,7 @@ namespace ControlAssuranceAPI.Repositories
                             gIAARecommendation.GIAAAuditReportId = gIAAAuditReport.ID;
                             gIAARecommendation.Title = recTitle;
 
-                            if(string.IsNullOrEmpty(managerName) == false)
+                            if (string.IsNullOrEmpty(managerName) == false)
                             {
                                 recDetails += $"{Environment.NewLine}GIAA Manager: {managerName}";
                             }
@@ -453,12 +453,12 @@ namespace ControlAssuranceAPI.Repositories
                             gIAARecommendation.RecommendationDetails = recDetails;
 
                             //2 text fields
-                            if(actionOwner != gIAARecommendation.OriginalImportedActionOwners)
+                            if (actionOwner != gIAARecommendation.OriginalImportedActionOwners)
                             {
                                 gIAARecommendation.OriginalImportedActionOwners = actionOwner;
                                 gIAARecommendation.DisplayedImportedActionOwners = actionOwner;
                             }
-                            
+
 
 
                             GIAAActionPriority gIAAActionPriority = gIAAActionPriorities.FirstOrDefault(x => x.Title == recPriority);
@@ -553,10 +553,10 @@ namespace ControlAssuranceAPI.Repositories
                     }
 
 
-                    #endregion Import Work
+                #endregion Import Work
 
 
-                    AfterImport:
+                AfterImport:
 
                     //after import
                     //loop through all the recs and set UpdateStatus
@@ -564,11 +564,11 @@ namespace ControlAssuranceAPI.Repositories
                     //- else set blank
 
                     DateTime todaysDate = DateTime.Now;
-                    foreach(var r in dbThread.GIAARecommendations)
+                    foreach (var r in dbThread.GIAARecommendations)
                     {
 
                         //1. If Revised Target date is null and Target Date is > today then set Recommendation status to 'Overdue'
-                        if(r.RevisedDate == null && r.TargetDate < todaysDate)
+                        if (r.RevisedDate == null && r.TargetDate < todaysDate)
                         {
                             if (r.GIAAActionStatusTypeId == 1)
                             {
@@ -616,7 +616,7 @@ namespace ControlAssuranceAPI.Repositories
                         gIAAImportRepository.ChangeStatusAfterParsing("Success", "");
                     }
 
-                    
+
                 }
                 catch (Exception ex)
                 {
@@ -636,7 +636,7 @@ namespace ControlAssuranceAPI.Repositories
             });
 
 
-            
+
 
         }
 

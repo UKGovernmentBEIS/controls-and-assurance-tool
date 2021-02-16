@@ -17,15 +17,18 @@ export interface ICrDatePickerProps {
     onSelectDate?: (date: Date) => void;
     history?: string;
     errorMessage?: string;
+    width?: string;
 }
 
 export class CrDatePicker extends React.Component<ICrDatePickerProps, {}> {
+    private width:string = this.props.width ? this.props.width : '350px';
     public render(): JSX.Element {
         return (
             <div className={this.props.className}>
                 {this.props.label && <Label required={this.props.required}>{this.props.label}</Label>}
-                <div style={{ maxWidth: '350px' }}>
+                <div style={{ width: this.width }}>
                     <DatePicker
+                    
                         className={this.props.errorMessage && styles.datePickerInvalid}
                         disabled={this.props.disabled}
                         minDate={this.props.minDate}

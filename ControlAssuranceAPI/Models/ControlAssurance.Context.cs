@@ -33,6 +33,15 @@ namespace ControlAssuranceAPI.Models
         public virtual DbSet<AutoFunctionsLog> AutoFunctionsLogs { get; set; }
         public virtual DbSet<AutomationOption> AutomationOptions { get; set; }
         public virtual DbSet<AvailableExport> AvailableExports { get; set; }
+        public virtual DbSet<CLCase> CLCases { get; set; }
+        public virtual DbSet<CLComFramework> CLComFrameworks { get; set; }
+        public virtual DbSet<CLDefForm> CLDefForms { get; set; }
+        public virtual DbSet<CLIR35Scope> CLIR35Scope { get; set; }
+        public virtual DbSet<CLProfessionalCat> CLProfessionalCats { get; set; }
+        public virtual DbSet<CLStaffGrade> CLStaffGrades { get; set; }
+        public virtual DbSet<CLVacancyType> CLVacancyTypes { get; set; }
+        public virtual DbSet<CLWorker> CLWorkers { get; set; }
+        public virtual DbSet<CLWorkLocation> CLWorkLocations { get; set; }
         public virtual DbSet<DefElement> DefElements { get; set; }
         public virtual DbSet<DefElementGroup> DefElementGroups { get; set; }
         public virtual DbSet<DefForm> DefForms { get; set; }

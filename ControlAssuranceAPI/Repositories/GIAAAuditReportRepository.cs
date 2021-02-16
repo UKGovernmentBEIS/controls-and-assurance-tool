@@ -42,11 +42,11 @@ namespace ControlAssuranceAPI.Repositories
             List<GIAAAuditReportView_Result> retList = new List<GIAAAuditReportView_Result>();
 
             var qry = from r in db.GIAAAuditReports
-                          join a in db.GIAAAssurances on r.GIAAAssuranceId equals a.ID into aj
+                      join a in db.GIAAAssurances on r.GIAAAssuranceId equals a.ID into aj
                       from ajx in aj.DefaultIfEmpty()
                       orderby r.ID
                       where r.IsArchive == isArchive
-                          //where p.NAORecommendations.Any(x => x.NAOUpdates.Any (y => y.NAOPeriodId == naoPeriodId))
+                      //where p.NAORecommendations.Any(x => x.NAOUpdates.Any (y => y.NAOPeriodId == naoPeriodId))
                       select new
                       {
                           r.ID,
@@ -143,10 +143,10 @@ namespace ControlAssuranceAPI.Repositories
 
             }
 
-            
-        
-        //label
-        //AfterPermissions:
+
+
+            //label
+            //AfterPermissions:
 
 
             if (dgAreaId > 0)
@@ -168,9 +168,9 @@ namespace ControlAssuranceAPI.Repositories
                 qry = qry.Where(x => x.GIAAAuditReportDirectorates.Any(d => arrDirs.Contains(d.DirectorateId.Value)));
             }
 
-            
-            
-            if(justMine == true && incompleteOnly == true)
+
+
+            if (justMine == true && incompleteOnly == true)
             {
                 qry = qry.Where(x => x.GIAARecommendations.Any(r => r.UpdateStatus == "ReqUpdate" && r.GIAAActionOwners.Any(o => o.UserId == loggedInUserID)));
             }
@@ -200,7 +200,7 @@ namespace ControlAssuranceAPI.Repositories
 
 
                 int totalRecs = iteR.GIAARecommendations.Count;
-                int totalClosedRecs = iteR.GIAARecommendations.Count(x => x.GIAAActionStatusTypeId == 2 );
+                int totalClosedRecs = iteR.GIAARecommendations.Count(x => x.GIAAActionStatusTypeId == 2);
 
 
                 int reqUpdateRecs = iteR.GIAARecommendations.Count(r => r.UpdateStatus == "ReqUpdate");
@@ -214,26 +214,26 @@ namespace ControlAssuranceAPI.Repositories
 
                 HashSet<User> uniqueOwners = new HashSet<User>();
 
-                foreach(var rec in iteR.GIAARecommendations)
+                foreach (var rec in iteR.GIAARecommendations)
                 {
-                    if(string.IsNullOrEmpty(rec.DisplayedImportedActionOwners) == false)
+                    if (string.IsNullOrEmpty(rec.DisplayedImportedActionOwners) == false)
                     {
                         numDisplayedOwners++;
                     }
-                    foreach(var owner in rec.GIAAActionOwners)
+                    foreach (var owner in rec.GIAAActionOwners)
                     {
                         var ownerName = owner.User.Title;
                         uniqueOwners.Add(owner.User);
                     }
                 }
 
-                if(numDisplayedOwners > 0)
+                if (numDisplayedOwners > 0)
                 {
                     users = $"<<{numDisplayedOwners}>>,";
                 }
 
                 int totalUniqueOwners = uniqueOwners.Count;
-                foreach(var uniqueOwner in uniqueOwners)
+                foreach (var uniqueOwner in uniqueOwners)
                 {
                     users += uniqueOwner.Title + ",";
                 }
@@ -246,7 +246,7 @@ namespace ControlAssuranceAPI.Repositories
 
                 string updateStatus = "";
 
-                if(reqUpdateRecs > 0)
+                if (reqUpdateRecs > 0)
                 {
                     updateStatus = "ReqUpdate";
                 }
@@ -305,7 +305,7 @@ namespace ControlAssuranceAPI.Repositories
             if (r != null)
             {
                 int totalRec = r.GIAARecommendations.Count();
-                int totalClosed = r.GIAARecommendations.Count(x => x.GIAAActionStatusTypeId == 2 ); //closed=2
+                int totalClosed = r.GIAARecommendations.Count(x => x.GIAAActionStatusTypeId == 2); //closed=2
                 int percentClosed = 0;
                 try
                 {
@@ -314,7 +314,8 @@ namespace ControlAssuranceAPI.Repositories
                     percentClosed = (int)b;
                     //percentClosed = (int)(((decimal)(totalClosed / totalRec)) * (decimal)100);
                 }
-                catch(Exception ex) {
+                catch (Exception ex)
+                {
                     string m = ex.Message;
                 }
 
@@ -349,8 +350,8 @@ namespace ControlAssuranceAPI.Repositories
                 ret.Director = directors;
                 ret.DG = dgs;
 
-                ret.Year = r.AuditYear != null ? r.AuditYear : "";               
-                ret.IssueDate = r.IssueDate != null ? r.IssueDate.Value.ToString("dd/MM/yyyy") : "";              
+                ret.Year = r.AuditYear != null ? r.AuditYear : "";
+                ret.IssueDate = r.IssueDate != null ? r.IssueDate.Value.ToString("dd/MM/yyyy") : "";
                 ret.Stats = $"Total={totalRec} , Closed={totalClosed} , PercentClosed={percentClosed}%";
                 //Total=5 , Closed=1 , PercentClosed=20%
                 ret.Assurance = r.GIAAAssurance != null ? r.GIAAAssurance.Title : "";
@@ -361,6 +362,6 @@ namespace ControlAssuranceAPI.Repositories
             return ret;
         }
 
-        
+
     }
 }

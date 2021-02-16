@@ -64,6 +64,105 @@
           <Property Name="OutputFileName" Type="nvarchar" MaxLength="4000" />
           <Property Name="OutputFileStatus" Type="nvarchar(max)" />
         </EntityType>
+        <EntityType Name="CLCase">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" />
+          <Property Name="CaseType" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedById" Type="int" />
+          <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="ApplHMUserId" Type="int" />
+          <Property Name="ReqCostCentre" Type="nvarchar" MaxLength="500" />
+          <Property Name="ReqDirectorateId" Type="int" />
+          <Property Name="ReqVacancyTitle" Type="nvarchar" MaxLength="1000" />
+          <Property Name="ReqGradeId" Type="int" />
+          <Property Name="ReqWorkPurpose" Type="nvarchar(max)" />
+          <Property Name="ReqProfessionalCatId" Type="int" />
+          <Property Name="ReqEstStartDate" Type="datetime" />
+          <Property Name="ReqEstEndDate" Type="datetime" />
+          <Property Name="ReqWorkLocationId" Type="int" />
+          <Property Name="ReqNumPositions" Type="int" />
+          <Property Name="ComFrameworkId" Type="int" />
+          <Property Name="ComJustification" Type="nvarchar(max)" />
+          <Property Name="ComPSRAccountId" Type="nvarchar" MaxLength="50" />
+          <Property Name="JustAltOptions" Type="nvarchar(max)" />
+          <Property Name="JustSuccessionPlanning" Type="nvarchar(max)" />
+          <Property Name="FinMaxRate" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="FinEstCost" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="FinIR35ScopeId" Type="int" />
+          <Property Name="FinIR35AssessmentId" Type="int" />
+          <Property Name="OtherComments" Type="nvarchar(max)" />
+          <Property Name="BHUserId" Type="int" />
+          <Property Name="FBPUserId" Type="int" />
+          <Property Name="HRBPUserId" Type="int" />
+          <Property Name="BHApprovalDecision" Type="nvarchar" MaxLength="50" />
+          <Property Name="BHApprovalComments" Type="nvarchar(max)" />
+          <Property Name="FBPApprovalDecision" Type="nvarchar" MaxLength="50" />
+          <Property Name="FBPApprovalComments" Type="nvarchar(max)" />
+          <Property Name="HRBPApprovalDecision" Type="nvarchar" MaxLength="50" />
+          <Property Name="HRBPApprovalComments" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="CLComFramework">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="CLDefForm">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="1000" />
+          <Property Name="Details" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="CLIR35Scope">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="CLProfessionalCat">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="500" />
+        </EntityType>
+        <EntityType Name="CLStaffGrade">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="CLVacancyType">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="CLWorker">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" />
+          <Property Name="CLCaseId" Type="int" />
+          <Property Name="Stage" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="CLWorkLocation">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="500" />
+        </EntityType>
         <EntityType Name="DefElement">
           <Key>
             <PropertyRef Name="ID" />
@@ -986,6 +1085,78 @@
             </Principal>
             <Dependent Role="AuditFeedback">
               <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CLCase_CLComFramework">
+          <End Role="CLComFramework" Type="Self.CLComFramework" Multiplicity="0..1" />
+          <End Role="CLCase" Type="Self.CLCase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CLComFramework">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CLCase">
+              <PropertyRef Name="ComFrameworkId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CLCase_CLIR35Scope">
+          <End Role="CLIR35Scope" Type="Self.CLIR35Scope" Multiplicity="0..1" />
+          <End Role="CLCase" Type="Self.CLCase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CLIR35Scope">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CLCase">
+              <PropertyRef Name="FinIR35ScopeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CLCase_CLProfessionalCat">
+          <End Role="CLProfessionalCat" Type="Self.CLProfessionalCat" Multiplicity="0..1" />
+          <End Role="CLCase" Type="Self.CLCase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CLProfessionalCat">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CLCase">
+              <PropertyRef Name="ReqProfessionalCatId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CLCase_CLStaffGrade">
+          <End Role="CLStaffGrade" Type="Self.CLStaffGrade" Multiplicity="0..1" />
+          <End Role="CLCase" Type="Self.CLCase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CLStaffGrade">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CLCase">
+              <PropertyRef Name="ReqGradeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CLCase_Directorate">
+          <End Role="Directorate" Type="Self.Directorate" Multiplicity="0..1" />
+          <End Role="CLCase" Type="Self.CLCase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Directorate">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CLCase">
+              <PropertyRef Name="ReqDirectorateId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CLWorker_CLCase">
+          <End Role="CLCase" Type="Self.CLCase" Multiplicity="0..1" />
+          <End Role="CLWorker" Type="Self.CLWorker" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CLCase">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CLWorker">
+              <PropertyRef Name="CLCaseId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2026,6 +2197,15 @@
           <EntitySet Name="AutoFunctionsLog" EntityType="Self.AutoFunctionsLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AutomationOption" EntityType="Self.AutomationOption" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AvailableExport" EntityType="Self.AvailableExport" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CLCase" EntityType="Self.CLCase" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CLComFramework" EntityType="Self.CLComFramework" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CLDefForm" EntityType="Self.CLDefForm" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CLIR35Scope" EntityType="Self.CLIR35Scope" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CLProfessionalCat" EntityType="Self.CLProfessionalCat" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CLStaffGrade" EntityType="Self.CLStaffGrade" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CLVacancyType" EntityType="Self.CLVacancyType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CLWorker" EntityType="Self.CLWorker" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CLWorkLocation" EntityType="Self.CLWorkLocation" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DefElement" EntityType="Self.DefElement" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DefElementGroup" EntityType="Self.DefElementGroup" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DefForm" EntityType="Self.DefForm" Schema="dbo" store:Type="Tables" />
@@ -2103,6 +2283,30 @@
           <AssociationSet Name="FK_AuditFeedback_User" Association="Self.FK_AuditFeedback_User">
             <End Role="User" EntitySet="User" />
             <End Role="AuditFeedback" EntitySet="AuditFeedback" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CLCase_CLComFramework" Association="Self.FK_CLCase_CLComFramework">
+            <End Role="CLComFramework" EntitySet="CLComFramework" />
+            <End Role="CLCase" EntitySet="CLCase" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CLCase_CLIR35Scope" Association="Self.FK_CLCase_CLIR35Scope">
+            <End Role="CLIR35Scope" EntitySet="CLIR35Scope" />
+            <End Role="CLCase" EntitySet="CLCase" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CLCase_CLProfessionalCat" Association="Self.FK_CLCase_CLProfessionalCat">
+            <End Role="CLProfessionalCat" EntitySet="CLProfessionalCat" />
+            <End Role="CLCase" EntitySet="CLCase" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CLCase_CLStaffGrade" Association="Self.FK_CLCase_CLStaffGrade">
+            <End Role="CLStaffGrade" EntitySet="CLStaffGrade" />
+            <End Role="CLCase" EntitySet="CLCase" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CLCase_Directorate" Association="Self.FK_CLCase_Directorate">
+            <End Role="Directorate" EntitySet="Directorate" />
+            <End Role="CLCase" EntitySet="CLCase" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CLWorker_CLCase" Association="Self.FK_CLWorker_CLCase">
+            <End Role="CLCase" EntitySet="CLCase" />
+            <End Role="CLWorker" EntitySet="CLWorker" />
           </AssociationSet>
           <AssociationSet Name="FK_DefElement_DefElementGroup" Association="Self.FK_DefElement_DefElementGroup">
             <End Role="DefElementGroup" EntitySet="DefElementGroup" />
@@ -2508,6 +2712,116 @@
           <Property Name="OutputFileName" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
           <Property Name="OutputFileStatus" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EntityType Name="CLCase">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CaseType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedById" Type="Int32" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="ApplHMUserId" Type="Int32" />
+          <Property Name="ReqCostCentre" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="ReqDirectorateId" Type="Int32" />
+          <Property Name="ReqVacancyTitle" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="ReqGradeId" Type="Int32" />
+          <Property Name="ReqWorkPurpose" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ReqProfessionalCatId" Type="Int32" />
+          <Property Name="ReqEstStartDate" Type="DateTime" Precision="3" />
+          <Property Name="ReqEstEndDate" Type="DateTime" Precision="3" />
+          <Property Name="ReqWorkLocationId" Type="Int32" />
+          <Property Name="ReqNumPositions" Type="Int32" />
+          <Property Name="ComFrameworkId" Type="Int32" />
+          <Property Name="ComJustification" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ComPSRAccountId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="JustAltOptions" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="JustSuccessionPlanning" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="FinMaxRate" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="FinEstCost" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="FinIR35ScopeId" Type="Int32" />
+          <Property Name="FinIR35AssessmentId" Type="Int32" />
+          <Property Name="OtherComments" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="BHUserId" Type="Int32" />
+          <Property Name="FBPUserId" Type="Int32" />
+          <Property Name="HRBPUserId" Type="Int32" />
+          <Property Name="BHApprovalDecision" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="BHApprovalComments" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="FBPApprovalDecision" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="FBPApprovalComments" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="HRBPApprovalDecision" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="HRBPApprovalComments" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="CLComFramework" Relationship="Self.FK_CLCase_CLComFramework" FromRole="CLCase" ToRole="CLComFramework" />
+          <NavigationProperty Name="CLIR35Scope" Relationship="Self.FK_CLCase_CLIR35Scope" FromRole="CLCase" ToRole="CLIR35Scope" />
+          <NavigationProperty Name="CLProfessionalCat" Relationship="Self.FK_CLCase_CLProfessionalCat" FromRole="CLCase" ToRole="CLProfessionalCat" />
+          <NavigationProperty Name="CLStaffGrade" Relationship="Self.FK_CLCase_CLStaffGrade" FromRole="CLCase" ToRole="CLStaffGrade" />
+          <NavigationProperty Name="Directorate" Relationship="Self.FK_CLCase_Directorate" FromRole="CLCase" ToRole="Directorate" />
+          <NavigationProperty Name="CLWorkers" Relationship="Self.FK_CLWorker_CLCase" FromRole="CLCase" ToRole="CLWorker" />
+        </EntityType>
+        <EntityType Name="CLComFramework">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="CLCases" Relationship="Self.FK_CLCase_CLComFramework" FromRole="CLComFramework" ToRole="CLCase" />
+        </EntityType>
+        <EntityType Name="CLDefForm">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="Details" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="CLIR35Scope">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="CLCases" Relationship="Self.FK_CLCase_CLIR35Scope" FromRole="CLIR35Scope" ToRole="CLCase" />
+        </EntityType>
+        <EntityType Name="CLProfessionalCat">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="CLCases" Relationship="Self.FK_CLCase_CLProfessionalCat" FromRole="CLProfessionalCat" ToRole="CLCase" />
+        </EntityType>
+        <EntityType Name="CLStaffGrade">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="CLCases" Relationship="Self.FK_CLCase_CLStaffGrade" FromRole="CLStaffGrade" ToRole="CLCase" />
+        </EntityType>
+        <EntityType Name="CLVacancyType">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="CLWorker">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CLCaseId" Type="Int32" />
+          <Property Name="Stage" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="CLCase" Relationship="Self.FK_CLWorker_CLCase" FromRole="CLWorker" ToRole="CLCase" />
+        </EntityType>
+        <EntityType Name="CLWorkLocation">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+        </EntityType>
         <EntityType Name="DefElement">
           <Key>
             <PropertyRef Name="ID" />
@@ -2631,6 +2945,7 @@
           <Property Name="SysEndTime" Type="DateTime" Precision="0" />
           <Property Name="ModifiedByUserID" Type="Int32" />
           <Property Name="ReportApproverUserID" Type="Int32" />
+          <NavigationProperty Name="CLCases" Relationship="Self.FK_CLCase_Directorate" FromRole="Directorate" ToRole="CLCase" />
           <NavigationProperty Name="DirectorateGroup" Relationship="Self.FK_Directorate_DirectorateGroup" FromRole="Directorate" ToRole="DirectorateGroup" />
           <NavigationProperty Name="EntityStatusType" Relationship="Self.FK_Directorate_EntityStatusType" FromRole="Directorate" ToRole="EntityStatusType" />
           <NavigationProperty Name="User" Relationship="Self.FK_Directorate_User" FromRole="Directorate" ToRole="User" />
@@ -3601,6 +3916,78 @@
             </Principal>
             <Dependent Role="AuditFeedback">
               <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CLCase_CLComFramework">
+          <End Role="CLComFramework" Type="Self.CLComFramework" Multiplicity="0..1" />
+          <End Role="CLCase" Type="Self.CLCase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CLComFramework">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CLCase">
+              <PropertyRef Name="ComFrameworkId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CLCase_CLIR35Scope">
+          <End Role="CLIR35Scope" Type="Self.CLIR35Scope" Multiplicity="0..1" />
+          <End Role="CLCase" Type="Self.CLCase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CLIR35Scope">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CLCase">
+              <PropertyRef Name="FinIR35ScopeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CLCase_CLProfessionalCat">
+          <End Role="CLProfessionalCat" Type="Self.CLProfessionalCat" Multiplicity="0..1" />
+          <End Role="CLCase" Type="Self.CLCase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CLProfessionalCat">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CLCase">
+              <PropertyRef Name="ReqProfessionalCatId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CLCase_CLStaffGrade">
+          <End Role="CLStaffGrade" Type="Self.CLStaffGrade" Multiplicity="0..1" />
+          <End Role="CLCase" Type="Self.CLCase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CLStaffGrade">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CLCase">
+              <PropertyRef Name="ReqGradeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CLCase_Directorate">
+          <End Role="Directorate" Type="Self.Directorate" Multiplicity="0..1" />
+          <End Role="CLCase" Type="Self.CLCase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Directorate">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CLCase">
+              <PropertyRef Name="ReqDirectorateId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CLWorker_CLCase">
+          <End Role="CLCase" Type="Self.CLCase" Multiplicity="0..1" />
+          <End Role="CLWorker" Type="Self.CLWorker" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CLCase">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CLWorker">
+              <PropertyRef Name="CLCaseId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -4623,6 +5010,15 @@
           <EntitySet Name="AutoFunctionsLogs" EntityType="Self.AutoFunctionsLog" />
           <EntitySet Name="AutomationOptions" EntityType="Self.AutomationOption" />
           <EntitySet Name="AvailableExports" EntityType="Self.AvailableExport" />
+          <EntitySet Name="CLCases" EntityType="Self.CLCase" />
+          <EntitySet Name="CLComFrameworks" EntityType="Self.CLComFramework" />
+          <EntitySet Name="CLDefForms" EntityType="Self.CLDefForm" />
+          <EntitySet Name="CLIR35Scope" EntityType="Self.CLIR35Scope" />
+          <EntitySet Name="CLProfessionalCats" EntityType="Self.CLProfessionalCat" />
+          <EntitySet Name="CLStaffGrades" EntityType="Self.CLStaffGrade" />
+          <EntitySet Name="CLVacancyTypes" EntityType="Self.CLVacancyType" />
+          <EntitySet Name="CLWorkers" EntityType="Self.CLWorker" />
+          <EntitySet Name="CLWorkLocations" EntityType="Self.CLWorkLocation" />
           <EntitySet Name="DefElements" EntityType="Self.DefElement" />
           <EntitySet Name="DefElementGroups" EntityType="Self.DefElementGroup" />
           <EntitySet Name="DefForms" EntityType="Self.DefForm" />
@@ -4700,6 +5096,30 @@
           <AssociationSet Name="FK_AuditFeedback_User" Association="Self.FK_AuditFeedback_User">
             <End Role="User" EntitySet="Users" />
             <End Role="AuditFeedback" EntitySet="AuditFeedbacks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CLCase_CLComFramework" Association="Self.FK_CLCase_CLComFramework">
+            <End Role="CLComFramework" EntitySet="CLComFrameworks" />
+            <End Role="CLCase" EntitySet="CLCases" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CLCase_CLIR35Scope" Association="Self.FK_CLCase_CLIR35Scope">
+            <End Role="CLIR35Scope" EntitySet="CLIR35Scope" />
+            <End Role="CLCase" EntitySet="CLCases" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CLCase_CLProfessionalCat" Association="Self.FK_CLCase_CLProfessionalCat">
+            <End Role="CLProfessionalCat" EntitySet="CLProfessionalCats" />
+            <End Role="CLCase" EntitySet="CLCases" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CLCase_CLStaffGrade" Association="Self.FK_CLCase_CLStaffGrade">
+            <End Role="CLStaffGrade" EntitySet="CLStaffGrades" />
+            <End Role="CLCase" EntitySet="CLCases" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CLCase_Directorate" Association="Self.FK_CLCase_Directorate">
+            <End Role="Directorate" EntitySet="Directorates" />
+            <End Role="CLCase" EntitySet="CLCases" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CLWorker_CLCase" Association="Self.FK_CLWorker_CLCase">
+            <End Role="CLCase" EntitySet="CLCases" />
+            <End Role="CLWorker" EntitySet="CLWorkers" />
           </AssociationSet>
           <AssociationSet Name="FK_DefElement_DefElementGroup" Association="Self.FK_DefElement_DefElementGroup">
             <End Role="DefElementGroup" EntitySet="DefElementGroups" />
@@ -5302,6 +5722,114 @@
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="OutputFileName" ColumnName="OutputFileName" />
                 <ScalarProperty Name="OutputFileStatus" ColumnName="OutputFileStatus" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CLCases">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.CLCase">
+              <MappingFragment StoreEntitySet="CLCase">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="CaseType" ColumnName="CaseType" />
+                <ScalarProperty Name="CreatedById" ColumnName="CreatedById" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="ApplHMUserId" ColumnName="ApplHMUserId" />
+                <ScalarProperty Name="ReqCostCentre" ColumnName="ReqCostCentre" />
+                <ScalarProperty Name="ReqDirectorateId" ColumnName="ReqDirectorateId" />
+                <ScalarProperty Name="ReqVacancyTitle" ColumnName="ReqVacancyTitle" />
+                <ScalarProperty Name="ReqGradeId" ColumnName="ReqGradeId" />
+                <ScalarProperty Name="ReqWorkPurpose" ColumnName="ReqWorkPurpose" />
+                <ScalarProperty Name="ReqProfessionalCatId" ColumnName="ReqProfessionalCatId" />
+                <ScalarProperty Name="ReqEstStartDate" ColumnName="ReqEstStartDate" />
+                <ScalarProperty Name="ReqEstEndDate" ColumnName="ReqEstEndDate" />
+                <ScalarProperty Name="ReqWorkLocationId" ColumnName="ReqWorkLocationId" />
+                <ScalarProperty Name="ReqNumPositions" ColumnName="ReqNumPositions" />
+                <ScalarProperty Name="ComFrameworkId" ColumnName="ComFrameworkId" />
+                <ScalarProperty Name="ComJustification" ColumnName="ComJustification" />
+                <ScalarProperty Name="ComPSRAccountId" ColumnName="ComPSRAccountId" />
+                <ScalarProperty Name="JustAltOptions" ColumnName="JustAltOptions" />
+                <ScalarProperty Name="JustSuccessionPlanning" ColumnName="JustSuccessionPlanning" />
+                <ScalarProperty Name="FinMaxRate" ColumnName="FinMaxRate" />
+                <ScalarProperty Name="FinEstCost" ColumnName="FinEstCost" />
+                <ScalarProperty Name="FinIR35ScopeId" ColumnName="FinIR35ScopeId" />
+                <ScalarProperty Name="FinIR35AssessmentId" ColumnName="FinIR35AssessmentId" />
+                <ScalarProperty Name="OtherComments" ColumnName="OtherComments" />
+                <ScalarProperty Name="BHUserId" ColumnName="BHUserId" />
+                <ScalarProperty Name="FBPUserId" ColumnName="FBPUserId" />
+                <ScalarProperty Name="HRBPUserId" ColumnName="HRBPUserId" />
+                <ScalarProperty Name="BHApprovalDecision" ColumnName="BHApprovalDecision" />
+                <ScalarProperty Name="BHApprovalComments" ColumnName="BHApprovalComments" />
+                <ScalarProperty Name="FBPApprovalDecision" ColumnName="FBPApprovalDecision" />
+                <ScalarProperty Name="FBPApprovalComments" ColumnName="FBPApprovalComments" />
+                <ScalarProperty Name="HRBPApprovalDecision" ColumnName="HRBPApprovalDecision" />
+                <ScalarProperty Name="HRBPApprovalComments" ColumnName="HRBPApprovalComments" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CLComFrameworks">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.CLComFramework">
+              <MappingFragment StoreEntitySet="CLComFramework">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CLDefForms">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.CLDefForm">
+              <MappingFragment StoreEntitySet="CLDefForm">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Details" ColumnName="Details" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CLIR35Scope">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.CLIR35Scope">
+              <MappingFragment StoreEntitySet="CLIR35Scope">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CLProfessionalCats">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.CLProfessionalCat">
+              <MappingFragment StoreEntitySet="CLProfessionalCat">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CLStaffGrades">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.CLStaffGrade">
+              <MappingFragment StoreEntitySet="CLStaffGrade">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CLVacancyTypes">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.CLVacancyType">
+              <MappingFragment StoreEntitySet="CLVacancyType">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CLWorkers">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.CLWorker">
+              <MappingFragment StoreEntitySet="CLWorker">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="CLCaseId" ColumnName="CLCaseId" />
+                <ScalarProperty Name="Stage" ColumnName="Stage" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CLWorkLocations">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.CLWorkLocation">
+              <MappingFragment StoreEntitySet="CLWorkLocation">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

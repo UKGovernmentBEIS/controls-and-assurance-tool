@@ -90,6 +90,16 @@ namespace ControlAssuranceAPI.Models
         DbSet<IAPAssignment> IAPAssignments { get; set; }
         DbSet<IAPActionDirectorate> IAPActionDirectorates { get; set; }
 
+        DbSet<CLCase> CLCases { get; set; }
+        DbSet<CLComFramework> CLComFrameworks { get; set; }
+        DbSet<CLDefForm> CLDefForms { get; set; }
+        DbSet<CLIR35Scope> CLIR35Scope { get; set; }
+        DbSet<CLProfessionalCat> CLProfessionalCats { get; set; }
+        DbSet<CLStaffGrade> CLStaffGrades { get; set; }
+        DbSet<CLVacancyType> CLVacancyTypes { get; set; }
+        DbSet<CLWorkLocation> CLWorkLocations { get; set; }
+        DbSet<CLWorker> CLWorkers { get; set; }
+
         DbSet<ExportDefination> ExportDefinations { get; set; }
         DbSet<AvailableExport> AvailableExports { get; set; }
 

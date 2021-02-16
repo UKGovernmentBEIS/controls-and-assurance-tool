@@ -65,7 +65,8 @@ export { IIAPAssignment, IAPAssignment } from './IAPAssignment';
 export { IIAPActionUpdate, IAPActionUpdate } from './IAPActionUpdate';
 export { IIAPActionDirectorate, IAPActionDirectorate } from './IAPActionDirectorate';
 
-
+export { ICLDefForm } from './CLDefForm';
+export { ICLCase, CLCase } from './CLCase';
 
 export { SaveStatus } from './SaveStatus';
 export { CrUpdateFormState, ICrUpdateFormState } from './CrUpdateFormState';
