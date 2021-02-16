@@ -845,7 +845,8 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                     split
                                     splitButtonAriaLabel="See 2 options"
                                     aria-roledescription="split button"
-                                    menuProps={menuProps}
+                                    
+                                    menuIconProps={menuProps}
 
 
                                 />
