@@ -841,7 +841,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                     //className={styles.formButton} style={{ marginRight: '5px' }}
                                     //style={{ border: '1px solid rgb(138,136,134)' }}
                                     onClick={this.props.onShowList}
-                                    primaryDisabled
+                                    //primaryDisabled
                                     split
                                     splitButtonAriaLabel="See 2 options"
                                     aria-roledescription="split button"
