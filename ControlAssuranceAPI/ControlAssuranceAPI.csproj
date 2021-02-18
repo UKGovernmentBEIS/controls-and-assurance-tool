@@ -327,6 +327,7 @@
     <Compile Include="Controllers\AutomationOptionsController.cs" />
     <Compile Include="Controllers\AvailableExportsController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\CLCaseEvidencesController.cs" />
     <Compile Include="Controllers\CLCasesController.cs" />
     <Compile Include="Controllers\CLComFrameworksController.cs" />
     <Compile Include="Controllers\CLDefFormsController.cs" />
@@ -437,6 +438,10 @@
     <Compile Include="Models\CLCase.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\CLCaseEvidence.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ClCaseInfoView_Result.cs" />
     <Compile Include="Models\CLCaseView_Result.cs" />
     <Compile Include="Models\CLComFramework.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
@@ -717,6 +722,7 @@
     <Compile Include="Repositories\AutomationOptionRepository.cs" />
     <Compile Include="Repositories\AvailableExportRepository.cs" />
     <Compile Include="Repositories\BaseRepository.cs" />
+    <Compile Include="Repositories\CLCaseEvidenceRepository.cs" />
     <Compile Include="Repositories\CLCaseRepository.cs" />
     <Compile Include="Repositories\CLComFrameworkRepository.cs" />
     <Compile Include="Repositories\CLDefFormRepository.cs" />

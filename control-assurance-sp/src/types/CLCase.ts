@@ -36,6 +36,7 @@ export interface ICLCase  extends IEntity {
     FBPApprovalComments?: string;
     HRBPApprovalDecision?: string;
     HRBPApprovalComments?: string;
+    CaseChangeLog?: string;
 
 
 }
@@ -76,6 +77,7 @@ export class CLCase implements ICLCase{
     public FBPApprovalComments?: string = null;
     public HRBPApprovalDecision?: string = null;
     public HRBPApprovalComments?: string = null;
+    public CaseChangeLog?: string = null;
 
     constructor(caseType: string) {
         this.CaseType = caseType;
@@ -83,4 +85,19 @@ export class CLCase implements ICLCase{
     }
 
 
+}
+
+export interface IClCaseInfo  extends IEntity {
+    Stage?: string;
+    CreatedBy?: string;
+    CreatedOn?: string;
+    CaseRef?: string;    
+}
+export class ClCaseInfo  implements IClCaseInfo {
+    public ID: number = 0;
+    public Title: string = "";
+    public Stage?: string = "";
+    public CreatedBy?: string = "";
+    public CreatedOn?: string = "";
+    public CaseRef?: string = "";
 }

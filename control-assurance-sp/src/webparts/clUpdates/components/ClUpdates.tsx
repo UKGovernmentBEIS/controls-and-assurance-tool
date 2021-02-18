@@ -60,7 +60,7 @@ export class ClUpdatesState extends types.UserContextWebPartState implements ICl
 export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWebPartComponentProps, ClUpdatesState> {
 
   private readonly headerTxt_MainTab: string = "Contingent Labour";
-  private readonly headerTxt_NewCaseTab: string = "New Case";
+  private readonly headerTxt_NewCaseTab: string = "Case";
 
 
   constructor(props: types.IWebPartComponentProps) {
@@ -144,6 +144,9 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
 
         onShowList={this.handleShowMainTab}
         clCaseId={this.state.Section_MainList_SelectedId}
+        currentUserName={this.getCurrentUserName()}
+        currentUserId={this.getCurrentUserId()}
+        superUserPermission={this.isSuperUser()}
         {...this.props}
       />
 
@@ -183,6 +186,15 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
     }
 
     return userId;
+  }
+
+  private getCurrentUserName = (): string => {
+    let userName: string = "";
+    if (this.state.User) {
+      userName = this.state.User.Title;
+    }
+
+    return userName;
   }
 
   private isSuperUser(): boolean {

@@ -34,6 +34,7 @@ namespace ControlAssuranceAPI.Models
         public virtual DbSet<AutomationOption> AutomationOptions { get; set; }
         public virtual DbSet<AvailableExport> AvailableExports { get; set; }
         public virtual DbSet<CLCase> CLCases { get; set; }
+        public virtual DbSet<CLCaseEvidence> CLCaseEvidences { get; set; }
         public virtual DbSet<CLComFramework> CLComFrameworks { get; set; }
         public virtual DbSet<CLDefForm> CLDefForms { get; set; }
         public virtual DbSet<CLIR35Scope> CLIR35Scope { get; set; }

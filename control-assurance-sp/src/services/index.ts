@@ -91,6 +91,7 @@ export { CLProfessionalCatService } from './CLProfessionalCatService';
 export { CLWorkLocationService } from './CLWorkLocationService';
 export { CLComFrameworkService } from './CLComFrameworkService';
 export { CLIR35ScopeService } from './CLIR35ScopeService';
+export { CLCaseEvidenceService } from './CLCaseEvidenceService';
 
 export { ExportDefinationService } from './ExportDefinationService';
 export { AvailableExportService } from './AvailableExportService';

@@ -14,6 +14,7 @@ export interface ICrTextFieldProps {
     rows?: number;
     maxLength?: number;
     onChanged?: (value: string) => void;
+    onBlur?: (ev:any) => void;
     history?: string;
     charCounter?: boolean;
     errorMessage?: string;
@@ -80,6 +81,7 @@ export class CrTextField extends React.Component<ICrTextFieldProps, {}> {
             maxLength={this.props.maxLength}
             value={val}
             onChanged={this.props.onChanged}
+            onBlur={this.props.onBlur}
             suffix={this.props.suffix}
             
             />
@@ -116,7 +118,7 @@ export class CrTextField extends React.Component<ICrTextFieldProps, {}> {
             rows={this.props.rows}
             maxLength={this.props.maxLength}
             value={vv}
-
+            onBlur={this.props.onBlur}
             onChanged={this.props.onChanged}
             suffix={this.props.suffix}
             maskChar=""

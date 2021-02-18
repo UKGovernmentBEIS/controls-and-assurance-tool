@@ -121,7 +121,9 @@ namespace ControlAssuranceAPI
             builder.EntitySet<CLVacancyType>("CLVacancyTypes");
             builder.EntitySet<CLWorkLocation>("CLWorkLocations");
             builder.EntitySet<CLWorker>("CLWorkers");
-
+            builder.EntitySet<CLCaseEvidence>("CLCaseEvidences");
+            
+            builder.EntitySet<ClCaseInfoView_Result>("ClCaseInfoViewResult");
             builder.EntitySet<CLCaseView_Result>("CLCaseViewResult");
             
 

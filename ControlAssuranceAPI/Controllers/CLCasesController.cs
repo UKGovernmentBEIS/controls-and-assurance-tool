@@ -30,6 +30,13 @@ namespace ControlAssuranceAPI.Controllers
             return SingleResult.Create(db.CLCaseRepository.CLCases.Where(x => x.ID == key));
         }
 
+        // GET: /odata/CLCases?clCaseId=1&getInfo=true
+        public ClCaseInfoView_Result Get(int clCaseId, bool getInfo)
+        {
+            var rInfo = db.CLCaseRepository.GetCaseInfo(clCaseId);
+            return rInfo;
+        }
+
         // GET: /odata/CLCases?caseType=BusinessCases
         public List<CLCaseView_Result> Get(string caseType)
         {

@@ -30,6 +30,24 @@ namespace ControlAssuranceAPI.Repositories
             return CLCases.Where(x => x.ID == keyValue).FirstOrDefault();
         }
 
+        public ClCaseInfoView_Result GetCaseInfo(int id)
+        {
+            ClCaseInfoView_Result ret = new ClCaseInfoView_Result();
+            var c = db.CLCases.FirstOrDefault(x => x.ID == id);
+            if (c != null)
+            {
+
+                ret.ID = c.ID;
+                ret.Stage = c.CLWorkers.FirstOrDefault().Stage; //qry needs to be changed
+                ret.CreatedBy = db.Users.FirstOrDefault(x => x.ID == c.CreatedById).Title;
+                ret.CreatedOn = c.CreatedOn.Value.ToString("dd/MM/yyyy HH:mm");
+                ret.CaseRef = $"{c.CLComFramework.Title}{c.ID}"; //TODO
+
+            }
+
+            return ret;
+        }
+
         public List<CLCaseView_Result> GetCases()
         {
             List<CLCaseView_Result> retList = new List<CLCaseView_Result>();
@@ -77,6 +95,13 @@ namespace ControlAssuranceAPI.Repositories
             CLWorker cLWorker = new CLWorker();
             cLWorker.CLCaseId = caseDb.ID;
             cLWorker.Stage = "Draft";
+
+            string user = apiUser.Title;
+            string date = DateTime.Now.ToString("ddMMMyyyy HH:mm");
+            string newChangeLog = $"{date} Case Added by {user},";
+            cLCase.CaseChangeLog = newChangeLog;
+
+
             db.CLWorkers.Add(cLWorker);
             db.SaveChanges();
             
@@ -118,6 +143,15 @@ namespace ControlAssuranceAPI.Repositories
             cLcase.FBPApprovalComments = inputCase.FBPApprovalComments;
             cLcase.HRBPApprovalDecision = inputCase.HRBPApprovalDecision;
             cLcase.HRBPApprovalComments = inputCase.HRBPApprovalComments;
+
+
+
+            var apiUser = ApiUser;
+            string user = apiUser.Title;
+            string date = DateTime.Now.ToString("ddMMMyyyy HH:mm");
+            string newChangeLog = $"{cLcase.CaseChangeLog}{date} Case Modified by {user},";
+            cLcase.CaseChangeLog = newChangeLog;
+
 
 
 

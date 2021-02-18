@@ -99,6 +99,7 @@ namespace ControlAssuranceAPI.Models
         DbSet<CLVacancyType> CLVacancyTypes { get; set; }
         DbSet<CLWorkLocation> CLWorkLocations { get; set; }
         DbSet<CLWorker> CLWorkers { get; set; }
+        DbSet<CLCaseEvidence> CLCaseEvidences { get; set; }
 
         DbSet<ExportDefination> ExportDefinations { get; set; }
         DbSet<AvailableExport> AvailableExports { get; set; }

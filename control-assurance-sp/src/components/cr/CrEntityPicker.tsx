@@ -81,6 +81,8 @@ export class CrEntityPicker extends React.Component<ICrEntityPickerProps, ICrEnt
     }
 
     public render(): JSX.Element {
+
+
         return (
             <div className={this.props.className}>
                 {this.props.label &&
@@ -93,6 +95,9 @@ export class CrEntityPicker extends React.Component<ICrEntityPickerProps, ICrEnt
                     onResolveSuggestions={this.resolveEntity}
                     onChange={this.entitiesChanged}
                     pickerSuggestionsProps={{ noResultsFoundText: 'No items found' }}
+                    
+                    
+                    
                 />
                 {this.props.errorMessage && <FieldErrorMessage value={this.props.errorMessage} />}
             </div>

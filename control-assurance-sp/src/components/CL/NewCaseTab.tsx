@@ -9,10 +9,15 @@ import { FormButtons } from '../cr/FormButtons';
 import { MessageDialog } from '../cr/MessageDialog';
 import { DefaultButton, PrimaryButton } from 'office-ui-fabric-react/lib/Button';
 import { Panel, PanelType } from 'office-ui-fabric-react/lib/Panel';
+import EvidenceList from './EV/EvidenceList';
+import { sp } from '@pnp/sp';
+import EvidenceSaveForm from './EV/EvidenceSaveForm';
 import styles from '../../styles/cr.module.scss';
-import { CLCase, ICLCase, IEntity, ILinkLocalType, INAOUpdate, IUser, } from '../../types';
+import { CLCase, ClCaseInfo, ICLCase, ICLCaseEvidence, IClCaseInfo, IEntity, ILinkLocalType, INAOUpdate, IUser, } from '../../types';
+import { getUploadFolder_CLEvidence } from '../../types/AppGlobals';
 import { IGenColumn, ColumnType, ColumnDisplayType } from '../../types/GenColumn';
 import EntityList from '../entity/EntityList';
+import { ConfirmDialog } from '../cr/ConfirmDialog';
 import { CrDatePicker } from '../cr/CrDatePicker';
 import { CrEntityPicker } from '../cr/CrEntityPicker';
 import { changeDatePicker } from '../../types/AppGlobals';
@@ -27,11 +32,14 @@ export interface INewCaseTabProps extends types.IBaseComponentProps {
     //naoRecommendationId: any;
     clCaseId?: number;
     onShowList: () => void;
+    currentUserId: number;
+    currentUserName: string;
+    superUserPermission: boolean;
 
 
     //onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
 
-    //superUserPermission:boolean;
+
 
 }
 
@@ -63,8 +71,12 @@ export interface INewCaseTabState {
     Loading: boolean;
     LookupData: ILookupData;
     FormData: ICLCase;
-    RecInfo: INAOUpdate;
+    CaseInfo: IClCaseInfo;
     FormIsDirty: boolean;
+    Evidence_ListFilterText: string;
+    ShowIR35EvidenceForm: boolean;
+    IR35Evidence: ICLCaseEvidence;
+    HideIR35EvDeleteDialog:boolean;
 
 
 }
@@ -73,11 +85,16 @@ export class NewCaseTabState implements INewCaseTabState {
     public Loading = false;
     public LookupData = new LookupData();
     public FormData;
-    public RecInfo = null;
+    public CaseInfo;
     public FormIsDirty = false;
+    public Evidence_ListFilterText: string = null;
+    public ShowIR35EvidenceForm: boolean = false;
+    public IR35Evidence: ICLCaseEvidence = null;
+    public HideIR35EvDeleteDialog:boolean = true;
 
     constructor(caseType: string) {
         this.FormData = new CLCase(caseType);
+        this.CaseInfo = new ClCaseInfo();
 
     }
 
@@ -87,6 +104,7 @@ export class NewCaseTabState implements INewCaseTabState {
 export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCaseTabState> {
 
     private clCaseService: services.CLCaseService = new services.CLCaseService(this.props.spfxContext, this.props.api);
+    private clCaseEvidenceService: services.CLCaseEvidenceService = new services.CLCaseEvidenceService(this.props.spfxContext, this.props.api);
     private userService: services.UserService = new services.UserService(this.props.spfxContext, this.props.api);
     private clStaffGradeService: services.CLStaffGradeService = new services.CLStaffGradeService(this.props.spfxContext, this.props.api);
     private directorateService: services.DirectorateService = new services.DirectorateService(this.props.spfxContext, this.props.api);
@@ -95,9 +113,12 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     private clComFrameworkService: services.CLComFrameworkService = new services.CLComFrameworkService(this.props.spfxContext, this.props.api);
     private clIR35ScopeService: services.CLIR35ScopeService = new services.CLIR35ScopeService(this.props.spfxContext, this.props.api);
 
+    private UploadFolder_Evidence: string = "";
+
     constructor(props: INewCaseTabProps, state: INewCaseTabState) {
         super(props);
         this.state = new NewCaseTabState('New Case');
+        this.UploadFolder_Evidence = getUploadFolder_CLEvidence(props.spfxContext);
 
     }
 
@@ -118,11 +139,16 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                 {this.renderApprovers()}
                 {this.renderFormButtons()}
 
-                {/* {this.renderListsMainTitle()}
-                {this.renderEvidencesList()}
-                {this.renderFeedbacksList()}
-                {this.renderHistoricUpdatesList()}
-                {this.renderChangeLogs()} */}
+                {this.props.clCaseId > 0 && this.renderListsMainTitle()}
+                {this.props.clCaseId > 0 && this.renderEvidencesList()}
+
+                {/* {this.renderFeedbacksList()}
+                {this.renderHistoricUpdatesList()}*/}
+                {this.props.clCaseId > 0 && this.renderChangeLogs()}
+
+
+                {this.state.ShowIR35EvidenceForm && this.renderIR35EvidenceForm()}
+                <ConfirmDialog hidden={this.state.HideIR35EvDeleteDialog} title={`Are you sure you want to delete this IR35 assessment  evidence?`} content={`A deleted evidence cannot be un-deleted.`} confirmButtonText="Delete" handleConfirm={this.deleteIR35Evidence} handleCancel={this.toggleIR35EvDeleteConfirm} />
 
 
 
@@ -141,7 +167,6 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
     private renderInfoTable() {
 
-
         return (
 
             <React.Fragment>
@@ -158,13 +183,13 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                     Stage
                                 </td>
                                 <td style={{ width: 'calc(100% - 50% - 170px - 170px)', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)' }}>
-                                    Draft
+                                    {this.state.CaseInfo.Stage}
                                 </td>
                                 <td style={{ width: '170px', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
                                     Case Ref
                                 </td>
                                 <td style={{ width: 'calc(100% - 50% - 170px - 170px)', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
-                                    &nbsp;
+                                    {this.state.CaseInfo.CaseRef}
                                 </td>
 
                             </tr>
@@ -176,13 +201,13 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                     Created By
                                 </td>
                                 <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', }}>
-                                    &nbsp;
+                                    {this.state.CaseInfo.CreatedBy}
                                 </td>
                                 <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
                                     Created On
                                 </td>
                                 <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
-                                    &nbsp;
+                                    {this.state.CaseInfo.CreatedOn}
                                 </td>
 
                             </tr>
@@ -247,6 +272,11 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
     private renderRequirement() {
         const fd = this.state.FormData;
+
+        let numPositionsLength: number = 1; //default for hiring manager
+        if (this.props.superUserPermission === true) {
+            numPositionsLength = 2;
+        }
 
 
         return (
@@ -349,6 +379,8 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                             <div style={{ width: '50%', paddingRight: '5px' }}>
                                 <CrTextField
                                     //className={styles.formField}
+                                    numbersOnly={true}
+                                    maxLength={6}
                                     onChanged={(v) => this.changeTextField(v, "ReqCostCentre")}
                                     value={fd.ReqCostCentre}
 
@@ -494,7 +526,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                     onChanged={(v) => this.changeTextField(v, "ReqNumPositions")}
                                     value={String(fd.ReqNumPositions)}
                                     numbersOnly={true}
-                                    maxLength={2}
+                                    maxLength={numPositionsLength}
 
 
                                 />
@@ -532,11 +564,22 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     private renderCommercial() {
         const fd = this.state.FormData;
 
-        const yesNoNaOptions: IDropdownOption[] = [
-            { key: 'Yes', text: 'Yes' },
-            { key: 'No', text: 'No' },
-            { key: 'NA', text: 'N/A' },
-        ];
+        let yesNoNaOptions: IDropdownOption[] = [];
+
+        if (this.state.FormData.ComFrameworkId === 1) {
+            //PSR
+            yesNoNaOptions = [
+                { key: 'Yes', text: 'Yes' },
+                { key: 'No', text: 'No' },
+            ];
+        }
+        else {
+            yesNoNaOptions = [
+                { key: 'NA', text: 'N/A' },
+            ];
+        }
+
+
 
 
         return (
@@ -757,9 +800,10 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                 <CrTextField
                                     //className={styles.formField}
                                     //numbersOnly={true}
+                                    onBlur={(ev) => this.blurRateTextField(ev, "FinMaxRate")}
                                     onChanged={(v) => this.changeTextField_number(v, "FinMaxRate")}
                                     value={fd.FinMaxRate && String(fd.FinMaxRate)}
-                                    //value=''
+                                //value=''
 
                                 />
 
@@ -771,9 +815,10 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                 <CrTextField
                                     //className={styles.formField}
                                     //numbersOnly={true}
+                                    onBlur={(ev) => this.blurRateTextField(ev, "FinEstCost")}
                                     onChanged={(v) => this.changeTextField_number(v, "FinEstCost")}
                                     value={fd.FinEstCost && String(fd.FinEstCost)}
-                                    //value=''
+                                //value=''
 
                                 />
 
@@ -783,7 +828,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                 <DefaultButton text="Calculate"
                                     //className={styles.formButton} style={{ marginRight: '5px' }}
                                     //style={{ border: '1px solid rgb(138,136,134)' }}
-                                    onClick={this.props.onShowList}
+                                    onClick={this.calculateRate}
 
                                 />
 
@@ -830,26 +875,38 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                     //className={styles.formField}
                                     //onChanged={(v) => this.changeTextField(v, "TargetDate")}
                                     //value={fd.TargetDate}
-                                    value=''
+                                    disabled={true}                                    
+                                    value={this.state.IR35Evidence && this.state.IR35Evidence.Title}
 
                                 />
 
                             </div>
                             <div style={{ width: '130px', }}>
 
-                                <DefaultButton text="Actions"
+                                {/* <DefaultButton text="Actions"
+                                    disabled={this.props.clCaseId > 0 ? false : true}
                                     //className={styles.formButton} style={{ marginRight: '5px' }}
                                     //style={{ border: '1px solid rgb(138,136,134)' }}
-                                    onClick={this.props.onShowList}
+                                    //onClick={this.props.onShowList}
                                     //primaryDisabled
-                                    split
-                                    splitButtonAriaLabel="See 2 options"
-                                    aria-roledescription="split button"
+                                    //split
+                                    //splitButtonAriaLabel="See 2 options"
+                                    //aria-roledescription="split button"
+                                    //menuProps={menuProps}
+                                
                                     
-                                    menuIconProps={menuProps}
+                                    //menuIconProps={menuProps}
 
 
-                                />
+                                /> */}
+
+                                {
+                                    this.props.clCaseId > 0 && <span>
+                                        {this.state.IR35Evidence === null && <span style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }} onClick={this.addIr35Evidence} >Add</span>}
+                                        {this.state.IR35Evidence !== null && <span style={{ marginRight: '5px', cursor: 'pointer', color: 'blue', textDecoration: 'underline' }} onClick={this.viewIR35Evidence} >View</span>}
+                                        {this.state.IR35Evidence !== null && <span style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }} onClick={this.toggleIR35EvDeleteConfirm} >Delete</span>}
+                                    </span>
+                                }
 
                             </div>
 
@@ -1073,12 +1130,74 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
     }
 
+    private renderIR35EvidenceForm() {
+
+        return (
+
+            <EvidenceSaveForm
+                showForm={this.state.ShowIR35EvidenceForm}
+                parentId={this.state.FormData.ID}
+
+                evidenceId={null}
+                onSaved={this.ir35EvidenceSaved}
+                onCancelled={this.closeIR35EvidencePanel}
+                evidenceType="IR35"
+                {...this.props}
+            />
+        );
+
+    }
+
+    private renderChangeLogs() {
+        const fd = this.state.FormData;
+        let changeLog = fd.CaseChangeLog ? fd.CaseChangeLog : "";
+        let changeLogArr = changeLog.split(',');
+        let changeLogs = "";
+
+        changeLogArr.reverse().forEach(log => {
+            if (log.length > 0) {
+                changeLogs += `${log}<br />`;
+            }
+        });
+
+        return (
+            <React.Fragment>
+                <div style={{ marginTop: "30px" }}>
+                    <div style={{ fontWeight: 'bold' }}>Change Log:</div>
+                    <div style={{ marginTop: "20px" }} dangerouslySetInnerHTML={{ __html: changeLogs }} />
+                </div>
+            </React.Fragment>
+        );
+    }
+
     private renderListsMainTitle() {
         return (
             <div style={{ marginBottom: '20px', marginTop: '50px' }} className={styles.sectionATitle}>
                 Evidence, Feedback, Previous Updates and Logs
             </div>
         );
+    }
+
+    private renderEvidencesList() {
+
+        return (
+            <React.Fragment>
+                <div style={{ marginTop: '30px', fontWeight: "bold", marginBottom: '10px' }}>Evidence</div>
+                <div style={{ minHeight: '120px', border: '1px solid rgb(166,166,166)' }}>
+                    <EvidenceList
+                        parentId={this.state.FormData.ID}
+                        isViewOnly={false}
+                        filterText={this.state.Evidence_ListFilterText}
+                        onChangeFilterText={this.handleEvidence_ChangeFilterText}
+                        {...this.props}
+                        onError={this.props.onError}
+
+                    />
+                </div>
+
+            </React.Fragment>
+        );
+
     }
 
 
@@ -1098,17 +1217,17 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
             //remove all the child and parent entities before sending post/patch
             //delete f.User; //parent entity
 
-            if(this.isNumeric(f.FinMaxRate) === true){
+            if (this.isNumeric(f.FinMaxRate) === true) {
                 f.FinMaxRate = Number(f.FinMaxRate);
             }
-            else{
+            else {
                 f.FinMaxRate = null;
             }
 
-            if(this.isNumeric(f.FinEstCost) === true){
+            if (this.isNumeric(f.FinEstCost) === true) {
                 f.FinEstCost = Number(f.FinEstCost);
             }
-            else{
+            else {
                 f.FinEstCost = null;
             }
 
@@ -1215,7 +1334,9 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
             this.loadCLWorkLocations(),
             this.loadCLComFrameworks(),
             this.loadCLIR35Scopes(),
+            this.loadCaseInfo(),
             this.loadClCase(),
+            this.loadIR35Evidence(),
 
         ]);
     }
@@ -1245,7 +1366,17 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                 this.setState({
                     FormData: c,
+                }, () => {
+                    this.blurRateTextField(null, "FinMaxRate");
+                    setTimeout(() => {
+                        this.blurRateTextField(null, "FinEstCost");
+
+
+                    }, 2000);
+
                 });
+
+
 
 
             }, (err) => {
@@ -1253,9 +1384,74 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
             });
 
         }
+        else {
+            //set hiring manage to the current user as default for new case
+            this.setState({ FormData: this.cloneObject(this.state.FormData, 'ApplHMUserId', this.props.currentUserId) });
+        }
+    }
+
+    private loadCaseInfo = (): void => {
+
+        if (this.props.clCaseId > 0) {
+            this.clCaseService.getCaseInfo(this.props.clCaseId).then((x: IClCaseInfo) => {
+                console.log('Case Info', x);
+
+                this.setState({
+                    CaseInfo: x
+                });
+
+
+            }, (err) => {
+                if (this.props.onError) this.props.onError(`Error loading Case info`, err.message);
+            });
+        }
+        else {
+            let x = { ...this.state.CaseInfo };
+            x.Stage = "Draft";
+            x.CreatedBy = this.props.currentUserName;
+            x.CaseRef = "Available after creation";
+            x.CreatedOn = "Available after creation";
+            this.setState({ CaseInfo: x });
+        }
 
 
 
+
+    }
+
+    private loadIR35Evidence = (): void => {
+
+        if (this.props.clCaseId > 0) {
+            this.clCaseEvidenceService.readIR35Evidence(this.props.clCaseId).then((x: ICLCaseEvidence[]) => {
+                console.log('IR35 EV', x);
+                if (x.length > 0) {
+                    const ir35Ev: ICLCaseEvidence = x[0];
+
+                    this.setState({
+                        IR35Evidence: ir35Ev,
+                    });
+                }
+                else{
+                    this.setState({
+                        IR35Evidence: null,
+                    });
+                }
+
+
+
+
+            }, (err) => {
+                if (this.props.onError) this.props.onError(`Error loading Case IR35 Evidence`, err.message);
+            });
+        }
+        else {
+            // let x = {...this.state.CaseInfo};
+            // x.Stage = "Draft";
+            // x.CreatedBy = this.props.currentUserName;
+            // x.CaseRef = "Available after creation";
+            // x.CreatedOn = "Available after creation";
+            // this.setState({ CaseInfo: x });
+        }
 
     }
 
@@ -1266,6 +1462,9 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     //#region Event Handlers
 
 
+    private handleEvidence_ChangeFilterText = (value: string): void => {
+        this.setState({ Evidence_ListFilterText: value });
+    }
 
 
 
@@ -1283,20 +1482,20 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         // catch(ex){
         //     console.log('err', ex);
         // }
-        if(value == null || value == ''){
+        if (value == null || value == '') {
             console.log('set value to null');
             this.setState({ FormData: this.cloneObject(this.state.FormData, f, null)/*, FormIsDirty: true*/ });
         }
-        else{
+        else {
             const isNum: boolean = this.isNumeric(value);
             console.log('isNumeric', isNum);
-            if(isNum === true){
+            if (isNum === true) {
                 this.setState({ FormData: this.cloneObject(this.state.FormData, f, value)/*, FormIsDirty: true*/ });
             }
-            else{
+            else {
                 this.setState({ FormData: this.cloneObject(this.state.FormData, f, this.state.FormData[f])/*, FormIsDirty: true*/ });
             }
-            
+
         }
 
     }
@@ -1322,13 +1521,185 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, value.length === 1 ? value[0] : null), });
     }
 
-    private isNumeric(str:any) {
+    private isNumeric(str: any) {
         const tempNum = Number(str);
         //if (typeof str != "string") return false; // we only process strings!  
         return !isNaN(tempNum) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
-               !isNaN(parseFloat(str)); // ...and ensure strings of whitespace fail
-      }
+            !isNaN(parseFloat(str)); // ...and ensure strings of whitespace fail
+    }
+
+    private blurRateTextField = (ev, f: string): void => {
+        console.log('blur', f);
+        if (Number(this.state.FormData[f]) > 0) {
+            const rateStr = Number(this.state.FormData[f]).toFixed(2);
+            this.setState({ FormData: this.cloneObject(this.state.FormData, f, rateStr)/*, FormIsDirty: true*/ });
+        }
+        else {
+            console.log('value is less than 0');
+        }
+
+    }
+
+    private calculateRate = (): void => {
+        if (this.state.FormData.ReqEstStartDate != null && this.state.FormData.ReqEstEndDate != null && this.state.FormData.ReqNumPositions > 0 && this.state.FormData.FinMaxRate > 0) {
+            const startDate: Date = new Date(this.state.FormData.ReqEstStartDate.getTime());
+            const endDate: Date = new Date(this.state.FormData.ReqEstEndDate.getTime());
+            const days: number = this.getBusinessDatesCount(startDate, endDate);
+            console.log('days', days);
+
+            const numPositions: number = this.state.FormData.ReqNumPositions;
+            const dayRate: number = this.state.FormData.FinMaxRate;
+
+            const totalCost: string = (numPositions * dayRate * days).toFixed(2);
+            console.log('totalCost', totalCost);
+
+            //const fd: ICLCase = this.cloneObject(this.state.FormData);
+            //fd.FinEstCost = Number(totalCost);
+
+            //this.setState({ FormData: fd });
+
+
+            this.setState({ FormData: this.cloneObject(this.state.FormData, 'FinEstCost', totalCost) });
+            //this.setState({ FormData: this.cloneObject(this.state.FormData, 'FinEstCost', totalCost) });
+
+
+
+
+
+        }
+        else {
+            console.log('both dates and other values are not provided');
+        }
+    }
+    private addIr35Evidence = () => {
+        console.log('in addIr35Evidence');
+        this.setState({ ShowIR35EvidenceForm: true });
+
+    }
+
+    private ir35EvidenceSaved = (): void => {
+        //this.loadEvidences();
+        this.closeIR35EvidencePanel();
+        this.loadIR35Evidence();
+    }
+
+    private closeIR35EvidencePanel = (): void => {
+        this.setState({ ShowIR35EvidenceForm: false });
+    }
 
     //#endregion Event Handlers
+
+
+    //     var startDate = new Date('05/03/2016');
+    // var endDate = new Date('05/10/2016');
+    // var numOfDates = getBusinessDatesCount(startDate,endDate);
+
+    private getBusinessDatesCount = (startDate: Date, endDate: Date): number => {
+        var count = 0;
+        var curDate = startDate;
+        while (curDate <= endDate) {
+            var dayOfWeek = curDate.getDay();
+            if (!((dayOfWeek == 6) || (dayOfWeek == 0)))
+                count++;
+            curDate.setDate(curDate.getDate() + 1);
+        }
+        //alert(count)
+        return count;
+    }
+
+    private viewIR35Evidence = (): void => {
+        console.log('in view.');
+        const fileName: string = this.state.IR35Evidence.Title;
+        if (this.state.IR35Evidence.IsLink === true) {
+            console.log('selected evidence is a link');
+
+            const a = document.createElement('a');
+            //document.body.appendChild(a);
+            a.href = fileName;
+            a.target = "_blank";
+            //a.download = fileName;
+
+            document.body.appendChild(a);
+            console.log(a);
+            //a.click();
+            //document.body.removeChild(a);
+
+
+            setTimeout(() => {
+                window.URL.revokeObjectURL(fileName);
+                window.open(fileName, '_blank');
+                document.body.removeChild(a);
+            }, 1);
+
+
+
+
+        }
+        else {
+            const f = sp.web.getFolderByServerRelativeUrl(this.UploadFolder_Evidence).files.getByName(fileName);
+
+            f.get().then(t => {
+                console.log(t);
+                const serverRelativeUrl = t["ServerRelativeUrl"];
+                console.log(serverRelativeUrl);
+
+                const a = document.createElement('a');
+                //document.body.appendChild(a);
+                a.href = serverRelativeUrl;
+                a.target = "_blank";
+                a.download = fileName;
+
+                document.body.appendChild(a);
+                console.log(a);
+                //a.click();
+                //document.body.removeChild(a);
+
+
+                setTimeout(() => {
+                    window.URL.revokeObjectURL(serverRelativeUrl);
+                    window.open(serverRelativeUrl, '_blank');
+                    document.body.removeChild(a);
+                }, 1);
+
+
+            });
+        }
+
+
+
+
+    }
+
+    private toggleIR35EvDeleteConfirm = (): void => {
+        this.setState({ HideIR35EvDeleteDialog: !this.state.HideIR35EvDeleteDialog });
+    }
+
+
+    private deleteIR35Evidence = (): void => {
+        if (this.props.onError) this.props.onError(null);
+        this.setState({ HideIR35EvDeleteDialog: true });
+
+        const fileName: string = this.state.IR35Evidence.Title;
+        //console.log(fileName);
+
+        if(this.state.IR35Evidence.IsLink === true){
+
+            console.log('deleting eveidence (link)');
+            this.clCaseEvidenceService.delete(this.state.IR35Evidence.ID).then(this.loadIR35Evidence, (err) => {
+                if (this.props.onError) this.props.onError(`Cannot delete this evidence. `, err.message);
+            });
+        }
+        else{
+
+            sp.web.getFolderByServerRelativeUrl(this.UploadFolder_Evidence).files.getByName(fileName).delete().then(df => {
+                //console.log('file deleted', df);
+
+                this.clCaseEvidenceService.delete(this.state.IR35Evidence.ID).then(this.loadIR35Evidence, (err) => {
+                    if (this.props.onError) this.props.onError(`Cannot delete this evidence. `, err.message);
+                });
+            });
+        }
+    }
+
 
 }

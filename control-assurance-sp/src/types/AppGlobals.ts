@@ -49,6 +49,13 @@ export function getUploadFolder_IAPFiles(context: WebPartContext) : string {
     return path;
 }
 
+export function getUploadFolder_CLEvidence(context: WebPartContext) : string {
+    const serverRelativeUrl = context.pageContext.web.serverRelativeUrl;
+    const path:string = `${serverRelativeUrl}/Shared%20Documents/CLEvidence`;
+
+    return path;
+}
+
 export function changeDatePicker(currentClassRef:any, date: Date, f: string): void {
     console.log('original date', date);
     if(date != null){

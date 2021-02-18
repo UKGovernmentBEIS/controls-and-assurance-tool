@@ -170,6 +170,7 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
             fieldName: 'CostCenter',
             minWidth: 100,
             maxWidth: 100,
+            isMultiline: true,
             isResizable: true,
             headerClassName: styles.bold,
         },

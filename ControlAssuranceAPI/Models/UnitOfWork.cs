@@ -96,6 +96,7 @@ namespace ControlAssuranceAPI.Models
         private CLVacancyTypeRepository cLVacancyTypeRepository;
         private CLWorkLocationRepository cLWorkLocationRepository;
         private CLWorkerRepository cLWorkerRepository;
+        private CLCaseEvidenceRepository cLCaseEvidenceRepository;
 
         private ExportDefinationRepository exportDefinationRepository;
         private AvailableExportRepository availableExportRepository;
@@ -821,6 +822,14 @@ namespace ControlAssuranceAPI.Models
             get
             {
                 return cLWorkerRepository = cLWorkerRepository ?? new CLWorkerRepository(user, context);
+            }
+        }
+
+        public CLCaseEvidenceRepository CLCaseEvidenceRepository
+        {
+            get
+            {
+                return cLCaseEvidenceRepository = cLCaseEvidenceRepository ?? new CLCaseEvidenceRepository(user, context);
             }
         }
 

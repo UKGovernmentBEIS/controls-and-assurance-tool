@@ -55,6 +55,7 @@ namespace ControlAssuranceAPI.Models
         public string FBPApprovalComments { get; set; }
         public string HRBPApprovalDecision { get; set; }
         public string HRBPApprovalComments { get; set; }
+        public string CaseChangeLog { get; set; }
     
         public virtual CLComFramework CLComFramework { get; set; }
         public virtual CLIR35Scope CLIR35Scope { get; set; }

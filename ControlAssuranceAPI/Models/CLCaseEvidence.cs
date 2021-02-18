@@ -12,14 +12,19 @@ namespace ControlAssuranceAPI.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class CLWorker
+    public partial class CLCaseEvidence
     {
         public int ID { get; set; }
         public string Title { get; set; }
-        public Nullable<int> CLCaseId { get; set; }
-        public string Stage { get; set; }
-        public string WorkerChangeLog { get; set; }
+        public Nullable<bool> IsLink { get; set; }
+        public string Details { get; set; }
+        public string AdditionalNotes { get; set; }
+        public Nullable<int> ParentId { get; set; }
+        public string ParentType { get; set; }
+        public Nullable<System.DateTime> DateUploaded { get; set; }
+        public Nullable<int> UploadedByUserId { get; set; }
+        public string EvidenceType { get; set; }
     
-        public virtual CLCase CLCase { get; set; }
+        public virtual User User { get; set; }
     }
 }
