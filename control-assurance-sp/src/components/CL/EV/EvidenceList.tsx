@@ -21,6 +21,7 @@ export interface IEvidenceListProps extends types.IBaseComponentProps {
     onChangeFilterText: (value: string) => void;
 
     isViewOnly:boolean;
+    evChangesCounter:number;
 
 }
 
@@ -440,7 +441,7 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
     }
     public componentDidUpdate(prevProps: IEvidenceListProps): void {
         console.log("in component DidUpdate", this.props.parentId);
-        if(prevProps.parentId !== this.props.parentId){
+        if(prevProps.parentId !== this.props.parentId || prevProps.evChangesCounter !== this.props.evChangesCounter){
             console.log("in component DidUpdate load");
             this.loadEvidences();
         }

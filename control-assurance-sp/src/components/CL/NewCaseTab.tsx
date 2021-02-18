@@ -37,6 +37,7 @@ export interface INewCaseTabProps extends types.IBaseComponentProps {
     superUserPermission: boolean;
 
 
+
     //onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
 
 
@@ -77,6 +78,7 @@ export interface INewCaseTabState {
     ShowIR35EvidenceForm: boolean;
     IR35Evidence: ICLCaseEvidence;
     HideIR35EvDeleteDialog:boolean;
+    EvidenceChangesCounter: number;
 
 
 }
@@ -91,6 +93,7 @@ export class NewCaseTabState implements INewCaseTabState {
     public ShowIR35EvidenceForm: boolean = false;
     public IR35Evidence: ICLCaseEvidence = null;
     public HideIR35EvDeleteDialog:boolean = true;
+    public EvidenceChangesCounter:number = 0;
 
     constructor(caseType: string) {
         this.FormData = new CLCase(caseType);
@@ -1189,6 +1192,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                         isViewOnly={false}
                         filterText={this.state.Evidence_ListFilterText}
                         onChangeFilterText={this.handleEvidence_ChangeFilterText}
+                        evChangesCounter={this.state.EvidenceChangesCounter}
                         {...this.props}
                         onError={this.props.onError}
 
@@ -1422,6 +1426,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     private loadIR35Evidence = (): void => {
 
         if (this.props.clCaseId > 0) {
+            const counter:number = this.state.EvidenceChangesCounter + 1;
             this.clCaseEvidenceService.readIR35Evidence(this.props.clCaseId).then((x: ICLCaseEvidence[]) => {
                 console.log('IR35 EV', x);
                 if (x.length > 0) {
@@ -1429,11 +1434,13 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                     this.setState({
                         IR35Evidence: ir35Ev,
+                        EvidenceChangesCounter: counter,
                     });
                 }
                 else{
                     this.setState({
                         IR35Evidence: null,
+                        EvidenceChangesCounter: counter,
                     });
                 }
 
@@ -1581,6 +1588,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         //this.loadEvidences();
         this.closeIR35EvidencePanel();
         this.loadIR35Evidence();
+
     }
 
     private closeIR35EvidencePanel = (): void => {

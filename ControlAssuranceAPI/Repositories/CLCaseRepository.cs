@@ -41,7 +41,7 @@ namespace ControlAssuranceAPI.Repositories
                 ret.Stage = c.CLWorkers.FirstOrDefault().Stage; //qry needs to be changed
                 ret.CreatedBy = db.Users.FirstOrDefault(x => x.ID == c.CreatedById).Title;
                 ret.CreatedOn = c.CreatedOn.Value.ToString("dd/MM/yyyy HH:mm");
-                ret.CaseRef = $"{c.CLComFramework.Title}{c.ID}"; //TODO
+                ret.CaseRef = $"{c.CLComFramework?.Title ?? ""}{c.ID}"; //TODO
 
             }
 
@@ -60,7 +60,7 @@ namespace ControlAssuranceAPI.Repositories
             {
                 CLCaseView_Result item = new CLCaseView_Result();
                 item.ID = ite.ID;
-                item.CaseRef = $"{ite.CLComFramework.Title}{ite.ID}";
+                item.CaseRef = $"{ite.CLComFramework?.Title ?? ""}{ite.ID}";
                 item.Title1 = ite.ReqVacancyTitle;
                 item.Title2 = ite.CaseType;
                 item.Stage = ite.CLWorkers.FirstOrDefault().Stage; //qry needs to be changed
@@ -68,7 +68,7 @@ namespace ControlAssuranceAPI.Repositories
                 item.StageActions2 = "";
                 item.Worker = "";
                 item.CreatedOn = ite.CreatedOn != null ? ite.CreatedOn.Value.ToString("dd/MM/yyyy") : "";
-                item.CostCenter = $"{ite.ReqCostCentre} - {ite.Directorate.Title}";
+                item.CostCenter = $"{ite.ReqCostCentre} - {ite.Directorate?.Title?.ToString() ?? ""}";
                 item.StartDate = ite.ReqEstStartDate != null ? ite.ReqEstStartDate.Value.ToString("dd/MM/yyyy") : "";
                 item.EndDate = ite.ReqEstEndDate != null ? ite.ReqEstEndDate.Value.ToString("dd/MM/yyyy") : "";
 
@@ -88,6 +88,10 @@ namespace ControlAssuranceAPI.Repositories
             int apiUserId = apiUser.ID;
             cLCase.CreatedById = apiUserId;
             cLCase.CreatedOn = DateTime.Now;
+            if (string.IsNullOrEmpty(cLCase.ReqVacancyTitle))
+            {
+                cLCase.ReqVacancyTitle = "Title Required";
+            }
 
             var caseDb = db.CLCases.Add(cLCase);
             db.SaveChanges();
@@ -113,6 +117,8 @@ namespace ControlAssuranceAPI.Repositories
         public CLCase Update(CLCase inputCase)
         {
             var cLcase = db.CLCases.FirstOrDefault(x => x.ID == inputCase.ID);
+
+
             cLcase.ApplHMUserId = inputCase.ApplHMUserId;
             cLcase.ReqCostCentre = inputCase.ReqCostCentre;
             cLcase.ReqDirectorateId = inputCase.ReqDirectorateId;
@@ -143,6 +149,11 @@ namespace ControlAssuranceAPI.Repositories
             cLcase.FBPApprovalComments = inputCase.FBPApprovalComments;
             cLcase.HRBPApprovalDecision = inputCase.HRBPApprovalDecision;
             cLcase.HRBPApprovalComments = inputCase.HRBPApprovalComments;
+
+            if (string.IsNullOrEmpty(cLcase.ReqVacancyTitle))
+            {
+                cLcase.ReqVacancyTitle = "Title Required";
+            }
 
 
 
