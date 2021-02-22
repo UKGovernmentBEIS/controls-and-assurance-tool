@@ -92,10 +92,10 @@ namespace ControlAssuranceAPI.Controllers
                 }
             }
 
-            if(giaaRecommendation.RevisedDate != existingRevisedDate || giaaRecommendation.GIAAActionStatusTypeId != existingStatusId)
-            {
-                db.GIAAUpdateRepository.AddOnRecChanged(giaaRecommendation.ID, giaaRecommendation.RevisedDate, giaaRecommendation.GIAAActionStatusTypeId, existingRevisedDate, existingStatusId);
-            }
+            //if(giaaRecommendation.RevisedDate != existingRevisedDate || giaaRecommendation.GIAAActionStatusTypeId != existingStatusId)
+            //{
+            //    db.GIAAUpdateRepository.AddOnRecChanged(giaaRecommendation.ID, giaaRecommendation.RevisedDate, giaaRecommendation.GIAAActionStatusTypeId, existingRevisedDate, existingStatusId);
+            //}
 
             return Updated(giaaRecommendation);
         }

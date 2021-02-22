@@ -24,6 +24,7 @@ export interface IUpdatesListProps extends types.IBaseComponentProps {
     giaaRecommendationId: number | string;
     defaultGIAAActionStatusTypeId:number;
     defaultRevisedDate:Date;
+    targetDate:Date;
 
     filterText?: string;
     onChangeFilterText: (value: string) => void;
@@ -115,8 +116,8 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
             key: 'UpdateType',
             name: 'UpdateType',
             fieldName: 'UpdateType',
-            minWidth: 100,
-            maxWidth: 100,
+            minWidth: 120,
+            maxWidth: 120,
             isResizable: true,
             headerClassName: styles.bold,
         },
@@ -143,8 +144,18 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
             key: 'UpdateDetails',
             name: 'Details',
             fieldName: 'UpdateDetails',
-            minWidth: 285,
-            maxWidth: 285,
+            minWidth: 270,
+            maxWidth: 270,
+            isResizable: true,
+            isMultiline: true,
+            headerClassName: styles.bold,
+        },
+        {
+            key: 'Requests',
+            name: 'Requests',
+            fieldName: 'Requests',
+            minWidth: 145,
+            maxWidth: 145,
             isResizable: true,
             isMultiline: true,
             headerClassName: styles.bold,
@@ -226,7 +237,7 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
 
                     <ConfirmDialog hidden={this.state.HideDeleteDialog} title={`Are you sure you want to delete this record?`} content={`A deleted record cannot be un-deleted.`} confirmButtonText="Delete" handleConfirm={this.handleDelete} handleCancel={this.toggleDeleteConfirm} />
                     <MessageDialog hidden={this.state.HideActionUpdatePermissionDialog} title={`Not Allowed!`} content='Only the Super User, GIAA Actions Super User and recommendation Action Owners can provide updates.' handleOk={this.toggle_HideActionUpdatePermissionDialog} />
-                    <MessageDialog hidden={this.state.HideReviseImplementationDatePermissionDialogue} title={`Not Allowed!`} content='Only the Super User, GIAA Actions Super User, GIAA Staff and recommendation Action Owners can revise the implementation date.' handleOk={this.toggle_HideReviseImplementationDatePermissionDialogue} />
+                    {/* <MessageDialog hidden={this.state.HideReviseImplementationDatePermissionDialogue} title={`Not Allowed!`} content='Only the Super User, GIAA Actions Super User or GIAA Staff can revise the implementation date.' handleOk={this.toggle_HideReviseImplementationDatePermissionDialogue} /> */}
                     <MessageDialog hidden={this.state.HideGiaaCommentsPermissionDialogue} title={null} content='Only the Super User, GIAA Actions Super User and GIAA Staff can add GIAA Comments.' handleOk={this.toggle_HideGiaaCommentsPermissionDialogue} />
                 </div>
             </div>
@@ -254,7 +265,7 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
                 selection={this._selection}
 
                 onAddActionUpdate={this.handleAddActionUpdate}
-                onAddRevisedDate={this.handleAddRevisedDate}
+                onAddStatus_DateUpdate={this.handleAddStatus_RevisedDate}
                 onAddGIAAComments={this.handleAddGIAAComments}
                 onAddMiscComments={this.handleAddMiscComments}
 
@@ -264,6 +275,8 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
                 onDelete={this.toggleDeleteConfirm}
 
                 //editDisabled={!this.state.EnableEdit}
+                superUserPermission={this.props.superUserPermission}
+                giaaStaffPermission={this.props.giaaStaffPermission}
 
 
 
@@ -283,6 +296,7 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
                 giaaRecommendationId={this.props.giaaRecommendationId}
                 defaultActionStatusTypeId={d1}
                 defaultRevDate={d2}
+                targetDate={this.props.targetDate}
                 updateType={this.state.FormType}
                 showForm={this.state.ShowForm}
                 entityId={this.state.SelectedEntity}
@@ -434,13 +448,13 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
 
 
     }
-    private handleAddRevisedDate = (): void => {
+    private handleAddStatus_RevisedDate = (): void => {
 
-        if(this.props.superUserPermission === true || this.props.giaaStaffPermission === true || this.props.actionOwnerPermission === true){
+        if(this.props.superUserPermission === true || this.props.giaaStaffPermission === true){
 
             if (this.state.SelectedEntity)
                 this._selection.setKeySelected(this.state.SelectedEntity.toString(), false, false);
-            const formType:string = GIAAUpdateTypes.RevisedDate;
+            const formType:string = GIAAUpdateTypes.Status_DateUpdate;
             this.setState({ SelectedEntity: null, ShowForm: true, FormType: formType });
 
         }

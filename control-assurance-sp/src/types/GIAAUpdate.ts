@@ -15,6 +15,9 @@ export interface IGIAAUpdate  extends IEntity {
     UpdatedById?: number;
     UpdateDate?: Date;
     UpdateChangeLog?: string;
+    RequestClose?:boolean;
+    RequestDateChange?:boolean;
+    RequestDateChangeTo?: Date;
     
 
 }
@@ -35,6 +38,9 @@ export class GIAAUpdate implements IGIAAUpdate{
     public UpdatedById?: number = null;
     public UpdateDate?: Date = null;
     public UpdateChangeLog?: string = null;
+    public RequestClose?:boolean = false;
+    public RequestDateChange?:boolean = false;
+    public RequestDateChangeTo?: Date = null;
 
     constructor(giaaRecommendationId: number, updateType: string) {
         this.GIAARecommendationId = giaaRecommendationId;

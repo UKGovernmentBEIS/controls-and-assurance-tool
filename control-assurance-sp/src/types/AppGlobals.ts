@@ -106,7 +106,8 @@ export enum RAGRatings {
 
 export enum GIAAUpdateTypes {
     ActionUpdate = "Action Update",
-    RevisedDate = "Revised Date",
+    Status_DateUpdate = "Status/Date Update",
+    //RevisedDate = "Revised Date",
     GIAAComment = "GIAA Comment",
     MiscComment = "Misc Comment",
     RecChanged = "Rec Changed"
@@ -116,4 +117,5 @@ export enum IAPActionUpdateTypes {
     ActionUpdate = "Action Update",
     RevisedDate = "Revised Date",
     MiscComment = "Misc Comment",
+    GIAAComment = "GIAA Comment",
 }

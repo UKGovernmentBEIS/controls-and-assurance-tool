@@ -201,6 +201,7 @@ export default class ActionUpdatesTab extends React.Component<IActionUpdatesTabP
                             giaaRecommendationId={this.state.GIAARecommendationId}
                             defaultGIAAActionStatusTypeId={this.state.RecInfo.GIAAActionStatusTypeId}
                             defaultRevisedDate={this.state.RecInfo.RevisedDate}
+                            targetDate={this.state.RecInfo.TargetDate}
                             onError={this.props.onError}
                             filterText={this.state.ListFilterText}
                             onChangeFilterText={this.handle_ChangeFilterText}

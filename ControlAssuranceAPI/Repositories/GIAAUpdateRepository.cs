@@ -14,7 +14,8 @@ namespace ControlAssuranceAPI.Repositories
         public class GIAAUpdateTypes
         {
             public static string ActionUpdate = "Action Update";
-            public static string RevisedDate = "Revised Date";
+            public static string Status_DateUpdate = "Status/Date Update";
+            //public static string RevisedDate = "Revised Date";
             public static string GIAAComment = "GIAA Comment";
             public static string MiscComment = "Misc Comment";
             public static string RecChanged = "Rec Changed";
@@ -57,7 +58,10 @@ namespace ControlAssuranceAPI.Repositories
                           Status = u.GIAAActionStatusType.Title,
                           u.RevisedDate,
                           u.EvFileName,
-                          u.EvIsLink
+                          u.EvIsLink,
+                          u.RequestClose,
+                          u.RequestDateChange,
+                          u.RequestDateChangeTo,
 
                       };
 
@@ -70,16 +74,24 @@ namespace ControlAssuranceAPI.Repositories
 
             foreach (var ite in list)
             {
-
+                string requests = "";
+                if (ite.RequestClose == true)
+                {
+                    requests = "Close Req";
+                }
+                else if(ite.RequestDateChange == true)
+                {
+                    requests = $"Revise Date ( {ite.RequestDateChangeTo?.ToString("dd/MM/yyyy") ?? ""} )";
+                }
                 GIAAUpdateView_Result item = new GIAAUpdateView_Result
                 {
-
                     ID = ite.ID,
                     Title = ite.Title,
                     UpdateType = ite.UpdateType,
                     UpdateBy = ite.UpdateBy,
                     UpdateDate = ite.UpdateDate != null ? ite.UpdateDate.Value.ToString("dd/MM/yyyy HH:mm") : "",
                     UpdateDetails = ite.UpdateDetails != null ? ite.UpdateDetails : "",
+                    Requests = requests,
                     Status = ite.Status != null ? ite.Status : "",
                     RevisedDate = ite.RevisedDate != null ? ite.RevisedDate.Value.ToString("dd/MM/yyyy") : "",
                     Evidence = ite.EvFileName != null ? ite.EvFileName : "",
@@ -102,25 +114,47 @@ namespace ControlAssuranceAPI.Repositories
             giaaUpdate.UpdateDate = DateTime.Now;
             giaaUpdate.UpdatedById = ApiUser.ID;
 
+
+            if (giaaUpdate.UpdateType == GIAAUpdateTypes.ActionUpdate)
+            {
+                if(giaaUpdate.RequestClose == true)
+                {
+                    giaaUpdate.RequestDateChangeTo = null;
+                }
+            }
+
             ret = db.GIAAUpdates.Add(giaaUpdate);
             db.SaveChanges();
 
 
-            if (giaaUpdate.UpdateType == GIAAUpdateTypes.ActionUpdate)
+            if(giaaUpdate.UpdateType == GIAAUpdateTypes.Status_DateUpdate)
             {
-                //copy value back to rec
+                //    //copy values back to rec
                 db.Entry(ret).Reference(u => u.GIAARecommendation).Load();
                 ret.GIAARecommendation.GIAAActionStatusTypeId = giaaUpdate.GIAAActionStatusTypeId;
+                ret.GIAARecommendation.RevisedDate = giaaUpdate.RevisedDate;
+                //ret.GIAARecommendation.UpdateStatus = "Blank"; ???
+                db.SaveChanges();
+            }
+            if (giaaUpdate.UpdateType == GIAAUpdateTypes.ActionUpdate)
+            {
+                if (giaaUpdate.RequestClose == true)
+                {
+                    giaaUpdate.RequestDateChangeTo = null;
+                }
+                //copy value back to rec
+                db.Entry(ret).Reference(u => u.GIAARecommendation).Load();
+                
                 ret.GIAARecommendation.UpdateStatus = "Blank";
                 db.SaveChanges();
             }
-            else if(giaaUpdate.UpdateType == GIAAUpdateTypes.RevisedDate)
-            {
-                //copy value back to rec
-                db.Entry(ret).Reference(u => u.GIAARecommendation).Load();
-                ret.GIAARecommendation.RevisedDate = giaaUpdate.RevisedDate;
-                db.SaveChanges();
-            }
+            //else if(giaaUpdate.UpdateType == GIAAUpdateTypes.RevisedDate)
+            //{
+            //    //copy value back to rec
+            //    db.Entry(ret).Reference(u => u.GIAARecommendation).Load();
+            //    ret.GIAARecommendation.RevisedDate = giaaUpdate.RevisedDate;
+            //    db.SaveChanges();
+            //}
 
 
             return ret;

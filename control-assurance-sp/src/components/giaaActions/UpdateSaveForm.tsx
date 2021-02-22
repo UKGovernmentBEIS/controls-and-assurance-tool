@@ -25,6 +25,7 @@ export interface IUpdatesSaveFormProps extends types.IBaseComponentProps {
     updateType: string;
     defaultActionStatusTypeId: number;
     defaultRevDate:Date;
+    targetDate:Date;
     entityId: number;
     showForm: boolean;
     onSaved?: (defaultGIAAActionStatusTypeId:number, defaultRevisedDate:Date) => void;
@@ -43,6 +44,7 @@ export interface IErrorMessage {
     RevisedDate: string;
     ActionStatus: string;
     FileUpload: string;
+    RequestDateChangeTo:string;
 
 
 }
@@ -52,6 +54,7 @@ export class ErrorMessage implements IErrorMessage {
     public RevisedDate = null;
     public ActionStatus = null;
     public FileUpload = null;
+    public RequestDateChangeTo = null;
 }
 export interface IUpdatesSaveFormState {
     Loading: boolean;
@@ -123,6 +126,9 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
     public renderFormFields() {
         return (
             <React.Fragment>
+                {this.renderReqCloseCheckBox()}
+                {this.renderReqDateChangeCheckBox()}
+                {this.renderReqDateChangeTo()}
                 {this.renderGIAAActionStatusTypes()}
                 {this.renderRevisedDate()}
                 {this.renderUpdateDetails()}
@@ -136,14 +142,86 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
         );
     }
 
-    private renderGIAAActionStatusTypes() {
+    private renderReqCloseCheckBox() {
         if (this.props.updateType !== GIAAUpdateTypes.ActionUpdate) return null;
+
+        if(this.state.FormData.RequestDateChange === true) return null;
+
+        return (
+            <React.Fragment>
+
+                <CrCheckbox
+                    className={`${styles.formField} ${styles.checkbox}`}
+                    label="Please check this box if you wish to ask internal audit to close the action. Please include your evidence below as indicated by the mandatory fields."
+                    checked={this.state.FormData.RequestClose}
+                    onChange={(ev, isChecked) => this.changeCheckbox_Req(isChecked, "RequestClose")}
+
+
+                />
+
+
+
+            </React.Fragment>
+        );
+
+    }
+
+    private renderReqDateChangeCheckBox() {
+        if (this.props.updateType !== GIAAUpdateTypes.ActionUpdate) return null;
+
+        if(this.state.FormData.RequestClose === true) return null;
+
+        return (
+            <React.Fragment>
+
+                <CrCheckbox
+                    className={`${styles.formField} ${styles.checkbox}`}
+                    label="Please check this box if you wish to ask internal audit to change the implementation date for the action. Please select a revised date and provide a reason below."
+                    checked={this.state.FormData.RequestDateChange}
+                    onChange={(ev, isChecked) => this.changeCheckbox_Req(isChecked, "RequestDateChange")}
+
+
+                />
+
+
+
+            </React.Fragment>
+        );
+
+    }
+
+    private renderReqDateChangeTo() {
+        if (this.props.updateType !== GIAAUpdateTypes.ActionUpdate) return null;
+
+        if(this.state.FormData.RequestClose === true) return null;
+
+        let required:boolean = false;
+        if(this.state.FormData.RequestDateChange === true){
+            required = true;
+            console.log('RequestDateChangeTo set to required');
+        }
+
+        return (
+            <CrDatePicker
+                //label="Revised Date"
+                className={styles.formField}
+                required={required}
+                value={this.state.FormData.RequestDateChangeTo}
+                onSelectDate={(v) => changeDatePicker(this, v, "RequestDateChangeTo")}
+                errorMessage={this.state.ErrMessages.RequestDateChangeTo}
+            />
+        );
+    }
+
+    
+    private renderGIAAActionStatusTypes() {
+        if (this.props.updateType !== GIAAUpdateTypes.Status_DateUpdate) return null;
 
         const giaaActionStatusTypes = this.state.LookupData.GIAAActionStatusTypes;
         if (giaaActionStatusTypes) {
             return (
                 <CrDropdown
-                    label="Proposed Recommendation Status"
+                    label="Revised Recommendation Status"
                     placeholder="Select an Option"
                     required={true}
                     className={styles.formField}
@@ -159,12 +237,13 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
     }
 
     private renderRevisedDate() {
-        if (this.props.updateType !== GIAAUpdateTypes.RevisedDate) return null;
+        if (this.props.updateType !== GIAAUpdateTypes.Status_DateUpdate) return null;
+
         return (
             <CrDatePicker
-                label="Revised Date"
+                label="Revised Implementation Date"
                 className={styles.formField}
-                required={true}
+                //required={true}
                 value={this.state.FormData.RevisedDate}
                 onSelectDate={(v) => changeDatePicker(this, v, "RevisedDate")}
                 errorMessage={this.state.ErrMessages.RevisedDate}
@@ -177,7 +256,7 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
         let lbl: string = "";
         if (this.props.updateType === GIAAUpdateTypes.ActionUpdate)
             lbl = "Action Update Details";
-        else if (this.props.updateType === GIAAUpdateTypes.RevisedDate)
+        else if (this.props.updateType === GIAAUpdateTypes.Status_DateUpdate)
             lbl = "Reason for Revision";
         else if (this.props.updateType === GIAAUpdateTypes.GIAAComment)
             lbl = "GIAA Comment";
@@ -214,10 +293,18 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
 
     private renderEvLabel() {
         let lbl: string = "";
-        if (this.props.updateType === GIAAUpdateTypes.ActionUpdate)
-            lbl = "Optional link or evidence upload";
-        else if (this.props.updateType === GIAAUpdateTypes.RevisedDate)
-            lbl = "Provide evidence of authorisation for revision";
+        if (this.props.updateType === GIAAUpdateTypes.ActionUpdate){
+            if(this.state.FormData.RequestClose === true){
+                lbl = "Upload Evidence";
+            }
+            else{
+                lbl = "Optional link or evidence upload";
+            }
+            
+        }
+            
+        else if (this.props.updateType === GIAAUpdateTypes.Status_DateUpdate)
+            lbl = "Provide supporting evidence if necessary";
         else if (this.props.updateType === GIAAUpdateTypes.GIAAComment)
             lbl = "Optional link or supporting pdf upload";
         else
@@ -228,7 +315,9 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
         );
     }
     private renderEvCheckBox() {
-        if (this.props.updateType === GIAAUpdateTypes.RevisedDate) return null;
+        if (this.props.updateType === GIAAUpdateTypes.Status_DateUpdate) return null;
+
+        if(this.state.FormData.RequestClose === true) return null;
 
         return (
             <React.Fragment>
@@ -346,8 +435,8 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
     private getHeaderText = (): string => {
         if (this.props.updateType === GIAAUpdateTypes.ActionUpdate)
             return "Add new action update";
-        else if (this.props.updateType === GIAAUpdateTypes.RevisedDate)
-            return "Revise Implemention Date";
+        else if (this.props.updateType === GIAAUpdateTypes.Status_DateUpdate)
+            return "Status/Implementation Date Update";
         else if (this.props.updateType === GIAAUpdateTypes.GIAAComment)
             return "Add GIAA Comments";
         else
@@ -517,12 +606,31 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
 
         //console.log('after load', this.state.LookupData.Users);
         if(this.props.updateType === GIAAUpdateTypes.ActionUpdate){
-            console.log('onAfterLoad', this.props.defaultActionStatusTypeId);
-            this.setState({ FormData: this.cloneObject(this.state.FormData, "GIAAActionStatusTypeId", this.props.defaultActionStatusTypeId), FormIsDirty: true });
+            //console.log('onAfterLoad', this.props.defaultActionStatusTypeId);
+            //this.setState({ FormData: this.cloneObject(this.state.FormData, "GIAAActionStatusTypeId", this.props.defaultActionStatusTypeId), FormIsDirty: true });
+
+            //console.log('onAfterLoad - defaultRevDate', this.props.defaultRevDate);
+            //this.setState({ FormData: this.cloneObject(this.state.FormData, "RequestDateChangeTo", this.props.defaultRevDate), FormIsDirty: true });
         }
-        else if(this.props.updateType === GIAAUpdateTypes.RevisedDate){
-            console.log('onAfterLoad', this.props.defaultRevDate);
-            this.setState({ FormData: this.cloneObject(this.state.FormData, "RevisedDate", this.props.defaultRevDate), FormIsDirty: true });
+        else if(this.props.updateType === GIAAUpdateTypes.Status_DateUpdate){
+            console.log('onAfterLoad - defaultActionStatusTypeId', this.props.defaultActionStatusTypeId);
+            console.log('onAfterLoad - defaultRevDate', this.props.defaultRevDate);
+
+            let fd: IGIAAUpdate = this.cloneObject(this.state.FormData, "RevisedDate", this.props.defaultRevDate);
+            fd = this.cloneObject(fd, "GIAAActionStatusTypeId", this.props.defaultActionStatusTypeId);
+
+            //check if targetDate is greaterthan today date and status is open then set status to overdue
+            //console.log('props.targetDate', this.props.targetDate);
+            //console.log('new Date', new Date());
+            if(this.props.targetDate < new Date() && fd.GIAAActionStatusTypeId === 1){
+                console.log('target date is greater than todays date and status is open, so set status to overdue');
+                fd = this.cloneObject(fd, "GIAAActionStatusTypeId", 3); //3 is overdue
+            }
+            
+
+            this.setState({ FormData: fd, FormIsDirty: true });
+
+            
         }
 
     }
@@ -531,6 +639,16 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
 
     //#region Form Operations
 
+
+    private clearValidations =(): void => {
+        let errMsg: IErrorMessage = { ...this.state.ErrMessages };
+        errMsg.ActionStatus = null;
+        errMsg.Details = null;
+        errMsg.FileUpload = null;
+        errMsg.RevisedDate = null;
+        errMsg.RequestDateChangeTo = null;
+        this.setState({ ErrMessages: errMsg });
+    }
 
     private validateEntity = (): boolean => {
         let returnVal: boolean = true;
@@ -544,57 +662,36 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
             errMsg.Details = null;
         }
 
-        if(this.props.updateType === GIAAUpdateTypes.ActionUpdate && this.state.FormData.GIAAActionStatusTypeId === null){
-            errMsg.ActionStatus = "Proposed Recommendation Status required";
+        if(this.props.updateType === GIAAUpdateTypes.Status_DateUpdate && this.state.FormData.GIAAActionStatusTypeId === null){
+            errMsg.ActionStatus = "Revised Recommendation Status required";
             returnVal = false;
         }
         else{
             errMsg.ActionStatus = null;
         }
 
-        if(this.props.updateType === GIAAUpdateTypes.RevisedDate && this.state.FormData.RevisedDate === null){
-            errMsg.RevisedDate = "Revised Date required";
+        if(this.state.FormData.RequestDateChange === true && this.state.FormData.RequestDateChangeTo === null){
+            errMsg.RequestDateChangeTo = "Date required";
             returnVal = false;
         }
         else{
-            errMsg.RevisedDate = null;
+            errMsg.RequestDateChangeTo = null;
         }
 
 
+        // if(this.props.updateType === GIAAUpdateTypes.RevisedDate && this.state.FormData.RevisedDate === null){
+        //     errMsg.RevisedDate = "Revised Date required";
+        //     returnVal = false;
+        // }
+        // else{
+        //     errMsg.RevisedDate = null;
+        // }
 
-        if(this.props.updateType === GIAAUpdateTypes.RevisedDate){
 
-            //((document.querySelector("#fileUpload") as HTMLInputElement).files[0]) == null
+
+        if(this.props.updateType === GIAAUpdateTypes.ActionUpdate && this.state.FormData.RequestClose === true){
+
             const file = (document.querySelector("#fileUpload") as HTMLInputElement).files[0];
-            
-
-            // const reader = new FileReader();
-            // // reader.addEventListener('load', (event) => {
-            // //   //img.src = event.target.result;
-            // //   //const r = event.target.res
-            // //   //console.log('r', r);
-            // // });
-
-            // reader.onload = (e) => {
-            //     // e.target.result should contain the text
-            //     const xx = e.target['result'];
-            //     const ee = new Entity();
-            //     ee.Title = xx;
-
-            //     this.xmlStringManagerService.create(ee).then(x => {
-            //         //console.log(x);
-
-
-            //     });
-
-            //     console.log('xx', xx);
-                
-            // };
-
-            // reader.readAsText(file);
-
-
-            //console.log('x1', x1);
 
             if(file == null){
                 errMsg.FileUpload = "PDF file required";
@@ -646,6 +743,9 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
     // }
     protected changeCheckboxIsLink = (value: boolean, f: string): void => {
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, value), /*ShowFileUpload: !value , FormIsDirty: true*/ });
+    }
+    private changeCheckbox_Req = (value: boolean, f: string): void => {
+        this.setState({ FormData: this.cloneObject(this.state.FormData, f, value), FormIsDirty: true }, this.clearValidations);
     }
 
 

@@ -28,6 +28,9 @@ namespace ControlAssuranceAPI.Models
         public Nullable<int> UpdatedById { get; set; }
         public Nullable<System.DateTime> UpdateDate { get; set; }
         public string UpdateChangeLog { get; set; }
+        public Nullable<bool> RequestClose { get; set; }
+        public Nullable<bool> RequestDateChange { get; set; }
+        public Nullable<System.DateTime> RequestDateChangeTo { get; set; }
     
         public virtual GIAAActionStatusType GIAAActionStatusType { get; set; }
         public virtual GIAARecommendation GIAARecommendation { get; set; }

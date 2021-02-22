@@ -13,6 +13,7 @@ namespace ControlAssuranceAPI.Models
         public string UpdateBy { get; set; }
         public string UpdateDate { get; set; }
         public string UpdateDetails { get; set; }
+        public string Requests { get; set; }
         public string Status { get; set; }
         public string RevisedDate { get; set; }
         public string Evidence { get; set; }

@@ -12,7 +12,7 @@ import { CrDatePicker } from '../cr/CrDatePicker';
 
 import { CrEntityPicker } from '../cr/CrEntityPicker';
 import { FieldErrorMessage } from '../cr/FieldDecorators';
-import { GIAAUpdateTypes } from '../../types/AppGlobals';
+import { IAPActionUpdateTypes } from '../../types/AppGlobals';
 import styles from '../../styles/cr.module.scss';
 import GiaaUpdates from '../../webparts/giaaUpdates/components/GiaaUpdates';
 import { sp, ChunkedFileUploadProgressData } from '@pnp/sp';
@@ -137,7 +137,7 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
     }
 
     private renderIAPStatusTypes() {
-        if (this.props.updateType !== GIAAUpdateTypes.ActionUpdate) return null;
+        if (this.props.updateType !== IAPActionUpdateTypes.ActionUpdate) return null;
 
         const giaaActionStatusTypes = this.state.LookupData.IAPStatusTypes;
         if (giaaActionStatusTypes) {
@@ -159,7 +159,7 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
     }
 
     private renderRevisedDate() {
-        if (this.props.updateType !== GIAAUpdateTypes.RevisedDate) return null;
+        if (this.props.updateType !== IAPActionUpdateTypes.RevisedDate) return null;
         return (
             <CrDatePicker
                 label="Revised Date"
@@ -175,11 +175,11 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
     private renderUpdateDetails() {
 
         let lbl: string = "";
-        if (this.props.updateType === GIAAUpdateTypes.ActionUpdate)
+        if (this.props.updateType === IAPActionUpdateTypes.ActionUpdate)
             lbl = "Action Update Details";
-        else if (this.props.updateType === GIAAUpdateTypes.RevisedDate)
+        else if (this.props.updateType === IAPActionUpdateTypes.RevisedDate)
             lbl = "Reason for Revision";
-        else if (this.props.updateType === GIAAUpdateTypes.GIAAComment)
+        else if (this.props.updateType === IAPActionUpdateTypes.GIAAComment)
             lbl = "GIAA Comment";
         else
             lbl = "Add Comment or Feedback";
@@ -202,11 +202,11 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
 
     private renderEvLabel() {
         let lbl: string = "";
-        if (this.props.updateType === GIAAUpdateTypes.ActionUpdate)
+        if (this.props.updateType === IAPActionUpdateTypes.ActionUpdate)
             lbl = "Optional link or evidence upload";
-        else if (this.props.updateType === GIAAUpdateTypes.RevisedDate)
+        else if (this.props.updateType === IAPActionUpdateTypes.RevisedDate)
             lbl = "Provide evidence of authorisation for revision";
-        else if (this.props.updateType === GIAAUpdateTypes.GIAAComment)
+        else if (this.props.updateType === IAPActionUpdateTypes.GIAAComment)
             lbl = "Optional link or supporting pdf upload";
         else
             lbl = "Optional link or supporting pdf upload";
@@ -216,7 +216,7 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
         );
     }
     private renderEvCheckBox() {
-        if (this.props.updateType === GIAAUpdateTypes.RevisedDate) return null;
+        if (this.props.updateType === IAPActionUpdateTypes.RevisedDate) return null;
 
         return (
             <React.Fragment>
@@ -332,11 +332,11 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
     //#endregion Class Methods
 
     private getHeaderText = (): string => {
-        if (this.props.updateType === GIAAUpdateTypes.ActionUpdate)
+        if (this.props.updateType === IAPActionUpdateTypes.ActionUpdate)
             return "Add new action update";
-        else if (this.props.updateType === GIAAUpdateTypes.RevisedDate)
+        else if (this.props.updateType === IAPActionUpdateTypes.RevisedDate)
             return "Revise Implemention Date";
-        else if (this.props.updateType === GIAAUpdateTypes.GIAAComment)
+        else if (this.props.updateType === IAPActionUpdateTypes.GIAAComment)
             return "Add GIAA Comments";
         else
             return "Add Comment or Feedback";
@@ -504,11 +504,11 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
     private onAfterLoad = (entity: types.IEntity): void => {
 
         //console.log('after load', this.state.LookupData.Users);
-        if(this.props.updateType === GIAAUpdateTypes.ActionUpdate){
+        if(this.props.updateType === IAPActionUpdateTypes.ActionUpdate){
             console.log('onAfterLoad', this.props.defaultActionStatusTypeId);
             this.setState({ FormData: this.cloneObject(this.state.FormData, "IAPStatusTypeId", this.props.defaultActionStatusTypeId), FormIsDirty: true });
         }
-        else if(this.props.updateType === GIAAUpdateTypes.RevisedDate){
+        else if(this.props.updateType === IAPActionUpdateTypes.RevisedDate){
             console.log('onAfterLoad', this.props.defaultRevDate);
             this.setState({ FormData: this.cloneObject(this.state.FormData, "RevisedDate", this.props.defaultRevDate), FormIsDirty: true });
         }
@@ -518,6 +518,7 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
     //#endregion Data Load
 
     //#region Form Operations
+
 
 
     private validateEntity = (): boolean => {
@@ -532,7 +533,7 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
             errMsg.Details = null;
         }
 
-        if(this.props.updateType === GIAAUpdateTypes.ActionUpdate && this.state.FormData.IAPStatusTypeId === null){
+        if(this.props.updateType === IAPActionUpdateTypes.ActionUpdate && this.state.FormData.IAPStatusTypeId === null){
             errMsg.ActionStatus = "Proposed Recommendation Status required";
             returnVal = false;
         }
@@ -540,7 +541,7 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
             errMsg.ActionStatus = null;
         }
 
-        if(this.props.updateType === GIAAUpdateTypes.RevisedDate && this.state.FormData.RevisedDate === null){
+        if(this.props.updateType === IAPActionUpdateTypes.RevisedDate && this.state.FormData.RevisedDate === null){
             errMsg.RevisedDate = "Revised Date required";
             returnVal = false;
         }
@@ -550,7 +551,7 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
 
 
 
-        if(this.props.updateType === GIAAUpdateTypes.RevisedDate){
+        if(this.props.updateType === IAPActionUpdateTypes.RevisedDate){
 
             //((document.querySelector("#fileUpload") as HTMLInputElement).files[0]) == null
             const file = (document.querySelector("#fileUpload") as HTMLInputElement).files[0];

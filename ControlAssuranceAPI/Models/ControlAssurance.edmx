@@ -592,6 +592,9 @@
           <Property Name="UpdatedById" Type="int" />
           <Property Name="UpdateDate" Type="datetime" />
           <Property Name="UpdateChangeLog" Type="nvarchar(max)" />
+          <Property Name="RequestClose" Type="bit" />
+          <Property Name="RequestDateChange" Type="bit" />
+          <Property Name="RequestDateChangeTo" Type="datetime" />
         </EntityType>
         <EntityType Name="GoAssignment">
           <Key>
@@ -3339,6 +3342,9 @@
           <Property Name="UpdatedById" Type="Int32" />
           <Property Name="UpdateDate" Type="DateTime" Precision="3" />
           <Property Name="UpdateChangeLog" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="RequestClose" Type="Boolean" />
+          <Property Name="RequestDateChange" Type="Boolean" />
+          <Property Name="RequestDateChangeTo" Type="DateTime" Precision="3" />
           <NavigationProperty Name="GIAAActionStatusType" Relationship="Self.FK_GIAAUpdate_GIAAActionStatusType" FromRole="GIAAUpdate" ToRole="GIAAActionStatusType" />
           <NavigationProperty Name="GIAARecommendation" Relationship="Self.FK_GIAAUpdate_GIAARecommendation" FromRole="GIAAUpdate" ToRole="GIAARecommendation" />
           <NavigationProperty Name="User" Relationship="Self.FK_GIAAUpdate_User" FromRole="GIAAUpdate" ToRole="User" />
@@ -6355,6 +6361,9 @@
                 <ScalarProperty Name="UpdatedById" ColumnName="UpdatedById" />
                 <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
                 <ScalarProperty Name="UpdateChangeLog" ColumnName="UpdateChangeLog" />
+                <ScalarProperty Name="RequestClose" ColumnName="RequestClose" />
+                <ScalarProperty Name="RequestDateChange" ColumnName="RequestDateChange" />
+                <ScalarProperty Name="RequestDateChangeTo" ColumnName="RequestDateChangeTo" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

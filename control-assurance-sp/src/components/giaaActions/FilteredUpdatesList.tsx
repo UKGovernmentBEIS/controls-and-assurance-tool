@@ -69,7 +69,7 @@ export interface IFilteredUpdatesListProps {
     selection?: ISelection;
 
     onAddActionUpdate: () => void;
-    onAddRevisedDate: () => void;
+    onAddStatus_DateUpdate: () => void;
     onAddGIAAComments: () => void;
     onAddMiscComments: () => void;
 
@@ -83,6 +83,9 @@ export interface IFilteredUpdatesListProps {
     onView: () => void;
 
     //isViewOnly:boolean;
+
+    superUserPermission:boolean;
+    giaaStaffPermission:boolean;
 
 }
 
@@ -129,12 +132,12 @@ export class FilteredUpdatesList extends React.Component<IFilteredUpdatesListPro
                             onClick={props.onAddActionUpdate}
                         />}
 
-                    {selCount === 0 &&
+                    {selCount === 0 && (props.superUserPermission === true || props.giaaStaffPermission === true) &&
                         <CommandBarButton
                             iconProps={{ iconName: 'AddEvent' }}
                             className={classNames.cmdBtn}
-                            text="Revise Implementation Date"
-                            onClick={props.onAddRevisedDate}
+                            text="Status/Implementation Date Update"
+                            onClick={props.onAddStatus_DateUpdate}
                         />}
 
                     {selCount === 0 &&

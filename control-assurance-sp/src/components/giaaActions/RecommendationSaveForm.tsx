@@ -193,7 +193,7 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
     }
 
     private renderRevisedDate() {
-
+        if(this.props.entityId) return null;
 
         return (
             <CrDatePicker
@@ -206,6 +206,8 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
     }
 
     private renderGIAAActionStatusTypes() {
+        if(this.props.entityId) return null;
+        
         const giaaActionStatusTypes = this.state.LookupData.GIAAActionStatusTypes;
         if (giaaActionStatusTypes) {
             return (
