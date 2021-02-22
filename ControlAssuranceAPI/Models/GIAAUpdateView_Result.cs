@@ -18,5 +18,6 @@ namespace ControlAssuranceAPI.Models
         public string RevisedDate { get; set; }
         public string Evidence { get; set; }
         public bool EvIsLink { get; set; }
+        public string EvType { get; set; }
     }
 }

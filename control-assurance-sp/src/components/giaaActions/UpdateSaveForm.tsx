@@ -129,6 +129,7 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
                 {this.renderReqCloseCheckBox()}
                 {this.renderReqDateChangeCheckBox()}
                 {this.renderReqDateChangeTo()}
+                {this.renderMarkAllReqCloseCheckBox()}
                 {this.renderGIAAActionStatusTypes()}
                 {this.renderRevisedDate()}
                 {this.renderUpdateDetails()}
@@ -214,6 +215,27 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
     }
 
     
+    private renderMarkAllReqCloseCheckBox() {
+        if (this.props.updateType !== GIAAUpdateTypes.Status_DateUpdate) return null;
+
+        return (
+            <React.Fragment>
+
+                <CrCheckbox
+                    className={`${styles.formField} ${styles.checkbox}`}
+                    label="Mark any outstanding status close or revise implementation date requests from action owners"
+                    checked={this.state.FormData.MarkAllReqClosed}
+                    onChange={(ev, isChecked) => this.changeCheckbox(isChecked, "MarkAllReqClosed")}
+
+
+                />
+
+
+
+            </React.Fragment>
+        );
+
+    }
     private renderGIAAActionStatusTypes() {
         if (this.props.updateType !== GIAAUpdateTypes.Status_DateUpdate) return null;
 
@@ -326,7 +348,7 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
                     className={`${styles.formField} ${styles.checkbox}`}
                     label="Provide a link instead of uploading a file"
                     checked={this.state.FormData.EvIsLink}
-                    onChange={(ev, isChecked) => this.changeCheckboxIsLink(isChecked, "EvIsLink")}
+                    onChange={(ev, isChecked) => this.changeCheckbox(isChecked, "EvIsLink")}
 
 
                 />
@@ -741,7 +763,7 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
     // protected changeDatePicker = (date: Date, f: string): void => {
     //     this.setState({ FormData: this.cloneObject(this.state.FormData, f, date), FormIsDirty: true });
     // }
-    protected changeCheckboxIsLink = (value: boolean, f: string): void => {
+    protected changeCheckbox = (value: boolean, f: string): void => {
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, value), /*ShowFileUpload: !value , FormIsDirty: true*/ });
     }
     private changeCheckbox_Req = (value: boolean, f: string): void => {

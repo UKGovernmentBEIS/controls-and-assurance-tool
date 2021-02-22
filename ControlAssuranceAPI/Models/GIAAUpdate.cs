@@ -31,6 +31,8 @@ namespace ControlAssuranceAPI.Models
         public Nullable<bool> RequestClose { get; set; }
         public Nullable<bool> RequestDateChange { get; set; }
         public Nullable<System.DateTime> RequestDateChangeTo { get; set; }
+        public Nullable<bool> RequestStatusOpen { get; set; }
+        public Nullable<bool> MarkAllReqClosed { get; set; }
     
         public virtual GIAAActionStatusType GIAAActionStatusType { get; set; }
         public virtual GIAARecommendation GIAARecommendation { get; set; }

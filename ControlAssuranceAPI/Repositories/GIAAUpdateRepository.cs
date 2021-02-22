@@ -62,6 +62,7 @@ namespace ControlAssuranceAPI.Repositories
                           u.RequestClose,
                           u.RequestDateChange,
                           u.RequestDateChangeTo,
+                          u.RequestStatusOpen,
 
                       };
 
@@ -77,11 +78,21 @@ namespace ControlAssuranceAPI.Repositories
                 string requests = "";
                 if (ite.RequestClose == true)
                 {
-                    requests = "Close Req";
+                    string s1 = "";
+                    if(ite.RequestStatusOpen == false)
+                    {
+                        s1 = " - Done";
+                    }
+                    requests = $"Close Req{s1}";
                 }
                 else if(ite.RequestDateChange == true)
                 {
-                    requests = $"Revise Date ( {ite.RequestDateChangeTo?.ToString("dd/MM/yyyy") ?? ""} )";
+                    string s1 = "";
+                    if (ite.RequestStatusOpen == false)
+                    {
+                        s1 = " - Done";
+                    }
+                    requests = $"Revise Date ( {ite.RequestDateChangeTo?.ToString("dd/MM/yyyy") ?? ""} ){s1}";
                 }
                 GIAAUpdateView_Result item = new GIAAUpdateView_Result
                 {
@@ -95,7 +106,8 @@ namespace ControlAssuranceAPI.Repositories
                     Status = ite.Status != null ? ite.Status : "",
                     RevisedDate = ite.RevisedDate != null ? ite.RevisedDate.Value.ToString("dd/MM/yyyy") : "",
                     Evidence = ite.EvFileName != null ? ite.EvFileName : "",
-                    EvIsLink = ite.EvIsLink != null ? ite.EvIsLink.Value : false
+                    EvIsLink = ite.EvIsLink != null ? ite.EvIsLink.Value : false,
+                    EvType = ite.EvFileName == null ? "" : ite.EvIsLink == true ? "Link" : (ite.EvFileName.ToLower().EndsWith(".pdf")) ? "PDF" : "",
 
 
                 };
@@ -115,46 +127,46 @@ namespace ControlAssuranceAPI.Repositories
             giaaUpdate.UpdatedById = ApiUser.ID;
 
 
-            if (giaaUpdate.UpdateType == GIAAUpdateTypes.ActionUpdate)
-            {
-                if(giaaUpdate.RequestClose == true)
-                {
-                    giaaUpdate.RequestDateChangeTo = null;
-                }
-            }
-
             ret = db.GIAAUpdates.Add(giaaUpdate);
             db.SaveChanges();
 
-
-            if(giaaUpdate.UpdateType == GIAAUpdateTypes.Status_DateUpdate)
-            {
-                //    //copy values back to rec
-                db.Entry(ret).Reference(u => u.GIAARecommendation).Load();
-                ret.GIAARecommendation.GIAAActionStatusTypeId = giaaUpdate.GIAAActionStatusTypeId;
-                ret.GIAARecommendation.RevisedDate = giaaUpdate.RevisedDate;
-                //ret.GIAARecommendation.UpdateStatus = "Blank"; ???
-                db.SaveChanges();
-            }
             if (giaaUpdate.UpdateType == GIAAUpdateTypes.ActionUpdate)
             {
                 if (giaaUpdate.RequestClose == true)
                 {
-                    giaaUpdate.RequestDateChangeTo = null;
+                    ret.RequestDateChangeTo = null;
+                    ret.RequestStatusOpen = true;
                 }
-                //copy value back to rec
+                else if (giaaUpdate.RequestDateChange == true)
+                {
+                    ret.RequestStatusOpen = true;
+                }
+                //set updateStatus to blank - means update is provided
                 db.Entry(ret).Reference(u => u.GIAARecommendation).Load();
                 
                 ret.GIAARecommendation.UpdateStatus = "Blank";
                 db.SaveChanges();
             }
-            //else if(giaaUpdate.UpdateType == GIAAUpdateTypes.RevisedDate)
-            //{
-            //    //copy value back to rec
-            //    db.Entry(ret).Reference(u => u.GIAARecommendation).Load();
-            //    ret.GIAARecommendation.RevisedDate = giaaUpdate.RevisedDate;
-            //    db.SaveChanges();
-            //}
+            else if (giaaUpdate.UpdateType == GIAAUpdateTypes.Status_DateUpdate)
+            {
+                //copy values back to rec
+                db.Entry(ret).Reference(u => u.GIAARecommendation).Load();
+                ret.GIAARecommendation.GIAAActionStatusTypeId = giaaUpdate.GIAAActionStatusTypeId;
+                ret.GIAARecommendation.RevisedDate = giaaUpdate.RevisedDate;
+                db.SaveChanges();
+
+                if (giaaUpdate.MarkAllReqClosed == true)
+                {
+                    var reqStatusOpenUpdates = db.GIAAUpdates.Where(x => x.GIAARecommendationId == ret.GIAARecommendationId && x.RequestStatusOpen == true);
+                    foreach(var ite in reqStatusOpenUpdates)
+                    {
+                        ite.RequestStatusOpen = false;
+                    }
+                }
+                db.SaveChanges();
+                
+            }
+
 
 
             return ret;

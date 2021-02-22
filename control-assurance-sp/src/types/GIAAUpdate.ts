@@ -1,3 +1,4 @@
+import { GIAAUpdateTypes } from "./AppGlobals";
 import { IEntity } from "./Entity";
 
 
@@ -18,6 +19,7 @@ export interface IGIAAUpdate  extends IEntity {
     RequestClose?:boolean;
     RequestDateChange?:boolean;
     RequestDateChangeTo?: Date;
+    MarkAllReqClosed?:boolean;
     
 
 }
@@ -41,10 +43,15 @@ export class GIAAUpdate implements IGIAAUpdate{
     public RequestClose?:boolean = false;
     public RequestDateChange?:boolean = false;
     public RequestDateChangeTo?: Date = null;
+    public MarkAllReqClosed?:boolean = null;
 
     constructor(giaaRecommendationId: number, updateType: string) {
         this.GIAARecommendationId = giaaRecommendationId;
         this.UpdateType = updateType;
+
+        if(updateType === GIAAUpdateTypes.Status_DateUpdate){
+            this.MarkAllReqClosed = true; //default checked
+        }
     }
 
 

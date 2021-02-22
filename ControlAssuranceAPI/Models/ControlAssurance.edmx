@@ -595,6 +595,8 @@
           <Property Name="RequestClose" Type="bit" />
           <Property Name="RequestDateChange" Type="bit" />
           <Property Name="RequestDateChangeTo" Type="datetime" />
+          <Property Name="RequestStatusOpen" Type="bit" />
+          <Property Name="MarkAllReqClosed" Type="bit" />
         </EntityType>
         <EntityType Name="GoAssignment">
           <Key>
@@ -3345,6 +3347,8 @@
           <Property Name="RequestClose" Type="Boolean" />
           <Property Name="RequestDateChange" Type="Boolean" />
           <Property Name="RequestDateChangeTo" Type="DateTime" Precision="3" />
+          <Property Name="RequestStatusOpen" Type="Boolean" />
+          <Property Name="MarkAllReqClosed" Type="Boolean" />
           <NavigationProperty Name="GIAAActionStatusType" Relationship="Self.FK_GIAAUpdate_GIAAActionStatusType" FromRole="GIAAUpdate" ToRole="GIAAActionStatusType" />
           <NavigationProperty Name="GIAARecommendation" Relationship="Self.FK_GIAAUpdate_GIAARecommendation" FromRole="GIAAUpdate" ToRole="GIAARecommendation" />
           <NavigationProperty Name="User" Relationship="Self.FK_GIAAUpdate_User" FromRole="GIAAUpdate" ToRole="User" />
@@ -6364,6 +6368,8 @@
                 <ScalarProperty Name="RequestClose" ColumnName="RequestClose" />
                 <ScalarProperty Name="RequestDateChange" ColumnName="RequestDateChange" />
                 <ScalarProperty Name="RequestDateChangeTo" ColumnName="RequestDateChangeTo" />
+                <ScalarProperty Name="RequestStatusOpen" ColumnName="RequestStatusOpen" />
+                <ScalarProperty Name="MarkAllReqClosed" ColumnName="MarkAllReqClosed" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
