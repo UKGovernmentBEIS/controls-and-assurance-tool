@@ -128,8 +128,8 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         { key: 'RequireDetails', text: 'Require further details', afterDecisionText: 'Require further details' },
     ];
 
-    private checkIconGreen: string = require('../../images/greentick2626.png');
-    private checkIconRed: string = require('../../images/redtick2626.png');
+    private checkIconGreen: string = require('../../images/greentick1212.png');
+    private checkIconRed: string = require('../../images/redtick1212.png');
 
 
 
