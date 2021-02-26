@@ -192,10 +192,25 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
             const title2: string = item["Title2"];
 
             return (
-                
-                <span>{fieldContent}<br/>{title2}</span>
-            );
 
+                <span>{fieldContent}<br />{title2}</span>
+            );
+        }
+        else if (column.key === "StageActions1") {
+
+            const stageActions2: string = item["StageActions2"];
+
+            return (
+
+                <span>{fieldContent}
+                    { stageActions2.length > 0 &&
+                        <React.Fragment>
+                            <br />
+                            <span>{stageActions2}</span>
+                        </React.Fragment>
+                    }
+                </span>
+            );
         }
         else {
             return <span>{fieldContent}</span>;

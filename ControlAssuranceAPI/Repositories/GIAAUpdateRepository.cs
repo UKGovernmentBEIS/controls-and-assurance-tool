@@ -172,6 +172,20 @@ namespace ControlAssuranceAPI.Repositories
             return ret;
         }
 
+        public GIAAUpdate Update(GIAAUpdate gIAAUpdate)
+        {
+            var update = db.GIAAUpdates.FirstOrDefault(x => x.ID == gIAAUpdate.ID);
+            update.EvFileName = gIAAUpdate.EvFileName; //update only called to update this
+
+            db.SaveChanges();
+            return update;
+        }
+
+        public GIAAUpdate Remove(GIAAUpdate gIAAUpdate)
+        {
+            return db.GIAAUpdates.Remove(gIAAUpdate);
+        }
+
         public void AddOnRecChanged(int gIAARecommendationId, DateTime? newRevisedDate, int? newStatusId, DateTime? existingRevisedDate, int? existingStatusId )
         {
             GIAAUpdate gIAAUpdate = new GIAAUpdate();

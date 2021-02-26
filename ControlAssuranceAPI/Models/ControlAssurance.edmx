@@ -104,6 +104,14 @@
           <Property Name="HRBPApprovalDecision" Type="nvarchar" MaxLength="50" />
           <Property Name="HRBPApprovalComments" Type="nvarchar(max)" />
           <Property Name="CaseChangeLog" Type="nvarchar(max)" />
+          <Property Name="CaseCreated" Type="bit" />
+          <Property Name="CaseRef" Type="int" />
+          <Property Name="BHDecisionById" Type="int" />
+          <Property Name="FBPDecisionById" Type="int" />
+          <Property Name="HRBPDecisionById" Type="int" />
+          <Property Name="BHDecisionDate" Type="datetime" />
+          <Property Name="FBPDecisionDate" Type="datetime" />
+          <Property Name="HRBPDecisionDate" Type="datetime" />
         </EntityType>
         <EntityType Name="CLCaseEvidence">
           <Key>
@@ -1155,6 +1163,18 @@
             </Principal>
             <Dependent Role="CLCase">
               <PropertyRef Name="ReqGradeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CLCase_CLWorkLocation">
+          <End Role="CLWorkLocation" Type="Self.CLWorkLocation" Multiplicity="0..1" />
+          <End Role="CLCase" Type="Self.CLCase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CLWorkLocation">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CLCase">
+              <PropertyRef Name="ReqWorkLocationId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2335,6 +2355,10 @@
             <End Role="CLStaffGrade" EntitySet="CLStaffGrade" />
             <End Role="CLCase" EntitySet="CLCase" />
           </AssociationSet>
+          <AssociationSet Name="FK_CLCase_CLWorkLocation" Association="Self.FK_CLCase_CLWorkLocation">
+            <End Role="CLWorkLocation" EntitySet="CLWorkLocation" />
+            <End Role="CLCase" EntitySet="CLCase" />
+          </AssociationSet>
           <AssociationSet Name="FK_CLCase_Directorate" Association="Self.FK_CLCase_Directorate">
             <End Role="Directorate" EntitySet="Directorate" />
             <End Role="CLCase" EntitySet="CLCase" />
@@ -2791,10 +2815,19 @@
           <Property Name="HRBPApprovalDecision" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="HRBPApprovalComments" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="CaseChangeLog" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CaseCreated" Type="Boolean" />
+          <Property Name="CaseRef" Type="Int32" />
+          <Property Name="BHDecisionById" Type="Int32" />
+          <Property Name="FBPDecisionById" Type="Int32" />
+          <Property Name="HRBPDecisionById" Type="Int32" />
+          <Property Name="BHDecisionDate" Type="DateTime" Precision="3" />
+          <Property Name="FBPDecisionDate" Type="DateTime" Precision="3" />
+          <Property Name="HRBPDecisionDate" Type="DateTime" Precision="3" />
           <NavigationProperty Name="CLComFramework" Relationship="Self.FK_CLCase_CLComFramework" FromRole="CLCase" ToRole="CLComFramework" />
           <NavigationProperty Name="CLIR35Scope" Relationship="Self.FK_CLCase_CLIR35Scope" FromRole="CLCase" ToRole="CLIR35Scope" />
           <NavigationProperty Name="CLProfessionalCat" Relationship="Self.FK_CLCase_CLProfessionalCat" FromRole="CLCase" ToRole="CLProfessionalCat" />
           <NavigationProperty Name="CLStaffGrade" Relationship="Self.FK_CLCase_CLStaffGrade" FromRole="CLCase" ToRole="CLStaffGrade" />
+          <NavigationProperty Name="CLWorkLocation" Relationship="Self.FK_CLCase_CLWorkLocation" FromRole="CLCase" ToRole="CLWorkLocation" />
           <NavigationProperty Name="Directorate" Relationship="Self.FK_CLCase_Directorate" FromRole="CLCase" ToRole="Directorate" />
           <NavigationProperty Name="CLWorkers" Relationship="Self.FK_CLWorker_CLCase" FromRole="CLCase" ToRole="CLWorker" />
         </EntityType>
@@ -2878,6 +2911,7 @@
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" />
           <Property Name="Title" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="CLCases" Relationship="Self.FK_CLCase_CLWorkLocation" FromRole="CLWorkLocation" ToRole="CLCase" />
         </EntityType>
         <EntityType Name="DefElement">
           <Key>
@@ -4027,6 +4061,18 @@
             </Principal>
             <Dependent Role="CLCase">
               <PropertyRef Name="ReqGradeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CLCase_CLWorkLocation">
+          <End Role="CLWorkLocation" Type="Self.CLWorkLocation" Multiplicity="0..1" />
+          <End Role="CLCase" Type="Self.CLCase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CLWorkLocation">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CLCase">
+              <PropertyRef Name="ReqWorkLocationId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -5189,6 +5235,10 @@
             <End Role="CLStaffGrade" EntitySet="CLStaffGrades" />
             <End Role="CLCase" EntitySet="CLCases" />
           </AssociationSet>
+          <AssociationSet Name="FK_CLCase_CLWorkLocation" Association="Self.FK_CLCase_CLWorkLocation">
+            <End Role="CLWorkLocation" EntitySet="CLWorkLocations" />
+            <End Role="CLCase" EntitySet="CLCases" />
+          </AssociationSet>
           <AssociationSet Name="FK_CLCase_Directorate" Association="Self.FK_CLCase_Directorate">
             <End Role="Directorate" EntitySet="Directorates" />
             <End Role="CLCase" EntitySet="CLCases" />
@@ -5844,6 +5894,14 @@
                 <ScalarProperty Name="HRBPApprovalDecision" ColumnName="HRBPApprovalDecision" />
                 <ScalarProperty Name="HRBPApprovalComments" ColumnName="HRBPApprovalComments" />
                 <ScalarProperty Name="CaseChangeLog" ColumnName="CaseChangeLog" />
+                <ScalarProperty Name="CaseCreated" ColumnName="CaseCreated" />
+                <ScalarProperty Name="CaseRef" ColumnName="CaseRef" />
+                <ScalarProperty Name="BHDecisionById" ColumnName="BHDecisionById" />
+                <ScalarProperty Name="FBPDecisionById" ColumnName="FBPDecisionById" />
+                <ScalarProperty Name="HRBPDecisionById" ColumnName="HRBPDecisionById" />
+                <ScalarProperty Name="BHDecisionDate" ColumnName="BHDecisionDate" />
+                <ScalarProperty Name="FBPDecisionDate" ColumnName="FBPDecisionDate" />
+                <ScalarProperty Name="HRBPDecisionDate" ColumnName="HRBPDecisionDate" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

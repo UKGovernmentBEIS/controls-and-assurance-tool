@@ -78,6 +78,14 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
             isResizable: true,
             columnDisplayType: ColumnDisplayTypes.Hidden,
         },
+        {
+            key: 'CaseId',
+            name: 'CaseId',
+            fieldName: 'CaseId',
+            minWidth: 1,
+            isResizable: true,
+            columnDisplayType: ColumnDisplayTypes.Hidden,
+        },
 
         {
             key: 'CaseRef',

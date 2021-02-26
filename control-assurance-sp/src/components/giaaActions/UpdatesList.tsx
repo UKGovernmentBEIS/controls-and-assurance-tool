@@ -22,23 +22,23 @@ export interface IUpdatesListProps extends types.IBaseComponentProps {
 
     //onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
     giaaRecommendationId: number | string;
-    defaultGIAAActionStatusTypeId:number;
-    defaultRevisedDate:Date;
-    targetDate:Date;
+    defaultGIAAActionStatusTypeId: number;
+    defaultRevisedDate: Date;
+    targetDate: Date;
 
     filterText?: string;
     onChangeFilterText: (value: string) => void;
 
-    superUserPermission:boolean;
-    giaaStaffPermission:boolean;
-    actionOwnerPermission:boolean;
+    superUserPermission: boolean;
+    giaaStaffPermission: boolean;
+    actionOwnerPermission: boolean;
 
 
 }
 
 export interface IUpdatesListState<T> {
-    DefaultGIAAActionStatusTypeId:number;
-    DefaultRevisedDate:Date;
+    DefaultGIAAActionStatusTypeId: number;
+    DefaultRevisedDate: Date;
 
     SelectedEntity: number;
     SelectedEntityTitle: string;
@@ -59,12 +59,12 @@ export interface IUpdatesListState<T> {
     InitDataLoaded: boolean;
 
     HideActionUpdatePermissionDialog: boolean;
-    HideReviseImplementationDatePermissionDialogue:boolean;
-    HideGiaaCommentsPermissionDialogue:boolean;
+    HideReviseImplementationDatePermissionDialogue: boolean;
+    HideGiaaCommentsPermissionDialogue: boolean;
 }
 export class UpdatesListState<T> implements IUpdatesListState<T>{
-    public DefaultGIAAActionStatusTypeId:number = null;
-    public DefaultRevisedDate:Date = null;
+    public DefaultGIAAActionStatusTypeId: number = null;
+    public DefaultRevisedDate: Date = null;
 
     public SelectedEntity = null;
     public SelectedEntityTitle: string = null;
@@ -92,7 +92,7 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
     private _selection: Selection;
     private updateService: services.GIAAUpdateService = new services.GIAAUpdateService(this.props.spfxContext, this.props.api);
 
-    private UploadFolder_Evidence:string = "";
+    private UploadFolder_Evidence: string = "";
 
     private listColumns: IUpdatesListColumn[] = [
         //use fieldName as key
@@ -184,7 +184,7 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
             fieldName: 'Evidence',
             minWidth: 180,
             maxWidth: 180,
-            isMultiline:true,
+            isMultiline: true,
             isResizable: true,
             headerClassName: styles.bold,
             columnDisplayType: ColumnDisplayTypes.Hidden,
@@ -195,7 +195,7 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
             fieldName: 'EvType',
             minWidth: 80,
             maxWidth: 80,
-            isMultiline:true,
+            isMultiline: true,
             isResizable: true,
             headerClassName: styles.bold,
         },
@@ -208,7 +208,7 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
         super(props);
         this.state = new UpdatesListState<IEntity>();
         this.UploadFolder_Evidence = getUploadFolder_GIAAUpdateEvidence(props.spfxContext);
-        
+
         this._selection = new Selection({
             onSelectionChanged: () => {
                 if (this._selection.getSelectedCount() === 1) {
@@ -217,19 +217,19 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
                     console.log(sel);
                     const key = Number(sel.key);
                     const title: string = sel["UpdateType"];
-                    
+
                     //const evIsLink:boolean = sel["EvIsLink"];
-                    const evidence:string = sel["Evidence"];
-                    
-                    let enableView:boolean = false;
-                    if(evidence != ""){
+                    const evidence: string = sel["Evidence"];
+
+                    let enableView: boolean = false;
+                    if (evidence != "") {
                         enableView = true;
                     }
 
-                    this.setState({ SelectedEntity: key, SelectedEntityTitle: title, EnableView:enableView, EnableDelete: true });
+                    this.setState({ SelectedEntity: key, SelectedEntityTitle: title, EnableView: enableView, EnableDelete: true });
                 }
                 else {
-                    this.setState({ SelectedEntity: null, SelectedEntityTitle: null, EnableView:false, EnableDelete: false });
+                    this.setState({ SelectedEntity: null, SelectedEntityTitle: null, EnableView: false, EnableDelete: false });
                 }
             }
         });
@@ -266,10 +266,10 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
 
         return (
             <FilteredUpdatesList
-                
+
                 columns={listColumns}
                 items={items}
-                
+
 
                 filterText={this.props.filterText}
                 onFilterChange={this.props.onChangeFilterText}
@@ -292,7 +292,7 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
 
 
 
-                
+
             />
         );
     }
@@ -363,14 +363,14 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
         this.setState({ ShowForm: false });
     }
 
-    private formSaved = (defaultGIAAActionStatusTypeId: number, defaultRevisedDate:Date): void => {
+    private formSaved = (defaultGIAAActionStatusTypeId: number, defaultRevisedDate: Date): void => {
         console.log('form Saved defaultGIAAActionStatusTypeId, defaultRevisedDate', defaultGIAAActionStatusTypeId, defaultRevisedDate);
-        if(defaultGIAAActionStatusTypeId !== null){
+        if (defaultGIAAActionStatusTypeId !== null) {
 
             this.setState({ DefaultGIAAActionStatusTypeId: defaultGIAAActionStatusTypeId });
             console.log('state updated DefaultGIAAActionStatusTypeId', defaultGIAAActionStatusTypeId);
         }
-        if(defaultRevisedDate !== null){
+        if (defaultRevisedDate !== null) {
             this.setState({ DefaultRevisedDate: defaultRevisedDate });
             console.log('state updated DefaultRevisedDate', defaultRevisedDate);
         }
@@ -420,7 +420,7 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
         if (this.props.onError) this.props.onError(`Error loading ${entityName || 'items'}`, err.message);
     }
     public componentDidMount(): void {
-        this.setState( { DefaultGIAAActionStatusTypeId: this.props.defaultGIAAActionStatusTypeId, DefaultRevisedDate: this.props.defaultRevisedDate });
+        this.setState({ DefaultGIAAActionStatusTypeId: this.props.defaultGIAAActionStatusTypeId, DefaultRevisedDate: this.props.defaultRevisedDate });
         this.loadData();
         //console.log('web title: ', this.props.spfxContext.pageContext.web.title);
 
@@ -444,15 +444,15 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
     private handleAddActionUpdate = (): void => {
 
 
-        if(this.props.superUserPermission === true || this.props.actionOwnerPermission === true){
+        if (this.props.superUserPermission === true || this.props.actionOwnerPermission === true) {
 
             if (this.state.SelectedEntity)
                 this._selection.setKeySelected(this.state.SelectedEntity.toString(), false, false);
-            const formType:string = GIAAUpdateTypes.ActionUpdate;
+            const formType: string = GIAAUpdateTypes.ActionUpdate;
             this.setState({ SelectedEntity: null, ShowForm: true, FormType: formType });
 
         }
-        else{
+        else {
             this.toggle_HideActionUpdatePermissionDialog();
             console.log('Only the Super User, GIAA Actions Super User and recommendation Action Owners can provide updates');
         }
@@ -461,15 +461,15 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
     }
     private handleAddStatus_RevisedDate = (): void => {
 
-        if(this.props.superUserPermission === true || this.props.giaaStaffPermission === true){
+        if (this.props.superUserPermission === true || this.props.giaaStaffPermission === true) {
 
             if (this.state.SelectedEntity)
                 this._selection.setKeySelected(this.state.SelectedEntity.toString(), false, false);
-            const formType:string = GIAAUpdateTypes.Status_DateUpdate;
+            const formType: string = GIAAUpdateTypes.Status_DateUpdate;
             this.setState({ SelectedEntity: null, ShowForm: true, FormType: formType });
 
         }
-        else{
+        else {
             this.toggle_HideReviseImplementationDatePermissionDialogue();
             console.log('Only the Super User, GIAA Actions Super User, GIAA Staff and recommendation Action Owners can revise the implementation date');
         }
@@ -478,15 +478,15 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
     }
     private handleAddGIAAComments = (): void => {
 
-        if(this.props.superUserPermission === true || this.props.giaaStaffPermission === true){
+        if (this.props.superUserPermission === true || this.props.giaaStaffPermission === true) {
 
             if (this.state.SelectedEntity)
                 this._selection.setKeySelected(this.state.SelectedEntity.toString(), false, false);
-            const formType:string = GIAAUpdateTypes.GIAAComment;
+            const formType: string = GIAAUpdateTypes.GIAAComment;
             this.setState({ SelectedEntity: null, ShowForm: true, FormType: formType });
 
         }
-        else{
+        else {
             this.toggle_HideGiaaCommentsPermissionDialogue();
             console.log('Only the Super User, GIAA Actions Super User and GIAA Staff can add GIAA Comments');
         }
@@ -496,15 +496,15 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
     private handleAddMiscComments = (): void => {
         if (this.state.SelectedEntity)
             this._selection.setKeySelected(this.state.SelectedEntity.toString(), false, false);
-        const formType:string = GIAAUpdateTypes.MiscComment;
+        const formType: string = GIAAUpdateTypes.MiscComment;
         this.setState({ SelectedEntity: null, ShowForm: true, FormType: formType });
     }
 
 
     private handleView = (): void => {
         console.log('in view.');
-        const fileName:string = this.getSelectedEntityEv();
-        if(this.isSelectedEntityALink() === true){
+        const fileName: string = this.getSelectedEntityEv();
+        if (this.isSelectedEntityALink() === true) {
             console.log('selected evidence is a link');
 
             const a = document.createElement('a');
@@ -512,51 +512,51 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
             a.href = fileName;
             a.target = "_blank";
             //a.download = fileName;
-            
+
             document.body.appendChild(a);
             console.log(a);
             //a.click();
             //document.body.removeChild(a);
-            
-            
+
+
             setTimeout(() => {
-              window.URL.revokeObjectURL(fileName);
-              window.open(fileName, '_blank');
-              document.body.removeChild(a);
+                window.URL.revokeObjectURL(fileName);
+                window.open(fileName, '_blank');
+                document.body.removeChild(a);
             }, 1);
 
 
 
 
         }
-        else{
+        else {
             const f = sp.web.getFolderByServerRelativeUrl(this.UploadFolder_Evidence).files.getByName(fileName);
-    
+
             f.get().then(t => {
                 console.log(t);
                 const serverRelativeUrl = t["ServerRelativeUrl"];
                 console.log(serverRelativeUrl);
-          
+
                 const a = document.createElement('a');
                 //document.body.appendChild(a);
                 a.href = serverRelativeUrl;
                 a.target = "_blank";
                 a.download = fileName;
-                
+
                 document.body.appendChild(a);
                 console.log(a);
                 //a.click();
                 //document.body.removeChild(a);
-                
-                
+
+
                 setTimeout(() => {
-                  window.URL.revokeObjectURL(serverRelativeUrl);
-                  window.open(serverRelativeUrl, '_blank');
-                  document.body.removeChild(a);
+                    window.URL.revokeObjectURL(serverRelativeUrl);
+                    window.open(serverRelativeUrl, '_blank');
+                    document.body.removeChild(a);
                 }, 1);
-                
-          
-              });
+
+
+            });
         }
 
     }
@@ -584,17 +584,32 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
                 }
                 else {
                     console.log("selected file is an attachment");
-                    sp.web.getFolderByServerRelativeUrl(this.UploadFolder_Evidence).files.getByName(fileName).delete().then(df => {
-                        //console.log('file deleted', df);
 
-                        this.updateService.delete(this.state.SelectedEntity).then(this.loadData, (err) => {
-                            if (this.props.onError) this.props.onError(`Cannot delete record. `, err.message);
+                    this.updateService.delete(this.state.SelectedEntity).then(() => {
+                        console.log('db record deleted');
+                        this.loadData();
+                        sp.web.getFolderByServerRelativeUrl(this.UploadFolder_Evidence).files.getByName(fileName).delete().then(df => {
+                            console.log('file deleted');
                         });
+
+                    }, (err) => {
+                        if (this.props.onError) this.props.onError(`Cannot delete record. `, err.message);
                     });
+
+
+
+
+                    // sp.web.getFolderByServerRelativeUrl(this.UploadFolder_Evidence).files.getByName(fileName).delete().then(df => {
+                    //     //console.log('file deleted', df);
+
+                    //     this.updateService.delete(this.state.SelectedEntity).then(this.loadData, (err) => {
+                    //         if (this.props.onError) this.props.onError(`Cannot delete record. `, err.message);
+                    //     });
+                    // });
                 }
 
             }
-            else{
+            else {
 
                 console.log("selected file has not attachment");
                 this.updateService.delete(this.state.SelectedEntity).then(this.loadData, (err) => {
@@ -622,7 +637,7 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
 
         //         sp.web.getFolderByServerRelativeUrl(this.UploadFolder_Evidence).files.getByName(fileName).delete().then(df => {
         //             //console.log('file deleted', df);
-    
+
         //             this.updateService.delete(this.state.SelectedEntity).then(this.loadData, (err) => {
         //                 if (this.props.onError) this.props.onError(`Cannot delete record. `, err.message);
         //             });

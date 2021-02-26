@@ -8,6 +8,7 @@ namespace ControlAssuranceAPI.Models
     public class CLCaseView_Result
     {
         public int ID { get; set; }
+        public int CaseId { get; set; }
         public string CaseRef { get; set; }
         public string Title1 { get; set; }
         public string Title2 { get; set; }

@@ -82,6 +82,7 @@ export default class Section extends React.Component<ISectionProps, SectionState
                             filterText={this.props.listFilterText}
                             onChangeFilterText={this.props.onChangeFilterText}
                             createPermission={true}
+                            
 
                         />
                     </div>

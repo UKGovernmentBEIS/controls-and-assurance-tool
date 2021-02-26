@@ -56,11 +56,20 @@ namespace ControlAssuranceAPI.Models
         public string HRBPApprovalDecision { get; set; }
         public string HRBPApprovalComments { get; set; }
         public string CaseChangeLog { get; set; }
+        public Nullable<bool> CaseCreated { get; set; }
+        public Nullable<int> CaseRef { get; set; }
+        public Nullable<int> BHDecisionById { get; set; }
+        public Nullable<int> FBPDecisionById { get; set; }
+        public Nullable<int> HRBPDecisionById { get; set; }
+        public Nullable<System.DateTime> BHDecisionDate { get; set; }
+        public Nullable<System.DateTime> FBPDecisionDate { get; set; }
+        public Nullable<System.DateTime> HRBPDecisionDate { get; set; }
     
         public virtual CLComFramework CLComFramework { get; set; }
         public virtual CLIR35Scope CLIR35Scope { get; set; }
         public virtual CLProfessionalCat CLProfessionalCat { get; set; }
         public virtual CLStaffGrade CLStaffGrade { get; set; }
+        public virtual CLWorkLocation CLWorkLocation { get; set; }
         public virtual Directorate Directorate { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CLWorker> CLWorkers { get; set; }

@@ -11,7 +11,7 @@ import BaseUserContextWebPartComponent from '../../../components/BaseUserContext
 import * as services from '../../../services';
 import EntityList from '../../../components/entity/EntityList';
 import { IGenColumn, ColumnType, ColumnDisplayType } from '../../../types/GenColumn';
-import { IUserPermission, IDefForm, IGIAAPeriod, IEntity, IDirectorateGroup, IGoDefForm, GoForm, IGoForm } from '../../../types';
+import { IUserPermission, IDefForm, IGIAAPeriod, IEntity, IDirectorateGroup, IGoDefForm, GoForm, IGoForm, CLCase, ICLCase } from '../../../types';
 import { CrLoadingOverlayWelcome } from '../../../components/cr/CrLoadingOverlayWelcome';
 import styles from '../../../styles/cr.module.scss';
 import { PrimaryButton } from 'office-ui-fabric-react/lib/Button';
@@ -35,6 +35,8 @@ export interface IClUpdatesState extends types.IUserContextWebPartState {
   Section1_IsOpen: boolean;
   Section1_MainList_ListFilterText: string;
   Section_MainList_SelectedId:number;
+  Section_MainList_SelectedCaseId:number;
+  Section_MainList_SelectedStage:string;
 
 
 
@@ -47,6 +49,8 @@ export class ClUpdatesState extends types.UserContextWebPartState implements ICl
   public Section1_IsOpen: boolean = false;
   public Section1_MainList_ListFilterText: string = null;
   public Section_MainList_SelectedId = null;
+  public Section_MainList_SelectedCaseId = null;
+  public Section_MainList_SelectedStage = null;
 
 
 
@@ -58,7 +62,8 @@ export class ClUpdatesState extends types.UserContextWebPartState implements ICl
 //#endregion types defination
 
 export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWebPartComponentProps, ClUpdatesState> {
-
+  private clCaseService: services.CLCaseService = new services.CLCaseService(this.props.spfxContext, this.props.api);
+  
   private readonly headerTxt_MainTab: string = "Contingent Labour";
   private readonly headerTxt_NewCaseTab: string = "Case";
 
@@ -143,10 +148,13 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
       <NewCaseTab
 
         onShowList={this.handleShowMainTab}
-        clCaseId={this.state.Section_MainList_SelectedId}
+        clWorkerId={this.state.Section_MainList_SelectedId}
+        clCaseId={this.state.Section_MainList_SelectedCaseId}
+        stage={this.state.Section_MainList_SelectedStage}
         currentUserName={this.getCurrentUserName()}
         currentUserId={this.getCurrentUserId()}
         superUserPermission={this.isSuperUser()}
+        viewerPermission={this.isViewerPermission()}
         {...this.props}
       />
 
@@ -204,9 +212,23 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
     for (let i = 0; i < ups.length; i++) {
 
       let up: IUserPermission = ups[i];
-      console.log('in isSuperUser loop', ups);
+      //console.log('in isSuperUser loop', ups);
       if (up.PermissionTypeId == 1 || up.PermissionTypeId == 13) {
         //super user or giaa super user
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  private isViewerPermission(): boolean {
+    let ups = this.state.UserPermissions;
+    for (let i = 0; i < ups.length; i++) {
+
+      let up: IUserPermission = ups[i];
+      if (up.PermissionTypeId == 14) {
+        //CL Viewer
         return true;
       }
     }
@@ -249,12 +271,46 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
 
     //if ID is 0 then new case add request
     console.log('on main list item title click ', ID, title, filteredItems);
-    this.setState({
-      SelectedPivotKey: this.headerTxt_NewCaseTab,
-      Section_MainList_SelectedId: ID,
-      //Section_MainList_SelectedTitle: title,
-      //Section_MainList_FilteredItems: filteredItems
-    });
+
+    //ID from parameter is workerID
+
+    if(ID === 0){
+      let caseId:number = 0;
+      const newCase = new CLCase("New Case");
+      this.clCaseService.create(newCase).then((x:ICLCase): void => {
+          console.log('case created', x);
+          caseId = x.ID;
+
+          this.setState({
+            SelectedPivotKey: this.headerTxt_NewCaseTab,
+            Section_MainList_SelectedId: 0, //worker id
+            Section_MainList_SelectedCaseId: caseId,
+            Section_MainList_SelectedStage: 'Draft',
+            //Section_MainList_SelectedTitle: title,
+            //Section_MainList_FilteredItems: filteredItems
+          });
+
+
+      }, (err) => {  });
+    }
+    else{
+      const caseF = (filteredItems.filter(x => x['ID'] === ID))[0];
+      const caseId:number = Number(caseF['CaseId']);
+      const stage:string = caseF['Stage'];
+      console.log('stage', stage);
+
+      this.setState({
+        SelectedPivotKey: this.headerTxt_NewCaseTab,
+        Section_MainList_SelectedId: ID,
+        Section_MainList_SelectedCaseId: caseId,
+        Section_MainList_SelectedStage: stage,
+        //Section_MainList_SelectedTitle: title,
+        //Section_MainList_FilteredItems: filteredItems
+      });
+    }
+
+
+
   }
 
 

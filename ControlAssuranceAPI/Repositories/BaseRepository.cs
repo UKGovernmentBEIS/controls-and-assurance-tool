@@ -230,5 +230,34 @@ namespace ControlAssuranceAPI.Repositories
             return superUser;
         }
 
+        protected bool CL_SuperUserOrViewer(int userId, out bool superUser, out bool clSuperUser, out bool clViewer)
+        {
+            superUser = false;
+            clSuperUser = false;
+            clViewer = false;
+
+            var userPermissions = db.UserPermissions.Where(up => up.UserId == userId).ToList();
+            foreach (var permissioin in userPermissions)
+            {
+                if (permissioin.PermissionTypeId == 1)
+                {
+                    superUser = true;
+                }
+                if (permissioin.PermissionTypeId == 13) //CL Super user
+                {
+                    clSuperUser = true;
+                }
+                else if (permissioin.PermissionTypeId == 14) //CL Viewer
+                {
+                    clViewer = true;
+                }
+            }
+
+            if (superUser == true || clSuperUser == true || clViewer == true)
+                return true;
+
+            return false;
+        }
+
     }
 }

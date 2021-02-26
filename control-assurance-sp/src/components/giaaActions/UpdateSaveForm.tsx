@@ -223,7 +223,7 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
 
                 <CrCheckbox
                     className={`${styles.formField} ${styles.checkbox}`}
-                    label="Mark outstanding requests from action owners as done"
+                    label="Mark any outstanding status close or revise implementation date requests from action owners"
                     checked={this.state.FormData.MarkAllReqClosed}
                     onChange={(ev, isChecked) => this.changeCheckbox(isChecked, "MarkAllReqClosed")}
 
@@ -279,7 +279,7 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
         if (this.props.updateType === GIAAUpdateTypes.ActionUpdate)
             lbl = "Action Update Details";
         else if (this.props.updateType === GIAAUpdateTypes.Status_DateUpdate)
-            lbl = "Comments";
+            lbl = "Reason for Revision";
         else if (this.props.updateType === GIAAUpdateTypes.GIAAComment)
             lbl = "GIAA Comment";
         else
@@ -396,7 +396,7 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
                     <input type="file" name="fileUpload" id="fileUpload" accept="application/pdf"></input>
                     {this.state.ErrMessages.FileUpload && <FieldErrorMessage value={this.state.ErrMessages.FileUpload} />}
                     <div style={{ paddingTop: '10px' }}>
-                        Please upload evidence files as PDFs. For guidance on saving documents or mail as PDFs, please click <span onClick={this.viewHelpPDF} style={{ textDecoration: 'underline', cursor: 'pointer' }}>here</span>.
+                        Please upload all evidence files as PDFs. For guidance on savings documents as PDFs, please click <span onClick={this.viewHelpPDF} style={{ textDecoration: 'underline', cursor: 'pointer' }}>here</span>.
                     </div>
                 </div>
                 {this.state.ShowUploadProgress && <div style={{ minHeight: '80px', marginTop: '15px' }}>
@@ -506,7 +506,7 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
 
                 //console.log('in update');
 
-                this.giaaUpdateService.update(f.ID, f).then(() =>this.props.onSaved(f.GIAAActionStatusTypeId, f.RevisedDate), (err) => {
+                this.giaaUpdateService.updatePut(f.ID, f).then(() =>this.props.onSaved(f.GIAAActionStatusTypeId, f.RevisedDate), (err) => {
                     if (this.props.onError) this.props.onError(`Error updating item`, err.message);
                 });
             }

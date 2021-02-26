@@ -533,6 +533,7 @@ namespace ControlAssuranceAPI.Repositories
                                 if (gIAAUpdate.ID == 0)
                                 {
                                     dbThread.GIAAUpdates.Add(gIAAUpdate);
+
                                 }
 
                             }

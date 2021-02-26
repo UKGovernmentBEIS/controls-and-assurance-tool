@@ -59,44 +59,76 @@ namespace ControlAssuranceAPI.Controllers
         }
 
         // PATCH: odata/GIAAUpdates(1)
-        [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] int key, Delta<GIAAUpdate> patch)
+        [AcceptVerbs("PUT")]
+        public IHttpActionResult Put([FromODataUri] int key, GIAAUpdate gIAAUpdate)
         {
-            //Validate(patch.GetEntity());
 
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
+            db.GIAAUpdateRepository.Update(gIAAUpdate);
+
+            return Updated(gIAAUpdate);
+        }
+
+        // DELETE: odata/GIAAUpdates(1)
+        public IHttpActionResult Delete([FromODataUri] int key)
+        {
             GIAAUpdate gIAAUpdate = db.GIAAUpdateRepository.Find(key);
             if (gIAAUpdate == null)
             {
                 return NotFound();
             }
 
-            //patch.TrySetPropertyValue("DateUploaded", DateTime.Now);
+            var x = db.GIAAUpdateRepository.Remove(gIAAUpdate);
+            if (x == null) return Unauthorized();
 
-            patch.Patch(gIAAUpdate);
+            db.SaveChanges();
 
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!GIAAUpdateExists(key))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return Updated(gIAAUpdate);
+            return StatusCode(HttpStatusCode.NoContent);
         }
+
+        //// PATCH: odata/GIAAUpdates(1)
+        //[AcceptVerbs("PATCH", "MERGE")]
+        //public IHttpActionResult Patch([FromODataUri] int key, Delta<GIAAUpdate> patch)
+        //{
+        //    //Validate(patch.GetEntity());
+
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
+
+        //    GIAAUpdate gIAAUpdate = db.GIAAUpdateRepository.Find(key);
+        //    if (gIAAUpdate == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    //patch.TrySetPropertyValue("DateUploaded", DateTime.Now);
+
+        //    patch.Patch(gIAAUpdate);
+
+        //    try
+        //    {
+        //        db.SaveChanges();
+        //    }
+        //    catch (DbUpdateConcurrencyException)
+        //    {
+        //        if (!GIAAUpdateExists(key))
+        //        {
+        //            return NotFound();
+        //        }
+        //        else
+        //        {
+        //            throw;
+        //        }
+        //    }
+
+        //    return Updated(gIAAUpdate);
+        //}
 
         private bool GIAAUpdateExists(int key)
         {

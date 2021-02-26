@@ -14,7 +14,16 @@ namespace ControlAssuranceAPI.Models
     
     public partial class CLWorkLocation
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public CLWorkLocation()
+        {
+            this.CLCases = new HashSet<CLCase>();
+        }
+    
         public int ID { get; set; }
         public string Title { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CLCase> CLCases { get; set; }
     }
 }

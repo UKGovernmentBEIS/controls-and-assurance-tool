@@ -91,7 +91,25 @@ export interface IClCaseInfo  extends IEntity {
     Stage?: string;
     CreatedBy?: string;
     CreatedOn?: string;
-    CaseRef?: string;    
+    CaseRef?: string;
+
+    ApplHMUser?: string;
+    ReqGrade?: string;
+    Directorate?: string;
+    ReqEstStartDate?: string;
+    ReqEstEndDate?: string;
+    ReqProfessionalCat?: string;
+    ReqWorkLocation?: string;
+    ComFramework?: string;
+    ComPSRAccount?: string;
+    FinIR35Scope?: string;
+    BHUser?: string;
+    FBPUser?: string;
+    HRBPUser?: string;
+    BHDecisionByAndDate?: string;
+    FBPDecisionByAndDate?: string;
+    HRBPDecisionByAndDate?: string;
+
 }
 export class ClCaseInfo  implements IClCaseInfo {
     public ID: number = 0;
@@ -100,4 +118,24 @@ export class ClCaseInfo  implements IClCaseInfo {
     public CreatedBy?: string = "";
     public CreatedOn?: string = "";
     public CaseRef?: string = "";
+
+    public ApplHMUser?: string = "";
+    public ReqGrade?: string = "";
+    public Directorate?: string = "";
+    public ReqEstStartDate?: string = "";
+    public ReqEstEndDate?: string = "";
+    public ReqProfessionalCat?: string = "";
+    public ReqWorkLocation?: string = "";
+    public ComFramework?: string = "";
+    public ComPSRAccount?: string = "";
+    public FinIR35Scope?: string = "";
+    public BHUser?: string = "";
+    public FBPUser?: string = "";
+    public HRBPUser?: string = "";
+
+    public BHDecisionByAndDate?: string = "";
+    public FBPDecisionByAndDate?: string = "";
+    public HRBPDecisionByAndDate?: string = "";
+
+
 }
