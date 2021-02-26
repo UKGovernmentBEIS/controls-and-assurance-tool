@@ -82,7 +82,7 @@ export default class AppHome extends BaseUserContextWebPartComponent<types.IWebP
           <div style={{ marginTop: '20px', marginRight: '20px', width: '250px' }}>
             <div style={{ textAlign: 'center', color: 'white', backgroundColor: 'rgb(122,116,117)', fontSize: '35px', height: '270px', borderBottom: '1px solid white' }}>
               <img src={this.naoApphomeImg}></img>
-              <div>NAO/PAC Tracker.</div>
+              <div>NAO/PAC Tracker</div>
             </div>
             <div style={{ backgroundColor: 'rgb(122,116,117)', textAlign: 'center', padding: '10px', cursor: 'pointer' }}
               onClick={this.handleNAOTrackerClick}  >

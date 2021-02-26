@@ -441,6 +441,7 @@
     <Compile Include="Models\CLCaseEvidence.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\CLCaseEvidenceView_Result.cs" />
     <Compile Include="Models\ClCaseInfoView_Result.cs" />
     <Compile Include="Models\CLCaseView_Result.cs" />
     <Compile Include="Models\CLComFramework.cs">

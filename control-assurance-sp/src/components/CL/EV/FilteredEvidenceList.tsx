@@ -61,6 +61,7 @@ export interface IFilteredEvidenceListProps {
 
     editDisabled: boolean;
     deleteDisabled: boolean;
+    viewDisabled: boolean;
 
     isViewOnly:boolean;
 }
@@ -117,7 +118,7 @@ export class FilteredEvidenceList extends React.Component<IFilteredEvidenceListP
                             onClick={this.props.onDelete}
                         />}
 
-                    {(props.editDisabled === false) &&
+                    {(props.viewDisabled === false) &&
                         <CommandBarButton
                             iconProps={{ iconName: 'View' }}
                             className={classNames.cmdBtn}

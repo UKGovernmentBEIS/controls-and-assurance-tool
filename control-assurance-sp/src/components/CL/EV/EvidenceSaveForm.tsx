@@ -5,12 +5,15 @@ import { ICLCaseEvidence, CLCaseEvidence } from '../../../types';
 import { CrTextField } from '../../cr/CrTextField';
 import { CrCheckbox } from '../../cr/CrCheckbox';
 import { FieldErrorMessage } from '../../cr/FieldDecorators';
+import { CrChoiceGroup, IChoiceGroupOption } from '../../cr/CrChoiceGroup';
 import { FormButtons } from '../../cr/FormButtons';
 import { Panel, PanelType } from 'office-ui-fabric-react/lib/Panel';
 import { FormCommandBar } from '../../cr/FormCommandBar';
 import { sp, ChunkedFileUploadProgressData } from '@pnp/sp';
 import { getUploadFolder_CLEvidence, getFolder_Help } from '../../../types/AppGlobals';
 import styles from '../../../styles/cr.module.scss';
+import '../../../styles/CustomFabric.scss';
+import { TooltipHost } from 'office-ui-fabric-react';
 
 export interface IEvidenceSaveFormProps extends types.IBaseComponentProps {
     parentId: number;
@@ -43,7 +46,7 @@ export interface IEvidenceSaveFormState {
     UploadStatus: string;
     UploadProgress: number;
     ShowUploadProgress: boolean;
-    ShowFileUpload: boolean;
+    //ShowFileUpload: boolean;
     EditRequest: boolean;
     ErrMessages: IErrorMessage;
 }
@@ -57,7 +60,7 @@ export class EvidenceSaveFormState implements IEvidenceSaveFormState {
     public UploadStatus = "";
     public UploadProgress: number = 0;
     public ShowUploadProgress = false;
-    public ShowFileUpload = false;
+    //public ShowFileUpload = false;
     public EditRequest = false;
     public ErrMessages = new ErrorMessage();
 
@@ -89,7 +92,7 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
     public render(): React.ReactElement<IEvidenceSaveFormProps> {
         //const errors = this.state.ValidationErrors;
         return (
-            <Panel isOpen={this.props.showForm} headerText={"Evidence"} type={PanelType.medium} onRenderNavigation={() => <FormCommandBar onSave={this.saveEvidence} onCancel={this.props.onCancelled} />}>
+            <Panel isOpen={this.props.showForm} headerText={"Case Discussion, General Comments and Attachments"} type={PanelType.medium} onRenderNavigation={() => <FormCommandBar onSave={this.saveEvidence} onCancel={this.props.onCancelled} />}>
                 <div className={styles.cr}>
                     {this.renderFormFields()}
                     <FormButtons
@@ -104,7 +107,7 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
     }
 
     public renderInfoText(){
-        if(this.state.FormData.ID > 0 && this.state.EditRequest === true && this.state.FormData.IsLink !== true ){
+        if(this.state.FormData.ID > 0 && this.state.EditRequest === true && this.state.FormData.AttachmentType === "PDF" ){
             const fileName = this.state.FormData.Title;
             return(
                 <div style={{marginTop: '20px'}}>
@@ -119,8 +122,7 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
         return (
             <React.Fragment>
                 {this.renderDetails()}
-                {this.renderAdditionalNotes()}
-                {this.renderIsLinkCheckbox()}
+                {this.renderAttachmentTypeChoiceOptions()}
                 {this.renderLinkBox()}
 
                 {this.renderFileUpload()}
@@ -132,7 +134,7 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
     private renderDetails() {
         return (
             <CrTextField
-                label="Title"
+                label="Details"
                 required={true}
                 className={styles.formField}
                 value={this.state.FormData.Details}
@@ -144,44 +146,61 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
         );
     }
 
-    private renderAdditionalNotes() {
-        return (
-            <CrTextField
-                label="Additional Notes"
-                //required={true}
-                className={styles.formField}
-                value={this.state.FormData.AdditionalNotes}
-                onChanged={(v) => this.changeTextField(v, "AdditionalNotes")}
-                multiline={true}
-                rows={3}
-            />
-        );
-    }
 
-    private renderIsLinkCheckbox() {
+    private renderAttachmentTypeChoiceOptions() {
 
-        if (this.state.EditRequest === true) return null;
+
+        const options:IChoiceGroupOption[] = [
+            { key: 'None', text: 'None' },
+            { key: 'PDF', text: 'PDF File' },
+            { key: 'Link', text: 'Link' },
+        ];
+
+        const fd = this.state.FormData;
+
         return (
             <div>
 
-                <CrCheckbox
-                    className={`${styles.formField} ${styles.checkbox}`}
-                    label="Provide a link instead of uploading a file"
-                    checked={this.state.FormData.IsLink}
-                    onChange={(ev, isChecked) => this.changeCheckboxIsLink(isChecked, "IsLink")}
+
+                <CrChoiceGroup
+                    label="Attachment"
+                    className="inlineflex"
+                    options={options}
+                    disabled={this.state.EditRequest}
+                    selectedKey={fd.AttachmentType}
+                    onChange={(ev, option) => this.changeChoiceGroup(ev, option, "AttachmentType")}
+                                />
 
 
-                />
 
             </div>
         );
     }
 
-    private renderLinkBox() {
-        if (this.state.ShowFileUpload == true)
-            return null;
+    // private renderIsLinkCheckbox() {
 
-        if (this.state.FormData.IsLink === true) {
+    //     if (this.state.EditRequest === true) return null;
+    //     return (
+    //         <div>
+
+    //             <CrCheckbox
+    //                 className={`${styles.formField} ${styles.checkbox}`}
+    //                 label="Provide a link instead of uploading a file"
+    //                 checked={this.state.FormData.IsLink}
+    //                 onChange={(ev, isChecked) => this.changeCheckboxIsLink(isChecked, "IsLink")}
+
+
+    //             />
+
+    //         </div>
+    //     );
+    // }
+
+    private renderLinkBox() {
+        // if (this.state.ShowFileUpload == true)
+        //     return null;
+
+        if (this.state.FormData.AttachmentType === "Link") {
 
             return (
                 <CrTextField
@@ -201,8 +220,12 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
     }
 
     private renderFileUpload() {
-        if (this.state.ShowFileUpload == false)
-            return null;
+        // if (this.state.ShowFileUpload == false)
+        //     return null;
+
+        if(this.state.EditRequest === true) return null;
+        if (this.state.FormData.AttachmentType !== "PDF")
+        return null;
 
         return (
             <div style={{ marginTop: '20px', marginBottom: '20px' }}>
@@ -363,7 +386,7 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
                 //firts create record in the db, so we can get the ID, then use the ID to append in the file name to make file name unique
                 this.cLCaseEvidenceService.create(f).then(x => {
                     //console.log(x);
-                    if (this.state.ShowFileUpload === true) {
+                    if (this.state.FormData.AttachmentType === "PDF") {
                         this.uploadFile(x.ID, x.UploadedByUserId);
                     }
                     else {
@@ -379,7 +402,7 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
 
                 //console.log('in update');
 
-                this.cLCaseEvidenceService.update(f.ID, f).then(this.props.onSaved, (err) => {
+                this.cLCaseEvidenceService.updatePut(f.ID, f).then(this.props.onSaved, (err) => {
                     if (this.props.onError) this.props.onError(`Error updating item`, err.message);
                 });
             }
@@ -399,7 +422,7 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
             errMsg.Details = null;
         }
 
-        if (this.state.ShowFileUpload === true) {
+        if (this.state.EditRequest === false && this.state.FormData.AttachmentType === "PDF") {
 
             //((document.querySelector("#fileUpload") as HTMLInputElement).files[0]) == null
             const file = (document.querySelector("#fileUpload") as HTMLInputElement).files[0];
@@ -430,7 +453,7 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
             errMsg.FileUpload = null;
         }
         
-        if (this.state.FormData.IsLink === true) {
+        if (this.state.FormData.AttachmentType === "Link") {
             if (this.state.FormData.Title === null || this.state.FormData.Title === '') {
 
                 errMsg.Title = "Link Required";
@@ -486,7 +509,7 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
             loadingPromises.push(this.loadEvidence());
         }
         else {
-            this.setState({ ShowFileUpload: true });
+            //this.setState({ ShowFileUpload: true });
         }
         Promise.all(loadingPromises).then(p => this.onAfterLoad(p[1])).then(p => this.setState({ Loading: false })).catch(err => this.setState({ Loading: false }));
 
@@ -511,13 +534,18 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, value), FormIsDirty: true });
     }
 
-    protected changeCheckboxIsLink = (value: boolean, f: string): void => {
-        this.setState({ FormData: this.cloneObject(this.state.FormData, f, value), ShowFileUpload: !value /*, FormIsDirty: true*/ });
-    }
+    // protected changeCheckboxIsLink = (value: boolean, f: string): void => {
+    //     this.setState({ FormData: this.cloneObject(this.state.FormData, f, value), ShowFileUpload: !value /*, FormIsDirty: true*/ });
+    // }
     private cloneObject(obj, changeProp?, changeValue?) {
         if (changeProp)
             return { ...obj, [changeProp]: changeValue };
         return { ...obj };
+    }
+    protected changeChoiceGroup = (ev, option: IChoiceGroupOption, f: string): void => {
+        const selectedKey = option.key;
+        this.setState({ FormData: this.cloneObject(this.state.FormData, f, selectedKey)/*, FormIsDirty: true*/ });
+
     }
 
 

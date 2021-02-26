@@ -20,8 +20,8 @@ export interface IEvidenceListProps extends types.IBaseComponentProps {
     filterText?: string;
     onChangeFilterText: (value: string) => void;
 
-    isViewOnly:boolean;
-    evChangesCounter:number;
+    isViewOnly: boolean;
+    evChangesCounter: number;
 
 }
 
@@ -31,6 +31,7 @@ export interface IEvidenceListState<T> {
     SelectedEntityChildren: number;
     ShowForm: boolean;
     EnableEdit?: boolean;
+    EnableView?: boolean;
     EnableDelete?: boolean;
     HideDeleteDialog: boolean;
     ShowChildForm: boolean;
@@ -48,6 +49,7 @@ export class EvidenceListState<T> implements IEvidenceListState<T>{
     public ShowForm = false;
     public HideDeleteDialog = true;
     public EnableEdit = false;
+    public EnableView = false;
     public EnableDelete = false;
     public ShowChildForm = false;
     public CurrentPage = 1;
@@ -59,7 +61,7 @@ export class EvidenceListState<T> implements IEvidenceListState<T>{
 }
 
 export default class EvidenceList extends React.Component<IEvidenceListProps, IEvidenceListState<IEntity>> {
-    private UploadFolder_Evidence:string = "";
+    private UploadFolder_Evidence: string = "";
     private _selection: Selection;
     private cLCaseEvidenceService: services.CLCaseEvidenceService = new services.CLCaseEvidenceService(this.props.spfxContext, this.props.api);
 
@@ -82,77 +84,47 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
             columnDisplayType: ColumnDisplayTypes.Hidden,
         },
         {
-            key: 'Details',
-            name: 'Title',
-            fieldName: 'Details',
-            minWidth: 300,
-            maxWidth: 400,
-            isResizable: true,
-            isMultiline: true,
-            headerClassName: styles.bold,
-
-        },
-        // {
-        //     key: 'Controls',
-        //     name: 'Controls',
-        //     fieldName: 'Controls',
-        //     minWidth: 200,
-        //     maxWidth: 300,
-        //     isResizable: true,
-        //     isMultiline: true,
-        //     headerClassName: styles.bold,
-
-        // },
-        // {
-        //     key: 'Team',
-        //     name: 'Team/Info Holder',
-        //     fieldName: 'Team',
-        //     minWidth: 200,
-        //     maxWidth: 300,
-        //     isResizable: true,
-        //     isMultiline: true,
-        //     headerClassName: styles.bold,
-
-        // },
-        // {
-        //     key: 'InfoHolder',
-        //     name: 'InfoHolder',
-        //     fieldName: 'InfoHolder',
-        //     minWidth: 1,
-        //     isResizable: true,
-        //     columnDisplayType: ColumnDisplayTypes.Hidden,
-
-        // },
-        {
-            key: 'AdditionalNotes',
-            name: 'Additional Notes',
-            fieldName: 'AdditionalNotes',
-            minWidth: 300,
-            maxWidth: 400,
-            isResizable: true,
-            isMultiline: true,
-            headerClassName: styles.bold,
-
-        },
-        {
-            key: 'UploadedByUser',
-            name: 'Uploaded By',
-            fieldName: 'UploadedByUser',
+            key: 'DateAdded',
+            name: 'Date',
+            fieldName: 'DateAdded',
             minWidth: 100,
-            maxWidth: 200,
+            maxWidth: 100,
             isResizable: true,
             headerClassName: styles.bold,
-        },
-        // {
-        //     key: 'DateUploaded',
-        //     name: 'Upload Date',
-        //     fieldName: 'DateUploaded',
-        //     minWidth: 100,
-        //     maxWidth: 150,
-        //     isResizable: true,
-        //     headerClassName: styles.bold,
 
-        // },
+        },
+        {
+            key: 'AddedBy',
+            name: 'By',
+            fieldName: 'AddedBy',
+            minWidth: 100,
+            maxWidth: 100,
+            isResizable: true,
+            headerClassName: styles.bold,
+
+        },
+        {
+            key: 'Details',
+            name: 'Details',
+            fieldName: 'Details',
+            minWidth: 550,
+            maxWidth: 550,
+            isResizable: true,
+            isMultiline: true,
+            headerClassName: styles.bold,
+
+        },
+        {
+            key: 'AttachmentType',
+            name: 'Attachment',
+            fieldName: 'AttachmentType',
+            minWidth: 70,
+            maxWidth: 70,
+            isResizable: true,
+            headerClassName: styles.bold,
+
+        },
+
 
 
     ];
@@ -170,11 +142,17 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
                     const sel = this._selection.getSelection()[0];
                     const key = Number(sel.key);
                     const title: string = sel["Title"];
+                    const attachmentType: string = sel["AttachmentType"];
 
-                    this.setState({ SelectedEntity: key, SelectedEntityTitle: title, EnableEdit: true, EnableDelete: true });
+                    let enableView: boolean = true;
+                    if(attachmentType === "None"){
+                        enableView = false;                            
+                    }
+
+                    this.setState({ SelectedEntity: key, SelectedEntityTitle: title, EnableEdit: true, EnableDelete: true, EnableView: enableView });
                 }
                 else {
-                    this.setState({ SelectedEntity: null, SelectedEntityTitle: null, EnableEdit: false, EnableDelete: false });
+                    this.setState({ SelectedEntity: null, SelectedEntityTitle: null, EnableEdit: false, EnableDelete: false, EnableView: false });
                 }
             }
         });
@@ -191,7 +169,7 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
                     {this.renderList()}
                     {this.state.ShowForm && this.renderForm()}
 
-                    <ConfirmDialog hidden={this.state.HideDeleteDialog} title={`Are you sure you want to delete this evidence?`} content={`A deleted evidence cannot be un-deleted.`} confirmButtonText="Delete" handleConfirm={this.deleteFile} handleCancel={this.toggleDeleteConfirm} />
+                    <ConfirmDialog hidden={this.state.HideDeleteDialog} title={`Are you sure you want to delete this record?`} content={`A deleted record cannot be un-deleted.`} confirmButtonText="Delete" handleConfirm={this.deleteFile} handleCancel={this.toggleDeleteConfirm} />
                 </div>
             </div>
         );
@@ -221,7 +199,8 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
                 onView={this.viewFile}
                 editDisabled={!this.state.EnableEdit}
                 deleteDisabled={!this.state.EnableDelete}
-                
+                viewDisabled={!this.state.EnableView}
+
             />
         );
     }
@@ -234,7 +213,7 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
                 showForm={this.state.ShowForm}
                 //goElementId={this.props.goElementId}
                 parentId={this.props.parentId}
-                
+
                 evidenceId={this.state.SelectedEntity}
                 onSaved={this.fileSaved}
                 onCancelled={this.closePanel}
@@ -255,18 +234,11 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
         listColumns.map((c) => {
             let fieldContent: string = String(e[c.fieldName]);
 
-            if (c.fieldName === "UploadedByUser") {
-                item = {
-                    [c.fieldName]: e["User"]["Title"],
-                    ...item
-                };
-            }
-            else{
-                item = {
-                    [c.fieldName]: fieldContent,
-                    ...item
-                };
-            }
+
+            item = {
+                [c.fieldName]: fieldContent,
+                ...item
+            };
 
 
 
@@ -299,8 +271,9 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
 
     private viewFile = (): void => {
         console.log('in view.');
-        const fileName:string = this.state.SelectedEntityTitle;
-        if(this.isSelectedEntityALink() === true){
+        const fileName: string = this.state.SelectedEntityTitle;
+        const selectedAttachmentType: string = this.selectedRecordAttachmentType();
+        if (selectedAttachmentType === "Link") {
             console.log('selected evidence is a link');
 
             const a = document.createElement('a');
@@ -308,55 +281,55 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
             a.href = fileName;
             a.target = "_blank";
             //a.download = fileName;
-            
+
             document.body.appendChild(a);
             console.log(a);
             //a.click();
             //document.body.removeChild(a);
-            
-            
+
+
             setTimeout(() => {
-              window.URL.revokeObjectURL(fileName);
-              window.open(fileName, '_blank');
-              document.body.removeChild(a);
+                window.URL.revokeObjectURL(fileName);
+                window.open(fileName, '_blank');
+                document.body.removeChild(a);
             }, 1);
 
 
 
 
         }
-        else{
+        else if (selectedAttachmentType === "PDF") {
             const f = sp.web.getFolderByServerRelativeUrl(this.UploadFolder_Evidence).files.getByName(fileName);
-    
+
             f.get().then(t => {
                 console.log(t);
                 const serverRelativeUrl = t["ServerRelativeUrl"];
                 console.log(serverRelativeUrl);
-          
+
                 const a = document.createElement('a');
                 //document.body.appendChild(a);
                 a.href = serverRelativeUrl;
                 a.target = "_blank";
                 a.download = fileName;
-                
+
                 document.body.appendChild(a);
                 console.log(a);
                 //a.click();
                 //document.body.removeChild(a);
-                
-                
+
+
                 setTimeout(() => {
-                  window.URL.revokeObjectURL(serverRelativeUrl);
-                  window.open(serverRelativeUrl, '_blank');
-                  document.body.removeChild(a);
+                    window.URL.revokeObjectURL(serverRelativeUrl);
+                    window.open(serverRelativeUrl, '_blank');
+                    document.body.removeChild(a);
                 }, 1);
-                
-          
-              });
+
+
+            });
         }
 
 
-  
+
 
     }
 
@@ -373,9 +346,9 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
         let entity = this.state.Entities.filter((e) => { return e.ID === this.state.SelectedEntity; });
         return entity[0] ? entity[0].Title : null;
     }
-    private isSelectedEntityALink = (): boolean => {
+    private selectedRecordAttachmentType = (): string => {
         let entity = this.state.Entities.filter((e) => { return e.ID === this.state.SelectedEntity; });
-        return entity[0] ? entity[0]["IsLink"] : null;
+        return entity[0] ? entity[0]["AttachmentType"] : null;
     }
 
     private toggleDeleteConfirm = (): void => {
@@ -390,22 +363,28 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
             const fileName: string = this.state.SelectedEntityTitle;
             //console.log(fileName);
 
-            if(this.isSelectedEntityALink() === true){
+            const selectedAttachmentType: string = this.selectedRecordAttachmentType();
+            if (selectedAttachmentType === "PDF") {
+
+                this.cLCaseEvidenceService.delete(this.state.SelectedEntity).then(() => {
+                    this.loadEvidences();
+
+                    sp.web.getFolderByServerRelativeUrl(this.UploadFolder_Evidence).files.getByName(fileName).delete().then(df => {
+                        //console.log('file deleted', df);
+                    });
+
+
+                }, (err) => {
+                    if (this.props.onError) this.props.onError(`Cannot delete this evidence. `, err.message);
+                });
+            }
+            else {
 
                 console.log('deleting eveidence (link)');
                 this.cLCaseEvidenceService.delete(this.state.SelectedEntity).then(this.loadEvidences, (err) => {
                     if (this.props.onError) this.props.onError(`Cannot delete this evidence. `, err.message);
                 });
-            }
-            else{
 
-                sp.web.getFolderByServerRelativeUrl(this.UploadFolder_Evidence).files.getByName(fileName).delete().then(df => {
-                    //console.log('file deleted', df);
-    
-                    this.cLCaseEvidenceService.delete(this.state.SelectedEntity).then(this.loadEvidences, (err) => {
-                        if (this.props.onError) this.props.onError(`Cannot delete this evidence. `, err.message);
-                    });
-                });
             }
 
 
@@ -441,7 +420,7 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
     }
     public componentDidUpdate(prevProps: IEvidenceListProps): void {
         console.log("in component DidUpdate", this.props.parentId);
-        if(prevProps.parentId !== this.props.parentId || prevProps.evChangesCounter !== this.props.evChangesCounter){
+        if (prevProps.parentId !== this.props.parentId || prevProps.evChangesCounter !== this.props.evChangesCounter) {
             console.log("in component DidUpdate load");
             this.loadEvidences();
         }

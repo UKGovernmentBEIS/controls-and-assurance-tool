@@ -125,7 +125,8 @@ namespace ControlAssuranceAPI
             
             builder.EntitySet<ClCaseInfoView_Result>("ClCaseInfoViewResult");
             builder.EntitySet<CLCaseView_Result>("CLCaseViewResult");
-            
+            builder.EntitySet<CLCaseEvidenceView_Result>("CLCaseEvidenceViewResult");
+
 
 
             builder.EntitySet<ExportDefination>("ExportDefinations");

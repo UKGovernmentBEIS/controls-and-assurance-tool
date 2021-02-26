@@ -29,6 +29,30 @@ namespace ControlAssuranceAPI.Controllers
             return SingleResult.Create(db.CLCaseEvidenceRepository.CLCaseEvidences.Where(x => x.ID == key));
         }
 
+        // GET: /odata/CLCaseEvidences?getCasesForList=&parentId=1
+        public List<CLCaseEvidenceView_Result> Get(string getCasesForList, int parentId)
+        {
+            var res = db.CLCaseEvidenceRepository.GetEvidences(parentId);
+            return res;
+        }
+
+
+        // PATCH: odata/CLCaseEvidences(1)
+        [AcceptVerbs("PUT")]
+        public IHttpActionResult Put([FromODataUri] int key, CLCaseEvidence cLCaseEvidence)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var r = db.CLCaseEvidenceRepository.Update(cLCaseEvidence);
+
+            return Updated(r);
+        }
+
+
         // POST: odata/CLCaseEvidences
         public IHttpActionResult Post(CLCaseEvidence cLCaseEvidence)
         {
@@ -45,45 +69,45 @@ namespace ControlAssuranceAPI.Controllers
             return Created(x);
         }
 
-        // PATCH: odata/CLCaseEvidences(1)
-        [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] int key, Delta<CLCaseEvidence> patch)
-        {
-            //Validate(patch.GetEntity());
+        //// PATCH: odata/CLCaseEvidences(1)
+        //[AcceptVerbs("PATCH", "MERGE")]
+        //public IHttpActionResult Patch([FromODataUri] int key, Delta<CLCaseEvidence> patch)
+        //{
+        //    //Validate(patch.GetEntity());
 
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
 
-            CLCaseEvidence cLCaseEvidence = db.CLCaseEvidenceRepository.Find(key);
-            if (cLCaseEvidence == null)
-            {
-                return NotFound();
-            }
+        //    CLCaseEvidence cLCaseEvidence = db.CLCaseEvidenceRepository.Find(key);
+        //    if (cLCaseEvidence == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            patch.TrySetPropertyValue("DateUploaded", DateTime.Now);
+        //    patch.TrySetPropertyValue("DateUploaded", DateTime.Now);
 
-            patch.Patch(cLCaseEvidence);
+        //    patch.Patch(cLCaseEvidence);
 
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CLCaseEvidenceExists(key))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+        //    try
+        //    {
+        //        db.SaveChanges();
+        //    }
+        //    catch (DbUpdateConcurrencyException)
+        //    {
+        //        if (!CLCaseEvidenceExists(key))
+        //        {
+        //            return NotFound();
+        //        }
+        //        else
+        //        {
+        //            throw;
+        //        }
+        //    }
 
-            return Updated(cLCaseEvidence);
-        }
+        //    return Updated(cLCaseEvidence);
+        //}
 
         // DELETE: odata/CLCaseEvidences(1)
         public IHttpActionResult Delete([FromODataUri] int key)

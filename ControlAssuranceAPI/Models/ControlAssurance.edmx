@@ -119,14 +119,14 @@
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Title" Type="nvarchar" MaxLength="1000" />
-          <Property Name="IsLink" Type="bit" />
           <Property Name="Details" Type="nvarchar(max)" />
-          <Property Name="AdditionalNotes" Type="nvarchar(max)" />
           <Property Name="ParentId" Type="int" />
           <Property Name="ParentType" Type="nvarchar" MaxLength="50" />
           <Property Name="DateUploaded" Type="datetime" />
           <Property Name="UploadedByUserId" Type="int" />
           <Property Name="EvidenceType" Type="nvarchar" MaxLength="50" />
+          <Property Name="AttachmentType" Type="nvarchar" MaxLength="50" />
+          <Property Name="RecordCreated" Type="bit" />
         </EntityType>
         <EntityType Name="CLComFramework">
           <Key>
@@ -2837,14 +2837,14 @@
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Title" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
-          <Property Name="IsLink" Type="Boolean" />
           <Property Name="Details" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="AdditionalNotes" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ParentId" Type="Int32" />
           <Property Name="ParentType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="DateUploaded" Type="DateTime" Precision="3" />
           <Property Name="UploadedByUserId" Type="Int32" />
           <Property Name="EvidenceType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="AttachmentType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RecordCreated" Type="Boolean" />
           <NavigationProperty Name="User" Relationship="Self.FK_CLCaseEvidence_User" FromRole="CLCaseEvidence" ToRole="User" />
         </EntityType>
         <EntityType Name="CLComFramework">
@@ -5910,14 +5910,14 @@
               <MappingFragment StoreEntitySet="CLCaseEvidence">
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Title" ColumnName="Title" />
-                <ScalarProperty Name="IsLink" ColumnName="IsLink" />
                 <ScalarProperty Name="Details" ColumnName="Details" />
-                <ScalarProperty Name="AdditionalNotes" ColumnName="AdditionalNotes" />
                 <ScalarProperty Name="ParentId" ColumnName="ParentId" />
                 <ScalarProperty Name="ParentType" ColumnName="ParentType" />
                 <ScalarProperty Name="DateUploaded" ColumnName="DateUploaded" />
                 <ScalarProperty Name="UploadedByUserId" ColumnName="UploadedByUserId" />
                 <ScalarProperty Name="EvidenceType" ColumnName="EvidenceType" />
+                <ScalarProperty Name="AttachmentType" ColumnName="AttachmentType" />
+                <ScalarProperty Name="RecordCreated" ColumnName="RecordCreated" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

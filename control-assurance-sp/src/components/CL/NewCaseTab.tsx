@@ -128,6 +128,8 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         { key: 'RequireDetails', text: 'Require further details', afterDecisionText: 'Require further details' },
     ];
 
+    private checkIconGreen: string = require('../../images/greentick2626.png');
+    private checkIconRed: string = require('../../images/redtick2626.png');
 
 
 
@@ -141,15 +143,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     public render(): React.ReactElement<INewCaseTabProps> {
 
 
-        let isViewOnly: boolean = false;
-        if (this.props.viewerPermission === true && this.isSuperUserOrApprover() === false
-            && this.state.FormData.ApplHMUserId !== this.props.currentUserId
-            && this.state.FormData.CreatedById !== this.props.currentUserId) {
-            isViewOnly = true;
-
-        }
-
-
+        let isViewOnly: boolean = this.isViewOnlyPermission();
 
         return (
             <React.Fragment>
@@ -163,17 +157,6 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                 {this.props.stage === "Draft" && isViewOnly === false && this.renderOther()}
                 {this.props.stage === "Draft" && isViewOnly === false && this.renderApprovers()}
                 {this.props.stage === "Draft" && isViewOnly === false && this.renderFormButtons_DraftStage()}
-
-                {this.props.stage === "Draft" && this.renderListsMainTitle()}
-                {this.props.stage === "Draft" && this.renderEvidencesList()}
-
-                {/* {this.renderFeedbacksList()}
-                {this.renderHistoricUpdatesList()}*/}
-                {this.props.stage === "Draft" && this.renderChangeLogs()}
-
-
-                {this.state.ShowIR35EvidenceForm && this.renderIR35EvidenceForm()}
-                <ConfirmDialog hidden={this.state.HideIR35EvDeleteDialog} title={`Are you sure you want to delete this IR35 assessment  evidence?`} content={`A deleted evidence cannot be un-deleted.`} confirmButtonText="Delete" handleConfirm={this.deleteIR35Evidence} handleCancel={this.toggleIR35EvDeleteConfirm} />
 
 
                 {(this.props.stage === "Approval" || isViewOnly === true) && this.renderDetailsOfApplicant_info()}
@@ -192,6 +175,13 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                 {(this.props.stage === "Approval" || isViewOnly === true) && this.renderFinanceBusinessPartnerApprovalDecision()}
                 {(this.props.stage === "Approval" || isViewOnly === true) && this.renderHRBusinessPartnerApprovalDecision()}
                 {this.props.stage === "Approval" && this.renderFormButtons_ApprovalStage()}
+
+                {this.renderListsMainTitle()}
+                {this.renderEvidencesList()}
+                {this.renderChangeLogs()}
+
+                {this.state.ShowIR35EvidenceForm && this.renderIR35EvidenceForm()}
+                <ConfirmDialog hidden={this.state.HideIR35EvDeleteDialog} title={`Are you sure you want to delete this IR35 assessment  evidence?`} content={`A deleted evidence cannot be un-deleted.`} confirmButtonText="Delete" handleConfirm={this.deleteIR35Evidence} handleCancel={this.toggleIR35EvDeleteConfirm} />
 
 
             </React.Fragment>
@@ -284,6 +274,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     private renderDetailsOfApplicant() {
         const fd = this.state.FormData;
 
+        const applHMUserIdValidationImg = this.state.FormData.ApplHMUserId !== null ? this.checkIconGreen : this.checkIconRed;
 
         return (
             <div>
@@ -295,7 +286,18 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                         <div style={{ display: 'flex' }}>
                             <div style={{ width: '100%', fontWeight: 'bold' }}>
-                                <span>Name of hiring manager</span>
+
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Name of hiring manager</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={applHMUserIdValidationImg} />
+                                    </div>
+                                </div>
+
+
+
+
 
                             </div>
 
@@ -337,6 +339,17 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         }
         //dont show this section if user is viewer
 
+        const reqVacancyTitleValidationImg = fd.ReqVacancyTitle !== null && fd.ReqVacancyTitle.length > 5 ? this.checkIconGreen : this.checkIconRed;
+        const reqGradeIdValidationImg = fd.ReqGradeId !== null ? this.checkIconGreen : this.checkIconRed;
+        const reqWorkPurposeValidationImg = fd.ReqWorkPurpose !== null && fd.ReqWorkPurpose.length > 9 ? this.checkIconGreen : this.checkIconRed;
+        const reqCostCentreValidationImg = fd.ReqCostCentre !== null && fd.ReqCostCentre.length === 6 ? this.checkIconGreen : this.checkIconRed;
+        const reqDirectorateIdValidationImg = fd.ReqDirectorateId !== null ? this.checkIconGreen : this.checkIconRed;
+        const reqEstStartDateValidationImg = fd.ReqEstStartDate !== null ? this.checkIconGreen : this.checkIconRed;
+        const reqEstEndDateValidationImg = fd.ReqEstEndDate !== null ? this.checkIconGreen : this.checkIconRed;
+        const reqProfessionalCatIdValidationImg = fd.ReqProfessionalCatId !== null ? this.checkIconGreen : this.checkIconRed;
+        const reqWorkLocationIdValidationImg = fd.ReqWorkLocationId !== null ? this.checkIconGreen : this.checkIconRed;
+        const reqNumPositionsValidationImg = fd.ReqNumPositions !== null && fd.ReqNumPositions > 0 ? this.checkIconGreen : this.checkIconRed;
+        
 
         return (
             <div>
@@ -348,11 +361,21 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                         <div style={{ display: 'flex' }}>
                             <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
-                                <span>Title of vacancy</span>
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Title of vacancy</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={reqVacancyTitleValidationImg} />
+                                    </div>
+                                </div>
 
                             </div>
                             <div style={{ width: '50%', fontWeight: 'bold' }}>
-                                <span>Grade of vacancy</span>
+                            <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Grade of vacancy</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={reqGradeIdValidationImg} />
+                                    </div>
+                                </div>
 
                             </div>
 
@@ -393,7 +416,13 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                         <div style={{ display: 'flex' }}>
                             <div style={{ width: '100%', fontWeight: 'bold' }}>
-                                <span>Work proposal (what will they be doing? )</span>
+                                
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Work proposal (what will they be doing? )</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={reqWorkPurposeValidationImg} />
+                                    </div>
+                                </div>
 
                             </div>
 
@@ -424,11 +453,23 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                         <div style={{ display: 'flex' }}>
                             <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
-                                <span>Cost centre worker is going into</span>
+                                
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Cost centre worker is going into</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={reqCostCentreValidationImg} />
+                                    </div>
+                                </div>
 
                             </div>
                             <div style={{ width: '50%', fontWeight: 'bold' }}>
-                                <span>Directorate worker is going into</span>
+                                
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Directorate worker is going into</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={reqDirectorateIdValidationImg} />
+                                    </div>
+                                </div>
 
                             </div>
 
@@ -472,11 +513,23 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                         <div style={{ display: 'flex' }}>
                             <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
-                                <span>Estimated start date</span>
+                                
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Estimated start date</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={reqEstStartDateValidationImg} />
+                                    </div>
+                                </div>
 
                             </div>
                             <div style={{ width: '50%', fontWeight: 'bold' }}>
-                                <span>Estimated end date</span>
+                                
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Estimated end date</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={reqEstEndDateValidationImg} />
+                                    </div>
+                                </div>
 
                             </div>
 
@@ -520,11 +573,23 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                         <div style={{ display: 'flex' }}>
                             <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
-                                <span>Professional Category</span>
+                                
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Professional Category</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={reqProfessionalCatIdValidationImg} />
+                                    </div>
+                                </div>
 
                             </div>
                             <div style={{ width: '50%', fontWeight: 'bold' }}>
-                                <span>Work location</span>
+                                
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Work location</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={reqWorkLocationIdValidationImg} />
+                                    </div>
+                                </div>
 
                             </div>
 
@@ -568,7 +633,13 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                         <div style={{ display: 'flex' }}>
                             <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
-                                <span>Number of positions</span>
+                                
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Number of positions</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={reqNumPositionsValidationImg} />
+                                    </div>
+                                </div>
 
                             </div>
                             <div style={{ width: '50%', fontWeight: 'bold' }}>
@@ -1232,7 +1303,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     private renderListsMainTitle() {
         return (
             <div style={{ marginBottom: '20px', marginTop: '50px' }} className={styles.sectionATitle}>
-                Evidence, Feedback, Previous Updates and Logs
+                Case Discussion, General Comments and File Attachments
             </div>
         );
     }
@@ -1241,11 +1312,11 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
         return (
             <React.Fragment>
-                <div style={{ marginTop: '30px', fontWeight: "bold", marginBottom: '10px' }}>Evidence</div>
+                {/* <div style={{ marginTop: '30px', fontWeight: "bold", marginBottom: '10px' }}>Evidence</div> */}
                 <div style={{ minHeight: '120px', border: '1px solid rgb(166,166,166)' }}>
                     <EvidenceList
                         parentId={this.state.FormData.ID}
-                        isViewOnly={false}
+                        isViewOnly={this.isViewOnlyPermission()}
                         filterText={this.state.Evidence_ListFilterText}
                         onChangeFilterText={this.handleEvidence_ChangeFilterText}
                         evChangesCounter={this.state.EvidenceChangesCounter}
@@ -1695,23 +1766,23 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                         <tbody>
 
                             <tr>
-                                <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
                                     Decision
                                 </td>
-                                <td style={{ width: '31%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)' }}>
+                                <td style={{ width: '31%', borderTop: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)' }}>
                                     {decision}
                                 </td>
-                                <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
                                     By/Date
                                 </td>
-                                <td style={{ width: '31%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                <td style={{ width: '31%', borderTop: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
                                     {this.state.CaseInfo.BHDecisionByAndDate}
                                 </td>
 
                             </tr>
 
 
-                            <tr>
+                            {/* <tr>
                                 <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
                                     Comments
                                 </td>
@@ -1719,7 +1790,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                     <div dangerouslySetInnerHTML={{ __html: this.state.FormData.BHApprovalComments && this.state.FormData.BHApprovalComments.split('\n').join('<br/>') }} ></div>
                                 </td>
 
-                            </tr>
+                            </tr> */}
 
 
                         </tbody>
@@ -1761,23 +1832,23 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                         <tbody>
 
                             <tr>
-                                <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
                                     Decision
                                 </td>
-                                <td style={{ width: '31%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)' }}>
+                                <td style={{ width: '31%', borderTop: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)' }}>
                                     {decision}
                                 </td>
-                                <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
                                     By/Date
                                 </td>
-                                <td style={{ width: '31%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                <td style={{ width: '31%', borderTop: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
                                     {this.state.CaseInfo.FBPDecisionByAndDate}
                                 </td>
 
                             </tr>
 
 
-                            <tr>
+                            {/* <tr>
                                 <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
                                     Comments
                                 </td>
@@ -1785,7 +1856,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                     <div dangerouslySetInnerHTML={{ __html: this.state.FormData.FBPApprovalComments && this.state.FormData.FBPApprovalComments.split('\n').join('<br/>') }} ></div>
                                 </td>
 
-                            </tr>
+                            </tr> */}
 
 
                         </tbody>
@@ -1827,23 +1898,23 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                         <tbody>
 
                             <tr>
-                                <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
                                     Decision
                                 </td>
-                                <td style={{ width: '31%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)' }}>
+                                <td style={{ width: '31%', borderTop: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)' }}>
                                     {decision}
                                 </td>
-                                <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
                                     By/Date
                                 </td>
-                                <td style={{ width: '31%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                <td style={{ width: '31%', borderTop: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
                                     {this.state.CaseInfo.HRBPDecisionByAndDate}
                                 </td>
 
                             </tr>
 
 
-                            <tr>
+                            {/* <tr>
                                 <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
                                     Comments
                                 </td>
@@ -1851,7 +1922,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                     <div dangerouslySetInnerHTML={{ __html: this.state.FormData.HRBPApprovalComments && this.state.FormData.HRBPApprovalComments.split('\n').join('<br/>') }} ></div>
                                 </td>
 
-                            </tr>
+                            </tr> */}
 
 
                         </tbody>
@@ -1912,7 +1983,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                     {/* 2nd row */}
 
-                    <div className={styles.formField}>
+                    {/* <div className={styles.formField}>
 
                         <div style={{ display: 'flex' }}>
                             <div style={{ width: '100%', fontWeight: 'bold' }}>
@@ -1938,7 +2009,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                             </div>
 
                         </div>
-                    </div>
+                    </div> */}
 
 
 
@@ -1997,7 +2068,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                     {/* 2nd row */}
 
-                    <div className={styles.formField}>
+                    {/* <div className={styles.formField}>
 
                         <div style={{ display: 'flex' }}>
                             <div style={{ width: '100%', fontWeight: 'bold' }}>
@@ -2023,7 +2094,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                             </div>
 
                         </div>
-                    </div>
+                    </div> */}
 
 
 
@@ -2082,7 +2153,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                     {/* 2nd row */}
 
-                    <div className={styles.formField}>
+                    {/* <div className={styles.formField}>
 
                         <div style={{ display: 'flex' }}>
                             <div style={{ width: '100%', fontWeight: 'bold' }}>
@@ -2108,7 +2179,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                             </div>
 
                         </div>
-                    </div>
+                    </div> */}
 
 
 
@@ -2555,7 +2626,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     private viewIR35Evidence = (): void => {
         console.log('in view.');
         const fileName: string = this.state.IR35Evidence.Title;
-        if (this.state.IR35Evidence.IsLink === true) {
+        if (this.state.IR35Evidence.AttachmentType === "Link") {
             console.log('selected evidence is a link');
 
             const a = document.createElement('a');
@@ -2627,7 +2698,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         const fileName: string = this.state.IR35Evidence.Title;
         //console.log(fileName);
 
-        if (this.state.IR35Evidence.IsLink === true) {
+        if (this.state.IR35Evidence.AttachmentType === "Link") {
 
             console.log('deleting eveidence (link)');
             this.clCaseEvidenceService.delete(this.state.IR35Evidence.ID).then(this.loadIR35Evidence, (err) => {
@@ -2660,5 +2731,17 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         }
     }
 
+    private isViewOnlyPermission = (): boolean => {
+
+        let isViewOnly: boolean = false;
+        if (this.props.viewerPermission === true && this.isSuperUserOrApprover() === false
+            && this.state.FormData.ApplHMUserId !== this.props.currentUserId
+            && this.state.FormData.CreatedById !== this.props.currentUserId) {
+            isViewOnly = true;
+
+        }
+
+        return isViewOnly;
+    }
 
 }
