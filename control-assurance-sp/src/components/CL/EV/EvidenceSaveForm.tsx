@@ -65,8 +65,12 @@ export class EvidenceSaveFormState implements IEvidenceSaveFormState {
     public ErrMessages = new ErrorMessage();
 
     constructor(parentId: number, evidenceType:string) {
-        this.FormData = new CLCaseEvidence(parentId, evidenceType);
-        this.FormDataBeforeChanges = new CLCaseEvidence(parentId, evidenceType);
+        let defaultAttachmentType:string = "None";
+        if(evidenceType === "IR35"){
+            defaultAttachmentType = "PDF";
+        }
+        this.FormData = new CLCaseEvidence(parentId, evidenceType, defaultAttachmentType);
+        this.FormDataBeforeChanges = new CLCaseEvidence(parentId, evidenceType, defaultAttachmentType);
     }
 
 }
@@ -91,8 +95,9 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
 
     public render(): React.ReactElement<IEvidenceSaveFormProps> {
         //const errors = this.state.ValidationErrors;
+        const headerText: string = this.props.evidenceType === "IR35" ? "Evidence" : "Case Discussion, General Comments and Attachments";
         return (
-            <Panel isOpen={this.props.showForm} headerText={"Case Discussion, General Comments and Attachments"} type={PanelType.medium} onRenderNavigation={() => <FormCommandBar onSave={this.saveEvidence} onCancel={this.props.onCancelled} />}>
+            <Panel isOpen={this.props.showForm} headerText={headerText} type={PanelType.medium} onRenderNavigation={() => <FormCommandBar onSave={this.saveEvidence} onCancel={this.props.onCancelled} />}>
                 <div className={styles.cr}>
                     {this.renderFormFields()}
                     <FormButtons
@@ -150,11 +155,15 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
     private renderAttachmentTypeChoiceOptions() {
 
 
-        const options:IChoiceGroupOption[] = [
+        let options:IChoiceGroupOption[] = [
             { key: 'None', text: 'None' },
             { key: 'PDF', text: 'PDF File' },
             { key: 'Link', text: 'Link' },
         ];
+
+        if(this.props.evidenceType === "IR35"){
+            options = options.filter(x => x.key !== 'None');
+        }
 
         const fd = this.state.FormData;
 
@@ -233,7 +242,9 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
                     <input type="file" name="fileUpload" id="fileUpload" accept="application/pdf"></input>
                     {this.state.ErrMessages.FileUpload && <FieldErrorMessage value={this.state.ErrMessages.FileUpload} />}
                     <div style={{paddingTop:'10px'}}>
-                        Please upload all evidence files as PDFs. For guidance on savings documents as PDFs, please click <span onClick={this.viewHelpPDF} style={{textDecoration:'underline', cursor:'pointer'}}>here</span>.
+                        {/* Please upload all evidence files as PDFs. For guidance on savings documents as PDFs, please click <span onClick={this.viewHelpPDF} style={{textDecoration:'underline', cursor:'pointer'}}>here</span>. */}
+                        Please upload all evidence as PDFs. For guidance on saving documents and emails please click <span onClick={this.viewHelpPDF} style={{textDecoration:'underline', cursor:'pointer'}}>here</span>.
+
                     </div>
                 </div>
                 {this.state.ShowUploadProgress && <div style={{ minHeight: '80px', marginTop: '15px' }}>

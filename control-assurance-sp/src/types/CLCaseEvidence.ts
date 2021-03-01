@@ -22,12 +22,13 @@ export class CLCaseEvidence implements ICLCaseEvidence{
     public DateUploaded?: Date = null;
     public UploadedByUserId?: number = null;
     public EvidenceType?: string = null;
-    public AttachmentType?: string = "None"; //default
+    public AttachmentType?: string = null; // "None";
 
 
-    constructor(parentId: number, evidenceType: string) {
+    constructor(parentId: number, evidenceType: string, attachmentType: string) {
         this.ParentId = parentId;
         this.EvidenceType = evidenceType;
+        this.AttachmentType = attachmentType;
     }
 
     //public User?: User = null; 

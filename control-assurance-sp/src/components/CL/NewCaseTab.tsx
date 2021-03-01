@@ -81,6 +81,8 @@ export interface INewCaseTabState {
     ShowIR35EvidenceForm: boolean;
     IR35Evidence: ICLCaseEvidence;
     HideIR35EvDeleteDialog: boolean;
+    HideFormValidationMessage: boolean;
+    HideSubmitApprovalDoneMessage: boolean;
     EvidenceChangesCounter: number;
 
 
@@ -96,6 +98,8 @@ export class NewCaseTabState implements INewCaseTabState {
     public ShowIR35EvidenceForm: boolean = false;
     public IR35Evidence: ICLCaseEvidence = null;
     public HideIR35EvDeleteDialog: boolean = true;
+    public HideFormValidationMessage: boolean = true;
+    public HideSubmitApprovalDoneMessage: boolean = true;
     public EvidenceChangesCounter: number = 0;
 
     constructor(caseType: string) {
@@ -182,6 +186,12 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                 {this.state.ShowIR35EvidenceForm && this.renderIR35EvidenceForm()}
                 <ConfirmDialog hidden={this.state.HideIR35EvDeleteDialog} title={`Are you sure you want to delete this IR35 assessment  evidence?`} content={`A deleted evidence cannot be un-deleted.`} confirmButtonText="Delete" handleConfirm={this.deleteIR35Evidence} handleCancel={this.toggleIR35EvDeleteConfirm} />
+
+                {/* validation */}
+                <MessageDialog hidden={this.state.HideFormValidationMessage} title="Form Validation" content="Failed validation checks. Please ensure all fields marked with a red asterisk are completed." handleOk={() => { this.setState({ HideFormValidationMessage: true }); }} />
+
+                {/* submit for approval - done */}
+                <MessageDialog hidden={this.state.HideSubmitApprovalDoneMessage} title="Form Validation" content="Validation checks completed successfully. This case is being moved to the approvals stage." handleOk={() => { this.setState({ HideSubmitApprovalDoneMessage: true }, this.props.onShowList ); }} />
 
 
             </React.Fragment>
@@ -339,7 +349,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         }
         //dont show this section if user is viewer
 
-        const reqVacancyTitleValidationImg = fd.ReqVacancyTitle !== null && fd.ReqVacancyTitle.length > 5 ? this.checkIconGreen : this.checkIconRed;
+        const reqVacancyTitleValidationImg = fd.ReqVacancyTitle !== null && fd.ReqVacancyTitle.length > 1 ? this.checkIconGreen : this.checkIconRed;
         const reqGradeIdValidationImg = fd.ReqGradeId !== null ? this.checkIconGreen : this.checkIconRed;
         const reqWorkPurposeValidationImg = fd.ReqWorkPurpose !== null && fd.ReqWorkPurpose.length > 9 ? this.checkIconGreen : this.checkIconRed;
         const reqCostCentreValidationImg = fd.ReqCostCentre !== null && fd.ReqCostCentre.length === 6 ? this.checkIconGreen : this.checkIconRed;
@@ -349,7 +359,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         const reqProfessionalCatIdValidationImg = fd.ReqProfessionalCatId !== null ? this.checkIconGreen : this.checkIconRed;
         const reqWorkLocationIdValidationImg = fd.ReqWorkLocationId !== null ? this.checkIconGreen : this.checkIconRed;
         const reqNumPositionsValidationImg = fd.ReqNumPositions !== null && fd.ReqNumPositions > 0 ? this.checkIconGreen : this.checkIconRed;
-        
+
 
         return (
             <div>
@@ -370,7 +380,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                             </div>
                             <div style={{ width: '50%', fontWeight: 'bold' }}>
-                            <div className={styles.flexContainerSectionQuestion}>
+                                <div className={styles.flexContainerSectionQuestion}>
                                     <div className={styles.sectionQuestionCol1}><span>Grade of vacancy</span></div>
                                     <div className={styles.sectionQuestionCol2}>
                                         <img src={reqGradeIdValidationImg} />
@@ -416,7 +426,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                         <div style={{ display: 'flex' }}>
                             <div style={{ width: '100%', fontWeight: 'bold' }}>
-                                
+
                                 <div className={styles.flexContainerSectionQuestion}>
                                     <div className={styles.sectionQuestionCol1}><span>Work proposal (what will they be doing? )</span></div>
                                     <div className={styles.sectionQuestionCol2}>
@@ -453,9 +463,9 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                         <div style={{ display: 'flex' }}>
                             <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
-                                
+
                                 <div className={styles.flexContainerSectionQuestion}>
-                                    <div className={styles.sectionQuestionCol1}><span>Cost centre worker is going into</span></div>
+                                    <div className={styles.sectionQuestionCol1}><span>Cost Centre for this role</span></div>
                                     <div className={styles.sectionQuestionCol2}>
                                         <img src={reqCostCentreValidationImg} />
                                     </div>
@@ -463,9 +473,9 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                             </div>
                             <div style={{ width: '50%', fontWeight: 'bold' }}>
-                                
+
                                 <div className={styles.flexContainerSectionQuestion}>
-                                    <div className={styles.sectionQuestionCol1}><span>Directorate worker is going into</span></div>
+                                    <div className={styles.sectionQuestionCol1}><span>Directorate this role will be in</span></div>
                                     <div className={styles.sectionQuestionCol2}>
                                         <img src={reqDirectorateIdValidationImg} />
                                     </div>
@@ -513,7 +523,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                         <div style={{ display: 'flex' }}>
                             <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
-                                
+
                                 <div className={styles.flexContainerSectionQuestion}>
                                     <div className={styles.sectionQuestionCol1}><span>Estimated start date</span></div>
                                     <div className={styles.sectionQuestionCol2}>
@@ -523,7 +533,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                             </div>
                             <div style={{ width: '50%', fontWeight: 'bold' }}>
-                                
+
                                 <div className={styles.flexContainerSectionQuestion}>
                                     <div className={styles.sectionQuestionCol1}><span>Estimated end date</span></div>
                                     <div className={styles.sectionQuestionCol2}>
@@ -573,7 +583,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                         <div style={{ display: 'flex' }}>
                             <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
-                                
+
                                 <div className={styles.flexContainerSectionQuestion}>
                                     <div className={styles.sectionQuestionCol1}><span>Professional Category</span></div>
                                     <div className={styles.sectionQuestionCol2}>
@@ -583,7 +593,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                             </div>
                             <div style={{ width: '50%', fontWeight: 'bold' }}>
-                                
+
                                 <div className={styles.flexContainerSectionQuestion}>
                                     <div className={styles.sectionQuestionCol1}><span>Work location</span></div>
                                     <div className={styles.sectionQuestionCol2}>
@@ -633,7 +643,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                         <div style={{ display: 'flex' }}>
                             <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
-                                
+
                                 <div className={styles.flexContainerSectionQuestion}>
                                     <div className={styles.sectionQuestionCol1}><span>Number of positions</span></div>
                                     <div className={styles.sectionQuestionCol2}>
@@ -694,6 +704,19 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     private renderCommercial() {
         const fd = this.state.FormData;
 
+        const comFrameworkIdValidationImg = fd.ComFrameworkId !== null ? this.checkIconGreen : this.checkIconRed;
+        const comPSRAccountIdValidationImg = fd.ComPSRAccountId !== null ? this.checkIconGreen : this.checkIconRed;
+
+        let comJustificationValidationImg: string = "";
+        if (fd.ComFrameworkId > 1) {
+            if (fd.ComJustification !== null && fd.ComJustification.length > 9) {
+                comJustificationValidationImg = this.checkIconGreen;
+            }
+            else {
+                comJustificationValidationImg = this.checkIconRed;
+            }
+        }
+
         let yesNoNaOptions: IDropdownOption[] = [];
 
         if (this.state.FormData.ComFrameworkId === 1) {
@@ -722,13 +745,24 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                         <div style={{ display: 'flex' }}>
                             <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
-                                <span>Framework</span>
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Framework</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={comFrameworkIdValidationImg} />
+                                    </div>
+                                </div>
 
                             </div>
-                            <div style={{ width: '50%', fontWeight: 'bold' }}>
-                                <span>If PSR confirm whether user account already held</span>
+                            {fd.ComFrameworkId === 1 && <div style={{ width: '50%', fontWeight: 'bold' }}>
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Confirm if you have a Fieldglass account</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={comPSRAccountIdValidationImg} />
+                                    </div>
+                                </div>
 
-                            </div>
+
+                            </div>}
 
 
                         </div>
@@ -745,7 +779,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                             </div>
 
-                            <div style={{ width: '50%', }}>
+                            {fd.ComFrameworkId === 1 && <div style={{ width: '50%', }}>
                                 <CrDropdown
                                     placeholder="Select an Option"
                                     options={yesNoNaOptions}
@@ -753,7 +787,11 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                     onChanged={(v) => this.changeDropdown(v, "ComPSRAccountId")}
                                 />
 
-                            </div>
+                                {fd.ComPSRAccountId === 'No' && <div style={{ fontSize: '12px', fontStyle: 'italic', paddingTop: '5px', marginTop: '0px', paddingLeft: '0px' }}>
+                                    Note: Please contact PSR help desk to have one arranged, you will have to raise a worker requirement on Fieldglass.
+                                </div>}
+
+                            </div>}
 
 
 
@@ -763,11 +801,17 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                     {/* 2nd row */}
 
-                    <div className={styles.formField}>
+                    {fd.ComFrameworkId > 1 && <div className={styles.formField}>
 
                         <div style={{ display: 'flex' }}>
                             <div style={{ width: '100%', fontWeight: 'bold' }}>
-                                <span>Justification if not PSR</span>
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Justification if not PSR</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={comJustificationValidationImg} />
+                                    </div>
+                                </div>
 
                             </div>
 
@@ -789,7 +833,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                             </div>
 
                         </div>
-                    </div>
+                    </div>}
 
 
 
@@ -806,6 +850,9 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     private renderResourcingJustification() {
         const fd = this.state.FormData;
 
+        const justAltOptionsValidationImg = fd.JustAltOptions !== null && fd.JustAltOptions.length > 9 ? this.checkIconGreen : this.checkIconRed;
+        const justSuccessionPlanningValidationImg = fd.JustSuccessionPlanning !== null && fd.JustSuccessionPlanning.length > 9 ? this.checkIconGreen : this.checkIconRed;
+
 
         return (
             <div>
@@ -818,7 +865,13 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                         <div style={{ display: 'flex' }}>
                             <div style={{ width: '100%', fontWeight: 'bold' }}>
-                                <span>Alternative resourcing options: set out what other options have been considered and why these are not suitable</span>
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Alternative resourcing options: set out what other options have been considered and why these are not suitable</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={justAltOptionsValidationImg} />
+                                    </div>
+                                </div>
+
 
                             </div>
 
@@ -848,7 +901,13 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                         <div style={{ display: 'flex' }}>
                             <div style={{ width: '100%', fontWeight: 'bold' }}>
-                                <span>Succession planning: explain how you plan to manage knowledge transfer and reduce reliance on contingent labour</span>
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Succession planning: explain how you plan to manage knowledge transfer and reduce reliance on contingent labour</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={justSuccessionPlanningValidationImg} />
+                                    </div>
+                                </div>
 
                             </div>
 
@@ -887,23 +946,29 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     private renderFinance() {
         const fd = this.state.FormData;
 
-        const menuProps: IContextualMenuProps = {
-            items: [
-                {
-                    key: 'action1',
-                    text: 'Action 1',
-                    iconProps: { iconName: 'Add' },
-                    onClick: (ev) => alert('action 1 todo'),
-                    //onClick: (ev) => this.props.onShowList(),
-                },
-                {
-                    key: 'action2',
-                    text: 'Action2',
-                    iconProps: { iconName: 'Add' },
-                    onClick: (ev) => alert('action 2 todo'),
-                },
-            ],
-        };
+        const finMaxRateValidationImg = fd.FinMaxRate !== null && fd.FinMaxRate > 0 ? this.checkIconGreen : this.checkIconRed;
+        const finEstCostValidationImg = fd.FinEstCost !== null && fd.FinEstCost > 0 ? this.checkIconGreen : this.checkIconRed;
+        const finIR35ScopeIdValidationImg = fd.FinIR35ScopeId !== null ? this.checkIconGreen : this.checkIconRed;
+
+        const iR35EvidenceValidationImg = this.state.IR35Evidence !== null ? this.checkIconGreen : this.checkIconRed;
+
+        // const menuProps: IContextualMenuProps = {
+        //     items: [
+        //         {
+        //             key: 'action1',
+        //             text: 'Action 1',
+        //             iconProps: { iconName: 'Add' },
+        //             onClick: (ev) => alert('action 1 todo'),
+        //             //onClick: (ev) => this.props.onShowList(),
+        //         },
+        //         {
+        //             key: 'action2',
+        //             text: 'Action2',
+        //             iconProps: { iconName: 'Add' },
+        //             onClick: (ev) => alert('action 2 todo'),
+        //         },
+        //     ],
+        // };
 
         return (
             <div>
@@ -915,11 +980,23 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                         <div style={{ display: 'flex' }}>
                             <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
-                                <span>Expected daily rate including fee (excluding vat)</span>
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Expected daily rate including fee (excluding vat)</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={finMaxRateValidationImg} />
+                                    </div>
+                                </div>
 
                             </div>
                             <div style={{ width: '50%', fontWeight: 'bold' }}>
-                                <span>Estimated cost</span>
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Estimated cost</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={finEstCostValidationImg} />
+                                    </div>
+                                </div>
 
                             </div>
 
@@ -977,11 +1054,23 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                         <div style={{ display: 'flex' }}>
                             <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
-                                <span>Confirm whether in-scope of IR35</span>
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Confirm whether in-scope of IR35</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={finIR35ScopeIdValidationImg} />
+                                    </div>
+                                </div>
 
                             </div>
                             <div style={{ width: '50%', fontWeight: 'bold' }}>
-                                <span>Attach IR35 assesment evidence</span>
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Attach IR35 assesment evidence</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={iR35EvidenceValidationImg} />
+                                    </div>
+                                </div>
 
                             </div>
 
@@ -1006,12 +1095,13 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                     //onChanged={(v) => this.changeTextField(v, "TargetDate")}
                                     //value={fd.TargetDate}
                                     disabled={true}
-                                    value={this.state.IR35Evidence && this.state.IR35Evidence.Title}
+                                    style={{ border: '1px solid gray' }}
+                                    value={this.state.IR35Evidence && (this.state.IR35Evidence.AttachmentType === "Link" ? "Linked evidence available" : this.state.IR35Evidence.AttachmentType === "PDF" ? "PDF evidence available to download" : "")}
 
                                 />
 
                             </div>
-                            <div style={{ width: '130px', }}>
+                            <div style={{ width: '130px', marginTop: '5px' }}>
 
                                 {/* <DefaultButton text="Actions"
                                     disabled={this.props.clCaseId > 0 ? false : true}
@@ -1044,6 +1134,22 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
 
                         </div>
+
+                        {
+
+
+                            this.state.IR35Evidence !== null &&
+
+                            <div style={{ display: 'flex' }}>
+                                <div style={{ width: '50%' }}>&nbsp;</div>
+                                <div style={{ width: '50%', fontSize: '12px', fontStyle: 'italic', paddingTop: '5px', marginTop: '0px', paddingLeft: '0px' }}>
+                                    {this.state.IR35Evidence.Details}
+                                </div>
+                            </div>
+
+                        }
+
+
                     </div>
 
 
@@ -1112,6 +1218,10 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     private renderApprovers() {
         const fd = this.state.FormData;
 
+        const bhUserIdValidationImg = this.state.FormData.BHUserId !== null ? this.checkIconGreen : this.checkIconRed;
+        const fbpUserIdValidationImg = this.state.FormData.FBPUserId !== null ? this.checkIconGreen : this.checkIconRed;
+        const hrbpUserIdValidationImg = this.state.FormData.HRBPUserId !== null ? this.checkIconGreen : this.checkIconRed;
+
 
         return (
             <div>
@@ -1123,11 +1233,24 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                         <div style={{ display: 'flex' }}>
                             <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
-                                <span>Budget holder</span>
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Budget holder</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={bhUserIdValidationImg} />
+                                    </div>
+                                </div>
+
 
                             </div>
                             <div style={{ width: '50%', fontWeight: 'bold' }}>
-                                <span>Finance business partner</span>
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Finance business partner</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={fbpUserIdValidationImg} />
+                                    </div>
+                                </div>
 
                             </div>
 
@@ -1174,7 +1297,13 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                         <div style={{ display: 'flex' }}>
                             <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
-                                <span>HR business partner</span>
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>HR business partner</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={hrbpUserIdValidationImg} />
+                                    </div>
+                                </div>
 
                             </div>
                             <div style={{ width: '50%', fontWeight: 'bold' }}>
@@ -1418,13 +1547,13 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                             <tr>
                                 <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
-                                    Cost centre worker is going into
+                                    Cost Centre for this role
                                 </td>
                                 <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', }}>
                                     {this.state.FormData.ReqCostCentre}
                                 </td>
                                 <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
-                                    Directorate worker is going into
+                                    Directorate this role will be in
                                 </td>
                                 <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
                                     {this.state.CaseInfo.Directorate}
@@ -1628,7 +1757,17 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                     Attach IR35 assesment evidence
                                 </td>
                                 <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                    {this.state.IR35Evidence &&
+                                        <div>
+                                            <div>
+                                                <span>{this.state.IR35Evidence.AttachmentType === "Link" ? "Linked evidence available" : "PDF evidence available to download"}&nbsp;<span style={{ marginLeft: '5px', cursor: 'pointer', color: 'blue', textDecoration: 'underline' }} onClick={this.viewIR35Evidence} >View</span></span>
+                                            </div>
+                                            <div style={{ fontSize: '12px', fontStyle: 'italic', paddingTop: '5px', }}>
+                                                {this.state.IR35Evidence.Details}
+                                            </div>
+                                        </div>
 
+                                    }
                                 </td>
 
                             </tr>
@@ -1965,7 +2104,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                         </div>
                         <div style={{ display: 'flex', marginTop: '5px' }}>
-                            <div style={{ width: '100%', }}>
+                            <div style={{ minWidth: '50%', }}>
                                 <CrChoiceGroup
                                     className="inlineflex"
                                     options={this.approvalDecisionItems}
@@ -1976,6 +2115,14 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
 
                             </div>
+                            {fd.BHApprovalDecision === 'RequireDetails' && <div style={{ width: 'auto' }}>
+
+                                <div style={{ textAlign: 'right', fontSize: '12px', fontStyle: 'italic', paddingTop: '0px', marginTop: '0px', paddingLeft: '10px', paddingRight: '10px' }}>
+                                    Note: Please use the discussion box at the bottom of the page to specify what further information you require.
+                                </div>
+
+                            </div>}
+
 
 
                         </div>
@@ -2050,7 +2197,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                         </div>
                         <div style={{ display: 'flex', marginTop: '5px' }}>
-                            <div style={{ width: '100%', }}>
+                            <div style={{ minWidth: '50%', }}>
                                 <CrChoiceGroup
                                     className="inlineflex"
                                     options={this.approvalDecisionItems}
@@ -2061,6 +2208,13 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
 
                             </div>
+                            {fd.FBPApprovalDecision === 'RequireDetails' && <div style={{ width: 'auto' }}>
+
+                                <div style={{ textAlign: 'right', fontSize: '12px', fontStyle: 'italic', paddingTop: '0px', marginTop: '0px', paddingLeft: '10px', paddingRight: '10px' }}>
+                                    Note: Please use the discussion box at the bottom of the page to specify what further information you require.
+                                </div>
+
+                            </div>}
 
 
                         </div>
@@ -2135,7 +2289,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                         </div>
                         <div style={{ display: 'flex', marginTop: '5px' }}>
-                            <div style={{ width: '100%', }}>
+                            <div style={{ minWidth: '50%', }}>
                                 <CrChoiceGroup
                                     className="inlineflex"
                                     options={this.approvalDecisionItems}
@@ -2146,6 +2300,13 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
 
                             </div>
+                            {fd.HRBPApprovalDecision === 'RequireDetails' && <div style={{ width: 'auto' }}>
+
+                                <div style={{ textAlign: 'right', fontSize: '12px', fontStyle: 'italic', paddingTop: '0px', marginTop: '0px', paddingLeft: '10px', paddingRight: '10px' }}>
+                                    Note: Please use the discussion box at the bottom of the page to specify what further information you require.
+                                </div>
+
+                            </div>}
 
 
                         </div>
@@ -2233,13 +2394,63 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
     //#region Data Load/Save
 
-    private validateEntity = (): boolean => {
+    private validateEntity = (submitForApproval: boolean, submitDecision): boolean => {
+        const fd = this.state.FormData;
+
+        if (submitForApproval === true) {
+            //details of application
+            if (this.state.FormData.ApplHMUserId === null) return false;
+
+            //requirement
+            if (fd.ReqVacancyTitle !== null && fd.ReqVacancyTitle.length > 1) { } else { return false; }
+            if (fd.ReqGradeId !== null) { } else { return false; }
+            if (fd.ReqWorkPurpose !== null && fd.ReqWorkPurpose.length > 9) { } else { return false; }
+            if (fd.ReqCostCentre !== null && fd.ReqCostCentre.length === 6) { } else { return false; }
+            if (fd.ReqDirectorateId !== null) { } else { return false; }
+            if (fd.ReqEstStartDate !== null) { } else { return false; }
+            if (fd.ReqEstEndDate !== null) { } else { return false; }
+            if (fd.ReqProfessionalCatId !== null) { } else { return false; }
+            if (fd.ReqWorkLocationId !== null) { } else { return false; }
+            if (fd.ReqNumPositions !== null && fd.ReqNumPositions > 0) { } else { return false; }
+
+            //Commercial
+            if (fd.ComFrameworkId !== null) { } else { return false; }
+            if (fd.ComFrameworkId === 1 && fd.ComPSRAccountId === null) { return false; }
+
+            if (fd.ComFrameworkId > 1) {
+                if (fd.ComJustification !== null && fd.ComJustification.length > 9) {
+                    //validation ok
+                }
+                else {
+                    return false;
+                }
+            }
+
+            //Resourcing Justification
+            if (fd.JustAltOptions !== null && fd.JustAltOptions.length > 9) { } else { return false; }
+            if (fd.JustSuccessionPlanning !== null && fd.JustSuccessionPlanning.length > 9) { } else { return false; }
+
+            //Finance
+            if (fd.FinMaxRate !== null && fd.FinMaxRate > 0) { } else { return false; }
+            if (fd.FinEstCost !== null && fd.FinEstCost > 0) { } else { return false; }
+            if (fd.FinIR35ScopeId !== null) { } else { return false; }
+            if (this.state.IR35Evidence === null) { return false; }
+
+            //Approvers
+            if (this.state.FormData.BHUserId === null) return false;
+            if (this.state.FormData.FBPUserId === null) return false;
+            if (this.state.FormData.HRBPUserId === null) return false;
+
+        }
+
+
+        //at the end return true
         return true;
     }
 
 
     private saveData = (submitForApproval: boolean, submitDecision): void => {
-        if (this.validateEntity()) {
+        if (this.validateEntity(submitForApproval, submitDecision)) {
             console.log('in save data');
             if (this.props.onError) this.props.onError(null);
             let f: ICLCase = { ...this.state.FormData };
@@ -2275,7 +2486,15 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                 if (this.props.onError)
                     this.props.onError(null);
 
-                this.props.onShowList();
+                if (submitForApproval === true) {
+                    //
+                    console.log('submit for approval - done');
+                    this.setState({ HideSubmitApprovalDoneMessage: false });
+                }
+                else {
+                    this.props.onShowList();
+                }
+
 
 
             }, (err) => {
@@ -2283,6 +2502,11 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                     this.props.onError(`Error saving data`, err.message);
             });
 
+        }
+        else {
+            //validation is false
+            console.log('validations required');
+            this.setState({ HideFormValidationMessage: false });
         }
     }
 

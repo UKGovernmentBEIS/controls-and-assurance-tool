@@ -153,7 +153,7 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
 
                 <CrCheckbox
                     className={`${styles.formField} ${styles.checkbox}`}
-                    label="Please check this box if you wish to ask internal audit to close the action. Please include your evidence below as indicated by the mandatory fields."
+                    label="Please check this box to request actions to be closed, provide details in the box provided and upload any supporting evidence."
                     checked={this.state.FormData.RequestClose}
                     onChange={(ev, isChecked) => this.changeCheckbox_Req(isChecked, "RequestClose")}
 
@@ -177,7 +177,7 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
 
                 <CrCheckbox
                     className={`${styles.formField} ${styles.checkbox}`}
-                    label="Please check this box if you wish to ask internal audit to change the implementation date for the action. Please select a revised date and provide a reason below."
+                    label="Please check this box if you wish to revise the implementation date. By doing so you confirm there is a valid reason for changing the date, which has been approved by the responsible director."
                     checked={this.state.FormData.RequestDateChange}
                     onChange={(ev, isChecked) => this.changeCheckbox_Req(isChecked, "RequestDateChange")}
 

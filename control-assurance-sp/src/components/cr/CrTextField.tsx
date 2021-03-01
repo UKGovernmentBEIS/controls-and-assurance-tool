@@ -20,6 +20,7 @@ export interface ICrTextFieldProps {
     errorMessage?: string;
     suffix?: string;
     numbersOnly?: boolean;
+    style? :React.CSSProperties;
 }
 
 export class CrTextField extends React.Component<ICrTextFieldProps, {}> {
@@ -73,6 +74,7 @@ export class CrTextField extends React.Component<ICrTextFieldProps, {}> {
             <TextField
             label={this.props.label}
             className={this.props.errorMessage && styles.textFieldInvalid}
+            style={this.props.style && this.props.style}
             required={this.props.required}
             disabled={this.props.disabled}
             placeholder={this.props.placeholder}
@@ -111,6 +113,7 @@ export class CrTextField extends React.Component<ICrTextFieldProps, {}> {
             //key={ this.generateKey("textfield")}
             label={this.props.label}
             className={this.props.errorMessage && styles.textFieldInvalid}
+            style={this.props.style && this.props.style}
             required={this.props.required}
             disabled={this.props.disabled}
             placeholder={this.props.placeholder}

@@ -165,7 +165,8 @@ namespace ControlAssuranceAPI.Repositories
                       {
                           w.ID,
                           w.Stage,
-                          w.CLCase
+                          w.CLCase,
+                          HiringManagerObj = db.Users.FirstOrDefault(x => x.ID == w.CLCase.ApplHMUserId)
                       };
 
             if (isSuperUserOrViewer == true)
@@ -279,7 +280,7 @@ namespace ControlAssuranceAPI.Repositories
                 item.ID = ite.ID;
                 item.CaseId = ite.CLCase.ID;
                 item.CaseRef = $"{ite.CLCase.CLComFramework?.Title ?? ""}{ite.ID}";
-                item.Title1 = ite.CLCase.ReqVacancyTitle;
+                item.Title1 = ite.CLCase.ReqVacancyTitle?.ToString() ?? "Title Required";
                 item.Title2 = ite.CLCase.CaseType;
                 item.Stage = ite.Stage;
                 item.StageActions1 = stageActions1;
@@ -289,6 +290,8 @@ namespace ControlAssuranceAPI.Repositories
                 item.CostCenter = $"{ite.CLCase.ReqCostCentre} - {ite.CLCase.Directorate?.Title?.ToString() ?? ""}";
                 item.StartDate = ite.CLCase.ReqEstStartDate != null ? ite.CLCase.ReqEstStartDate.Value.ToString("dd/MM/yyyy") : "";
                 item.EndDate = ite.CLCase.ReqEstEndDate != null ? ite.CLCase.ReqEstEndDate.Value.ToString("dd/MM/yyyy") : "";
+
+                item.HiringManager = ite.HiringManagerObj?.Title ?? "";
 
 
                 retList.Add(item);
@@ -470,18 +473,6 @@ namespace ControlAssuranceAPI.Repositories
             cLcase.FBPApprovalComments = inputCase.FBPApprovalComments;
             cLcase.HRBPApprovalDecision = inputCase.HRBPApprovalDecision;
             cLcase.HRBPApprovalComments = inputCase.HRBPApprovalComments;
-
-            if (string.IsNullOrEmpty(cLcase.ReqVacancyTitle))
-            {
-                cLcase.ReqVacancyTitle = "Title Required";
-            }
-
-
-
-
-
-
-
 
 
             db.SaveChanges();
