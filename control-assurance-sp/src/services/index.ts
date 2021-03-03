@@ -6,6 +6,7 @@ export { EntityService } from './EntityService';
 export { EntityUpdateService } from './EntityUpdateService';
 export { LookupService } from './LookupService';
 
+export { PersonTitleService } from './PersonTitleService';
 export { AutomationOptionService } from './AutomationOptionService';
 export { AutoFunctionLastRunService } from './AutoFunctionLastRunService';
 export { DefFormService } from './DefFormService';
@@ -92,6 +93,9 @@ export { CLWorkLocationService } from './CLWorkLocationService';
 export { CLComFrameworkService } from './CLComFrameworkService';
 export { CLIR35ScopeService } from './CLIR35ScopeService';
 export { CLCaseEvidenceService } from './CLCaseEvidenceService';
+export { CLWorkerService } from './CLWorkerService';
+export { CLSecurityClearanceService } from './CLSecurityClearanceService';
+export { CLDeclarationConflictService } from './CLDeclarationConflictService';
 
 export { ExportDefinationService } from './ExportDefinationService';
 export { AvailableExportService } from './AvailableExportService';

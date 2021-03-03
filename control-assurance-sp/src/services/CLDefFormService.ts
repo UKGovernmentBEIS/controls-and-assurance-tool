@@ -18,6 +18,14 @@ export class CLDefFormService extends EntityService<ICLDefForm> {
         });
     }
 
+    public readDefForm(): Promise<ICLDefForm> {
+        //const qry:string = `?$select=EngagedStageFormText`;
+
+        return this.read(1, false, false).then((e: ICLDefForm): ICLDefForm => {
+            return e;
+        });
+    }
+
 
 
 }

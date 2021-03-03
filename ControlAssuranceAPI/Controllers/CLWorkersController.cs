@@ -29,5 +29,20 @@ namespace ControlAssuranceAPI.Controllers
         {
             return SingleResult.Create(db.CLWorkerRepository.CLWorkers.Where(x => x.ID == key));
         }
+
+        // PATCH: odata/CLWorkers(1)
+        [AcceptVerbs("PUT")]
+        public IHttpActionResult Put([FromODataUri] int key, CLWorker cLWorker)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            db.CLWorkerRepository.Update(cLWorker);
+
+            return Updated(cLWorker);
+        }
     }
 }

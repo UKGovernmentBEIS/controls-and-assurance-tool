@@ -85,6 +85,7 @@ namespace ControlAssuranceAPI.Repositories
                       where w.ParentId == parentId
                       && w.RecordCreated == true
                       && w.EvidenceType != "IR35"
+                      && w.EvidenceType != "ContractorSecurityCheck"
                       select new
                       {
                           w.ID,

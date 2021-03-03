@@ -19,7 +19,39 @@ namespace ControlAssuranceAPI.Models
         public Nullable<int> CLCaseId { get; set; }
         public string Stage { get; set; }
         public string WorkerChangeLog { get; set; }
+        public Nullable<int> WorkerNumber { get; set; }
+        public string OnbContractorFirstname { get; set; }
+        public string OnbContractorSurname { get; set; }
+        public Nullable<System.DateTime> OnbStartDate { get; set; }
+        public Nullable<System.DateTime> OnbEndDate { get; set; }
+        public Nullable<decimal> OnbDayRate { get; set; }
+        public string OnbContractorHomeAddress { get; set; }
+        public string OnbContractorEmail { get; set; }
+        public string OnbContractorPhone { get; set; }
+        public string PurchaseOrderNum { get; set; }
+        public Nullable<int> OnbSecurityClearanceId { get; set; }
+        public Nullable<int> OnbContractorTitleId { get; set; }
+        public string OnbContractorGender { get; set; }
+        public Nullable<System.DateTime> OnbContractorDob { get; set; }
+        public string OnbContractorNINum { get; set; }
+        public string OnbContractorPostCode { get; set; }
+        public Nullable<int> OnbDecConflictId { get; set; }
+        public Nullable<int> OnbLineManagerUserId { get; set; }
+        public Nullable<int> OnbLineManagerGradeId { get; set; }
+        public string OnbLineManagerEmployeeNum { get; set; }
+        public string OnbLineManagerPhone { get; set; }
+        public Nullable<bool> OnbWorkingDayMon { get; set; }
+        public Nullable<bool> OnbWorkingDayTue { get; set; }
+        public Nullable<bool> OnbWorkingDayWed { get; set; }
+        public Nullable<bool> OnbWorkingDayThu { get; set; }
+        public Nullable<bool> OnbWorkingDayFri { get; set; }
+        public Nullable<bool> OnbWorkingDaySat { get; set; }
+        public Nullable<bool> OnbWorkingDaySun { get; set; }
     
         public virtual CLCase CLCase { get; set; }
+        public virtual CLDeclarationConflict CLDeclarationConflict { get; set; }
+        public virtual CLSecurityClearance CLSecurityClearance { get; set; }
+        public virtual CLStaffGrade CLStaffGrade { get; set; }
+        public virtual PersonTitle PersonTitle { get; set; }
     }
 }

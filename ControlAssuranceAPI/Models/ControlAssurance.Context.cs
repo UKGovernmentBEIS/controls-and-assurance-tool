@@ -36,9 +36,11 @@ namespace ControlAssuranceAPI.Models
         public virtual DbSet<CLCase> CLCases { get; set; }
         public virtual DbSet<CLCaseEvidence> CLCaseEvidences { get; set; }
         public virtual DbSet<CLComFramework> CLComFrameworks { get; set; }
+        public virtual DbSet<CLDeclarationConflict> CLDeclarationConflicts { get; set; }
         public virtual DbSet<CLDefForm> CLDefForms { get; set; }
         public virtual DbSet<CLIR35Scope> CLIR35Scope { get; set; }
         public virtual DbSet<CLProfessionalCat> CLProfessionalCats { get; set; }
+        public virtual DbSet<CLSecurityClearance> CLSecurityClearances { get; set; }
         public virtual DbSet<CLStaffGrade> CLStaffGrades { get; set; }
         public virtual DbSet<CLVacancyType> CLVacancyTypes { get; set; }
         public virtual DbSet<CLWorker> CLWorkers { get; set; }
@@ -103,6 +105,7 @@ namespace ControlAssuranceAPI.Models
         public virtual DbSet<NAOUpdateStatusType> NAOUpdateStatusTypes { get; set; }
         public virtual DbSet<Period> Periods { get; set; }
         public virtual DbSet<PermissionType> PermissionTypes { get; set; }
+        public virtual DbSet<PersonTitle> PersonTitles { get; set; }
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<Team> Teams { get; set; }
         public virtual DbSet<TeamMember> TeamMembers { get; set; }

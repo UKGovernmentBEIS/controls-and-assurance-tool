@@ -15,11 +15,15 @@ export class CLCaseEvidenceService extends EntityService<ICLCaseEvidence> {
     public readAllByParentId(parentId:number): Promise<IEntity[]> {
         //ne null means not null, cause we only want to get completed uploaded files.
         //return this.readAll(`?$orderby=ID&$expand=User&$filter=ParentId eq ${parentId} and Title ne null and EvidenceType ne 'IR35'`);
-        return this.readAll(`?getCasesForList=&parentId=${parentId}`);
+        return this.readAll(`?getGeneralEvidencesForList=&parentId=${parentId}`);
     }
 
     public readIR35Evidence(parentId:number): Promise<IEntity[]> {
         return this.readAll(`?$orderby=ID&$filter=ParentId eq ${parentId} and EvidenceType eq 'IR35'`);
+    }
+
+    public readContractorSecurityCheckEvidence(parentId:number): Promise<IEntity[]> {
+        return this.readAll(`?$orderby=ID&$filter=ParentId eq ${parentId} and EvidenceType eq 'ContractorSecurityCheck'`);
     }
 
 }

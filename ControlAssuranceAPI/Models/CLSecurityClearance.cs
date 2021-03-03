@@ -12,20 +12,17 @@ namespace ControlAssuranceAPI.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class CLStaffGrade
+    public partial class CLSecurityClearance
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public CLStaffGrade()
+        public CLSecurityClearance()
         {
-            this.CLCases = new HashSet<CLCase>();
             this.CLWorkers = new HashSet<CLWorker>();
         }
     
         public int ID { get; set; }
         public string Title { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<CLCase> CLCases { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CLWorker> CLWorkers { get; set; }
     }

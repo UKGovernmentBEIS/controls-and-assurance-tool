@@ -12,6 +12,7 @@ namespace ControlAssuranceAPI.Models
 
         private IPrincipal user;
         private IControlAssuranceContext context;
+        private PersonTitleRepository personTitleRepository;
         private AutomationOptionRepository automationOptionRepository;
         private AutoFunctionLastRunRepository autoFunctionLastRunRepository;
         private DefFormRepository defFormRepository;
@@ -97,6 +98,8 @@ namespace ControlAssuranceAPI.Models
         private CLWorkLocationRepository cLWorkLocationRepository;
         private CLWorkerRepository cLWorkerRepository;
         private CLCaseEvidenceRepository cLCaseEvidenceRepository;
+        private CLSecurityClearanceRepository cLSecurityClearanceRepository;
+        private CLDeclarationConflictRepository cLDeclarationConflictRepository;
 
         private ExportDefinationRepository exportDefinationRepository;
         private AvailableExportRepository availableExportRepository;
@@ -125,6 +128,14 @@ namespace ControlAssuranceAPI.Models
             get
             {
                 return automationOptionRepository = automationOptionRepository ?? new AutomationOptionRepository(user, context);
+            }
+        }
+
+        public PersonTitleRepository PersonTitleRepository
+        {
+            get
+            {
+                return personTitleRepository = personTitleRepository ?? new PersonTitleRepository(user, context);
             }
         }
 
@@ -832,6 +843,23 @@ namespace ControlAssuranceAPI.Models
                 return cLCaseEvidenceRepository = cLCaseEvidenceRepository ?? new CLCaseEvidenceRepository(user, context);
             }
         }
+
+        public CLSecurityClearanceRepository CLSecurityClearanceRepository
+        {
+            get
+            {
+                return cLSecurityClearanceRepository = cLSecurityClearanceRepository ?? new CLSecurityClearanceRepository(user, context);
+            }
+        }
+
+        public CLDeclarationConflictRepository CLDeclarationConflictRepository
+        {
+            get
+            {
+                return cLDeclarationConflictRepository = cLDeclarationConflictRepository ?? new CLDeclarationConflictRepository(user, context);
+            }
+        }
+
 
         public ExportDefinationRepository ExportDefinationRepository
         {

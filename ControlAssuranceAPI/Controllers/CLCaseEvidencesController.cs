@@ -29,8 +29,8 @@ namespace ControlAssuranceAPI.Controllers
             return SingleResult.Create(db.CLCaseEvidenceRepository.CLCaseEvidences.Where(x => x.ID == key));
         }
 
-        // GET: /odata/CLCaseEvidences?getCasesForList=&parentId=1
-        public List<CLCaseEvidenceView_Result> Get(string getCasesForList, int parentId)
+        // GET: /odata/CLCaseEvidences?getGeneralEvidencesForList=&parentId=1
+        public List<CLCaseEvidenceView_Result> Get(string getGeneralEvidencesForList, int parentId)
         {
             var res = db.CLCaseEvidenceRepository.GetEvidences(parentId);
             return res;

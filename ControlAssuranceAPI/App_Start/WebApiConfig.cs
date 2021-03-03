@@ -35,6 +35,7 @@ namespace ControlAssuranceAPI
             config.Count().Filter().OrderBy().Expand().Select().MaxTop(null); //new line
 
             builder.EntitySet<Models.AutomationOption>("AutomationOptions");
+            builder.EntitySet<Models.PersonTitle>("PersonTitles");
             builder.EntitySet<Models.AutoFunctionLastRun>("AutoFunctionLastRuns");
             builder.EntitySet<DefForm>("DefForms");
             builder.EntitySet<Models.DefElementGroup>("DefElementGroups");
@@ -122,7 +123,9 @@ namespace ControlAssuranceAPI
             builder.EntitySet<CLWorkLocation>("CLWorkLocations");
             builder.EntitySet<CLWorker>("CLWorkers");
             builder.EntitySet<CLCaseEvidence>("CLCaseEvidences");
-            
+            builder.EntitySet<CLSecurityClearance>("CLSecurityClearances");
+            builder.EntitySet<CLDeclarationConflict>("CLDeclarationConflicts");
+
             builder.EntitySet<ClCaseInfoView_Result>("ClCaseInfoViewResult");
             builder.EntitySet<CLCaseView_Result>("CLCaseViewResult");
             builder.EntitySet<CLCaseEvidenceView_Result>("CLCaseEvidenceViewResult");

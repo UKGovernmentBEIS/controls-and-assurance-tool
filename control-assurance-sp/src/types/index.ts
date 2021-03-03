@@ -68,6 +68,7 @@ export { IIAPActionDirectorate, IAPActionDirectorate } from './IAPActionDirector
 export { ICLDefForm } from './CLDefForm';
 export { ICLCase, CLCase, IClCaseInfo, ClCaseInfo } from './CLCase';
 export { ICLCaseEvidence, CLCaseEvidence } from './CLCaseEvidence';
+export { ICLWorker, CLWorker } from './ClWorker';
 
 export { SaveStatus } from './SaveStatus';
 export { CrUpdateFormState, ICrUpdateFormState } from './CrUpdateFormState';

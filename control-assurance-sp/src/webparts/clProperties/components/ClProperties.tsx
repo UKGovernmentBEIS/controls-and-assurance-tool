@@ -85,6 +85,19 @@ export default class ClProperties extends BaseUserContextWebPartComponent<types.
         numRows: 10
       },
 
+      {
+        key: 'EngagedStageFormText',
+        columnType: ColumnType.TextBox,
+        columnDisplayType: ColumnDisplayType.FormOnly,
+        name: 'Engaged Stage Form Text',
+        fieldName: 'EngagedStageFormText',
+        minWidth: 300,
+        isResizable: true,
+        isRequired: false,
+        fieldMaxLength: 5000,
+        numRows: 10
+      },
+
 
     ];
 

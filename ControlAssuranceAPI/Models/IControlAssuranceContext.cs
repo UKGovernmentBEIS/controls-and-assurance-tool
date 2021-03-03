@@ -12,7 +12,7 @@ namespace ControlAssuranceAPI.Models
         DbSet<AutoFunctionLastRun> AutoFunctionLastRuns { get; set; }
 
         DbSet<EmailQueue> EmailQueues { get; set; }
-
+        DbSet<PersonTitle> PersonTitles { get; set; }
         DbSet<DefElement> DefElements { get; set; }
         DbSet<DefElementGroup> DefElementGroups { get; set; }
         DbSet<DefForm> DefForms { get; set; }
@@ -100,6 +100,8 @@ namespace ControlAssuranceAPI.Models
         DbSet<CLWorkLocation> CLWorkLocations { get; set; }
         DbSet<CLWorker> CLWorkers { get; set; }
         DbSet<CLCaseEvidence> CLCaseEvidences { get; set; }
+        DbSet<CLSecurityClearance> CLSecurityClearances { get; set; }
+        DbSet<CLDeclarationConflict> CLDeclarationConflicts { get; set; }
 
         DbSet<ExportDefination> ExportDefinations { get; set; }
         DbSet<AvailableExport> AvailableExports { get; set; }

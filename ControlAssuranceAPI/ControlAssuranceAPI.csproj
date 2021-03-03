@@ -78,8 +78,8 @@
     <Reference Include="Google.Apis.PlatformServices, Version=1.49.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.1.49.0\lib\net45\Google.Apis.PlatformServices.dll</HintPath>
     </Reference>
-    <Reference Include="JWT, Version=7.0.0.0, Culture=neutral, PublicKeyToken=6f98bca0f40f2ecf, processorArchitecture=MSIL">
-      <HintPath>..\packages\JWT.7.1.0\lib\net46\JWT.dll</HintPath>
+    <Reference Include="JWT, Version=5.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\JWT.5.0.1\lib\net46\JWT.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNet.OData, Version=7.1.0.21120, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.OData.7.1.0\lib\net45\Microsoft.AspNet.OData.dll</HintPath>
@@ -211,8 +211,9 @@
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="Notify, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Notify.4.0.0\lib\netstandard2.0\Notify.dll</HintPath>
+    <Reference Include="Notify, Version=2.9.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Notify.2.9.0\lib\netstandard2.0\Notify.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
@@ -330,9 +331,11 @@
     <Compile Include="Controllers\CLCaseEvidencesController.cs" />
     <Compile Include="Controllers\CLCasesController.cs" />
     <Compile Include="Controllers\CLComFrameworksController.cs" />
+    <Compile Include="Controllers\CLDeclarationConflictsController.cs" />
     <Compile Include="Controllers\CLDefFormsController.cs" />
     <Compile Include="Controllers\CLIR35ScopesController.cs" />
     <Compile Include="Controllers\CLProfessionalCatsController.cs" />
+    <Compile Include="Controllers\CLSecurityClearancesController.cs" />
     <Compile Include="Controllers\CLStaffGradesController.cs" />
     <Compile Include="Controllers\CLVacancyTypesController.cs" />
     <Compile Include="Controllers\CLWorkersController.cs" />
@@ -399,6 +402,7 @@
     <Compile Include="Controllers\DGAreaStatsController.cs" />
     <Compile Include="Controllers\DirectorateStatsController.cs" />
     <Compile Include="Controllers\DivisionStatsController.cs" />
+    <Compile Include="Controllers\PersonTitlesController.cs" />
     <Compile Include="Controllers\TeamMemberController.cs" />
     <Compile Include="Controllers\TeamsController.cs" />
     <Compile Include="Controllers\UserHelpsController.cs" />
@@ -447,6 +451,9 @@
     <Compile Include="Models\CLComFramework.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\CLDeclarationConflict.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\CLDefForm.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
@@ -454,6 +461,9 @@
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CLProfessionalCat.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CLSecurityClearance.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CLStaffGrade.cs">
@@ -677,6 +687,9 @@
     <Compile Include="Models\PermissionType.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\PersonTitle.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\SPDGAreaStat2_Result.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
@@ -726,9 +739,11 @@
     <Compile Include="Repositories\CLCaseEvidenceRepository.cs" />
     <Compile Include="Repositories\CLCaseRepository.cs" />
     <Compile Include="Repositories\CLComFrameworkRepository.cs" />
+    <Compile Include="Repositories\CLDeclarationConflictRepository.cs" />
     <Compile Include="Repositories\CLDefFormRepository.cs" />
     <Compile Include="Repositories\CLIR35ScopeRepository.cs" />
     <Compile Include="Repositories\CLProfessionalCatRepository.cs" />
+    <Compile Include="Repositories\CLSecurityClearanceRepository.cs" />
     <Compile Include="Repositories\CLStaffGradeRepository.cs" />
     <Compile Include="Repositories\CLVacancyTypeRepository.cs" />
     <Compile Include="Repositories\CLWorkerRepository.cs" />
@@ -794,6 +809,7 @@
     <Compile Include="Repositories\NAOUpdateFeedbackTypeRepository.cs" />
     <Compile Include="Repositories\NAOUpdateRepository.cs" />
     <Compile Include="Repositories\NAOUpdateStatusTypeRepository.cs" />
+    <Compile Include="Repositories\PersonTitleRepository.cs" />
     <Compile Include="Repositories\SPDivisionStatRepository.cs" />
     <Compile Include="Repositories\SPDirectorateStatRepository.cs" />
     <Compile Include="Repositories\SPDGAreaStatRepository.cs" />

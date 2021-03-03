@@ -135,6 +135,13 @@
           <Property Name="ID" Type="int" Nullable="false" />
           <Property Name="Title" Type="nvarchar" MaxLength="50" />
         </EntityType>
+        <EntityType Name="CLDeclarationConflict">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="2000" />
+        </EntityType>
         <EntityType Name="CLDefForm">
           <Key>
             <PropertyRef Name="ID" />
@@ -142,6 +149,7 @@
           <Property Name="ID" Type="int" Nullable="false" />
           <Property Name="Title" Type="nvarchar" MaxLength="1000" />
           <Property Name="Details" Type="nvarchar(max)" />
+          <Property Name="EngagedStageFormText" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="CLIR35Scope">
           <Key>
@@ -156,6 +164,13 @@
           </Key>
           <Property Name="ID" Type="int" Nullable="false" />
           <Property Name="Title" Type="nvarchar" MaxLength="500" />
+        </EntityType>
+        <EntityType Name="CLSecurityClearance">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="CLStaffGrade">
           <Key>
@@ -180,6 +195,34 @@
           <Property Name="CLCaseId" Type="int" />
           <Property Name="Stage" Type="nvarchar" MaxLength="50" />
           <Property Name="WorkerChangeLog" Type="nvarchar(max)" />
+          <Property Name="WorkerNumber" Type="int" />
+          <Property Name="OnbContractorFirstname" Type="nvarchar" MaxLength="100" />
+          <Property Name="OnbContractorSurname" Type="nvarchar" MaxLength="100" />
+          <Property Name="OnbStartDate" Type="datetime" />
+          <Property Name="OnbEndDate" Type="datetime" />
+          <Property Name="OnbDayRate" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="OnbContractorHomeAddress" Type="nvarchar" MaxLength="1000" />
+          <Property Name="OnbContractorEmail" Type="nvarchar" MaxLength="1000" />
+          <Property Name="OnbContractorPhone" Type="nvarchar" MaxLength="200" />
+          <Property Name="PurchaseOrderNum" Type="nvarchar" MaxLength="200" />
+          <Property Name="OnbSecurityClearanceId" Type="int" />
+          <Property Name="OnbContractorTitleId" Type="int" />
+          <Property Name="OnbContractorGender" Type="nvarchar" MaxLength="50" />
+          <Property Name="OnbContractorDob" Type="datetime" />
+          <Property Name="OnbContractorNINum" Type="nvarchar" MaxLength="100" />
+          <Property Name="OnbContractorPostCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="OnbDecConflictId" Type="int" />
+          <Property Name="OnbLineManagerUserId" Type="int" />
+          <Property Name="OnbLineManagerGradeId" Type="int" />
+          <Property Name="OnbLineManagerEmployeeNum" Type="nvarchar" MaxLength="100" />
+          <Property Name="OnbLineManagerPhone" Type="nvarchar" MaxLength="200" />
+          <Property Name="OnbWorkingDayMon" Type="bit" />
+          <Property Name="OnbWorkingDayTue" Type="bit" />
+          <Property Name="OnbWorkingDayWed" Type="bit" />
+          <Property Name="OnbWorkingDayThu" Type="bit" />
+          <Property Name="OnbWorkingDayFri" Type="bit" />
+          <Property Name="OnbWorkingDaySat" Type="bit" />
+          <Property Name="OnbWorkingDaySun" Type="bit" />
         </EntityType>
         <EntityType Name="CLWorkLocation">
           <Key>
@@ -1023,6 +1066,13 @@
           <Property Name="ID" Type="int" Nullable="false" />
           <Property Name="Title" Type="nvarchar" MaxLength="50" />
         </EntityType>
+        <EntityType Name="PersonTitle">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" />
+        </EntityType>
         <EntityType Name="sysdiagrams">
           <Key>
             <PropertyRef Name="diagram_id" />
@@ -1211,6 +1261,54 @@
             </Principal>
             <Dependent Role="CLWorker">
               <PropertyRef Name="CLCaseId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CLWorker_CLDeclarationConflict">
+          <End Role="CLDeclarationConflict" Type="Self.CLDeclarationConflict" Multiplicity="0..1" />
+          <End Role="CLWorker" Type="Self.CLWorker" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CLDeclarationConflict">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CLWorker">
+              <PropertyRef Name="OnbDecConflictId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CLWorker_CLSecurityClearance">
+          <End Role="CLSecurityClearance" Type="Self.CLSecurityClearance" Multiplicity="0..1" />
+          <End Role="CLWorker" Type="Self.CLWorker" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CLSecurityClearance">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CLWorker">
+              <PropertyRef Name="OnbSecurityClearanceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CLWorker_CLStaffGrade">
+          <End Role="CLStaffGrade" Type="Self.CLStaffGrade" Multiplicity="0..1" />
+          <End Role="CLWorker" Type="Self.CLWorker" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CLStaffGrade">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CLWorker">
+              <PropertyRef Name="OnbLineManagerGradeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CLWorker_PersonTitle">
+          <End Role="PersonTitle" Type="Self.PersonTitle" Multiplicity="0..1" />
+          <End Role="CLWorker" Type="Self.CLWorker" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PersonTitle">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CLWorker">
+              <PropertyRef Name="OnbContractorTitleId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2254,9 +2352,11 @@
           <EntitySet Name="CLCase" EntityType="Self.CLCase" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CLCaseEvidence" EntityType="Self.CLCaseEvidence" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CLComFramework" EntityType="Self.CLComFramework" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CLDeclarationConflict" EntityType="Self.CLDeclarationConflict" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CLDefForm" EntityType="Self.CLDefForm" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CLIR35Scope" EntityType="Self.CLIR35Scope" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CLProfessionalCat" EntityType="Self.CLProfessionalCat" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CLSecurityClearance" EntityType="Self.CLSecurityClearance" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CLStaffGrade" EntityType="Self.CLStaffGrade" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CLVacancyType" EntityType="Self.CLVacancyType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CLWorker" EntityType="Self.CLWorker" Schema="dbo" store:Type="Tables" />
@@ -2321,6 +2421,7 @@
           <EntitySet Name="NAOUpdateStatusType" EntityType="Self.NAOUpdateStatusType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Period" EntityType="Self.Period" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PermissionType" EntityType="Self.PermissionType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PersonTitle" EntityType="Self.PersonTitle" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Team" EntityType="Self.Team" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TeamMember" EntityType="Self.TeamMember" Schema="dbo" store:Type="Tables" />
@@ -2369,6 +2470,22 @@
           </AssociationSet>
           <AssociationSet Name="FK_CLWorker_CLCase" Association="Self.FK_CLWorker_CLCase">
             <End Role="CLCase" EntitySet="CLCase" />
+            <End Role="CLWorker" EntitySet="CLWorker" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CLWorker_CLDeclarationConflict" Association="Self.FK_CLWorker_CLDeclarationConflict">
+            <End Role="CLDeclarationConflict" EntitySet="CLDeclarationConflict" />
+            <End Role="CLWorker" EntitySet="CLWorker" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CLWorker_CLSecurityClearance" Association="Self.FK_CLWorker_CLSecurityClearance">
+            <End Role="CLSecurityClearance" EntitySet="CLSecurityClearance" />
+            <End Role="CLWorker" EntitySet="CLWorker" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CLWorker_CLStaffGrade" Association="Self.FK_CLWorker_CLStaffGrade">
+            <End Role="CLStaffGrade" EntitySet="CLStaffGrade" />
+            <End Role="CLWorker" EntitySet="CLWorker" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CLWorker_PersonTitle" Association="Self.FK_CLWorker_PersonTitle">
+            <End Role="PersonTitle" EntitySet="PersonTitle" />
             <End Role="CLWorker" EntitySet="CLWorker" />
           </AssociationSet>
           <AssociationSet Name="FK_DefElement_DefElementGroup" Association="Self.FK_DefElement_DefElementGroup">
@@ -2855,6 +2972,14 @@
           <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="CLCases" Relationship="Self.FK_CLCase_CLComFramework" FromRole="CLComFramework" ToRole="CLCase" />
         </EntityType>
+        <EntityType Name="CLDeclarationConflict">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="CLWorkers" Relationship="Self.FK_CLWorker_CLDeclarationConflict" FromRole="CLDeclarationConflict" ToRole="CLWorker" />
+        </EntityType>
         <EntityType Name="CLDefForm">
           <Key>
             <PropertyRef Name="ID" />
@@ -2862,6 +2987,7 @@
           <Property Name="ID" Type="Int32" Nullable="false" />
           <Property Name="Title" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
           <Property Name="Details" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="EngagedStageFormText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="CLIR35Scope">
           <Key>
@@ -2879,6 +3005,14 @@
           <Property Name="Title" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="CLCases" Relationship="Self.FK_CLCase_CLProfessionalCat" FromRole="CLProfessionalCat" ToRole="CLCase" />
         </EntityType>
+        <EntityType Name="CLSecurityClearance">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="CLWorkers" Relationship="Self.FK_CLWorker_CLSecurityClearance" FromRole="CLSecurityClearance" ToRole="CLWorker" />
+        </EntityType>
         <EntityType Name="CLStaffGrade">
           <Key>
             <PropertyRef Name="ID" />
@@ -2886,6 +3020,7 @@
           <Property Name="ID" Type="Int32" Nullable="false" />
           <Property Name="Title" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="CLCases" Relationship="Self.FK_CLCase_CLStaffGrade" FromRole="CLStaffGrade" ToRole="CLCase" />
+          <NavigationProperty Name="CLWorkers" Relationship="Self.FK_CLWorker_CLStaffGrade" FromRole="CLStaffGrade" ToRole="CLWorker" />
         </EntityType>
         <EntityType Name="CLVacancyType">
           <Key>
@@ -2903,7 +3038,39 @@
           <Property Name="CLCaseId" Type="Int32" />
           <Property Name="Stage" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="WorkerChangeLog" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="WorkerNumber" Type="Int32" />
+          <Property Name="OnbContractorFirstname" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="OnbContractorSurname" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="OnbStartDate" Type="DateTime" Precision="3" />
+          <Property Name="OnbEndDate" Type="DateTime" Precision="3" />
+          <Property Name="OnbDayRate" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="OnbContractorHomeAddress" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="OnbContractorEmail" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="OnbContractorPhone" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="PurchaseOrderNum" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="OnbSecurityClearanceId" Type="Int32" />
+          <Property Name="OnbContractorTitleId" Type="Int32" />
+          <Property Name="OnbContractorGender" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="OnbContractorDob" Type="DateTime" Precision="3" />
+          <Property Name="OnbContractorNINum" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="OnbContractorPostCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="OnbDecConflictId" Type="Int32" />
+          <Property Name="OnbLineManagerUserId" Type="Int32" />
+          <Property Name="OnbLineManagerGradeId" Type="Int32" />
+          <Property Name="OnbLineManagerEmployeeNum" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="OnbLineManagerPhone" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="OnbWorkingDayMon" Type="Boolean" />
+          <Property Name="OnbWorkingDayTue" Type="Boolean" />
+          <Property Name="OnbWorkingDayWed" Type="Boolean" />
+          <Property Name="OnbWorkingDayThu" Type="Boolean" />
+          <Property Name="OnbWorkingDayFri" Type="Boolean" />
+          <Property Name="OnbWorkingDaySat" Type="Boolean" />
+          <Property Name="OnbWorkingDaySun" Type="Boolean" />
           <NavigationProperty Name="CLCase" Relationship="Self.FK_CLWorker_CLCase" FromRole="CLWorker" ToRole="CLCase" />
+          <NavigationProperty Name="CLDeclarationConflict" Relationship="Self.FK_CLWorker_CLDeclarationConflict" FromRole="CLWorker" ToRole="CLDeclarationConflict" />
+          <NavigationProperty Name="CLSecurityClearance" Relationship="Self.FK_CLWorker_CLSecurityClearance" FromRole="CLWorker" ToRole="CLSecurityClearance" />
+          <NavigationProperty Name="CLStaffGrade" Relationship="Self.FK_CLWorker_CLStaffGrade" FromRole="CLWorker" ToRole="CLStaffGrade" />
+          <NavigationProperty Name="PersonTitle" Relationship="Self.FK_CLWorker_PersonTitle" FromRole="CLWorker" ToRole="PersonTitle" />
         </EntityType>
         <EntityType Name="CLWorkLocation">
           <Key>
@@ -3885,6 +4052,14 @@
           <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="UserPermissions" Relationship="Self.FK_UserPermission_PermissionType" FromRole="PermissionType" ToRole="UserPermission" />
         </EntityType>
+        <EntityType Name="PersonTitle">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="CLWorkers" Relationship="Self.FK_CLWorker_PersonTitle" FromRole="PersonTitle" ToRole="CLWorker" />
+        </EntityType>
         <EntityType Name="sysdiagram">
           <Key>
             <PropertyRef Name="diagram_id" />
@@ -4109,6 +4284,54 @@
             </Principal>
             <Dependent Role="CLCaseEvidence">
               <PropertyRef Name="UploadedByUserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CLWorker_CLDeclarationConflict">
+          <End Role="CLDeclarationConflict" Type="Self.CLDeclarationConflict" Multiplicity="0..1" />
+          <End Role="CLWorker" Type="Self.CLWorker" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CLDeclarationConflict">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CLWorker">
+              <PropertyRef Name="OnbDecConflictId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CLWorker_CLSecurityClearance">
+          <End Role="CLSecurityClearance" Type="Self.CLSecurityClearance" Multiplicity="0..1" />
+          <End Role="CLWorker" Type="Self.CLWorker" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CLSecurityClearance">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CLWorker">
+              <PropertyRef Name="OnbSecurityClearanceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CLWorker_CLStaffGrade">
+          <End Role="CLStaffGrade" Type="Self.CLStaffGrade" Multiplicity="0..1" />
+          <End Role="CLWorker" Type="Self.CLWorker" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CLStaffGrade">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CLWorker">
+              <PropertyRef Name="OnbLineManagerGradeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CLWorker_PersonTitle">
+          <End Role="PersonTitle" Type="Self.PersonTitle" Multiplicity="0..1" />
+          <End Role="CLWorker" Type="Self.CLWorker" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PersonTitle">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CLWorker">
+              <PropertyRef Name="OnbContractorTitleId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -5134,9 +5357,11 @@
           <EntitySet Name="CLCases" EntityType="Self.CLCase" />
           <EntitySet Name="CLCaseEvidences" EntityType="Self.CLCaseEvidence" />
           <EntitySet Name="CLComFrameworks" EntityType="Self.CLComFramework" />
+          <EntitySet Name="CLDeclarationConflicts" EntityType="Self.CLDeclarationConflict" />
           <EntitySet Name="CLDefForms" EntityType="Self.CLDefForm" />
           <EntitySet Name="CLIR35Scope" EntityType="Self.CLIR35Scope" />
           <EntitySet Name="CLProfessionalCats" EntityType="Self.CLProfessionalCat" />
+          <EntitySet Name="CLSecurityClearances" EntityType="Self.CLSecurityClearance" />
           <EntitySet Name="CLStaffGrades" EntityType="Self.CLStaffGrade" />
           <EntitySet Name="CLVacancyTypes" EntityType="Self.CLVacancyType" />
           <EntitySet Name="CLWorkers" EntityType="Self.CLWorker" />
@@ -5201,6 +5426,7 @@
           <EntitySet Name="NAOUpdateStatusTypes" EntityType="Self.NAOUpdateStatusType" />
           <EntitySet Name="Periods" EntityType="Self.Period" />
           <EntitySet Name="PermissionTypes" EntityType="Self.PermissionType" />
+          <EntitySet Name="PersonTitles" EntityType="Self.PersonTitle" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
           <EntitySet Name="Teams" EntityType="Self.Team" />
           <EntitySet Name="TeamMembers" EntityType="Self.TeamMember" />
@@ -5250,6 +5476,22 @@
           <AssociationSet Name="FK_CLCaseEvidence_User" Association="Self.FK_CLCaseEvidence_User">
             <End Role="User" EntitySet="Users" />
             <End Role="CLCaseEvidence" EntitySet="CLCaseEvidences" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CLWorker_CLDeclarationConflict" Association="Self.FK_CLWorker_CLDeclarationConflict">
+            <End Role="CLDeclarationConflict" EntitySet="CLDeclarationConflicts" />
+            <End Role="CLWorker" EntitySet="CLWorkers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CLWorker_CLSecurityClearance" Association="Self.FK_CLWorker_CLSecurityClearance">
+            <End Role="CLSecurityClearance" EntitySet="CLSecurityClearances" />
+            <End Role="CLWorker" EntitySet="CLWorkers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CLWorker_CLStaffGrade" Association="Self.FK_CLWorker_CLStaffGrade">
+            <End Role="CLStaffGrade" EntitySet="CLStaffGrades" />
+            <End Role="CLWorker" EntitySet="CLWorkers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CLWorker_PersonTitle" Association="Self.FK_CLWorker_PersonTitle">
+            <End Role="PersonTitle" EntitySet="PersonTitles" />
+            <End Role="CLWorker" EntitySet="CLWorkers" />
           </AssociationSet>
           <AssociationSet Name="FK_DefElement_DefElementGroup" Association="Self.FK_DefElement_DefElementGroup">
             <End Role="DefElementGroup" EntitySet="DefElementGroups" />
@@ -5929,12 +6171,21 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="CLDeclarationConflicts">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.CLDeclarationConflict">
+              <MappingFragment StoreEntitySet="CLDeclarationConflict">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="CLDefForms">
             <EntityTypeMapping TypeName="ControlAssuranceModel.CLDefForm">
               <MappingFragment StoreEntitySet="CLDefForm">
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Title" ColumnName="Title" />
                 <ScalarProperty Name="Details" ColumnName="Details" />
+                <ScalarProperty Name="EngagedStageFormText" ColumnName="EngagedStageFormText" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -5949,6 +6200,14 @@
           <EntitySetMapping Name="CLProfessionalCats">
             <EntityTypeMapping TypeName="ControlAssuranceModel.CLProfessionalCat">
               <MappingFragment StoreEntitySet="CLProfessionalCat">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CLSecurityClearances">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.CLSecurityClearance">
+              <MappingFragment StoreEntitySet="CLSecurityClearance">
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Title" ColumnName="Title" />
               </MappingFragment>
@@ -5978,6 +6237,34 @@
                 <ScalarProperty Name="CLCaseId" ColumnName="CLCaseId" />
                 <ScalarProperty Name="Stage" ColumnName="Stage" />
                 <ScalarProperty Name="WorkerChangeLog" ColumnName="WorkerChangeLog" />
+                <ScalarProperty Name="WorkerNumber" ColumnName="WorkerNumber" />
+                <ScalarProperty Name="OnbContractorFirstname" ColumnName="OnbContractorFirstname" />
+                <ScalarProperty Name="OnbContractorSurname" ColumnName="OnbContractorSurname" />
+                <ScalarProperty Name="OnbStartDate" ColumnName="OnbStartDate" />
+                <ScalarProperty Name="OnbEndDate" ColumnName="OnbEndDate" />
+                <ScalarProperty Name="OnbDayRate" ColumnName="OnbDayRate" />
+                <ScalarProperty Name="OnbContractorHomeAddress" ColumnName="OnbContractorHomeAddress" />
+                <ScalarProperty Name="OnbContractorEmail" ColumnName="OnbContractorEmail" />
+                <ScalarProperty Name="OnbContractorPhone" ColumnName="OnbContractorPhone" />
+                <ScalarProperty Name="PurchaseOrderNum" ColumnName="PurchaseOrderNum" />
+                <ScalarProperty Name="OnbSecurityClearanceId" ColumnName="OnbSecurityClearanceId" />
+                <ScalarProperty Name="OnbContractorTitleId" ColumnName="OnbContractorTitleId" />
+                <ScalarProperty Name="OnbContractorGender" ColumnName="OnbContractorGender" />
+                <ScalarProperty Name="OnbContractorDob" ColumnName="OnbContractorDob" />
+                <ScalarProperty Name="OnbContractorNINum" ColumnName="OnbContractorNINum" />
+                <ScalarProperty Name="OnbContractorPostCode" ColumnName="OnbContractorPostCode" />
+                <ScalarProperty Name="OnbDecConflictId" ColumnName="OnbDecConflictId" />
+                <ScalarProperty Name="OnbLineManagerUserId" ColumnName="OnbLineManagerUserId" />
+                <ScalarProperty Name="OnbLineManagerGradeId" ColumnName="OnbLineManagerGradeId" />
+                <ScalarProperty Name="OnbLineManagerEmployeeNum" ColumnName="OnbLineManagerEmployeeNum" />
+                <ScalarProperty Name="OnbLineManagerPhone" ColumnName="OnbLineManagerPhone" />
+                <ScalarProperty Name="OnbWorkingDayMon" ColumnName="OnbWorkingDayMon" />
+                <ScalarProperty Name="OnbWorkingDayTue" ColumnName="OnbWorkingDayTue" />
+                <ScalarProperty Name="OnbWorkingDayWed" ColumnName="OnbWorkingDayWed" />
+                <ScalarProperty Name="OnbWorkingDayThu" ColumnName="OnbWorkingDayThu" />
+                <ScalarProperty Name="OnbWorkingDayFri" ColumnName="OnbWorkingDayFri" />
+                <ScalarProperty Name="OnbWorkingDaySat" ColumnName="OnbWorkingDaySat" />
+                <ScalarProperty Name="OnbWorkingDaySun" ColumnName="OnbWorkingDaySun" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -6879,6 +7166,14 @@
           <EntitySetMapping Name="PermissionTypes">
             <EntityTypeMapping TypeName="ControlAssuranceModel.PermissionType">
               <MappingFragment StoreEntitySet="PermissionType">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PersonTitles">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.PersonTitle">
+              <MappingFragment StoreEntitySet="PersonTitle">
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Title" ColumnName="Title" />
               </MappingFragment>

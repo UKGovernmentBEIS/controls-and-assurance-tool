@@ -13,16 +13,16 @@ import EvidenceList from './EV/EvidenceList';
 import { sp } from '@pnp/sp';
 import EvidenceSaveForm from './EV/EvidenceSaveForm';
 import styles from '../../styles/cr.module.scss';
-import { CLCase, ClCaseInfo, ICLCase, ICLCaseEvidence, IClCaseInfo, IEntity, ILinkLocalType, INAOUpdate, IUser, } from '../../types';
+import { CLCase, ClCaseInfo, ICLCase, ICLCaseEvidence, IClCaseInfo, IEntity, ILinkLocalType, ICLDefForm, IUser, ICLWorker, CLWorker } from '../../types';
 import { getUploadFolder_CLEvidence } from '../../types/AppGlobals';
 import { IGenColumn, ColumnType, ColumnDisplayType } from '../../types/GenColumn';
 import EntityList from '../entity/EntityList';
 import { ConfirmDialog } from '../cr/ConfirmDialog';
 import { CrDatePicker } from '../cr/CrDatePicker';
 import { CrEntityPicker } from '../cr/CrEntityPicker';
-import { changeDatePicker } from '../../types/AppGlobals';
+import { changeDatePicker, changeDatePickerV2 } from '../../types/AppGlobals';
 import '../../styles/CustomFabric.scss';
-import { IContextualMenuProps } from 'office-ui-fabric-react';
+import { IContextualMenuProps, themeRulesStandardCreator } from 'office-ui-fabric-react';
 
 
 
@@ -54,6 +54,9 @@ export interface ILookupData {
     CLWorkLocations: IEntity[];
     CLComFrameworks: IEntity[];
     CLIR35Scopes: IEntity[];
+    CLSecurityClearances: IEntity[];
+    CLDeclarationConflicts: IEntity[];
+    PersonTitles: IEntity[];
     Users: IUser[];
 }
 
@@ -65,6 +68,9 @@ export class LookupData implements ILookupData {
     public CLWorkLocations: IEntity[] = [];
     public CLComFrameworks: IEntity[] = [];
     public CLIR35Scopes: IEntity[] = [];
+    public CLSecurityClearances: IEntity[] = [];
+    public CLDeclarationConflicts: IEntity[] = [];
+    public PersonTitles: IEntity[] = [];
     public Users = [];
 
 }
@@ -75,15 +81,21 @@ export interface INewCaseTabState {
     Loading: boolean;
     LookupData: ILookupData;
     FormData: ICLCase;
+    FormDataWorker: ICLWorker;
     CaseInfo: IClCaseInfo;
     FormIsDirty: boolean;
     Evidence_ListFilterText: string;
     ShowIR35EvidenceForm: boolean;
+    ShowContractorSecurityCheckEvidenceForm: boolean;
     IR35Evidence: ICLCaseEvidence;
+    ContractorSecurityCheckEvidence: ICLCaseEvidence;
     HideIR35EvDeleteDialog: boolean;
+    HideContractorSecurityCheckEvDeleteDialog: boolean;
     HideFormValidationMessage: boolean;
     HideSubmitApprovalDoneMessage: boolean;
+    HideSubmitEngagedDoneMessage: boolean;
     EvidenceChangesCounter: number;
+    DefForm: ICLDefForm;
 
 
 }
@@ -92,19 +104,26 @@ export class NewCaseTabState implements INewCaseTabState {
     public Loading = false;
     public LookupData = new LookupData();
     public FormData;
+    public FormDataWorker;
     public CaseInfo;
     public FormIsDirty = false;
     public Evidence_ListFilterText: string = null;
     public ShowIR35EvidenceForm: boolean = false;
+    public ShowContractorSecurityCheckEvidenceForm: boolean = false;
     public IR35Evidence: ICLCaseEvidence = null;
+    public ContractorSecurityCheckEvidence: ICLCaseEvidence = null;
     public HideIR35EvDeleteDialog: boolean = true;
+    public HideContractorSecurityCheckEvDeleteDialog: boolean = true;
     public HideFormValidationMessage: boolean = true;
     public HideSubmitApprovalDoneMessage: boolean = true;
+    public HideSubmitEngagedDoneMessage: boolean = true;
     public EvidenceChangesCounter: number = 0;
+    public DefForm: ICLDefForm = null;
 
     constructor(caseType: string) {
         this.FormData = new CLCase(caseType);
         this.CaseInfo = new ClCaseInfo();
+        this.FormDataWorker = new CLWorker();
 
     }
 
@@ -114,6 +133,7 @@ export class NewCaseTabState implements INewCaseTabState {
 export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCaseTabState> {
 
     private clCaseService: services.CLCaseService = new services.CLCaseService(this.props.spfxContext, this.props.api);
+    private clWorkerService: services.CLWorkerService = new services.CLWorkerService(this.props.spfxContext, this.props.api);
     private clCaseEvidenceService: services.CLCaseEvidenceService = new services.CLCaseEvidenceService(this.props.spfxContext, this.props.api);
     private userService: services.UserService = new services.UserService(this.props.spfxContext, this.props.api);
     private clStaffGradeService: services.CLStaffGradeService = new services.CLStaffGradeService(this.props.spfxContext, this.props.api);
@@ -121,7 +141,11 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     private clProfessionalCatService: services.CLProfessionalCatService = new services.CLProfessionalCatService(this.props.spfxContext, this.props.api);
     private clWorkLocationService: services.CLWorkLocationService = new services.CLWorkLocationService(this.props.spfxContext, this.props.api);
     private clComFrameworkService: services.CLComFrameworkService = new services.CLComFrameworkService(this.props.spfxContext, this.props.api);
+    private clSecurityClearanceService: services.CLSecurityClearanceService = new services.CLSecurityClearanceService(this.props.spfxContext, this.props.api);
+    private clDeclarationConflictService: services.CLDeclarationConflictService = new services.CLDeclarationConflictService(this.props.spfxContext, this.props.api);
+    private personTitleService: services.PersonTitleService = new services.PersonTitleService(this.props.spfxContext, this.props.api);
     private clIR35ScopeService: services.CLIR35ScopeService = new services.CLIR35ScopeService(this.props.spfxContext, this.props.api);
+    private clDefFormService: services.CLDefFormService = new services.CLDefFormService(this.props.spfxContext, this.props.api);
 
     private UploadFolder_Evidence: string = "";
 
@@ -180,6 +204,9 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                 {(this.props.stage === "Approval" || isViewOnly === true) && this.renderHRBusinessPartnerApprovalDecision()}
                 {this.props.stage === "Approval" && this.renderFormButtons_ApprovalStage()}
 
+                {this.props.stage === "Onboarding" && isViewOnly === false && this.renderOnboarding()}
+                {this.props.stage === "Onboarding" && isViewOnly === false && this.renderFormButtons_OnboardingStage()}
+
                 {this.renderListsMainTitle()}
                 {this.renderEvidencesList()}
                 {this.renderChangeLogs()}
@@ -187,11 +214,17 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                 {this.state.ShowIR35EvidenceForm && this.renderIR35EvidenceForm()}
                 <ConfirmDialog hidden={this.state.HideIR35EvDeleteDialog} title={`Are you sure you want to delete this IR35 assessment  evidence?`} content={`A deleted evidence cannot be un-deleted.`} confirmButtonText="Delete" handleConfirm={this.deleteIR35Evidence} handleCancel={this.toggleIR35EvDeleteConfirm} />
 
+                {this.state.ShowContractorSecurityCheckEvidenceForm && this.renderContractorSecurityCheckEvidenceForm()}
+                <ConfirmDialog hidden={this.state.HideContractorSecurityCheckEvDeleteDialog} title={`Are you sure you want to delete this security checks confirmation evidence?`} content={`A deleted evidence cannot be un-deleted.`} confirmButtonText="Delete" handleConfirm={this.deleteContractorSecurityCheckEvidence} handleCancel={this.toggleContractorSecurityCheckEvDeleteConfirm} />
+
                 {/* validation */}
                 <MessageDialog hidden={this.state.HideFormValidationMessage} title="Form Validation" content="Failed validation checks. Please ensure all fields marked with a red asterisk are completed." handleOk={() => { this.setState({ HideFormValidationMessage: true }); }} />
 
                 {/* submit for approval - done */}
-                <MessageDialog hidden={this.state.HideSubmitApprovalDoneMessage} title="Form Validation" content="Validation checks completed successfully. This case is being moved to the approvals stage." handleOk={() => { this.setState({ HideSubmitApprovalDoneMessage: true }, this.props.onShowList ); }} />
+                <MessageDialog hidden={this.state.HideSubmitApprovalDoneMessage} title="Form Validation" content="Validation checks completed successfully. This case is being moved to the approvals stage." handleOk={() => { this.setState({ HideSubmitApprovalDoneMessage: true }, this.props.onShowList); }} />
+
+                {/* submit to engaged - done */}
+                <MessageDialog hidden={this.state.HideSubmitEngagedDoneMessage} title="Form Validation" content="Validation checks completed successfully. This case is being moved to the engaged stage." handleOk={() => { this.setState({ HideSubmitEngagedDoneMessage: true }, this.props.onShowList); }} />
 
 
             </React.Fragment>
@@ -1407,6 +1440,24 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
     }
 
+    private renderContractorSecurityCheckEvidenceForm() {
+
+        return (
+
+            <EvidenceSaveForm
+                showForm={this.state.ShowContractorSecurityCheckEvidenceForm}
+                parentId={this.props.clWorkerId}
+
+                evidenceId={null}
+                onSaved={this.contractorSecurityCheckEvidenceSaved}
+                onCancelled={this.closeContractorSecurityCheckEvidencePanel}
+                evidenceType="ContractorSecurityCheck"
+                {...this.props}
+            />
+        );
+
+    }
+
     private renderChangeLogs() {
         const fd = this.state.FormData;
         let changeLog = fd.CaseChangeLog ? fd.CaseChangeLog : "";
@@ -2392,6 +2443,850 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
     }
 
+
+    private renderOnboarding() {
+
+        //if (this.props.stage !== "Onboarding") return;
+        if (this.state.DefForm === null) return;
+
+        const genderOptions: IDropdownOption[] = [
+            { key: 'Male', text: 'Male' },
+            { key: 'Female', text: 'Female' },
+        ];
+
+        const fd = this.state.FormDataWorker;
+
+
+
+        const req_OnbContractorGender_Img = fd.OnbContractorGender !== null ? this.checkIconGreen : this.checkIconRed;
+        const req_OnbContractorTitleId_Img = fd.OnbContractorTitleId !== null ? this.checkIconGreen : this.checkIconRed;
+        const req_OnbContractorFirstname_Img = fd.OnbContractorFirstname !== null && fd.OnbContractorFirstname.length > 1 ? this.checkIconGreen : this.checkIconRed;
+        const req_OnbContractorSurname_Img = fd.OnbContractorSurname !== null && fd.OnbContractorSurname.length > 1 ? this.checkIconGreen : this.checkIconRed;
+        const req_OnbContractorDob_Img = fd.OnbContractorDob !== null ? this.checkIconGreen : this.checkIconRed;
+        const req_OnbContractorNINum_Img = fd.OnbContractorNINum !== null && fd.OnbContractorNINum.length > 1 ? this.checkIconGreen : this.checkIconRed;
+        const req_OnbContractorPhone_Img = fd.OnbContractorPhone !== null && fd.OnbContractorPhone.length > 1 ? this.checkIconGreen : this.checkIconRed;
+        const req_OnbContractorEmail_Img = fd.OnbContractorEmail !== null && fd.OnbContractorEmail.length > 1 ? this.checkIconGreen : this.checkIconRed;
+        const req_OnbContractorHomeAddress_Img = fd.OnbContractorHomeAddress !== null && fd.OnbContractorHomeAddress.length > 1 ? this.checkIconGreen : this.checkIconRed;
+        const req_OnbContractorPostCode_Img = fd.OnbContractorPostCode !== null && fd.OnbContractorPostCode.length > 1 ? this.checkIconGreen : this.checkIconRed;
+
+        const req_OnbStartDate_Img = fd.OnbStartDate !== null ? this.checkIconGreen : this.checkIconRed;
+        const req_OnbEndDate_Img = fd.OnbEndDate !== null ? this.checkIconGreen : this.checkIconRed;
+        const req_OnbDayRate_Img = fd.OnbDayRate !== null && fd.OnbDayRate > 0 ? this.checkIconGreen : this.checkIconRed;
+        const req_OnbSecurityClearanceId_Img = fd.OnbSecurityClearanceId !== null ? this.checkIconGreen : this.checkIconRed;
+        const req_ContractorSecurityCheckEvidence_Img = this.state.ContractorSecurityCheckEvidence !== null ? this.checkIconGreen : this.checkIconRed;
+
+        //workdays
+        let totalWorkingDays: number = 0;
+        if (fd.OnbWorkingDayMon === true) totalWorkingDays++;
+        if (fd.OnbWorkingDayTue === true) totalWorkingDays++;
+        if (fd.OnbWorkingDayWed === true) totalWorkingDays++;
+        if (fd.OnbWorkingDayThu === true) totalWorkingDays++;
+        if (fd.OnbWorkingDayFri === true) totalWorkingDays++;
+        if (fd.OnbWorkingDaySat === true) totalWorkingDays++;
+        if (fd.OnbWorkingDaySun === true) totalWorkingDays++;
+
+        const req_workDays_Img = totalWorkingDays > 0 ? this.checkIconGreen : this.checkIconRed;
+
+
+        const req_OnbDecConflictId_Img = fd.OnbDecConflictId !== null ? this.checkIconGreen : this.checkIconRed;
+
+        const req_OnbLineManagerUserId_Img = fd.OnbLineManagerUserId !== null ? this.checkIconGreen : this.checkIconRed;
+        const req_OnbLineManagerGradeId_Img = fd.OnbLineManagerGradeId !== null ? this.checkIconGreen : this.checkIconRed;
+        const req_OnbLineManagerEmployeeNum_Img = fd.OnbLineManagerEmployeeNum !== null && fd.OnbLineManagerEmployeeNum.length > 1 ? this.checkIconGreen : this.checkIconRed;
+        const req_OnbLineManagerPhone_Img = fd.OnbLineManagerPhone !== null && fd.OnbLineManagerPhone.length > 1 ? this.checkIconGreen : this.checkIconRed;
+
+
+
+        return (
+            <div>
+                <div style={{ marginBottom: '10px', marginTop: '30px' }} className={styles.sectionATitle}>Onboarding</div>
+
+                <div style={{ width: '100%', marginLeft: 'auto', marginRight: 'auto', paddingRight: '10px', paddingLeft: '10px', paddingTop: '20px', paddingBottom: '0px', backgroundColor: 'rgb(245,245,245)', border: '1px solid rgb(230,230,230)', }}>
+
+                    <div className={styles.formField} dangerouslySetInnerHTML={{ __html: this.state.DefForm.EngagedStageFormText && this.state.DefForm.EngagedStageFormText }}></div>
+
+                    <div style={{ fontSize: '23px', fontWeight: 'bold', textDecoration: 'underline', paddingBottom: '25px' }}>
+                        Contractor Details
+                    </div>
+                    {/* 1st row */}
+                    <div className={styles.formField}>
+
+                        <div style={{ display: 'flex' }}>
+                            <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Contractor gender</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={req_OnbContractorGender_Img} />
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div style={{ width: '50%', fontWeight: 'bold' }}>
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Contractor title</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={req_OnbContractorTitleId_Img} />
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                        <div style={{ display: 'flex', marginTop: '5px' }}>
+                            <div style={{ width: '50%', paddingRight: '5px' }}>
+                                <CrDropdown
+                                    placeholder="Select an Option"
+                                    options={genderOptions}
+                                    selectedKey={fd.OnbContractorGender}
+                                    onChanged={(v) => this.changeDropdown_Worker(v, "OnbContractorGender")}
+                                />
+
+
+
+                            </div>
+
+                            <div style={{ width: '50%', }}>
+                                <CrDropdown
+                                    placeholder="Select an Option"
+                                    options={this.state.LookupData.PersonTitles.map((p) => { return { key: p.ID, text: p.Title }; })}
+                                    selectedKey={fd.OnbContractorTitleId}
+                                    onChanged={(v) => this.changeDropdown_Worker(v, "OnbContractorTitleId")}
+                                />
+
+                            </div>
+
+
+
+
+                        </div>
+                    </div>
+
+                    {/* 2nd row */}
+                    <div className={styles.formField}>
+
+                        <div style={{ display: 'flex' }}>
+                            <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Contractor firstname</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={req_OnbContractorFirstname_Img} />
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div style={{ width: '50%', fontWeight: 'bold' }}>
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Contractor surname</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={req_OnbContractorSurname_Img} />
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                        <div style={{ display: 'flex', marginTop: '5px' }}>
+                            <div style={{ width: '50%', paddingRight: '5px' }}>
+                                <CrTextField
+                                    //className={styles.formField}
+                                    onChanged={(v) => this.changeTextField_Worker(v, "OnbContractorFirstname")}
+                                    value={fd.OnbContractorFirstname}
+
+                                />
+
+
+
+                            </div>
+
+                            <div style={{ width: '50%', }}>
+                                <CrTextField
+                                    //className={styles.formField}
+                                    onChanged={(v) => this.changeTextField_Worker(v, "OnbContractorSurname")}
+                                    value={fd.OnbContractorSurname}
+
+                                />
+
+                            </div>
+
+
+
+
+                        </div>
+                    </div>
+
+                    {/* 3rd row */}
+                    <div className={styles.formField}>
+
+                        <div style={{ display: 'flex' }}>
+                            <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Contractor date of birth</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={req_OnbContractorDob_Img} />
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div style={{ width: '50%', fontWeight: 'bold' }}>
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Contractor NI Number</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={req_OnbContractorNINum_Img} />
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                        <div style={{ display: 'flex', marginTop: '5px' }}>
+                            <div style={{ width: '50%', paddingRight: '5px' }}>
+                                <CrDatePicker
+                                    maxWidth='100%'
+                                    value={fd.OnbContractorDob}
+                                    onSelectDate={(v) => changeDatePickerV2(this, 'FormDataWorker', v, "OnbContractorDob")}
+                                //required={true}
+                                //errorMessage={this.state.ErrMessages.CurrentPeriodStartDate}
+                                />
+
+
+
+                            </div>
+
+                            <div style={{ width: '50%', }}>
+                                <CrTextField
+                                    //className={styles.formField}
+                                    onChanged={(v) => this.changeTextField_Worker(v, "OnbContractorNINum")}
+                                    value={fd.OnbContractorNINum}
+
+                                />
+
+                            </div>
+
+
+
+
+                        </div>
+                    </div>
+
+                    {/* 4th row */}
+                    <div className={styles.formField}>
+
+                        <div style={{ display: 'flex' }}>
+                            <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Contractor telephone (personal)</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={req_OnbContractorPhone_Img} />
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div style={{ width: '50%', fontWeight: 'bold' }}>
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Contractor email (personal)</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={req_OnbContractorEmail_Img} />
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                        <div style={{ display: 'flex', marginTop: '5px' }}>
+                            <div style={{ width: '50%', paddingRight: '5px' }}>
+                                <CrTextField
+                                    //className={styles.formField}
+                                    onChanged={(v) => this.changeTextField_Worker(v, "OnbContractorPhone")}
+                                    value={fd.OnbContractorPhone}
+
+                                />
+
+
+
+                            </div>
+
+                            <div style={{ width: '50%', }}>
+                                <CrTextField
+                                    //className={styles.formField}
+                                    onChanged={(v) => this.changeTextField_Worker(v, "OnbContractorEmail")}
+                                    value={fd.OnbContractorEmail}
+
+                                />
+
+                            </div>
+
+
+
+
+                        </div>
+                    </div>
+
+                    {/* 5th row */}
+
+                    <div className={styles.formField}>
+
+                        <div style={{ display: 'flex' }}>
+                            <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Contractor home address (personal)</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={req_OnbContractorHomeAddress_Img} />
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div style={{ width: '50%', fontWeight: 'bold' }}>
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Contractor post code (personal)</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={req_OnbContractorPostCode_Img} />
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                        <div style={{ display: 'flex', marginTop: '5px' }}>
+                            <div style={{ width: '50%', paddingRight: '5px' }}>
+                                <CrTextField
+                                    //className={styles.formField}
+                                    onChanged={(v) => this.changeTextField_Worker(v, "OnbContractorHomeAddress")}
+                                    value={fd.OnbContractorHomeAddress}
+
+                                />
+
+
+
+                            </div>
+
+                            <div style={{ width: '50%', }}>
+                                <CrTextField
+                                    //className={styles.formField}
+                                    onChanged={(v) => this.changeTextField_Worker(v, "OnbContractorPostCode")}
+                                    value={fd.OnbContractorPostCode}
+
+                                />
+
+                            </div>
+
+
+
+
+                        </div>
+                    </div>
+
+                    <div style={{ fontSize: '23px', fontWeight: 'bold', textDecoration: 'underline', paddingBottom: '25px' }}>
+                        Vacancy Details
+                    </div>
+
+                    {/* 1st row */}
+
+                    <div className={styles.formField}>
+
+                        <div style={{ display: 'flex' }}>
+                            <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Start date</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={req_OnbStartDate_Img} />
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div style={{ width: '50%', fontWeight: 'bold' }}>
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>End date</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={req_OnbEndDate_Img} />
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                        <div style={{ display: 'flex', marginTop: '5px' }}>
+                            <div style={{ width: '50%', paddingRight: '5px' }}>
+                                <CrDatePicker
+                                    maxWidth='100%'
+                                    value={fd.OnbStartDate}
+                                    onSelectDate={(v) => changeDatePickerV2(this, 'FormDataWorker', v, "OnbStartDate")}
+                                //required={true}
+                                //errorMessage={this.state.ErrMessages.CurrentPeriodStartDate}
+                                />
+
+
+
+                            </div>
+
+                            <div style={{ width: '50%', }}>
+                                <CrDatePicker
+                                    maxWidth='100%'
+                                    //className={styles.width100percent}
+                                    value={fd.OnbEndDate}
+                                    onSelectDate={(v) => changeDatePickerV2(this, 'FormDataWorker', v, "OnbEndDate")}
+                                //required={true}
+                                //errorMessage={this.state.ErrMessages.CurrentPeriodStartDate}
+                                />
+
+                            </div>
+
+
+
+
+                        </div>
+                    </div>
+
+
+                    {/* 2rd row */}
+
+                    <div className={styles.formField}>
+
+                        <div style={{ display: 'flex' }}>
+                            <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Daily rate (including fee) agreed</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={req_OnbDayRate_Img} />
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div style={{ width: '50%', fontWeight: 'bold' }}>
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Purchase order number</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        {/* <img src={reqVacancyTitleValidationImg} /> */}
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                        <div style={{ display: 'flex', marginTop: '5px' }}>
+                            <div style={{ width: '50%', paddingRight: '5px' }}>
+                                <CrTextField
+                                    //className={styles.formField}
+                                    //numbersOnly={true}
+                                    onBlur={(ev) => this.blurRateTextField_Worker(ev, "OnbDayRate")}
+                                    onChanged={(v) => this.changeTextField_number_Worker(v, "OnbDayRate")}
+                                    value={fd.OnbDayRate && String(fd.OnbDayRate)}
+                                //value=''
+
+                                />
+
+
+
+                            </div>
+
+                            <div style={{ width: '50%', }}>
+                                <CrTextField
+                                    //className={styles.formField}
+                                    onChanged={(v) => this.changeTextField_Worker(v, "PurchaseOrderNum")}
+                                    value={fd.PurchaseOrderNum}
+
+                                />
+
+                            </div>
+
+
+
+
+                        </div>
+                    </div>
+
+
+                    {/* 3rd row */}
+
+
+                    <div className={styles.formField}>
+
+                        <div style={{ display: 'flex' }}>
+                            <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Security clearance</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={req_OnbSecurityClearanceId_Img} />
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div style={{ width: '50%', fontWeight: 'bold' }}>
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Security checks confirmation evidence</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={req_ContractorSecurityCheckEvidence_Img} />
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                        <div style={{ display: 'flex', marginTop: '5px' }}>
+                            <div style={{ width: '50%', paddingRight: '5px' }}>
+                                <CrDropdown
+                                    placeholder="Select an Option"
+                                    options={this.state.LookupData.CLSecurityClearances.map((p) => { return { key: p.ID, text: p.Title }; })}
+                                    selectedKey={fd.OnbSecurityClearanceId}
+                                    onChanged={(v) => this.changeDropdown_Worker(v, "OnbSecurityClearanceId")}
+                                />
+
+
+
+                            </div>
+
+                            <div style={{ width: 'calc(100% - 50% - 130px)', paddingRight: '5px' }}>
+                                <CrTextField
+                                    //className={styles.formField}
+                                    //onChanged={(v) => this.changeTextField(v, "TargetDate")}
+                                    //value={fd.TargetDate}
+                                    disabled={true}
+                                    style={{ border: '1px solid gray' }}
+                                    value={this.state.ContractorSecurityCheckEvidence && (this.state.ContractorSecurityCheckEvidence.AttachmentType === "Link" ? "Linked evidence available" : this.state.ContractorSecurityCheckEvidence.AttachmentType === "PDF" ? "PDF evidence available to download" : "")}
+
+                                />
+
+                            </div>
+                            <div style={{ width: '130px', marginTop: '5px' }}>
+
+                                {
+                                    <span>
+                                        {this.state.ContractorSecurityCheckEvidence === null && <span style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }} onClick={this.addContractorSecurityCheckEvidence} >Add</span>}
+                                        {this.state.ContractorSecurityCheckEvidence !== null && <span style={{ marginRight: '5px', cursor: 'pointer', color: 'blue', textDecoration: 'underline' }} onClick={this.viewContractorSecurityCheckEvidence} >View</span>}
+                                        {this.state.ContractorSecurityCheckEvidence !== null && <span style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }} onClick={this.toggleContractorSecurityCheckEvDeleteConfirm} >Delete</span>}
+                                    </span>
+                                }
+
+                            </div>
+
+
+
+
+                        </div>
+
+                        {
+
+
+                            this.state.ContractorSecurityCheckEvidence !== null &&
+
+                            <div style={{ display: 'flex' }}>
+                                <div style={{ width: '50%' }}>&nbsp;</div>
+                                <div style={{ width: '50%', fontSize: '12px', fontStyle: 'italic', paddingTop: '5px', marginTop: '0px', paddingLeft: '0px' }}>
+                                    {this.state.ContractorSecurityCheckEvidence.Details}
+                                </div>
+                            </div>
+
+                        }
+
+
+                    </div>
+
+                    {/* 4th row */}
+
+                    <div className={styles.formField}>
+
+                        <div style={{ display: 'flex' }}>
+                            <div style={{ width: '100%', fontWeight: 'bold' }}>
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Work days</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={req_workDays_Img} />
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <div style={{ display: 'flex', marginTop: '5px' }}>
+                            <div style={{ paddingRight: '15px' }}>
+                                <CrCheckbox
+                                    //className={`${styles.formField} ${styles.checkbox}`}
+                                    label="Monday"
+                                    checked={fd.OnbWorkingDayMon}
+                                    onChange={(ev, isChecked) => this.changeCheckbox_Worker(isChecked, "OnbWorkingDayMon")}
+                                />
+                            </div>
+
+                            <div style={{ paddingRight: '15px' }}>
+                                <CrCheckbox
+                                    //className={`${styles.formField} ${styles.checkbox}`}
+                                    label="Tuesday"
+                                    checked={fd.OnbWorkingDayTue}
+                                    onChange={(ev, isChecked) => this.changeCheckbox_Worker(isChecked, "OnbWorkingDayTue")}
+                                />
+                            </div>
+
+                            <div style={{ paddingRight: '15px' }}>
+                                <CrCheckbox
+                                    //className={`${styles.formField} ${styles.checkbox}`}
+                                    label="Wednesday"
+                                    checked={fd.OnbWorkingDayWed}
+                                    onChange={(ev, isChecked) => this.changeCheckbox_Worker(isChecked, "OnbWorkingDayWed")}
+                                />
+                            </div>
+
+                            <div style={{ paddingRight: '15px' }}>
+                                <CrCheckbox
+                                    //className={`${styles.formField} ${styles.checkbox}`}
+                                    label="Thursday"
+                                    checked={fd.OnbWorkingDayThu}
+                                    onChange={(ev, isChecked) => this.changeCheckbox_Worker(isChecked, "OnbWorkingDayThu")}
+                                />
+                            </div>
+
+                            <div style={{ paddingRight: '15px' }}>
+                                <CrCheckbox
+                                    //className={`${styles.formField} ${styles.checkbox}`}
+                                    label="Friday"
+                                    checked={fd.OnbWorkingDayFri}
+                                    onChange={(ev, isChecked) => this.changeCheckbox_Worker(isChecked, "OnbWorkingDayFri")}
+                                />
+                            </div>
+
+                            <div style={{ paddingRight: '15px' }}>
+                                <CrCheckbox
+                                    //className={`${styles.formField} ${styles.checkbox}`}
+                                    label="Saturday"
+                                    checked={fd.OnbWorkingDaySat}
+                                    onChange={(ev, isChecked) => this.changeCheckbox_Worker(isChecked, "OnbWorkingDaySat")}
+                                />
+                            </div>
+
+                            <div style={{ paddingRight: '15px' }}>
+                                <CrCheckbox
+                                    //className={`${styles.formField} ${styles.checkbox}`}
+                                    label="Sunday"
+                                    checked={fd.OnbWorkingDaySun}
+                                    onChange={(ev, isChecked) => this.changeCheckbox_Worker(isChecked, "OnbWorkingDaySun")}
+                                />
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                    {/* 5th row */}
+                    <div className={styles.formField}>
+
+                        <div style={{ display: 'flex' }}>
+                            <div style={{ width: '100%', fontWeight: 'bold' }}>
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Declaration of conflict of interest</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={req_OnbDecConflictId_Img} />
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div style={{ display: 'flex', marginTop: '5px' }}>
+                            <div style={{ width: '100%', }}>
+                                <CrDropdown
+                                    placeholder="Select an Option"
+                                    options={this.state.LookupData.CLDeclarationConflicts.map((p) => { return { key: p.ID, text: p.Title }; })}
+                                    selectedKey={fd.OnbDecConflictId}
+                                    onChanged={(v) => this.changeDropdown_Worker(v, "OnbDecConflictId")}
+                                />
+
+
+
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    <div style={{ fontSize: '23px', fontWeight: 'bold', textDecoration: 'underline', paddingBottom: '25px' }}>
+                        Line Manager
+                    </div>
+
+
+
+                    {/* 1st row */}
+
+                    <div className={styles.formField}>
+
+                        <div style={{ display: 'flex' }}>
+                            <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Name of Line Manager</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={req_OnbLineManagerUserId_Img} />
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div style={{ width: '50%', fontWeight: 'bold' }}>
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Line Manager grade</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={req_OnbLineManagerGradeId_Img} />
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                        <div style={{ display: 'flex', marginTop: '5px' }}>
+                            <div style={{ width: '50%', paddingRight: '5px' }}>
+                                <CrEntityPicker
+                                    displayForUser={true}
+                                    entities={this.state.LookupData.Users}
+                                    itemLimit={1}
+                                    selectedEntities={fd.OnbLineManagerUserId && [fd.OnbLineManagerUserId]}
+                                    onChange={(v) => this.changeUserPicker_Worker(v, 'OnbLineManagerUserId')}
+                                />
+
+
+
+                            </div>
+
+                            <div style={{ width: '50%', }}>
+                                <CrDropdown
+                                    placeholder="Select an Option"
+                                    options={this.state.LookupData.CLStaffGrades.map((p) => { return { key: p.ID, text: p.Title }; })}
+                                    selectedKey={fd.OnbLineManagerGradeId}
+                                    onChanged={(v) => this.changeDropdown_Worker(v, "OnbLineManagerGradeId")}
+                                />
+
+                            </div>
+
+
+
+
+                        </div>
+                    </div>
+
+
+
+                    {/* 2nd row */}
+
+                    <div className={styles.formField}>
+
+                        <div style={{ display: 'flex' }}>
+                            <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Line Manager Employee Number</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={req_OnbLineManagerEmployeeNum_Img} />
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div style={{ width: '50%', fontWeight: 'bold' }}>
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Line Manager telephone number</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={req_OnbLineManagerPhone_Img} />
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                        <div style={{ display: 'flex', marginTop: '5px' }}>
+                            <div style={{ width: '50%', paddingRight: '5px' }}>
+                                <CrTextField
+                                    //className={styles.formField}
+                                    onChanged={(v) => this.changeTextField_Worker(v, "OnbLineManagerEmployeeNum")}
+                                    value={fd.OnbLineManagerEmployeeNum}
+
+                                />
+
+
+
+                            </div>
+
+                            <div style={{ width: '50%', }}>
+                                <CrTextField
+                                    //className={styles.formField}
+                                    onChanged={(v) => this.changeTextField_Worker(v, "OnbLineManagerPhone")}
+                                    value={fd.OnbLineManagerPhone}
+
+                                />
+
+                            </div>
+
+
+
+
+                        </div>
+                    </div>
+
+
+
+
+                </div>
+
+
+
+
+
+            </div>
+        );
+    }
+
+    private renderFormButtons_OnboardingStage() {
+
+        return (
+            <div>
+
+                {
+
+                    <React.Fragment>
+                        {<PrimaryButton text="Save as Draft" className={styles.formButton} style={{ marginRight: '5px' }}
+                            onClick={() => this.saveData_Onboarding(false)}
+                        />}
+
+                        <PrimaryButton text="Submit to Engaged" className={styles.formButton} style={{ marginRight: '5px' }}
+                            onClick={() => this.saveData_Onboarding(true)}
+                        />
+
+                        <DefaultButton text="Close" className={styles.formButton} style={{ marginRight: '5px' }}
+                            onClick={this.props.onShowList}
+                        />
+
+
+                    </React.Fragment>
+                }
+
+
+
+            </div>
+        );
+
+
+    }
+
     //#region Data Load/Save
 
     private validateEntity = (submitForApproval: boolean, submitDecision): boolean => {
@@ -2448,6 +3343,57 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         return true;
     }
 
+    private validateEntity_Onboarding = (submitToEngaged: boolean): boolean => {
+        if (submitToEngaged === true) {
+
+            const fd = this.state.FormDataWorker;
+            if (fd.OnbContractorGender === null) return false;
+            if (fd.OnbContractorTitleId === null) return false;
+            if (fd.OnbContractorFirstname !== null && fd.OnbContractorFirstname.length > 1) { } else return false;
+            if (fd.OnbContractorSurname !== null && fd.OnbContractorSurname.length > 1) { } else return false;
+            if (fd.OnbContractorDob === null) return false;
+            if (fd.OnbContractorNINum !== null && fd.OnbContractorNINum.length > 1) { } else return false;
+            if (fd.OnbContractorPhone !== null && fd.OnbContractorPhone.length > 1) { } else return false;
+            if (fd.OnbContractorEmail !== null && fd.OnbContractorEmail.length > 1) { } else return false;
+            if (fd.OnbContractorHomeAddress !== null && fd.OnbContractorHomeAddress.length > 1) { } else return false;
+            if (fd.OnbContractorPostCode !== null && fd.OnbContractorPostCode.length > 1) { } else return false;
+
+            if (fd.OnbStartDate === null) return false;
+            if (fd.OnbEndDate === null) return false;
+            if (fd.OnbDayRate !== null && fd.OnbDayRate > 0) { } else return false;
+            if (fd.OnbSecurityClearanceId === null) return false;
+            if (this.state.ContractorSecurityCheckEvidence === null) return false;
+
+            //workdays
+            let totalWorkingDays: number = 0;
+            if (fd.OnbWorkingDayMon === true) totalWorkingDays++;
+            if (fd.OnbWorkingDayTue === true) totalWorkingDays++;
+            if (fd.OnbWorkingDayWed === true) totalWorkingDays++;
+            if (fd.OnbWorkingDayThu === true) totalWorkingDays++;
+            if (fd.OnbWorkingDayFri === true) totalWorkingDays++;
+            if (fd.OnbWorkingDaySat === true) totalWorkingDays++;
+            if (fd.OnbWorkingDaySun === true) totalWorkingDays++;
+
+            if (totalWorkingDays === 0) return false;
+
+
+            if (fd.OnbDecConflictId === null) return false;
+
+            if (fd.OnbLineManagerUserId === null) return false;
+            if (fd.OnbLineManagerGradeId === null) return false;
+            if (fd.OnbLineManagerEmployeeNum !== null && fd.OnbLineManagerEmployeeNum.length > 1) { } else return false;
+            if (fd.OnbLineManagerPhone !== null && fd.OnbLineManagerPhone.length > 1) { } else return false;
+
+
+
+        }
+
+
+        //at the end return true
+        return true;
+
+    }
+
 
     private saveData = (submitForApproval: boolean, submitDecision): void => {
         if (this.validateEntity(submitForApproval, submitDecision)) {
@@ -2490,6 +3436,60 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                     //
                     console.log('submit for approval - done');
                     this.setState({ HideSubmitApprovalDoneMessage: false });
+                }
+                else {
+                    this.props.onShowList();
+                }
+
+
+
+            }, (err) => {
+                if (this.props.onError)
+                    this.props.onError(`Error saving data`, err.message);
+            });
+
+        }
+        else {
+            //validation is false
+            console.log('validations required');
+            this.setState({ HideFormValidationMessage: false });
+        }
+    }
+
+    private saveData_Onboarding = (submitToEngaged: boolean): void => {
+        if (this.validateEntity_Onboarding(submitToEngaged)) {
+
+            console.log('in saveData_Onboarding');
+            if (this.props.onError) this.props.onError(null);
+            let f: ICLWorker = { ...this.state.FormDataWorker };
+            //remove all the child and parent entities before sending post/patch
+            //delete f.User; //parent entity
+
+            if (this.isNumeric(f.OnbDayRate) === true) {
+                f.OnbDayRate = Number(f.OnbDayRate);
+            }
+            else {
+                f.OnbDayRate = null;
+            }
+
+
+
+            //
+            if (submitToEngaged === true) {
+                f.Title = "SubmitToEngaged"; //for api to know its a request for SubmitToEngaged
+            }
+
+
+            this.clWorkerService.updatePut(f.ID, f).then((): void => {
+                //console.log('saved..');
+
+                if (this.props.onError)
+                    this.props.onError(null);
+
+                if (submitToEngaged === true) {
+                    //
+                    console.log('submitToEngaged - done');
+                    this.setState({ HideSubmitEngagedDoneMessage: false });
                 }
                 else {
                     this.props.onShowList();
@@ -2558,6 +3558,35 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
             return data;
         }, (err) => { if (this.props.onError) this.props.onError(`Error loading CLIR35Scopes lookup data`, err.message); });
     }
+    private loadCLSecurityClearances = (): void => {
+        if (this.props.stage !== "Onboarding") return;
+
+        this.clSecurityClearanceService.readAll().then((data: IEntity[]): IEntity[] => {
+            console.log('loadCLSecurityClearances - data', data);
+            this.setState({ LookupData: this.cloneObject(this.state.LookupData, "CLSecurityClearances", data) });
+            return data;
+        }, (err) => { if (this.props.onError) this.props.onError(`Error loading CLSecurityClearances lookup data`, err.message); });
+    }
+
+    private loadCLDeclarationConflicts = (): void => {
+        if (this.props.stage !== "Onboarding") return;
+
+        this.clDeclarationConflictService.readAll().then((data: IEntity[]): IEntity[] => {
+            console.log('CLDeclarationConflicts - data', data);
+            this.setState({ LookupData: this.cloneObject(this.state.LookupData, "CLDeclarationConflicts", data) });
+            return data;
+        }, (err) => { if (this.props.onError) this.props.onError(`Error loading CLDeclarationConflicts lookup data`, err.message); });
+    }
+
+    private loadPersonTitles = (): void => {
+        if (this.props.stage !== "Onboarding") return;
+
+        this.personTitleService.readAll().then((data: IEntity[]): IEntity[] => {
+            console.log('PersonTitles - data', data);
+            this.setState({ LookupData: this.cloneObject(this.state.LookupData, "PersonTitles", data) });
+            return data;
+        }, (err) => { if (this.props.onError) this.props.onError(`Error loading PersonTitles lookup data`, err.message); });
+    }
 
     protected loadLookups(): Promise<any> {
 
@@ -2569,9 +3598,15 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
             this.loadCLWorkLocations(),
             this.loadCLComFrameworks(),
             this.loadCLIR35Scopes(),
+            this.loadCLSecurityClearances(),
+            this.loadPersonTitles(),
+            this.loadCLDeclarationConflicts(),
             this.loadCaseInfo(),
             this.loadClCase(),
             this.loadIR35Evidence(),
+            this.loadDefForm(),
+            this.loadCLWorker(),
+            this.loadContractorSecurityCheckEvidence(),
 
         ]);
     }
@@ -2629,7 +3664,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     private loadCaseInfo = (): void => {
 
         if (this.props.clCaseId > 0) {
-            this.clCaseService.getCaseInfo(this.props.clCaseId).then((x: IClCaseInfo) => {
+            this.clCaseService.getCaseInfo(this.props.clCaseId, this.props.clWorkerId).then((x: IClCaseInfo) => {
                 console.log('Case Info', x);
 
                 this.setState({
@@ -2694,6 +3729,64 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
     }
 
+    private loadDefForm = (): Promise<void> => {
+        if (this.props.stage !== "Onboarding") return;
+        console.log('loadDefForm');
+        let x = this.clDefFormService.readDefForm().then((df: ICLDefForm): void => {
+            console.log('df ', df);
+            this.setState({ DefForm: df });
+
+        }, (err) => { if (this.props.onError) this.props.onError(`Error loading df`, err.message); });
+        return x;
+    }
+
+    private loadCLWorker = (): void => {
+
+        if (this.props.stage !== "Onboarding") return;
+
+        this.clWorkerService.read(this.props.clWorkerId).then((w: ICLWorker) => {
+            console.log('CLWorker', w);
+            this.setState({
+                FormDataWorker: w,
+            });
+
+
+        }, (err) => {
+            if (this.props.onError) this.props.onError(`Error loading worker`, err.message);
+        });
+    }
+
+    private loadContractorSecurityCheckEvidence = (): void => {
+
+        if (this.props.stage !== "Onboarding") return;
+
+        //const counter: number = this.state.EvidenceChangesCounter + 1;
+        this.clCaseEvidenceService.readContractorSecurityCheckEvidence(this.props.clWorkerId).then((x: ICLCaseEvidence[]) => {
+            console.log('loadContractorSecurityCheckEvidence', x);
+            if (x.length > 0) {
+                const contractorSecurityCheckEvidence: ICLCaseEvidence = x[0];
+
+                this.setState({
+                    ContractorSecurityCheckEvidence: contractorSecurityCheckEvidence,
+                    //EvidenceChangesCounter: counter,
+                });
+            }
+            else {
+                this.setState({
+                    ContractorSecurityCheckEvidence: null,
+                    //EvidenceChangesCounter: counter,
+                });
+            }
+
+
+
+
+        }, (err) => {
+            if (this.props.onError) this.props.onError(`Error loading Case ContractorSecurityCheckEvidence Evidence`, err.message);
+        });
+
+    }
+
 
     //#endregion Data Load/Save
 
@@ -2714,13 +3807,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     }
 
     protected changeTextField_number = (value: string, f: string): void => {
-        // try{
-        //     const temp:number = Number(value);
-        //     console.log('converted into number', temp);
-        // }
-        // catch(ex){
-        //     console.log('err', ex);
-        // }
+
         if (value == null || value == '') {
             console.log('set value to null');
             this.setState({ FormData: this.cloneObject(this.state.FormData, f, null)/*, FormIsDirty: true*/ });
@@ -2738,18 +3825,43 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         }
 
     }
+    private changeTextField_number_Worker = (value: string, f: string): void => {
+
+        if (value == null || value == '') {
+            console.log('set value to null');
+            this.setState({ FormDataWorker: this.cloneObject(this.state.FormDataWorker, f, null)/*, FormIsDirty: true*/ });
+        }
+        else {
+            const isNum: boolean = this.isNumeric(value);
+            console.log('isNumeric', isNum);
+            if (isNum === true) {
+                this.setState({ FormDataWorker: this.cloneObject(this.state.FormDataWorker, f, value)/*, FormIsDirty: true*/ });
+            }
+            else {
+                this.setState({ FormDataWorker: this.cloneObject(this.state.FormDataWorker, f, this.state.FormDataWorker[f])/*, FormIsDirty: true*/ });
+            }
+
+        }
+
+    }
 
     protected changeTextField = (value: string, f: string): void => {
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, value)/*, FormIsDirty: true*/ });
     }
 
+    private changeTextField_Worker = (value: string, f: string): void => {
+        this.setState({ FormDataWorker: this.cloneObject(this.state.FormDataWorker, f, value)/*, FormIsDirty: true*/ });
+    }
 
 
-    protected changeCheckbox = (value: boolean, f: string): void => {
-        this.setState({ FormData: this.cloneObject(this.state.FormData, f, value)/*, FormIsDirty: true*/ });
+    private changeCheckbox_Worker = (value: boolean, f: string): void => {
+        this.setState({ FormDataWorker: this.cloneObject(this.state.FormDataWorker, f, value)/*, FormIsDirty: true*/ });
     }
     private changeDropdown = (option: IDropdownOption, f: string, index?: number): void => {
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, option.key), /*FormIsDirty: true*/ });
+    }
+    private changeDropdown_Worker = (option: IDropdownOption, f: string, index?: number): void => {
+        this.setState({ FormDataWorker: this.cloneObject(this.state.FormDataWorker, f, option.key), /*FormIsDirty: true*/ });
     }
     protected changeChoiceGroup = (ev, option: IChoiceGroupOption, f: string): void => {
         const selectedKey = option.key;
@@ -2758,6 +3870,9 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     }
     private changeUserPicker = (value: number[], f: string): void => {
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, value.length === 1 ? value[0] : null), });
+    }
+    private changeUserPicker_Worker = (value: number[], f: string): void => {
+        this.setState({ FormDataWorker: this.cloneObject(this.state.FormDataWorker, f, value.length === 1 ? value[0] : null), });
     }
 
     private isNumeric(str: any) {
@@ -2772,6 +3887,17 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         if (Number(this.state.FormData[f]) > 0) {
             const rateStr = Number(this.state.FormData[f]).toFixed(2);
             this.setState({ FormData: this.cloneObject(this.state.FormData, f, rateStr)/*, FormIsDirty: true*/ });
+        }
+        else {
+            console.log('value is less than 0');
+        }
+
+    }
+    private blurRateTextField_Worker = (ev, f: string): void => {
+        console.log('blur', f);
+        if (Number(this.state.FormDataWorker[f]) > 0) {
+            const rateStr = Number(this.state.FormDataWorker[f]).toFixed(2);
+            this.setState({ FormDataWorker: this.cloneObject(this.state.FormDataWorker, f, rateStr)/*, FormIsDirty: true*/ });
         }
         else {
             console.log('value is less than 0');
@@ -2815,6 +3941,11 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         this.setState({ ShowIR35EvidenceForm: true });
 
     }
+    private addContractorSecurityCheckEvidence = () => {
+        console.log('in addContractorSecurityCheckEvidence');
+        this.setState({ ShowContractorSecurityCheckEvidenceForm: true });
+
+    }
 
     private ir35EvidenceSaved = (): void => {
         //this.loadEvidences();
@@ -2823,8 +3954,18 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
     }
 
+    private contractorSecurityCheckEvidenceSaved = (): void => {
+        //this.loadEvidences();
+        this.closeContractorSecurityCheckEvidencePanel();
+        this.loadContractorSecurityCheckEvidence();
+
+    }
+
     private closeIR35EvidencePanel = (): void => {
         this.setState({ ShowIR35EvidenceForm: false });
+    }
+    private closeContractorSecurityCheckEvidencePanel = (): void => {
+        this.setState({ ShowContractorSecurityCheckEvidenceForm: false });
     }
 
     //#endregion Event Handlers
@@ -2910,8 +4051,75 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
     }
 
+    private viewContractorSecurityCheckEvidence = (): void => {
+        console.log('in viewContractorSecurityCheckEvidence.');
+        const fileName: string = this.state.ContractorSecurityCheckEvidence.Title;
+        if (this.state.ContractorSecurityCheckEvidence.AttachmentType === "Link") {
+            console.log('selected evidence is a link');
+
+            const a = document.createElement('a');
+            //document.body.appendChild(a);
+            a.href = fileName;
+            a.target = "_blank";
+            //a.download = fileName;
+
+            document.body.appendChild(a);
+            console.log(a);
+            //a.click();
+            //document.body.removeChild(a);
+
+
+            setTimeout(() => {
+                window.URL.revokeObjectURL(fileName);
+                window.open(fileName, '_blank');
+                document.body.removeChild(a);
+            }, 1);
+
+
+
+
+        }
+        else {
+            const f = sp.web.getFolderByServerRelativeUrl(this.UploadFolder_Evidence).files.getByName(fileName);
+
+            f.get().then(t => {
+                console.log(t);
+                const serverRelativeUrl = t["ServerRelativeUrl"];
+                console.log(serverRelativeUrl);
+
+                const a = document.createElement('a');
+                //document.body.appendChild(a);
+                a.href = serverRelativeUrl;
+                a.target = "_blank";
+                a.download = fileName;
+
+                document.body.appendChild(a);
+                console.log(a);
+                //a.click();
+                //document.body.removeChild(a);
+
+
+                setTimeout(() => {
+                    window.URL.revokeObjectURL(serverRelativeUrl);
+                    window.open(serverRelativeUrl, '_blank');
+                    document.body.removeChild(a);
+                }, 1);
+
+
+            });
+        }
+
+
+
+
+    }
+
     private toggleIR35EvDeleteConfirm = (): void => {
         this.setState({ HideIR35EvDeleteDialog: !this.state.HideIR35EvDeleteDialog });
+    }
+
+    private toggleContractorSecurityCheckEvDeleteConfirm = (): void => {
+        this.setState({ HideContractorSecurityCheckEvDeleteDialog: !this.state.HideContractorSecurityCheckEvDeleteDialog });
     }
 
 
@@ -2935,6 +4143,32 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                 //console.log('file deleted', df);
 
                 this.clCaseEvidenceService.delete(this.state.IR35Evidence.ID).then(this.loadIR35Evidence, (err) => {
+                    if (this.props.onError) this.props.onError(`Cannot delete this evidence. `, err.message);
+                });
+            });
+        }
+    }
+
+    private deleteContractorSecurityCheckEvidence = (): void => {
+        if (this.props.onError) this.props.onError(null);
+        this.setState({ HideContractorSecurityCheckEvDeleteDialog: true });
+
+        const fileName: string = this.state.ContractorSecurityCheckEvidence.Title;
+        //console.log(fileName);
+
+        if (this.state.ContractorSecurityCheckEvidence.AttachmentType === "Link") {
+
+            console.log('deleting eveidence (link)');
+            this.clCaseEvidenceService.delete(this.state.ContractorSecurityCheckEvidence.ID).then(this.loadContractorSecurityCheckEvidence, (err) => {
+                if (this.props.onError) this.props.onError(`Cannot delete this evidence. `, err.message);
+            });
+        }
+        else {
+
+            sp.web.getFolderByServerRelativeUrl(this.UploadFolder_Evidence).files.getByName(fileName).delete().then(df => {
+                //console.log('file deleted', df);
+
+                this.clCaseEvidenceService.delete(this.state.ContractorSecurityCheckEvidence.ID).then(this.loadContractorSecurityCheckEvidence, (err) => {
                     if (this.props.onError) this.props.onError(`Cannot delete this evidence. `, err.message);
                 });
             });

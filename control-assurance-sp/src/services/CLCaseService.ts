@@ -27,8 +27,8 @@ export class CLCaseService extends EntityService<IEntity> {
         });
     }
 
-    public getCaseInfo(clCaseId:number): Promise<IGIAAAuditReportInfo> {
-        return this.readEntity(`?clCaseId=${clCaseId}&getInfo=true`);
+    public getCaseInfo(clCaseId:number, clWorkerId): Promise<IGIAAAuditReportInfo> {
+        return this.readEntity(`?clCaseId=${clCaseId}&clWorkerId=${clWorkerId}&getInfo=true`);
     }
 
 

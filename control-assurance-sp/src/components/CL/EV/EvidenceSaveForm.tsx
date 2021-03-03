@@ -66,7 +66,7 @@ export class EvidenceSaveFormState implements IEvidenceSaveFormState {
 
     constructor(parentId: number, evidenceType:string) {
         let defaultAttachmentType:string = "None";
-        if(evidenceType === "IR35"){
+        if(evidenceType === "IR35" || evidenceType === "ContractorSecurityCheck"){
             defaultAttachmentType = "PDF";
         }
         this.FormData = new CLCaseEvidence(parentId, evidenceType, defaultAttachmentType);
@@ -94,8 +94,10 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
 
 
     public render(): React.ReactElement<IEvidenceSaveFormProps> {
+        console.log('in render - evidenceType',this.props.evidenceType);
         //const errors = this.state.ValidationErrors;
-        const headerText: string = this.props.evidenceType === "IR35" ? "Evidence" : "Case Discussion, General Comments and Attachments";
+        const headerText: string = (this.props.evidenceType === "IR35" || this.props.evidenceType === "ContractorSecurityCheck") ? "Evidence" : "Case Discussion, General Comments and Attachments";
+        
         return (
             <Panel isOpen={this.props.showForm} headerText={headerText} type={PanelType.medium} onRenderNavigation={() => <FormCommandBar onSave={this.saveEvidence} onCancel={this.props.onCancelled} />}>
                 <div className={styles.cr}>
@@ -161,7 +163,7 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
             { key: 'Link', text: 'Link' },
         ];
 
-        if(this.props.evidenceType === "IR35"){
+        if(this.props.evidenceType === "IR35" || this.props.evidenceType === "ContractorSecurityCheck"){
             options = options.filter(x => x.key !== 'None');
         }
 

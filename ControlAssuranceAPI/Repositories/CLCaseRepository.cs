@@ -25,9 +25,35 @@ namespace ControlAssuranceAPI.Repositories
 
         public class CaseStages
         {
-            public static string Draft = "Draft";
-            public static string Approval = "Approval";
-            public static string Onboarding = "Onboarding";
+            //public static string Draft = "Draft";
+            //public static string Approval = "Approval";
+            //public static string Onboarding = "Onboarding";
+
+            public static CaseStage Draft = new CaseStage { Name = "Draft", Number = 1 };
+            public static CaseStage Approval = new CaseStage { Name = "Approval", Number = 2 };
+            public static CaseStage Onboarding = new CaseStage { Name = "Onboarding", Number = 3 };
+            public static CaseStage Engaged = new CaseStage { Name = "Engaged", Number = 4 };
+
+            public static int GetStageNumber(string stageName)
+            {
+                if (stageName == CaseStages.Draft.Name)
+                    return CaseStages.Draft.Number;
+                else if (stageName == CaseStages.Approval.Name)
+                    return CaseStages.Approval.Number;
+                else if (stageName == CaseStages.Onboarding.Name)
+                    return CaseStages.Onboarding.Number;
+                else if (stageName == CaseStages.Engaged.Name)
+                    return CaseStages.Engaged.Number;
+                else
+                    return 0;
+            }
+
+
+            public class CaseStage
+            {
+                public string Name { get; set; }
+                public int Number { get; set; }
+            }
 
         }
 
@@ -46,7 +72,7 @@ namespace ControlAssuranceAPI.Repositories
             return CLCases.Where(x => x.ID == keyValue).FirstOrDefault();
         }
 
-        public ClCaseInfoView_Result GetCaseInfo(int id)
+        public ClCaseInfoView_Result GetCaseInfo(int clCaseId, int clWorkerId)
         {
             var loggedInUser = ApiUser;
             //string loggedInUserTitle = loggedInUser.Title;
@@ -56,18 +82,22 @@ namespace ControlAssuranceAPI.Repositories
 
 
             ClCaseInfoView_Result ret = new ClCaseInfoView_Result();
-            var c = db.CLCases.FirstOrDefault(x => x.ID == id);
-            if (c != null)
+            var w = db.CLWorkers.FirstOrDefault(x => x.ID == clWorkerId);
+            if (w != null)
             {
 
-                ret.ID = c.ID;
-                ret.Stage = c.CLWorkers.FirstOrDefault()?.Stage ?? CaseStages.Draft; //qry needs to be changed
-                ret.CreatedBy = db.Users.FirstOrDefault(x => x.ID == c.CreatedById).Title;
-                ret.CreatedOn = c.CreatedOn.Value.ToString("dd/MM/yyyy HH:mm");
+                ret.ID = w.ID;
+                ret.Stage = w.Stage;
+                ret.CreatedBy = db.Users.FirstOrDefault(x => x.ID == w.CLCase.CreatedById).Title;
+                ret.CreatedOn = w.CLCase.CreatedOn.Value.ToString("dd/MM/yyyy HH:mm");
                 string caseRef = "";
-                if (c.CaseCreated == true)
+                if (w.CLCase.CaseCreated == true)
                 {
-                    caseRef = $"{c.CLComFramework?.Title ?? ""}{c.ID}"; //TODO
+                    caseRef = $"{w.CLCase.CLComFramework?.Title ?? ""}{w.CLCase.ID}";
+                    if (CaseStages.GetStageNumber(w.Stage) >= CaseStages.Onboarding.Number && w.CLCase.ReqNumPositions > 1)
+                    {
+                        caseRef += $"/{w.CLCase.ReqNumPositions}/{w.WorkerNumber?.ToString() ?? ""}";
+                    }
                 }
                 else
                 {
@@ -76,66 +106,66 @@ namespace ControlAssuranceAPI.Repositories
                 ret.CaseRef = caseRef;
 
                 //following fields mostly needed after Draft stage
-                if(ret.Stage == CaseStages.Approval || clViewer == true)
+                if(ret.Stage == CaseStages.Approval.Name || clViewer == true)
                 {
                     string applHMUser = "";
-                    if(c.ApplHMUserId != null)
+                    if(w.CLCase.ApplHMUserId != null)
                     {
-                        applHMUser = db.Users.FirstOrDefault(x => x.ID == c.ApplHMUserId)?.Title ?? "";
+                        applHMUser = db.Users.FirstOrDefault(x => x.ID == w.CLCase.ApplHMUserId)?.Title ?? "";
                         ret.ApplHMUser = applHMUser;
                     }
 
-                    ret.ReqGrade = c.CLStaffGrade?.Title ?? "";
-                    ret.Directorate = c.Directorate?.Title ?? "";
-                    ret.ReqEstStartDate = c.ReqEstStartDate?.ToString("dd/MM/yyyy") ?? "";
-                    ret.ReqEstEndDate = c.ReqEstEndDate?.ToString("dd/MM/yyyy") ?? "";
-                    ret.ReqProfessionalCat = c.CLProfessionalCat?.Title ?? "";
-                    ret.ReqWorkLocation = c.CLWorkLocation?.Title ?? "";
-                    ret.ComFramework = c.CLComFramework?.Title ?? "";
-                    ret.ComPSRAccount = c.ComPSRAccountId?.ToString();
+                    ret.ReqGrade = w.CLCase.CLStaffGrade?.Title ?? "";
+                    ret.Directorate = w.CLCase.Directorate?.Title ?? "";
+                    ret.ReqEstStartDate = w.CLCase.ReqEstStartDate?.ToString("dd/MM/yyyy") ?? "";
+                    ret.ReqEstEndDate = w.CLCase.ReqEstEndDate?.ToString("dd/MM/yyyy") ?? "";
+                    ret.ReqProfessionalCat = w.CLCase.CLProfessionalCat?.Title ?? "";
+                    ret.ReqWorkLocation = w.CLCase.CLWorkLocation?.Title ?? "";
+                    ret.ComFramework = w.CLCase.CLComFramework?.Title ?? "";
+                    ret.ComPSRAccount = w.CLCase.ComPSRAccountId?.ToString();
                     if (ret.ComPSRAccount == "NA")
                         ret.ComPSRAccount = "N/A";
-                    ret.FinIR35Scope = c.CLIR35Scope?.Title ?? "";
+                    ret.FinIR35Scope = w.CLCase.CLIR35Scope?.Title ?? "";
 
                     string bhUser = "";
-                    if (c.BHUserId != null)
+                    if (w.CLCase.BHUserId != null)
                     {
-                        bhUser = db.Users.FirstOrDefault(x => x.ID == c.BHUserId)?.Title ?? "";
+                        bhUser = db.Users.FirstOrDefault(x => x.ID == w.CLCase.BHUserId)?.Title ?? "";
                         ret.BHUser = bhUser;
                     }
 
                     string fbpUser = "";
-                    if (c.FBPUserId != null)
+                    if (w.CLCase.FBPUserId != null)
                     {
-                        fbpUser = db.Users.FirstOrDefault(x => x.ID == c.FBPUserId)?.Title ?? "";
+                        fbpUser = db.Users.FirstOrDefault(x => x.ID == w.CLCase.FBPUserId)?.Title ?? "";
                         ret.FBPUser = fbpUser;
                     }
 
                     string hrbpUser = "";
-                    if (c.HRBPUserId != null)
+                    if (w.CLCase.HRBPUserId != null)
                     {
-                        hrbpUser = db.Users.FirstOrDefault(x => x.ID == c.HRBPUserId)?.Title ?? "";
+                        hrbpUser = db.Users.FirstOrDefault(x => x.ID == w.CLCase.HRBPUserId)?.Title ?? "";
                         ret.HRBPUser = hrbpUser;
                     }
 
                     string bhDecisionByAndDate = "";
-                    if(c.BHDecisionById != null)
+                    if(w.CLCase.BHDecisionById != null)
                     {
-                        bhDecisionByAndDate = db.Users.FirstOrDefault(x => x.ID == c.BHDecisionById)?.Title + ", " + c.BHDecisionDate?.ToString("dd/MM/yyyy HH:mm") ?? "";
+                        bhDecisionByAndDate = db.Users.FirstOrDefault(x => x.ID == w.CLCase.BHDecisionById)?.Title + ", " + w.CLCase.BHDecisionDate?.ToString("dd/MM/yyyy HH:mm") ?? "";
                         ret.BHDecisionByAndDate = bhDecisionByAndDate;
                     }
 
                     string fbpDecisionByAndDate = "";
-                    if (c.FBPDecisionById != null)
+                    if (w.CLCase.FBPDecisionById != null)
                     {
-                        fbpDecisionByAndDate = db.Users.FirstOrDefault(x => x.ID == c.FBPDecisionById)?.Title + ", " + c.FBPDecisionDate?.ToString("dd/MM/yyyy HH:mm") ?? "";
+                        fbpDecisionByAndDate = db.Users.FirstOrDefault(x => x.ID == w.CLCase.FBPDecisionById)?.Title + ", " + w.CLCase.FBPDecisionDate?.ToString("dd/MM/yyyy HH:mm") ?? "";
                         ret.FBPDecisionByAndDate = fbpDecisionByAndDate;
                     }
 
                     string hrbpDecisionByAndDate = "";
-                    if (c.HRBPDecisionById != null)
+                    if (w.CLCase.HRBPDecisionById != null)
                     {
-                        hrbpDecisionByAndDate = db.Users.FirstOrDefault(x => x.ID == c.HRBPDecisionById)?.Title + ", " + c.HRBPDecisionDate?.ToString("dd/MM/yyyy HH:mm") ?? "";
+                        hrbpDecisionByAndDate = db.Users.FirstOrDefault(x => x.ID == w.CLCase.HRBPDecisionById)?.Title + ", " + w.CLCase.HRBPDecisionDate?.ToString("dd/MM/yyyy HH:mm") ?? "";
                         ret.HRBPDecisionByAndDate = hrbpDecisionByAndDate;
                     }
 
@@ -165,6 +195,7 @@ namespace ControlAssuranceAPI.Repositories
                       {
                           w.ID,
                           w.Stage,
+                          w.WorkerNumber,
                           w.CLCase,
                           HiringManagerObj = db.Users.FirstOrDefault(x => x.ID == w.CLCase.ApplHMUserId)
                       };
@@ -190,7 +221,7 @@ namespace ControlAssuranceAPI.Repositories
                 string stageActions1 = "ToComplete";
                 string stageAction2 = "";
 
-                if(ite.Stage == CaseStages.Approval)
+                if(ite.Stage == CaseStages.Approval.Name)
                 {
                     int totalRejected = 0;
                     int totalRequireDetails = 0;
@@ -274,12 +305,18 @@ namespace ControlAssuranceAPI.Repositories
                     }
                 }
 
+                string caseRef = $"{ite.CLCase.CLComFramework?.Title ?? ""}{ite.CLCase.ID}";
+                if(CaseStages.GetStageNumber(ite.Stage) >= CaseStages.Onboarding.Number && ite.CLCase.ReqNumPositions > 1) 
+                {
+                    caseRef += $"/{ite.CLCase.ReqNumPositions}/{ite.WorkerNumber?.ToString() ?? ""}";
+                }
+
 
 
                 CLCaseView_Result item = new CLCaseView_Result();
                 item.ID = ite.ID;
                 item.CaseId = ite.CLCase.ID;
-                item.CaseRef = $"{ite.CLCase.CLComFramework?.Title ?? ""}{ite.ID}";
+                item.CaseRef = caseRef;
                 item.Title1 = ite.CLCase.ReqVacancyTitle?.ToString() ?? "Title Required";
                 item.Title2 = ite.CLCase.CaseType;
                 item.Stage = ite.Stage;
@@ -347,7 +384,7 @@ namespace ControlAssuranceAPI.Repositories
 
                 CLWorker cLWorker = new CLWorker();
                 cLWorker.CLCaseId = cLcase.ID;
-                cLWorker.Stage = CaseStages.Draft;
+                cLWorker.Stage = CaseStages.Draft.Name;
 
                 db.CLWorkers.Add(cLWorker);
                 db.SaveChanges();
@@ -359,7 +396,7 @@ namespace ControlAssuranceAPI.Repositories
             {
                 newChangeLog = $"{cLcase.CaseChangeLog}{date} Case submitted for Approval by {user},";
                 var worker = cLcase.CLWorkers.FirstOrDefault();
-                worker.Stage = CaseStages.Approval;
+                worker.Stage = CaseStages.Approval.Name;
                 cLcase.CaseChangeLog = newChangeLog;
             }
             else if(inputCase.Title == "SubmitDecision")
@@ -413,11 +450,12 @@ namespace ControlAssuranceAPI.Repositories
                             else
                             {
                                 cLWorker = new CLWorker();
+                                cLWorker.CLCaseId = cLcase.ID;
                                 db.CLWorkers.Add(cLWorker);
                             }
 
-
-                            cLWorker.Stage = CaseStages.Onboarding;
+                            cLWorker.WorkerNumber = (i + 1);
+                            cLWorker.Stage = CaseStages.Onboarding.Name;
 
 
                         }
