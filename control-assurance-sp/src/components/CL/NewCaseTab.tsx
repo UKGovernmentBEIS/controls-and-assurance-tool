@@ -22,7 +22,6 @@ import { CrDatePicker } from '../cr/CrDatePicker';
 import { CrEntityPicker } from '../cr/CrEntityPicker';
 import { changeDatePicker, changeDatePickerV2 } from '../../types/AppGlobals';
 import '../../styles/CustomFabric.scss';
-import { IContextualMenuProps, themeRulesStandardCreator } from 'office-ui-fabric-react';
 
 
 
