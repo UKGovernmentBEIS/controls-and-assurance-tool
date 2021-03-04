@@ -110,6 +110,16 @@ export interface IClCaseInfo  extends IEntity {
     FBPDecisionByAndDate?: string;
     HRBPDecisionByAndDate?: string;
 
+    OnbContractorTitle?: string;
+    OnbContractorDobStr?: string;
+    OnbStartDateStr?: string;
+    OnbEndDateStr?: string;
+    OnbSecurityClearance?: string;
+    WorkDays?: string;
+    OnbDecConflict?: string;
+    OnbLineManagerUser?: string;
+    OnbLineManagerGrade?: string;
+
 }
 export class ClCaseInfo  implements IClCaseInfo {
     public ID: number = 0;
@@ -136,6 +146,16 @@ export class ClCaseInfo  implements IClCaseInfo {
     public BHDecisionByAndDate?: string = "";
     public FBPDecisionByAndDate?: string = "";
     public HRBPDecisionByAndDate?: string = "";
+
+    public OnbContractorTitle?: string = "";
+    public OnbContractorDobStr?: string = "";
+    public OnbStartDateStr?: string = "";
+    public OnbEndDateStr?: string = "";
+    public OnbSecurityClearance?: string = "";
+    public WorkDays?: string = "";
+    public OnbDecConflict?: string = "";
+    public OnbLineManagerUser?: string = "";
+    public OnbLineManagerGrade?: string = "";
 
 
 }

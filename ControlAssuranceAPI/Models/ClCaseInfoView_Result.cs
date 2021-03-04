@@ -30,5 +30,15 @@ namespace ControlAssuranceAPI.Models
         public string BHDecisionByAndDate { get; set; }
         public string FBPDecisionByAndDate { get; set; }
         public string HRBPDecisionByAndDate { get; set; }
+
+        public string OnbContractorTitle { get; set; }
+        public string OnbContractorDobStr { get; set; }
+        public string OnbStartDateStr { get; set; }
+        public string OnbEndDateStr { get; set; }
+        public string OnbSecurityClearance { get; set; }
+        public string WorkDays { get; set; }
+        public string OnbDecConflict { get; set; }
+        public string OnbLineManagerUser { get; set; }
+        public string OnbLineManagerGrade { get; set; }
     }
 }

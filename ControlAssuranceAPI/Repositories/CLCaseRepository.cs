@@ -106,7 +106,8 @@ namespace ControlAssuranceAPI.Repositories
                 ret.CaseRef = caseRef;
 
                 //following fields mostly needed after Draft stage
-                if(ret.Stage == CaseStages.Approval.Name || clViewer == true)
+                
+                if((CaseStages.GetStageNumber(ret.Stage) >= CaseStages.Approval.Number) || clViewer == true)
                 {
                     string applHMUser = "";
                     if(w.CLCase.ApplHMUserId != null)
@@ -171,6 +172,35 @@ namespace ControlAssuranceAPI.Repositories
 
                 }
                 
+                
+                
+                if((CaseStages.GetStageNumber(ret.Stage) >= CaseStages.Onboarding.Number) || clViewer == true)
+                {
+                    ret.OnbContractorTitle = w.PersonTitle?.Title ?? "";
+                    ret.OnbContractorDobStr = w.OnbContractorDob?.ToString("dd/MM/yyyy") ?? "";
+                    ret.OnbStartDateStr = w.OnbStartDate?.ToString("dd/MM/yyyy") ?? "";
+                    ret.OnbEndDateStr = w.OnbEndDate?.ToString("dd/MM/yyyy") ?? "";
+                    ret.OnbSecurityClearance = w.CLSecurityClearance?.Title ?? "";
+                    string workDays = "";
+                    if (w.OnbWorkingDayMon == true) workDays += "Monday, ";
+                    if (w.OnbWorkingDayTue == true) workDays += "Tuesday, ";
+                    if (w.OnbWorkingDayWed == true) workDays += "Wednesday, ";
+                    if (w.OnbWorkingDayThu == true) workDays += "Thursday, ";
+                    if (w.OnbWorkingDayFri == true) workDays += "Friday, ";
+                    if (w.OnbWorkingDaySat == true) workDays += "Saturday, ";
+                    if (w.OnbWorkingDaySun == true) workDays += "Sunday, ";
+
+                    if(workDays.Length > 0)
+                    {
+                        workDays = workDays.Substring(0, workDays.Length - 2);
+                    }
+                    ret.WorkDays = workDays;
+                    ret.OnbDecConflict = w.CLDeclarationConflict?.Title ?? "";
+                    ret.OnbLineManagerUser = w.OnbLineManagerUserId != null ? db.Users.FirstOrDefault(x => x.ID == w.OnbLineManagerUserId)?.Title ?? "" : "";
+                    ret.OnbLineManagerGrade = w.CLStaffGrade?.Title ?? "";
+
+                }
+
 
 
 

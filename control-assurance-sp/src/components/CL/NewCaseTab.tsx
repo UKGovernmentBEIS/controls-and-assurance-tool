@@ -22,6 +22,7 @@ import { CrDatePicker } from '../cr/CrDatePicker';
 import { CrEntityPicker } from '../cr/CrEntityPicker';
 import { changeDatePicker, changeDatePickerV2 } from '../../types/AppGlobals';
 import '../../styles/CustomFabric.scss';
+import { IContextualMenuProps } from 'office-ui-fabric-react';
 
 
 
@@ -169,42 +170,55 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
     public render(): React.ReactElement<INewCaseTabProps> {
 
+        //stages
+        /*
+            1: Draft
+            2: Approval
+            3: Onboarding
+            4: Engaged
+        
+        */
+
 
         let isViewOnly: boolean = this.isViewOnlyPermission();
+
+        const stage = this.props.stage;
 
         return (
             <React.Fragment>
                 {this.renderSectionTitle()}
                 {this.renderInfoTable()}
-                {this.props.stage === "Draft" && isViewOnly === false && this.renderDetailsOfApplicant()}
-                {this.props.stage === "Draft" && isViewOnly === false && this.renderRequirement()}
-                {this.props.stage === "Draft" && isViewOnly === false && this.renderCommercial()}
-                {this.props.stage === "Draft" && isViewOnly === false && this.renderResourcingJustification()}
-                {this.props.stage === "Draft" && isViewOnly === false && this.renderFinance()}
-                {this.props.stage === "Draft" && isViewOnly === false && this.renderOther()}
-                {this.props.stage === "Draft" && isViewOnly === false && this.renderApprovers()}
-                {this.props.stage === "Draft" && isViewOnly === false && this.renderFormButtons_DraftStage()}
+                {stage === "Draft" && isViewOnly === false && this.renderDetailsOfApplicant()}
+                {stage === "Draft" && isViewOnly === false && this.renderRequirement()}
+                {stage === "Draft" && isViewOnly === false && this.renderCommercial()}
+                {stage === "Draft" && isViewOnly === false && this.renderResourcingJustification()}
+                {stage === "Draft" && isViewOnly === false && this.renderFinance()}
+                {stage === "Draft" && isViewOnly === false && this.renderOther()}
+                {stage === "Draft" && isViewOnly === false && this.renderApprovers()}
+                {stage === "Draft" && isViewOnly === false && this.renderFormButtons_DraftStage()}
 
 
-                {(this.props.stage === "Approval" || isViewOnly === true) && this.renderDetailsOfApplicant_info()}
-                {(this.props.stage === "Approval" || isViewOnly === true) && this.renderRequirement_info()}
-                {(this.props.stage === "Approval" || isViewOnly === true) && this.renderCommercial_info()}
-                {(this.props.stage === "Approval" || isViewOnly === true) && this.renderResourcingJustification_info()}
-                {(this.props.stage === "Approval" || isViewOnly === true) && this.renderFinance_info()}
-                {(this.props.stage === "Approval" || isViewOnly === true) && this.renderOther_info()}
-                {(this.props.stage === "Approval" || isViewOnly === true) && this.renderApprovers_info()}
+                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || isViewOnly === true) && this.renderDetailsOfApplicant_info()}
+                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || isViewOnly === true) && this.renderRequirement_info()}
+                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || isViewOnly === true) && this.renderCommercial_info()}
+                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || isViewOnly === true) && this.renderResourcingJustification_info()}
+                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || isViewOnly === true) && this.renderFinance_info()}
+                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || isViewOnly === true) && this.renderOther_info()}
+                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || isViewOnly === true) && this.renderApprovers_info()}
 
-                {(this.props.stage === "Approval" || isViewOnly === true) && this.renderBudgetHolderApprovalDecision_info()}
-                {(this.props.stage === "Approval" || isViewOnly === true) && this.renderFinanceBusinessPartnerApprovalDecision_info()}
-                {(this.props.stage === "Approval" || isViewOnly === true) && this.renderHRBusinessPartnerApprovalDecision_info()}
+                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || isViewOnly === true) && this.renderBudgetHolderApprovalDecision_info()}
+                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || isViewOnly === true) && this.renderFinanceBusinessPartnerApprovalDecision_info()}
+                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || isViewOnly === true) && this.renderHRBusinessPartnerApprovalDecision_info()}
 
-                {(this.props.stage === "Approval" || isViewOnly === true) && this.renderBudgetHolderApprovalDecision()}
-                {(this.props.stage === "Approval" || isViewOnly === true) && this.renderFinanceBusinessPartnerApprovalDecision()}
-                {(this.props.stage === "Approval" || isViewOnly === true) && this.renderHRBusinessPartnerApprovalDecision()}
-                {this.props.stage === "Approval" && this.renderFormButtons_ApprovalStage()}
+                {(stage === "Approval") && this.renderBudgetHolderApprovalDecision()}
+                {(stage === "Approval") && this.renderFinanceBusinessPartnerApprovalDecision()}
+                {(stage === "Approval") && this.renderHRBusinessPartnerApprovalDecision()}
+                {stage === "Approval" && this.renderFormButtons_ApprovalStage()}
 
-                {this.props.stage === "Onboarding" && isViewOnly === false && this.renderOnboarding()}
-                {this.props.stage === "Onboarding" && isViewOnly === false && this.renderFormButtons_OnboardingStage()}
+                {stage === "Onboarding" && isViewOnly === false && this.renderOnboarding()}
+                {stage === "Onboarding" && isViewOnly === false && this.renderFormButtons_OnboardingStage()}
+                
+                {((stage === "Onboarding" && isViewOnly === true) || (stage === "Engaged")) && this.renderOnboarding_info()}
 
                 {this.renderListsMainTitle()}
                 {this.renderEvidencesList()}
@@ -2504,7 +2518,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                     <div className={styles.formField} dangerouslySetInnerHTML={{ __html: this.state.DefForm.EngagedStageFormText && this.state.DefForm.EngagedStageFormText }}></div>
 
-                    <div style={{ fontSize: '23px', fontWeight: 'bold', textDecoration: 'underline', paddingBottom: '25px' }}>
+                    <div style={{ fontSize: '18px', fontWeight:'bold', textDecoration: 'underline', paddingBottom: '25px' }}>
                         Contractor Details
                     </div>
                     {/* 1st row */}
@@ -2785,7 +2799,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                         </div>
                     </div>
 
-                    <div style={{ fontSize: '23px', fontWeight: 'bold', textDecoration: 'underline', paddingBottom: '25px' }}>
+                    <div style={{ fontSize: '18px', fontWeight:'bold', textDecoration: 'underline', paddingBottom: '25px' }}>
                         Vacancy Details
                     </div>
 
@@ -3118,7 +3132,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                     </div>
 
 
-                    <div style={{ fontSize: '23px', fontWeight: 'bold', textDecoration: 'underline', paddingBottom: '25px' }}>
+                    <div style={{ fontSize: '18px', fontWeight:'bold', textDecoration: 'underline', paddingBottom: '25px' }}>
                         Line Manager
                     </div>
 
@@ -3284,6 +3298,224 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         );
 
 
+    }
+
+    private renderOnboarding_info() {
+
+        const fd = this.state.FormDataWorker;
+        const caseInfo = this.state.CaseInfo;
+
+        return (
+
+            <React.Fragment>
+
+                <div style={{ marginBottom: '10px', marginTop: '30px' }} className={styles.sectionATitle}>Onboarding</div>
+
+                <div style={{ width: '100%', marginLeft: 'auto', marginRight: 'auto', paddingRight: '5px', overflowX: 'hidden' }}>
+
+                    <table cellSpacing="0" cellPadding="10" style={{ width: '100%' }}>
+
+                        <tbody>
+
+                            <tr>
+                                <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Contractor gender
+                                </td>
+                                <td style={{ width: '31%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)' }}>
+                                    {fd.OnbContractorGender}
+                                </td>
+                                <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Contractor title
+                                </td>
+                                <td style={{ width: '31%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                    {caseInfo.OnbContractorTitle}
+                                </td>
+
+                            </tr>
+
+                            <tr>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Contractor firstname
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', }}>
+                                    {fd.OnbContractorFirstname}
+                                </td>
+                                <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Contractor surname
+                                </td>
+                                <td style={{ width: '31%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                    {fd.OnbContractorSurname}
+                                </td>
+
+
+                            </tr>
+
+                            <tr>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Contractor date of birth
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', }}>
+                                    {caseInfo.OnbContractorDobStr}
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Contractor NI Number
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                    {fd.OnbContractorNINum}
+                                </td>
+
+                            </tr>
+
+                            <tr>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Contractor telephone (personal)
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', }}>
+                                    {fd.OnbContractorPhone}
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Contractor email (personal)
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                    {fd.OnbContractorEmail}
+                                </td>
+
+                            </tr>
+
+                            <tr>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Contractor home address (personal)
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', }}>
+                                    {fd.OnbContractorHomeAddress}
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Contractor post code (personal)
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                    {fd.OnbContractorPostCode}
+                                </td>
+
+                            </tr>
+
+                            <tr>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Start date
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', }}>
+                                    {caseInfo.OnbStartDateStr}
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    End date
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                    {caseInfo.OnbEndDateStr}
+                                </td>
+
+                            </tr>
+
+                            <tr>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Daily rate (including fee) agreed
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', }}>
+                                    {fd.OnbDayRate}
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Purchase order number
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                    {fd.PurchaseOrderNum}
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Security clearance
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', }}>
+                                    {caseInfo.OnbSecurityClearance}
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Security checks confirmation evidence
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                    {this.state.ContractorSecurityCheckEvidence &&
+                                        <div>
+                                            <div>
+                                                <span>{this.state.ContractorSecurityCheckEvidence.AttachmentType === "Link" ? "Linked evidence available" : "PDF evidence available to download"}&nbsp;<span style={{ marginLeft: '5px', cursor: 'pointer', color: 'blue', textDecoration: 'underline' }} onClick={this.viewContractorSecurityCheckEvidence} >View</span></span>
+                                            </div>
+                                            <div style={{ fontSize: '12px', fontStyle: 'italic', paddingTop: '5px', }}>
+                                                {this.state.ContractorSecurityCheckEvidence.Details}
+                                            </div>
+                                        </div>
+
+                                    }
+                                </td>
+
+                            </tr>
+
+                            <tr>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Work days
+                                </td>
+                                <td colSpan={3} style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                    {caseInfo.WorkDays}
+                                </td>
+
+                            </tr>
+
+                            <tr>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Declaration of conflict of interest
+                                </td>
+                                <td colSpan={3} style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                    {caseInfo.OnbDecConflict}
+                                </td>
+
+                            </tr>
+
+                            <tr>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Name of Line Manager
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', }}>
+                                    {caseInfo.OnbLineManagerUser}
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Line Manager grade
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                    {caseInfo.OnbLineManagerGrade}
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)', borderBottom: '1px solid rgb(166,166,166)' }}>
+                                    Line Manager Employee Number
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)' }}>
+                                    {fd.OnbLineManagerEmployeeNum}
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)', borderBottom: '1px solid rgb(166,166,166)' }}>
+                                    Line Manager telephone number
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)' }}>
+                                    {fd.OnbLineManagerPhone}
+                                </td>
+
+                            </tr>
+
+
+
+                        </tbody>
+
+
+                    </table>
+                </div>
+
+            </React.Fragment>
+        );
     }
 
     //#region Data Load/Save
@@ -3741,12 +3973,19 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
     private loadCLWorker = (): void => {
 
-        if (this.props.stage !== "Onboarding") return;
+        if (this.props.stage === "Onboarding" || this.props.stage === "Engaged"){
+            //ok - load data
+        }
+        else{
+            return;
+        }
 
         this.clWorkerService.read(this.props.clWorkerId).then((w: ICLWorker) => {
             console.log('CLWorker', w);
             this.setState({
                 FormDataWorker: w,
+            }, () => {
+                this.blurRateTextField_Worker(null, "OnbDayRate");
             });
 
 
@@ -3757,7 +3996,12 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
     private loadContractorSecurityCheckEvidence = (): void => {
 
-        if (this.props.stage !== "Onboarding") return;
+        if (this.props.stage === "Onboarding" || this.props.stage === "Engaged"){
+            //ok - load data
+        }
+        else{
+            return;
+        }
 
         //const counter: number = this.state.EvidenceChangesCounter + 1;
         this.clCaseEvidenceService.readContractorSecurityCheckEvidence(this.props.clWorkerId).then((x: ICLCaseEvidence[]) => {
