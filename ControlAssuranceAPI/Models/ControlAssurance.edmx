@@ -150,6 +150,7 @@
           <Property Name="Title" Type="nvarchar" MaxLength="1000" />
           <Property Name="Details" Type="nvarchar(max)" />
           <Property Name="EngagedStageFormText" Type="nvarchar(max)" />
+          <Property Name="OnboardingStageFormText" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="CLIR35Scope">
           <Key>
@@ -223,6 +224,18 @@
           <Property Name="OnbWorkingDayFri" Type="bit" />
           <Property Name="OnbWorkingDaySat" Type="bit" />
           <Property Name="OnbWorkingDaySun" Type="bit" />
+          <Property Name="BPSSCheckedById" Type="int" />
+          <Property Name="BPSSCheckedOn" Type="datetime" />
+          <Property Name="POCheckedById" Type="int" />
+          <Property Name="POCheckedOn" Type="datetime" />
+          <Property Name="ITCheckedById" Type="int" />
+          <Property Name="ITCheckedOn" Type="datetime" />
+          <Property Name="UKSBSCheckedById" Type="int" />
+          <Property Name="UKSBSCheckedOn" Type="date" />
+          <Property Name="PassCheckedById" Type="int" />
+          <Property Name="PassCheckedOn" Type="datetime" />
+          <Property Name="ContractCheckedById" Type="int" />
+          <Property Name="ContractCheckedOn" Type="datetime" />
         </EntityType>
         <EntityType Name="CLWorkLocation">
           <Key>
@@ -2988,6 +3001,7 @@
           <Property Name="Title" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
           <Property Name="Details" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="EngagedStageFormText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="OnboardingStageFormText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="CLIR35Scope">
           <Key>
@@ -3066,6 +3080,18 @@
           <Property Name="OnbWorkingDayFri" Type="Boolean" />
           <Property Name="OnbWorkingDaySat" Type="Boolean" />
           <Property Name="OnbWorkingDaySun" Type="Boolean" />
+          <Property Name="BPSSCheckedById" Type="Int32" />
+          <Property Name="BPSSCheckedOn" Type="DateTime" Precision="3" />
+          <Property Name="POCheckedById" Type="Int32" />
+          <Property Name="POCheckedOn" Type="DateTime" Precision="3" />
+          <Property Name="ITCheckedById" Type="Int32" />
+          <Property Name="ITCheckedOn" Type="DateTime" Precision="3" />
+          <Property Name="UKSBSCheckedById" Type="Int32" />
+          <Property Name="UKSBSCheckedOn" Type="DateTime" Precision="0" />
+          <Property Name="PassCheckedById" Type="Int32" />
+          <Property Name="PassCheckedOn" Type="DateTime" Precision="3" />
+          <Property Name="ContractCheckedById" Type="Int32" />
+          <Property Name="ContractCheckedOn" Type="DateTime" Precision="3" />
           <NavigationProperty Name="CLCase" Relationship="Self.FK_CLWorker_CLCase" FromRole="CLWorker" ToRole="CLCase" />
           <NavigationProperty Name="CLDeclarationConflict" Relationship="Self.FK_CLWorker_CLDeclarationConflict" FromRole="CLWorker" ToRole="CLDeclarationConflict" />
           <NavigationProperty Name="CLSecurityClearance" Relationship="Self.FK_CLWorker_CLSecurityClearance" FromRole="CLWorker" ToRole="CLSecurityClearance" />
@@ -6186,6 +6212,7 @@
                 <ScalarProperty Name="Title" ColumnName="Title" />
                 <ScalarProperty Name="Details" ColumnName="Details" />
                 <ScalarProperty Name="EngagedStageFormText" ColumnName="EngagedStageFormText" />
+                <ScalarProperty Name="OnboardingStageFormText" ColumnName="OnboardingStageFormText" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -6265,6 +6292,18 @@
                 <ScalarProperty Name="OnbWorkingDayFri" ColumnName="OnbWorkingDayFri" />
                 <ScalarProperty Name="OnbWorkingDaySat" ColumnName="OnbWorkingDaySat" />
                 <ScalarProperty Name="OnbWorkingDaySun" ColumnName="OnbWorkingDaySun" />
+                <ScalarProperty Name="BPSSCheckedById" ColumnName="BPSSCheckedById" />
+                <ScalarProperty Name="BPSSCheckedOn" ColumnName="BPSSCheckedOn" />
+                <ScalarProperty Name="POCheckedById" ColumnName="POCheckedById" />
+                <ScalarProperty Name="POCheckedOn" ColumnName="POCheckedOn" />
+                <ScalarProperty Name="ITCheckedById" ColumnName="ITCheckedById" />
+                <ScalarProperty Name="ITCheckedOn" ColumnName="ITCheckedOn" />
+                <ScalarProperty Name="UKSBSCheckedById" ColumnName="UKSBSCheckedById" />
+                <ScalarProperty Name="UKSBSCheckedOn" ColumnName="UKSBSCheckedOn" />
+                <ScalarProperty Name="PassCheckedById" ColumnName="PassCheckedById" />
+                <ScalarProperty Name="PassCheckedOn" ColumnName="PassCheckedOn" />
+                <ScalarProperty Name="ContractCheckedById" ColumnName="ContractCheckedById" />
+                <ScalarProperty Name="ContractCheckedOn" ColumnName="ContractCheckedOn" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

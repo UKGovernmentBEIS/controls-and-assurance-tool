@@ -201,7 +201,22 @@ namespace ControlAssuranceAPI.Repositories
 
                 }
 
+                if ((CaseStages.GetStageNumber(ret.Stage) >= CaseStages.Engaged.Number) && clViewer == true)
+                {
+                    ret.BPSSCheckedBy = w.BPSSCheckedById != null ? db.Users.FirstOrDefault(x => x.ID == w.BPSSCheckedById)?.Title ?? "" : "";
+                    ret.POCheckedBy = w.POCheckedById != null ? db.Users.FirstOrDefault(x => x.ID == w.POCheckedById)?.Title ?? "" : "";
+                    ret.ITCheckedBy = w.ITCheckedById != null ? db.Users.FirstOrDefault(x => x.ID == w.ITCheckedById)?.Title ?? "" : "";
+                    ret.UKSBSCheckedBy = w.UKSBSCheckedById != null ? db.Users.FirstOrDefault(x => x.ID == w.UKSBSCheckedById)?.Title ?? "" : "";
+                    ret.PassCheckedBy = w.PassCheckedById != null ? db.Users.FirstOrDefault(x => x.ID == w.PassCheckedById)?.Title ?? "" : "";
+                    ret.ContractCheckedBy = w.ContractCheckedById != null ? db.Users.FirstOrDefault(x => x.ID == w.ContractCheckedById)?.Title ?? "" : "";
 
+                    ret.BPSSCheckedOn = w.BPSSCheckedOn?.ToString("dd/MM/yyyy") ?? "";
+                    ret.POCheckedOn = w.POCheckedOn?.ToString("dd/MM/yyyy") ?? "";
+                    ret.ITCheckedOn = w.ITCheckedOn?.ToString("dd/MM/yyyy") ?? "";
+                    ret.UKSBSCheckedOn = w.UKSBSCheckedOn?.ToString("dd/MM/yyyy") ?? "";
+                    ret.PassCheckedOn = w.PassCheckedOn?.ToString("dd/MM/yyyy") ?? "";
+                    ret.ContractCheckedOn = w.ContractCheckedOn?.ToString("dd/MM/yyyy") ?? "";
+                }
 
 
             }
@@ -209,8 +224,9 @@ namespace ControlAssuranceAPI.Repositories
             return ret;
         }
 
-        public List<CLCaseView_Result> GetCases()
+        public List<CLCaseView_Result> GetCases(string caseType)
         {
+            GetCounts();
             var loggedInUser = ApiUser;
             //string loggedInUserTitle = loggedInUser.Title;
             int loggedInUserID = loggedInUser.ID;
@@ -229,6 +245,15 @@ namespace ControlAssuranceAPI.Repositories
                           w.CLCase,
                           HiringManagerObj = db.Users.FirstOrDefault(x => x.ID == w.CLCase.ApplHMUserId)
                       };
+
+            if(caseType == CaseStages.Engaged.Name)
+            {
+                qry = qry.Where(x => x.Stage == CaseStages.Engaged.Name);
+            }
+            else if(caseType == "BusinessCases") //just a word to show all cases apart from the engaged
+            {
+                qry = qry.Where(x => x.Stage != CaseStages.Engaged.Name);
+            }
 
             if (isSuperUserOrViewer == true)
             {
@@ -368,6 +393,52 @@ namespace ControlAssuranceAPI.Repositories
 
 
             return retList;
+        }
+
+        public CLCaseCounts_Result GetCounts()
+        {
+            var loggedInUser = ApiUser;
+            //string loggedInUserTitle = loggedInUser.Title;
+            int loggedInUserID = loggedInUser.ID;
+            bool isSuperUserOrViewer = base.CL_SuperUserOrViewer(loggedInUserID, out bool superUser, out bool clSuperUser, out bool clViewer);
+
+
+            List<CLCaseView_Result> retList = new List<CLCaseView_Result>();
+            var qry = from w in db.CLWorkers
+                      where w.CLCase.CaseCreated == true
+                      select new
+                      {
+                          w.ID,
+                          w.Stage,
+                          w.CLCase,
+                      };
+
+
+            if (isSuperUserOrViewer == true)
+            {
+                //full permission to view all cases in the list
+            }
+            else
+            {
+                qry = qry.Where(x => x.CLCase.CreatedById == loggedInUserID
+                                    || x.CLCase.ApplHMUserId == loggedInUserID
+                                    || x.CLCase.BHUserId == loggedInUserID
+                                    || x.CLCase.FBPUserId == loggedInUserID
+                                    || x.CLCase.HRBPUserId == loggedInUserID);
+
+            }
+
+            int totalBusinessCases = qry.Count(x => x.Stage != CaseStages.Engaged.Name);
+            int totalEngagedCases = qry.Count(x => x.Stage == CaseStages.Engaged.Name);
+
+            CLCaseCounts_Result cLCaseCounts = new CLCaseCounts_Result
+            {
+                TotalBusinessCases = totalBusinessCases,
+                TotalEngagedCases = totalEngagedCases,
+            };
+
+            return cLCaseCounts;
+
         }
 
         public CLCase Add(CLCase cLCase)

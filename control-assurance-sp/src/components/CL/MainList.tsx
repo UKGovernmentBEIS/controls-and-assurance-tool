@@ -21,6 +21,7 @@ export interface IMainListProps extends types.IBaseComponentProps {
     //onMainSaved: () => void;
 
     createPermission: boolean;
+    caseType:string;
 
 }
 
@@ -329,7 +330,7 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
         this.setState({ Loading: true });
 
 
-        const read: Promise<IEntity[]> = this.mainService.readAllWithFilters();
+        const read: Promise<IEntity[]> = this.mainService.readAllWithFilters(this.props.caseType);
         read.then((entities: any): void => {
             this.setState({
                 Loading: false, Entities: entities,

@@ -18,7 +18,9 @@ import { MessageDialog } from '../cr/MessageDialog';
 export interface ISectionProps extends IEntityFormProps {
 
     sectionTitle: string;
+    sectionTotalCases: number;
     //onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
+    caseType:string;
     section_IsOpen: boolean;
     onSection_toggleOpen: () => void;
 
@@ -60,15 +62,23 @@ export default class Section extends React.Component<ISectionProps, SectionState
         const ShowForm = this.props.section_IsOpen;
         const currentDateTime: string = services.DateService.dateToUkDateTime(new Date());
 
+        let hideRagIndicator:boolean = true;
+        let totalSectionCases:string = "";
+        if(this.props.sectionTotalCases !== null){
+            hideRagIndicator = false;
+            totalSectionCases = String(this.props.sectionTotalCases);
+        }
+
         return (
             <div className={styles.cr}>
                 <UpdateHeader2 title={this.props.sectionTitle} isOpen={ShowForm}
                     leadUser=""
-                    hideRagIndicator={true}
+                    hideRagIndicator={hideRagIndicator}
                     //rag={ this.state.FormData.SummaryCompletionStatus === SectionStatus.Completed ? 5 : this.state.FormData.SummaryCompletionStatus === SectionStatus.InProgress ? 3 : null }
-                    rag={null}
+                    rag={-1}
+                    ragLabel={totalSectionCases}
                     //ragLabel={ this.state.FormData.SummaryCompletionStatus === SectionStatus.Completed ? "Completed" : this.state.FormData.SummaryCompletionStatus === SectionStatus.InProgress ? "In Progress" : null }
-                    ragLabel={null}
+                    //ragLabel={null}
                     onClick={this.props.onSection_toggleOpen} />
 
                 {ShowForm && <div style={{ overflowX: 'hidden' }}
@@ -81,6 +91,7 @@ export default class Section extends React.Component<ISectionProps, SectionState
                             onItemTitleClick={this.props.onItemTitleClick}
                             filterText={this.props.listFilterText}
                             onChangeFilterText={this.props.onChangeFilterText}
+                            caseType={this.props.caseType}
                             createPermission={true}
                             
 

@@ -40,7 +40,14 @@ namespace ControlAssuranceAPI.Controllers
         // GET: /odata/CLCases?caseType=BusinessCases
         public List<CLCaseView_Result> Get(string caseType)
         {
-            var res = db.CLCaseRepository.GetCases();
+            var res = db.CLCaseRepository.GetCases(caseType);
+            return res;
+        }
+
+        // GET: /odata/CLCases?getCaseCounts=true
+        public CLCaseCounts_Result Get(bool getCaseCounts)
+        {
+            var res = db.CLCaseRepository.GetCounts();
             return res;
         }
 

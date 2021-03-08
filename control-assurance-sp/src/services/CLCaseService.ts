@@ -12,8 +12,8 @@ export class CLCaseService extends EntityService<IEntity> {
         super(spfxContext, api, `/CLCases`);
     }
 
-    public readAllWithFilters(): Promise<IEntity[]> {
-        return this.readAll(`?caseType=BusinessCases`);
+    public readAllWithFilters(caseType:string): Promise<IEntity[]> {
+        return this.readAll(`?caseType=${caseType}`);
     }
 
     public readWithExpandDirectorates(ID: number): Promise<IGIAAAuditReport> {
@@ -31,6 +31,9 @@ export class CLCaseService extends EntityService<IEntity> {
         return this.readEntity(`?clCaseId=${clCaseId}&clWorkerId=${clWorkerId}&getInfo=true`);
     }
 
+    public getCaseCounts(): Promise<IEntity> {
+        return this.readEntity(`?getCaseCounts=true`);
+    }
 
 
 

@@ -11,7 +11,7 @@ import BaseUserContextWebPartComponent from '../../../components/BaseUserContext
 import * as services from '../../../services';
 import EntityList from '../../../components/entity/EntityList';
 import { IGenColumn, ColumnType, ColumnDisplayType } from '../../../types/GenColumn';
-import { IUserPermission, IDefForm, IGIAAPeriod, IEntity, IDirectorateGroup, IGoDefForm, GoForm, IGoForm, CLCase, ICLCase } from '../../../types';
+import { IUserPermission, IDefForm, IGIAAPeriod, IEntity, IDirectorateGroup, IGoDefForm, GoForm, IGoForm, CLCase, ICLCase, IClCaseCounts, ICLDefForm } from '../../../types';
 import { CrLoadingOverlayWelcome } from '../../../components/cr/CrLoadingOverlayWelcome';
 import styles from '../../../styles/cr.module.scss';
 import { PrimaryButton } from 'office-ui-fabric-react/lib/Button';
@@ -34,10 +34,15 @@ export interface IClUpdatesState extends types.IUserContextWebPartState {
 
   Section1_IsOpen: boolean;
   Section1_MainList_ListFilterText: string;
-  Section_MainList_SelectedId:number;
-  Section_MainList_SelectedCaseId:number;
-  Section_MainList_SelectedStage:string;
+  Section2_IsOpen: boolean;
+  Section2_MainList_ListFilterText: string;
+  Section_MainList_SelectedId: number;
+  Section_MainList_SelectedCaseId: number;
+  Section_MainList_SelectedStage: string;
 
+  TotalBusinessCases: number;
+  TotalEngagedCases: number;
+  DefForm: ICLDefForm;
 
 
 }
@@ -48,9 +53,14 @@ export class ClUpdatesState extends types.UserContextWebPartState implements ICl
 
   public Section1_IsOpen: boolean = false;
   public Section1_MainList_ListFilterText: string = null;
+  public Section2_IsOpen: boolean = false;
+  public Section2_MainList_ListFilterText: string = null;
   public Section_MainList_SelectedId = null;
   public Section_MainList_SelectedCaseId = null;
   public Section_MainList_SelectedStage = null;
+  public TotalBusinessCases = null;
+  public TotalEngagedCases = null;
+  public DefForm: ICLDefForm = null;
 
 
 
@@ -63,7 +73,8 @@ export class ClUpdatesState extends types.UserContextWebPartState implements ICl
 
 export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWebPartComponentProps, ClUpdatesState> {
   private clCaseService: services.CLCaseService = new services.CLCaseService(this.props.spfxContext, this.props.api);
-  
+  private clDefFormService: services.CLDefFormService = new services.CLDefFormService(this.props.spfxContext, this.props.api);
+
   private readonly headerTxt_MainTab: string = "Contingent Labour";
   private readonly headerTxt_NewCaseTab: string = "Case";
 
@@ -103,11 +114,25 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
             <div>
               <Section
                 sectionTitle="Business Cases"
+                caseType="BusinessCases"
+                sectionTotalCases={this.state.TotalBusinessCases}
                 onItemTitleClick={this.handleSection_MainListItemTitleClick}
                 section_IsOpen={this.state.Section1_IsOpen}
                 onSection_toggleOpen={this.handleSection1_toggleOpen}
                 listFilterText={this.state.Section1_MainList_ListFilterText}
                 onChangeFilterText={this.handleSection1_ChangeFilterText}
+                {...this.props}
+              />
+
+              <Section
+                sectionTitle="Engaged"
+                caseType="Engaged"
+                sectionTotalCases={this.state.TotalEngagedCases}
+                onItemTitleClick={this.handleSection_MainListItemTitleClick}
+                section_IsOpen={this.state.Section2_IsOpen}
+                onSection_toggleOpen={this.handleSection2_toggleOpen}
+                listFilterText={this.state.Section2_MainList_ListFilterText}
+                onChangeFilterText={this.handleSection2_ChangeFilterText}
                 {...this.props}
               />
 
@@ -155,6 +180,7 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
         currentUserId={this.getCurrentUserId()}
         superUserPermission={this.isSuperUser()}
         viewerPermission={this.isViewerPermission()}
+        defForm={this.state.DefForm}
         {...this.props}
       />
 
@@ -179,8 +205,37 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
   protected loadLookups(): Promise<any> {
 
     return Promise.all([
-
+      this.loadCaseCounts(),
+      this.loadDefForm(),
     ]);
+  }
+
+  private loadCaseCounts = (): void => {
+
+
+    this.clCaseService.getCaseCounts().then((x: IClCaseCounts) => {
+      console.log('Case Counts', x);
+
+      this.setState({
+        TotalBusinessCases: x.TotalBusinessCases,
+        TotalEngagedCases: x.TotalEngagedCases,
+      });
+
+
+    }, (err) => {
+      if (this.onError) this.onError(`Error loading Case Counts`, err.message);
+    });
+
+  }
+
+  private loadDefForm = (): Promise<void> => {
+    console.log('loadDefForm');
+    let x = this.clDefFormService.readDefForm().then((df: ICLDefForm): void => {
+      console.log('df ', df);
+      this.setState({ DefForm: df });
+
+    }, (err) => { if (this.onError) this.onError(`Error loading df`, err.message); });
+    return x;
   }
 
   //#endregion Data Load
@@ -260,10 +315,16 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
   private handleSection1_toggleOpen = (): void => {
     this.setState({ Section1_IsOpen: !this.state.Section1_IsOpen });
   }
+  private handleSection2_toggleOpen = (): void => {
+    this.setState({ Section2_IsOpen: !this.state.Section2_IsOpen });
+  }
 
 
   private handleSection1_ChangeFilterText = (value: string): void => {
     this.setState({ Section1_MainList_ListFilterText: value });
+  }
+  private handleSection2_ChangeFilterText = (value: string): void => {
+    this.setState({ Section2_MainList_ListFilterText: value });
   }
 
 
@@ -274,29 +335,29 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
 
     //ID from parameter is workerID
 
-    if(ID === 0){
-      let caseId:number = 0;
+    if (ID === 0) {
+      let caseId: number = 0;
       const newCase = new CLCase("New Case");
-      this.clCaseService.create(newCase).then((x:ICLCase): void => {
-          console.log('case created', x);
-          caseId = x.ID;
+      this.clCaseService.create(newCase).then((x: ICLCase): void => {
+        console.log('case created', x);
+        caseId = x.ID;
 
-          this.setState({
-            SelectedPivotKey: this.headerTxt_NewCaseTab,
-            Section_MainList_SelectedId: 0, //worker id
-            Section_MainList_SelectedCaseId: caseId,
-            Section_MainList_SelectedStage: 'Draft',
-            //Section_MainList_SelectedTitle: title,
-            //Section_MainList_FilteredItems: filteredItems
-          });
+        this.setState({
+          SelectedPivotKey: this.headerTxt_NewCaseTab,
+          Section_MainList_SelectedId: 0, //worker id
+          Section_MainList_SelectedCaseId: caseId,
+          Section_MainList_SelectedStage: 'Draft',
+          //Section_MainList_SelectedTitle: title,
+          //Section_MainList_FilteredItems: filteredItems
+        });
 
 
-      }, (err) => {  });
+      }, (err) => { });
     }
-    else{
+    else {
       const caseF = (filteredItems.filter(x => x['ID'] === ID))[0];
-      const caseId:number = Number(caseF['CaseId']);
-      const stage:string = caseF['Stage'];
+      const caseId: number = Number(caseF['CaseId']);
+      const stage: string = caseF['Stage'];
       console.log('stage', stage);
 
       this.setState({

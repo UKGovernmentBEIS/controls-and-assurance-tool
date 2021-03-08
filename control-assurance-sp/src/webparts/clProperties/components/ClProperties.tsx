@@ -86,6 +86,19 @@ export default class ClProperties extends BaseUserContextWebPartComponent<types.
       },
 
       {
+        key: 'OnboardingStageFormText',
+        columnType: ColumnType.TextBox,
+        columnDisplayType: ColumnDisplayType.FormOnly,
+        name: 'Onboarding Stage Form Text',
+        fieldName: 'OnboardingStageFormText',
+        minWidth: 300,
+        isResizable: true,
+        isRequired: false,
+        fieldMaxLength: 5000,
+        numRows: 10
+      },
+
+      {
         key: 'EngagedStageFormText',
         columnType: ColumnType.TextBox,
         columnDisplayType: ColumnDisplayType.FormOnly,

@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="276d3a782f9b4630ad7cee34816b4d17" Name="Diagram1">
+      <Diagram DiagramId="6ef9c5a7dc4242219c6de193a4645619" Name="Diagram1">
         <EntityTypeShape EntityType="ControlAssuranceModel.APILog" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.AuditFeedback" Width="1.5" PointX="6" PointY="59.375" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.AutoFunctionLastRun" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
@@ -14,18 +14,18 @@
         <EntityTypeShape EntityType="ControlAssuranceModel.CLCase" Width="1.5" PointX="11.25" PointY="50.375" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.CLCaseEvidence" Width="1.5" PointX="3" PointY="59.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.CLComFramework" Width="1.5" PointX="9" PointY="49.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.CLDeclarationConflict" Width="1.5" PointX="17.25" PointY="48.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.CLDeclarationConflict" Width="1.5" PointX="17.25" PointY="47.625" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.CLDefForm" Width="1.5" PointX="4.75" PointY="4.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.CLIR35Scope" Width="1.5" PointX="9" PointY="46.625" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.CLProfessionalCat" Width="1.5" PointX="9" PointY="43.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.CLSecurityClearance" Width="1.5" PointX="17.25" PointY="46" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.CLSecurityClearance" Width="1.5" PointX="17.25" PointY="50" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.CLStaffGrade" Width="1.5" PointX="9" PointY="72.25" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.CLVacancyType" Width="1.5" PointX="6.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.CLWorker" Width="1.5" PointX="19.5" PointY="47.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.CLWorker" Width="1.5" PointX="19.5" PointY="45.5" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.CLWorkLocation" Width="1.5" PointX="9" PointY="74.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.DefElement" Width="1.5" PointX="19.5" PointY="31.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.DefElementGroup" Width="1.5" PointX="17.25" PointY="37.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.DefForm" Width="1.5" PointX="15" PointY="37.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.DefElement" Width="1.5" PointX="19.5" PointY="29.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.DefElementGroup" Width="1.5" PointX="17.25" PointY="35.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.DefForm" Width="1.5" PointX="15" PointY="35.125" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.Directorate" Width="1.5" PointX="3" PointY="53.375" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.DirectorateGroup" Width="1.5" PointX="3" PointY="63.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.DirectorateGroupMember" Width="1.5" PointX="11.25" PointY="67" IsExpanded="true" />
@@ -83,7 +83,7 @@
         <EntityTypeShape EntityType="ControlAssuranceModel.NAOUpdateStatusType" Width="1.5" PointX="4.5" PointY="33.875" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.Period" Width="1.5" PointX="14.25" PointY="48.125" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.PermissionType" Width="1.5" PointX="3.75" PointY="47" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.PersonTitle" Width="1.5" PointX="17.25" PointY="43.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.PersonTitle" Width="1.5" PointX="17.25" PointY="44.375" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.sysdiagram" Width="1.5" PointX="10.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.Team" Width="1.5" PointX="14.25" PointY="53.125" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.TeamMember" Width="1.5" PointX="19.5" PointY="57.5" IsExpanded="true" />

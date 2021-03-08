@@ -5,7 +5,7 @@ import BaseUserContextWebPartComponent from '../../../components/BaseUserContext
 import * as services from '../../../services';
 import EntityList from '../../../components/entity/EntityList';
 import { IGenColumn, ColumnType, ColumnDisplayType } from '../../../types/GenColumn';
-import { IUserPermission, IDefForm, IPeriod } from '../../../types';
+import { IUserPermission, IDefForm, IPeriod, IEntity } from '../../../types';
 import { CrLoadingOverlayWelcome } from '../../../components/cr/CrLoadingOverlayWelcome';
 import styles from '../../../styles/cr.module.scss';
 import { PrimaryButton } from 'office-ui-fabric-react/lib/Button';
@@ -31,6 +31,8 @@ export default class AppHome extends BaseUserContextWebPartComponent<types.IWebP
   private individualActionAppHomeImg: string = "";
 
   private spSiteUrl: string = this.props.spfxContext.pageContext.web.absoluteUrl;
+
+  private giaaDefFormService: services.GIAADefFormService = new services.GIAADefFormService(this.props.spfxContext, this.props.api);
 
 
 
@@ -165,5 +167,32 @@ export default class AppHome extends BaseUserContextWebPartComponent<types.IWebP
 
 
   //#endregion event handlers
+
+
+
+  //#region Data Load
+
+  private getTestDateTime = (): void => {
+
+    this.giaaDefFormService.getTestDateTime().then((x: IEntity) => {
+      console.log('DateTime Info', x);
+
+
+    }, (err) => {
+
+    });
+
+
+  }
+
+
+  protected loadLookups(): Promise<any> {
+
+    return Promise.all([
+      this.getTestDateTime(),
+    ]);
+  }
+
+  //#endregion Data Load
 
 }

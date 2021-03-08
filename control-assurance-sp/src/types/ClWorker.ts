@@ -36,6 +36,19 @@ export interface ICLWorker  extends IEntity {
     OnbLineManagerEmployeeNum?: string;
     OnbLineManagerPhone?: string;
 
+    BPSSCheckedById?: number;
+    BPSSCheckedOn?: Date;
+    POCheckedById?: number;
+    POCheckedOn?: Date;
+    ITCheckedById?: number;
+    ITCheckedOn?: Date;
+    UKSBSCheckedById?: number;
+    UKSBSCheckedOn?: Date;
+    PassCheckedById?: number;
+    PassCheckedOn?: Date;
+    ContractCheckedById?: number;
+    ContractCheckedOn?: Date;
+
 
 }
 
@@ -74,6 +87,19 @@ export class CLWorker implements ICLWorker{
     public OnbLineManagerGradeId?: number = null;
     public OnbLineManagerEmployeeNum?: string = null;
     public OnbLineManagerPhone?: string = null;
+
+    public BPSSCheckedById?: number = null;
+    public BPSSCheckedOn?: Date = null;
+    public POCheckedById?: number = null;
+    public POCheckedOn?: Date = null;
+    public ITCheckedById?: number = null;
+    public ITCheckedOn?: Date = null;
+    public UKSBSCheckedById?: number = null;
+    public UKSBSCheckedOn?: Date = null;
+    public PassCheckedById?: number = null;
+    public PassCheckedOn?: Date = null;
+    public ContractCheckedById?: number = null;
+    public ContractCheckedOn?: Date = null;
 
 
     constructor() {

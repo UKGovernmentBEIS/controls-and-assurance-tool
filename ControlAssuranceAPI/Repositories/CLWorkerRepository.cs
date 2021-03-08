@@ -41,7 +41,28 @@ namespace ControlAssuranceAPI.Repositories
 
             //check for approval
             string newChangeLog = "";
-            if (inputWorker.Title == "SubmitToEngaged")
+            if(inputWorker.Title == "SaveEngaged")
+            {
+                clWorker.BPSSCheckedById = inputWorker.BPSSCheckedById;
+                clWorker.BPSSCheckedOn = inputWorker.BPSSCheckedOn;
+                clWorker.POCheckedById = inputWorker.POCheckedById;
+                clWorker.POCheckedOn = inputWorker.POCheckedOn;
+                clWorker.ITCheckedById = inputWorker.ITCheckedById;
+                clWorker.ITCheckedOn = inputWorker.ITCheckedOn;
+                clWorker.UKSBSCheckedById = inputWorker.UKSBSCheckedById;
+                clWorker.UKSBSCheckedOn = inputWorker.UKSBSCheckedOn;
+                clWorker.PassCheckedById = inputWorker.PassCheckedById;
+                clWorker.PassCheckedOn = inputWorker.PassCheckedOn;
+                clWorker.ContractCheckedById = inputWorker.ContractCheckedById;
+                clWorker.ContractCheckedOn = inputWorker.ContractCheckedOn;
+
+                db.SaveChanges();
+                return clWorker;
+
+                //no need to go further in this if condition.
+
+            }
+            else if (inputWorker.Title == "SubmitToEngaged")
             {
                 //newChangeLog = $"{cLcase.CaseChangeLog}{date} Case submitted for Approval by {user},";
                 //var worker = cLcase.CLWorkers.FirstOrDefault();

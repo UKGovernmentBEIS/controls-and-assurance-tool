@@ -120,8 +120,22 @@ export interface IClCaseInfo  extends IEntity {
     OnbLineManagerUser?: string;
     OnbLineManagerGrade?: string;
 
+    BPSSCheckedBy?: string;
+    BPSSCheckedOn?: string;
+    POCheckedBy?: string;
+    POCheckedOn?: string;
+    ITCheckedBy?: string;
+    ITCheckedOn?: string;
+    UKSBSCheckedBy?: string;
+    UKSBSCheckedOn?: string;
+    PassCheckedBy?: string;
+    PassCheckedOn?: string;
+    ContractCheckedBy?: string;
+    ContractCheckedOn?: string;
+
 }
 export class ClCaseInfo  implements IClCaseInfo {
+
     public ID: number = 0;
     public Title: string = "";
     public Stage?: string = "";
@@ -157,5 +171,23 @@ export class ClCaseInfo  implements IClCaseInfo {
     public OnbLineManagerUser?: string = "";
     public OnbLineManagerGrade?: string = "";
 
+    public BPSSCheckedBy?: string = "";
+    public BPSSCheckedOn?: string = "";
+    public POCheckedBy?: string = "";
+    public POCheckedOn?: string = "";
+    public ITCheckedBy?: string = "";
+    public ITCheckedOn?: string = "";
+    public UKSBSCheckedBy?: string = "";
+    public UKSBSCheckedOn?: string = "";
+    public PassCheckedBy?: string = "";
+    public PassCheckedOn?: string = "";
+    public ContractCheckedBy?: string = "";
+    public ContractCheckedOn?: string = "";
 
+
+}
+
+export interface IClCaseCounts extends IEntity{
+    TotalBusinessCases?: number;
+    TotalEngagedCases?: string;
 }

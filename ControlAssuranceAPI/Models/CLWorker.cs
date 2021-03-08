@@ -47,6 +47,18 @@ namespace ControlAssuranceAPI.Models
         public Nullable<bool> OnbWorkingDayFri { get; set; }
         public Nullable<bool> OnbWorkingDaySat { get; set; }
         public Nullable<bool> OnbWorkingDaySun { get; set; }
+        public Nullable<int> BPSSCheckedById { get; set; }
+        public Nullable<System.DateTime> BPSSCheckedOn { get; set; }
+        public Nullable<int> POCheckedById { get; set; }
+        public Nullable<System.DateTime> POCheckedOn { get; set; }
+        public Nullable<int> ITCheckedById { get; set; }
+        public Nullable<System.DateTime> ITCheckedOn { get; set; }
+        public Nullable<int> UKSBSCheckedById { get; set; }
+        public Nullable<System.DateTime> UKSBSCheckedOn { get; set; }
+        public Nullable<int> PassCheckedById { get; set; }
+        public Nullable<System.DateTime> PassCheckedOn { get; set; }
+        public Nullable<int> ContractCheckedById { get; set; }
+        public Nullable<System.DateTime> ContractCheckedOn { get; set; }
     
         public virtual CLCase CLCase { get; set; }
         public virtual CLDeclarationConflict CLDeclarationConflict { get; set; }

@@ -18,5 +18,6 @@ namespace ControlAssuranceAPI.Models
         public string Title { get; set; }
         public string Details { get; set; }
         public string EngagedStageFormText { get; set; }
+        public string OnboardingStageFormText { get; set; }
     }
 }

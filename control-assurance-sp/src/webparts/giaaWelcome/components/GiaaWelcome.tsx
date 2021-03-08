@@ -123,7 +123,7 @@ export default class GIAAWelcome extends BaseUserContextWebPartComponent<types.I
     return Promise.all([
         this.welcomeAccess(),
         this.loadDefForm(),
-        this.getTestDateTime(),
+        //this.getTestDateTime(),
     ]);
   }
 

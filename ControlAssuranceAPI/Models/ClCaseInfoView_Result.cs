@@ -40,5 +40,18 @@ namespace ControlAssuranceAPI.Models
         public string OnbDecConflict { get; set; }
         public string OnbLineManagerUser { get; set; }
         public string OnbLineManagerGrade { get; set; }
+
+        public string BPSSCheckedBy { get; set; }
+        public string BPSSCheckedOn { get; set; }
+        public string POCheckedBy { get; set; }
+        public string POCheckedOn { get; set; }
+        public string ITCheckedBy { get; set; }
+        public string ITCheckedOn { get; set; }
+        public string UKSBSCheckedBy { get; set; }
+        public string UKSBSCheckedOn { get; set; }
+        public string PassCheckedBy { get; set; }
+        public string PassCheckedOn { get; set; }
+        public string ContractCheckedBy { get; set; }
+        public string ContractCheckedOn { get; set; }
     }
 }
