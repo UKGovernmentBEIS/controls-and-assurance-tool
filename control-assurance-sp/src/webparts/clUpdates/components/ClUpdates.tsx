@@ -300,9 +300,13 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
   //#region event handlers
 
 
-  private handleShowMainTab = (): void => {
+  private handleShowMainTab = (refreshCounters?:boolean): void => {
     console.log('in handleShowMainTab');
     this.clearErrors();
+    if(refreshCounters === true){
+      console.log('refreshCounters');
+      this.loadCaseCounts();
+    }
     this.setState({ SelectedPivotKey: this.headerTxt_MainTab });
   }
 

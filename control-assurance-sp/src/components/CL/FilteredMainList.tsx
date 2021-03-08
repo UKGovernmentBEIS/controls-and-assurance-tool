@@ -66,6 +66,8 @@ export interface IFilteredMainListProps {
 
     createPermission: boolean;
 
+    caseType:string;
+
 
 }
 
@@ -97,7 +99,7 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
                 <div className={classNames.controlWrapper}>
 
 
-                    {props.createPermission && props.editDisabled && props.deleteDisabled &&
+                    {props.caseType === "BusinessCases" && props.createPermission && props.editDisabled && props.deleteDisabled &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Add' }}
                             className={classNames.cmdBtn}

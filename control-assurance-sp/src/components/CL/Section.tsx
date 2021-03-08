@@ -75,7 +75,7 @@ export default class Section extends React.Component<ISectionProps, SectionState
                     leadUser=""
                     hideRagIndicator={hideRagIndicator}
                     //rag={ this.state.FormData.SummaryCompletionStatus === SectionStatus.Completed ? 5 : this.state.FormData.SummaryCompletionStatus === SectionStatus.InProgress ? 3 : null }
-                    rag={-1}
+                    rag={-2}
                     ragLabel={totalSectionCases}
                     //ragLabel={ this.state.FormData.SummaryCompletionStatus === SectionStatus.Completed ? "Completed" : this.state.FormData.SummaryCompletionStatus === SectionStatus.InProgress ? "In Progress" : null }
                     //ragLabel={null}

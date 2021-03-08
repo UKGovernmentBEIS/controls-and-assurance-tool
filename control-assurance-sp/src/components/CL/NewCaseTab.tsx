@@ -33,7 +33,7 @@ export interface INewCaseTabProps extends types.IBaseComponentProps {
     clWorkerId: number;
     clCaseId: number;
     stage: string;
-    onShowList: () => void;
+    onShowList: (refreshCounters?: boolean) => void;
     currentUserId: number;
     currentUserName: string;
     superUserPermission: boolean;
@@ -96,6 +96,7 @@ export interface INewCaseTabState {
     HideSubmitApprovalDoneMessage: boolean;
     HideSubmitEngagedDoneMessage: boolean;
     EvidenceChangesCounter: number;
+    Engaged_MoveToChecksDoneBtn: boolean;
     //DefForm: ICLDefForm;
 
 
@@ -119,6 +120,7 @@ export class NewCaseTabState implements INewCaseTabState {
     public HideSubmitApprovalDoneMessage: boolean = true;
     public HideSubmitEngagedDoneMessage: boolean = true;
     public EvidenceChangesCounter: number = 0;
+    public Engaged_MoveToChecksDoneBtn = false;
     //public DefForm: ICLDefForm = null;
 
     constructor(caseType: string) {
@@ -181,9 +183,11 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         */
 
 
+
         let isViewOnly: boolean = this.isViewOnlyPermission();
 
         const stage = this.props.stage;
+        const fdw = this.state.FormDataWorker;
 
         return (
             <React.Fragment>
@@ -222,7 +226,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                 {stage === "Engaged" && isViewOnly === false && this.renderEngaged()}
                 {stage === "Engaged" && isViewOnly === false && this.renderFormButtons_EngagedStage()}
-                {(stage === "Engaged" && isViewOnly === true) && this.renderEngaged_info()}
+                {(stage === "Engaged" && (isViewOnly === true || fdw.EngagedChecksDone === true)) && this.renderEngaged_info()}
 
                 {this.renderListsMainTitle()}
                 {this.renderEvidencesList()}
@@ -238,10 +242,10 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                 <MessageDialog hidden={this.state.HideFormValidationMessage} title="Form Validation" content="Failed validation checks. Please ensure all fields marked with a red asterisk are completed." handleOk={() => { this.setState({ HideFormValidationMessage: true }); }} />
 
                 {/* submit for approval - done */}
-                <MessageDialog hidden={this.state.HideSubmitApprovalDoneMessage} title="Form Validation" content="Validation checks completed successfully. This case is being moved to the approvals stage." handleOk={() => { this.setState({ HideSubmitApprovalDoneMessage: true }, this.props.onShowList); }} />
+                <MessageDialog hidden={this.state.HideSubmitApprovalDoneMessage} title="Form Validation" content="Validation checks completed successfully. This case is being moved to the approvals stage." handleOk={() => { this.setState({ HideSubmitApprovalDoneMessage: true }, () => this.props.onShowList()); }} />
 
                 {/* submit to engaged - done */}
-                <MessageDialog hidden={this.state.HideSubmitEngagedDoneMessage} title="Form Validation" content="Validation checks completed successfully. This case is being moved to the engaged stage." handleOk={() => { this.setState({ HideSubmitEngagedDoneMessage: true }, this.props.onShowList); }} />
+                <MessageDialog hidden={this.state.HideSubmitEngagedDoneMessage} title="Form Validation" content="Validation checks completed successfully. This case is being moved to the engaged stage." handleOk={() => { this.setState({ HideSubmitEngagedDoneMessage: true }, () => this.props.onShowList(true)); }} />
 
 
             </React.Fragment>
@@ -1424,7 +1428,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                         />
 
                         <DefaultButton text="Close" className={styles.formButton} style={{ marginRight: '5px' }}
-                            onClick={this.props.onShowList}
+                            onClick={() => this.props.onShowList()}
                         />
 
 
@@ -2445,7 +2449,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                         />}
 
                         <DefaultButton text="Close" className={styles.formButton} style={{ marginRight: '5px' }}
-                            onClick={this.props.onShowList}
+                            onClick={() => this.props.onShowList()}
                         />
 
 
@@ -3281,15 +3285,15 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                     <React.Fragment>
                         {<PrimaryButton text="Save as Draft" className={styles.formButton} style={{ marginRight: '5px' }}
-                            onClick={() => this.saveData_Worker(false, false)}
+                            onClick={() => this.saveData_Worker(false, false, false)}
                         />}
 
                         <PrimaryButton text="Submit to Engaged" className={styles.formButton} style={{ marginRight: '5px' }}
-                            onClick={() => this.saveData_Worker(true, false)}
+                            onClick={() => this.saveData_Worker(true, false, false)}
                         />
 
                         <DefaultButton text="Close" className={styles.formButton} style={{ marginRight: '5px' }}
-                            onClick={this.props.onShowList}
+                            onClick={() => this.props.onShowList()}
                         />
 
 
@@ -3526,8 +3530,28 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
         //if (this.props.stage !== "Onboarding") return;
         if (this.props.defForm === null) return;
-
+        
         const fd = this.state.FormDataWorker;
+
+        if(fd.EngagedChecksDone === true) return;
+
+        const req_BPSSCheckedById_Img = fd.BPSSCheckedById !== null ? this.checkIconGreen : this.checkIconRed;
+        const req_BPSSCheckedOn_Img = fd.BPSSCheckedOn !== null ? this.checkIconGreen : this.checkIconRed;
+
+        const req_POCheckedById_Img = fd.POCheckedById !== null ? this.checkIconGreen : this.checkIconRed;
+        const req_POCheckedOn_Img = fd.POCheckedOn !== null ? this.checkIconGreen : this.checkIconRed;
+
+        const req_ITCheckedById_Img = fd.ITCheckedById !== null ? this.checkIconGreen : this.checkIconRed;
+        const req_ITCheckedOn_Img = fd.ITCheckedOn !== null ? this.checkIconGreen : this.checkIconRed;
+
+        const req_UKSBSCheckedById_Img = fd.UKSBSCheckedById !== null ? this.checkIconGreen : this.checkIconRed;
+        const req_UKSBSCheckedByOn_Img = fd.UKSBSCheckedOn !== null ? this.checkIconGreen : this.checkIconRed;
+
+        const req_PassCheckedById_Img = fd.PassCheckedById !== null ? this.checkIconGreen : this.checkIconRed;
+        const req_PassCheckedOn_Img = fd.PassCheckedOn !== null ? this.checkIconGreen : this.checkIconRed;
+
+        const req_ContractCheckedById_Img = fd.ContractCheckedById !== null ? this.checkIconGreen : this.checkIconRed;
+        const req_ContractCheckedOn_Img = fd.ContractCheckedOn !== null ? this.checkIconGreen : this.checkIconRed;
 
 
 
@@ -3548,7 +3572,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                 <div className={styles.flexContainerSectionQuestion}>
                                     <div className={styles.sectionQuestionCol1}><span>BPSS checked by</span></div>
                                     <div className={styles.sectionQuestionCol2}>
-
+                                        <img src={req_BPSSCheckedById_Img} />
                                     </div>
                                 </div>
 
@@ -3557,7 +3581,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                 <div className={styles.flexContainerSectionQuestion}>
                                     <div className={styles.sectionQuestionCol1}><span>BPSS checked on</span></div>
                                     <div className={styles.sectionQuestionCol2}>
-
+                                        <img src={req_BPSSCheckedOn_Img} />
                                     </div>
                                 </div>
 
@@ -3572,7 +3596,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                     entities={this.state.LookupData.Users}
                                     itemLimit={1}
                                     selectedEntities={fd.BPSSCheckedById && [fd.BPSSCheckedById]}
-                                    onChange={(v) => this.changeUserPicker_Worker(v, 'BPSSCheckedById')}
+                                    onChange={(v) => this.changeUserPicker_Worker(v, 'BPSSCheckedById', true)}
                                 />
 
 
@@ -3583,7 +3607,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                 <CrDatePicker
                                     maxWidth='100%'
                                     value={fd.BPSSCheckedOn}
-                                    onSelectDate={(v) => changeDatePickerV2(this, 'FormDataWorker', v, "BPSSCheckedOn")}
+                                    onSelectDate={(v) => changeDatePickerV2(this, 'FormDataWorker', v, "BPSSCheckedOn", this.engaged_Checks)}
                                 />
                             </div>
 
@@ -3601,7 +3625,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                 <div className={styles.flexContainerSectionQuestion}>
                                     <div className={styles.sectionQuestionCol1}><span>PO checked by</span></div>
                                     <div className={styles.sectionQuestionCol2}>
-
+                                        <img src={req_POCheckedById_Img} />
                                     </div>
                                 </div>
 
@@ -3610,7 +3634,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                 <div className={styles.flexContainerSectionQuestion}>
                                     <div className={styles.sectionQuestionCol1}><span>PO checked on</span></div>
                                     <div className={styles.sectionQuestionCol2}>
-
+                                        <img src={req_POCheckedOn_Img} />
                                     </div>
                                 </div>
 
@@ -3625,7 +3649,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                     entities={this.state.LookupData.Users}
                                     itemLimit={1}
                                     selectedEntities={fd.POCheckedById && [fd.POCheckedById]}
-                                    onChange={(v) => this.changeUserPicker_Worker(v, 'POCheckedById')}
+                                    onChange={(v) => this.changeUserPicker_Worker(v, 'POCheckedById', true)}
                                 />
 
 
@@ -3636,7 +3660,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                 <CrDatePicker
                                     maxWidth='100%'
                                     value={fd.POCheckedOn}
-                                    onSelectDate={(v) => changeDatePickerV2(this, 'FormDataWorker', v, "POCheckedOn")}
+                                    onSelectDate={(v) => changeDatePickerV2(this, 'FormDataWorker', v, "POCheckedOn", this.engaged_Checks)}
                                 />
 
                             </div>
@@ -3656,7 +3680,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                 <div className={styles.flexContainerSectionQuestion}>
                                     <div className={styles.sectionQuestionCol1}><span>IT checked by</span></div>
                                     <div className={styles.sectionQuestionCol2}>
-
+                                        <img src={req_ITCheckedById_Img} />
                                     </div>
                                 </div>
 
@@ -3666,7 +3690,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                 <div className={styles.flexContainerSectionQuestion}>
                                     <div className={styles.sectionQuestionCol1}><span>IT checked on</span></div>
                                     <div className={styles.sectionQuestionCol2}>
-
+                                        <img src={req_ITCheckedOn_Img} />
                                     </div>
                                 </div>
 
@@ -3681,7 +3705,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                     entities={this.state.LookupData.Users}
                                     itemLimit={1}
                                     selectedEntities={fd.ITCheckedById && [fd.ITCheckedById]}
-                                    onChange={(v) => this.changeUserPicker_Worker(v, 'ITCheckedById')}
+                                    onChange={(v) => this.changeUserPicker_Worker(v, 'ITCheckedById', true)}
                                 />
 
 
@@ -3691,7 +3715,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                 <CrDatePicker
                                     maxWidth='100%'
                                     value={fd.ITCheckedOn}
-                                    onSelectDate={(v) => changeDatePickerV2(this, 'FormDataWorker', v, "ITCheckedOn")}
+                                    onSelectDate={(v) => changeDatePickerV2(this, 'FormDataWorker', v, "ITCheckedOn", this.engaged_Checks)}
                                 />
 
                             </div>
@@ -3711,7 +3735,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                 <div className={styles.flexContainerSectionQuestion}>
                                     <div className={styles.sectionQuestionCol1}><span>UKSBS/Oracle checked by</span></div>
                                     <div className={styles.sectionQuestionCol2}>
-
+                                        <img src={req_UKSBSCheckedById_Img} />
                                     </div>
                                 </div>
 
@@ -3721,7 +3745,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                 <div className={styles.flexContainerSectionQuestion}>
                                     <div className={styles.sectionQuestionCol1}><span>UKSBS/Oracle checked on</span></div>
                                     <div className={styles.sectionQuestionCol2}>
-
+                                        <img src={req_UKSBSCheckedByOn_Img} />
                                     </div>
                                 </div>
 
@@ -3736,7 +3760,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                     entities={this.state.LookupData.Users}
                                     itemLimit={1}
                                     selectedEntities={fd.UKSBSCheckedById && [fd.UKSBSCheckedById]}
-                                    onChange={(v) => this.changeUserPicker_Worker(v, 'UKSBSCheckedById')}
+                                    onChange={(v) => this.changeUserPicker_Worker(v, 'UKSBSCheckedById', true)}
                                 />
 
 
@@ -3747,7 +3771,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                 <CrDatePicker
                                     maxWidth='100%'
                                     value={fd.UKSBSCheckedOn}
-                                    onSelectDate={(v) => changeDatePickerV2(this, 'FormDataWorker', v, "UKSBSCheckedOn")}
+                                    onSelectDate={(v) => changeDatePickerV2(this, 'FormDataWorker', v, "UKSBSCheckedOn", this.engaged_Checks)}
                                 />
 
                             </div>
@@ -3768,7 +3792,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                 <div className={styles.flexContainerSectionQuestion}>
                                     <div className={styles.sectionQuestionCol1}><span>Pass checked by</span></div>
                                     <div className={styles.sectionQuestionCol2}>
-
+                                        <img src={req_PassCheckedById_Img} />
                                     </div>
                                 </div>
 
@@ -3778,7 +3802,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                 <div className={styles.flexContainerSectionQuestion}>
                                     <div className={styles.sectionQuestionCol1}><span>Pass checked on</span></div>
                                     <div className={styles.sectionQuestionCol2}>
-
+                                        <img src={req_PassCheckedOn_Img} />
                                     </div>
                                 </div>
 
@@ -3793,7 +3817,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                     entities={this.state.LookupData.Users}
                                     itemLimit={1}
                                     selectedEntities={fd.PassCheckedById && [fd.PassCheckedById]}
-                                    onChange={(v) => this.changeUserPicker_Worker(v, 'PassCheckedById')}
+                                    onChange={(v) => this.changeUserPicker_Worker(v, 'PassCheckedById', true)}
                                 />
 
 
@@ -3804,7 +3828,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                 <CrDatePicker
                                     maxWidth='100%'
                                     value={fd.PassCheckedOn}
-                                    onSelectDate={(v) => changeDatePickerV2(this, 'FormDataWorker', v, "PassCheckedOn")}
+                                    onSelectDate={(v) => changeDatePickerV2(this, 'FormDataWorker', v, "PassCheckedOn", this.engaged_Checks)}
                                 />
 
                             </div>
@@ -3826,7 +3850,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                 <div className={styles.flexContainerSectionQuestion}>
                                     <div className={styles.sectionQuestionCol1}><span>Contract checked by</span></div>
                                     <div className={styles.sectionQuestionCol2}>
-
+                                        <img src={req_ContractCheckedById_Img} />
                                     </div>
                                 </div>
 
@@ -3836,7 +3860,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                 <div className={styles.flexContainerSectionQuestion}>
                                     <div className={styles.sectionQuestionCol1}><span>Contract checked on</span></div>
                                     <div className={styles.sectionQuestionCol2}>
-
+                                        <img src={req_ContractCheckedOn_Img} />
                                     </div>
                                 </div>
 
@@ -3851,7 +3875,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                     entities={this.state.LookupData.Users}
                                     itemLimit={1}
                                     selectedEntities={fd.ContractCheckedById && [fd.ContractCheckedById]}
-                                    onChange={(v) => this.changeUserPicker_Worker(v, 'ContractCheckedById')}
+                                    onChange={(v) => this.changeUserPicker_Worker(v, 'ContractCheckedById', true)}
                                 />
 
 
@@ -3861,7 +3885,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                 <CrDatePicker
                                     maxWidth='100%'
                                     value={fd.ContractCheckedOn}
-                                    onSelectDate={(v) => changeDatePickerV2(this, 'FormDataWorker', v, "ContractCheckedOn")}
+                                    onSelectDate={(v) => changeDatePickerV2(this, 'FormDataWorker', v, "ContractCheckedOn", this.engaged_Checks)}
                                 />
 
                             </div>
@@ -3887,6 +3911,8 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
     private renderFormButtons_EngagedStage() {
 
+        if(this.state.FormDataWorker.EngagedChecksDone === true) return;
+
         return (
             <div>
 
@@ -3894,12 +3920,16 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                     <React.Fragment>
                         {<PrimaryButton text="Save" className={styles.formButton} style={{ marginRight: '5px' }}
-                            onClick={() => this.saveData_Worker(false, true)}
+                            onClick={() => this.saveData_Worker(false, true, false)}
                         />}
 
                         <DefaultButton text="Close" className={styles.formButton} style={{ marginRight: '5px' }}
-                            onClick={this.props.onShowList}
+                            onClick={() => this.props.onShowList()}
                         />
+
+                        {this.state.Engaged_MoveToChecksDoneBtn && <PrimaryButton text="Move to Checks Done" className={styles.formButton} style={{ marginRight: '5px' }}
+                            onClick={() => this.saveData_Worker(false, true, true)}
+                        />}
 
 
                     </React.Fragment>
@@ -4021,7 +4051,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                     Contract checked on
                                 </td>
                                 <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)' }}>
-                                {caseInfo.ContractCheckedOn}
+                                    {caseInfo.ContractCheckedOn}
                                 </td>
 
                             </tr>
@@ -4208,7 +4238,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         }
     }
 
-    private saveData_Worker = (submitToEngaged: boolean, saveEngaged: boolean): void => {
+    private saveData_Worker = (submitToEngaged: boolean, saveEngaged: boolean, moveToChecksDone:boolean): void => {
         if (this.validateEntity_Onboarding(submitToEngaged)) {
 
             console.log('in saveData_Onboarding');
@@ -4231,7 +4261,13 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                 f.Title = "SubmitToEngaged"; //for api to know its a request for SubmitToEngaged
             }
             else if (saveEngaged === true) {
-                f.Title = "SaveEngaged"; //for api to know its a request for Save button from Engaged state
+                if(moveToChecksDone === true){
+                    f.Title = "SaveEngaged_MoveToChecksDone"; //for api to know its a request from Move to Checks Done button
+                }
+                else{
+                    f.Title = "SaveEngaged"; //for api to know its a request for Save button from Engaged state
+                }
+                
             }
 
 
@@ -4516,6 +4552,12 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                 FormDataWorker: w,
             }, () => {
                 this.blurRateTextField_Worker(null, "OnbDayRate");
+
+                if (this.props.stage === "Engaged") {
+                    this.engaged_Checks();
+                }
+
+
             });
 
 
@@ -4644,8 +4686,33 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     private changeUserPicker = (value: number[], f: string): void => {
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, value.length === 1 ? value[0] : null), });
     }
-    private changeUserPicker_Worker = (value: number[], f: string): void => {
-        this.setState({ FormDataWorker: this.cloneObject(this.state.FormDataWorker, f, value.length === 1 ? value[0] : null), });
+    private changeUserPicker_Worker = (value: number[], f: string, engagedChecks?: boolean): void => {
+        this.setState({
+            FormDataWorker: this.cloneObject(this.state.FormDataWorker, f, value.length === 1 ? value[0] : null),
+        },
+            () => {
+                if (engagedChecks === true) {
+                    this.engaged_Checks();
+                }
+            }
+        );
+    }
+
+    private engaged_Checks = (): void => {
+        const fd = this.state.FormDataWorker;
+        if (fd.BPSSCheckedById !== null && fd.BPSSCheckedOn !== null &&
+            fd.POCheckedById !== null && fd.POCheckedOn !== null &&
+            fd.ITCheckedById !== null && fd.ITCheckedOn !== null &&
+            fd.UKSBSCheckedById !== null && fd.UKSBSCheckedOn !== null &&
+            fd.PassCheckedById !== null && fd.PassCheckedOn !== null &&
+            fd.ContractCheckedById !== null && fd.ContractCheckedOn !== null) {
+            console.log('engaged all checks ok');
+            this.setState({ Engaged_MoveToChecksDoneBtn: true });
+        }
+        else {
+            console.log('all engaged checks not done');
+            this.setState({ Engaged_MoveToChecksDoneBtn: false });
+        }
     }
 
     private isNumeric(str: any) {

@@ -49,6 +49,7 @@ export interface IEvidenceSaveFormState {
     //ShowFileUpload: boolean;
     EditRequest: boolean;
     ErrMessages: IErrorMessage;
+
 }
 
 export class EvidenceSaveFormState implements IEvidenceSaveFormState {
@@ -99,11 +100,12 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
         const headerText: string = (this.props.evidenceType === "IR35" || this.props.evidenceType === "ContractorSecurityCheck") ? "Evidence" : "Case Discussion, General Comments and Attachments";
         
         return (
-            <Panel isOpen={this.props.showForm} headerText={headerText} type={PanelType.medium} onRenderNavigation={() => <FormCommandBar onSave={this.saveEvidence} onCancel={this.props.onCancelled} />}>
+            <Panel isOpen={this.props.showForm} headerText={headerText} type={PanelType.medium} onRenderNavigation={() => <FormCommandBar onSave={this.saveEvidence} onCancel={this.props.onCancelled} saveDisabled={this.state.ShowUploadProgress} />}>
                 <div className={styles.cr}>
                     {this.renderFormFields()}
                     <FormButtons
                         primaryText={"Save"}
+                        primaryDisabled={this.state.ShowUploadProgress}
                         onPrimaryClick={() => this.saveEvidence()}
                         onSecondaryClick={this.props.onCancelled}
                     />

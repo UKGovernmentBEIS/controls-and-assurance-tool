@@ -236,6 +236,7 @@
           <Property Name="PassCheckedOn" Type="datetime" />
           <Property Name="ContractCheckedById" Type="int" />
           <Property Name="ContractCheckedOn" Type="datetime" />
+          <Property Name="EngagedChecksDone" Type="bit" />
         </EntityType>
         <EntityType Name="CLWorkLocation">
           <Key>
@@ -3092,6 +3093,7 @@
           <Property Name="PassCheckedOn" Type="DateTime" Precision="3" />
           <Property Name="ContractCheckedById" Type="Int32" />
           <Property Name="ContractCheckedOn" Type="DateTime" Precision="3" />
+          <Property Name="EngagedChecksDone" Type="Boolean" />
           <NavigationProperty Name="CLCase" Relationship="Self.FK_CLWorker_CLCase" FromRole="CLWorker" ToRole="CLCase" />
           <NavigationProperty Name="CLDeclarationConflict" Relationship="Self.FK_CLWorker_CLDeclarationConflict" FromRole="CLWorker" ToRole="CLDeclarationConflict" />
           <NavigationProperty Name="CLSecurityClearance" Relationship="Self.FK_CLWorker_CLSecurityClearance" FromRole="CLWorker" ToRole="CLSecurityClearance" />
@@ -6304,6 +6306,7 @@
                 <ScalarProperty Name="PassCheckedOn" ColumnName="PassCheckedOn" />
                 <ScalarProperty Name="ContractCheckedById" ColumnName="ContractCheckedById" />
                 <ScalarProperty Name="ContractCheckedOn" ColumnName="ContractCheckedOn" />
+                <ScalarProperty Name="EngagedChecksDone" ColumnName="EngagedChecksDone" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

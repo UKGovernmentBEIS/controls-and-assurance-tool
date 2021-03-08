@@ -280,6 +280,7 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
                 editDisabled={!this.state.EnableEdit}
                 deleteDisabled={!this.state.EnableDelete}
                 createPermission={true}
+                caseType={this.props.caseType}
 
             />
         );

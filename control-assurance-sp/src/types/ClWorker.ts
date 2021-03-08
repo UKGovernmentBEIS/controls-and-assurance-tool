@@ -48,6 +48,7 @@ export interface ICLWorker  extends IEntity {
     PassCheckedOn?: Date;
     ContractCheckedById?: number;
     ContractCheckedOn?: Date;
+    EngagedChecksDone: boolean;
 
 
 }
@@ -100,6 +101,7 @@ export class CLWorker implements ICLWorker{
     public PassCheckedOn?: Date = null;
     public ContractCheckedById?: number = null;
     public ContractCheckedOn?: Date = null;
+    public EngagedChecksDone: boolean = null;
 
 
     constructor() {

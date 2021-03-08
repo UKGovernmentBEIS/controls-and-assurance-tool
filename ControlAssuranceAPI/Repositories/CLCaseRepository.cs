@@ -201,7 +201,7 @@ namespace ControlAssuranceAPI.Repositories
 
                 }
 
-                if ((CaseStages.GetStageNumber(ret.Stage) >= CaseStages.Engaged.Number) && clViewer == true)
+                if ((CaseStages.GetStageNumber(ret.Stage) >= CaseStages.Engaged.Number) && (clViewer == true || w.EngagedChecksDone == true))
                 {
                     ret.BPSSCheckedBy = w.BPSSCheckedById != null ? db.Users.FirstOrDefault(x => x.ID == w.BPSSCheckedById)?.Title ?? "" : "";
                     ret.POCheckedBy = w.POCheckedById != null ? db.Users.FirstOrDefault(x => x.ID == w.POCheckedById)?.Title ?? "" : "";
@@ -243,7 +243,23 @@ namespace ControlAssuranceAPI.Repositories
                           w.Stage,
                           w.WorkerNumber,
                           w.CLCase,
-                          HiringManagerObj = db.Users.FirstOrDefault(x => x.ID == w.CLCase.ApplHMUserId)
+                          HiringManagerObj = db.Users.FirstOrDefault(x => x.ID == w.CLCase.ApplHMUserId),
+                          w.OnbContractorFirstname,
+                          w.OnbContractorSurname,
+
+                          w.BPSSCheckedById,
+                          w.BPSSCheckedOn,
+                          w.POCheckedById,
+                          w.POCheckedOn,
+                          w.ITCheckedById,
+                          w.ITCheckedOn,
+                          w.UKSBSCheckedById,
+                          w.UKSBSCheckedOn,
+                          w.PassCheckedById,
+                          w.PassCheckedOn,
+                          w.ContractCheckedById,
+                          w.ContractCheckedOn,
+                          w.EngagedChecksDone,
                       };
 
             if(caseType == CaseStages.Engaged.Name)
@@ -359,6 +375,30 @@ namespace ControlAssuranceAPI.Repositories
                         stageActions1 = "AwaitingApproval";
                     }
                 }
+                else if(ite.Stage == CaseStages.Engaged.Name)
+                {
+                    stageActions1 = "Complete Checks";
+                    int remainingChecks = 6;
+                    //count how many checks are completed from out of 6
+
+                    if (ite.BPSSCheckedById != null && ite.BPSSCheckedOn != null) remainingChecks--;
+                    if (ite.POCheckedById != null && ite.POCheckedOn != null) remainingChecks--;
+                    if (ite.ITCheckedById != null && ite.ITCheckedOn != null) remainingChecks--;
+                    if (ite.UKSBSCheckedById != null && ite.UKSBSCheckedOn != null) remainingChecks--;
+                    if (ite.PassCheckedById != null && ite.PassCheckedOn != null) remainingChecks--;
+                    if (ite.ContractCheckedById != null && ite.ContractCheckedOn != null) remainingChecks--;
+
+                    stageAction2 = $"Remaining Chks: {remainingChecks}";
+
+                    if(remainingChecks == 0 && ite.EngagedChecksDone == true)
+                    {
+                        //Once checks are done then Stage action column goes to blank
+                        stageActions1 = "";
+                        stageAction2 = "";
+                    }
+
+
+                }
 
                 string caseRef = $"{ite.CLCase.CLComFramework?.Title ?? ""}{ite.CLCase.ID}";
                 if(CaseStages.GetStageNumber(ite.Stage) >= CaseStages.Onboarding.Number && ite.CLCase.ReqNumPositions > 1) 
@@ -366,6 +406,11 @@ namespace ControlAssuranceAPI.Repositories
                     caseRef += $"/{ite.CLCase.ReqNumPositions}/{ite.WorkerNumber?.ToString() ?? ""}";
                 }
 
+                string worker = "";
+                if(ite.OnbContractorFirstname != null)
+                {
+                    worker = $"{ite.OnbContractorFirstname} {ite.OnbContractorSurname?.ToString() ?? ""}";
+                }
 
 
                 CLCaseView_Result item = new CLCaseView_Result();
@@ -377,7 +422,7 @@ namespace ControlAssuranceAPI.Repositories
                 item.Stage = ite.Stage;
                 item.StageActions1 = stageActions1;
                 item.StageActions2 = stageAction2;
-                item.Worker = "";
+                item.Worker = worker;
                 item.CreatedOn = ite.CLCase.CreatedOn != null ? ite.CLCase.CreatedOn.Value.ToString("dd/MM/yyyy") : "";
                 item.CostCenter = $"{ite.CLCase.ReqCostCentre} - {ite.CLCase.Directorate?.Title?.ToString() ?? ""}";
                 item.StartDate = ite.CLCase.ReqEstStartDate != null ? ite.CLCase.ReqEstStartDate.Value.ToString("dd/MM/yyyy") : "";

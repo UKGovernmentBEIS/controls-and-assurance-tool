@@ -59,6 +59,7 @@ namespace ControlAssuranceAPI.Models
         public Nullable<System.DateTime> PassCheckedOn { get; set; }
         public Nullable<int> ContractCheckedById { get; set; }
         public Nullable<System.DateTime> ContractCheckedOn { get; set; }
+        public Nullable<bool> EngagedChecksDone { get; set; }
     
         public virtual CLCase CLCase { get; set; }
         public virtual CLDeclarationConflict CLDeclarationConflict { get; set; }

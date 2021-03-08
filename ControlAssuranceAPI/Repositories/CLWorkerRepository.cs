@@ -41,7 +41,7 @@ namespace ControlAssuranceAPI.Repositories
 
             //check for approval
             string newChangeLog = "";
-            if(inputWorker.Title == "SaveEngaged")
+            if(inputWorker.Title.StartsWith("SaveEngaged") == true)
             {
                 clWorker.BPSSCheckedById = inputWorker.BPSSCheckedById;
                 clWorker.BPSSCheckedOn = inputWorker.BPSSCheckedOn;
@@ -55,6 +55,11 @@ namespace ControlAssuranceAPI.Repositories
                 clWorker.PassCheckedOn = inputWorker.PassCheckedOn;
                 clWorker.ContractCheckedById = inputWorker.ContractCheckedById;
                 clWorker.ContractCheckedOn = inputWorker.ContractCheckedOn;
+
+                if(inputWorker.Title == "SaveEngaged_MoveToChecksDone")
+                {
+                    clWorker.EngagedChecksDone = true;
+                }
 
                 db.SaveChanges();
                 return clWorker;
