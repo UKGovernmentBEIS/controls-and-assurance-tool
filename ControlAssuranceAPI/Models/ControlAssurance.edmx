@@ -151,6 +151,7 @@
           <Property Name="Details" Type="nvarchar(max)" />
           <Property Name="EngagedStageFormText" Type="nvarchar(max)" />
           <Property Name="OnboardingStageFormText" Type="nvarchar(max)" />
+          <Property Name="LeavingStageFormText" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="CLIR35Scope">
           <Key>
@@ -237,6 +238,19 @@
           <Property Name="ContractCheckedById" Type="int" />
           <Property Name="ContractCheckedOn" Type="datetime" />
           <Property Name="EngagedChecksDone" Type="bit" />
+          <Property Name="LeStartDate" Type="datetime" />
+          <Property Name="LeContractorPhone" Type="nvarchar" MaxLength="200" />
+          <Property Name="LeContractorEmail" Type="nvarchar" MaxLength="1000" />
+          <Property Name="LeContractorHomeAddress" Type="nvarchar" MaxLength="1000" />
+          <Property Name="LeContractorPostCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="LeContractorDetailsCheckedById" Type="int" />
+          <Property Name="LeContractorDetailsCheckedOn" Type="datetime" />
+          <Property Name="LeITCheckedById" Type="int" />
+          <Property Name="LeITCheckedOn" Type="datetime" />
+          <Property Name="LeUKSBSCheckedById" Type="int" />
+          <Property Name="LeUKSBSCheckedOn" Type="date" />
+          <Property Name="LePassCheckedById" Type="int" />
+          <Property Name="LePassCheckedOn" Type="datetime" />
         </EntityType>
         <EntityType Name="CLWorkLocation">
           <Key>
@@ -3003,6 +3017,7 @@
           <Property Name="Details" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="EngagedStageFormText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="OnboardingStageFormText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="LeavingStageFormText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="CLIR35Scope">
           <Key>
@@ -3094,6 +3109,19 @@
           <Property Name="ContractCheckedById" Type="Int32" />
           <Property Name="ContractCheckedOn" Type="DateTime" Precision="3" />
           <Property Name="EngagedChecksDone" Type="Boolean" />
+          <Property Name="LeStartDate" Type="DateTime" Precision="3" />
+          <Property Name="LeContractorPhone" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="LeContractorEmail" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="LeContractorHomeAddress" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="LeContractorPostCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LeContractorDetailsCheckedById" Type="Int32" />
+          <Property Name="LeContractorDetailsCheckedOn" Type="DateTime" Precision="3" />
+          <Property Name="LeITCheckedById" Type="Int32" />
+          <Property Name="LeITCheckedOn" Type="DateTime" Precision="3" />
+          <Property Name="LeUKSBSCheckedById" Type="Int32" />
+          <Property Name="LeUKSBSCheckedOn" Type="DateTime" Precision="0" />
+          <Property Name="LePassCheckedById" Type="Int32" />
+          <Property Name="LePassCheckedOn" Type="DateTime" Precision="3" />
           <NavigationProperty Name="CLCase" Relationship="Self.FK_CLWorker_CLCase" FromRole="CLWorker" ToRole="CLCase" />
           <NavigationProperty Name="CLDeclarationConflict" Relationship="Self.FK_CLWorker_CLDeclarationConflict" FromRole="CLWorker" ToRole="CLDeclarationConflict" />
           <NavigationProperty Name="CLSecurityClearance" Relationship="Self.FK_CLWorker_CLSecurityClearance" FromRole="CLWorker" ToRole="CLSecurityClearance" />
@@ -6215,6 +6243,7 @@
                 <ScalarProperty Name="Details" ColumnName="Details" />
                 <ScalarProperty Name="EngagedStageFormText" ColumnName="EngagedStageFormText" />
                 <ScalarProperty Name="OnboardingStageFormText" ColumnName="OnboardingStageFormText" />
+                <ScalarProperty Name="LeavingStageFormText" ColumnName="LeavingStageFormText" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -6307,6 +6336,19 @@
                 <ScalarProperty Name="ContractCheckedById" ColumnName="ContractCheckedById" />
                 <ScalarProperty Name="ContractCheckedOn" ColumnName="ContractCheckedOn" />
                 <ScalarProperty Name="EngagedChecksDone" ColumnName="EngagedChecksDone" />
+                <ScalarProperty Name="LeStartDate" ColumnName="LeStartDate" />
+                <ScalarProperty Name="LeContractorPhone" ColumnName="LeContractorPhone" />
+                <ScalarProperty Name="LeContractorEmail" ColumnName="LeContractorEmail" />
+                <ScalarProperty Name="LeContractorHomeAddress" ColumnName="LeContractorHomeAddress" />
+                <ScalarProperty Name="LeContractorPostCode" ColumnName="LeContractorPostCode" />
+                <ScalarProperty Name="LeContractorDetailsCheckedById" ColumnName="LeContractorDetailsCheckedById" />
+                <ScalarProperty Name="LeContractorDetailsCheckedOn" ColumnName="LeContractorDetailsCheckedOn" />
+                <ScalarProperty Name="LeITCheckedById" ColumnName="LeITCheckedById" />
+                <ScalarProperty Name="LeITCheckedOn" ColumnName="LeITCheckedOn" />
+                <ScalarProperty Name="LeUKSBSCheckedById" ColumnName="LeUKSBSCheckedById" />
+                <ScalarProperty Name="LeUKSBSCheckedOn" ColumnName="LeUKSBSCheckedOn" />
+                <ScalarProperty Name="LePassCheckedById" ColumnName="LePassCheckedById" />
+                <ScalarProperty Name="LePassCheckedOn" ColumnName="LePassCheckedOn" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

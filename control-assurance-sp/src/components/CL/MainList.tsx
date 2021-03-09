@@ -18,10 +18,12 @@ export interface IMainListProps extends types.IBaseComponentProps {
     onChangeFilterText: (value: string) => void;
 
     onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
+    onMoveToLeaving?: (ID: number, caseId: number) => void;
     //onMainSaved: () => void;
-
+    currentUserId: number;
+    superUserPermission: boolean;
     createPermission: boolean;
-    caseType:string;
+    caseType: string;
 
 }
 
@@ -42,6 +44,7 @@ export interface IMainListState<T> {
     Loading: boolean;
     ListFilterText?: string;
     InitDataLoaded: boolean;
+    MoveToLeavingPermission:boolean;
 }
 export class MainListState<T> implements IMainListState<T>{
     public SelectedEntity = null;
@@ -60,6 +63,7 @@ export class MainListState<T> implements IMainListState<T>{
     public Loading = false;
     public ListFilterText = null;
     public InitDataLoaded = false;
+    public MoveToLeavingPermission = false;
 }
 
 export default class MainList extends React.Component<IMainListProps, IMainListState<IEntity>> {
@@ -213,6 +217,26 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
         },
 
 
+        {
+            key: 'HiringManagerId',
+            name: 'HiringManagerId',
+            fieldName: 'HiringManagerId',
+            minWidth: 1,
+            maxWidth: 1,
+            headerClassName: styles.bold,
+            columnDisplayType: ColumnDisplayTypes.Hidden,
+        },
+
+        {
+            key: 'EngagedChecksDone',
+            name: 'EngagedChecksDone',
+            fieldName: 'EngagedChecksDone',
+            minWidth: 1,
+            maxWidth: 1,
+            headerClassName: styles.bold,
+            columnDisplayType: ColumnDisplayTypes.Hidden,
+        },
+
 
 
 
@@ -231,13 +255,28 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
                     console.log(sel);
                     const key = Number(sel.key);
                     const title: string = sel["Title"];
-                    //const goElementId = Number(sel["GoElementId"]);
+
+                    //move to leaving permission - only superuser or hiring manager have permission
+                    const hiringMgrUserId: number = Number(sel["HiringManagerId"]);
+                    console.log('hiringMgrUserId', hiringMgrUserId);
+
+                    //console.log('sel["EngagedChecksDone"]', sel["EngagedChecksDone"]);
+                    //const engagedChecksDone:boolean =  sel["EngagedChecksDone"];
+                    const engagedChecksDone:boolean = (sel["EngagedChecksDone"] === '1');
+                    console.log('engagedChecksDone', engagedChecksDone);
+
+                    let moveToLeavingPermission:boolean = false;
+                    if(engagedChecksDone === true && (this.props.superUserPermission === true || (this.props.currentUserId === hiringMgrUserId))){
+                    
+                        console.log('MoveToLeavingPermission is true');
+                        moveToLeavingPermission = true;
+                    }
 
 
-                    this.setState({ SelectedEntity: key, SelectedEntityTitle: title, EnableEdit: true, EnableDelete: true });
+                    this.setState({ SelectedEntity: key, SelectedEntityTitle: title, EnableEdit: true, EnableDelete: true, MoveToLeavingPermission: moveToLeavingPermission });
                 }
                 else {
-                    this.setState({ SelectedEntity: null, SelectedEntityTitle: null, EnableEdit: false, EnableDelete: false });
+                    this.setState({ SelectedEntity: null, SelectedEntityTitle: null, EnableEdit: false, EnableDelete: false, MoveToLeavingPermission: false });
                 }
             }
         });
@@ -281,6 +320,9 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
                 deleteDisabled={!this.state.EnableDelete}
                 createPermission={true}
                 caseType={this.props.caseType}
+
+                moveToLeavingPermission={this.state.MoveToLeavingPermission}
+                onMoveToLeaving={this.moveToLeaving}
 
             />
         );
@@ -370,6 +412,14 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
         // if (this.state.SelectedEntity)
         //     this._selection.setKeySelected(this.state.SelectedEntity.toString(), false, false);
         // this.setState({ SelectedEntity: null, ShowForm: true });
+    }
+
+    private moveToLeaving = (): void => {
+        console.log('on move to leaving', this.state.SelectedEntity, this.state.SelectedEntityTitle);
+        const record = this.state.Entities.filter(x => x.ID === this.state.SelectedEntity)[0];
+        console.log(record);
+        this.props.onMoveToLeaving(this.state.SelectedEntity, Number(record['CaseId']));
+
     }
 
 

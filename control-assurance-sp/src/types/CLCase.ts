@@ -133,6 +133,17 @@ export interface IClCaseInfo  extends IEntity {
     ContractCheckedBy?: string;
     ContractCheckedOn?: string;
 
+
+    LeStartDateStr?: string;
+    LeContractorDetailsCheckedBy?: string;
+    LeContractorDetailsCheckedOn?: string;
+    LeITCheckedBy?: string;
+    LeITCheckedOn?: string;
+    LeUKSBSCheckedBy?: string;
+    LeUKSBSCheckedOn?: string;
+    LePassCheckedBy?: string;
+    LePassCheckedOn?: string;
+
 }
 export class ClCaseInfo  implements IClCaseInfo {
 
@@ -184,10 +195,21 @@ export class ClCaseInfo  implements IClCaseInfo {
     public ContractCheckedBy?: string = "";
     public ContractCheckedOn?: string = "";
 
+    public LeStartDateStr?: string = "";
+    public LeContractorDetailsCheckedBy?: string = "";
+    public LeContractorDetailsCheckedOn?: string = "";
+    public LeITCheckedBy?: string = "";
+    public LeITCheckedOn?: string = "";
+    public LeUKSBSCheckedBy?: string = "";
+    public LeUKSBSCheckedOn?: string = "";
+    public LePassCheckedBy?: string = "";
+    public LePassCheckedOn?: string = "";
+
 
 }
 
 export interface IClCaseCounts extends IEntity{
     TotalBusinessCases?: number;
-    TotalEngagedCases?: string;
+    TotalEngagedCases?: number;
+    TotalArchivedCases?: number;
 }

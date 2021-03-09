@@ -19,6 +19,8 @@ namespace ControlAssuranceAPI.Models
         public string CreatedOn { get; set; }
         public string CostCenter { get; set; }
         public string HiringManager { get; set; }
+        public int? HiringManagerId { get; set; }
+        public string EngagedChecksDone { get; set; }
         public string StartDate { get; set; }
         public string EndDate { get; set; }
 

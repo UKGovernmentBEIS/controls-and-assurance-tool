@@ -36,12 +36,16 @@ export interface IClUpdatesState extends types.IUserContextWebPartState {
   Section1_MainList_ListFilterText: string;
   Section2_IsOpen: boolean;
   Section2_MainList_ListFilterText: string;
+  Section3_IsOpen: boolean;
+  Section3_MainList_ListFilterText: string;
+
   Section_MainList_SelectedId: number;
   Section_MainList_SelectedCaseId: number;
   Section_MainList_SelectedStage: string;
 
   TotalBusinessCases: number;
   TotalEngagedCases: number;
+  TotalArchivedCases: number;
   DefForm: ICLDefForm;
 
 
@@ -55,11 +59,15 @@ export class ClUpdatesState extends types.UserContextWebPartState implements ICl
   public Section1_MainList_ListFilterText: string = null;
   public Section2_IsOpen: boolean = false;
   public Section2_MainList_ListFilterText: string = null;
+  public Section3_IsOpen: boolean = false;
+  public Section3_MainList_ListFilterText: string = null;
+
   public Section_MainList_SelectedId = null;
   public Section_MainList_SelectedCaseId = null;
   public Section_MainList_SelectedStage = null;
   public TotalBusinessCases = null;
   public TotalEngagedCases = null;
+  public TotalArchivedCases = null;
   public DefForm: ICLDefForm = null;
 
 
@@ -121,6 +129,9 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
                 onSection_toggleOpen={this.handleSection1_toggleOpen}
                 listFilterText={this.state.Section1_MainList_ListFilterText}
                 onChangeFilterText={this.handleSection1_ChangeFilterText}
+                currentUserId={this.getCurrentUserId()}
+                superUserPermission={this.isSuperUser()}
+
                 {...this.props}
               />
 
@@ -133,9 +144,25 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
                 onSection_toggleOpen={this.handleSection2_toggleOpen}
                 listFilterText={this.state.Section2_MainList_ListFilterText}
                 onChangeFilterText={this.handleSection2_ChangeFilterText}
+                onMoveToLeaving={this.handleMoveToLeavingClick}
+                currentUserId={this.getCurrentUserId()}
+                superUserPermission={this.isSuperUser()}
                 {...this.props}
               />
 
+              <Section
+                sectionTitle="Archived"
+                caseType="Archived"
+                sectionTotalCases={this.state.TotalArchivedCases}
+                onItemTitleClick={this.handleSection_MainListItemTitleClick}
+                section_IsOpen={this.state.Section3_IsOpen}
+                onSection_toggleOpen={this.handleSection3_toggleOpen}
+                listFilterText={this.state.Section3_MainList_ListFilterText}
+                onChangeFilterText={this.handleSection3_ChangeFilterText}
+                currentUserId={this.getCurrentUserId()}
+                superUserPermission={this.isSuperUser()}
+                {...this.props}
+              />
 
 
 
@@ -219,6 +246,7 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
       this.setState({
         TotalBusinessCases: x.TotalBusinessCases,
         TotalEngagedCases: x.TotalEngagedCases,
+        TotalArchivedCases: x.TotalArchivedCases,
       });
 
 
@@ -300,10 +328,10 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
   //#region event handlers
 
 
-  private handleShowMainTab = (refreshCounters?:boolean): void => {
+  private handleShowMainTab = (refreshCounters?: boolean): void => {
     console.log('in handleShowMainTab');
     this.clearErrors();
-    if(refreshCounters === true){
+    if (refreshCounters === true) {
       console.log('refreshCounters');
       this.loadCaseCounts();
     }
@@ -322,6 +350,9 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
   private handleSection2_toggleOpen = (): void => {
     this.setState({ Section2_IsOpen: !this.state.Section2_IsOpen });
   }
+  private handleSection3_toggleOpen = (): void => {
+    this.setState({ Section3_IsOpen: !this.state.Section3_IsOpen });
+  }
 
 
   private handleSection1_ChangeFilterText = (value: string): void => {
@@ -329,6 +360,9 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
   }
   private handleSection2_ChangeFilterText = (value: string): void => {
     this.setState({ Section2_MainList_ListFilterText: value });
+  }
+  private handleSection3_ChangeFilterText = (value: string): void => {
+    this.setState({ Section3_MainList_ListFilterText: value });
   }
 
 
@@ -375,6 +409,18 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
     }
 
 
+
+  }
+
+  private handleMoveToLeavingClick = (ID: number, caseId: number): void => {
+
+    this.setState({
+      SelectedPivotKey: this.headerTxt_NewCaseTab,
+      Section_MainList_SelectedId: ID,
+      Section_MainList_SelectedCaseId: caseId,
+      Section_MainList_SelectedStage: 'Leaving',
+
+    });
 
   }
 

@@ -10,5 +10,6 @@ namespace ControlAssuranceAPI.Models
         public int ID { get; set; } = 1;
         public int TotalBusinessCases { get; set; }
         public int TotalEngagedCases { get; set; }
+        public int TotalArchivedCases { get; set; }
     }
 }

@@ -33,6 +33,8 @@ namespace ControlAssuranceAPI.Repositories
             public static CaseStage Approval = new CaseStage { Name = "Approval", Number = 2 };
             public static CaseStage Onboarding = new CaseStage { Name = "Onboarding", Number = 3 };
             public static CaseStage Engaged = new CaseStage { Name = "Engaged", Number = 4 };
+            public static CaseStage Leaving = new CaseStage { Name = "Leaving", Number = 5 };
+            public static CaseStage Left = new CaseStage { Name = "Left", Number = 6 };
 
             public static int GetStageNumber(string stageName)
             {
@@ -44,6 +46,10 @@ namespace ControlAssuranceAPI.Repositories
                     return CaseStages.Onboarding.Number;
                 else if (stageName == CaseStages.Engaged.Name)
                     return CaseStages.Engaged.Number;
+                else if (stageName == CaseStages.Leaving.Name)
+                    return CaseStages.Leaving.Number;
+                else if (stageName == CaseStages.Left.Name)
+                    return CaseStages.Left.Number;
                 else
                     return 0;
             }
@@ -218,6 +224,20 @@ namespace ControlAssuranceAPI.Repositories
                     ret.ContractCheckedOn = w.ContractCheckedOn?.ToString("dd/MM/yyyy") ?? "";
                 }
 
+                if ((CaseStages.GetStageNumber(ret.Stage) >= CaseStages.Leaving.Number) || (clViewer == true))
+                {
+                    ret.LeStartDateStr = w.LeStartDate?.ToString("dd/MM/yyyy") ?? "";
+                    ret.LeContractorDetailsCheckedBy = w.LeContractorDetailsCheckedById != null ? db.Users.FirstOrDefault(x => x.ID == w.LeContractorDetailsCheckedById)?.Title ?? "" : "";
+                    ret.LeITCheckedBy = w.LeITCheckedById != null ? db.Users.FirstOrDefault(x => x.ID == w.LeITCheckedById)?.Title ?? "" : "";
+                    ret.LeUKSBSCheckedBy = w.LeUKSBSCheckedById != null ? db.Users.FirstOrDefault(x => x.ID == w.LeUKSBSCheckedById)?.Title ?? "" : "";
+                    ret.LePassCheckedBy = w.LePassCheckedById != null ? db.Users.FirstOrDefault(x => x.ID == w.LePassCheckedById)?.Title ?? "" : "";
+
+                    ret.LeContractorDetailsCheckedOn = w.LeContractorDetailsCheckedOn?.ToString("dd/MM/yyyy") ?? "";
+                    ret.LeITCheckedOn = w.LeITCheckedOn?.ToString("dd/MM/yyyy") ?? "";
+                    ret.LeUKSBSCheckedOn = w.LeUKSBSCheckedOn?.ToString("dd/MM/yyyy") ?? "";
+                    ret.LePassCheckedOn = w.LePassCheckedOn?.ToString("dd/MM/yyyy") ?? "";
+                }
+
 
             }
 
@@ -243,7 +263,7 @@ namespace ControlAssuranceAPI.Repositories
                           w.Stage,
                           w.WorkerNumber,
                           w.CLCase,
-                          HiringManagerObj = db.Users.FirstOrDefault(x => x.ID == w.CLCase.ApplHMUserId),
+                          HiringManagerObj = db.Users.FirstOrDefault(x => x.ID == w.CLCase.ApplHMUserId),                          
                           w.OnbContractorFirstname,
                           w.OnbContractorSurname,
 
@@ -262,13 +282,18 @@ namespace ControlAssuranceAPI.Repositories
                           w.EngagedChecksDone,
                       };
 
-            if(caseType == CaseStages.Engaged.Name)
+            if (caseType == "BusinessCases") //just a word to show all cases apart from the engaged
             {
-                qry = qry.Where(x => x.Stage == CaseStages.Engaged.Name);
+                qry = qry.Where(x => x.Stage != CaseStages.Engaged.Name && x.Stage != CaseStages.Leaving.Name && x.Stage != CaseStages.Left.Name);
             }
-            else if(caseType == "BusinessCases") //just a word to show all cases apart from the engaged
+            else if (caseType == CaseStages.Engaged.Name)
             {
-                qry = qry.Where(x => x.Stage != CaseStages.Engaged.Name);
+                qry = qry.Where(x => x.Stage == CaseStages.Engaged.Name || x.Stage == CaseStages.Leaving.Name);
+            }
+
+            else if(caseType == "Archived")
+            {
+                qry = qry.Where(x => x.Stage == CaseStages.Left.Name);
             }
 
             if (isSuperUserOrViewer == true)
@@ -426,9 +451,12 @@ namespace ControlAssuranceAPI.Repositories
                 item.CreatedOn = ite.CLCase.CreatedOn != null ? ite.CLCase.CreatedOn.Value.ToString("dd/MM/yyyy") : "";
                 item.CostCenter = $"{ite.CLCase.ReqCostCentre} - {ite.CLCase.Directorate?.Title?.ToString() ?? ""}";
                 item.StartDate = ite.CLCase.ReqEstStartDate != null ? ite.CLCase.ReqEstStartDate.Value.ToString("dd/MM/yyyy") : "";
-                item.EndDate = ite.CLCase.ReqEstEndDate != null ? ite.CLCase.ReqEstEndDate.Value.ToString("dd/MM/yyyy") : "";
-
+                item.EndDate = ite.CLCase.ReqEstEndDate != null ? ite.CLCase.ReqEstEndDate.Value.ToString("dd/MM/yyyy") : "";               
                 item.HiringManager = ite.HiringManagerObj?.Title ?? "";
+                
+                item.HiringManagerId = ite.CLCase.ApplHMUserId;
+                //item.EngagedChecksDone = ite.EngagedChecksDone != null ? ite.EngagedChecksDone.Value.ToString() : "false";
+                item.EngagedChecksDone = ite.EngagedChecksDone == true ? "1" : "0";
 
 
                 retList.Add(item);
@@ -473,13 +501,16 @@ namespace ControlAssuranceAPI.Repositories
 
             }
 
-            int totalBusinessCases = qry.Count(x => x.Stage != CaseStages.Engaged.Name);
-            int totalEngagedCases = qry.Count(x => x.Stage == CaseStages.Engaged.Name);
+
+            int totalBusinessCases = qry.Count(x => x.Stage != CaseStages.Engaged.Name && x.Stage != CaseStages.Leaving.Name && x.Stage != CaseStages.Left.Name);
+            int totalEngagedCases = qry.Count(x => x.Stage == CaseStages.Engaged.Name || x.Stage == CaseStages.Leaving.Name);
+            int totalArchivedCases = qry.Count(x => x.Stage == CaseStages.Left.Name);
 
             CLCaseCounts_Result cLCaseCounts = new CLCaseCounts_Result
             {
                 TotalBusinessCases = totalBusinessCases,
                 TotalEngagedCases = totalEngagedCases,
+                TotalArchivedCases = totalArchivedCases,
             };
 
             return cLCaseCounts;

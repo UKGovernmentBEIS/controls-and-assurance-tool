@@ -67,11 +67,47 @@ namespace ControlAssuranceAPI.Repositories
                 //no need to go further in this if condition.
 
             }
+            else if(inputWorker.Title.StartsWith("SaveLeaving") == true)
+            {
+                clWorker.LeStartDate = inputWorker.LeStartDate;
+                clWorker.LeContractorPhone = inputWorker.LeContractorPhone;
+                clWorker.LeContractorEmail = inputWorker.LeContractorEmail;
+                clWorker.LeContractorHomeAddress = inputWorker.LeContractorHomeAddress;
+                clWorker.LeContractorPostCode = inputWorker.LeContractorPostCode;
+
+                clWorker.LeContractorDetailsCheckedById = inputWorker.LeContractorDetailsCheckedById;
+                clWorker.LeContractorDetailsCheckedOn = inputWorker.LeContractorDetailsCheckedOn;
+                clWorker.LeITCheckedById = inputWorker.LeITCheckedById;
+                clWorker.LeITCheckedOn = inputWorker.LeITCheckedOn;
+                clWorker.LeUKSBSCheckedById = inputWorker.LeUKSBSCheckedById;
+                clWorker.LeUKSBSCheckedOn = inputWorker.LeUKSBSCheckedOn;
+                clWorker.LePassCheckedById = inputWorker.LePassCheckedById;
+                clWorker.LePassCheckedOn = inputWorker.LePassCheckedOn;
+                clWorker.Stage = CLCaseRepository.CaseStages.Leaving.Name;
+
+                if (inputWorker.Title == "SaveLeaving_MoveToArchive")
+                {
+                    clWorker.Stage = CLCaseRepository.CaseStages.Left.Name;
+                }
+
+                db.SaveChanges();
+                return clWorker;
+            }
             else if (inputWorker.Title == "SubmitToEngaged")
             {
+                clWorker.Stage = CLCaseRepository.CaseStages.Engaged.Name;
+                //copy few values for later usage for the leaving stage
+                clWorker.LeStartDate = inputWorker.OnbStartDate;
+                clWorker.LeContractorPhone = inputWorker.OnbContractorPhone;
+                clWorker.LeContractorEmail = inputWorker.OnbContractorEmail;
+                clWorker.LeContractorHomeAddress = inputWorker.OnbContractorHomeAddress;
+                clWorker.LeContractorPostCode = inputWorker.OnbContractorPostCode;
+
+
+
                 //newChangeLog = $"{cLcase.CaseChangeLog}{date} Case submitted for Approval by {user},";
                 //var worker = cLcase.CLWorkers.FirstOrDefault();
-                clWorker.Stage = CLCaseRepository.CaseStages.Engaged.Name;
+
                 //cLcase.CaseChangeLog = newChangeLog;
             }
             

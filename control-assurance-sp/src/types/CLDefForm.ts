@@ -3,5 +3,6 @@ export interface ICLDefForm extends IEntity {
     Details?: string;
     EngagedStageFormText?: string;
     OnboardingStageFormText?: string;
+    LeavingStageFormText?: string;
 
 }

@@ -97,6 +97,7 @@ export interface INewCaseTabState {
     HideSubmitEngagedDoneMessage: boolean;
     EvidenceChangesCounter: number;
     Engaged_MoveToChecksDoneBtn: boolean;
+    Leaving_MoveToArchiveBtn: boolean;
     //DefForm: ICLDefForm;
 
 
@@ -121,6 +122,7 @@ export class NewCaseTabState implements INewCaseTabState {
     public HideSubmitEngagedDoneMessage: boolean = true;
     public EvidenceChangesCounter: number = 0;
     public Engaged_MoveToChecksDoneBtn = false;
+    public Leaving_MoveToArchiveBtn: boolean = false;
     //public DefForm: ICLDefForm = null;
 
     constructor(caseType: string) {
@@ -179,6 +181,8 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
             2: Approval
             3: Onboarding
             4: Engaged
+            5: Leaving
+            6: Left
         
         */
 
@@ -203,17 +207,17 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                 {stage === "Draft" && isViewOnly === false && this.renderFormButtons_DraftStage()}
 
 
-                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || isViewOnly === true) && this.renderDetailsOfApplicant_info()}
-                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || isViewOnly === true) && this.renderRequirement_info()}
-                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || isViewOnly === true) && this.renderCommercial_info()}
-                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || isViewOnly === true) && this.renderResourcingJustification_info()}
-                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || isViewOnly === true) && this.renderFinance_info()}
-                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || isViewOnly === true) && this.renderOther_info()}
-                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || isViewOnly === true) && this.renderApprovers_info()}
+                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || isViewOnly === true) && this.renderDetailsOfApplicant_info()}
+                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || isViewOnly === true) && this.renderRequirement_info()}
+                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || isViewOnly === true) && this.renderCommercial_info()}
+                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || isViewOnly === true) && this.renderResourcingJustification_info()}
+                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || isViewOnly === true) && this.renderFinance_info()}
+                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || isViewOnly === true) && this.renderOther_info()}
+                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || isViewOnly === true) && this.renderApprovers_info()}
 
-                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || isViewOnly === true) && this.renderBudgetHolderApprovalDecision_info()}
-                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || isViewOnly === true) && this.renderFinanceBusinessPartnerApprovalDecision_info()}
-                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || isViewOnly === true) && this.renderHRBusinessPartnerApprovalDecision_info()}
+                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || isViewOnly === true) && this.renderBudgetHolderApprovalDecision_info()}
+                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || isViewOnly === true) && this.renderFinanceBusinessPartnerApprovalDecision_info()}
+                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || isViewOnly === true) && this.renderHRBusinessPartnerApprovalDecision_info()}
 
                 {(stage === "Approval") && this.renderBudgetHolderApprovalDecision()}
                 {(stage === "Approval") && this.renderFinanceBusinessPartnerApprovalDecision()}
@@ -222,11 +226,15 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                 {stage === "Onboarding" && isViewOnly === false && this.renderOnboarding()}
                 {stage === "Onboarding" && isViewOnly === false && this.renderFormButtons_OnboardingStage()}
-                {((stage === "Onboarding" && isViewOnly === true) || (stage === "Engaged")) && this.renderOnboarding_info()}
+                {((stage === "Onboarding" && isViewOnly === true) || (stage === "Engaged" || stage === "Leaving" || stage === "Left")) && this.renderOnboarding_info()}
 
                 {stage === "Engaged" && isViewOnly === false && this.renderEngaged()}
                 {stage === "Engaged" && isViewOnly === false && this.renderFormButtons_EngagedStage()}
-                {(stage === "Engaged" && (isViewOnly === true || fdw.EngagedChecksDone === true)) && this.renderEngaged_info()}
+                {((stage === "Engaged" || stage === "Leaving" || stage === "Left") && (isViewOnly === true || fdw.EngagedChecksDone === true)) && this.renderEngaged_info()}
+
+                {stage === "Leaving" && isViewOnly === false && this.renderLeaving()}
+                {stage === "Leaving" && isViewOnly === false && this.renderFormButtons_LeavingStage()}
+                {((stage === "Left") || (stage === "Leaving" && isViewOnly === true)) && this.renderLeaving_info()}
 
                 {this.renderListsMainTitle()}
                 {this.renderEvidencesList()}
@@ -543,9 +551,10 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                             <div style={{ width: '50%', paddingRight: '5px' }}>
                                 <CrTextField
                                     //className={styles.formField}
-                                    numbersOnly={true}
+                                    //numbersOnly={true}
                                     maxLength={6}
-                                    onChanged={(v) => this.changeTextField(v, "ReqCostCentre")}
+                                    //onChanged={(v) => this.changeTextField(v, "ReqCostCentre")}
+                                    onChanged={(v) => this.changeTextField_number(v, "ReqCostCentre")}
                                     value={fd.ReqCostCentre}
 
                                 />
@@ -1709,8 +1718,8 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                 <td style={{ width: '31%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)' }}>
                                     {this.state.CaseInfo.ComFramework}
                                 </td>
-                                <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
-                                    If PSR confirm whether user account already held
+                                <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>                                    
+                                    Confirm if you have a Fieldglass account
                                 </td>
                                 <td style={{ width: '31%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
                                     {this.state.CaseInfo.ComPSRAccount}
@@ -3285,11 +3294,11 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                     <React.Fragment>
                         {<PrimaryButton text="Save as Draft" className={styles.formButton} style={{ marginRight: '5px' }}
-                            onClick={() => this.saveData_Worker(false, false, false)}
+                            onClick={() => this.saveData_Worker(false, false, false, false, false)}
                         />}
 
                         <PrimaryButton text="Submit to Engaged" className={styles.formButton} style={{ marginRight: '5px' }}
-                            onClick={() => this.saveData_Worker(true, false, false)}
+                            onClick={() => this.saveData_Worker(true, false, false, false, false)}
                         />
 
                         <DefaultButton text="Close" className={styles.formButton} style={{ marginRight: '5px' }}
@@ -3530,10 +3539,10 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
         //if (this.props.stage !== "Onboarding") return;
         if (this.props.defForm === null) return;
-        
+
         const fd = this.state.FormDataWorker;
 
-        if(fd.EngagedChecksDone === true) return;
+        if (fd.EngagedChecksDone === true) return;
 
         const req_BPSSCheckedById_Img = fd.BPSSCheckedById !== null ? this.checkIconGreen : this.checkIconRed;
         const req_BPSSCheckedOn_Img = fd.BPSSCheckedOn !== null ? this.checkIconGreen : this.checkIconRed;
@@ -3911,7 +3920,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
     private renderFormButtons_EngagedStage() {
 
-        if(this.state.FormDataWorker.EngagedChecksDone === true) return;
+        if (this.state.FormDataWorker.EngagedChecksDone === true) return;
 
         return (
             <div>
@@ -3920,7 +3929,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                     <React.Fragment>
                         {<PrimaryButton text="Save" className={styles.formButton} style={{ marginRight: '5px' }}
-                            onClick={() => this.saveData_Worker(false, true, false)}
+                            onClick={() => this.saveData_Worker(false, true, false, false, false)}
                         />}
 
                         <DefaultButton text="Close" className={styles.formButton} style={{ marginRight: '5px' }}
@@ -3928,7 +3937,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                         />
 
                         {this.state.Engaged_MoveToChecksDoneBtn && <PrimaryButton text="Move to Checks Done" className={styles.formButton} style={{ marginRight: '5px' }}
-                            onClick={() => this.saveData_Worker(false, true, true)}
+                            onClick={() => this.saveData_Worker(false, true, true, false, false)}
                         />}
 
 
@@ -4036,6 +4045,611 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                 </td>
                                 <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
                                     {caseInfo.PassCheckedOn}
+                                </td>
+
+                            </tr>
+
+                            <tr>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)', borderBottom: '1px solid rgb(166,166,166)' }}>
+                                    Contract checked by
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)' }}>
+                                    {caseInfo.ContractCheckedBy}
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)', borderBottom: '1px solid rgb(166,166,166)' }}>
+                                    Contract checked on
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)' }}>
+                                    {caseInfo.ContractCheckedOn}
+                                </td>
+
+                            </tr>
+
+
+                        </tbody>
+
+
+                    </table>
+                </div>
+
+            </React.Fragment>
+        );
+    }
+
+    private renderLeaving() {
+
+        if (this.props.defForm === null) return;
+
+
+        const fd = this.state.FormDataWorker;
+
+        const req_LeStartDate_Img = fd.LeStartDate !== null ? this.checkIconGreen : this.checkIconRed;
+        const req_LeContractorPhone_Img = fd.LeContractorPhone !== null && fd.LeContractorPhone.length > 1 ? this.checkIconGreen : this.checkIconRed;
+        const req_LeContractorEmail_Img = fd.LeContractorEmail !== null && fd.LeContractorEmail.length > 1 ? this.checkIconGreen : this.checkIconRed;
+        const req_LeContractorHomeAddress_Img = fd.LeContractorHomeAddress !== null && fd.LeContractorHomeAddress.length > 1 ? this.checkIconGreen : this.checkIconRed;
+        const req_LeContractorPostCode_Img = fd.LeContractorPostCode !== null && fd.LeContractorPostCode.length > 1 ? this.checkIconGreen : this.checkIconRed;
+
+
+        const req_LeContractorDetailsCheckedById_Img = fd.LeContractorDetailsCheckedById !== null ? this.checkIconGreen : this.checkIconRed;
+        const req_LeContractorDetailsCheckedOn_Img = fd.LeContractorDetailsCheckedOn !== null ? this.checkIconGreen : this.checkIconRed;
+
+        const req_LeITCheckedById_Img = fd.LeITCheckedById !== null ? this.checkIconGreen : this.checkIconRed;
+        const req_LeITCheckedOn_Img = fd.LeITCheckedOn !== null ? this.checkIconGreen : this.checkIconRed;
+
+        const req_LeUKSBSCheckedById_Img = fd.LeUKSBSCheckedById !== null ? this.checkIconGreen : this.checkIconRed;
+        const req_LeUKSBSCheckedOn_Img = fd.LeUKSBSCheckedOn !== null ? this.checkIconGreen : this.checkIconRed;
+
+        const req_LePassCheckedById_Img = fd.LePassCheckedById !== null ? this.checkIconGreen : this.checkIconRed;
+        const req_LePassCheckedOn_Img = fd.LePassCheckedOn !== null ? this.checkIconGreen : this.checkIconRed;
+
+
+
+        return (
+            <div>
+                <div style={{ marginBottom: '10px', marginTop: '30px' }} className={styles.sectionATitle}>Leaving</div>
+
+                <div style={{ width: '100%', marginLeft: 'auto', marginRight: 'auto', paddingRight: '10px', paddingLeft: '10px', paddingTop: '20px', paddingBottom: '0px', backgroundColor: 'rgb(245,245,245)', border: '1px solid rgb(230,230,230)', }}>
+
+                    <div className={styles.formField} dangerouslySetInnerHTML={{ __html: this.props.defForm.LeavingStageFormText && this.props.defForm.LeavingStageFormText }}></div>
+
+                    <div style={{ fontSize: '18px', fontWeight: 'bold', textDecoration: 'underline', paddingBottom: '25px' }}>
+                        Confirm Contractor Details
+                    </div>
+
+                    {/* 1st row */}
+                    <div className={styles.formField}>
+
+                        <div style={{ display: 'flex' }}>
+                            <div style={{ width: '50%', fontWeight: 'bold' }}>
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Start date</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={req_LeStartDate_Img} />
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+
+                        </div>
+                        <div style={{ display: 'flex', marginTop: '5px' }}>
+                            <div style={{ width: '100%', }}>
+                                <CrDatePicker
+                                    maxWidth='100%'
+                                    value={fd.LeStartDate}
+                                    onSelectDate={(v) => changeDatePickerV2(this, 'FormDataWorker', v, "LeStartDate")}
+
+                                />
+
+
+
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                    {/* 2nd row */}
+                    <div className={styles.formField}>
+
+                        <div style={{ display: 'flex' }}>
+                            <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Contractor telephone (personal)</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={req_LeContractorPhone_Img} />
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div style={{ width: '50%', fontWeight: 'bold' }}>
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Contractor email (personal)</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={req_LeContractorEmail_Img} />
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                        <div style={{ display: 'flex', marginTop: '5px' }}>
+                            <div style={{ width: '50%', paddingRight: '5px' }}>
+                                <CrTextField
+                                    onChanged={(v) => this.changeTextField_Worker(v, "LeContractorPhone")}
+                                    value={fd.LeContractorPhone}
+
+                                />
+
+
+
+                            </div>
+
+                            <div style={{ width: '50%', }}>
+                                <CrTextField
+                                    onChanged={(v) => this.changeTextField_Worker(v, "LeContractorEmail")}
+                                    value={fd.LeContractorEmail}
+
+                                />
+
+                            </div>
+
+
+
+
+                        </div>
+                    </div>
+
+                    {/* 3rd row */}
+
+                    <div className={styles.formField}>
+
+                        <div style={{ display: 'flex' }}>
+                            <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Contractor home address (personal)</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={req_LeContractorHomeAddress_Img} />
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div style={{ width: '50%', fontWeight: 'bold' }}>
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Contractor post code (personal)</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={req_LeContractorPostCode_Img} />
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                        <div style={{ display: 'flex', marginTop: '5px' }}>
+                            <div style={{ width: '50%', paddingRight: '5px' }}>
+                                <CrTextField
+                                    onChanged={(v) => this.changeTextField_Worker(v, "LeContractorHomeAddress")}
+                                    value={fd.LeContractorHomeAddress}
+
+                                />
+
+
+
+                            </div>
+
+                            <div style={{ width: '50%', }}>
+                                <CrTextField
+                                    onChanged={(v) => this.changeTextField_Worker(v, "LeContractorPostCode")}
+                                    value={fd.LeContractorPostCode}
+
+                                />
+
+                            </div>
+
+
+
+
+                        </div>
+                    </div>
+
+                    <div style={{ fontSize: '18px', fontWeight: 'bold', textDecoration: 'underline', paddingBottom: '25px' }}>
+                        Checks
+                    </div>
+
+                    {/* 1st row */}
+                    <div className={styles.formField}>
+
+                        <div style={{ display: 'flex' }}>
+                            <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Contractor details above checked by</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={req_LeContractorDetailsCheckedById_Img} />
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div style={{ width: '50%', fontWeight: 'bold' }}>
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Contractor details above checked on</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={req_LeContractorDetailsCheckedOn_Img} />
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                        <div style={{ display: 'flex', marginTop: '5px' }}>
+                            <div style={{ width: '50%', paddingRight: '5px' }}>
+                                <CrEntityPicker
+                                    displayForUser={true}
+                                    entities={this.state.LookupData.Users}
+                                    itemLimit={1}
+                                    selectedEntities={fd.LeContractorDetailsCheckedById && [fd.LeContractorDetailsCheckedById]}
+                                    onChange={(v) => this.changeUserPicker_Worker(v, 'LeContractorDetailsCheckedById', false, true)}
+                                />
+
+
+
+                            </div>
+
+                            <div style={{ width: '50%', }}>
+                                <CrDatePicker
+                                    maxWidth='100%'
+                                    value={fd.LeContractorDetailsCheckedOn}
+                                    onSelectDate={(v) => changeDatePickerV2(this, 'FormDataWorker', v, "LeContractorDetailsCheckedOn", this.leaving_Checks)}
+                                />
+                            </div>
+
+
+
+
+                        </div>
+                    </div>
+
+                    {/* 2nd row */}
+                    <div className={styles.formField}>
+
+                        <div style={{ display: 'flex' }}>
+                            <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>IT checked by</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={req_LeITCheckedById_Img} />
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div style={{ width: '50%', fontWeight: 'bold' }}>
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>IT checked on</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={req_LeITCheckedOn_Img} />
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                        <div style={{ display: 'flex', marginTop: '5px' }}>
+                            <div style={{ width: '50%', paddingRight: '5px' }}>
+                                <CrEntityPicker
+                                    displayForUser={true}
+                                    entities={this.state.LookupData.Users}
+                                    itemLimit={1}
+                                    selectedEntities={fd.LeITCheckedById && [fd.LeITCheckedById]}
+                                    onChange={(v) => this.changeUserPicker_Worker(v, 'LeITCheckedById', false, true)}
+                                />
+
+
+
+                            </div>
+
+                            <div style={{ width: '50%', }}>
+                                <CrDatePicker
+                                    maxWidth='100%'
+                                    value={fd.LeITCheckedOn}
+                                    onSelectDate={(v) => changeDatePickerV2(this, 'FormDataWorker', v, "LeITCheckedOn", this.leaving_Checks)}
+                                />
+
+                            </div>
+
+
+
+
+                        </div>
+                    </div>
+
+                    {/* 3rd row */}
+                    <div className={styles.formField}>
+
+                        <div style={{ display: 'flex' }}>
+                            <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>UKSBS/Oracle checked by</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={req_LeUKSBSCheckedById_Img} />
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div style={{ width: '50%', fontWeight: 'bold' }}>
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>UKSBS/Oracle checked on</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={req_LeUKSBSCheckedOn_Img} />
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                        <div style={{ display: 'flex', marginTop: '5px' }}>
+                            <div style={{ width: '50%', paddingRight: '5px' }}>
+                                <CrEntityPicker
+                                    displayForUser={true}
+                                    entities={this.state.LookupData.Users}
+                                    itemLimit={1}
+                                    selectedEntities={fd.LeUKSBSCheckedById && [fd.LeUKSBSCheckedById]}
+                                    onChange={(v) => this.changeUserPicker_Worker(v, 'LeUKSBSCheckedById', false, true)}
+                                />
+
+
+                            </div>
+
+                            <div style={{ width: '50%', }}>
+                                <CrDatePicker
+                                    maxWidth='100%'
+                                    value={fd.LeUKSBSCheckedOn}
+                                    onSelectDate={(v) => changeDatePickerV2(this, 'FormDataWorker', v, "LeUKSBSCheckedOn", this.leaving_Checks)}
+                                />
+
+                            </div>
+
+
+
+
+                        </div>
+                    </div>
+
+                    {/* 4th row */}
+                    <div className={styles.formField}>
+
+                        <div style={{ display: 'flex' }}>
+                            <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Pass checked by</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={req_LePassCheckedById_Img} />
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div style={{ width: '50%', fontWeight: 'bold' }}>
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Pass checked on</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={req_LePassCheckedOn_Img} />
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                        <div style={{ display: 'flex', marginTop: '5px' }}>
+                            <div style={{ width: '50%', paddingRight: '5px' }}>
+                                <CrEntityPicker
+                                    displayForUser={true}
+                                    entities={this.state.LookupData.Users}
+                                    itemLimit={1}
+                                    selectedEntities={fd.LePassCheckedById && [fd.LePassCheckedById]}
+                                    onChange={(v) => this.changeUserPicker_Worker(v, 'LePassCheckedById', false, true)}
+                                />
+
+
+
+                            </div>
+
+                            <div style={{ width: '50%', }}>
+                                <CrDatePicker
+                                    maxWidth='100%'
+                                    value={fd.LePassCheckedOn}
+                                    onSelectDate={(v) => changeDatePickerV2(this, 'FormDataWorker', v, "LePassCheckedOn", this.leaving_Checks)}
+                                />
+
+                            </div>
+
+
+
+
+                        </div>
+                    </div>
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+            </div>
+        );
+    }
+
+    private renderFormButtons_LeavingStage() {
+
+        //if (this.state.FormDataWorker.EngagedChecksDone === true) return;
+
+        return (
+            <div>
+
+                {
+
+                    <React.Fragment>
+                        {<PrimaryButton text="Save" className={styles.formButton} style={{ marginRight: '5px' }}
+                            onClick={() => this.saveData_Worker(false, false, false, true, false)}
+                        />}
+
+                        <DefaultButton text="Close" className={styles.formButton} style={{ marginRight: '5px' }}
+                            onClick={() => this.props.onShowList()}
+                        />
+
+                        {this.state.Leaving_MoveToArchiveBtn && <PrimaryButton text="Move to Archive" className={styles.formButton} style={{ marginRight: '5px' }}
+                            onClick={() => this.saveData_Worker(false, false, false, true, true)}
+                        />}
+
+
+                    </React.Fragment>
+                }
+
+
+
+            </div>
+        );
+
+
+    }
+
+    private renderLeaving_info() {
+
+        const caseInfo = this.state.CaseInfo;
+        const fd = this.state.FormDataWorker;
+
+        return (
+
+            <React.Fragment>
+
+                <div style={{ marginBottom: '10px', marginTop: '30px' }} className={styles.sectionATitle}>Leaving</div>
+
+                <div style={{ width: '100%', marginLeft: 'auto', marginRight: 'auto', paddingRight: '5px', overflowX: 'hidden' }}>
+
+                    <table cellSpacing="0" cellPadding="10" style={{ width: '100%' }}>
+
+                        <tbody>
+
+                            <tr>
+                                <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Start Date
+                                </td>
+                                <td colSpan={3} style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                    {caseInfo.LeStartDateStr}
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Contractor telephone (personal)
+                                </td>
+                                <td style={{ width: '31%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)' }}>
+                                    {fd.LeContractorPhone}
+                                </td>
+                                <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Contractor email (personal)
+                                </td>
+                                <td style={{ width: '31%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                    {fd.LeContractorEmail}
+                                </td>
+
+                            </tr>
+
+                            <tr>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Contractor home address (personal)
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', }}>
+                                    {fd.LeContractorHomeAddress}
+                                </td>
+                                <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Contractor post code (personal)
+                                </td>
+                                <td style={{ width: '31%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                    {fd.LeContractorPostCode}
+                                </td>
+
+
+                            </tr>
+
+                            <tr>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Contractor details above checked by
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', }}>
+                                    {caseInfo.LeContractorDetailsCheckedBy}
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Contractor details above checked on
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                    {caseInfo.LeContractorDetailsCheckedOn}
+                                </td>
+
+                            </tr>
+
+                            <tr>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    IT checked by
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', }}>
+                                    {caseInfo.LeITCheckedBy}
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    IT checked on
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                    {caseInfo.LeITCheckedOn}
+                                </td>
+
+                            </tr>
+
+                            <tr>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    UKSBS/Oracle checked by
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', }}>
+                                    {caseInfo.LeUKSBSCheckedBy}
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    UKSBS/Oracle checked on
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                    {caseInfo.LeUKSBSCheckedOn}
+                                </td>
+
+                            </tr>
+
+                            <tr>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Pass checked by
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', }}>
+                                    {caseInfo.LePassCheckedBy}
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Pass checked on
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                    {caseInfo.LePassCheckedOn}
                                 </td>
 
                             </tr>
@@ -4238,7 +4852,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         }
     }
 
-    private saveData_Worker = (submitToEngaged: boolean, saveEngaged: boolean, moveToChecksDone:boolean): void => {
+    private saveData_Worker = (submitToEngaged: boolean, saveEngaged: boolean, moveToChecksDone: boolean, saveLeaving: boolean, moveToArchive: boolean): void => {
         if (this.validateEntity_Onboarding(submitToEngaged)) {
 
             console.log('in saveData_Onboarding');
@@ -4261,13 +4875,22 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                 f.Title = "SubmitToEngaged"; //for api to know its a request for SubmitToEngaged
             }
             else if (saveEngaged === true) {
-                if(moveToChecksDone === true){
+                if (moveToChecksDone === true) {
                     f.Title = "SaveEngaged_MoveToChecksDone"; //for api to know its a request from Move to Checks Done button
                 }
-                else{
+                else {
                     f.Title = "SaveEngaged"; //for api to know its a request for Save button from Engaged state
                 }
-                
+
+            }
+            else if (saveLeaving === true) {
+                if (moveToArchive === true) {
+                    f.Title = "SaveLeaving_MoveToArchive";
+                }
+                else {
+                    f.Title = "SaveLeaving";
+                }
+
             }
 
 
@@ -4539,7 +5162,8 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
     private loadCLWorker = (): void => {
 
-        if (this.props.stage === "Onboarding" || this.props.stage === "Engaged") {
+        const stage = this.props.stage;
+        if (stage === "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left") {
             //ok - load data
         }
         else {
@@ -4568,7 +5192,8 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
     private loadContractorSecurityCheckEvidence = (): void => {
 
-        if (this.props.stage === "Onboarding" || this.props.stage === "Engaged") {
+        const stage = this.props.stage;
+        if (stage === "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left") {
             //ok - load data
         }
         else {
@@ -4686,7 +5311,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     private changeUserPicker = (value: number[], f: string): void => {
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, value.length === 1 ? value[0] : null), });
     }
-    private changeUserPicker_Worker = (value: number[], f: string, engagedChecks?: boolean): void => {
+    private changeUserPicker_Worker = (value: number[], f: string, engagedChecks?: boolean, leavingChecks?: boolean): void => {
         this.setState({
             FormDataWorker: this.cloneObject(this.state.FormDataWorker, f, value.length === 1 ? value[0] : null),
         },
@@ -4713,6 +5338,29 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
             console.log('all engaged checks not done');
             this.setState({ Engaged_MoveToChecksDoneBtn: false });
         }
+    }
+
+    private leaving_Checks = (): void => {
+        const fd = this.state.FormDataWorker;
+
+        if (fd.LeStartDate !== null &&
+            fd.LeContractorPhone !== null && fd.LeContractorPhone.length > 1 &&
+            fd.LeContractorEmail !== null && fd.LeContractorEmail.length > 1 &&
+            fd.LeContractorHomeAddress !== null && fd.LeContractorHomeAddress.length > 1 &&
+            fd.LeContractorPostCode !== null && fd.LeContractorPostCode.length > 1 &&
+
+            fd.LeContractorDetailsCheckedById !== null && fd.LeContractorDetailsCheckedOn !== null &&
+            fd.LeITCheckedById !== null && fd.LeITCheckedOn !== null &&
+            fd.LeUKSBSCheckedById !== null && fd.LeUKSBSCheckedOn !== null &&
+            fd.LePassCheckedById !== null && fd.LePassCheckedOn !== null) {
+            console.log('leaving all checks ok');
+            this.setState({ Leaving_MoveToArchiveBtn: true });
+        }
+        else {
+            console.log('all leaving checks not done');
+            this.setState({ Leaving_MoveToArchiveBtn: false });
+        }
+
     }
 
     private isNumeric(str: any) {

@@ -67,6 +67,8 @@ export interface IFilteredMainListProps {
     createPermission: boolean;
 
     caseType:string;
+    moveToLeavingPermission?:boolean;
+    onMoveToLeaving: () => void;
 
 
 }
@@ -111,13 +113,13 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
 
 
 
-                    {/* {props.superUserPermission && (props.deleteDisabled === false) &&
+                    {props.caseType === "Engaged" && props.moveToLeavingPermission && (props.editDisabled === false) &&
                         <CommandBarButton
-                            iconProps={{ iconName: 'Delete' }}
+                            iconProps={{ iconName: 'Leave' }}
                             className={classNames.cmdBtn}
-                            text="Delete"
-                            onClick={props.onDelete}
-                        />} */}
+                            text="Move to Leaving"
+                            onClick={props.onMoveToLeaving}
+                        />}
 
                     <span style={controlStyles2}>
 

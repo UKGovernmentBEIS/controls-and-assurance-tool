@@ -50,6 +50,20 @@ export interface ICLWorker  extends IEntity {
     ContractCheckedOn?: Date;
     EngagedChecksDone: boolean;
 
+    LeStartDate?: Date;
+    LeContractorPhone?: string;
+    LeContractorEmail?: string;
+    LeContractorHomeAddress?: string;
+    LeContractorPostCode?: string;
+    LeContractorDetailsCheckedById?: number;
+    LeContractorDetailsCheckedOn?: Date;
+    LeITCheckedById?: number;
+    LeITCheckedOn?: Date;
+    LeUKSBSCheckedById?: number;
+    LeUKSBSCheckedOn?: Date;
+    LePassCheckedById?: number;
+    LePassCheckedOn?: Date;
+
 
 }
 
@@ -102,6 +116,20 @@ export class CLWorker implements ICLWorker{
     public ContractCheckedById?: number = null;
     public ContractCheckedOn?: Date = null;
     public EngagedChecksDone: boolean = null;
+
+    public LeStartDate?: Date = null;
+    public LeContractorPhone?: string = null;
+    public LeContractorEmail?: string = null;
+    public LeContractorHomeAddress?: string = null;
+    public LeContractorPostCode?: string = null;
+    public LeContractorDetailsCheckedById?: number = null;
+    public LeContractorDetailsCheckedOn = null;
+    public LeITCheckedById?: number = null;
+    public LeITCheckedOn?: Date = null;
+    public LeUKSBSCheckedById?: number = null;
+    public LeUKSBSCheckedOn?: Date = null;
+    public LePassCheckedById?: number = null;
+    public LePassCheckedOn?: Date = null;
 
 
     constructor() {

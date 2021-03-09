@@ -60,6 +60,19 @@ namespace ControlAssuranceAPI.Models
         public Nullable<int> ContractCheckedById { get; set; }
         public Nullable<System.DateTime> ContractCheckedOn { get; set; }
         public Nullable<bool> EngagedChecksDone { get; set; }
+        public Nullable<System.DateTime> LeStartDate { get; set; }
+        public string LeContractorPhone { get; set; }
+        public string LeContractorEmail { get; set; }
+        public string LeContractorHomeAddress { get; set; }
+        public string LeContractorPostCode { get; set; }
+        public Nullable<int> LeContractorDetailsCheckedById { get; set; }
+        public Nullable<System.DateTime> LeContractorDetailsCheckedOn { get; set; }
+        public Nullable<int> LeITCheckedById { get; set; }
+        public Nullable<System.DateTime> LeITCheckedOn { get; set; }
+        public Nullable<int> LeUKSBSCheckedById { get; set; }
+        public Nullable<System.DateTime> LeUKSBSCheckedOn { get; set; }
+        public Nullable<int> LePassCheckedById { get; set; }
+        public Nullable<System.DateTime> LePassCheckedOn { get; set; }
     
         public virtual CLCase CLCase { get; set; }
         public virtual CLDeclarationConflict CLDeclarationConflict { get; set; }
