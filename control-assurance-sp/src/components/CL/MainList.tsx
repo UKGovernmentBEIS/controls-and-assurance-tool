@@ -19,6 +19,7 @@ export interface IMainListProps extends types.IBaseComponentProps {
 
     onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
     onMoveToLeaving?: (ID: number, caseId: number) => void;
+    onCreateExtension?: (ID: number, caseId: number) => void;
     //onMainSaved: () => void;
     currentUserId: number;
     superUserPermission: boolean;
@@ -45,6 +46,7 @@ export interface IMainListState<T> {
     ListFilterText?: string;
     InitDataLoaded: boolean;
     MoveToLeavingPermission:boolean;
+    CreateExtensionPermission:boolean;
 }
 export class MainListState<T> implements IMainListState<T>{
     public SelectedEntity = null;
@@ -64,6 +66,7 @@ export class MainListState<T> implements IMainListState<T>{
     public ListFilterText = null;
     public InitDataLoaded = false;
     public MoveToLeavingPermission = false;
+    public CreateExtensionPermission = false;
 }
 
 export default class MainList extends React.Component<IMainListProps, IMainListState<IEntity>> {
@@ -273,10 +276,10 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
                     }
 
 
-                    this.setState({ SelectedEntity: key, SelectedEntityTitle: title, EnableEdit: true, EnableDelete: true, MoveToLeavingPermission: moveToLeavingPermission });
+                    this.setState({ SelectedEntity: key, SelectedEntityTitle: title, EnableEdit: true, EnableDelete: true, MoveToLeavingPermission: moveToLeavingPermission, CreateExtensionPermission: moveToLeavingPermission });
                 }
                 else {
-                    this.setState({ SelectedEntity: null, SelectedEntityTitle: null, EnableEdit: false, EnableDelete: false, MoveToLeavingPermission: false });
+                    this.setState({ SelectedEntity: null, SelectedEntityTitle: null, EnableEdit: false, EnableDelete: false, MoveToLeavingPermission: false, CreateExtensionPermission: false });
                 }
             }
         });
@@ -323,6 +326,9 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
 
                 moveToLeavingPermission={this.state.MoveToLeavingPermission}
                 onMoveToLeaving={this.moveToLeaving}
+
+                createExtensionPermission={this.state.CreateExtensionPermission}
+                onCreateExtension={this.createExtension}
 
             />
         );
@@ -419,6 +425,15 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
         const record = this.state.Entities.filter(x => x.ID === this.state.SelectedEntity)[0];
         console.log(record);
         this.props.onMoveToLeaving(this.state.SelectedEntity, Number(record['CaseId']));
+
+    }
+
+    private createExtension = (): void => {
+        console.log('on createExtension', this.state.SelectedEntity, this.state.SelectedEntityTitle);
+        const record = this.state.Entities.filter(x => x.ID === this.state.SelectedEntity)[0];
+        console.log(record);
+        this.props.onCreateExtension(this.state.SelectedEntity, Number(record['CaseId']));
+
 
     }
 

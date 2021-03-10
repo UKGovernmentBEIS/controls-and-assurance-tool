@@ -145,6 +145,7 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
                 listFilterText={this.state.Section2_MainList_ListFilterText}
                 onChangeFilterText={this.handleSection2_ChangeFilterText}
                 onMoveToLeaving={this.handleMoveToLeavingClick}
+                onCreateExtension={this.handleCreateExtensionClick}
                 currentUserId={this.getCurrentUserId()}
                 superUserPermission={this.isSuperUser()}
                 {...this.props}
@@ -424,6 +425,28 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
 
   }
 
+  private handleCreateExtensionClick = (ID: number, caseId: number): void => {
+
+    console.log('in handleCreateExtensionClick');
+
+    this.clCaseService.createExtension(ID).then((x: ICLCase) => {
+      console.log('Case', x);
+
+      this.setState({
+        SelectedPivotKey: this.headerTxt_NewCaseTab,
+        Section_MainList_SelectedId: x.ID, //workerId
+        Section_MainList_SelectedCaseId: x['CLCaseId'], //case id
+        Section_MainList_SelectedStage: 'Draft',
+
+      });
+
+
+    }, (err) => {
+      if (this.onError) this.onError(`Error creating extension`, err.message);
+    });
+
+
+  }
 
 
 

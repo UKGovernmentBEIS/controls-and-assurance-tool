@@ -134,7 +134,7 @@ export interface IClCaseInfo  extends IEntity {
     ContractCheckedOn?: string;
 
 
-    LeStartDateStr?: string;
+    LeEndDateStr?: string;
     LeContractorDetailsCheckedBy?: string;
     LeContractorDetailsCheckedOn?: string;
     LeITCheckedBy?: string;

@@ -238,7 +238,7 @@
           <Property Name="ContractCheckedById" Type="int" />
           <Property Name="ContractCheckedOn" Type="datetime" />
           <Property Name="EngagedChecksDone" Type="bit" />
-          <Property Name="LeStartDate" Type="datetime" />
+          <Property Name="LeEndDate" Type="datetime" />
           <Property Name="LeContractorPhone" Type="nvarchar" MaxLength="200" />
           <Property Name="LeContractorEmail" Type="nvarchar" MaxLength="1000" />
           <Property Name="LeContractorHomeAddress" Type="nvarchar" MaxLength="1000" />
@@ -251,6 +251,7 @@
           <Property Name="LeUKSBSCheckedOn" Type="date" />
           <Property Name="LePassCheckedById" Type="int" />
           <Property Name="LePassCheckedOn" Type="datetime" />
+          <Property Name="ExtendedFromWorkerId" Type="int" />
         </EntityType>
         <EntityType Name="CLWorkLocation">
           <Key>
@@ -3109,7 +3110,7 @@
           <Property Name="ContractCheckedById" Type="Int32" />
           <Property Name="ContractCheckedOn" Type="DateTime" Precision="3" />
           <Property Name="EngagedChecksDone" Type="Boolean" />
-          <Property Name="LeStartDate" Type="DateTime" Precision="3" />
+          <Property Name="LeEndDate" Type="DateTime" Precision="3" />
           <Property Name="LeContractorPhone" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="LeContractorEmail" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
           <Property Name="LeContractorHomeAddress" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
@@ -3122,6 +3123,7 @@
           <Property Name="LeUKSBSCheckedOn" Type="DateTime" Precision="0" />
           <Property Name="LePassCheckedById" Type="Int32" />
           <Property Name="LePassCheckedOn" Type="DateTime" Precision="3" />
+          <Property Name="ExtendedFromWorkerId" Type="Int32" />
           <NavigationProperty Name="CLCase" Relationship="Self.FK_CLWorker_CLCase" FromRole="CLWorker" ToRole="CLCase" />
           <NavigationProperty Name="CLDeclarationConflict" Relationship="Self.FK_CLWorker_CLDeclarationConflict" FromRole="CLWorker" ToRole="CLDeclarationConflict" />
           <NavigationProperty Name="CLSecurityClearance" Relationship="Self.FK_CLWorker_CLSecurityClearance" FromRole="CLWorker" ToRole="CLSecurityClearance" />
@@ -6336,7 +6338,7 @@
                 <ScalarProperty Name="ContractCheckedById" ColumnName="ContractCheckedById" />
                 <ScalarProperty Name="ContractCheckedOn" ColumnName="ContractCheckedOn" />
                 <ScalarProperty Name="EngagedChecksDone" ColumnName="EngagedChecksDone" />
-                <ScalarProperty Name="LeStartDate" ColumnName="LeStartDate" />
+                <ScalarProperty Name="LeEndDate" ColumnName="LeEndDate" />
                 <ScalarProperty Name="LeContractorPhone" ColumnName="LeContractorPhone" />
                 <ScalarProperty Name="LeContractorEmail" ColumnName="LeContractorEmail" />
                 <ScalarProperty Name="LeContractorHomeAddress" ColumnName="LeContractorHomeAddress" />
@@ -6349,6 +6351,7 @@
                 <ScalarProperty Name="LeUKSBSCheckedOn" ColumnName="LeUKSBSCheckedOn" />
                 <ScalarProperty Name="LePassCheckedById" ColumnName="LePassCheckedById" />
                 <ScalarProperty Name="LePassCheckedOn" ColumnName="LePassCheckedOn" />
+                <ScalarProperty Name="ExtendedFromWorkerId" ColumnName="ExtendedFromWorkerId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

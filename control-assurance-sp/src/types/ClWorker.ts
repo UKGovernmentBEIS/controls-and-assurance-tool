@@ -50,7 +50,7 @@ export interface ICLWorker  extends IEntity {
     ContractCheckedOn?: Date;
     EngagedChecksDone: boolean;
 
-    LeStartDate?: Date;
+    LeEndDate?: Date;
     LeContractorPhone?: string;
     LeContractorEmail?: string;
     LeContractorHomeAddress?: string;
@@ -117,7 +117,7 @@ export class CLWorker implements ICLWorker{
     public ContractCheckedOn?: Date = null;
     public EngagedChecksDone: boolean = null;
 
-    public LeStartDate?: Date = null;
+    public LeEndDate?: Date = null;
     public LeContractorPhone?: string = null;
     public LeContractorEmail?: string = null;
     public LeContractorHomeAddress?: string = null;

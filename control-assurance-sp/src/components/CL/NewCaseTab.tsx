@@ -98,6 +98,7 @@ export interface INewCaseTabState {
     EvidenceChangesCounter: number;
     Engaged_MoveToChecksDoneBtn: boolean;
     Leaving_MoveToArchiveBtn: boolean;
+    Stage: string;
     //DefForm: ICLDefForm;
 
 
@@ -123,6 +124,7 @@ export class NewCaseTabState implements INewCaseTabState {
     public EvidenceChangesCounter: number = 0;
     public Engaged_MoveToChecksDoneBtn = false;
     public Leaving_MoveToArchiveBtn: boolean = false;
+    public Stage: string = ""; //set in componentDidMount
     //public DefForm: ICLDefForm = null;
 
     constructor(caseType: string) {
@@ -190,7 +192,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
         let isViewOnly: boolean = this.isViewOnlyPermission();
 
-        const stage = this.props.stage;
+        const stage = this.state.Stage;
         const fdw = this.state.FormDataWorker;
 
         return (
@@ -253,7 +255,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                 <MessageDialog hidden={this.state.HideSubmitApprovalDoneMessage} title="Form Validation" content="Validation checks completed successfully. This case is being moved to the approvals stage." handleOk={() => { this.setState({ HideSubmitApprovalDoneMessage: true }, () => this.props.onShowList()); }} />
 
                 {/* submit to engaged - done */}
-                <MessageDialog hidden={this.state.HideSubmitEngagedDoneMessage} title="Form Validation" content="Validation checks completed successfully. This case is being moved to the engaged stage." handleOk={() => { this.setState({ HideSubmitEngagedDoneMessage: true }, () => this.props.onShowList(true)); }} />
+                <MessageDialog hidden={this.state.HideSubmitEngagedDoneMessage} title="Form Validation" content="Validation checks completed successfully. This case is being moved to the engaged stage." handleOk={() => { this.setState({ HideSubmitEngagedDoneMessage: true }, () => this.afterSubmitEngagedSuccessMsg()); }} />
 
 
             </React.Fragment>
@@ -1718,7 +1720,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                 <td style={{ width: '31%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)' }}>
                                     {this.state.CaseInfo.ComFramework}
                                 </td>
-                                <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>                                    
+                                <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
                                     Confirm if you have a Fieldglass account
                                 </td>
                                 <td style={{ width: '31%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
@@ -2476,7 +2478,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
     private renderOnboarding() {
 
-        //if (this.props.stage !== "Onboarding") return;
+        //if (this.state.Stage !== "Onboarding") return;
         if (this.props.defForm === null) return;
 
         const genderOptions: IDropdownOption[] = [
@@ -3537,7 +3539,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
     private renderEngaged() {
 
-        //if (this.props.stage !== "Onboarding") return;
+        //if (this.state.Stage !== "Onboarding") return;
         if (this.props.defForm === null) return;
 
         const fd = this.state.FormDataWorker;
@@ -4083,7 +4085,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
         const fd = this.state.FormDataWorker;
 
-        const req_LeStartDate_Img = fd.LeStartDate !== null ? this.checkIconGreen : this.checkIconRed;
+        const req_LeEndDate_Img = fd.LeEndDate !== null ? this.checkIconGreen : this.checkIconRed;
         const req_LeContractorPhone_Img = fd.LeContractorPhone !== null && fd.LeContractorPhone.length > 1 ? this.checkIconGreen : this.checkIconRed;
         const req_LeContractorEmail_Img = fd.LeContractorEmail !== null && fd.LeContractorEmail.length > 1 ? this.checkIconGreen : this.checkIconRed;
         const req_LeContractorHomeAddress_Img = fd.LeContractorHomeAddress !== null && fd.LeContractorHomeAddress.length > 1 ? this.checkIconGreen : this.checkIconRed;
@@ -4123,9 +4125,9 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                             <div style={{ width: '50%', fontWeight: 'bold' }}>
 
                                 <div className={styles.flexContainerSectionQuestion}>
-                                    <div className={styles.sectionQuestionCol1}><span>Start date</span></div>
+                                    <div className={styles.sectionQuestionCol1}><span>End date</span></div>
                                     <div className={styles.sectionQuestionCol2}>
-                                        <img src={req_LeStartDate_Img} />
+                                        <img src={req_LeEndDate_Img} />
                                     </div>
                                 </div>
 
@@ -4138,8 +4140,8 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                             <div style={{ width: '100%', }}>
                                 <CrDatePicker
                                     maxWidth='100%'
-                                    value={fd.LeStartDate}
-                                    onSelectDate={(v) => changeDatePickerV2(this, 'FormDataWorker', v, "LeStartDate")}
+                                    value={fd.LeEndDate}
+                                    onSelectDate={(v) => changeDatePickerV2(this, 'FormDataWorker', v, "LeEndDate")}
 
                                 />
 
@@ -4550,10 +4552,10 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                             <tr>
                                 <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
-                                    Start Date
+                                    End Date
                                 </td>
                                 <td colSpan={3} style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
-                                    {caseInfo.LeStartDateStr}
+                                    {caseInfo.LeEndDateStr}
                                 </td>
 
                             </tr>
@@ -4973,7 +4975,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         }, (err) => { if (this.props.onError) this.props.onError(`Error loading CLIR35Scopes lookup data`, err.message); });
     }
     private loadCLSecurityClearances = (): void => {
-        if (this.props.stage !== "Onboarding") return;
+        if (this.state.Stage !== "Onboarding") return;
 
         this.clSecurityClearanceService.readAll().then((data: IEntity[]): IEntity[] => {
             console.log('loadCLSecurityClearances - data', data);
@@ -4983,7 +4985,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     }
 
     private loadCLDeclarationConflicts = (): void => {
-        if (this.props.stage !== "Onboarding") return;
+        if (this.state.Stage !== "Onboarding") return;
 
         this.clDeclarationConflictService.readAll().then((data: IEntity[]): IEntity[] => {
             console.log('CLDeclarationConflicts - data', data);
@@ -4993,7 +4995,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     }
 
     private loadPersonTitles = (): void => {
-        if (this.props.stage !== "Onboarding") return;
+        if (this.state.Stage !== "Onboarding") return;
 
         this.personTitleService.readAll().then((data: IEntity[]): IEntity[] => {
             console.log('PersonTitles - data', data);
@@ -5029,7 +5031,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     public componentDidMount(): void {
         //this.loadUpdates();
 
-        this.setState({ Loading: true }, this.callBackFirstLoad
+        this.setState({ Loading: true, Stage: this.props.stage }, this.callBackFirstLoad
 
         );
     }
@@ -5144,7 +5146,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     }
 
     // private loadDefForm = (): Promise<void> => {
-    //     if (this.props.stage === "Onboarding" || this.props.stage === "Engaged") {
+    //     if (this.state.Stage === "Onboarding" || this.state.Stage === "Engaged") {
     //         //ok - load data
     //     }
     //     else {
@@ -5162,7 +5164,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
     private loadCLWorker = (): void => {
 
-        const stage = this.props.stage;
+        const stage = this.state.Stage;
         if (stage === "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left") {
             //ok - load data
         }
@@ -5177,7 +5179,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
             }, () => {
                 this.blurRateTextField_Worker(null, "OnbDayRate");
 
-                if (this.props.stage === "Engaged") {
+                if (this.state.Stage === "Engaged") {
                     this.engaged_Checks();
                 }
 
@@ -5192,7 +5194,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
     private loadContractorSecurityCheckEvidence = (): void => {
 
-        const stage = this.props.stage;
+        const stage = this.state.Stage;
         if (stage === "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left") {
             //ok - load data
         }
@@ -5343,7 +5345,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     private leaving_Checks = (): void => {
         const fd = this.state.FormDataWorker;
 
-        if (fd.LeStartDate !== null &&
+        if (fd.LeEndDate !== null &&
             fd.LeContractorPhone !== null && fd.LeContractorPhone.length > 1 &&
             fd.LeContractorEmail !== null && fd.LeContractorEmail.length > 1 &&
             fd.LeContractorHomeAddress !== null && fd.LeContractorHomeAddress.length > 1 &&
@@ -5688,6 +5690,25 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         }
 
         return isViewOnly;
+    }
+
+    private afterSubmitEngagedSuccessMsg = (): void => {
+        console.log('afterSubmitEngagedSuccessMsg');
+
+        if (this.state.FormData.CaseType === "Extension") {
+            console.log('case type is extension, go to the next stage directly');
+            this.setState({
+                Stage: 'Engaged'
+            }, () => {
+                this.loadCLWorker();
+
+            });
+        }
+        else {
+            this.props.onShowList(true);
+        }
+
+
     }
 
 }

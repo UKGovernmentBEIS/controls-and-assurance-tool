@@ -28,6 +28,7 @@ export interface ISectionProps extends IEntityFormProps {
     onChangeFilterText: (value: string) => void;
     onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
     onMoveToLeaving?: (ID: number, caseId: number) => void;
+    onCreateExtension?: (ID: number, caseId: number) => void;
     currentUserId: number;
     superUserPermission: boolean;
 
@@ -98,6 +99,7 @@ export default class Section extends React.Component<ISectionProps, SectionState
                             createPermission={true}
                             onMoveToLeaving={this.props.onMoveToLeaving}
                             currentUserId={this.props.currentUserId}
+                            onCreateExtension={this.props.onCreateExtension}
                             
 
                         />

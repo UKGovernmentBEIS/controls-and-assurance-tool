@@ -66,9 +66,11 @@ export interface IFilteredMainListProps {
 
     createPermission: boolean;
 
-    caseType:string;
-    moveToLeavingPermission?:boolean;
+    caseType: string;
+    moveToLeavingPermission?: boolean;
+    createExtensionPermission?: boolean;
     onMoveToLeaving: () => void;
+    onCreateExtension: () => void;
 
 
 }
@@ -119,6 +121,14 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
                             className={classNames.cmdBtn}
                             text="Move to Leaving"
                             onClick={props.onMoveToLeaving}
+                        />}
+
+                    {props.caseType === "Engaged" && props.createExtensionPermission && (props.editDisabled === false) &&
+                        <CommandBarButton
+                            iconProps={{ iconName: 'AddTo' }}
+                            className={classNames.cmdBtn}
+                            text="Create Extension"
+                            onClick={props.onCreateExtension}
                         />}
 
                     <span style={controlStyles2}>

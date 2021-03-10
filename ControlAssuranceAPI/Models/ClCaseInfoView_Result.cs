@@ -54,7 +54,7 @@ namespace ControlAssuranceAPI.Models
         public string ContractCheckedBy { get; set; }
         public string ContractCheckedOn { get; set; }
 
-        public string LeStartDateStr { get; set; }
+        public string LeEndDateStr { get; set; }
         public string LeContractorDetailsCheckedBy { get; set; }
         public string LeContractorDetailsCheckedOn { get; set; }
         public string LeITCheckedBy { get; set; }

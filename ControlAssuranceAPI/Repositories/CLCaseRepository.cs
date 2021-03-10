@@ -99,7 +99,7 @@ namespace ControlAssuranceAPI.Repositories
                 string caseRef = "";
                 if (w.CLCase.CaseCreated == true)
                 {
-                    caseRef = $"{w.CLCase.CLComFramework?.Title ?? ""}{w.CLCase.ID}";
+                    caseRef = $"{w.CLCase.CLComFramework?.Title ?? ""}{w.CLCase.CaseRef}";
                     if (CaseStages.GetStageNumber(w.Stage) >= CaseStages.Onboarding.Number && w.CLCase.ReqNumPositions > 1)
                     {
                         caseRef += $"/{w.CLCase.ReqNumPositions}/{w.WorkerNumber?.ToString() ?? ""}";
@@ -226,7 +226,7 @@ namespace ControlAssuranceAPI.Repositories
 
                 if ((CaseStages.GetStageNumber(ret.Stage) >= CaseStages.Leaving.Number) || (clViewer == true))
                 {
-                    ret.LeStartDateStr = w.LeStartDate?.ToString("dd/MM/yyyy") ?? "";
+                    ret.LeEndDateStr = w.LeEndDate?.ToString("dd/MM/yyyy") ?? "";
                     ret.LeContractorDetailsCheckedBy = w.LeContractorDetailsCheckedById != null ? db.Users.FirstOrDefault(x => x.ID == w.LeContractorDetailsCheckedById)?.Title ?? "" : "";
                     ret.LeITCheckedBy = w.LeITCheckedById != null ? db.Users.FirstOrDefault(x => x.ID == w.LeITCheckedById)?.Title ?? "" : "";
                     ret.LeUKSBSCheckedBy = w.LeUKSBSCheckedById != null ? db.Users.FirstOrDefault(x => x.ID == w.LeUKSBSCheckedById)?.Title ?? "" : "";
@@ -425,7 +425,7 @@ namespace ControlAssuranceAPI.Repositories
 
                 }
 
-                string caseRef = $"{ite.CLCase.CLComFramework?.Title ?? ""}{ite.CLCase.ID}";
+                string caseRef = $"{ite.CLCase.CLComFramework?.Title ?? ""}{ite.CLCase.CaseRef}";
                 if(CaseStages.GetStageNumber(ite.Stage) >= CaseStages.Onboarding.Number && ite.CLCase.ReqNumPositions > 1) 
                 {
                     caseRef += $"/{ite.CLCase.ReqNumPositions}/{ite.WorkerNumber?.ToString() ?? ""}";
@@ -517,6 +517,17 @@ namespace ControlAssuranceAPI.Repositories
 
         }
 
+        private int GetNewCaseRef()
+        {
+            int newCaseRef = 1;
+            var lastRecord = db.CLCases.Where(x => x.CaseCreated == true).OrderByDescending(x => x.ID).FirstOrDefault();
+            if (lastRecord != null)
+            {
+                newCaseRef = lastRecord.CaseRef.Value + 1;
+            }
+            return newCaseRef;
+        }
+
         public CLCase Add(CLCase cLCase)
         {
             var apiUser = ApiUser;
@@ -550,12 +561,7 @@ namespace ControlAssuranceAPI.Repositories
                 newCase = true;
                 //new case
                 cLcase.CaseCreated = true;
-                int newCaseRef = 1;
-                var lastRecord = db.CLCases.Where(x => x.CaseCreated == true).OrderByDescending(x => x.ID).FirstOrDefault();
-                if (lastRecord != null)
-                {
-                    newCaseRef = lastRecord.CaseRef.Value + 1;
-                }
+                int newCaseRef = this.GetNewCaseRef();
                 cLcase.CaseRef = newCaseRef;
                 cLcase.CaseChangeLog = $"{date} Case Added by {user},";
 
@@ -694,6 +700,155 @@ namespace ControlAssuranceAPI.Repositories
             return cLcase;
         }
 
+        
+        public CLWorker CreateExtension(int existingWorkerId)
+        {
+            var apiUser = ApiUser;
+            int apiUserId = apiUser.ID;
+
+            CLWorker existingWorker = db.CLWorkers.FirstOrDefault(x => x.ID == existingWorkerId);
+            CLCase existingCase = existingWorker.CLCase;
+            //create new case based on existing case
+            CLCase cLCase = new CLCase();
+            cLCase.CaseType = "Extension";
+            cLCase.CreatedById = apiUserId;
+            cLCase.CreatedOn = DateTime.Now;
+            cLCase.ApplHMUserId = existingCase.ApplHMUserId; //TODO - need to ask
+            cLCase.ReqCostCentre = existingCase.ReqCostCentre;
+            cLCase.ReqDirectorateId = existingCase.ReqDirectorateId;
+            cLCase.ReqVacancyTitle = existingCase.ReqVacancyTitle;
+            cLCase.ReqGradeId = existingCase.ReqGradeId;
+            cLCase.ReqWorkPurpose = existingCase.ReqWorkPurpose;
+            cLCase.ReqProfessionalCatId = existingCase.ReqProfessionalCatId;
+            cLCase.ReqEstStartDate = existingCase.ReqEstEndDate;
+            cLCase.ReqEstEndDate = null;
+            cLCase.ReqWorkLocationId = existingCase.ReqWorkLocationId;
+            cLCase.ReqNumPositions = 1;
+            cLCase.ComFrameworkId = existingCase.ComFrameworkId;
+            cLCase.ComJustification = existingCase.ComJustification;
+            cLCase.ComPSRAccountId = existingCase.ComPSRAccountId;
+            cLCase.JustAltOptions = existingCase.JustAltOptions;
+            cLCase.JustSuccessionPlanning = existingCase.JustSuccessionPlanning;
+            cLCase.FinMaxRate = existingCase.FinMaxRate;
+            //cLCase.FinEstCost = existingCase.FinEstCost;
+            cLCase.FinIR35ScopeId = existingCase.FinIR35ScopeId;
+            cLCase.FinIR35AssessmentId = existingCase.FinIR35AssessmentId;
+            cLCase.OtherComments = existingCase.OtherComments;
+
+            cLCase.BHUserId = existingCase.BHUserId;
+            cLCase.FBPUserId = existingCase.FBPUserId;
+            cLCase.HRBPUserId = existingCase.HRBPUserId;
+            
+            cLCase.CaseCreated = true;
+            int newCaseRef = this.GetNewCaseRef();
+            cLCase.CaseRef = newCaseRef;
+            db.CLCases.Add(cLCase);
+            db.SaveChanges();
+
+            //create ir35 evidence record
+            var existingIR35Ev = db.CLCaseEvidences.FirstOrDefault(x => x.ParentId == existingCase.ID && x.EvidenceType == "IR35" && x.RecordCreated == true);
+            if(existingIR35Ev != null)
+            {
+                CLCaseEvidence newIR35Ev = new CLCaseEvidence();
+                newIR35Ev.Title = existingIR35Ev.Title;
+                newIR35Ev.Details = existingIR35Ev.Details;
+                newIR35Ev.ParentId = cLCase.ID;
+                newIR35Ev.DateUploaded = existingIR35Ev.DateUploaded;
+                newIR35Ev.UploadedByUserId = existingIR35Ev.UploadedByUserId;
+                newIR35Ev.EvidenceType = existingIR35Ev.EvidenceType;
+                newIR35Ev.AttachmentType = existingIR35Ev.AttachmentType;
+                newIR35Ev.RecordCreated = existingIR35Ev.RecordCreated;
+
+                db.CLCaseEvidences.Add(newIR35Ev);
+                //db.SaveChanges();
+
+            }
+
+            //create new worker bases on existing worker record
+            CLWorker cLWorker = new CLWorker();
+            cLWorker.CLCaseId = cLCase.ID;
+            cLWorker.Stage = CaseStages.Draft.Name;
+            cLWorker.ExtendedFromWorkerId = existingWorkerId;
+
+            cLWorker.OnbContractorGender = existingWorker.OnbContractorGender;
+            cLWorker.OnbContractorTitleId = existingWorker.OnbContractorTitleId;
+            cLWorker.OnbContractorFirstname = existingWorker.OnbContractorFirstname;
+            cLWorker.OnbContractorSurname = existingWorker.OnbContractorSurname;
+            cLWorker.OnbContractorDob = existingWorker.OnbContractorDob;
+            cLWorker.OnbContractorNINum = existingWorker.OnbContractorNINum;
+            cLWorker.OnbContractorPhone = existingWorker.OnbContractorPhone;
+            cLWorker.OnbContractorEmail = existingWorker.OnbContractorEmail;
+            cLWorker.OnbContractorHomeAddress = existingWorker.OnbContractorHomeAddress;
+            cLWorker.OnbContractorPostCode = existingWorker.OnbContractorPostCode;
+
+            cLWorker.OnbStartDate = cLCase.ReqEstStartDate;
+            //cLWorker.OnbEndDate = existingWorker.OnbEndDate; null
+            cLWorker.OnbDayRate = existingWorker.OnbDayRate;
+            //cLWorker.PurchaseOrderNum = existingWorker.PurchaseOrderNum; //TODO - need to ask
+            cLWorker.OnbSecurityClearanceId = existingWorker.OnbSecurityClearanceId;
+            cLWorker.OnbDecConflictId = existingWorker.OnbDecConflictId;
+
+            cLWorker.OnbWorkingDayMon = existingWorker.OnbWorkingDayMon;
+            cLWorker.OnbWorkingDayTue = existingWorker.OnbWorkingDayTue;
+            cLWorker.OnbWorkingDayWed = existingWorker.OnbWorkingDayWed;
+            cLWorker.OnbWorkingDayThu = existingWorker.OnbWorkingDayThu;
+            cLWorker.OnbWorkingDayFri = existingWorker.OnbWorkingDayFri;
+            cLWorker.OnbWorkingDaySat = existingWorker.OnbWorkingDaySat;
+            cLWorker.OnbWorkingDaySun = existingWorker.OnbWorkingDaySun;
+
+            cLWorker.OnbLineManagerUserId = existingWorker.OnbLineManagerUserId;
+            cLWorker.OnbLineManagerGradeId = existingWorker.OnbLineManagerGradeId;
+            cLWorker.OnbLineManagerEmployeeNum = existingWorker.OnbLineManagerEmployeeNum;
+            cLWorker.OnbLineManagerPhone = existingWorker.OnbLineManagerPhone;
+
+            //engaged data
+            cLWorker.BPSSCheckedById = existingWorker.BPSSCheckedById;
+            cLWorker.BPSSCheckedOn = existingWorker.BPSSCheckedOn;
+            cLWorker.POCheckedById = existingWorker.POCheckedById;
+            cLWorker.POCheckedOn = existingWorker.POCheckedOn;
+            cLWorker.ITCheckedById = existingWorker.ITCheckedById;
+            cLWorker.ITCheckedOn = existingWorker.ITCheckedOn;
+            cLWorker.UKSBSCheckedById = existingWorker.UKSBSCheckedById;
+            cLWorker.UKSBSCheckedOn = existingWorker.UKSBSCheckedOn;
+            cLWorker.PassCheckedById = existingWorker.PassCheckedById;
+            cLWorker.PassCheckedOn = existingWorker.PassCheckedOn;
+            cLWorker.ContractCheckedById = existingWorker.ContractCheckedById;
+            cLWorker.ContractCheckedOn = existingWorker.ContractCheckedOn;
+
+            db.CLWorkers.Add(cLWorker);
+            db.SaveChanges();
+
+
+            //create ContractorSecurityCheck evidence record
+            var existingContractorSecurityCheckEv = db.CLCaseEvidences.FirstOrDefault(x => x.ParentId == existingWorkerId && x.EvidenceType == "ContractorSecurityCheck" && x.RecordCreated == true);
+            if (existingContractorSecurityCheckEv != null)
+            {
+                CLCaseEvidence newContractorSecurityCheckEv = new CLCaseEvidence();
+                newContractorSecurityCheckEv.Title = existingContractorSecurityCheckEv.Title;
+                newContractorSecurityCheckEv.Details = existingContractorSecurityCheckEv.Details;
+                newContractorSecurityCheckEv.ParentId = cLWorker.ID;
+                newContractorSecurityCheckEv.DateUploaded = existingContractorSecurityCheckEv.DateUploaded;
+                newContractorSecurityCheckEv.UploadedByUserId = existingContractorSecurityCheckEv.UploadedByUserId;
+                newContractorSecurityCheckEv.EvidenceType = existingContractorSecurityCheckEv.EvidenceType;
+                newContractorSecurityCheckEv.AttachmentType = existingContractorSecurityCheckEv.AttachmentType;
+                newContractorSecurityCheckEv.RecordCreated = existingContractorSecurityCheckEv.RecordCreated;
+
+                db.CLCaseEvidences.Add(newContractorSecurityCheckEv);
+                db.SaveChanges();
+
+            }
+
+
+
+
+
+
+            return cLWorker;
+        }
+        
+        
+        
+        
         public CLCase Remove(CLCase cLCase)
         {
             return db.CLCases.Remove(cLCase);

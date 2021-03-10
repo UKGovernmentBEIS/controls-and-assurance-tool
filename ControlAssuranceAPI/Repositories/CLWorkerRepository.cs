@@ -40,6 +40,10 @@ namespace ControlAssuranceAPI.Repositories
             //string date = DateTime.Now.ToString("ddMMMyyyy HH:mm");
 
             //check for approval
+
+            if (inputWorker.Title == null)
+                inputWorker.Title = "";
+
             string newChangeLog = "";
             if(inputWorker.Title.StartsWith("SaveEngaged") == true)
             {
@@ -69,7 +73,7 @@ namespace ControlAssuranceAPI.Repositories
             }
             else if(inputWorker.Title.StartsWith("SaveLeaving") == true)
             {
-                clWorker.LeStartDate = inputWorker.LeStartDate;
+                clWorker.LeEndDate = inputWorker.LeEndDate;
                 clWorker.LeContractorPhone = inputWorker.LeContractorPhone;
                 clWorker.LeContractorEmail = inputWorker.LeContractorEmail;
                 clWorker.LeContractorHomeAddress = inputWorker.LeContractorHomeAddress;
@@ -97,7 +101,7 @@ namespace ControlAssuranceAPI.Repositories
             {
                 clWorker.Stage = CLCaseRepository.CaseStages.Engaged.Name;
                 //copy few values for later usage for the leaving stage
-                clWorker.LeStartDate = inputWorker.OnbStartDate;
+                clWorker.LeEndDate = inputWorker.OnbEndDate;
                 clWorker.LeContractorPhone = inputWorker.OnbContractorPhone;
                 clWorker.LeContractorEmail = inputWorker.OnbContractorEmail;
                 clWorker.LeContractorHomeAddress = inputWorker.OnbContractorHomeAddress;
@@ -156,5 +160,8 @@ namespace ControlAssuranceAPI.Repositories
             db.SaveChanges();
             return clWorker;
         }
+
+
+
     }
 }

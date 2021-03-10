@@ -51,6 +51,15 @@ namespace ControlAssuranceAPI.Controllers
             return res;
         }
 
+
+
+        // GET: /odata/CLCases?existingWorkerId=1&createExtension=true
+        public CLWorker Get(int existingWorkerId, bool createExtension)
+        {
+            var c = db.CLCaseRepository.CreateExtension(existingWorkerId);
+            return c;
+        }
+
         // POST: odata/CLCases
         public IHttpActionResult Post(CLCase cLCase)
         {
