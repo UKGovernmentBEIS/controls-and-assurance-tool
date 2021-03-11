@@ -144,6 +144,8 @@ export interface IClCaseInfo  extends IEntity {
     LePassCheckedBy?: string;
     LePassCheckedOn?: string;
 
+    ExtensionHistory?: string;
+
 }
 export class ClCaseInfo  implements IClCaseInfo {
 
@@ -205,6 +207,7 @@ export class ClCaseInfo  implements IClCaseInfo {
     public LePassCheckedBy?: string = "";
     public LePassCheckedOn?: string = "";
 
+    public ExtensionHistory = "";
 
 }
 

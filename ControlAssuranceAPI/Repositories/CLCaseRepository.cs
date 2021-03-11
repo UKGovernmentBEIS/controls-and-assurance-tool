@@ -238,7 +238,37 @@ namespace ControlAssuranceAPI.Repositories
                     ret.LePassCheckedOn = w.LePassCheckedOn?.ToString("dd/MM/yyyy") ?? "";
                 }
 
+                if(w.ExtendedFromWorkerId != null)
+                {
+                    //case type is extension, send extension history
+                    string extHistory = "";
+                    int? workerIdToFilter = w.ExtendedFromWorkerId;
+                    while (workerIdToFilter != null)
+                    {
 
+                        
+                        CLWorker lastWorker = db.CLWorkers.FirstOrDefault(x => x.ID == workerIdToFilter);
+                        if (lastWorker != null)
+                        {
+                            string caseRefLastWorker = $"{lastWorker.CLCase.CLComFramework?.Title ?? ""}{lastWorker.CLCase.CaseRef}";
+                            if (lastWorker.CLCase.ReqNumPositions > 1)
+                            {
+                                caseRefLastWorker += $"/{lastWorker.CLCase.ReqNumPositions}/{lastWorker.WorkerNumber?.ToString() ?? ""}";
+                            }
+                            
+                            caseRefLastWorker += $" (Started {lastWorker.OnbStartDate.Value.ToString("dd/MM/yyyy")})";
+
+                            //use '|' to separate between caseid, worker id, string ref
+                            //and use '^' to separate rows (cases)
+                            extHistory += $"{lastWorker.CLCase.ID}|{lastWorker.ID}|{lastWorker.Stage}|{caseRefLastWorker}^";
+                        }
+
+                        
+
+                        workerIdToFilter = lastWorker.ExtendedFromWorkerId;
+                    }
+                    ret.ExtensionHistory = extHistory;
+                }
             }
 
             return ret;
@@ -639,6 +669,7 @@ namespace ControlAssuranceAPI.Repositories
 
                             cLWorker.WorkerNumber = (i + 1);
                             cLWorker.Stage = CaseStages.Onboarding.Name;
+                            cLWorker.OnbEndDate = cLcase.ReqEstEndDate;
 
 
                         }

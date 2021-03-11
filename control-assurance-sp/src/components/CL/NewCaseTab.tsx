@@ -21,6 +21,7 @@ import { ConfirmDialog } from '../cr/ConfirmDialog';
 import { CrDatePicker } from '../cr/CrDatePicker';
 import { CrEntityPicker } from '../cr/CrEntityPicker';
 import { changeDatePicker, changeDatePickerV2 } from '../../types/AppGlobals';
+import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import '../../styles/CustomFabric.scss';
 import { IContextualMenuProps } from 'office-ui-fabric-react';
 
@@ -40,7 +41,9 @@ export interface INewCaseTabProps extends types.IBaseComponentProps {
     viewerPermission: boolean;
     defForm: ICLDefForm;
 
-
+    onShowHistoricCase?: (workerId: number, caseId: number, stage: string) => void;
+    historicCase?: boolean;
+    onShowCaseTab?: () => void;
 
     //onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
 
@@ -99,6 +102,7 @@ export interface INewCaseTabState {
     Engaged_MoveToChecksDoneBtn: boolean;
     Leaving_MoveToArchiveBtn: boolean;
     Stage: string;
+    HideRequirementInfoSection: boolean;
     //DefForm: ICLDefForm;
 
 
@@ -125,6 +129,7 @@ export class NewCaseTabState implements INewCaseTabState {
     public Engaged_MoveToChecksDoneBtn = false;
     public Leaving_MoveToArchiveBtn: boolean = false;
     public Stage: string = ""; //set in componentDidMount
+    public HideRequirementInfoSection = false;
     //public DefForm: ICLDefForm = null;
 
     constructor(caseType: string) {
@@ -135,6 +140,13 @@ export class NewCaseTabState implements INewCaseTabState {
     }
 
 
+}
+
+export interface IExtHistroyLink {
+    CaseId: number;
+    WorkerId: number;
+    Stage: string;
+    Text: string;
 }
 
 export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCaseTabState> {
@@ -242,6 +254,8 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                 {this.renderEvidencesList()}
                 {this.renderChangeLogs()}
 
+                {this.props.historicCase === true && this.renderCloseButton_HistoricCase()}
+
                 {this.state.ShowIR35EvidenceForm && this.renderIR35EvidenceForm()}
                 <ConfirmDialog hidden={this.state.HideIR35EvDeleteDialog} title={`Are you sure you want to delete this IR35 assessment  evidence?`} content={`A deleted evidence cannot be un-deleted.`} confirmButtonText="Delete" handleConfirm={this.deleteIR35Evidence} handleCancel={this.toggleIR35EvDeleteConfirm} />
 
@@ -249,13 +263,13 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                 <ConfirmDialog hidden={this.state.HideContractorSecurityCheckEvDeleteDialog} title={`Are you sure you want to delete this security checks confirmation evidence?`} content={`A deleted evidence cannot be un-deleted.`} confirmButtonText="Delete" handleConfirm={this.deleteContractorSecurityCheckEvidence} handleCancel={this.toggleContractorSecurityCheckEvDeleteConfirm} />
 
                 {/* validation */}
-                <MessageDialog hidden={this.state.HideFormValidationMessage} title="Form Validation" content="Failed validation checks. Please ensure all fields marked with a red asterisk are completed." handleOk={() => { this.setState({ HideFormValidationMessage: true }); }} />
+                <MessageDialog hidden={this.state.HideFormValidationMessage} title="Validation Failed" content="Failed validation checks. Please ensure all fields marked with a red asterisk are completed." handleOk={() => { this.setState({ HideFormValidationMessage: true }); }} />
 
                 {/* submit for approval - done */}
-                <MessageDialog hidden={this.state.HideSubmitApprovalDoneMessage} title="Form Validation" content="Validation checks completed successfully. This case is being moved to the approvals stage." handleOk={() => { this.setState({ HideSubmitApprovalDoneMessage: true }, () => this.props.onShowList()); }} />
+                <MessageDialog hidden={this.state.HideSubmitApprovalDoneMessage} title="Validation Successful" content="Validation checks completed successfully. This case is being moved to the approvals stage." handleOk={() => { this.setState({ HideSubmitApprovalDoneMessage: true }, () => this.props.onShowList()); }} />
 
                 {/* submit to engaged - done */}
-                <MessageDialog hidden={this.state.HideSubmitEngagedDoneMessage} title="Form Validation" content="Validation checks completed successfully. This case is being moved to the engaged stage." handleOk={() => { this.setState({ HideSubmitEngagedDoneMessage: true }, () => this.afterSubmitEngagedSuccessMsg()); }} />
+                <MessageDialog hidden={this.state.HideSubmitEngagedDoneMessage} title="Validation Successful" content="Validation checks completed successfully. This case is being moved to the engaged stage." handleOk={() => { this.setState({ HideSubmitEngagedDoneMessage: true }, () => this.afterSubmitEngagedSuccessMsg()); }} />
 
 
             </React.Fragment>
@@ -272,6 +286,42 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     }
 
     private renderInfoTable() {
+
+        const cInfo = this.state.CaseInfo;
+
+        let arrLinks: IExtHistroyLink[] = [];
+        //unpack publication links from single value
+        if (this.props.historicCase !== true && cInfo.ExtensionHistory !== null && cInfo.ExtensionHistory !== '') {
+            let arr1 = cInfo.ExtensionHistory.split('^');
+
+            //console.log('arr1', arr1);
+
+            for (let i = 0; i < arr1.length; i++) {
+
+                let itemStr: string = arr1[i];
+                //console.log('arr1 Loop itemStr', itemStr);
+                if (itemStr.trim() === '') {
+                    continue;
+                }
+                //console.log('after continue');
+                let arr2 = itemStr.split('|');
+                //console.log('after arr2 Split', arr2);
+                let item: IExtHistroyLink = { CaseId: 0, WorkerId: 0, Stage: '', Text: '' };
+                item.CaseId = Number(arr2[0]);
+                item.WorkerId = Number(arr2[1]);
+                item.Stage = arr2[2];
+                item.Text = arr2[3];
+
+                //console.log('item filled with data', item);
+
+                arrLinks.push(item);
+
+                arrLinks = arrLinks.reverse();
+
+                console.log('item pushed to arrLinks', arrLinks);
+
+            }
+        }
 
         return (
 
@@ -333,6 +383,23 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                 </td>
 
                             </tr>
+                            {
+                                arrLinks.length > 0 &&
+                                <tr>
+                                    <td style={{ borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                        Extension History
+                                    </td>
+                                    <td colSpan={3} style={{ borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+
+
+                                        {arrLinks.map((c, i) =>
+                                            <span style={{ textDecoration: 'underline', cursor: 'pointer', color: 'blue', marginRight: '15px' }} key={`span_ExtHis_${i}`} onClick={() => this.onViewExtHistroyClick(c.CaseId, c.WorkerId, c.Stage)} >{c.Text}</span>
+
+                                        )}
+
+                                    </td>
+                                </tr>
+                            }
 
 
                         </tbody>
@@ -427,338 +494,337 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
         return (
             <div>
-                <div style={{ marginBottom: '10px', marginTop: '30px' }} className={styles.sectionATitle}>Requirement</div>
-
-                <div style={{ width: '100%', marginLeft: 'auto', marginRight: 'auto', paddingRight: '10px', paddingLeft: '10px', paddingTop: '20px', paddingBottom: '0px', backgroundColor: 'rgb(245,245,245)', border: '1px solid rgb(230,230,230)', }}>
-
-                    <div className={styles.formField}>
-
-                        <div style={{ display: 'flex' }}>
-                            <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
-                                <div className={styles.flexContainerSectionQuestion}>
-                                    <div className={styles.sectionQuestionCol1}><span>Title of vacancy</span></div>
-                                    <div className={styles.sectionQuestionCol2}>
-                                        <img src={reqVacancyTitleValidationImg} />
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div style={{ width: '50%', fontWeight: 'bold' }}>
-                                <div className={styles.flexContainerSectionQuestion}>
-                                    <div className={styles.sectionQuestionCol1}><span>Grade of vacancy</span></div>
-                                    <div className={styles.sectionQuestionCol2}>
-                                        <img src={reqGradeIdValidationImg} />
-                                    </div>
-                                </div>
-
-                            </div>
-
-
-                        </div>
-                        <div style={{ display: 'flex', marginTop: '5px' }}>
-                            <div style={{ width: '50%', paddingRight: '5px' }}>
-                                <CrTextField
-                                    //className={styles.formField}
-                                    onChanged={(v) => this.changeTextField(v, "ReqVacancyTitle")}
-                                    value={fd.ReqVacancyTitle}
-
-                                />
-
-
-
-                            </div>
-
-                            <div style={{ width: '50%', }}>
-                                <CrDropdown
-                                    placeholder="Select an Option"
-                                    options={this.state.LookupData.CLStaffGrades.map((p) => { return { key: p.ID, text: p.Title }; })}
-                                    selectedKey={this.state.FormData.ReqGradeId}
-                                    onChanged={(v) => this.changeDropdown(v, "ReqGradeId")}
-                                />
-
-                            </div>
-
-
-
-
-                        </div>
-                    </div>
-
-                    {/* 2nd row */}
-
-                    <div className={styles.formField}>
-
-                        <div style={{ display: 'flex' }}>
-                            <div style={{ width: '100%', fontWeight: 'bold' }}>
-
-                                <div className={styles.flexContainerSectionQuestion}>
-                                    <div className={styles.sectionQuestionCol1}><span>Work proposal (what will they be doing? )</span></div>
-                                    <div className={styles.sectionQuestionCol2}>
-                                        <img src={reqWorkPurposeValidationImg} />
-                                    </div>
-                                </div>
-
-                            </div>
-
-
-                        </div>
-                        <div style={{ display: 'flex', marginTop: '5px' }}>
-                            <div style={{ width: '100%' }}>
-                                <CrTextField
-                                    multiline={true}
-                                    rows={6}
-                                    //className={styles.formField}
-                                    onChanged={(v) => this.changeTextField(v, "ReqWorkPurpose")}
-                                    value={fd.ReqWorkPurpose}
-
-                                />
-
-
-
-                            </div>
-
-                        </div>
-                    </div>
-
-
-                    {/* 3rd row */}
-
-                    <div className={styles.formField}>
-
-                        <div style={{ display: 'flex' }}>
-                            <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
-
-                                <div className={styles.flexContainerSectionQuestion}>
-                                    <div className={styles.sectionQuestionCol1}><span>Cost Centre for this role</span></div>
-                                    <div className={styles.sectionQuestionCol2}>
-                                        <img src={reqCostCentreValidationImg} />
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div style={{ width: '50%', fontWeight: 'bold' }}>
-
-                                <div className={styles.flexContainerSectionQuestion}>
-                                    <div className={styles.sectionQuestionCol1}><span>Directorate this role will be in</span></div>
-                                    <div className={styles.sectionQuestionCol2}>
-                                        <img src={reqDirectorateIdValidationImg} />
-                                    </div>
-                                </div>
-
-                            </div>
-
-
-                        </div>
-                        <div style={{ display: 'flex', marginTop: '5px' }}>
-                            <div style={{ width: '50%', paddingRight: '5px' }}>
-                                <CrTextField
-                                    //className={styles.formField}
-                                    //numbersOnly={true}
-                                    maxLength={6}
-                                    //onChanged={(v) => this.changeTextField(v, "ReqCostCentre")}
-                                    onChanged={(v) => this.changeTextField_number(v, "ReqCostCentre")}
-                                    value={fd.ReqCostCentre}
-
-                                />
-
-
-
-                            </div>
-
-                            <div style={{ width: '50%', }}>
-                                <CrDropdown
-                                    placeholder="Select an Option"
-                                    options={this.state.LookupData.Directorates.map((p) => { return { key: p.ID, text: p.Title }; })}
-                                    selectedKey={this.state.FormData.ReqDirectorateId}
-                                    onChanged={(v) => this.changeDropdown(v, "ReqDirectorateId")}
-                                />
-
-                            </div>
-
-
-
-
-                        </div>
-                    </div>
-
-
-                    {/* 4th row */}
-
-                    <div className={styles.formField}>
-
-                        <div style={{ display: 'flex' }}>
-                            <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
-
-                                <div className={styles.flexContainerSectionQuestion}>
-                                    <div className={styles.sectionQuestionCol1}><span>Estimated start date</span></div>
-                                    <div className={styles.sectionQuestionCol2}>
-                                        <img src={reqEstStartDateValidationImg} />
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div style={{ width: '50%', fontWeight: 'bold' }}>
-
-                                <div className={styles.flexContainerSectionQuestion}>
-                                    <div className={styles.sectionQuestionCol1}><span>Estimated end date</span></div>
-                                    <div className={styles.sectionQuestionCol2}>
-                                        <img src={reqEstEndDateValidationImg} />
-                                    </div>
-                                </div>
-
-                            </div>
-
-
-                        </div>
-                        <div style={{ display: 'flex', marginTop: '5px' }}>
-                            <div style={{ width: '50%', paddingRight: '5px' }}>
-                                <CrDatePicker
-                                    maxWidth='100%'
-                                    value={this.state.FormData.ReqEstStartDate}
-                                    onSelectDate={(v) => changeDatePicker(this, v, "ReqEstStartDate")}
-                                //required={true}
-                                //errorMessage={this.state.ErrMessages.CurrentPeriodStartDate}
-                                />
-
-
-
-                            </div>
-
-                            <div style={{ width: '50%', }}>
-                                <CrDatePicker
-                                    maxWidth='100%'
-                                    //className={styles.width100percent}
-                                    value={this.state.FormData.ReqEstEndDate}
-                                    onSelectDate={(v) => changeDatePicker(this, v, "ReqEstEndDate")}
-                                //required={true}
-                                //errorMessage={this.state.ErrMessages.CurrentPeriodStartDate}
-                                />
-
-                            </div>
-
-
-
-
-                        </div>
-                    </div>
-
-                    {/* 5th row */}
-
-                    <div className={styles.formField}>
-
-                        <div style={{ display: 'flex' }}>
-                            <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
-
-                                <div className={styles.flexContainerSectionQuestion}>
-                                    <div className={styles.sectionQuestionCol1}><span>Professional Category</span></div>
-                                    <div className={styles.sectionQuestionCol2}>
-                                        <img src={reqProfessionalCatIdValidationImg} />
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div style={{ width: '50%', fontWeight: 'bold' }}>
-
-                                <div className={styles.flexContainerSectionQuestion}>
-                                    <div className={styles.sectionQuestionCol1}><span>Work location</span></div>
-                                    <div className={styles.sectionQuestionCol2}>
-                                        <img src={reqWorkLocationIdValidationImg} />
-                                    </div>
-                                </div>
-
-                            </div>
-
-
-                        </div>
-                        <div style={{ display: 'flex', marginTop: '5px' }}>
-                            <div style={{ width: '50%', paddingRight: '5px' }}>
-                                <CrDropdown
-                                    placeholder="Select an Option"
-                                    options={this.state.LookupData.CLProfessionalCats.map((p) => { return { key: p.ID, text: p.Title }; })}
-
-                                    selectedKey={this.state.FormData.ReqProfessionalCatId}
-                                    onChanged={(v) => this.changeDropdown(v, "ReqProfessionalCatId")}
-                                />
-
-
-
-                            </div>
-
-                            <div style={{ width: '50%', }}>
-                                <CrDropdown
-                                    placeholder="Select an Option"
-                                    options={this.state.LookupData.CLWorkLocations.map((p) => { return { key: p.ID, text: p.Title }; })}
-                                    selectedKey={this.state.FormData.ReqWorkLocationId}
-                                    onChanged={(v) => this.changeDropdown(v, "ReqWorkLocationId")}
-                                />
-
-                            </div>
-
-
-
-
-                        </div>
-                    </div>
-
-
-
-                    {/* 6th row */}
-
-                    <div className={styles.formField}>
-
-                        <div style={{ display: 'flex' }}>
-                            <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
-
-                                <div className={styles.flexContainerSectionQuestion}>
-                                    <div className={styles.sectionQuestionCol1}><span>Number of positions</span></div>
-                                    <div className={styles.sectionQuestionCol2}>
-                                        <img src={reqNumPositionsValidationImg} />
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div style={{ width: '50%', fontWeight: 'bold' }}>
-                                <span>&nbsp;</span>
-
-                            </div>
-
-
-                        </div>
-                        <div style={{ display: 'flex', marginTop: '5px' }}>
-                            <div style={{ width: '50%', paddingRight: '5px' }}>
-                                <CrTextField
-                                    //className={styles.formField}
-                                    onChanged={(v) => this.changeTextField(v, "ReqNumPositions")}
-                                    value={String(fd.ReqNumPositions)}
-                                    numbersOnly={true}
-                                    maxLength={numPositionsLength}
-
-
-                                />
-
-
-
-                            </div>
-
-                            <div style={{ width: '50%', }}>
-
-                                <div style={{ fontSize: '12px', fontStyle: 'italic', paddingTop: '0px', marginTop: '0px', paddingLeft: '10px' }}>
-                                    Note: if case has multiple positions, the system will only show it as one case to the approvers. Once the case has been approved, it will create multiple records for onboarding each worker individually.
-                                </div>
-
-                            </div>
-
-
-
-
-                        </div>
-                    </div>
-
-
-
+                <div style={{ marginBottom: '10px', marginTop: '30px' }} className={styles.sectionATitle}>
+                    <span>Requirement</span>
                 </div>
+                {
+                    <div style={{ width: '100%', marginLeft: 'auto', marginRight: 'auto', paddingRight: '10px', paddingLeft: '10px', paddingTop: '20px', paddingBottom: '0px', backgroundColor: 'rgb(245,245,245)', border: '1px solid rgb(230,230,230)', }}>
+
+                        <div className={styles.formField}>
+
+                            <div style={{ display: 'flex' }}>
+                                <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
+                                    <div className={styles.flexContainerSectionQuestion}>
+                                        <div className={styles.sectionQuestionCol1}><span>Title of vacancy</span></div>
+                                        <div className={styles.sectionQuestionCol2}>
+                                            <img src={reqVacancyTitleValidationImg} />
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div style={{ width: '50%', fontWeight: 'bold' }}>
+                                    <div className={styles.flexContainerSectionQuestion}>
+                                        <div className={styles.sectionQuestionCol1}><span>Grade of vacancy</span></div>
+                                        <div className={styles.sectionQuestionCol2}>
+                                            <img src={reqGradeIdValidationImg} />
+                                        </div>
+                                    </div>
+
+                                </div>
 
 
+                            </div>
+                            <div style={{ display: 'flex', marginTop: '5px' }}>
+                                <div style={{ width: '50%', paddingRight: '5px' }}>
+                                    <CrTextField
+                                        //className={styles.formField}
+                                        onChanged={(v) => this.changeTextField(v, "ReqVacancyTitle")}
+                                        value={fd.ReqVacancyTitle}
+
+                                    />
+
+
+
+                                </div>
+
+                                <div style={{ width: '50%', }}>
+                                    <CrDropdown
+                                        placeholder="Select an Option"
+                                        options={this.state.LookupData.CLStaffGrades.map((p) => { return { key: p.ID, text: p.Title }; })}
+                                        selectedKey={fd.ReqGradeId}
+                                        onChanged={(v) => this.changeDropdown(v, "ReqGradeId")}
+                                    />
+
+                                </div>
+
+
+
+
+                            </div>
+                        </div>
+
+                        {/* 2nd row */}
+
+                        <div className={styles.formField}>
+
+                            <div style={{ display: 'flex' }}>
+                                <div style={{ width: '100%', fontWeight: 'bold' }}>
+
+                                    <div className={styles.flexContainerSectionQuestion}>
+                                        <div className={styles.sectionQuestionCol1}><span>Work proposal (what will they be doing? )</span></div>
+                                        <div className={styles.sectionQuestionCol2}>
+                                            <img src={reqWorkPurposeValidationImg} />
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+                            <div style={{ display: 'flex', marginTop: '5px' }}>
+                                <div style={{ width: '100%' }}>
+                                    <CrTextField
+                                        multiline={true}
+                                        rows={6}
+                                        //className={styles.formField}
+                                        onChanged={(v) => this.changeTextField(v, "ReqWorkPurpose")}
+                                        value={fd.ReqWorkPurpose}
+
+                                    />
+
+
+
+                                </div>
+
+                            </div>
+                        </div>
+
+
+                        {/* 3rd row */}
+
+                        <div className={styles.formField}>
+
+                            <div style={{ display: 'flex' }}>
+                                <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
+
+                                    <div className={styles.flexContainerSectionQuestion}>
+                                        <div className={styles.sectionQuestionCol1}><span>Cost Centre for this role</span></div>
+                                        <div className={styles.sectionQuestionCol2}>
+                                            <img src={reqCostCentreValidationImg} />
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div style={{ width: '50%', fontWeight: 'bold' }}>
+
+                                    <div className={styles.flexContainerSectionQuestion}>
+                                        <div className={styles.sectionQuestionCol1}><span>Directorate this role will be in</span></div>
+                                        <div className={styles.sectionQuestionCol2}>
+                                            <img src={reqDirectorateIdValidationImg} />
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+                            <div style={{ display: 'flex', marginTop: '5px' }}>
+                                <div style={{ width: '50%', paddingRight: '5px' }}>
+                                    <CrTextField
+                                        //className={styles.formField}
+                                        //numbersOnly={true}
+                                        maxLength={6}
+                                        //onChanged={(v) => this.changeTextField(v, "ReqCostCentre")}
+                                        onChanged={(v) => this.changeTextField_number(v, "ReqCostCentre")}
+                                        value={fd.ReqCostCentre}
+
+                                    />
+
+
+
+                                </div>
+
+                                <div style={{ width: '50%', }}>
+                                    <CrDropdown
+                                        placeholder="Select an Option"
+                                        options={this.state.LookupData.Directorates.map((p) => { return { key: p.ID, text: p.Title }; })}
+                                        selectedKey={fd.ReqDirectorateId}
+                                        onChanged={(v) => this.changeDropdown(v, "ReqDirectorateId")}
+                                    />
+
+                                </div>
+
+
+
+
+                            </div>
+                        </div>
+
+
+                        {/* 4th row */}
+
+                        <div className={styles.formField}>
+
+                            <div style={{ display: 'flex' }}>
+                                <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
+
+                                    <div className={styles.flexContainerSectionQuestion}>
+                                        <div className={styles.sectionQuestionCol1}><span>Estimated start date</span></div>
+                                        <div className={styles.sectionQuestionCol2}>
+                                            <img src={reqEstStartDateValidationImg} />
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div style={{ width: '50%', fontWeight: 'bold' }}>
+
+                                    <div className={styles.flexContainerSectionQuestion}>
+                                        <div className={styles.sectionQuestionCol1}><span>Estimated end date</span></div>
+                                        <div className={styles.sectionQuestionCol2}>
+                                            <img src={reqEstEndDateValidationImg} />
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+                            <div style={{ display: 'flex', marginTop: '5px' }}>
+                                <div style={{ width: '50%', paddingRight: '5px' }}>
+                                    <CrDatePicker
+                                        maxWidth='100%'
+                                        value={fd.ReqEstStartDate}
+                                        onSelectDate={(v) => changeDatePicker(this, v, "ReqEstStartDate")}
+                                    />
+
+
+
+                                </div>
+
+                                <div style={{ width: '50%', }}>
+                                    <CrDatePicker
+                                        maxWidth='100%'
+                                        value={fd.ReqEstEndDate}
+                                        onSelectDate={(v) => changeDatePicker(this, v, "ReqEstEndDate")}
+                                    />
+
+                                </div>
+
+
+
+
+                            </div>
+                        </div>
+
+                        {/* 5th row */}
+
+                        <div className={styles.formField}>
+
+                            <div style={{ display: 'flex' }}>
+                                <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
+
+                                    <div className={styles.flexContainerSectionQuestion}>
+                                        <div className={styles.sectionQuestionCol1}><span>Professional Category</span></div>
+                                        <div className={styles.sectionQuestionCol2}>
+                                            <img src={reqProfessionalCatIdValidationImg} />
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div style={{ width: '50%', fontWeight: 'bold' }}>
+
+                                    <div className={styles.flexContainerSectionQuestion}>
+                                        <div className={styles.sectionQuestionCol1}><span>Work location</span></div>
+                                        <div className={styles.sectionQuestionCol2}>
+                                            <img src={reqWorkLocationIdValidationImg} />
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+                            <div style={{ display: 'flex', marginTop: '5px' }}>
+                                <div style={{ width: '50%', paddingRight: '5px' }}>
+                                    <CrDropdown
+                                        placeholder="Select an Option"
+                                        options={this.state.LookupData.CLProfessionalCats.map((p) => { return { key: p.ID, text: p.Title }; })}
+                                        selectedKey={fd.ReqProfessionalCatId}
+                                        onChanged={(v) => this.changeDropdown(v, "ReqProfessionalCatId")}
+                                    />
+
+
+
+                                </div>
+
+                                <div style={{ width: '50%', }}>
+                                    <CrDropdown
+                                        placeholder="Select an Option"
+                                        options={this.state.LookupData.CLWorkLocations.map((p) => { return { key: p.ID, text: p.Title }; })}
+                                        selectedKey={fd.ReqWorkLocationId}
+                                        onChanged={(v) => this.changeDropdown(v, "ReqWorkLocationId")}
+                                    />
+
+                                </div>
+
+
+
+
+                            </div>
+                        </div>
+
+
+
+                        {/* 6th row */}
+
+                        <div className={styles.formField}>
+
+                            <div style={{ display: 'flex' }}>
+                                <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
+
+                                    <div className={styles.flexContainerSectionQuestion}>
+                                        <div className={styles.sectionQuestionCol1}><span>Number of positions</span></div>
+                                        <div className={styles.sectionQuestionCol2}>
+                                            <img src={reqNumPositionsValidationImg} />
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div style={{ width: '50%', fontWeight: 'bold' }}>
+                                    <span>&nbsp;</span>
+
+                                </div>
+
+
+                            </div>
+                            <div style={{ display: 'flex', marginTop: '5px' }}>
+                                <div style={{ width: '50%', paddingRight: '5px' }}>
+                                    <CrTextField
+                                        onChanged={(v) => this.changeTextField(v, "ReqNumPositions")}
+                                        value={String(fd.ReqNumPositions)}
+                                        numbersOnly={true}
+                                        maxLength={numPositionsLength}
+                                        readOnly={fd.CaseType === "Extension" ? true : false}
+
+                                    />
+
+
+
+                                </div>
+
+                                {
+                                    fd.CaseType !== "Extension" &&
+                                    <div style={{ width: '50%', }}>
+
+                                        <div style={{ fontSize: '12px', fontStyle: 'italic', paddingTop: '0px', marginTop: '0px', paddingLeft: '10px' }}>
+                                            Note: if case has multiple positions, the system will only show it as one case to the approvers. Once the case has been approved, it will create multiple records for onboarding each worker individually.
+                                        </div>
+                                    </div>
+                                }
+
+
+
+
+
+
+                            </div>
+                        </div>
+
+
+
+                    </div>
+
+                }
 
 
 
@@ -1593,108 +1659,119 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
             <React.Fragment>
 
-                <div style={{ marginBottom: '10px', marginTop: '30px' }} className={styles.sectionATitle}>Requirement</div>
-
-                <div style={{ width: '100%', marginLeft: 'auto', marginRight: 'auto', paddingRight: '5px', overflowX: 'hidden' }}>
-
-                    <table cellSpacing="0" cellPadding="10" style={{ width: '100%' }}>
-
-                        <tbody>
-
-                            <tr>
-                                <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
-                                    Title of vacancy
-                                </td>
-                                <td style={{ width: '31%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)' }}>
-                                    {this.state.FormData.ReqVacancyTitle}
-                                </td>
-                                <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
-                                    Grade of vacancy
-                                </td>
-                                <td style={{ width: '31%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
-                                    {this.state.CaseInfo.ReqGrade}
-                                </td>
-
-                            </tr>
-
-                            <tr>
-                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
-                                    Work proposal (what will they be doing? )
-                                </td>
-                                <td colSpan={3} style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
-                                    <div dangerouslySetInnerHTML={{ __html: this.state.FormData.ReqWorkPurpose && this.state.FormData.ReqWorkPurpose.split('\n').join('<br/>') }} ></div>
-                                </td>
-
-
-                            </tr>
-
-                            <tr>
-                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
-                                    Cost Centre for this role
-                                </td>
-                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', }}>
-                                    {this.state.FormData.ReqCostCentre}
-                                </td>
-                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
-                                    Directorate this role will be in
-                                </td>
-                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
-                                    {this.state.CaseInfo.Directorate}
-                                </td>
-
-                            </tr>
-
-                            <tr>
-                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
-                                    Estimated start date
-                                </td>
-                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', }}>
-                                    {this.state.CaseInfo.ReqEstStartDate}
-                                </td>
-                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
-                                    Estimated end date
-                                </td>
-                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
-                                    {this.state.CaseInfo.ReqEstEndDate}
-                                </td>
-
-                            </tr>
-
-                            <tr>
-                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
-                                    Professional Category
-                                </td>
-                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', }}>
-                                    {this.state.CaseInfo.ReqProfessionalCat}
-                                </td>
-                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
-                                    Work location
-                                </td>
-                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
-                                    {this.state.CaseInfo.ReqWorkLocation}
-                                </td>
-
-                            </tr>
-
-
-
-                            <tr>
-                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
-                                    Number of positions
-                                </td>
-                                <td colSpan={3} style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
-                                    {this.state.FormData.ReqNumPositions}
-                                </td>
-
-                            </tr>
-
-
-                        </tbody>
-
-
-                    </table>
+                <div style={{ marginBottom: '10px', marginTop: '30px', display:'flex', cursor:'pointer' }} className={styles.sectionATitle} onClick={() => this.setState({ HideRequirementInfoSection: !this.state.HideRequirementInfoSection })} >
+                    <div style={{width: '40px', paddingTop:'3px'}}>
+                        <Icon iconName={this.state.HideRequirementInfoSection === true ? 'ChevronRight' : 'ChevronDown'} />
+                    </div>
+                    <div>
+                        Requirement
+                    </div>
+                    
+                    
+                    {/* <span style={{ fontSize: '14px', cursor: 'pointer', textDecoration: 'underline' }} onClick={() => this.setState({ HideRequirementInfoSection: !this.state.HideRequirementInfoSection })} >{this.state.HideRequirementInfoSection === true ? 'Show' : 'Hide'}</span> */}
                 </div>
 
+                {(this.state.HideRequirementInfoSection === false) &&
+                    <div style={{ width: '100%', marginLeft: 'auto', marginRight: 'auto', paddingRight: '5px', overflowX: 'hidden' }}>
+
+                        <table cellSpacing="0" cellPadding="10" style={{ width: '100%' }}>
+
+                            <tbody>
+
+                                <tr>
+                                    <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                        Title of vacancy
+                                </td>
+                                    <td style={{ width: '31%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)' }}>
+                                        {this.state.FormData.ReqVacancyTitle}
+                                    </td>
+                                    <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                        Grade of vacancy
+                                </td>
+                                    <td style={{ width: '31%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                        {this.state.CaseInfo.ReqGrade}
+                                    </td>
+
+                                </tr>
+
+                                <tr>
+                                    <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                        Work proposal (what will they be doing? )
+                                </td>
+                                    <td colSpan={3} style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                        <div dangerouslySetInnerHTML={{ __html: this.state.FormData.ReqWorkPurpose && this.state.FormData.ReqWorkPurpose.split('\n').join('<br/>') }} ></div>
+                                    </td>
+
+
+                                </tr>
+
+                                <tr>
+                                    <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                        Cost Centre for this role
+                                </td>
+                                    <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', }}>
+                                        {this.state.FormData.ReqCostCentre}
+                                    </td>
+                                    <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                        Directorate this role will be in
+                                </td>
+                                    <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                        {this.state.CaseInfo.Directorate}
+                                    </td>
+
+                                </tr>
+
+                                <tr>
+                                    <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                        Estimated start date
+                                </td>
+                                    <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', }}>
+                                        {this.state.CaseInfo.ReqEstStartDate}
+                                    </td>
+                                    <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                        Estimated end date
+                                </td>
+                                    <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                        {this.state.CaseInfo.ReqEstEndDate}
+                                    </td>
+
+                                </tr>
+
+                                <tr>
+                                    <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                        Professional Category
+                                </td>
+                                    <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', }}>
+                                        {this.state.CaseInfo.ReqProfessionalCat}
+                                    </td>
+                                    <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                        Work location
+                                </td>
+                                    <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                        {this.state.CaseInfo.ReqWorkLocation}
+                                    </td>
+
+                                </tr>
+
+
+
+                                <tr>
+                                    <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                        Number of positions
+                                </td>
+                                    <td colSpan={3} style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                        {this.state.FormData.ReqNumPositions}
+                                    </td>
+
+                                </tr>
+
+
+                            </tbody>
+
+
+                        </table>
+                    </div>
+                }
             </React.Fragment>
         );
     }
@@ -1975,6 +2052,10 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
             }
         }
 
+        if(decision === ""){
+            decision = "Decision not made yet";
+        }
+
         return (
 
             <React.Fragment>
@@ -2041,6 +2122,10 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
             }
         }
 
+        if(decision === ""){
+            decision = "Decision not made yet";
+        }
+
         return (
 
             <React.Fragment>
@@ -2105,6 +2190,10 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
             if (x1.length > 0) {
                 decision = x1[0].afterDecisionText;
             }
+        }
+
+        if(decision === ""){
+            decision = "Decision not made yet";
         }
 
         return (
@@ -4683,6 +4772,27 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         );
     }
 
+    private renderCloseButton_HistoricCase() {
+
+
+        return (
+            <div>
+                {
+
+                    <DefaultButton text="Close" className={styles.formButton} style={{ marginRight: '5px' }}
+                        onClick={() => this.props.onShowCaseTab()}
+                    />
+
+
+                }
+
+
+
+            </div>
+        );
+
+
+    }
 
 
     //#region Data Load/Save
@@ -5709,6 +5819,11 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         }
 
 
+    }
+
+    private onViewExtHistroyClick = (caseId: number, workerId: number, stage: string): void => {
+        console.log('onViewExtHistroyClick', caseId, workerId, stage);
+        this.props.onShowHistoricCase(workerId, caseId, stage);
     }
 
 }

@@ -8,6 +8,7 @@ export interface ICrTextFieldProps {
     className?: string;
     value: string;
     disabled?: boolean;
+    readOnly?: boolean;
     required?: boolean;
     placeholder?: string;
     multiline?: boolean;
@@ -85,6 +86,7 @@ export class CrTextField extends React.Component<ICrTextFieldProps, {}> {
             onChanged={this.props.onChanged}
             onBlur={this.props.onBlur}
             suffix={this.props.suffix}
+            readOnly={this.props.readOnly}
             
             />
         );
@@ -127,6 +129,7 @@ export class CrTextField extends React.Component<ICrTextFieldProps, {}> {
             maskChar=""
             mask={maskVal}
             maskFormat={maskFormat}
+            readOnly={this.props.readOnly}
             
             />
         );

@@ -43,6 +43,10 @@ export interface IClUpdatesState extends types.IUserContextWebPartState {
   Section_MainList_SelectedCaseId: number;
   Section_MainList_SelectedStage: string;
 
+  HistoricCase_WorkerId: number;
+  HistoricCase_CaseId: number;
+  HistoricCase_Stage: string;
+
   TotalBusinessCases: number;
   TotalEngagedCases: number;
   TotalArchivedCases: number;
@@ -65,6 +69,12 @@ export class ClUpdatesState extends types.UserContextWebPartState implements ICl
   public Section_MainList_SelectedId = null;
   public Section_MainList_SelectedCaseId = null;
   public Section_MainList_SelectedStage = null;
+
+
+  public HistoricCase_WorkerId: number = null;
+  public HistoricCase_CaseId: number = null;
+  public HistoricCase_Stage: string = null;
+
   public TotalBusinessCases = null;
   public TotalEngagedCases = null;
   public TotalArchivedCases = null;
@@ -85,6 +95,7 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
 
   private readonly headerTxt_MainTab: string = "Contingent Labour";
   private readonly headerTxt_NewCaseTab: string = "Case";
+  private readonly headerTxt_HistoricCaseTab: string = "Extension Of";
 
 
   constructor(props: types.IWebPartComponentProps) {
@@ -103,6 +114,7 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
           {this.renderMainTab()}
         </PivotItem>
         {this.renderNewCaseTab()}
+        {this.renderHistoricCaseTab()}
 
 
       </Pivot>
@@ -180,11 +192,25 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
   }
 
   private renderNewCaseTab() {
-    if (this.state.SelectedPivotKey === this.headerTxt_NewCaseTab) {
+    if (this.state.SelectedPivotKey === this.headerTxt_NewCaseTab || this.state.SelectedPivotKey === this.headerTxt_HistoricCaseTab) {
       return (
 
         <PivotItem headerText={this.headerTxt_NewCaseTab} itemKey={this.headerTxt_NewCaseTab}>
           {this.renderNewCase()}
+        </PivotItem>
+
+      );
+    }
+    else
+      return <React.Fragment></React.Fragment>;
+  }
+
+  private renderHistoricCaseTab() {
+    if (this.state.SelectedPivotKey === this.headerTxt_HistoricCaseTab) {
+      return (
+
+        <PivotItem headerText={this.headerTxt_HistoricCaseTab} itemKey={this.headerTxt_HistoricCaseTab}>
+          {this.renderHistoricCase()}
         </PivotItem>
 
       );
@@ -208,6 +234,33 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
         currentUserId={this.getCurrentUserId()}
         superUserPermission={this.isSuperUser()}
         viewerPermission={this.isViewerPermission()}
+        defForm={this.state.DefForm}
+        onShowHistoricCase={this.handleShowHistoricCaseClick}
+        {...this.props}
+      />
+
+
+    );
+
+  }
+
+  private renderHistoricCase(): React.ReactElement<types.IWebPartComponentProps> {
+
+    return (
+
+
+      <NewCaseTab
+
+        onShowList={this.handleShowMainTab}
+        clWorkerId={this.state.HistoricCase_WorkerId}
+        clCaseId={this.state.HistoricCase_CaseId}
+        stage={this.state.HistoricCase_Stage}
+        currentUserName={this.getCurrentUserName()}
+        currentUserId={this.getCurrentUserId()}
+        superUserPermission={false}
+        viewerPermission={true}
+        historicCase={true}
+        onShowCaseTab={this.handleShowCaseTab}
         defForm={this.state.DefForm}
         {...this.props}
       />
@@ -446,6 +499,28 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
     });
 
 
+  }
+
+  private handleShowHistoricCaseClick = (workerId: number, caseId: number, stage:string): void => {
+
+    console.log('in handleShowHistoricCaseClick', caseId, workerId, stage);
+
+
+
+    this.setState({
+      SelectedPivotKey: this.headerTxt_HistoricCaseTab,
+      HistoricCase_CaseId: caseId,
+      HistoricCase_WorkerId: workerId,
+      HistoricCase_Stage: stage,
+
+    });
+
+  }
+
+  private handleShowCaseTab = (): void => {
+    console.log('in handleShowCaseTab');
+    this.clearErrors();
+    this.setState({ SelectedPivotKey: this.headerTxt_NewCaseTab });
   }
 
 

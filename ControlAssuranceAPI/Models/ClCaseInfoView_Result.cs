@@ -63,5 +63,7 @@ namespace ControlAssuranceAPI.Models
         public string LeUKSBSCheckedOn { get; set; }
         public string LePassCheckedBy { get; set; }
         public string LePassCheckedOn { get; set; }
+
+        public string ExtensionHistory { get; set; } = "";
     }
 }
