@@ -46,10 +46,14 @@ export class CrDatePicker extends React.Component<ICrDatePickerProps, {}> {
     }
 
     private _parseCrDate(value: string): Date {
+        console.log('_parseCrDate', value);
         let ukDateFormat = new RegExp(/^[0-3][0-9]\/[01][0-9]\/20[0-9]{2}$/);
-        if (!ukDateFormat.test(value)) return;
+        //if (!ukDateFormat.test(value)) return;
+        //console.log('_parseCrDate 2');
         let values = value.split('/');
+        //console.log('_parseCrDate 3');
         if (parseInt(values[0]) > 31 || parseInt(values[1]) > 12) return;
+        //console.log('_parseCrDate 4');
         return new Date(parseInt(values[2]), parseInt(values[1]) - 1, parseInt(values[0]));
     }
 }

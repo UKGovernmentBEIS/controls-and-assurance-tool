@@ -133,7 +133,7 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
                 {this.renderGIAAActionStatusTypes()}
                 {this.renderRevisedDate()}
                 {this.renderUpdateDetails()}
-                {this.renderLinkRiskManagement()}
+                {/* {this.renderLinkRiskManagement()} */}
                 {this.renderEvLabel()}
                 {this.renderEvCheckBox()}
                 {this.renderEvLinkBox()}

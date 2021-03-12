@@ -670,6 +670,19 @@ namespace ControlAssuranceAPI.Repositories
                             cLWorker.WorkerNumber = (i + 1);
                             cLWorker.Stage = CaseStages.Onboarding.Name;
                             cLWorker.OnbEndDate = cLcase.ReqEstEndDate;
+                            
+                            //set defaults for the new case
+                            if (cLcase.CaseType == "New Case")
+                            {
+                                cLWorker.OnbStartDate = cLcase.ReqEstStartDate;                                
+                                cLWorker.OnbDayRate = cLcase.FinMaxRate;
+                                cLWorker.OnbWorkingDayMon = true;
+                                cLWorker.OnbWorkingDayTue = true;
+                                cLWorker.OnbWorkingDayWed = true;
+                                cLWorker.OnbWorkingDayThu = true;
+                                cLWorker.OnbWorkingDayFri = true;
+                            }
+
 
 
                         }
@@ -737,9 +750,14 @@ namespace ControlAssuranceAPI.Repositories
             var apiUser = ApiUser;
             int apiUserId = apiUser.ID;
 
+            
+
             CLWorker existingWorker = db.CLWorkers.FirstOrDefault(x => x.ID == existingWorkerId);
             CLCase existingCase = existingWorker.CLCase;
             //create new case based on existing case
+            DateTime estStartDate = existingCase.ReqEstEndDate.Value.AddDays(1);
+
+
             CLCase cLCase = new CLCase();
             cLCase.CaseType = "Extension";
             cLCase.CreatedById = apiUserId;
@@ -751,7 +769,7 @@ namespace ControlAssuranceAPI.Repositories
             cLCase.ReqGradeId = existingCase.ReqGradeId;
             cLCase.ReqWorkPurpose = existingCase.ReqWorkPurpose;
             cLCase.ReqProfessionalCatId = existingCase.ReqProfessionalCatId;
-            cLCase.ReqEstStartDate = existingCase.ReqEstEndDate;
+            cLCase.ReqEstStartDate = estStartDate;
             cLCase.ReqEstEndDate = null;
             cLCase.ReqWorkLocationId = existingCase.ReqWorkLocationId;
             cLCase.ReqNumPositions = 1;

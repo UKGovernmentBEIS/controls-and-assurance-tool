@@ -22,6 +22,7 @@ export interface ICrTextFieldProps {
     suffix?: string;
     numbersOnly?: boolean;
     style? :React.CSSProperties;
+    autoComplete?:string;
 }
 
 export class CrTextField extends React.Component<ICrTextFieldProps, {}> {
@@ -87,6 +88,7 @@ export class CrTextField extends React.Component<ICrTextFieldProps, {}> {
             onBlur={this.props.onBlur}
             suffix={this.props.suffix}
             readOnly={this.props.readOnly}
+            autoComplete={this.props.autoComplete}
             
             />
         );

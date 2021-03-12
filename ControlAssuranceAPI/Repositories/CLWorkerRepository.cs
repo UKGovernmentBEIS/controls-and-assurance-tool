@@ -60,6 +60,11 @@ namespace ControlAssuranceAPI.Repositories
                 clWorker.ContractCheckedById = inputWorker.ContractCheckedById;
                 clWorker.ContractCheckedOn = inputWorker.ContractCheckedOn;
 
+                clWorker.ITSystemRef = inputWorker.ITSystemRef;
+                clWorker.ITSystemNotes = inputWorker.ITSystemNotes;
+                clWorker.UKSBSRef = inputWorker.UKSBSRef;
+                clWorker.UKSBSNotes = inputWorker.UKSBSNotes;
+
                 if(inputWorker.Title == "SaveEngaged_MoveToChecksDone")
                 {
                     clWorker.EngagedChecksDone = true;

@@ -74,6 +74,10 @@ namespace ControlAssuranceAPI.Models
         public Nullable<int> LePassCheckedById { get; set; }
         public Nullable<System.DateTime> LePassCheckedOn { get; set; }
         public Nullable<int> ExtendedFromWorkerId { get; set; }
+        public string ITSystemRef { get; set; }
+        public string ITSystemNotes { get; set; }
+        public string UKSBSRef { get; set; }
+        public string UKSBSNotes { get; set; }
     
         public virtual CLCase CLCase { get; set; }
         public virtual CLDeclarationConflict CLDeclarationConflict { get; set; }

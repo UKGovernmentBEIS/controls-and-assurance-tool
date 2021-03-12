@@ -486,7 +486,10 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         const reqCostCentreValidationImg = fd.ReqCostCentre !== null && fd.ReqCostCentre.length === 6 ? this.checkIconGreen : this.checkIconRed;
         const reqDirectorateIdValidationImg = fd.ReqDirectorateId !== null ? this.checkIconGreen : this.checkIconRed;
         const reqEstStartDateValidationImg = fd.ReqEstStartDate !== null ? this.checkIconGreen : this.checkIconRed;
-        const reqEstEndDateValidationImg = fd.ReqEstEndDate !== null ? this.checkIconGreen : this.checkIconRed;
+
+        const reqEstEndDateValidationImg = fd.ReqEstEndDate !== null && fd.ReqEstEndDate > fd.ReqEstStartDate ? this.checkIconGreen : this.checkIconRed;
+
+
         const reqProfessionalCatIdValidationImg = fd.ReqProfessionalCatId !== null ? this.checkIconGreen : this.checkIconRed;
         const reqWorkLocationIdValidationImg = fd.ReqWorkLocationId !== null ? this.checkIconGreen : this.checkIconRed;
         const reqNumPositionsValidationImg = fd.ReqNumPositions !== null && fd.ReqNumPositions > 0 ? this.checkIconGreen : this.checkIconRed;
@@ -685,6 +688,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                         maxWidth='100%'
                                         value={fd.ReqEstStartDate}
                                         onSelectDate={(v) => changeDatePicker(this, v, "ReqEstStartDate")}
+
                                     />
 
 
@@ -704,6 +708,15 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
 
                             </div>
+                            {
+                                (fd.ReqEstStartDate !== null && fd.ReqEstEndDate !== null && (fd.ReqEstEndDate <= fd.ReqEstStartDate)) &&
+                                <div style={{ display: 'flex' }}>
+                                    <div style={{ width: '50%' }}>&nbsp;</div>
+                                    <div style={{ width: '50%', fontSize: '12px', fontStyle: 'italic', paddingTop: '5px', marginTop: '0px', paddingLeft: '0px' }}>
+                                        End date should be greater than start date
+                                    </div>
+                                </div>
+                            }
                         </div>
 
                         {/* 5th row */}
@@ -1659,16 +1672,18 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
             <React.Fragment>
 
-                <div style={{ marginBottom: '10px', marginTop: '30px', display:'flex', cursor:'pointer' }} className={styles.sectionATitle} onClick={() => this.setState({ HideRequirementInfoSection: !this.state.HideRequirementInfoSection })} >
-                    <div style={{width: '40px', paddingTop:'3px'}}>
+                {/* <div style={{ marginBottom: '10px', marginTop: '30px', display: 'flex', cursor: 'pointer' }} className={styles.sectionATitle} onClick={() => this.setState({ HideRequirementInfoSection: !this.state.HideRequirementInfoSection })} >
+                    <div style={{ width: '40px', paddingTop: '3px' }}>
                         <Icon iconName={this.state.HideRequirementInfoSection === true ? 'ChevronRight' : 'ChevronDown'} />
                     </div>
                     <div>
                         Requirement
                     </div>
-                    
-                    
-                    {/* <span style={{ fontSize: '14px', cursor: 'pointer', textDecoration: 'underline' }} onClick={() => this.setState({ HideRequirementInfoSection: !this.state.HideRequirementInfoSection })} >{this.state.HideRequirementInfoSection === true ? 'Show' : 'Hide'}</span> */}
+                </div> */}
+
+                <div style={{ marginBottom: '10px', marginTop: '30px', }} className={styles.sectionATitle} >
+
+                    Requirement
                 </div>
 
                 {(this.state.HideRequirementInfoSection === false) &&
@@ -2052,7 +2067,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
             }
         }
 
-        if(decision === ""){
+        if (decision === "") {
             decision = "Decision not made yet";
         }
 
@@ -2122,7 +2137,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
             }
         }
 
-        if(decision === ""){
+        if (decision === "") {
             decision = "Decision not made yet";
         }
 
@@ -2192,7 +2207,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
             }
         }
 
-        if(decision === ""){
+        if (decision === "") {
             decision = "Decision not made yet";
         }
 
@@ -2591,7 +2606,8 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         const req_OnbContractorPostCode_Img = fd.OnbContractorPostCode !== null && fd.OnbContractorPostCode.length > 1 ? this.checkIconGreen : this.checkIconRed;
 
         const req_OnbStartDate_Img = fd.OnbStartDate !== null ? this.checkIconGreen : this.checkIconRed;
-        const req_OnbEndDate_Img = fd.OnbEndDate !== null ? this.checkIconGreen : this.checkIconRed;
+        const req_OnbEndDate_Img = fd.OnbEndDate !== null && fd.OnbEndDate > fd.OnbStartDate ? this.checkIconGreen : this.checkIconRed;
+
         const req_OnbDayRate_Img = fd.OnbDayRate !== null && fd.OnbDayRate > 0 ? this.checkIconGreen : this.checkIconRed;
         const req_OnbSecurityClearanceId_Img = fd.OnbSecurityClearanceId !== null ? this.checkIconGreen : this.checkIconRed;
         const req_ContractorSecurityCheckEvidence_Img = this.state.ContractorSecurityCheckEvidence !== null ? this.checkIconGreen : this.checkIconRed;
@@ -2770,8 +2786,6 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                     maxWidth='100%'
                                     value={fd.OnbContractorDob}
                                     onSelectDate={(v) => changeDatePickerV2(this, 'FormDataWorker', v, "OnbContractorDob")}
-                                //required={true}
-                                //errorMessage={this.state.ErrMessages.CurrentPeriodStartDate}
                                 />
 
 
@@ -2792,6 +2806,15 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
 
                         </div>
+                        {
+                            
+                            <div style={{ display: 'flex' }}>
+                                {/* <div style={{ width: '50%' }}>&nbsp;</div> */}
+                                <div style={{ width: '50%', fontSize: '12px', fontStyle: 'italic', paddingTop: '5px', marginTop: '0px', paddingLeft: '0px' }}>
+                                    Enter manually as dd/mm/yyyy or use date picker
+                                </div>
+                            </div>
+                        }
                     </div>
 
                     {/* 4th row */}
@@ -2969,6 +2992,17 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
 
                         </div>
+
+                        {
+                            (fd.OnbStartDate !== null && fd.OnbEndDate !== null && (fd.OnbEndDate <= fd.OnbStartDate)) &&
+                            <div style={{ display: 'flex' }}>
+                                <div style={{ width: '50%' }}>&nbsp;</div>
+                                <div style={{ width: '50%', fontSize: '12px', fontStyle: 'italic', paddingTop: '5px', marginTop: '0px', paddingLeft: '0px' }}>
+                                    End date should be greater than start date
+                                    </div>
+                            </div>
+                        }
+
                     </div>
 
 
@@ -3340,6 +3374,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                     //className={styles.formField}
                                     onChanged={(v) => this.changeTextField_Worker(v, "OnbLineManagerEmployeeNum")}
                                     value={fd.OnbLineManagerEmployeeNum}
+                                    autoComplete="*"
 
                                 />
 
@@ -3670,7 +3705,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                         <div style={{ display: 'flex' }}>
                             <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
                                 <div className={styles.flexContainerSectionQuestion}>
-                                    <div className={styles.sectionQuestionCol1}><span>BPSS checked by</span></div>
+                                    <div className={styles.sectionQuestionCol1}><span>Security clearance checked by</span></div>
                                     <div className={styles.sectionQuestionCol2}>
                                         <img src={req_BPSSCheckedById_Img} />
                                     </div>
@@ -3679,7 +3714,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                             </div>
                             <div style={{ width: '50%', fontWeight: 'bold' }}>
                                 <div className={styles.flexContainerSectionQuestion}>
-                                    <div className={styles.sectionQuestionCol1}><span>BPSS checked on</span></div>
+                                    <div className={styles.sectionQuestionCol1}><span>Security clearance checked on</span></div>
                                     <div className={styles.sectionQuestionCol2}>
                                         <img src={req_BPSSCheckedOn_Img} />
                                     </div>
@@ -3833,6 +3868,59 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                             <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
 
                                 <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>IT System Reference</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div style={{ width: '50%', fontWeight: 'bold' }}>
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>IT System notes</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                        <div style={{ display: 'flex', marginTop: '5px' }}>
+                            <div style={{ width: '50%', paddingRight: '5px' }}>
+                                <CrTextField
+                                    onChanged={(v) => this.changeTextField_Worker(v, "ITSystemRef")}
+                                    value={fd.ITSystemRef}
+
+                                />
+
+
+                            </div>
+
+                            <div style={{ width: '50%', }}>
+                                <CrTextField
+                                    onChanged={(v) => this.changeTextField_Worker(v, "ITSystemNotes")}
+                                    value={fd.ITSystemNotes}
+
+                                />
+
+                            </div>
+
+
+
+
+                        </div>
+                    </div>
+
+                    {/* 5th row */}
+                    <div className={styles.formField}>
+
+                        <div style={{ display: 'flex' }}>
+                            <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
+
+                                <div className={styles.flexContainerSectionQuestion}>
                                     <div className={styles.sectionQuestionCol1}><span>UKSBS/Oracle checked by</span></div>
                                     <div className={styles.sectionQuestionCol2}>
                                         <img src={req_UKSBSCheckedById_Img} />
@@ -3882,7 +3970,63 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                         </div>
                     </div>
 
-                    {/* 5th row */}
+
+                    {/* 6th row */}
+                    <div className={styles.formField}>
+
+                        <div style={{ display: 'flex' }}>
+                            <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>UKSBS Reference</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div style={{ width: '50%', fontWeight: 'bold' }}>
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>UKSBS notes</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                        <div style={{ display: 'flex', marginTop: '5px' }}>
+                            <div style={{ width: '50%', paddingRight: '5px' }}>
+                                <CrTextField
+                                    onChanged={(v) => this.changeTextField_Worker(v, "UKSBSRef")}
+                                    value={fd.UKSBSRef}
+
+                                />
+
+
+                            </div>
+
+                            <div style={{ width: '50%', }}>
+                                <CrTextField
+                                    onChanged={(v) => this.changeTextField_Worker(v, "UKSBSNotes")}
+                                    value={fd.UKSBSNotes}
+
+                                />
+
+                            </div>
+
+
+
+
+                        </div>
+                    </div>
+
+
+
+                    {/* 7th row */}
 
                     <div className={styles.formField}>
 
@@ -3940,7 +4084,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                     </div>
 
 
-                    {/* 6th row */}
+                    {/* 8th row */}
 
                     <div className={styles.formField}>
 
@@ -4046,6 +4190,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     private renderEngaged_info() {
 
         const caseInfo = this.state.CaseInfo;
+        const fd = this.state.FormDataWorker;
 
         return (
 
@@ -4061,13 +4206,13 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                             <tr>
                                 <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
-                                    BPSS checked by
+                                    Security clearance checked by
                                 </td>
                                 <td style={{ width: '31%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)' }}>
                                     {caseInfo.BPSSCheckedBy}
                                 </td>
                                 <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
-                                    BPSS checked on
+                                    Security clearance checked on
                                 </td>
                                 <td style={{ width: '31%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
                                     {caseInfo.BPSSCheckedOn}
@@ -4110,6 +4255,22 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                             <tr>
                                 <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    IT System Reference
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', }}>
+                                    {fd.ITSystemRef}
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    IT System notes
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                    {fd.ITSystemNotes}
+                                </td>
+
+                            </tr>
+
+                            <tr>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
                                     UKSBS/Oracle checked by
                                 </td>
                                 <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', }}>
@@ -4120,6 +4281,22 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                 </td>
                                 <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
                                     {caseInfo.UKSBSCheckedOn}
+                                </td>
+
+                            </tr>
+
+                            <tr>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    UKSBS Reference
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', }}>
+                                    {fd.UKSBSRef}
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    UKSBS notes
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                    {fd.UKSBSNotes}
                                 </td>
 
                             </tr>
@@ -4811,7 +4988,8 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
             if (fd.ReqCostCentre !== null && fd.ReqCostCentre.length === 6) { } else { return false; }
             if (fd.ReqDirectorateId !== null) { } else { return false; }
             if (fd.ReqEstStartDate !== null) { } else { return false; }
-            if (fd.ReqEstEndDate !== null) { } else { return false; }
+
+            if (fd.ReqEstEndDate !== null && fd.ReqEstEndDate > fd.ReqEstStartDate) { } else { return false; }
             if (fd.ReqProfessionalCatId !== null) { } else { return false; }
             if (fd.ReqWorkLocationId !== null) { } else { return false; }
             if (fd.ReqNumPositions !== null && fd.ReqNumPositions > 0) { } else { return false; }
@@ -4867,7 +5045,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
             if (fd.OnbContractorPostCode !== null && fd.OnbContractorPostCode.length > 1) { } else return false;
 
             if (fd.OnbStartDate === null) return false;
-            if (fd.OnbEndDate === null) return false;
+            if (fd.OnbEndDate !== null && fd.OnbEndDate > fd.OnbStartDate) { } else { return false; }
             if (fd.OnbDayRate !== null && fd.OnbDayRate > 0) { } else return false;
             if (fd.OnbSecurityClearanceId === null) return false;
             if (this.state.ContractorSecurityCheckEvidence === null) return false;
