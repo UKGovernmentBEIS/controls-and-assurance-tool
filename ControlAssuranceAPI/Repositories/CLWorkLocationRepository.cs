@@ -29,5 +29,23 @@ namespace ControlAssuranceAPI.Repositories
         {
             return CLWorkLocations.Where(x => x.ID == keyValue).FirstOrDefault();
         }
+
+        public CLWorkLocation Add(CLWorkLocation cLWorkLocation)
+        {
+            int newID = 1;
+            var lastRecord = db.CLWorkLocations.OrderByDescending(x => x.ID).FirstOrDefault();
+            if (lastRecord != null)
+            {
+                newID = lastRecord.ID + 1;
+            }
+            cLWorkLocation.ID = newID;
+
+            return db.CLWorkLocations.Add(cLWorkLocation);
+        }
+
+        public CLWorkLocation Remove(CLWorkLocation cLWorkLocation)
+        {
+            return db.CLWorkLocations.Remove(cLWorkLocation);
+        }
     }
 }

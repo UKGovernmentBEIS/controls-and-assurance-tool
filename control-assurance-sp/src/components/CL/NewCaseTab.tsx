@@ -3374,7 +3374,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                     //className={styles.formField}
                                     onChanged={(v) => this.changeTextField_Worker(v, "OnbLineManagerEmployeeNum")}
                                     value={fd.OnbLineManagerEmployeeNum}
-                                    autoComplete="*"
+                                    autoComplete='*'
 
                                 />
 

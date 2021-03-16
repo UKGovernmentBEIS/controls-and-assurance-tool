@@ -29,5 +29,23 @@ namespace ControlAssuranceAPI.Repositories
         {
             return CLComFrameworks.Where(x => x.ID == keyValue).FirstOrDefault();
         }
+
+        public CLComFramework Add(CLComFramework cLComFramework)
+        {
+            int newID = 1;
+            var lastRecord = db.CLComFrameworks.OrderByDescending(x => x.ID).FirstOrDefault();
+            if (lastRecord != null)
+            {
+                newID = lastRecord.ID + 1;
+            }
+            cLComFramework.ID = newID;
+
+            return db.CLComFrameworks.Add(cLComFramework);
+        }
+
+        public CLComFramework Remove(CLComFramework cLComFramework)
+        {
+            return db.CLComFrameworks.Remove(cLComFramework);
+        }
     }
 }

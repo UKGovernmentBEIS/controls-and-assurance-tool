@@ -29,5 +29,23 @@ namespace ControlAssuranceAPI.Repositories
         {
             return PersonTitles.Where(x => x.ID == keyValue).FirstOrDefault();
         }
+
+        public PersonTitle Add(PersonTitle personTitle)
+        {
+            int newID = 1;
+            var lastRecord = db.PersonTitles.OrderByDescending(x => x.ID).FirstOrDefault();
+            if (lastRecord != null)
+            {
+                newID = lastRecord.ID + 1;
+            }
+            personTitle.ID = newID;
+
+            return db.PersonTitles.Add(personTitle);
+        }
+
+        public PersonTitle Remove(PersonTitle personTitle)
+        {
+            return db.PersonTitles.Remove(personTitle);
+        }
     }
 }

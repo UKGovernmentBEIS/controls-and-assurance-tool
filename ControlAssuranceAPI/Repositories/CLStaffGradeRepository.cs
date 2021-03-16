@@ -29,5 +29,23 @@ namespace ControlAssuranceAPI.Repositories
         {
             return CLStaffGrades.Where(x => x.ID == keyValue).FirstOrDefault();
         }
+
+        public CLStaffGrade Add(CLStaffGrade cLStaffGrade)
+        {
+            int newID = 1;
+            var lastRecord = db.CLStaffGrades.OrderByDescending(x => x.ID).FirstOrDefault();
+            if (lastRecord != null)
+            {
+                newID = lastRecord.ID + 1;
+            }
+            cLStaffGrade.ID = newID;
+
+            return db.CLStaffGrades.Add(cLStaffGrade);
+        }
+
+        public CLStaffGrade Remove(CLStaffGrade cLStaffGrade)
+        {
+            return db.CLStaffGrades.Remove(cLStaffGrade);
+        }
     }
 }

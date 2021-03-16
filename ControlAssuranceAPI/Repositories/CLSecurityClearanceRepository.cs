@@ -29,5 +29,23 @@ namespace ControlAssuranceAPI.Repositories
         {
             return CLSecurityClearances.Where(x => x.ID == keyValue).FirstOrDefault();
         }
+
+        public CLSecurityClearance Add(CLSecurityClearance cLSecurityClearance)
+        {
+            int newID = 1;
+            var lastRecord = db.CLSecurityClearances.OrderByDescending(x => x.ID).FirstOrDefault();
+            if (lastRecord != null)
+            {
+                newID = lastRecord.ID + 1;
+            }
+            cLSecurityClearance.ID = newID;
+
+            return db.CLSecurityClearances.Add(cLSecurityClearance);
+        }
+
+        public CLSecurityClearance Remove(CLSecurityClearance cLSecurityClearance)
+        {
+            return db.CLSecurityClearances.Remove(cLSecurityClearance);
+        }
     }
 }

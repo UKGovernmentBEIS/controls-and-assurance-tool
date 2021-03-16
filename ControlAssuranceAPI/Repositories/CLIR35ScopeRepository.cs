@@ -29,5 +29,23 @@ namespace ControlAssuranceAPI.Repositories
         {
             return CLIR35Scopes.Where(x => x.ID == keyValue).FirstOrDefault();
         }
+
+        public CLIR35Scope Add(CLIR35Scope cLIR35Scope)
+        {
+            int newID = 1;
+            var lastRecord = db.CLIR35Scope.OrderByDescending(x => x.ID).FirstOrDefault();
+            if (lastRecord != null)
+            {
+                newID = lastRecord.ID + 1;
+            }
+            cLIR35Scope.ID = newID;
+
+            return db.CLIR35Scope.Add(cLIR35Scope);
+        }
+
+        public CLIR35Scope Remove(CLIR35Scope cLIR35Scope)
+        {
+            return db.CLIR35Scope.Remove(cLIR35Scope);
+        }
     }
 }

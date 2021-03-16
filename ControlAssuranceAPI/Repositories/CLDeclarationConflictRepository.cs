@@ -29,5 +29,24 @@ namespace ControlAssuranceAPI.Repositories
         {
             return CLDeclarationConflicts.Where(x => x.ID == keyValue).FirstOrDefault();
         }
+
+
+        public CLDeclarationConflict Add(CLDeclarationConflict cLDeclarationConflict)
+        {
+            int newID = 1;
+            var lastRecord = db.CLDeclarationConflicts.OrderByDescending(x => x.ID).FirstOrDefault();
+            if (lastRecord != null)
+            {
+                newID = lastRecord.ID + 1;
+            }
+            cLDeclarationConflict.ID = newID;
+
+            return db.CLDeclarationConflicts.Add(cLDeclarationConflict);
+        }
+
+        public CLDeclarationConflict Remove(CLDeclarationConflict cLDeclarationConflict)
+        {
+            return db.CLDeclarationConflicts.Remove(cLDeclarationConflict);
+        }
     }
 }

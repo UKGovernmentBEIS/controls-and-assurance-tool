@@ -29,5 +29,23 @@ namespace ControlAssuranceAPI.Repositories
         {
             return CLProfessionalCats.Where(x => x.ID == keyValue).FirstOrDefault();
         }
+
+        public CLProfessionalCat Add(CLProfessionalCat cLProfessionalCat)
+        {
+            int newID = 1;
+            var lastRecord = db.CLProfessionalCats.OrderByDescending(x => x.ID).FirstOrDefault();
+            if (lastRecord != null)
+            {
+                newID = lastRecord.ID + 1;
+            }
+            cLProfessionalCat.ID = newID;
+
+            return db.CLProfessionalCats.Add(cLProfessionalCat);
+        }
+
+        public CLProfessionalCat Remove(CLProfessionalCat cLProfessionalCat)
+        {
+            return db.CLProfessionalCats.Remove(cLProfessionalCat);
+        }
     }
 }

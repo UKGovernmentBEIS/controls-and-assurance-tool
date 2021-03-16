@@ -222,5 +222,13 @@ export default class EntityList extends BaseList<IEntityListProps, IEntityListSt
         if (prevProps.entityReadAllWithArg1 !== this.props.entityReadAllWithArg1 || prevProps.entityReadAllWithArg2 !== this.props.entityReadAllWithArg2) {
             this.loadEntities();
         }
+
+        if(prevProps.entityService !== this.props.entityService){
+            this.entityService = this.props.entityService;
+            //console.log('componentDidUpdate', this.props.entityService);
+            this.EntityName = { Plural: this.props.entityNamePlural, Singular: this.props.entityNameSingular };
+            this.ChildEntityName = { Api: this.props.childEntityNameApi, Plural: this.props.childEntityNamePlural, Singular: this.props.childEntityNameSingular };
+            this.loadEntities();
+        }
     }
 }
