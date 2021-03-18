@@ -8,7 +8,7 @@ export interface IGIAAAuditReport  extends IEntity {
     IssueDate?: Date;
     AuditYear?: string;
     Link?: string;
-    DirectorateId?: number;
+    //DirectorateId?: number;
     GIAAAssuranceId?: number;
     IsArchive?:boolean;
     GIAAAuditReportDirectorates?: IGIAAAuditReportDirectorate[];
@@ -22,7 +22,7 @@ export class GIAAAuditReport implements IGIAAAuditReport{
     public IssueDate = null;
     public AuditYear = null;
     public Link = null;
-    public DirectorateId = null;
+    //public DirectorateId = null;
     public GIAAAssuranceId = null;
     public IsArchive = false;
     public GIAAAuditReportDirectorates = [];
