@@ -120,7 +120,7 @@ export default class CLWelcome extends BaseUserContextWebPartComponent<types.IWe
   //#region event handlers
 
   private handleUpdatesClick = (): void => {
-    const pageUrl = this.props.spfxContext.pageContext.web.absoluteUrl + "/SitePages/ContingencyLabourProcesses.aspx";
+    const pageUrl = this.props.spfxContext.pageContext.web.absoluteUrl + "/SitePages/ContingentLabourProcesses.aspx";
     window.location.href = pageUrl;
     
   }
