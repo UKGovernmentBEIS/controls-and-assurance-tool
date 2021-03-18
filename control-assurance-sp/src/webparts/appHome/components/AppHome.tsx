@@ -29,6 +29,7 @@ export default class AppHome extends BaseUserContextWebPartComponent<types.IWebP
   private naoApphomeImg: string = "";
   private giaaApphomeImg: string = "";
   private individualActionAppHomeImg: string = "";
+  private contingentLabourAppHomeImg: string = "";
 
   private spSiteUrl: string = this.props.spfxContext.pageContext.web.absoluteUrl;
 
@@ -45,6 +46,7 @@ export default class AppHome extends BaseUserContextWebPartComponent<types.IWebP
     this.naoApphomeImg = `${this.spSiteUrl}/Shared%20Documents/images/naotracker-apphome.png`;
     this.giaaApphomeImg = `${this.spSiteUrl}/Shared%20Documents/images/giaaactions-apphome.png`;
     this.individualActionAppHomeImg = `${this.spSiteUrl}/Shared%20Documents/images/individual-actions-apphome.png`;
+    this.contingentLabourAppHomeImg = `${this.spSiteUrl}/Shared%20Documents/images/contingent-labour-apphome.png`;
   }
 
   //#region Render
@@ -119,11 +121,11 @@ export default class AppHome extends BaseUserContextWebPartComponent<types.IWebP
           {/* Contingent Labour */}
           <div style={{ marginTop: '20px', marginRight: '20px', width: '250px' }}>
             <div style={{ textAlign: 'center', color: 'white', backgroundColor: 'rgb(122,116,117)', fontSize: '35px', height: '270px', borderBottom: '1px solid white' }}>
-              <img src={this.governanceApphomeImg}></img>
+              <img src={this.contingentLabourAppHomeImg}></img>
               <div>Contingent Labour</div>
             </div>
             <div style={{ backgroundColor: 'rgb(122,116,117)', textAlign: 'center', padding: '10px', cursor: 'pointer' }}
-              onClick={this.handleGovernanceClick}  >
+              onClick={this.handleContingentLabourClick}  >
               <a style={{ color: 'white', fontSize: '25px', textDecoration: 'none' }} >Start</a>
             </div>
           </div>
