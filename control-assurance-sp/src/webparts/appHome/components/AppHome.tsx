@@ -116,6 +116,17 @@ export default class AppHome extends BaseUserContextWebPartComponent<types.IWebP
             </div>
           </div>
 
+          {/* Contingent Labour */}
+          <div style={{ marginTop: '20px', marginRight: '20px', width: '250px' }}>
+            <div style={{ textAlign: 'center', color: 'white', backgroundColor: 'rgb(122,116,117)', fontSize: '35px', height: '270px', borderBottom: '1px solid white' }}>
+              <img src={this.governanceApphomeImg}></img>
+              <div>Contingent Labour</div>
+            </div>
+            <div style={{ backgroundColor: 'rgb(122,116,117)', textAlign: 'center', padding: '10px', cursor: 'pointer' }}
+              onClick={this.handleGovernanceClick}  >
+              <a style={{ color: 'white', fontSize: '25px', textDecoration: 'none' }} >Start</a>
+            </div>
+          </div>
 
 
 
@@ -146,6 +157,11 @@ export default class AppHome extends BaseUserContextWebPartComponent<types.IWebP
 
   private handleGovernanceClick = (): void => {
     const pageUrl = this.spSiteUrl + "/SitePages/GovernanceWelcome.aspx";
+    window.location.href = pageUrl;
+  }
+
+  private handleContingentLabourClick = (): void => {
+    const pageUrl = this.spSiteUrl + "/SitePages/ContingentLabourWelcome.aspx";
     window.location.href = pageUrl;
   }
 
