@@ -1,2 +1,0 @@
-Insert into IAPType values (4, 'Auto')
-GO

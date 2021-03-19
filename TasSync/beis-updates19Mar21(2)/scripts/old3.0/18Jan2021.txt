@@ -1,9 +1,0 @@
-Insert into NAORecStatusType (ID, Title) values (4, 'Archived (exclude from reports)')
-GO
-
-Update [NAOType] Set Title='NAO Report' where ID=1
-GO
-
-Alter table IAPAction
-Add ActionLinks nvarchar(max)
-GO

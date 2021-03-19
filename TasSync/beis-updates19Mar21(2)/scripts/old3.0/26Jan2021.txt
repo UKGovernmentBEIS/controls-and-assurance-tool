@@ -1,9 +1,0 @@
-Alter table IAPType
-Add InternalDescription nvarchar(max)
-GO
-
-Insert into IAPType values (5, 'Auto', 'NAO/PAC Tracker')
-GO
-
-Update IAPType set InternalDescription = 'GIAA Actions' where ID=4
-GO

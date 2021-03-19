@@ -1,4 +1,0 @@
-  Alter table NAOPublication
-  Add IsArchive bit null;
-  Go
-  Update NAOPublication Set IsArchive='0'

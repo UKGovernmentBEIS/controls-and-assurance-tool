@@ -1,5 +1,0 @@
-Insert into PermissionType (ID, Title) values (11, 'MA Super User')
-GO
-Insert into PermissionType (ID, Title) values (12, 'MAViewOtherActionOwners')
-
-GO

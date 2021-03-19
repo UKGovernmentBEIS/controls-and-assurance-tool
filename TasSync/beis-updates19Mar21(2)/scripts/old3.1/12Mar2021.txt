@@ -1,8 +1,0 @@
-Alter table CLWorker
-Add
-ITSystemRef nvarchar(1000),
-ITSystemNotes nvarchar(max),
-UKSBSRef nvarchar(1000),
-UKSBSNotes nvarchar(max)
-
-GO

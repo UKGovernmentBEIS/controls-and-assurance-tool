@@ -1,3 +1,0 @@
-Generate data only script for the Period table
-Then in the script change table name to GoPeriod on all places
-And then run script to add data to the GoPeriod
