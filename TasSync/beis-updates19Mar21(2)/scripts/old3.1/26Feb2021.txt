@@ -1,0 +1,35 @@
+
+
+Alter table CLCaseEvidence
+Add AttachmentType nvarchar(50) null
+GO
+
+Alter table CLCaseEvidence
+Add RecordCreated bit null
+GO
+
+Update CLCaseEvidence Set AttachmentType='Link' where IsLink=1
+GO
+
+Update CLCaseEvidence Set AttachmentType='PDF' where IsLink=0 and Title is not null
+GO
+
+Update CLCaseEvidence Set AttachmentType='PDF' where IsLink is null and Title is not null
+GO
+
+delete from CLCaseEvidence where Title is null
+GO
+
+Update CLCaseEvidence Set RecordCreated = 1
+GO
+
+ALTER TABLE CLCaseEvidence
+DROP COLUMN IsLink
+GO
+
+ALTER TABLE CLCaseEvidence
+DROP COLUMN AdditionalNotes
+GO
+
+
+

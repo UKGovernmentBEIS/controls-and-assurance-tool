@@ -1,0 +1,49 @@
+alter table DefElement
+add SectionAQ1ResponseDetails nvarchar(500) null
+
+GO
+
+alter table DefElement
+add SectionAQ2ResponseDetails nvarchar(500) null
+
+GO
+
+alter table DefElement
+add SectionAQ3ResponseDetails nvarchar(500) null
+
+GO
+
+alter table DefElement
+add SectionAQ4ResponseDetails nvarchar(500) null
+
+GO
+
+alter table DefElement
+add SectionAQ5ResponseDetails nvarchar(500) null
+
+GO
+
+alter table DefElement
+add SectionAQ6ResponseDetails nvarchar(500) null
+
+GO
+
+alter table DefElement
+add SectionAQ7ResponseDetails nvarchar(500) null
+
+GO
+
+alter table DefElement
+add SectionAQ8ResponseDetails nvarchar(500) null
+
+GO
+
+alter table DefElement
+add SectionAQ9ResponseDetails nvarchar(500) null
+
+GO
+
+alter table DefElement
+add SectionAQ10ResponseDetails nvarchar(500) null
+
+GO

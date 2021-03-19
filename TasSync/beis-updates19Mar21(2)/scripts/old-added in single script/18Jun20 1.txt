@@ -1,0 +1,247 @@
+
+GO
+/****** Object:  Table [dbo].[NAODefForm]    Script Date: 6/18/2020 5:21:53 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[NAODefForm](
+	[ID] [int] NOT NULL,
+	[Title] [nvarchar](1000) NULL,
+	[Details] [nvarchar](max) NULL,
+ CONSTRAINT [PK_NAODefForm] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[NAOPeriod]    Script Date: 6/18/2020 5:21:53 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[NAOPeriod](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Title] [nvarchar](100) NOT NULL,
+	[PeriodStatus] [nvarchar](50) NULL,
+	[PeriodStartDate] [date] NULL,
+	[PeriodEndDate] [date] NULL,
+	[LastPeriodId] [int] NULL,
+ CONSTRAINT [PK_NAOPeriod] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[NAOPublication]    Script Date: 6/18/2020 5:21:53 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[NAOPublication](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Title] [nvarchar](2000) NULL,
+	[DirectorateId] [int] NULL,
+	[NAOTypeId] [int] NULL,
+	[Year] [nvarchar](50) NULL,
+	[PublicationLink] [nvarchar](2000) NULL,
+	[ContactDetails] [nvarchar](max) NULL,
+ CONSTRAINT [PK_NAOPublication] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[NAORecommendation]    Script Date: 6/18/2020 5:21:53 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[NAORecommendation](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Title] [nvarchar](2000) NULL,
+	[RecommendationDetails] [nvarchar](max) NULL,
+	[TargetDate] [nvarchar](50) NULL,
+	[NAOPublicationId] [int] NULL,
+	[NAORecStatusTypeId] [int] NULL,
+	[NAOUpdateStatusTypeId] [int] NULL,
+ CONSTRAINT [PK_NAORecommendation] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[NAORecStatusType]    Script Date: 6/18/2020 5:21:53 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[NAORecStatusType](
+	[ID] [int] NOT NULL,
+	[Title] [nvarchar](100) NULL,
+ CONSTRAINT [PK_NAOStatusType] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[NAOType]    Script Date: 6/18/2020 5:21:53 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[NAOType](
+	[ID] [int] NOT NULL,
+	[Title] [nvarchar](50) NULL,
+ CONSTRAINT [PK_NAOType] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[NAOUpdate]    Script Date: 6/18/2020 5:21:53 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[NAOUpdate](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Title] [nvarchar](50) NULL,
+	[TargetDate] [nvarchar](50) NULL,
+	[ActionsTaken] [nvarchar](max) NULL,
+	[NAOComments] [nvarchar](max) NULL,
+	[FurtherLinks] [nvarchar](2000) NULL,
+	[NAORecommendationId] [int] NULL,
+	[NAOPeriodId] [int] NULL,
+	[NAORecStatusTypeId] [int] NULL,
+	[NAOUpdateStatusTypeId] [int] NOT NULL,
+ CONSTRAINT [PK_NAOUpdate_1] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[NAOUpdateEvidence]    Script Date: 6/18/2020 5:21:53 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[NAOUpdateEvidence](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Title] [nvarchar](1000) NULL,
+	[IsLink] [bit] NULL,
+	[Details] [nvarchar](max) NULL,
+	[AdditionalNotes] [nvarchar](max) NULL,
+	[NAOUpdateId] [int] NULL,
+	[DateUploaded] [datetime] NULL,
+	[UploadedByUserId] [int] NULL,
+ CONSTRAINT [PK_NAOUpdateEvidence] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[NAOUpdateFeedback]    Script Date: 6/18/2020 5:21:53 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[NAOUpdateFeedback](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Title] [nvarchar](50) NULL,
+	[NAOUpdateId] [int] NULL,
+	[Comment] [nvarchar](max) NULL,
+	[CommentById] [int] NULL,
+	[CommentDate] [datetime] NULL,
+ CONSTRAINT [PK_NAOUpdateFeedback] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[NAOUpdateStatusType]    Script Date: 6/18/2020 5:21:53 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[NAOUpdateStatusType](
+	[ID] [int] NOT NULL,
+	[Title] [nvarchar](50) NULL,
+ CONSTRAINT [PK_NAOUpdateStatus] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Index [IX_NAOUpdate]    Script Date: 6/18/2020 5:21:53 PM ******/
+CREATE UNIQUE NONCLUSTERED INDEX [IX_NAOUpdate] ON [dbo].[NAOUpdate]
+(
+	[NAORecommendationId] ASC,
+	[NAOPeriodId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[NAOPublication]  WITH CHECK ADD  CONSTRAINT [FK_NAOPublication_Directorate] FOREIGN KEY([DirectorateId])
+REFERENCES [dbo].[Directorate] ([ID])
+GO
+ALTER TABLE [dbo].[NAOPublication] CHECK CONSTRAINT [FK_NAOPublication_Directorate]
+GO
+ALTER TABLE [dbo].[NAOPublication]  WITH CHECK ADD  CONSTRAINT [FK_NAOPublication_NAOType] FOREIGN KEY([NAOTypeId])
+REFERENCES [dbo].[NAOType] ([ID])
+GO
+ALTER TABLE [dbo].[NAOPublication] CHECK CONSTRAINT [FK_NAOPublication_NAOType]
+GO
+ALTER TABLE [dbo].[NAORecommendation]  WITH CHECK ADD  CONSTRAINT [FK_NAORecommendation_NAOPublication] FOREIGN KEY([NAOPublicationId])
+REFERENCES [dbo].[NAOPublication] ([ID])
+GO
+ALTER TABLE [dbo].[NAORecommendation] CHECK CONSTRAINT [FK_NAORecommendation_NAOPublication]
+GO
+ALTER TABLE [dbo].[NAORecommendation]  WITH CHECK ADD  CONSTRAINT [FK_NAORecommendation_NAORecStatusType] FOREIGN KEY([NAORecStatusTypeId])
+REFERENCES [dbo].[NAORecStatusType] ([ID])
+GO
+ALTER TABLE [dbo].[NAORecommendation] CHECK CONSTRAINT [FK_NAORecommendation_NAORecStatusType]
+GO
+ALTER TABLE [dbo].[NAORecommendation]  WITH CHECK ADD  CONSTRAINT [FK_NAORecommendation_NAOUpdateStatusType] FOREIGN KEY([NAOUpdateStatusTypeId])
+REFERENCES [dbo].[NAOUpdateStatusType] ([ID])
+GO
+ALTER TABLE [dbo].[NAORecommendation] CHECK CONSTRAINT [FK_NAORecommendation_NAOUpdateStatusType]
+GO
+ALTER TABLE [dbo].[NAOUpdate]  WITH CHECK ADD  CONSTRAINT [FK_NAOUpdate_NAOPeriod] FOREIGN KEY([NAOPeriodId])
+REFERENCES [dbo].[NAOPeriod] ([ID])
+GO
+ALTER TABLE [dbo].[NAOUpdate] CHECK CONSTRAINT [FK_NAOUpdate_NAOPeriod]
+GO
+ALTER TABLE [dbo].[NAOUpdate]  WITH CHECK ADD  CONSTRAINT [FK_NAOUpdate_NAORecommendation] FOREIGN KEY([NAORecommendationId])
+REFERENCES [dbo].[NAORecommendation] ([ID])
+GO
+ALTER TABLE [dbo].[NAOUpdate] CHECK CONSTRAINT [FK_NAOUpdate_NAORecommendation]
+GO
+ALTER TABLE [dbo].[NAOUpdate]  WITH CHECK ADD  CONSTRAINT [FK_NAOUpdate_NAORecStatusType] FOREIGN KEY([NAORecStatusTypeId])
+REFERENCES [dbo].[NAORecStatusType] ([ID])
+GO
+ALTER TABLE [dbo].[NAOUpdate] CHECK CONSTRAINT [FK_NAOUpdate_NAORecStatusType]
+GO
+ALTER TABLE [dbo].[NAOUpdate]  WITH CHECK ADD  CONSTRAINT [FK_NAOUpdate_NAOUpdateStatusType] FOREIGN KEY([NAOUpdateStatusTypeId])
+REFERENCES [dbo].[NAOUpdateStatusType] ([ID])
+GO
+ALTER TABLE [dbo].[NAOUpdate] CHECK CONSTRAINT [FK_NAOUpdate_NAOUpdateStatusType]
+GO
+ALTER TABLE [dbo].[NAOUpdateEvidence]  WITH CHECK ADD  CONSTRAINT [FK_NAOUpdateEvidence_NAOUpdate] FOREIGN KEY([NAOUpdateId])
+REFERENCES [dbo].[NAOUpdate] ([ID])
+GO
+ALTER TABLE [dbo].[NAOUpdateEvidence] CHECK CONSTRAINT [FK_NAOUpdateEvidence_NAOUpdate]
+GO
+ALTER TABLE [dbo].[NAOUpdateEvidence]  WITH CHECK ADD  CONSTRAINT [FK_NAOUpdateEvidence_User] FOREIGN KEY([UploadedByUserId])
+REFERENCES [dbo].[User] ([ID])
+GO
+ALTER TABLE [dbo].[NAOUpdateEvidence] CHECK CONSTRAINT [FK_NAOUpdateEvidence_User]
+GO
+ALTER TABLE [dbo].[NAOUpdateFeedback]  WITH CHECK ADD  CONSTRAINT [FK_NAOUpdateFeedback_NAOUpdate] FOREIGN KEY([NAOUpdateId])
+REFERENCES [dbo].[NAOUpdate] ([ID])
+GO
+ALTER TABLE [dbo].[NAOUpdateFeedback] CHECK CONSTRAINT [FK_NAOUpdateFeedback_NAOUpdate]
+GO
+ALTER TABLE [dbo].[NAOUpdateFeedback]  WITH CHECK ADD  CONSTRAINT [FK_NAOUpdateFeedback_User] FOREIGN KEY([CommentById])
+REFERENCES [dbo].[User] ([ID])
+GO
+ALTER TABLE [dbo].[NAOUpdateFeedback] CHECK CONSTRAINT [FK_NAOUpdateFeedback_User]
+GO

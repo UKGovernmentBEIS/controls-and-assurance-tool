@@ -1,0 +1,1115 @@
+/****** Object:  Table [dbo].[AvailableExport]    Script Date: 11/10/2020 10:18:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[AvailableExport](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Title] [nvarchar](500) NULL,
+	[Module] [nvarchar](50) NULL,
+	[Parameters] [nvarchar](1000) NULL,
+	[CreatedOn] [datetime] NULL,
+	[CreatedBy] [nvarchar](500) NULL,
+	[OutputFileName] [nvarchar](4000) NULL,
+	[OutputFileStatus] [nvarchar](max) NULL,
+ CONSTRAINT [PK_AvailableExport] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[ExportDefination]    Script Date: 11/10/2020 10:18:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[ExportDefination](
+	[ID] [int] NOT NULL,
+	[Title] [nvarchar](500) NULL,
+	[Module] [nvarchar](50) NULL,
+	[Type] [nvarchar](50) NULL,
+	[Query] [nvarchar](max) NULL,
+ CONSTRAINT [PK_ExportDefination] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[GIAAActionOwner]    Script Date: 11/10/2020 10:18:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[GIAAActionOwner](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Title] [nvarchar](50) NULL,
+	[GIAARecommendationId] [int] NULL,
+	[UserId] [int] NULL,
+ CONSTRAINT [PK_GIAAActionOwner] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[GIAAActionPriority]    Script Date: 11/10/2020 10:18:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[GIAAActionPriority](
+	[ID] [int] NOT NULL,
+	[Title] [nvarchar](50) NULL,
+ CONSTRAINT [PK_GIAAActionPriority] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[GIAAActionStatusType]    Script Date: 11/10/2020 10:18:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[GIAAActionStatusType](
+	[ID] [int] NOT NULL,
+	[Title] [nvarchar](50) NULL,
+ CONSTRAINT [PK_GIAAActionStatusType] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[GIAAAssurance]    Script Date: 11/10/2020 10:18:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[GIAAAssurance](
+	[ID] [int] NOT NULL,
+	[Title] [nvarchar](100) NULL,
+ CONSTRAINT [PK_GIAAAssurance] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[GIAAAuditReport]    Script Date: 11/10/2020 10:18:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[GIAAAuditReport](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Title] [nvarchar](2000) NULL,
+	[NumberStr] [nvarchar](50) NULL,
+	[IssueDate] [datetime] NULL,
+	[AuditYear] [nvarchar](50) NULL,
+	[Link] [nvarchar](2000) NULL,
+	[GIAAAssuranceId] [int] NULL,
+	[IsArchive] [bit] NULL,
+ CONSTRAINT [PK_GIAAAuditReport] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[GIAAAuditReportDirectorate]    Script Date: 11/10/2020 10:18:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[GIAAAuditReportDirectorate](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Title] [nvarchar](50) NULL,
+	[GIAAAuditReportId] [int] NULL,
+	[DirectorateId] [int] NULL,
+ CONSTRAINT [PK_GIAAAuditReportDirectorate] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[GIAADefForm]    Script Date: 11/10/2020 10:18:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[GIAADefForm](
+	[ID] [int] NOT NULL,
+	[Title] [nvarchar](1000) NULL,
+	[Details] [nvarchar](max) NULL,
+ CONSTRAINT [PK_GIAADefForm] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[GIAAImport]    Script Date: 11/10/2020 10:18:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[GIAAImport](
+	[ID] [int] NOT NULL,
+	[Title] [nvarchar](50) NULL,
+	[XMLContents] [nvarchar](max) NULL,
+	[Status] [nvarchar](50) NULL,
+	[LogDetails] [nvarchar](max) NULL,
+	[LastImportStatus] [nvarchar](1000) NULL,
+	[LastImportDate] [datetime] NULL,
+	[LastImportById] [int] NULL,
+ CONSTRAINT [PK_GIAAImport] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[GIAAPeriod]    Script Date: 11/10/2020 10:18:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[GIAAPeriod](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Title] [nvarchar](100) NOT NULL,
+	[PeriodStatus] [nvarchar](50) NULL,
+	[PeriodStartDate] [date] NULL,
+	[PeriodEndDate] [date] NULL,
+	[LastPeriodId] [int] NULL,
+ CONSTRAINT [GIAA_NAOPeriod] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[GIAARecommendation]    Script Date: 11/10/2020 10:18:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[GIAARecommendation](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Title] [nvarchar](2000) NULL,
+	[RecommendationDetails] [nvarchar](max) NULL,
+	[TargetDate] [datetime] NULL,
+	[GIAAActionPriorityId] [int] NULL,
+	[GIAAActionStatusTypeId] [int] NULL,
+	[GIAAAuditReportId] [int] NULL,
+	[RevisedDate] [datetime] NULL,
+	[OriginalImportedActionOwners] [nvarchar](2000) NULL,
+	[DisplayedImportedActionOwners] [nvarchar](2000) NULL,
+	[UpdateStatus] [nvarchar](50) NULL,
+ CONSTRAINT [PK_GIAARecommendation] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[GIAAUpdate]    Script Date: 11/10/2020 10:18:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[GIAAUpdate](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Title] [nvarchar](50) NULL,
+	[UpdateType] [nvarchar](50) NULL,
+	[UpdateDetails] [nvarchar](max) NULL,
+	[RevisedDate] [datetime] NULL,
+	[Link] [nvarchar](2000) NULL,
+	[EvFileName] [nvarchar](1000) NULL,
+	[EvIsLink] [bit] NULL,
+	[EvAdditionalNotes] [nvarchar](max) NULL,
+	[GIAARecommendationId] [int] NULL,
+	[GIAAActionStatusTypeId] [int] NULL,
+	[UpdatedById] [int] NULL,
+	[UpdateDate] [datetime] NULL,
+	[UpdateChangeLog] [nvarchar](max) NULL,
+ CONSTRAINT [PK_GIAAUpdate_1] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[IAPAction]    Script Date: 11/10/2020 10:18:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[IAPAction](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Title] [nvarchar](2000) NULL,
+	[Details] [nvarchar](max) NULL,
+	[IAPPriorityId] [int] NULL,
+	[IAPStatusTypeId] [int] NULL,
+	[IAPTypeId] [int] NULL,
+	[CreatedById] [int] NULL,
+	[CreatedOn] [datetime] NULL,
+	[Attachment] [nvarchar](1000) NULL,
+	[IsLink] [bit] NULL,
+	[OriginalCompletionDate] [datetime] NULL,
+	[CompletionDate] [datetime] NULL,
+	[MonthlyUpdateRequired] [bit] NULL,
+	[MonthlyUpdateRequiredIfNotCompleted] [bit] NULL,
+	[IsArchive] [bit] NULL,
+ CONSTRAINT [PK_IAPUpdate] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[IAPActionDirectorate]    Script Date: 11/10/2020 10:18:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[IAPActionDirectorate](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Title] [nvarchar](50) NULL,
+	[IAPActionId] [int] NULL,
+	[DirectorateId] [int] NULL,
+ CONSTRAINT [PK_IAPActionDirectorate] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[IAPActionUpdate]    Script Date: 11/10/2020 10:18:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[IAPActionUpdate](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Title] [nvarchar](50) NULL,
+	[UpdateType] [nvarchar](50) NULL,
+	[UpdateDetails] [nvarchar](max) NULL,
+	[RevisedDate] [datetime] NULL,
+	[EvFileName] [nvarchar](2000) NULL,
+	[EvIsLink] [bit] NULL,
+	[IAPActionId] [int] NULL,
+	[IAPStatusTypeId] [int] NULL,
+	[UpdatedById] [int] NULL,
+	[UpdateDate] [datetime] NULL,
+ CONSTRAINT [PK_IAPActionUpdate] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[IAPAssignment]    Script Date: 11/10/2020 10:18:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[IAPAssignment](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Title] [nvarchar](50) NULL,
+	[IAPActionId] [int] NULL,
+	[UserId] [int] NULL,
+ CONSTRAINT [PK_IAPAssignment] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[IAPDefForm]    Script Date: 11/10/2020 10:18:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[IAPDefForm](
+	[ID] [int] NOT NULL,
+	[Title] [nvarchar](1000) NULL,
+	[Details] [nvarchar](max) NULL,
+ CONSTRAINT [PK_IAPDefForm] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[IAPPriority]    Script Date: 11/10/2020 10:18:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[IAPPriority](
+	[ID] [int] NOT NULL,
+	[Title] [nvarchar](50) NULL,
+ CONSTRAINT [PK_IAPPriority] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[IAPStatusType]    Script Date: 11/10/2020 10:18:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[IAPStatusType](
+	[ID] [int] NOT NULL,
+	[Title] [nvarchar](50) NULL,
+ CONSTRAINT [PK_IAPStatusType] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[IAPType]    Script Date: 11/10/2020 10:18:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[IAPType](
+	[ID] [int] NOT NULL,
+	[Title] [nvarchar](50) NULL,
+ CONSTRAINT [PK_IAPType] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[NAOAssignment]    Script Date: 11/10/2020 10:18:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[NAOAssignment](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Title] [nvarchar](50) NULL,
+	[NAORecommendationId] [int] NULL,
+	[UserId] [int] NULL,
+ CONSTRAINT [PK_NAOAssignment] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[NAODefForm]    Script Date: 11/10/2020 10:18:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[NAODefForm](
+	[ID] [int] NOT NULL,
+	[Title] [nvarchar](1000) NULL,
+	[Details] [nvarchar](max) NULL,
+ CONSTRAINT [PK_NAODefForm] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[NAOOutput]    Script Date: 11/10/2020 10:18:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[NAOOutput](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Title] [nvarchar](50) NULL,
+	[NAOPeriodId] [int] NULL,
+	[DirectorateGroupId] [int] NULL,
+	[PdfStatus] [nvarchar](max) NULL,
+	[PdfDate] [datetime] NULL,
+	[PdfName] [nvarchar](4000) NULL,
+	[PeriodUpdateStatus] [nvarchar](50) NULL,
+ CONSTRAINT [PK_NAOOutput] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[NAOPeriod]    Script Date: 11/10/2020 10:18:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[NAOPeriod](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Title] [nvarchar](100) NOT NULL,
+	[PeriodStatus] [nvarchar](50) NULL,
+	[PeriodStartDate] [date] NULL,
+	[PeriodEndDate] [date] NULL,
+	[LastPeriodId] [int] NULL,
+ CONSTRAINT [PK_NAOPeriod] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[NAOPublication]    Script Date: 11/10/2020 10:18:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[NAOPublication](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Title] [nvarchar](2000) NULL,
+	[NAOTypeId] [int] NULL,
+	[Year] [nvarchar](50) NULL,
+	[PublicationLink] [nvarchar](2000) NULL,
+	[ContactDetails] [nvarchar](max) NULL,
+	[PublicationSummary] [nvarchar](max) NULL,
+	[IsArchive] [bit] NULL,
+ CONSTRAINT [PK_NAOPublication] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[NAOPublicationDirectorate]    Script Date: 11/10/2020 10:18:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[NAOPublicationDirectorate](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Title] [nvarchar](50) NULL,
+	[NAOPublicationId] [int] NULL,
+	[DirectorateId] [int] NULL,
+ CONSTRAINT [PK_NAOPublicationDirectorate] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[NAORecommendation]    Script Date: 11/10/2020 10:18:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[NAORecommendation](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Title] [nvarchar](2000) NULL,
+	[RecommendationDetails] [nvarchar](max) NULL,
+	[NAOPublicationId] [int] NULL,
+	[NAOUpdateStatusTypeId] [int] NULL,
+	[Conclusion] [nvarchar](max) NULL,
+	[OriginalTargetDate] [nvarchar](100) NULL,
+ CONSTRAINT [PK_NAORecommendation] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[NAORecStatusType]    Script Date: 11/10/2020 10:18:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[NAORecStatusType](
+	[ID] [int] NOT NULL,
+	[Title] [nvarchar](100) NULL,
+ CONSTRAINT [PK_NAOStatusType] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[NAOType]    Script Date: 11/10/2020 10:18:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[NAOType](
+	[ID] [int] NOT NULL,
+	[Title] [nvarchar](50) NULL,
+ CONSTRAINT [PK_NAOType] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[NAOUpdate]    Script Date: 11/10/2020 10:18:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[NAOUpdate](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Title] [nvarchar](50) NULL,
+	[TargetDate] [nvarchar](50) NULL,
+	[ActionsTaken] [nvarchar](max) NULL,
+	[NAOComments] [nvarchar](max) NULL,
+	[FurtherLinks] [nvarchar](2000) NULL,
+	[NAORecommendationId] [int] NULL,
+	[NAOPeriodId] [int] NULL,
+	[NAORecStatusTypeId] [int] NULL,
+	[NAOUpdateStatusTypeId] [int] NOT NULL,
+	[UpdateChangeLog] [nvarchar](max) NULL,
+	[LastSavedInfo] [nvarchar](2000) NULL,
+	[ProvideUpdate] [nvarchar](10) NULL,
+	[ImplementationDate] [datetime] NULL,
+ CONSTRAINT [PK_NAOUpdate_1] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[NAOUpdateEvidence]    Script Date: 11/10/2020 10:18:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[NAOUpdateEvidence](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Title] [nvarchar](1000) NULL,
+	[IsLink] [bit] NULL,
+	[Details] [nvarchar](max) NULL,
+	[AdditionalNotes] [nvarchar](max) NULL,
+	[NAOUpdateId] [int] NULL,
+	[DateUploaded] [datetime] NULL,
+	[UploadedByUserId] [int] NULL,
+ CONSTRAINT [PK_NAOUpdateEvidence] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[NAOUpdateFeedback]    Script Date: 11/10/2020 10:18:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[NAOUpdateFeedback](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Title] [nvarchar](50) NULL,
+	[NAOUpdateId] [int] NULL,
+	[Comment] [nvarchar](max) NULL,
+	[CommentById] [int] NULL,
+	[CommentDate] [datetime] NULL,
+	[NAOUpdateFeedbackTypeId] [int] NULL,
+ CONSTRAINT [PK_NAOUpdateFeedback] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[NAOUpdateFeedbackType]    Script Date: 11/10/2020 10:18:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[NAOUpdateFeedbackType](
+	[ID] [int] NOT NULL,
+	[Title] [nvarchar](50) NULL,
+ CONSTRAINT [PK_NAOUpdateFeedbackType] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[NAOUpdateStatusType]    Script Date: 11/10/2020 10:18:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[NAOUpdateStatusType](
+	[ID] [int] NOT NULL,
+	[Title] [nvarchar](50) NULL,
+ CONSTRAINT [PK_NAOUpdateStatus] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Index [IX_NAOOutput]    Script Date: 11/10/2020 10:18:46 AM ******/
+CREATE UNIQUE NONCLUSTERED INDEX [IX_NAOOutput] ON [dbo].[NAOOutput]
+(
+	[NAOPeriodId] ASC,
+	[DirectorateGroupId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+/****** Object:  Index [IX_NAOUpdate]    Script Date: 11/10/2020 10:18:46 AM ******/
+CREATE UNIQUE NONCLUSTERED INDEX [IX_NAOUpdate] ON [dbo].[NAOUpdate]
+(
+	[NAORecommendationId] ASC,
+	[NAOPeriodId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[GIAAActionOwner]  WITH CHECK ADD  CONSTRAINT [FK_GIAAActionOwner_GIAARecommendation] FOREIGN KEY([GIAARecommendationId])
+REFERENCES [dbo].[GIAARecommendation] ([ID])
+GO
+ALTER TABLE [dbo].[GIAAActionOwner] CHECK CONSTRAINT [FK_GIAAActionOwner_GIAARecommendation]
+GO
+ALTER TABLE [dbo].[GIAAActionOwner]  WITH CHECK ADD  CONSTRAINT [FK_GIAAActionOwner_User] FOREIGN KEY([UserId])
+REFERENCES [dbo].[User] ([ID])
+GO
+ALTER TABLE [dbo].[GIAAActionOwner] CHECK CONSTRAINT [FK_GIAAActionOwner_User]
+GO
+ALTER TABLE [dbo].[GIAAAuditReport]  WITH CHECK ADD  CONSTRAINT [FK_GIAAAuditReport_GIAAAssurance] FOREIGN KEY([GIAAAssuranceId])
+REFERENCES [dbo].[GIAAAssurance] ([ID])
+GO
+ALTER TABLE [dbo].[GIAAAuditReport] CHECK CONSTRAINT [FK_GIAAAuditReport_GIAAAssurance]
+GO
+ALTER TABLE [dbo].[GIAAAuditReportDirectorate]  WITH CHECK ADD  CONSTRAINT [FK_GIAAAuditReportDirectorate_Directorate] FOREIGN KEY([DirectorateId])
+REFERENCES [dbo].[Directorate] ([ID])
+GO
+ALTER TABLE [dbo].[GIAAAuditReportDirectorate] CHECK CONSTRAINT [FK_GIAAAuditReportDirectorate_Directorate]
+GO
+ALTER TABLE [dbo].[GIAAAuditReportDirectorate]  WITH CHECK ADD  CONSTRAINT [FK_GIAAAuditReportDirectorate_GIAAAuditReport] FOREIGN KEY([GIAAAuditReportId])
+REFERENCES [dbo].[GIAAAuditReport] ([ID])
+GO
+ALTER TABLE [dbo].[GIAAAuditReportDirectorate] CHECK CONSTRAINT [FK_GIAAAuditReportDirectorate_GIAAAuditReport]
+GO
+ALTER TABLE [dbo].[GIAAImport]  WITH CHECK ADD  CONSTRAINT [FK_GIAAImport_User] FOREIGN KEY([LastImportById])
+REFERENCES [dbo].[User] ([ID])
+GO
+ALTER TABLE [dbo].[GIAAImport] CHECK CONSTRAINT [FK_GIAAImport_User]
+GO
+ALTER TABLE [dbo].[GIAARecommendation]  WITH CHECK ADD  CONSTRAINT [FK_GIAARecommendation_GIAAActionPriority] FOREIGN KEY([GIAAActionPriorityId])
+REFERENCES [dbo].[GIAAActionPriority] ([ID])
+GO
+ALTER TABLE [dbo].[GIAARecommendation] CHECK CONSTRAINT [FK_GIAARecommendation_GIAAActionPriority]
+GO
+ALTER TABLE [dbo].[GIAARecommendation]  WITH CHECK ADD  CONSTRAINT [FK_GIAARecommendation_GIAAActionStatusType] FOREIGN KEY([GIAAActionStatusTypeId])
+REFERENCES [dbo].[GIAAActionStatusType] ([ID])
+GO
+ALTER TABLE [dbo].[GIAARecommendation] CHECK CONSTRAINT [FK_GIAARecommendation_GIAAActionStatusType]
+GO
+ALTER TABLE [dbo].[GIAARecommendation]  WITH CHECK ADD  CONSTRAINT [FK_GIAARecommendation_GIAAAuditReport] FOREIGN KEY([GIAAAuditReportId])
+REFERENCES [dbo].[GIAAAuditReport] ([ID])
+GO
+ALTER TABLE [dbo].[GIAARecommendation] CHECK CONSTRAINT [FK_GIAARecommendation_GIAAAuditReport]
+GO
+ALTER TABLE [dbo].[GIAAUpdate]  WITH CHECK ADD  CONSTRAINT [FK_GIAAUpdate_GIAAActionStatusType] FOREIGN KEY([GIAAActionStatusTypeId])
+REFERENCES [dbo].[GIAAActionStatusType] ([ID])
+GO
+ALTER TABLE [dbo].[GIAAUpdate] CHECK CONSTRAINT [FK_GIAAUpdate_GIAAActionStatusType]
+GO
+ALTER TABLE [dbo].[GIAAUpdate]  WITH CHECK ADD  CONSTRAINT [FK_GIAAUpdate_GIAARecommendation] FOREIGN KEY([GIAARecommendationId])
+REFERENCES [dbo].[GIAARecommendation] ([ID])
+GO
+ALTER TABLE [dbo].[GIAAUpdate] CHECK CONSTRAINT [FK_GIAAUpdate_GIAARecommendation]
+GO
+ALTER TABLE [dbo].[GIAAUpdate]  WITH CHECK ADD  CONSTRAINT [FK_GIAAUpdate_User] FOREIGN KEY([UpdatedById])
+REFERENCES [dbo].[User] ([ID])
+GO
+ALTER TABLE [dbo].[GIAAUpdate] CHECK CONSTRAINT [FK_GIAAUpdate_User]
+GO
+ALTER TABLE [dbo].[IAPAction]  WITH CHECK ADD  CONSTRAINT [FK_IAPAction_IAPPriority] FOREIGN KEY([IAPPriorityId])
+REFERENCES [dbo].[IAPPriority] ([ID])
+GO
+ALTER TABLE [dbo].[IAPAction] CHECK CONSTRAINT [FK_IAPAction_IAPPriority]
+GO
+ALTER TABLE [dbo].[IAPAction]  WITH CHECK ADD  CONSTRAINT [FK_IAPAction_IAPStatusType] FOREIGN KEY([IAPStatusTypeId])
+REFERENCES [dbo].[IAPStatusType] ([ID])
+GO
+ALTER TABLE [dbo].[IAPAction] CHECK CONSTRAINT [FK_IAPAction_IAPStatusType]
+GO
+ALTER TABLE [dbo].[IAPAction]  WITH CHECK ADD  CONSTRAINT [FK_IAPAction_IAPType] FOREIGN KEY([IAPTypeId])
+REFERENCES [dbo].[IAPType] ([ID])
+GO
+ALTER TABLE [dbo].[IAPAction] CHECK CONSTRAINT [FK_IAPAction_IAPType]
+GO
+ALTER TABLE [dbo].[IAPAction]  WITH CHECK ADD  CONSTRAINT [FK_IAPAction_User] FOREIGN KEY([CreatedById])
+REFERENCES [dbo].[User] ([ID])
+GO
+ALTER TABLE [dbo].[IAPAction] CHECK CONSTRAINT [FK_IAPAction_User]
+GO
+ALTER TABLE [dbo].[IAPActionDirectorate]  WITH CHECK ADD  CONSTRAINT [FK_IAPActionDirectorate_Directorate] FOREIGN KEY([DirectorateId])
+REFERENCES [dbo].[Directorate] ([ID])
+GO
+ALTER TABLE [dbo].[IAPActionDirectorate] CHECK CONSTRAINT [FK_IAPActionDirectorate_Directorate]
+GO
+ALTER TABLE [dbo].[IAPActionDirectorate]  WITH CHECK ADD  CONSTRAINT [FK_IAPActionDirectorate_IAPAction] FOREIGN KEY([IAPActionId])
+REFERENCES [dbo].[IAPAction] ([ID])
+GO
+ALTER TABLE [dbo].[IAPActionDirectorate] CHECK CONSTRAINT [FK_IAPActionDirectorate_IAPAction]
+GO
+ALTER TABLE [dbo].[IAPActionUpdate]  WITH CHECK ADD  CONSTRAINT [FK_IAPActionUpdate_IAPAction] FOREIGN KEY([IAPActionId])
+REFERENCES [dbo].[IAPAction] ([ID])
+GO
+ALTER TABLE [dbo].[IAPActionUpdate] CHECK CONSTRAINT [FK_IAPActionUpdate_IAPAction]
+GO
+ALTER TABLE [dbo].[IAPActionUpdate]  WITH CHECK ADD  CONSTRAINT [FK_IAPActionUpdate_IAPStatusType] FOREIGN KEY([IAPStatusTypeId])
+REFERENCES [dbo].[IAPStatusType] ([ID])
+GO
+ALTER TABLE [dbo].[IAPActionUpdate] CHECK CONSTRAINT [FK_IAPActionUpdate_IAPStatusType]
+GO
+ALTER TABLE [dbo].[IAPActionUpdate]  WITH CHECK ADD  CONSTRAINT [FK_IAPActionUpdate_User] FOREIGN KEY([UpdatedById])
+REFERENCES [dbo].[User] ([ID])
+GO
+ALTER TABLE [dbo].[IAPActionUpdate] CHECK CONSTRAINT [FK_IAPActionUpdate_User]
+GO
+ALTER TABLE [dbo].[IAPAssignment]  WITH CHECK ADD  CONSTRAINT [FK_IAPAssignment_IAPAction] FOREIGN KEY([IAPActionId])
+REFERENCES [dbo].[IAPAction] ([ID])
+GO
+ALTER TABLE [dbo].[IAPAssignment] CHECK CONSTRAINT [FK_IAPAssignment_IAPAction]
+GO
+ALTER TABLE [dbo].[IAPAssignment]  WITH CHECK ADD  CONSTRAINT [FK_IAPAssignment_User] FOREIGN KEY([UserId])
+REFERENCES [dbo].[User] ([ID])
+GO
+ALTER TABLE [dbo].[IAPAssignment] CHECK CONSTRAINT [FK_IAPAssignment_User]
+GO
+ALTER TABLE [dbo].[NAOAssignment]  WITH CHECK ADD  CONSTRAINT [FK_NAOAssignment_NAORecommendation] FOREIGN KEY([NAORecommendationId])
+REFERENCES [dbo].[NAORecommendation] ([ID])
+GO
+ALTER TABLE [dbo].[NAOAssignment] CHECK CONSTRAINT [FK_NAOAssignment_NAORecommendation]
+GO
+ALTER TABLE [dbo].[NAOAssignment]  WITH CHECK ADD  CONSTRAINT [FK_NAOAssignment_User] FOREIGN KEY([UserId])
+REFERENCES [dbo].[User] ([ID])
+GO
+ALTER TABLE [dbo].[NAOAssignment] CHECK CONSTRAINT [FK_NAOAssignment_User]
+GO
+ALTER TABLE [dbo].[NAOOutput]  WITH CHECK ADD  CONSTRAINT [FK_NAOOutput_DirectorateGroup] FOREIGN KEY([DirectorateGroupId])
+REFERENCES [dbo].[DirectorateGroup] ([ID])
+GO
+ALTER TABLE [dbo].[NAOOutput] CHECK CONSTRAINT [FK_NAOOutput_DirectorateGroup]
+GO
+ALTER TABLE [dbo].[NAOOutput]  WITH CHECK ADD  CONSTRAINT [FK_NAOOutput_NAOPeriod] FOREIGN KEY([NAOPeriodId])
+REFERENCES [dbo].[NAOPeriod] ([ID])
+GO
+ALTER TABLE [dbo].[NAOOutput] CHECK CONSTRAINT [FK_NAOOutput_NAOPeriod]
+GO
+ALTER TABLE [dbo].[NAOPublication]  WITH CHECK ADD  CONSTRAINT [FK_NAOPublication_NAOType] FOREIGN KEY([NAOTypeId])
+REFERENCES [dbo].[NAOType] ([ID])
+GO
+ALTER TABLE [dbo].[NAOPublication] CHECK CONSTRAINT [FK_NAOPublication_NAOType]
+GO
+ALTER TABLE [dbo].[NAOPublicationDirectorate]  WITH CHECK ADD  CONSTRAINT [FK_NAOPublicationDirectorate_Directorate] FOREIGN KEY([DirectorateId])
+REFERENCES [dbo].[Directorate] ([ID])
+GO
+ALTER TABLE [dbo].[NAOPublicationDirectorate] CHECK CONSTRAINT [FK_NAOPublicationDirectorate_Directorate]
+GO
+ALTER TABLE [dbo].[NAOPublicationDirectorate]  WITH CHECK ADD  CONSTRAINT [FK_NAOPublicationDirectorate_NAOPublication] FOREIGN KEY([NAOPublicationId])
+REFERENCES [dbo].[NAOPublication] ([ID])
+GO
+ALTER TABLE [dbo].[NAOPublicationDirectorate] CHECK CONSTRAINT [FK_NAOPublicationDirectorate_NAOPublication]
+GO
+ALTER TABLE [dbo].[NAORecommendation]  WITH CHECK ADD  CONSTRAINT [FK_NAORecommendation_NAOPublication] FOREIGN KEY([NAOPublicationId])
+REFERENCES [dbo].[NAOPublication] ([ID])
+GO
+ALTER TABLE [dbo].[NAORecommendation] CHECK CONSTRAINT [FK_NAORecommendation_NAOPublication]
+GO
+ALTER TABLE [dbo].[NAORecommendation]  WITH CHECK ADD  CONSTRAINT [FK_NAORecommendation_NAOUpdateStatusType] FOREIGN KEY([NAOUpdateStatusTypeId])
+REFERENCES [dbo].[NAOUpdateStatusType] ([ID])
+GO
+ALTER TABLE [dbo].[NAORecommendation] CHECK CONSTRAINT [FK_NAORecommendation_NAOUpdateStatusType]
+GO
+ALTER TABLE [dbo].[NAOUpdate]  WITH CHECK ADD  CONSTRAINT [FK_NAOUpdate_NAOPeriod] FOREIGN KEY([NAOPeriodId])
+REFERENCES [dbo].[NAOPeriod] ([ID])
+GO
+ALTER TABLE [dbo].[NAOUpdate] CHECK CONSTRAINT [FK_NAOUpdate_NAOPeriod]
+GO
+ALTER TABLE [dbo].[NAOUpdate]  WITH CHECK ADD  CONSTRAINT [FK_NAOUpdate_NAORecommendation] FOREIGN KEY([NAORecommendationId])
+REFERENCES [dbo].[NAORecommendation] ([ID])
+GO
+ALTER TABLE [dbo].[NAOUpdate] CHECK CONSTRAINT [FK_NAOUpdate_NAORecommendation]
+GO
+ALTER TABLE [dbo].[NAOUpdate]  WITH CHECK ADD  CONSTRAINT [FK_NAOUpdate_NAORecStatusType] FOREIGN KEY([NAORecStatusTypeId])
+REFERENCES [dbo].[NAORecStatusType] ([ID])
+GO
+ALTER TABLE [dbo].[NAOUpdate] CHECK CONSTRAINT [FK_NAOUpdate_NAORecStatusType]
+GO
+ALTER TABLE [dbo].[NAOUpdate]  WITH CHECK ADD  CONSTRAINT [FK_NAOUpdate_NAOUpdateStatusType] FOREIGN KEY([NAOUpdateStatusTypeId])
+REFERENCES [dbo].[NAOUpdateStatusType] ([ID])
+GO
+ALTER TABLE [dbo].[NAOUpdate] CHECK CONSTRAINT [FK_NAOUpdate_NAOUpdateStatusType]
+GO
+ALTER TABLE [dbo].[NAOUpdateEvidence]  WITH CHECK ADD  CONSTRAINT [FK_NAOUpdateEvidence_NAOUpdate] FOREIGN KEY([NAOUpdateId])
+REFERENCES [dbo].[NAOUpdate] ([ID])
+GO
+ALTER TABLE [dbo].[NAOUpdateEvidence] CHECK CONSTRAINT [FK_NAOUpdateEvidence_NAOUpdate]
+GO
+ALTER TABLE [dbo].[NAOUpdateEvidence]  WITH CHECK ADD  CONSTRAINT [FK_NAOUpdateEvidence_User] FOREIGN KEY([UploadedByUserId])
+REFERENCES [dbo].[User] ([ID])
+GO
+ALTER TABLE [dbo].[NAOUpdateEvidence] CHECK CONSTRAINT [FK_NAOUpdateEvidence_User]
+GO
+ALTER TABLE [dbo].[NAOUpdateFeedback]  WITH CHECK ADD  CONSTRAINT [FK_NAOUpdateFeedback_NAOUpdate] FOREIGN KEY([NAOUpdateId])
+REFERENCES [dbo].[NAOUpdate] ([ID])
+GO
+ALTER TABLE [dbo].[NAOUpdateFeedback] CHECK CONSTRAINT [FK_NAOUpdateFeedback_NAOUpdate]
+GO
+ALTER TABLE [dbo].[NAOUpdateFeedback]  WITH CHECK ADD  CONSTRAINT [FK_NAOUpdateFeedback_NAOUpdateFeedbackType] FOREIGN KEY([NAOUpdateFeedbackTypeId])
+REFERENCES [dbo].[NAOUpdateFeedbackType] ([ID])
+GO
+ALTER TABLE [dbo].[NAOUpdateFeedback] CHECK CONSTRAINT [FK_NAOUpdateFeedback_NAOUpdateFeedbackType]
+GO
+ALTER TABLE [dbo].[NAOUpdateFeedback]  WITH CHECK ADD  CONSTRAINT [FK_NAOUpdateFeedback_User] FOREIGN KEY([CommentById])
+REFERENCES [dbo].[User] ([ID])
+GO
+ALTER TABLE [dbo].[NAOUpdateFeedback] CHECK CONSTRAINT [FK_NAOUpdateFeedback_User]
+GO
+/****** Object:  StoredProcedure [dbo].[SPDGAreaStat2]    Script Date: 11/10/2020 10:18:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[SPDGAreaStat2] @PeriodId int
+AS
+
+select T1.*,
+
+--T2.TotalTeams,
+T2.TotalElements,
+T2.TotalQuestions,
+'' as 'ControlsBar',
+'' as 'AssuranceBar'
+
+from
+(select DirectorateGroup.ID, DirectorateGroup.Title,
+ISNULL(SUM(CAST(ISNULL(Element.ResponseAEffectUnsatisfactory,0) AS INT)),0) as 'TotalAUnsatisfactory',
+ISNULL(SUM(CAST(ISNULL(Element.ResponseAEffectLimited,0) AS INT)),0) as 'TotalALimited',
+ISNULL(SUM(CAST(ISNULL(Element.ResponseAEffectModerate,0) AS INT)),0) as 'TotalAModerate',
+ISNULL(SUM(CAST(ISNULL(Element.ResponseAEffectSubstantial,0) AS INT)),0) as 'TotalASubstantial',
+ISNULL(SUM(CAST(ISNULL(Element.ResponseAEffectNotApplicable,0) AS INT)),0) as 'TotalANotApplicable',
+
+ISNULL(SUM(CAST(ISNULL(Element.ResponseB1EffectUnsatisfactory,0) AS INT)),0) as 'TotalB1Unsatisfactory',
+ISNULL(SUM(CAST(ISNULL(Element.ResponseB1EffectLimited,0) AS INT)),0) as 'TotalB1Limited',
+ISNULL(SUM(CAST(ISNULL(Element.ResponseB1EffectModerate,0) AS INT)),0) as 'TotalB1Moderate',
+ISNULL(SUM(CAST(ISNULL(Element.ResponseB1EffectSubstantial,0) AS INT)),0) as 'TotalB1Substantial',
+ISNULL(SUM(CAST(ISNULL(Element.ResponseB1EffectNotApplicable,0) AS INT)),0) as 'TotalB1NotApplicable'
+
+from DirectorateGroup
+LEFT JOIN Directorate ON DirectorateGroup.ID = Directorate.DirectorateGroupID
+LEFT JOIN Team ON Directorate.ID = Team.DirectorateId
+LEFT JOIN Form ON Team.ID = Form.TeamId
+LEFT JOIN Element ON Form.ID  = Element.FormId
+AND Form.PeriodId=@PeriodId
+
+Group By DirectorateGroup.ID, DirectorateGroup.Title) T1
+
+INNER JOIN
+
+(
+select DirectorateGroup.ID, DirectorateGroup.Title,
+Count(Team.ID) as 'TotalTeams',
+(Count(Team.ID) * (select Count(ID) from DefElement where PeriodId=@PeriodId) ) as 'TotalElements',
+(Count(Team.ID) * (select Sum(SectionANumQuestions) from DefElement where PeriodId=@PeriodId) ) as 'TotalQuestions'
+from DirectorateGroup
+LEFT JOIN Directorate ON DirectorateGroup.ID = Directorate.DirectorateGroupID
+LEFT JOIN Team ON Directorate.ID = Team.DirectorateId
+Group By DirectorateGroup.ID, DirectorateGroup.Title
+) T2
+ON T1.ID = T2.ID
+GO
+/****** Object:  StoredProcedure [dbo].[SPDirectorateStat2]    Script Date: 11/10/2020 10:18:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+create PROCEDURE [dbo].[SPDirectorateStat2] @PeriodId int
+AS
+
+
+select  DirectorateGroup.Title AS DGTitle, T1.*, 
+
+
+--T2.TotalTeams,
+T2.TotalElements,
+T2.TotalQuestions,
+'' as 'ControlsBar',
+'' as 'AssuranceBar'
+
+from
+(select Directorate.ID, Directorate.Title, Directorate.DirectorateGroupID, 
+ISNULL(SUM(CAST(ISNULL(Element.ResponseAEffectUnsatisfactory,0) AS INT)),0) as 'TotalAUnsatisfactory',
+ISNULL(SUM(CAST(ISNULL(Element.ResponseAEffectLimited,0) AS INT)),0) as 'TotalALimited',
+ISNULL(SUM(CAST(ISNULL(Element.ResponseAEffectModerate,0) AS INT)),0) as 'TotalAModerate',
+ISNULL(SUM(CAST(ISNULL(Element.ResponseAEffectSubstantial,0) AS INT)),0) as 'TotalASubstantial',
+ISNULL(SUM(CAST(ISNULL(Element.ResponseAEffectNotApplicable,0) AS INT)),0) as 'TotalANotApplicable',
+
+ISNULL(SUM(CAST(ISNULL(Element.ResponseB1EffectUnsatisfactory,0) AS INT)),0) as 'TotalB1Unsatisfactory',
+ISNULL(SUM(CAST(ISNULL(Element.ResponseB1EffectLimited,0) AS INT)),0) as 'TotalB1Limited',
+ISNULL(SUM(CAST(ISNULL(Element.ResponseB1EffectModerate,0) AS INT)),0) as 'TotalB1Moderate',
+ISNULL(SUM(CAST(ISNULL(Element.ResponseB1EffectSubstantial,0) AS INT)),0) as 'TotalB1Substantial',
+ISNULL(SUM(CAST(ISNULL(Element.ResponseB1EffectNotApplicable,0) AS INT)),0) as 'TotalB1NotApplicable'
+
+from Directorate
+LEFT JOIN Team ON Directorate.ID = Team.DirectorateId
+LEFT JOIN Form ON Team.ID = Form.TeamId
+LEFT JOIN Element ON Form.ID  = Element.FormId
+AND Form.PeriodId=@PeriodId
+Group By Directorate.ID, Directorate.Title, Directorate.DirectorateGroupID) T1
+
+INNER JOIN (select Directorate.ID, Directorate.Title,
+Count(Team.ID) as 'TotalTeams',
+(Count(Team.ID) * (select Count(ID) from DefElement where PeriodId=@PeriodId) ) as 'TotalElements',
+(Count(Team.ID) * (select Sum(SectionANumQuestions) from DefElement where PeriodId=@PeriodId) ) as 'TotalQuestions'
+
+from Directorate
+
+
+LEFT JOIN Team ON Directorate.ID = Team.DirectorateId
+Group By Directorate.ID, Directorate.Title) T2
+ON T1.ID = T2.ID
+
+JOIN DirectorateGroup ON T1.DirectorateGroupID = DirectorateGroup.ID
+GO
+/****** Object:  StoredProcedure [dbo].[SPDivisionStat2]    Script Date: 11/10/2020 10:18:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[SPDivisionStat2] @PeriodId int
+AS
+
+
+-- NOTE: We started calling the entity Team and it was changed to Division, so the 2 terms are interchangable.
+-- -----------------------------------------------------------------------------------------------------------
+
+select  DirectorateGroup.Title AS DGTitle, Directorate.Title AS DirTitle, T1.*, 
+
+
+--T2.TotalTeams,
+T2.TotalElements,
+T2.TotalQuestions,
+'' as 'ControlsBar',
+'' as 'AssuranceBar'
+
+from
+(select Team.ID, Team.Title, Team.DirectorateID, 
+ISNULL(SUM(CAST(ISNULL(Element.ResponseAEffectUnsatisfactory,0) AS INT)),0) as 'TotalAUnsatisfactory',
+ISNULL(SUM(CAST(ISNULL(Element.ResponseAEffectLimited,0) AS INT)),0) as 'TotalALimited',
+ISNULL(SUM(CAST(ISNULL(Element.ResponseAEffectModerate,0) AS INT)),0) as 'TotalAModerate',
+ISNULL(SUM(CAST(ISNULL(Element.ResponseAEffectSubstantial,0) AS INT)),0) as 'TotalASubstantial',
+ISNULL(SUM(CAST(ISNULL(Element.ResponseAEffectNotApplicable,0) AS INT)),0) as 'TotalANotApplicable',
+
+ISNULL(SUM(CAST(ISNULL(Element.ResponseB1EffectUnsatisfactory,0) AS INT)),0) as 'TotalB1Unsatisfactory',
+ISNULL(SUM(CAST(ISNULL(Element.ResponseB1EffectLimited,0) AS INT)),0) as 'TotalB1Limited',
+ISNULL(SUM(CAST(ISNULL(Element.ResponseB1EffectModerate,0) AS INT)),0) as 'TotalB1Moderate',
+ISNULL(SUM(CAST(ISNULL(Element.ResponseB1EffectSubstantial,0) AS INT)),0) as 'TotalB1Substantial',
+ISNULL(SUM(CAST(ISNULL(Element.ResponseB1EffectNotApplicable,0) AS INT)),0) as 'TotalB1NotApplicable'
+
+from Team
+
+LEFT JOIN Form ON Team.ID = Form.TeamId
+LEFT JOIN Element ON Form.ID  = Element.FormId
+AND Form.PeriodId=@PeriodId
+Group By Team.ID, Team.Title, Team.DirectorateID) T1
+
+INNER JOIN (select Team.ID, Team.Title,
+Count(Team.ID) as 'TotalTeams',
+(Count(Team.ID) * (select Count(ID) from DefElement where PeriodId=@PeriodId) ) as 'TotalElements',
+(Count(Team.ID) * (select Sum(SectionANumQuestions) from DefElement where PeriodId=@PeriodId) ) as 'TotalQuestions'
+
+from Team
+
+--LEFT JOIN Team ON Directorate.ID = Team.DirectorateId
+Group By Team.ID, Team.Title) T2
+ON T1.ID = T2.ID
+
+JOIN Directorate ON T1.DirectorateID = Directorate.ID
+JOIN DirectorateGroup ON Directorate.DirectorateGroupID = DirectorateGroup.ID
+GO
+
+
+
+
+
+
+
+
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+alter table DefElement
+add SectionAQ1ResponseDetails nvarchar(500) null
+
+GO
+
+alter table DefElement
+add SectionAQ2ResponseDetails nvarchar(500) null
+
+GO
+
+alter table DefElement
+add SectionAQ3ResponseDetails nvarchar(500) null
+
+GO
+
+alter table DefElement
+add SectionAQ4ResponseDetails nvarchar(500) null
+
+GO
+
+alter table DefElement
+add SectionAQ5ResponseDetails nvarchar(500) null
+
+GO
+
+alter table DefElement
+add SectionAQ6ResponseDetails nvarchar(500) null
+
+GO
+
+alter table DefElement
+add SectionAQ7ResponseDetails nvarchar(500) null
+
+GO
+
+alter table DefElement
+add SectionAQ8ResponseDetails nvarchar(500) null
+
+GO
+
+alter table DefElement
+add SectionAQ9ResponseDetails nvarchar(500) null
+
+GO
+
+alter table DefElement
+add SectionAQ10ResponseDetails nvarchar(500) null
+
+GO
+
+
+
+
+ALTER TABLE Element
+ALTER Column ResponseAEffectUnsatisfactory int;
+
+GO
+
+ALTER TABLE Element
+ALTER Column ResponseAEffectLimited int;
+
+GO
+
+ALTER TABLE Element
+ALTER Column ResponseAEffectModerate int;
+
+GO
+
+ALTER TABLE Element
+ALTER Column ResponseAEffectSubstantial int;
+
+GO
+
+ALTER TABLE Element
+ALTER Column ResponseAEffectNotApplicable int;
+
+GO
+
+Alter table [Period] Add SystemFlag nvarchar(50);
+GO
+
+
+
+
+
+
+/****** Object:  Table [dbo].[GoPeriod]    Script Date: 9/24/2020 12:20:34 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[GoPeriod](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Title] [nvarchar](100) NOT NULL,
+	[PeriodStatus] [nvarchar](50) NULL,
+	[PeriodStartDate] [date] NULL,
+	[PeriodEndDate] [date] NULL,
+	[LastPeriodId] [int] NULL,
+ CONSTRAINT [PK_GoPeriod] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO

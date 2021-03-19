@@ -1,0 +1,3 @@
+Alter table EmailQueue
+Add EmailToUserId int
+GO

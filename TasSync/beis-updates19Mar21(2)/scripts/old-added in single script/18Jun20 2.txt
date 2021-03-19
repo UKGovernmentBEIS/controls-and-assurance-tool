@@ -1,0 +1,32 @@
+USE [ControlAssurance]
+GO
+INSERT [dbo].[NAODefForm] ([ID], [Title], [Details]) VALUES (1, N'Title here...', N'Details are here....')
+GO
+SET IDENTITY_INSERT [dbo].[NAOPeriod] ON 
+GO
+INSERT [dbo].[NAOPeriod] ([ID], [Title], [PeriodStatus], [PeriodStartDate], [PeriodEndDate], [LastPeriodId]) VALUES (1, N'Q3..Q4 2019', N'Archived Period', CAST(N'2019-07-01' AS Date), CAST(N'2019-07-31' AS Date), NULL)
+GO
+INSERT [dbo].[NAOPeriod] ([ID], [Title], [PeriodStatus], [PeriodStartDate], [PeriodEndDate], [LastPeriodId]) VALUES (2, N'Q1..Q2 2020', N'Current Period', CAST(N'2020-01-01' AS Date), CAST(N'2020-04-01' AS Date), 1)
+GO
+SET IDENTITY_INSERT [dbo].[NAOPeriod] OFF
+GO
+INSERT [dbo].[NAORecStatusType] ([ID], [Title]) VALUES (1, N'Outstanding')
+GO
+INSERT [dbo].[NAORecStatusType] ([ID], [Title]) VALUES (2, N'Implemented')
+GO
+INSERT [dbo].[NAOType] ([ID], [Title]) VALUES (1, N'NAO VfM Report')
+GO
+INSERT [dbo].[NAOType] ([ID], [Title]) VALUES (2, N'PAC Report')
+GO
+INSERT [dbo].[NAOUpdateStatusType] ([ID], [Title]) VALUES (1, N'NotStarted')
+GO
+INSERT [dbo].[NAOUpdateStatusType] ([ID], [Title]) VALUES (2, N'InProgress')
+GO
+INSERT [dbo].[NAOUpdateStatusType] ([ID], [Title]) VALUES (3, N'Updated')
+GO
+INSERT [dbo].[NAOUpdateStatusType] ([ID], [Title]) VALUES (4, N'NotRequired')
+GO
+INSERT [dbo].[NAOUpdateStatusType] ([ID], [Title]) VALUES (5, N'Reviewed')
+GO
+INSERT [dbo].[NAOUpdateStatusType] ([ID], [Title]) VALUES (6, N'Completed')
+GO

@@ -1,0 +1,147 @@
+DROP table IAPAssignment
+GO
+DROP table IAPUpdate
+GO
+
+
+
+
+
+
+/****** Object:  Table [dbo].[IAPAction]    Script Date: 11/5/2020 1:04:30 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[IAPAction](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Title] [nvarchar](2000) NULL,
+	[Details] [nvarchar](max) NULL,
+	[IAPPriorityId] [int] NULL,
+	[IAPStatusTypeId] [int] NULL,
+	[IAPTypeId] [int] NULL,
+	[CreatedById] [int] NULL,
+	[CreatedOn] [datetime] NULL,
+	[Attachment] [nvarchar](1000) NULL,
+	[IsLink] [bit] NULL,
+	[OriginalCompletionDate] [datetime] NULL,
+	[CompletionDate] [datetime] NULL,
+	[MonthlyUpdateRequired] [bit] NULL,
+	[MonthlyUpdateRequiredIfNotCompleted] [bit] NULL,
+	[IsArchive] [bit] NULL,
+ CONSTRAINT [PK_IAPUpdate] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[IAPActionDirectorate]    Script Date: 11/5/2020 1:04:30 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[IAPActionDirectorate](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Title] [nvarchar](50) NULL,
+	[IAPActionId] [int] NULL,
+	[DirectorateId] [int] NULL,
+ CONSTRAINT [PK_IAPActionDirectorate] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[IAPActionUpdate]    Script Date: 11/5/2020 1:04:30 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[IAPActionUpdate](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Title] [nvarchar](50) NULL,
+	[UpdateType] [nvarchar](50) NULL,
+	[UpdateDetails] [nvarchar](max) NULL,
+	[RevisedDate] [datetime] NULL,
+	[EvFileName] [nvarchar](2000) NULL,
+	[EvIsLink] [bit] NULL,
+	[IAPActionId] [int] NULL,
+	[IAPStatusTypeId] [int] NULL,
+	[UpdatedById] [int] NULL,
+	[UpdateDate] [datetime] NULL,
+ CONSTRAINT [PK_IAPActionUpdate] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[IAPAssignment]    Script Date: 11/5/2020 1:04:30 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[IAPAssignment](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Title] [nvarchar](50) NULL,
+	[IAPActionId] [int] NULL,
+	[UserId] [int] NULL,
+ CONSTRAINT [PK_IAPAssignment] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[IAPAction]  WITH CHECK ADD  CONSTRAINT [FK_IAPAction_IAPPriority] FOREIGN KEY([IAPPriorityId])
+REFERENCES [dbo].[IAPPriority] ([ID])
+GO
+ALTER TABLE [dbo].[IAPAction] CHECK CONSTRAINT [FK_IAPAction_IAPPriority]
+GO
+ALTER TABLE [dbo].[IAPAction]  WITH CHECK ADD  CONSTRAINT [FK_IAPAction_IAPStatusType] FOREIGN KEY([IAPStatusTypeId])
+REFERENCES [dbo].[IAPStatusType] ([ID])
+GO
+ALTER TABLE [dbo].[IAPAction] CHECK CONSTRAINT [FK_IAPAction_IAPStatusType]
+GO
+ALTER TABLE [dbo].[IAPAction]  WITH CHECK ADD  CONSTRAINT [FK_IAPAction_IAPType] FOREIGN KEY([IAPTypeId])
+REFERENCES [dbo].[IAPType] ([ID])
+GO
+ALTER TABLE [dbo].[IAPAction] CHECK CONSTRAINT [FK_IAPAction_IAPType]
+GO
+ALTER TABLE [dbo].[IAPAction]  WITH CHECK ADD  CONSTRAINT [FK_IAPAction_User] FOREIGN KEY([CreatedById])
+REFERENCES [dbo].[User] ([ID])
+GO
+ALTER TABLE [dbo].[IAPAction] CHECK CONSTRAINT [FK_IAPAction_User]
+GO
+ALTER TABLE [dbo].[IAPActionDirectorate]  WITH CHECK ADD  CONSTRAINT [FK_IAPActionDirectorate_Directorate] FOREIGN KEY([DirectorateId])
+REFERENCES [dbo].[Directorate] ([ID])
+GO
+ALTER TABLE [dbo].[IAPActionDirectorate] CHECK CONSTRAINT [FK_IAPActionDirectorate_Directorate]
+GO
+ALTER TABLE [dbo].[IAPActionDirectorate]  WITH CHECK ADD  CONSTRAINT [FK_IAPActionDirectorate_IAPAction] FOREIGN KEY([IAPActionId])
+REFERENCES [dbo].[IAPAction] ([ID])
+GO
+ALTER TABLE [dbo].[IAPActionDirectorate] CHECK CONSTRAINT [FK_IAPActionDirectorate_IAPAction]
+GO
+ALTER TABLE [dbo].[IAPActionUpdate]  WITH CHECK ADD  CONSTRAINT [FK_IAPActionUpdate_IAPAction] FOREIGN KEY([IAPActionId])
+REFERENCES [dbo].[IAPAction] ([ID])
+GO
+ALTER TABLE [dbo].[IAPActionUpdate] CHECK CONSTRAINT [FK_IAPActionUpdate_IAPAction]
+GO
+ALTER TABLE [dbo].[IAPActionUpdate]  WITH CHECK ADD  CONSTRAINT [FK_IAPActionUpdate_IAPStatusType] FOREIGN KEY([IAPStatusTypeId])
+REFERENCES [dbo].[IAPStatusType] ([ID])
+GO
+ALTER TABLE [dbo].[IAPActionUpdate] CHECK CONSTRAINT [FK_IAPActionUpdate_IAPStatusType]
+GO
+ALTER TABLE [dbo].[IAPActionUpdate]  WITH CHECK ADD  CONSTRAINT [FK_IAPActionUpdate_User] FOREIGN KEY([UpdatedById])
+REFERENCES [dbo].[User] ([ID])
+GO
+ALTER TABLE [dbo].[IAPActionUpdate] CHECK CONSTRAINT [FK_IAPActionUpdate_User]
+GO
+ALTER TABLE [dbo].[IAPAssignment]  WITH CHECK ADD  CONSTRAINT [FK_IAPAssignment_IAPAction] FOREIGN KEY([IAPActionId])
+REFERENCES [dbo].[IAPAction] ([ID])
+GO
+ALTER TABLE [dbo].[IAPAssignment] CHECK CONSTRAINT [FK_IAPAssignment_IAPAction]
+GO
+ALTER TABLE [dbo].[IAPAssignment]  WITH CHECK ADD  CONSTRAINT [FK_IAPAssignment_User] FOREIGN KEY([UserId])
+REFERENCES [dbo].[User] ([ID])
+GO
+ALTER TABLE [dbo].[IAPAssignment] CHECK CONSTRAINT [FK_IAPAssignment_User]
+GO

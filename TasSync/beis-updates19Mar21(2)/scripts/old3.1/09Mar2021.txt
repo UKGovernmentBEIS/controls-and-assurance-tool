@@ -1,0 +1,26 @@
+Alter table CLWorker
+Add
+LeStartDate datetime,
+LeContractorPhone nvarchar(200),
+LeContractorEmail nvarchar(1000),
+LeContractorHomeAddress nvarchar(1000),
+LeContractorPostCode nvarchar(50),
+
+LeContractorDetailsCheckedById int,
+LeContractorDetailsCheckedOn datetime,
+LeITCheckedById int,
+LeITCheckedOn datetime,
+LeUKSBSCheckedById int,
+LeUKSBSCheckedOn date,
+LePassCheckedById int,
+LePassCheckedOn datetime
+
+GO
+
+
+Alter table CLDefForm
+Add LeavingStageFormText nvarchar(max)
+GO
+
+Update CLDefForm set LeavingStageFormText='Text for the Leaving stage. Text for the Leaving stage.<br/><br/>Text for the Leaving stage.'
+GO

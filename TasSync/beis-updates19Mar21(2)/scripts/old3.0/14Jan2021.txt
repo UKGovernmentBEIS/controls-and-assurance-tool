@@ -1,0 +1,94 @@
+Alter table GIAAActionOwner
+Add DateAssigned datetime
+GO
+
+Alter table [IAPAssignment]
+Add DateAssigned datetime
+GO
+
+Alter table EmailQueue
+Add MainEntityId int
+GO
+
+
+/****** Object:  Table [dbo].[AutoFunctionLastRun]    Script Date: 1/13/2021 6:29:17 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[AutoFunctionLastRun](
+	[ID] [int] NOT NULL,
+	[Title] [nvarchar](50) NULL,
+	[LastRunDate] [datetime] NOT NULL,
+ CONSTRAINT [PK_AutoFunctionLastRun] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+drop table AutomationOption
+GO
+
+
+
+
+
+/****** Object:  Table [dbo].[AutomationOption]    Script Date: 1/14/2021 4:47:40 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[AutomationOption](
+	[ID] [int] NOT NULL,
+	[Title] [nvarchar](50) NOT NULL,
+	[Description] [nvarchar](max) NULL,
+	[Module] [nvarchar](50) NULL,
+	[Active] [bit] NOT NULL,
+	[NotifyTemplateId] [nvarchar](50) NULL,
+ CONSTRAINT [PK_AutomationOption] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+INSERT [dbo].[AutomationOption] ([ID], [Title], [Description], [Module], [Active], [NotifyTemplateId]) VALUES (1, N'IC-NewPeriodToDD', N'IC-NewPeriodToDD Description', N'Controls Assurance', 1, N'6dd3fa87-17e6-45cc-80d4-000000000000')
+GO
+INSERT [dbo].[AutomationOption] ([ID], [Title], [Description], [Module], [Active], [NotifyTemplateId]) VALUES (2, N'IC-NewPeriodToDirector', N'IC-NewPeriodToDirector Description', N'Controls Assurance', 1, N'6dd3fa87-17e6-45cc-80d4-000000000000')
+GO
+INSERT [dbo].[AutomationOption] ([ID], [Title], [Description], [Module], [Active], [NotifyTemplateId]) VALUES (3, N'IC-NewPeriodToDDDelegate', N'IC-NewPeriodToDDDelegate Description', N'Controls Assurance', 1, N'6dd3fa87-17e6-45cc-80d4-000000000000')
+GO
+INSERT [dbo].[AutomationOption] ([ID], [Title], [Description], [Module], [Active], [NotifyTemplateId]) VALUES (4, N'IC-NewPeriodToDirectorDelegate', N'IC-NewPeriodToDirectorDelegate Description', N'Controls Assurance', 1, N'6dd3fa87-17e6-45cc-80d4-000000000000')
+GO
+INSERT [dbo].[AutomationOption] ([ID], [Title], [Description], [Module], [Active], [NotifyTemplateId]) VALUES (5, N'IC-UpdateToSuperUsers', N'IC-UpdateToSuperUsers Description', N'Controls Assurance', 1, N'6dd3fa87-17e6-45cc-80d4-000000000000')
+GO
+INSERT [dbo].[AutomationOption] ([ID], [Title], [Description], [Module], [Active], [NotifyTemplateId]) VALUES (6, N'IC-ReminderToDD', N'IC-ReminderToDD Description', N'Controls Assurance', 1, N'6dd3fa87-17e6-45cc-80d4-000000000000')
+GO
+INSERT [dbo].[AutomationOption] ([ID], [Title], [Description], [Module], [Active], [NotifyTemplateId]) VALUES (7, N'IC-ReminderToDirector', N'IC-ReminderToDirector Description', N'Controls Assurance', 1, N'6dd3fa87-17e6-45cc-80d4-000000000000')
+GO
+INSERT [dbo].[AutomationOption] ([ID], [Title], [Description], [Module], [Active], [NotifyTemplateId]) VALUES (8, N'IC-ReminderToDDDelegate', N'IC-ReminderToDDDelegate Description', N'Controls Assurance', 1, N'6dd3fa87-17e6-45cc-80d4-000000000000')
+GO
+INSERT [dbo].[AutomationOption] ([ID], [Title], [Description], [Module], [Active], [NotifyTemplateId]) VALUES (9, N'IC-ReminderToDirectorDelegate', N'IC-ReminderToDirectorDelegate Description', N'Controls Assurance', 1, N'6dd3fa87-17e6-45cc-80d4-000000000000')
+GO
+INSERT [dbo].[AutomationOption] ([ID], [Title], [Description], [Module], [Active], [NotifyTemplateId]) VALUES (10, N'NP-NewAssignee', N'NP-NewAssignee Description', N'NAO/PAC Tracker', 1, N'6dd3fa87-17e6-45cc-80d4-000000000000')
+GO
+INSERT [dbo].[AutomationOption] ([ID], [Title], [Description], [Module], [Active], [NotifyTemplateId]) VALUES (11, N'NP-NewPeriod', N'NP-NewPeriod Description', N'NAO/PAC Tracker', 1, N'6dd3fa87-17e6-45cc-80d4-000000000000')
+GO
+INSERT [dbo].[AutomationOption] ([ID], [Title], [Description], [Module], [Active], [NotifyTemplateId]) VALUES (12, N'NP-UpdateReminder', N'NP-UpdateReminder Description', N'NAO/PAC Tracker', 1, N'6dd3fa87-17e6-45cc-80d4-000000000000')
+GO
+INSERT [dbo].[AutomationOption] ([ID], [Title], [Description], [Module], [Active], [NotifyTemplateId]) VALUES (13, N'GIAA-NewActionOwner', N'GIAA-NewActionOwner Description', N'GIAA Actions', 1, N'6dd3fa87-17e6-45cc-80d4-000000000000')
+GO
+INSERT [dbo].[AutomationOption] ([ID], [Title], [Description], [Module], [Active], [NotifyTemplateId]) VALUES (14, N'GIAA-UpdateReminder', N'GIAA-UpdateReminder Description', N'GIAA Actions', 1, N'6dd3fa87-17e6-45cc-80d4-000000000000')
+GO
+INSERT [dbo].[AutomationOption] ([ID], [Title], [Description], [Module], [Active], [NotifyTemplateId]) VALUES (15, N'MA-NewAction', N'MA-NewAction Description', N'Management Actions', 1, N'6dd3fa87-17e6-45cc-80d4-000000000000')
+GO
+INSERT [dbo].[AutomationOption] ([ID], [Title], [Description], [Module], [Active], [NotifyTemplateId]) VALUES (16, N'MA-UpdateReminder', N'MA-UpdateReminder Description', N'Management Actions', 1, N'6dd3fa87-17e6-45cc-80d4-000000000000')
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [IX_AutomationOption]    Script Date: 1/14/2021 4:47:41 PM ******/
+CREATE UNIQUE NONCLUSTERED INDEX [IX_AutomationOption] ON [dbo].[AutomationOption]
+(
+	[Title] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO

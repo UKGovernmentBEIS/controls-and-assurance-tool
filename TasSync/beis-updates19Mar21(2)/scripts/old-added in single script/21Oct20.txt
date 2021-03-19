@@ -1,0 +1,12 @@
+Update PermissionType set Title='GIAA Staff' where ID=4
+GO
+Insert into PermissionType (ID, Title) values (7, 'GIAA Actions Super User')
+GO
+
+
+Insert into PermissionType (ID, Title) values (8, 'NAO Tracker Super User')
+GO
+Insert into PermissionType (ID, Title) values (9, 'NAO Staff')
+GO
+Insert into PermissionType (ID, Title) values (10, 'PAC Staff')
+GO

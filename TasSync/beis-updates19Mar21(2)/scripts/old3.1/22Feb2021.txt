@@ -1,0 +1,7 @@
+Alter table GIAAUpdate
+Add RequestStatusOpen bit null
+GO
+
+Alter table GIAAUpdate
+Add MarkAllReqClosed bit null
+GO

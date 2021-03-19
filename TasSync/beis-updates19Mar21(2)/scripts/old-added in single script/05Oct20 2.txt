@@ -1,0 +1,6 @@
+-- after this script, update data in period table for the flag, which should be 'A' or 'B', 'B' is the new system
+
+
+Alter table [Period] Add SystemFlag nvarchar(50);
+GO
+

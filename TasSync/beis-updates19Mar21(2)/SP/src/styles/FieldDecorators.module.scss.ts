@@ -1,0 +1,47 @@
+/* tslint:disable */
+require("./FieldDecorators.module.css");
+const styles = {
+  cr: 'cr_5605c407',
+  crList: 'crList_5605c407',
+  listTitle: 'listTitle_5605c407',
+  history: 'history_5605c407',
+  reviewListTitle: 'reviewListTitle_5605c407',
+  reviewList: 'reviewList_5605c407',
+  checkbox: 'checkbox_5605c407',
+  formText: 'formText_5605c407',
+  formField: 'formField_5605c407',
+  formButton: 'formButton_5605c407',
+  textRight: 'textRight_5605c407',
+  lastMonth: 'lastMonth_5605c407',
+  textFieldInvalid: 'textFieldInvalid_5605c407',
+  datePickerInvalid: 'datePickerInvalid_5605c407',
+  dropdownInvalid: 'dropdownInvalid_5605c407',
+  userPickerInvalid: 'userPickerInvalid_5605c407',
+  msIcon: 'msIcon_5605c407',
+  entityCompleteIcon: 'entityCompleteIcon_5605c407',
+  listFilterBox: 'listFilterBox_5605c407',
+  updateHeader: 'updateHeader_5605c407',
+  rowColumns: 'rowColumns_5605c407',
+  column: 'column_5605c407',
+  flexWidthFix: 'flexWidthFix_5605c407',
+  subTitle: 'subTitle_5605c407',
+  updateHeaderTitle: 'updateHeaderTitle_5605c407',
+  rag: 'rag_5605c407',
+  signOffGridRow: 'signOffGridRow_5605c407',
+  content: 'content_5605c407',
+  sectionATitle: 'sectionATitle_5605c407',
+  italicNote: 'italicNote_5605c407',
+  flexContainerSectionBQuestionDetail: 'flexContainerSectionBQuestionDetail_5605c407',
+  sectionBQuestionDetailCol1: 'sectionBQuestionDetailCol1_5605c407',
+  sectionBQuestionDetailCol2: 'sectionBQuestionDetailCol2_5605c407',
+  flexContainerSectionQuestion: 'flexContainerSectionQuestion_5605c407',
+  sectionQuestionCol1: 'sectionQuestionCol1_5605c407',
+  sectionQuestionCol2: 'sectionQuestionCol2_5605c407',
+  bold: 'bold_5605c407',
+  width100percent: 'width100percent_5605c407',
+  fieldDecorators: 'fieldDecorators_5605c407',
+  errorMessage: 'errorMessage_5605c407'
+};
+
+export default styles;
+/* tslint:enable */

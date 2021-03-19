@@ -1,0 +1,3 @@
+Alter table CLWorker
+Add EngagedChecksDone bit
+GO

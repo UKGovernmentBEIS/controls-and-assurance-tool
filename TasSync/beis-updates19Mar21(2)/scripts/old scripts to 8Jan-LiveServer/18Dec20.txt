@@ -1,0 +1,38 @@
+
+/****** Object:  Table [dbo].[EmailQueue]    Script Date: 12/18/2020 6:47:16 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[EmailQueue](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Title] [nvarchar](100) NULL,
+	[PersonName] [nvarchar](100) NULL,
+	[EmailTo] [nvarchar](1000) NULL,
+	[emailCC] [nvarchar](max) NULL,
+	[Custom1] [nvarchar](max) NULL,
+	[Custom2] [nvarchar](max) NULL,
+	[Custom3] [nvarchar](max) NULL,
+	[Custom4] [nvarchar](max) NULL,
+	[Custom5] [nvarchar](max) NULL,
+	[Custom6] [nvarchar](max) NULL,
+	[Custom7] [nvarchar](max) NULL,
+	[Custom8] [nvarchar](max) NULL,
+	[Custom9] [nvarchar](max) NULL,
+	[Custom10] [nvarchar](max) NULL,
+	[Custom11] [nvarchar](max) NULL,
+	[Custom12] [nvarchar](max) NULL,
+	[Custom13] [nvarchar](max) NULL,
+	[Custom14] [nvarchar](max) NULL,
+	[Custom15] [nvarchar](max) NULL,
+	[Custom16] [nvarchar](max) NULL,
+	[Custom17] [nvarchar](max) NULL,
+	[Custom18] [nvarchar](max) NULL,
+	[Custom19] [nvarchar](max) NULL,
+	[Custom20] [nvarchar](max) NULL,
+ CONSTRAINT [PK_EmailQueue] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO

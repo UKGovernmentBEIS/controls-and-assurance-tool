@@ -1,0 +1,232 @@
+
+/****** Object:  Table [dbo].[GIAAActionPriority]    Script Date: 6/26/2020 4:01:48 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[GIAAActionPriority](
+	[ID] [int] NOT NULL,
+	[Title] [nvarchar](50) NULL,
+ CONSTRAINT [PK_GIAAActionPriority] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[GIAAActionStatusType]    Script Date: 6/26/2020 4:01:48 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[GIAAActionStatusType](
+	[ID] [int] NOT NULL,
+	[Title] [nvarchar](50) NULL,
+ CONSTRAINT [PK_GIAAActionStatusType] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[GIAAAssurance]    Script Date: 6/26/2020 4:01:48 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[GIAAAssurance](
+	[ID] [int] NOT NULL,
+	[Title] [nvarchar](100) NULL,
+ CONSTRAINT [PK_GIAAAssurance] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[GIAAAuditReport]    Script Date: 6/26/2020 4:01:48 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[GIAAAuditReport](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Title] [nvarchar](2000) NULL,
+	[NumberStr] [nvarchar](50) NULL,
+	[IssueDate] [datetime] NULL,
+	[AuditYear] [nvarchar](50) NULL,
+	[Link] [nvarchar](2000) NULL,
+	[DirectorateId] [int] NULL,
+	[GIAAAssuranceId] [int] NULL,
+ CONSTRAINT [PK_GIAAAuditReport] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[GIAADefForm]    Script Date: 6/26/2020 4:01:48 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[GIAADefForm](
+	[ID] [int] NOT NULL,
+	[Title] [nvarchar](1000) NULL,
+	[Details] [nvarchar](max) NULL,
+ CONSTRAINT [PK_GIAADefForm] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[GIAAPeriod]    Script Date: 6/26/2020 4:01:48 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[GIAAPeriod](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Title] [nvarchar](100) NOT NULL,
+	[PeriodStatus] [nvarchar](50) NULL,
+	[PeriodStartDate] [date] NULL,
+	[PeriodEndDate] [date] NULL,
+	[LastPeriodId] [int] NULL,
+ CONSTRAINT [GIAA_NAOPeriod] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[GIAARecommendation]    Script Date: 6/26/2020 4:01:48 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[GIAARecommendation](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Title] [nvarchar](100) NULL,
+	[RecommendationDetails] [nvarchar](max) NULL,
+	[TargetDate] [datetime] NULL,
+	[GIAAActionPriorityId] [int] NULL,
+	[GIAAActionStatusTypeId] [int] NULL,
+	[GIAAPeriodUpdateStatusId] [int] NULL,
+	[GIAAAuditReportId] [int] NULL,
+ CONSTRAINT [PK_GIAARecommendation] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[GIAAUpdate]    Script Date: 6/26/2020 4:01:48 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[GIAAUpdate](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Title] [nvarchar](50) NULL,
+	[TargetDate] [datetime] NULL,
+	[ProgressUpdateDetails] [nvarchar](max) NULL,
+	[GIAAComments] [nvarchar](max) NULL,
+	[Link] [nvarchar](2000) NULL,
+	[GIAARecommendationId] [int] NULL,
+	[GIAAPeriodId] [int] NULL,
+	[GIAAActionStatusTypeId] [int] NULL,
+	[GIAAActionPriorityId] [int] NULL,
+	[GIAAUpdateStatusId] [int] NOT NULL,
+	[UpdateChangeLog] [nvarchar](max) NULL,
+ CONSTRAINT [PK_GIAAUpdate_1] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[GIAAUpdateFeedback]    Script Date: 6/26/2020 4:01:48 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[GIAAUpdateFeedback](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Title] [nvarchar](50) NULL,
+	[GIAAUpdateId] [int] NULL,
+	[Comment] [nvarchar](max) NULL,
+	[CommentById] [int] NULL,
+	[CommentDate] [datetime] NULL,
+ CONSTRAINT [PK_GIAAUpdateFeedback] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[GIAAUpdateStatusType]    Script Date: 6/26/2020 4:01:48 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[GIAAUpdateStatusType](
+	[ID] [int] NOT NULL,
+	[Title] [nvarchar](50) NULL,
+ CONSTRAINT [PK_GIAAUpdateStatusType] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[GIAAAuditReport]  WITH CHECK ADD  CONSTRAINT [FK_GIAAAuditReport_Directorate] FOREIGN KEY([DirectorateId])
+REFERENCES [dbo].[Directorate] ([ID])
+GO
+ALTER TABLE [dbo].[GIAAAuditReport] CHECK CONSTRAINT [FK_GIAAAuditReport_Directorate]
+GO
+ALTER TABLE [dbo].[GIAAAuditReport]  WITH CHECK ADD  CONSTRAINT [FK_GIAAAuditReport_GIAAAssurance] FOREIGN KEY([GIAAAssuranceId])
+REFERENCES [dbo].[GIAAAssurance] ([ID])
+GO
+ALTER TABLE [dbo].[GIAAAuditReport] CHECK CONSTRAINT [FK_GIAAAuditReport_GIAAAssurance]
+GO
+ALTER TABLE [dbo].[GIAARecommendation]  WITH CHECK ADD  CONSTRAINT [FK_GIAARecommendation_GIAAActionPriority] FOREIGN KEY([GIAAActionPriorityId])
+REFERENCES [dbo].[GIAAActionPriority] ([ID])
+GO
+ALTER TABLE [dbo].[GIAARecommendation] CHECK CONSTRAINT [FK_GIAARecommendation_GIAAActionPriority]
+GO
+ALTER TABLE [dbo].[GIAARecommendation]  WITH CHECK ADD  CONSTRAINT [FK_GIAARecommendation_GIAAActionStatusType] FOREIGN KEY([GIAAActionStatusTypeId])
+REFERENCES [dbo].[GIAAActionStatusType] ([ID])
+GO
+ALTER TABLE [dbo].[GIAARecommendation] CHECK CONSTRAINT [FK_GIAARecommendation_GIAAActionStatusType]
+GO
+ALTER TABLE [dbo].[GIAARecommendation]  WITH CHECK ADD  CONSTRAINT [FK_GIAARecommendation_GIAAAuditReport] FOREIGN KEY([GIAAAuditReportId])
+REFERENCES [dbo].[GIAAAuditReport] ([ID])
+GO
+ALTER TABLE [dbo].[GIAARecommendation] CHECK CONSTRAINT [FK_GIAARecommendation_GIAAAuditReport]
+GO
+ALTER TABLE [dbo].[GIAAUpdate]  WITH CHECK ADD  CONSTRAINT [FK_GIAAUpdate_GIAAActionPriority] FOREIGN KEY([GIAAActionPriorityId])
+REFERENCES [dbo].[GIAAActionPriority] ([ID])
+GO
+ALTER TABLE [dbo].[GIAAUpdate] CHECK CONSTRAINT [FK_GIAAUpdate_GIAAActionPriority]
+GO
+ALTER TABLE [dbo].[GIAAUpdate]  WITH CHECK ADD  CONSTRAINT [FK_GIAAUpdate_GIAAActionStatusType] FOREIGN KEY([GIAAActionStatusTypeId])
+REFERENCES [dbo].[GIAAActionStatusType] ([ID])
+GO
+ALTER TABLE [dbo].[GIAAUpdate] CHECK CONSTRAINT [FK_GIAAUpdate_GIAAActionStatusType]
+GO
+ALTER TABLE [dbo].[GIAAUpdate]  WITH CHECK ADD  CONSTRAINT [FK_GIAAUpdate_GIAAPeriod] FOREIGN KEY([GIAAPeriodId])
+REFERENCES [dbo].[GIAAPeriod] ([ID])
+GO
+ALTER TABLE [dbo].[GIAAUpdate] CHECK CONSTRAINT [FK_GIAAUpdate_GIAAPeriod]
+GO
+ALTER TABLE [dbo].[GIAAUpdate]  WITH CHECK ADD  CONSTRAINT [FK_GIAAUpdate_GIAARecommendation] FOREIGN KEY([GIAARecommendationId])
+REFERENCES [dbo].[GIAARecommendation] ([ID])
+GO
+ALTER TABLE [dbo].[GIAAUpdate] CHECK CONSTRAINT [FK_GIAAUpdate_GIAARecommendation]
+GO
+ALTER TABLE [dbo].[GIAAUpdate]  WITH CHECK ADD  CONSTRAINT [FK_GIAAUpdate_GIAAUpdateStatusType] FOREIGN KEY([GIAAUpdateStatusId])
+REFERENCES [dbo].[GIAAUpdateStatusType] ([ID])
+GO
+ALTER TABLE [dbo].[GIAAUpdate] CHECK CONSTRAINT [FK_GIAAUpdate_GIAAUpdateStatusType]
+GO
+ALTER TABLE [dbo].[GIAAUpdateFeedback]  WITH CHECK ADD  CONSTRAINT [FK_GIAAUpdateFeedback_GIAAUpdate] FOREIGN KEY([GIAAUpdateId])
+REFERENCES [dbo].[GIAAUpdate] ([ID])
+GO
+ALTER TABLE [dbo].[GIAAUpdateFeedback] CHECK CONSTRAINT [FK_GIAAUpdateFeedback_GIAAUpdate]
+GO
+ALTER TABLE [dbo].[GIAAUpdateFeedback]  WITH CHECK ADD  CONSTRAINT [FK_GIAAUpdateFeedback_User] FOREIGN KEY([CommentById])
+REFERENCES [dbo].[User] ([ID])
+GO
+ALTER TABLE [dbo].[GIAAUpdateFeedback] CHECK CONSTRAINT [FK_GIAAUpdateFeedback_User]
+GO

@@ -1,0 +1,20 @@
+
+/****** Object:  Table [dbo].[NAOOutput2]    Script Date: 1/20/2021 6:01:34 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[NAOOutput2](
+	[ID] [int] NOT NULL,
+	[Title] [nvarchar](50) NULL,
+	[PdfStatus] [nvarchar](max) NULL,
+	[PdfDate] [datetime] NULL,
+	[PdfName] [nvarchar](4000) NULL,
+	[LastActionUser] [nvarchar](500) NULL,
+	[LastActionDetails] [nvarchar](max) NULL,
+ CONSTRAINT [PK_NAOOutput2] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO

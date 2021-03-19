@@ -1,0 +1,12 @@
+  Update GIAAActionPriority set Title='Medium' where ID=1;
+  Insert into GIAAActionPriority(ID, Title) values (3, 'Low');
+
+  Update GIAAActionStatusType set Title='Pending' where ID=2;
+  Update GIAAActionStatusType set Title='Implemented' where ID=3;
+  Insert into GIAAActionStatusType(ID, Title) values (4, 'Verified');
+  Insert into GIAAActionStatusType(ID, Title) values (5, 'NotVerified');
+  Insert into GIAAActionStatusType(ID, Title) values (6, 'NoLongerApplicable');
+
+
+ALTER TABLE GIAARecommendation
+ALTER COLUMN Title nvarchar(2000) null;

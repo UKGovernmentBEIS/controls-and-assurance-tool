@@ -1,0 +1,6 @@
+Alter table GIAARecommendation
+Add OriginalImportedActionOwners nvarchar(2000) null;
+Go
+Alter table GIAARecommendation
+Add DisplayedImportedActionOwners nvarchar(2000) null;
+Go

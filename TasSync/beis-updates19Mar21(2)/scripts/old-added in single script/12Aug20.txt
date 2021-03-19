@@ -1,0 +1,7 @@
+Update NAORecStatusType Set Title='Not Started' where ID=1
+GO
+
+Update NAOUpdateStatusType Set Title = 'Not Updated' where ID=1
+GO
+Update NAOUpdateStatusType Set Title = 'Updated' where ID=2
+GO

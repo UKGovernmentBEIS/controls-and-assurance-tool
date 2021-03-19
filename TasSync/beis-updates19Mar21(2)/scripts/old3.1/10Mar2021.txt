@@ -1,0 +1,7 @@
+Alter table CLWorker
+Add ExtendedFromWorkerId int
+
+GO
+
+EXEC sp_RENAME 'CLWorker.LeStartDate', 'LeEndDate', 'COLUMN'
+GO

@@ -1,0 +1,13 @@
+Alter table NAOPublication
+Alter column PublicationLink nvarchar(max)
+GO
+
+Update NAOPublication set PublicationLink=''
+GO
+
+Alter table NAOUpdate
+Alter column FurtherLinks nvarchar(max)
+GO
+
+Update NAOUpdate set FurtherLinks=''
+GO

@@ -1,0 +1,38 @@
+
+/****** Object:  Table [dbo].[NAOOutput]    Script Date: 8/20/2020 5:06:59 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[NAOOutput](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Title] [nvarchar](50) NULL,
+	[NAOPeriodId] [int] NULL,
+	[DirectorateGroupId] [int] NULL,
+	[PdfStatus] [nvarchar](max) NULL,
+	[PdfDate] [datetime] NULL,
+	[PdfName] [nvarchar](4000) NULL,
+	[PeriodUpdateStatus] [nvarchar](50) NULL,
+ CONSTRAINT [PK_NAOOutput] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Index [IX_NAOOutput]    Script Date: 8/20/2020 5:06:59 PM ******/
+CREATE UNIQUE NONCLUSTERED INDEX [IX_NAOOutput] ON [dbo].[NAOOutput]
+(
+	[NAOPeriodId] ASC,
+	[DirectorateGroupId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[NAOOutput]  WITH CHECK ADD  CONSTRAINT [FK_NAOOutput_DirectorateGroup] FOREIGN KEY([DirectorateGroupId])
+REFERENCES [dbo].[DirectorateGroup] ([ID])
+GO
+ALTER TABLE [dbo].[NAOOutput] CHECK CONSTRAINT [FK_NAOOutput_DirectorateGroup]
+GO
+ALTER TABLE [dbo].[NAOOutput]  WITH CHECK ADD  CONSTRAINT [FK_NAOOutput_NAOPeriod] FOREIGN KEY([NAOPeriodId])
+REFERENCES [dbo].[NAOPeriod] ([ID])
+GO
+ALTER TABLE [dbo].[NAOOutput] CHECK CONSTRAINT [FK_NAOOutput_NAOPeriod]
+GO

@@ -1,0 +1,2 @@
+ALTER TABLE IAPUpdate
+ADD Attachment nvarchar(1000) null, IsLink bit null;

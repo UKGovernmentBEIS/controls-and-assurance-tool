@@ -1,0 +1,11 @@
+Alter table GIAAUpdate
+Add RequestClose bit null
+GO
+
+Alter table GIAAUpdate
+Add RequestDateChange bit null
+GO
+
+Alter table GIAAUpdate
+Add RequestDateChangeTo datetime null
+GO

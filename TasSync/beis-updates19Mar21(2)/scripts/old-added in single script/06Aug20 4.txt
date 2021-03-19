@@ -1,0 +1,32 @@
+/****** Object:  Table [dbo].[NAOAssignment]    Script Date: 8/6/2020 2:58:33 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[NAOAssignment](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Title] [nvarchar](50) NULL,
+	[NAORecommendationId] [int] NULL,
+	[UserId] [int] NULL,
+ CONSTRAINT [PK_NAOAssignment] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[NAOAssignment]  WITH CHECK ADD  CONSTRAINT [FK_NAOAssignment_NAORecommendation] FOREIGN KEY([NAORecommendationId])
+REFERENCES [dbo].[NAORecommendation] ([ID])
+GO
+ALTER TABLE [dbo].[NAOAssignment] CHECK CONSTRAINT [FK_NAOAssignment_NAORecommendation]
+GO
+ALTER TABLE [dbo].[NAOAssignment]  WITH CHECK ADD  CONSTRAINT [FK_NAOAssignment_User] FOREIGN KEY([UserId])
+REFERENCES [dbo].[User] ([ID])
+GO
+ALTER TABLE [dbo].[NAOAssignment] CHECK CONSTRAINT [FK_NAOAssignment_User]
+GO
+
+
+INSERT [dbo].[NAOUpdateFeedbackType] ([ID], [Title]) VALUES (1, N'General Comment')
+GO
+INSERT [dbo].[NAOUpdateFeedbackType] ([ID], [Title]) VALUES (2, N'NAO Comment')
+GO

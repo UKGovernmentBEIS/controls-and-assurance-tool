@@ -1,0 +1,13 @@
+Insert into NAOUpdateFeedbackType values (3, 'PAC Comment')
+
+GO
+
+Alter table NAORecommendation
+Add OriginalTargetDate nvarchar(100)
+
+GO
+
+Alter table NAOUpdate
+Add ImplementationDate datetime null
+
+GO

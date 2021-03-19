@@ -1,0 +1,60 @@
+ALTER TABLE [dbo].[NAOUpdateFeedback] DROP CONSTRAINT [FK_NAOUpdateFeedback_User]
+
+
+GO
+ALTER TABLE [dbo].[NAOUpdateFeedback] DROP CONSTRAINT [FK_NAOUpdateFeedback_NAOUpdate]
+GO
+/****** Object:  Table [dbo].[NAOUpdateFeedbackType]    Script Date: 8/6/2020 2:52:00 PM ******/
+
+
+/****** Object:  Table [dbo].[NAOUpdateFeedback]    Script Date: 8/6/2020 2:52:00 PM ******/
+DROP TABLE [dbo].[NAOUpdateFeedback]
+GO
+/****** Object:  Table [dbo].[NAOUpdateFeedback]    Script Date: 8/6/2020 2:52:00 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[NAOUpdateFeedback](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Title] [nvarchar](50) NULL,
+	[NAOUpdateId] [int] NULL,
+	[Comment] [nvarchar](max) NULL,
+	[CommentById] [int] NULL,
+	[CommentDate] [datetime] NULL,
+	[NAOUpdateFeedbackTypeId] [int] NULL,
+ CONSTRAINT [PK_NAOUpdateFeedback] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[NAOUpdateFeedbackType]    Script Date: 8/6/2020 2:52:00 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[NAOUpdateFeedbackType](
+	[ID] [int] NOT NULL,
+	[Title] [nvarchar](50) NULL,
+ CONSTRAINT [PK_NAOUpdateFeedbackType] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[NAOUpdateFeedback]  WITH CHECK ADD  CONSTRAINT [FK_NAOUpdateFeedback_NAOUpdate] FOREIGN KEY([NAOUpdateId])
+REFERENCES [dbo].[NAOUpdate] ([ID])
+GO
+ALTER TABLE [dbo].[NAOUpdateFeedback] CHECK CONSTRAINT [FK_NAOUpdateFeedback_NAOUpdate]
+GO
+ALTER TABLE [dbo].[NAOUpdateFeedback]  WITH CHECK ADD  CONSTRAINT [FK_NAOUpdateFeedback_NAOUpdateFeedbackType] FOREIGN KEY([NAOUpdateFeedbackTypeId])
+REFERENCES [dbo].[NAOUpdateFeedbackType] ([ID])
+GO
+ALTER TABLE [dbo].[NAOUpdateFeedback] CHECK CONSTRAINT [FK_NAOUpdateFeedback_NAOUpdateFeedbackType]
+GO
+ALTER TABLE [dbo].[NAOUpdateFeedback]  WITH CHECK ADD  CONSTRAINT [FK_NAOUpdateFeedback_User] FOREIGN KEY([CommentById])
+REFERENCES [dbo].[User] ([ID])
+GO
+ALTER TABLE [dbo].[NAOUpdateFeedback] CHECK CONSTRAINT [FK_NAOUpdateFeedback_User]
+GO

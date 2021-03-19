@@ -1,0 +1,221 @@
+
+/****** Object:  Table [dbo].[CLSecurityClearance]    Script Date: 3/2/2021 11:15:49 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[CLSecurityClearance](
+	[ID] [int] NOT NULL,
+	[Title] [nvarchar](100) NULL,
+ CONSTRAINT [PK_CLSecurityClearance] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+
+/****** Object:  Table [dbo].[CLDeclarationConflict]    Script Date: 3/3/2021 9:22:25 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[CLDeclarationConflict](
+	[ID] [int] NOT NULL,
+	[Title] [nvarchar](2000) NULL,
+ CONSTRAINT [PK_CLDeclarationConflict] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[PersonTitle]    Script Date: 3/3/2021 9:22:25 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[PersonTitle](
+	[ID] [int] NOT NULL,
+	[Title] [nvarchar](50) NULL,
+ CONSTRAINT [PK_PersonTitle] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+
+
+
+
+Alter table ClWorker
+Add WorkerNumber int null
+GO
+
+Alter table ClWorker
+Add OnbContractorFirstname nvarchar(100)
+GO
+
+Alter table ClWorker
+Add OnbContractorSurname nvarchar(100)
+GO
+
+Alter table ClWorker
+Add OnbStartDate datetime
+GO
+
+Alter table ClWorker
+Add OnbEndDate datetime
+GO
+
+Alter table ClWorker
+Add OnbDayRate decimal(18,2)
+GO
+
+Alter table ClWorker
+Add OnbContractorHomeAddress nvarchar(1000)
+GO
+
+Alter table ClWorker
+Add OnbContractorEmail nvarchar(1000)
+GO
+
+Alter table ClWorker
+Add OnbContractorPhone nvarchar(200)
+GO
+
+Alter table ClWorker
+Add PurchaseOrderNum nvarchar(200)
+GO
+
+Alter table ClWorker
+Add OnbSecurityClearanceId int
+GO
+
+Alter table ClWorker
+Add OnbContractorTitleId int
+GO
+
+Alter table ClWorker
+Add OnbContractorGender nvarchar(50)
+GO
+
+Alter table ClWorker
+Add OnbContractorNINum nvarchar(100)
+GO
+
+Alter table ClWorker
+Add OnbContractorDob datetime
+GO
+
+Alter table ClWorker
+Add OnbContractorPostCode nvarchar(50)
+GO
+
+Alter table ClWorker
+Add OnbDecConflictId int
+GO
+
+Alter table ClWorker
+Add OnbLineManagerUserId int
+GO
+
+Alter table ClWorker
+Add OnbLineManagerGradeId int
+GO
+
+Alter table ClWorker
+Add OnbLineManagerEmployeeNum nvarchar(100)
+GO
+
+Alter table ClWorker
+Add OnbLineManagerPhone nvarchar(200)
+GO
+
+Alter table ClWorker
+Add OnbWorkingDayMon bit
+GO
+
+Alter table ClWorker
+Add OnbWorkingDayTue bit
+GO
+
+Alter table ClWorker
+Add OnbWorkingDayWed bit
+GO
+
+Alter table ClWorker
+Add OnbWorkingDayThu bit
+GO
+
+Alter table ClWorker
+Add OnbWorkingDayFri bit
+GO
+
+Alter table ClWorker
+Add OnbWorkingDaySat bit
+GO
+
+Alter table ClWorker
+Add OnbWorkingDaySun bit
+GO
+
+
+ALTER TABLE [dbo].[CLWorker]  WITH CHECK ADD  CONSTRAINT [FK_CLWorker_PersonTitle] FOREIGN KEY([OnbContractorTitleId])
+REFERENCES [dbo].[PersonTitle] ([ID])
+GO
+ALTER TABLE [dbo].[CLWorker] CHECK CONSTRAINT [FK_CLWorker_PersonTitle]
+GO
+
+ALTER TABLE [dbo].[CLWorker]  WITH CHECK ADD  CONSTRAINT [FK_CLWorker_CLDeclarationConflict] FOREIGN KEY([OnbDecConflictId])
+REFERENCES [dbo].[CLDeclarationConflict] ([ID])
+GO
+ALTER TABLE [dbo].[CLWorker] CHECK CONSTRAINT [FK_CLWorker_CLDeclarationConflict]
+GO
+
+ALTER TABLE [dbo].[CLWorker]  WITH CHECK ADD  CONSTRAINT [FK_CLWorker_CLStaffGrade] FOREIGN KEY([OnbLineManagerGradeId])
+REFERENCES [dbo].[CLStaffGrade] ([ID])
+GO
+ALTER TABLE [dbo].[CLWorker] CHECK CONSTRAINT [FK_CLWorker_CLStaffGrade]
+GO
+
+
+ALTER TABLE [dbo].[CLWorker]  WITH CHECK ADD  CONSTRAINT [FK_CLWorker_CLSecurityClearance] FOREIGN KEY([OnbSecurityClearanceId])
+REFERENCES [dbo].[CLSecurityClearance] ([ID])
+GO
+ALTER TABLE [dbo].[CLWorker] CHECK CONSTRAINT [FK_CLWorker_CLSecurityClearance]
+GO
+
+
+
+
+
+
+Insert into CLSecurityClearance (ID, Title) values (1, 'Not Required')
+GO
+
+Insert into CLSecurityClearance (ID, Title) values (2, 'BPSS Required')
+GO
+
+Insert into CLSecurityClearance (ID, Title) values (3, 'Pre-employment/BPSS Completed')
+GO
+
+Insert into PersonTitle(ID, Title) values (1, 'Mr')
+GO
+Insert into PersonTitle(ID, Title) values (2, 'Ms')
+GO
+
+Insert into CLDeclarationConflict(ID, Title) values (1, 'Value 1')
+GO
+
+Insert into CLDeclarationConflict(ID, Title) values (2, 'Value 2')
+GO
+
+
+
+Alter table CLDefForm
+Add EngagedStageFormText nvarchar(max)
+GO
+
+Update CLDefForm set EngagedStageFormText='Text for the engaged stage. Text for the engaged stage.<br/><br/>Text for the engaged stage.'
+GO

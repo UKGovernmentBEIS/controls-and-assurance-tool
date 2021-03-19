@@ -1,0 +1,226 @@
+@import '~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss';
+
+@mixin cr-border-invalid {
+  border: 1px solid #a80000;
+}
+
+// html {
+//   overflow-y:scroll;
+//  }
+.cr {
+  .crList {
+    margin-top:9px;
+  }
+
+  .listTitle {
+    @include ms-font-xxl;
+    
+    margin: 6px 10px;
+  }
+
+  .history {
+    margin: 0.3em 0em;
+    opacity: 0.7;
+  }
+
+  .reviewListTitle {
+    @include ms-font-l;
+    margin: 6px 0px;
+  }
+
+  .reviewList {
+    margin: 6px 0px 12px 0px;
+  }
+
+  .checkbox {
+      margin-top: 10px;
+  }
+
+  .formText {
+    height: 30px;
+    display: flex;
+    align-items: center;
+    margin: 0em;
+  }
+
+  .formField { margin-bottom: 20px; }
+
+//   .ms-ChoiceField {
+//     flex: 1;
+// }
+
+// .ms-ChoiceFieldGroup-flexContainer {
+//     display: flex;
+//     flex-wrap: wrap;
+//     flex-direction: row;
+// }
+// .ms-ChoiceField-wrapper {
+//     min-width: 20em;
+// }
+
+//   .choiceField_63b7bc59{
+//     display: inline-block !important;
+//     margin-bottom: 100px;
+//  }
+
+  .formButton { margin: 0.67em 0.67em 0.67em 0em; }
+
+  .textRight { text-align: right; }
+
+  .lastMonth { opacity: 0.7;  }
+
+  .textFieldInvalid :global .ms-TextField-fieldGroup { @include cr-border-invalid; }
+  .datePickerInvalid :global .ms-TextField-fieldGroup { @include cr-border-invalid; }
+  .dropdownInvalid :global .ms-Dropdown-title { @include cr-border-invalid; }
+  .userPickerInvalid :global .ms-BasePicker-text { @include cr-border-invalid; }
+
+  .msIcon {
+    font-size: 20px;
+    height: 20px;
+    width: 20px;
+    margin: 15px;
+  }
+
+  .entityCompleteIcon {
+    line-height: 30px;
+    float: left;
+    font-size: 20px;
+    margin: 0px 6px;
+  }
+
+  @media screen and (min-width: 800px) {
+    .listFilterBox {
+      min-width: 300px;
+    }
+  }
+
+  .listFilterBox {
+    margin: 4px;
+    background-color: white;
+  }
+
+  .updateHeader {
+    margin: 0px 0px 1px 0px;
+    cursor: pointer;
+
+    .rowColumns {
+      display: flex;
+
+      .column {
+        display: flex;
+        align-items: center;
+        .flexWidthFix {
+          min-width: 0;
+        }
+        .subTitle {
+          font-size: $ms-font-size-m;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+    }
+    .updateHeaderTitle {
+      font-size: $ms-font-size-l;
+      display: inline-block;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+    .rag {
+      width: 100%;
+      padding: 10px 0px;
+    }
+  }
+
+  .signOffGridRow {
+    margin-bottom: 16px;
+    .content {
+      background-color: $ms-color-themeLight;
+      border:1px solid lightgray;
+      padding: 0px 5px;
+    }
+  }
+  
+  @media screen and (max-width: 640px) {
+    .signOffGridRow {
+      .content{
+        margin-bottom:3px;
+      }
+    }
+  }
+
+  @media screen and (min-width: 640px) {
+    .signOffGridRow {
+      display: flex;
+      .content {
+        min-height: 150px;
+        height: 100%;
+      }
+    }
+  }
+
+  :global {
+    .ms-Label { font-size: $ms-font-size-m; font-weight: $ms-font-weight-semibold; }
+    .ms-font-xl { font-weight: 400; }
+    .ms-ChoiceField { .ms-Label { font-weight:$ms-font-weight-regular; } }
+  }
+}
+
+.sectionATitle{
+  font-size: 26px;
+  //margin-top: 30px;
+  //margin-bottom: 30px;
+}
+
+.italicNote{
+  font-style: italic;
+  font-size: 12px;
+  padding-bottom: 20px;
+  padding-left: 5px;
+}
+.flexContainerSectionBQuestionDetail {
+  display: flex;
+  //padding-bottom: 0.5rem;
+  //padding-top: 0.5rem;
+}
+.sectionBQuestionDetailCol1 {
+  flex: 0 0 8px;
+  background-color: rgb(18,119,211);
+  //padding-left: 0.5rem;
+}
+.sectionBQuestionDetailCol2 {
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 15px;
+  width: 100%;
+  background-color: rgb(244, 244, 244);
+}
+
+.flexContainerSectionQuestion {
+  display: flex;
+  //flex-wrap: wrap;
+}
+.sectionQuestionCol1 {
+  //flex: 0 0 auto;
+  
+  font-weight: 600;
+}
+.sectionQuestionCol2 {
+  flex: 0 0 55px;
+  padding-left: 5px;
+  //vertical-align: baseline !important;
+}
+.bold{
+  font-weight: bold;
+}
+
+.width100percent{
+  width: 100%;
+}
+
+
+
+// .inlineflex { :global .ms-ChoiceField { display: inline-block; } }
+
