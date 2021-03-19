@@ -19,6 +19,7 @@ namespace ControlAssuranceAPI.Models
         {
             this.AuditFeedbacks = new HashSet<AuditFeedback>();
             this.CLCaseEvidences = new HashSet<CLCaseEvidence>();
+            this.CLHiringMembers = new HashSet<CLHiringMember>();
             this.Directorates = new HashSet<Directorate>();
             this.DirectorateGroups = new HashSet<DirectorateGroup>();
             this.DirectorateGroupMembers = new HashSet<DirectorateGroupMember>();
@@ -55,6 +56,8 @@ namespace ControlAssuranceAPI.Models
         public virtual ICollection<AuditFeedback> AuditFeedbacks { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CLCaseEvidence> CLCaseEvidences { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CLHiringMember> CLHiringMembers { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Directorate> Directorates { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

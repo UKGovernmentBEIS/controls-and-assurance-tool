@@ -89,6 +89,7 @@ namespace ControlAssuranceAPI.Models
         DbSet<IAPActionUpdate> IAPActionUpdates { get; set; }
         DbSet<IAPAssignment> IAPAssignments { get; set; }
         DbSet<IAPActionDirectorate> IAPActionDirectorates { get; set; }
+        DbSet<CLHiringMember> CLHiringMembers { get; set; }
 
         DbSet<CLCase> CLCases { get; set; }
         DbSet<CLComFramework> CLComFrameworks { get; set; }

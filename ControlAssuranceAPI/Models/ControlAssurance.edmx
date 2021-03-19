@@ -153,6 +153,16 @@
           <Property Name="OnboardingStageFormText" Type="nvarchar(max)" />
           <Property Name="LeavingStageFormText" Type="nvarchar(max)" />
         </EntityType>
+        <EntityType Name="CLHiringMember">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" />
+          <Property Name="CLCaseId" Type="int" />
+          <Property Name="UserId" Type="int" />
+          <Property Name="DateAssigned" Type="datetime" />
+        </EntityType>
         <EntityType Name="CLIR35Scope">
           <Key>
             <PropertyRef Name="ID" />
@@ -1285,6 +1295,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_CLHiringMember_CLCase">
+          <End Role="CLCase" Type="Self.CLCase" Multiplicity="0..1" />
+          <End Role="CLHiringMember" Type="Self.CLHiringMember" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CLCase">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CLHiringMember">
+              <PropertyRef Name="CLCaseId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CLHiringMember_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="CLHiringMember" Type="Self.CLHiringMember" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CLHiringMember">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_CLWorker_CLCase">
           <End Role="CLCase" Type="Self.CLCase" Multiplicity="0..1" />
           <End Role="CLWorker" Type="Self.CLWorker" Multiplicity="*" />
@@ -2387,6 +2421,7 @@
           <EntitySet Name="CLComFramework" EntityType="Self.CLComFramework" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CLDeclarationConflict" EntityType="Self.CLDeclarationConflict" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CLDefForm" EntityType="Self.CLDefForm" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CLHiringMember" EntityType="Self.CLHiringMember" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CLIR35Scope" EntityType="Self.CLIR35Scope" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CLProfessionalCat" EntityType="Self.CLProfessionalCat" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CLSecurityClearance" EntityType="Self.CLSecurityClearance" Schema="dbo" store:Type="Tables" />
@@ -2500,6 +2535,14 @@
           <AssociationSet Name="FK_CLCaseEvidence_User" Association="Self.FK_CLCaseEvidence_User">
             <End Role="User" EntitySet="User" />
             <End Role="CLCaseEvidence" EntitySet="CLCaseEvidence" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CLHiringMember_CLCase" Association="Self.FK_CLHiringMember_CLCase">
+            <End Role="CLCase" EntitySet="CLCase" />
+            <End Role="CLHiringMember" EntitySet="CLHiringMember" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CLHiringMember_User" Association="Self.FK_CLHiringMember_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="CLHiringMember" EntitySet="CLHiringMember" />
           </AssociationSet>
           <AssociationSet Name="FK_CLWorker_CLCase" Association="Self.FK_CLWorker_CLCase">
             <End Role="CLCase" EntitySet="CLCase" />
@@ -2979,6 +3022,7 @@
           <NavigationProperty Name="CLStaffGrade" Relationship="Self.FK_CLCase_CLStaffGrade" FromRole="CLCase" ToRole="CLStaffGrade" />
           <NavigationProperty Name="CLWorkLocation" Relationship="Self.FK_CLCase_CLWorkLocation" FromRole="CLCase" ToRole="CLWorkLocation" />
           <NavigationProperty Name="Directorate" Relationship="Self.FK_CLCase_Directorate" FromRole="CLCase" ToRole="Directorate" />
+          <NavigationProperty Name="CLHiringMembers" Relationship="Self.FK_CLHiringMember_CLCase" FromRole="CLCase" ToRole="CLHiringMember" />
           <NavigationProperty Name="CLWorkers" Relationship="Self.FK_CLWorker_CLCase" FromRole="CLCase" ToRole="CLWorker" />
         </EntityType>
         <EntityType Name="CLCaseEvidence">
@@ -3023,6 +3067,18 @@
           <Property Name="EngagedStageFormText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="OnboardingStageFormText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="LeavingStageFormText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="CLHiringMember">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CLCaseId" Type="Int32" />
+          <Property Name="UserId" Type="Int32" />
+          <Property Name="DateAssigned" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="CLCase" Relationship="Self.FK_CLHiringMember_CLCase" FromRole="CLHiringMember" ToRole="CLCase" />
+          <NavigationProperty Name="User" Relationship="Self.FK_CLHiringMember_User" FromRole="CLHiringMember" ToRole="User" />
         </EntityType>
         <EntityType Name="CLIR35Scope">
           <Key>
@@ -4178,6 +4234,7 @@
           <Property Name="ModifiedByUserID" Type="Int32" />
           <NavigationProperty Name="AuditFeedbacks" Relationship="Self.FK_AuditFeedback_User" FromRole="User" ToRole="AuditFeedback" />
           <NavigationProperty Name="CLCaseEvidences" Relationship="Self.FK_CLCaseEvidence_User" FromRole="User" ToRole="CLCaseEvidence" />
+          <NavigationProperty Name="CLHiringMembers" Relationship="Self.FK_CLHiringMember_User" FromRole="User" ToRole="CLHiringMember" />
           <NavigationProperty Name="Directorates" Relationship="Self.FK_Directorate_User" FromRole="User" ToRole="Directorate" />
           <NavigationProperty Name="DirectorateGroups" Relationship="Self.FK_DirectorateGroup_User" FromRole="User" ToRole="DirectorateGroup" />
           <NavigationProperty Name="DirectorateGroupMembers" Relationship="Self.FK_DirectorateGroupMember_User" FromRole="User" ToRole="DirectorateGroupMember" />
@@ -4329,6 +4386,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_CLHiringMember_CLCase">
+          <End Role="CLCase" Type="Self.CLCase" Multiplicity="0..1" />
+          <End Role="CLHiringMember" Type="Self.CLHiringMember" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CLCase">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CLHiringMember">
+              <PropertyRef Name="CLCaseId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_CLWorker_CLCase">
           <End Role="CLCase" Type="Self.CLCase" Multiplicity="0..1" />
           <End Role="CLWorker" Type="Self.CLWorker" Multiplicity="*" />
@@ -4362,6 +4431,18 @@
             </Principal>
             <Dependent Role="CLWorker">
               <PropertyRef Name="OnbDecConflictId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CLHiringMember_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="CLHiringMember" Type="Self.CLHiringMember" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CLHiringMember">
+              <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -5425,6 +5506,7 @@
           <EntitySet Name="CLComFrameworks" EntityType="Self.CLComFramework" />
           <EntitySet Name="CLDeclarationConflicts" EntityType="Self.CLDeclarationConflict" />
           <EntitySet Name="CLDefForms" EntityType="Self.CLDefForm" />
+          <EntitySet Name="CLHiringMembers" EntityType="Self.CLHiringMember" />
           <EntitySet Name="CLIR35Scope" EntityType="Self.CLIR35Scope" />
           <EntitySet Name="CLProfessionalCats" EntityType="Self.CLProfessionalCat" />
           <EntitySet Name="CLSecurityClearances" EntityType="Self.CLSecurityClearance" />
@@ -5535,6 +5617,10 @@
             <End Role="Directorate" EntitySet="Directorates" />
             <End Role="CLCase" EntitySet="CLCases" />
           </AssociationSet>
+          <AssociationSet Name="FK_CLHiringMember_CLCase" Association="Self.FK_CLHiringMember_CLCase">
+            <End Role="CLCase" EntitySet="CLCases" />
+            <End Role="CLHiringMember" EntitySet="CLHiringMembers" />
+          </AssociationSet>
           <AssociationSet Name="FK_CLWorker_CLCase" Association="Self.FK_CLWorker_CLCase">
             <End Role="CLCase" EntitySet="CLCases" />
             <End Role="CLWorker" EntitySet="CLWorkers" />
@@ -5546,6 +5632,10 @@
           <AssociationSet Name="FK_CLWorker_CLDeclarationConflict" Association="Self.FK_CLWorker_CLDeclarationConflict">
             <End Role="CLDeclarationConflict" EntitySet="CLDeclarationConflicts" />
             <End Role="CLWorker" EntitySet="CLWorkers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CLHiringMember_User" Association="Self.FK_CLHiringMember_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="CLHiringMember" EntitySet="CLHiringMembers" />
           </AssociationSet>
           <AssociationSet Name="FK_CLWorker_CLSecurityClearance" Association="Self.FK_CLWorker_CLSecurityClearance">
             <End Role="CLSecurityClearance" EntitySet="CLSecurityClearances" />
@@ -6254,6 +6344,17 @@
                 <ScalarProperty Name="EngagedStageFormText" ColumnName="EngagedStageFormText" />
                 <ScalarProperty Name="OnboardingStageFormText" ColumnName="OnboardingStageFormText" />
                 <ScalarProperty Name="LeavingStageFormText" ColumnName="LeavingStageFormText" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CLHiringMembers">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.CLHiringMember">
+              <MappingFragment StoreEntitySet="CLHiringMember">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="CLCaseId" ColumnName="CLCaseId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="DateAssigned" ColumnName="DateAssigned" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

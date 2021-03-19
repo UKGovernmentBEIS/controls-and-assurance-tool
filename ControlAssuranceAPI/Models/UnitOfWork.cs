@@ -100,6 +100,7 @@ namespace ControlAssuranceAPI.Models
         private CLCaseEvidenceRepository cLCaseEvidenceRepository;
         private CLSecurityClearanceRepository cLSecurityClearanceRepository;
         private CLDeclarationConflictRepository cLDeclarationConflictRepository;
+        private CLHiringMemberRepository cLHiringMemberRepository;
 
         private ExportDefinationRepository exportDefinationRepository;
         private AvailableExportRepository availableExportRepository;
@@ -857,6 +858,14 @@ namespace ControlAssuranceAPI.Models
             get
             {
                 return cLDeclarationConflictRepository = cLDeclarationConflictRepository ?? new CLDeclarationConflictRepository(user, context);
+            }
+        }
+
+        public CLHiringMemberRepository CLHiringMemberRepository
+        {
+            get
+            {
+                return cLHiringMemberRepository = cLHiringMemberRepository ?? new CLHiringMemberRepository(user, context);
             }
         }
 

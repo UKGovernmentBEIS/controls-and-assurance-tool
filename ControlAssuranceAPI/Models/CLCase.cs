@@ -17,6 +17,7 @@ namespace ControlAssuranceAPI.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public CLCase()
         {
+            this.CLHiringMembers = new HashSet<CLHiringMember>();
             this.CLWorkers = new HashSet<CLWorker>();
         }
     
@@ -71,6 +72,8 @@ namespace ControlAssuranceAPI.Models
         public virtual CLStaffGrade CLStaffGrade { get; set; }
         public virtual CLWorkLocation CLWorkLocation { get; set; }
         public virtual Directorate Directorate { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CLHiringMember> CLHiringMembers { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CLWorker> CLWorkers { get; set; }
     }

@@ -125,6 +125,7 @@ namespace ControlAssuranceAPI
             builder.EntitySet<CLCaseEvidence>("CLCaseEvidences");
             builder.EntitySet<CLSecurityClearance>("CLSecurityClearances");
             builder.EntitySet<CLDeclarationConflict>("CLDeclarationConflicts");
+            builder.EntitySet<CLHiringMember>("CLHiringMembers");
 
             builder.EntitySet<CLCaseCounts_Result>("CLCaseCountsResult");
             builder.EntitySet<ClCaseInfoView_Result>("ClCaseInfoViewResult");
