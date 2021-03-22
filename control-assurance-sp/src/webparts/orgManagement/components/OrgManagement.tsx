@@ -358,7 +358,6 @@ export default class OrgManagement extends BaseUserContextWebPartComponent<types
         minWidth: 100,
         maxWidth: 150,
         isResizable: true,
-        isRequired: true,
         columnDisplayType: ColumnDisplayType.FormOnly,
       },
 
