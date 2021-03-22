@@ -122,6 +122,16 @@ namespace ControlAssuranceAPI.Repositories
                         ret.ApplHMUser = applHMUser;
                     }
 
+                    //hiring memebers
+                    string hiringMembers = "";
+                    foreach(var hm in w.CLCase.CLHiringMembers)
+                    {
+                        hiringMembers += $"{hm.User.Title}, ";
+                    }
+                    if (hiringMembers.Length > 0)
+                        hiringMembers = hiringMembers.Substring(0, hiringMembers.Length - 2);
+
+                    ret.ApplHMembers = hiringMembers;
                     ret.ReqGrade = w.CLCase.CLStaffGrade?.Title ?? "";
                     ret.Directorate = w.CLCase.Directorate?.Title ?? "";
                     ret.ReqEstStartDate = w.CLCase.ReqEstStartDate?.ToString("dd/MM/yyyy") ?? "";
@@ -276,7 +286,7 @@ namespace ControlAssuranceAPI.Repositories
 
         public List<CLCaseView_Result> GetCases(string caseType)
         {
-            GetCounts();
+            //GetCounts();
             var loggedInUser = ApiUser;
             //string loggedInUserTitle = loggedInUser.Title;
             int loggedInUserID = loggedInUser.ID;
@@ -334,6 +344,7 @@ namespace ControlAssuranceAPI.Repositories
             {
                 qry = qry.Where(x => x.CLCase.CreatedById == loggedInUserID
                                     || x.CLCase.ApplHMUserId == loggedInUserID
+                                    || x.CLCase.CLHiringMembers.Any(m => m.UserId == loggedInUserID)
                                     || x.CLCase.BHUserId == loggedInUserID
                                     || x.CLCase.FBPUserId == loggedInUserID
                                     || x.CLCase.HRBPUserId == loggedInUserID);
@@ -525,6 +536,7 @@ namespace ControlAssuranceAPI.Repositories
             {
                 qry = qry.Where(x => x.CLCase.CreatedById == loggedInUserID
                                     || x.CLCase.ApplHMUserId == loggedInUserID
+                                    || x.CLCase.CLHiringMembers.Any(m => m.UserId == loggedInUserID)
                                     || x.CLCase.BHUserId == loggedInUserID
                                     || x.CLCase.FBPUserId == loggedInUserID
                                     || x.CLCase.HRBPUserId == loggedInUserID);

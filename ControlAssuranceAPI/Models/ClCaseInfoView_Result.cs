@@ -15,6 +15,7 @@ namespace ControlAssuranceAPI.Models
         public string CaseRef { get; set; }
 
         public string ApplHMUser { get; set; }
+        public string ApplHMembers { get; set; }
         public string ReqGrade { get; set; }
         public string Directorate { get; set; }
         public string ReqEstStartDate { get; set; }

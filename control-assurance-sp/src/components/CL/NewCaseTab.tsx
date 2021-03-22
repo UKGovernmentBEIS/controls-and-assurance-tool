@@ -104,6 +104,7 @@ export interface INewCaseTabState {
     Leaving_MoveToArchiveBtn: boolean;
     Stage: string;
     HideRequirementInfoSection: boolean;
+    ShowAllowChangeHM: boolean;
     //DefForm: ICLDefForm;
 
 
@@ -132,6 +133,8 @@ export class NewCaseTabState implements INewCaseTabState {
     public Leaving_MoveToArchiveBtn: boolean = false;
     public Stage: string = ""; //set in componentDidMount
     public HideRequirementInfoSection = false;
+    public ShowAllowChangeHM: boolean = true;
+
     //public DefForm: ICLDefForm = null;
 
     constructor(caseType: string) {
@@ -218,7 +221,9 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
             <React.Fragment>
                 {this.renderSectionTitle()}
                 {this.renderInfoTable()}
-                {stage === "Draft" && isViewOnly === false && this.renderDetailsOfApplicant()}
+
+                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || isViewOnly === true) && this.renderDetailsOfApplicant_info()}
+                {/*stage === "Draft" && */isViewOnly === false && this.renderDetailsOfApplicant()}
                 {stage === "Draft" && isViewOnly === false && this.renderRequirement()}
                 {stage === "Draft" && isViewOnly === false && this.renderCommercial()}
                 {stage === "Draft" && isViewOnly === false && this.renderResourcingJustification()}
@@ -228,7 +233,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                 {stage === "Draft" && isViewOnly === false && this.renderFormButtons_DraftStage()}
 
 
-                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || isViewOnly === true) && this.renderDetailsOfApplicant_info()}
+
                 {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || isViewOnly === true) && this.renderRequirement_info()}
                 {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || isViewOnly === true) && this.renderCommercial_info()}
                 {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || isViewOnly === true) && this.renderResourcingJustification_info()}
@@ -422,6 +427,15 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     private renderDetailsOfApplicant() {
         const fd = this.state.FormData;
 
+
+        if (this.props.stage === "Draft" || (this.state.ShowAllowChangeHM === false)) {
+            console.log('renderDetailsOfApplicant - 1');
+        }
+        else return null;
+
+
+
+
         const fd_users: ICLHiringMember[] = this.state.FormData['CLHiringMembers'];
 
         const applHMUserIdValidationImg = this.state.FormData.ApplHMUserId !== null ? this.checkIconGreen : this.checkIconRed;
@@ -481,7 +495,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                 <div className={styles.flexContainerSectionQuestion}>
                                     <div className={styles.sectionQuestionCol1}><span>Hiring team member</span></div>
                                     <div className={styles.sectionQuestionCol2}>
-                                        
+
                                     </div>
                                 </div>
 
@@ -508,6 +522,15 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                             </div>
 
                         </div>
+                    </div>
+
+                    <div style={{ marginBottom: '10px'}}>
+                        {this.state.ShowAllowChangeHM === false &&
+                            <div>
+                                <span style={{ cursor: 'pointer', color: 'blue' }} onClick={()=> this.saveData(false, false) }>Save</span>&nbsp;&nbsp;
+                                <span style={{ cursor: 'pointer', color: 'blue' }} onClick={this.handleAllowChangeHM}>Cancel</span>
+                            </div>
+                        }
                     </div>
 
 
@@ -1681,6 +1704,35 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
     private renderDetailsOfApplicant_info() {
 
+        const fd = this.state.FormData;
+
+        let allowChange: boolean = false;
+        if (this.props.superUserPermission === true || fd.ApplHMUserId === this.props.currentUserId) {
+            allowChange = true;
+        }
+        else {
+
+            console.log('renderDetailsOfApplicant - 3');
+            let isHiringMember: boolean = false;
+            if (fd['CLHiringMembers']) {
+                //loop array
+                const arrM: [] = fd['CLHiringMembers'];
+                console.log(arrM);
+                for (let i = 0; i < arrM.length; i++) {
+                    console.log(arrM[i]);
+                    console.log(arrM[i]['UserId']);
+                    if (Number(arrM[i]['UserId']) === this.props.currentUserId) {
+                        isHiringMember = true;
+                        allowChange = true;
+                        break;
+                    }
+                }
+
+
+            }
+        }
+
+
         return (
 
             <React.Fragment>
@@ -1688,6 +1740,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                 <div style={{ marginBottom: '10px', marginTop: '50px' }} className={styles.sectionATitle}>Details of Applicant</div>
 
                 <div style={{ width: '100%', marginLeft: 'auto', marginRight: 'auto', paddingRight: '5px', overflowX: 'hidden' }}>
+
 
                     <table cellSpacing="0" cellPadding="10" style={{ width: '100%' }}>
 
@@ -1704,6 +1757,17 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                             </tr>
 
+                            <tr>
+                                <td style={{ width: '19%', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Hiring team member
+                                </td>
+                                <td style={{ width: '81%', borderBottom: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                    {this.state.CaseInfo.ApplHMembers}
+                                </td>
+
+
+                            </tr>
+
 
 
 
@@ -1713,6 +1777,9 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                     </table>
                 </div>
 
+                <div style={{ paddingTop: '5px' }}>
+                    {this.state.ShowAllowChangeHM === true && allowChange === true && <span style={{ cursor: 'pointer', color: 'blue' }} onClick={this.handleAllowChangeHM}>Allow Change</span>}
+                </div>
             </React.Fragment>
         );
     }
@@ -5169,7 +5236,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                 this.saveChildEntitiesAfterUpdate();
 
-                
+
                 if (this.props.onError)
                     this.props.onError(null);
 
@@ -6115,6 +6182,12 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     private onViewExtHistroyClick = (caseId: number, workerId: number, stage: string): void => {
         console.log('onViewExtHistroyClick', caseId, workerId, stage);
         this.props.onShowHistoricCase(workerId, caseId, stage);
+    }
+
+    private handleAllowChangeHM = (): void => {
+        this.setState({
+            ShowAllowChangeHM: !this.state.ShowAllowChangeHM,
+        });
     }
 
 }

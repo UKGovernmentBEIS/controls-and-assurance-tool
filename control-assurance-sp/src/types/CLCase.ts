@@ -94,6 +94,7 @@ export interface IClCaseInfo  extends IEntity {
     CaseRef?: string;
 
     ApplHMUser?: string;
+    ApplHMembers?: string;
     ReqGrade?: string;
     Directorate?: string;
     ReqEstStartDate?: string;
