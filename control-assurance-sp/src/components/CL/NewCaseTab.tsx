@@ -1716,7 +1716,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
             let isHiringMember: boolean = false;
             if (fd['CLHiringMembers']) {
                 //loop array
-                const arrM: [] = fd['CLHiringMembers'];
+                const arrM:any[]  = fd['CLHiringMembers'];
                 console.log(arrM);
                 for (let i = 0; i < arrM.length; i++) {
                     console.log(arrM[i]);
