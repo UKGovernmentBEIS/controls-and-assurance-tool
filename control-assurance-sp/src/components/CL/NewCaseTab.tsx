@@ -1778,7 +1778,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                 </div>
 
                 <div style={{ paddingTop: '5px' }}>
-                    {this.state.ShowAllowChangeHM === true && allowChange === true && <span style={{ cursor: 'pointer', color: 'blue' }} onClick={this.handleAllowChangeHM}>Allow Change</span>}
+                    {this.state.ShowAllowChangeHM === true && allowChange === true && <span style={{ cursor: 'pointer', color: 'blue' }} onClick={this.handleAllowChangeHM}>Change hiring manager/team member(s) </span>}
                 </div>
             </React.Fragment>
         );
