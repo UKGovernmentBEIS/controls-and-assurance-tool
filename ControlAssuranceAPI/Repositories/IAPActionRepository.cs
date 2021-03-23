@@ -610,6 +610,8 @@ namespace ControlAssuranceAPI.Repositories
 
             var iapTypeGIAAAction = db.IAPTypes.FirstOrDefault(x => x.ID == 4);
 
+            /*
+
             //get giaa reports for the current user and add to actions
             GIAAAuditReportRepository gIAAAuditReportRepository = new GIAAAuditReportRepository(base.user);
             var giaaAuditReports = gIAAAuditReportRepository.GetAuditReports(0, true, true, isArchive);
@@ -639,6 +641,8 @@ namespace ControlAssuranceAPI.Repositories
 
                 retList.Add(item);
             }
+
+            */
 
             //get NAO Publications and add to the actions list
             var iapTypeNAO = db.IAPTypes.FirstOrDefault(x => x.ID == 5);
