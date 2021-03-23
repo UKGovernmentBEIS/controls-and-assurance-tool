@@ -407,6 +407,22 @@ namespace ControlAssuranceAPI.Repositories
 
         public List<IAPActionView_Result> GetActions(string userIds, bool isArchive)
         {
+            try
+            {
+                return this.GetActionsData(userIds, isArchive);
+            }
+            catch (Exception ex)
+            {
+                APILog aPILog = new APILog();
+                aPILog.Title = $"{DateTime.Now} - Get Management Actions - {ex.Message}";
+                db.APILogs.Add(aPILog);
+                db.SaveChanges();
+                return new List<IAPActionView_Result>();
+            }
+        }
+
+        public List<IAPActionView_Result> GetActionsData(string userIds, bool isArchive)        
+        {
 
             //var ids = new[] { 1, 2, 3 };
             //db.type.Where(w => ids.Contains(w.id));
