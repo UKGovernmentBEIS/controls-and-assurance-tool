@@ -425,7 +425,7 @@ namespace ControlAssuranceAPI.Repositories
                 //var path = frame.GetFileName();
 
                 APILog aPILog = new APILog();
-                aPILog.Title = $"{DateTime.Now} - Get Management Actions - {ex.Message} Line {line.ToString()} Method {method} ";
+                aPILog.Title = $"{DateTime.Now} - Get Management Actions - {ex.Message} -Line: {line.ToString()} -Method: {method} -Stack: {st}";
                 db.APILogs.Add(aPILog);
                 db.SaveChanges();
                 return new List<IAPActionView_Result>();
