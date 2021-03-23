@@ -1,6 +1,7 @@
 ﻿using ControlAssuranceAPI.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Principal;
 using System.Web;
@@ -413,8 +414,18 @@ namespace ControlAssuranceAPI.Repositories
             }
             catch (Exception ex)
             {
+
+                var st = new StackTrace(ex, true);
+
+                // Get the bottom stack frame
+                var frame = st.GetFrame(st.FrameCount - 1);
+                // Get the line number from the stack frame
+                var line = frame.GetFileLineNumber();
+                var method = frame.GetMethod().ReflectedType.FullName;
+                //var path = frame.GetFileName();
+
                 APILog aPILog = new APILog();
-                aPILog.Title = $"{DateTime.Now} - Get Management Actions - {ex.Message}";
+                aPILog.Title = $"{DateTime.Now} - Get Management Actions - {ex.Message} Line {line.ToString()} Method {method} ";
                 db.APILogs.Add(aPILog);
                 db.SaveChanges();
                 return new List<IAPActionView_Result>();
