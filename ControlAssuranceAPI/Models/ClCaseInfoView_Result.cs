@@ -41,6 +41,8 @@ namespace ControlAssuranceAPI.Models
         public string OnbDecConflict { get; set; }
         public string OnbLineManagerUser { get; set; }
         public string OnbLineManagerGrade { get; set; }
+        public string OnbWorkOrderNumber { get; set; }
+        public string OnbRecruitersEmail { get; set; }
 
         public string BPSSCheckedBy { get; set; }
         public string BPSSCheckedOn { get; set; }
@@ -54,6 +56,8 @@ namespace ControlAssuranceAPI.Models
         public string PassCheckedOn { get; set; }
         public string ContractCheckedBy { get; set; }
         public string ContractCheckedOn { get; set; }
+        public string EngPONumber { get; set; }
+        public string EngPONote { get; set; }
 
         public string LeEndDateStr { get; set; }
         public string LeContractorDetailsCheckedBy { get; set; }

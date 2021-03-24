@@ -120,6 +120,8 @@ export interface IClCaseInfo  extends IEntity {
     OnbDecConflict?: string;
     OnbLineManagerUser?: string;
     OnbLineManagerGrade?: string;
+    OnbWorkOrderNumber?: string;
+    OnbRecruitersEmail?: string;
 
     BPSSCheckedBy?: string;
     BPSSCheckedOn?: string;
@@ -133,6 +135,8 @@ export interface IClCaseInfo  extends IEntity {
     PassCheckedOn?: string;
     ContractCheckedBy?: string;
     ContractCheckedOn?: string;
+    EngPONumber?:string;
+    EngPONote?:string;
 
 
     LeEndDateStr?: string;

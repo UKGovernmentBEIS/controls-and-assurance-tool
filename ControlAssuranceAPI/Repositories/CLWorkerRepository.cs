@@ -65,6 +65,9 @@ namespace ControlAssuranceAPI.Repositories
                 clWorker.UKSBSRef = inputWorker.UKSBSRef;
                 clWorker.UKSBSNotes = inputWorker.UKSBSNotes;
 
+                clWorker.EngPONumber = inputWorker.EngPONumber;
+                clWorker.EngPONote = inputWorker.EngPONote;
+
                 if(inputWorker.Title == "SaveEngaged_MoveToChecksDone")
                 {
                     clWorker.EngagedChecksDone = true;
@@ -111,6 +114,8 @@ namespace ControlAssuranceAPI.Repositories
                 clWorker.LeContractorEmail = inputWorker.OnbContractorEmail;
                 clWorker.LeContractorHomeAddress = inputWorker.OnbContractorHomeAddress;
                 clWorker.LeContractorPostCode = inputWorker.OnbContractorPostCode;
+
+                clWorker.EngPONumber = inputWorker.PurchaseOrderNum;
 
 
 
@@ -161,6 +166,9 @@ namespace ControlAssuranceAPI.Repositories
             clWorker.OnbLineManagerGradeId = inputWorker.OnbLineManagerGradeId;
             clWorker.OnbLineManagerEmployeeNum = inputWorker.OnbLineManagerEmployeeNum;
             clWorker.OnbLineManagerPhone = inputWorker.OnbLineManagerPhone;
+
+            clWorker.OnbWorkOrderNumber = inputWorker.OnbWorkOrderNumber;
+            clWorker.OnbRecruitersEmail = inputWorker.OnbRecruitersEmail;
 
             db.SaveChanges();
             return clWorker;

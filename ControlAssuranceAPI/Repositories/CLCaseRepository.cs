@@ -214,6 +214,8 @@ namespace ControlAssuranceAPI.Repositories
                     ret.OnbDecConflict = w.CLDeclarationConflict?.Title ?? "";
                     ret.OnbLineManagerUser = w.OnbLineManagerUserId != null ? db.Users.FirstOrDefault(x => x.ID == w.OnbLineManagerUserId)?.Title ?? "" : "";
                     ret.OnbLineManagerGrade = w.CLStaffGrade?.Title ?? "";
+                    ret.OnbWorkOrderNumber = w.OnbWorkOrderNumber?.ToString() ?? "";
+                    ret.OnbRecruitersEmail = w.OnbRecruitersEmail?.ToString() ?? "";
 
                 }
 
@@ -232,6 +234,11 @@ namespace ControlAssuranceAPI.Repositories
                     ret.UKSBSCheckedOn = w.UKSBSCheckedOn?.ToString("dd/MM/yyyy") ?? "";
                     ret.PassCheckedOn = w.PassCheckedOn?.ToString("dd/MM/yyyy") ?? "";
                     ret.ContractCheckedOn = w.ContractCheckedOn?.ToString("dd/MM/yyyy") ?? "";
+
+                    ret.EngPONumber = w.EngPONumber?.ToString() ?? "";
+                    ret.EngPONote = w.EngPONote?.ToString() ?? "";
+
+
                 }
 
                 if ((CaseStages.GetStageNumber(ret.Stage) >= CaseStages.Leaving.Number) || (clViewer == true))

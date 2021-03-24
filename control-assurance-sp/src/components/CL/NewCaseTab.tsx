@@ -524,10 +524,10 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                         </div>
                     </div>
 
-                    <div style={{ marginBottom: '10px'}}>
+                    <div style={{ marginBottom: '10px' }}>
                         {this.state.ShowAllowChangeHM === false &&
                             <div>
-                                <span style={{ cursor: 'pointer', color: 'blue' }} onClick={()=> this.saveData(false, false) }>Save</span>&nbsp;&nbsp;
+                                <span style={{ cursor: 'pointer', color: 'blue' }} onClick={() => this.saveData(false, false)}>Save</span>&nbsp;&nbsp;
                                 <span style={{ cursor: 'pointer', color: 'blue' }} onClick={this.handleAllowChangeHM}>Cancel</span>
                             </div>
                         }
@@ -1716,7 +1716,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
             let isHiringMember: boolean = false;
             if (fd['CLHiringMembers']) {
                 //loop array
-                const arrM:any[]  = fd['CLHiringMembers'];
+                const arrM: any[] = fd['CLHiringMembers'];
                 console.log(arrM);
                 for (let i = 0; i < arrM.length; i++) {
                     console.log(arrM[i]);
@@ -3517,6 +3517,69 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                     </div>
 
 
+                    <div style={{ fontSize: '18px', fontWeight: 'bold', textDecoration: 'underline', paddingBottom: '25px' }}>
+                        Recruitment
+                    </div>
+
+                    {/* 1st row */}
+
+                    <div className={styles.formField}>
+
+                        <div style={{ display: 'flex' }}>
+                            <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Work Order Number</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div style={{ width: '50%', fontWeight: 'bold' }}>
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Recruiters email</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                        <div style={{ display: 'flex', marginTop: '5px' }}>
+                            <div style={{ width: '50%', paddingRight: '5px' }}>
+                                <CrTextField
+                                    //className={styles.formField}
+                                    onChanged={(v) => this.changeTextField_Worker(v, "OnbWorkOrderNumber")}
+                                    value={fd.OnbWorkOrderNumber}
+                                    autoComplete='*'
+
+                                />
+
+
+
+                            </div>
+
+                            <div style={{ width: '50%', }}>
+                                <CrTextField
+                                    //className={styles.formField}
+                                    onChanged={(v) => this.changeTextField_Worker(v, "OnbRecruitersEmail")}
+                                    value={fd.OnbRecruitersEmail}
+
+                                />
+
+                            </div>
+
+
+
+
+                        </div>
+                    </div>
+
+
 
 
                 </div>
@@ -3752,17 +3815,33 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                             </tr>
                             <tr>
-                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)', borderBottom: '1px solid rgb(166,166,166)' }}>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)', }}>
                                     Line Manager Employee Number
                                 </td>
-                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)' }}>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', }}>
                                     {fd.OnbLineManagerEmployeeNum}
                                 </td>
-                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)', borderBottom: '1px solid rgb(166,166,166)' }}>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)', }}>
                                     Line Manager telephone number
                                 </td>
-                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)' }}>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)', }}>
                                     {fd.OnbLineManagerPhone}
+                                </td>
+
+                            </tr>
+
+                            <tr>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)', borderBottom: '1px solid rgb(166,166,166)' }}>
+                                    Work Order Number
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)' }}>
+                                    {caseInfo.OnbWorkOrderNumber}
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)', borderBottom: '1px solid rgb(166,166,166)' }}>
+                                    Recruiters email
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)' }}>
+                                    {caseInfo.OnbRecruitersEmail}
                                 </td>
 
                             </tr>
@@ -3914,6 +3993,60 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                     maxWidth='100%'
                                     value={fd.POCheckedOn}
                                     onSelectDate={(v) => changeDatePickerV2(this, 'FormDataWorker', v, "POCheckedOn", this.engaged_Checks)}
+                                />
+
+                            </div>
+
+
+
+
+                        </div>
+                    </div>
+
+                    {/* 3rd row */}
+                    <div className={styles.formField}>
+
+                        <div style={{ display: 'flex' }}>
+                            <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>PO Number</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div style={{ width: '50%', fontWeight: 'bold' }}>
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>PO Note</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                        <div style={{ display: 'flex', marginTop: '5px' }}>
+                            <div style={{ width: '50%', paddingRight: '5px' }}>
+                                <CrTextField
+                                    onChanged={(v) => this.changeTextField_Worker(v, "EngPONumber")}
+                                    value={fd.EngPONumber}
+                                    autoComplete='*'
+
+                                />
+
+
+                            </div>
+
+                            <div style={{ width: '50%', }}>
+                                <CrTextField
+                                    onChanged={(v) => this.changeTextField_Worker(v, "EngPONote")}
+                                    value={fd.EngPONote}
+
                                 />
 
                             </div>
@@ -4350,6 +4483,23 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                 </td>
                                 <td style={{ width: '31%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
                                     {caseInfo.POCheckedOn}
+                                </td>
+
+
+                            </tr>
+
+                            <tr>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    PO Number
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', }}>
+                                    {caseInfo.EngPONumber}
+                                </td>
+                                <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    PO Note
+                                </td>
+                                <td style={{ width: '31%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                    {caseInfo.EngPONote}
                                 </td>
 
 

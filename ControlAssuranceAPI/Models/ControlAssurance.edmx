@@ -266,6 +266,10 @@
           <Property Name="ITSystemNotes" Type="nvarchar(max)" />
           <Property Name="UKSBSRef" Type="nvarchar" MaxLength="1000" />
           <Property Name="UKSBSNotes" Type="nvarchar(max)" />
+          <Property Name="OnbWorkOrderNumber" Type="nvarchar" MaxLength="200" />
+          <Property Name="OnbRecruitersEmail" Type="nvarchar" MaxLength="1000" />
+          <Property Name="EngPONumber" Type="nvarchar" MaxLength="200" />
+          <Property Name="EngPONote" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="CLWorkLocation">
           <Key>
@@ -3188,6 +3192,10 @@
           <Property Name="ITSystemNotes" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="UKSBSRef" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
           <Property Name="UKSBSNotes" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="OnbWorkOrderNumber" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="OnbRecruitersEmail" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="EngPONumber" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="EngPONote" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="CLCase" Relationship="Self.FK_CLWorker_CLCase" FromRole="CLWorker" ToRole="CLCase" />
           <NavigationProperty Name="CLDeclarationConflict" Relationship="Self.FK_CLWorker_CLDeclarationConflict" FromRole="CLWorker" ToRole="CLDeclarationConflict" />
           <NavigationProperty Name="CLSecurityClearance" Relationship="Self.FK_CLWorker_CLSecurityClearance" FromRole="CLWorker" ToRole="CLSecurityClearance" />
@@ -6465,6 +6473,10 @@
                 <ScalarProperty Name="ITSystemNotes" ColumnName="ITSystemNotes" />
                 <ScalarProperty Name="UKSBSRef" ColumnName="UKSBSRef" />
                 <ScalarProperty Name="UKSBSNotes" ColumnName="UKSBSNotes" />
+                <ScalarProperty Name="OnbWorkOrderNumber" ColumnName="OnbWorkOrderNumber" />
+                <ScalarProperty Name="OnbRecruitersEmail" ColumnName="OnbRecruitersEmail" />
+                <ScalarProperty Name="EngPONumber" ColumnName="EngPONumber" />
+                <ScalarProperty Name="EngPONote" ColumnName="EngPONote" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

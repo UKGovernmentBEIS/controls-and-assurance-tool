@@ -432,7 +432,7 @@ namespace ControlAssuranceAPI.Repositories
             }
         }
 
-        public List<IAPActionView_Result> GetActionsData(string userIds, bool isArchive)        
+        public List<IAPActionView_Result> GetActionsData(string userIds, bool isArchive)
         {
 
             //var ids = new[] { 1, 2, 3 };
@@ -598,12 +598,11 @@ namespace ControlAssuranceAPI.Repositories
                         }
                         else
                         {
-                           
                             //check if there is an update for the current month
                             var actionUpdate = ite.IAPActionUpdates.FirstOrDefault
-                                (x => x.UpdateType == IAPActionUpdateRepository.IAPActionUpdateTypes.ActionUpdate 
+                                (x => x.UpdateType == IAPActionUpdateRepository.IAPActionUpdateTypes.ActionUpdate
                                     && x.UpdateDate != null
-                                    &&  x.UpdateDate.Value.Month == DateTime.Now.Month && x.UpdateDate.Value.Year == DateTime.Now.Year);
+                                    && x.UpdateDate.Value.Month == DateTime.Now.Month && x.UpdateDate.Value.Year == DateTime.Now.Year);
                             if (actionUpdate == null)
                             {
                                 //there is no update provided for current month, so updateStatus is Required
@@ -641,8 +640,6 @@ namespace ControlAssuranceAPI.Repositories
 
             var iapTypeGIAAAction = db.IAPTypes.FirstOrDefault(x => x.ID == 4);
 
-            /*
-
             //get giaa reports for the current user and add to actions
             GIAAAuditReportRepository gIAAAuditReportRepository = new GIAAAuditReportRepository(base.user);
             var giaaAuditReports = gIAAAuditReportRepository.GetAuditReports(0, true, true, isArchive);
@@ -672,8 +669,6 @@ namespace ControlAssuranceAPI.Repositories
 
                 retList.Add(item);
             }
-
-            */
 
             //get NAO Publications and add to the actions list
             var iapTypeNAO = db.IAPTypes.FirstOrDefault(x => x.ID == 5);

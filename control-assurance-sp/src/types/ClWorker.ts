@@ -35,6 +35,9 @@ export interface ICLWorker  extends IEntity {
     OnbLineManagerGradeId?: number;
     OnbLineManagerEmployeeNum?: string;
     OnbLineManagerPhone?: string;
+    OnbWorkOrderNumber?: string;
+    OnbRecruitersEmail?: string;
+
 
     BPSSCheckedById?: number;
     BPSSCheckedOn?: Date;
@@ -54,6 +57,9 @@ export interface ICLWorker  extends IEntity {
     ITSystemNotes?:string;
     UKSBSRef?:string;
     UKSBSNotes?:string;
+
+    EngPONumber?:string;
+    EngPONote?:string;
 
     LeEndDate?: Date;
     LeContractorPhone?: string;

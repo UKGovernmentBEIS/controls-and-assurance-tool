@@ -78,6 +78,10 @@ namespace ControlAssuranceAPI.Models
         public string ITSystemNotes { get; set; }
         public string UKSBSRef { get; set; }
         public string UKSBSNotes { get; set; }
+        public string OnbWorkOrderNumber { get; set; }
+        public string OnbRecruitersEmail { get; set; }
+        public string EngPONumber { get; set; }
+        public string EngPONote { get; set; }
     
         public virtual CLCase CLCase { get; set; }
         public virtual CLDeclarationConflict CLDeclarationConflict { get; set; }
