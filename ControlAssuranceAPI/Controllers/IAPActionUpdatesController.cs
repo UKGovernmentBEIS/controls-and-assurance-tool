@@ -87,7 +87,8 @@ namespace ControlAssuranceAPI.Controllers
             }
 
             //patch.TrySetPropertyValue("DateUploaded", DateTime.Now);
-
+            if (iAPActionUpdate.UpdateDate == null)
+                iAPActionUpdate.UpdateDate = DateTime.Now;
             patch.Patch(iAPActionUpdate);
 
             try
