@@ -598,8 +598,12 @@ namespace ControlAssuranceAPI.Repositories
                         }
                         else
                         {
+                           
                             //check if there is an update for the current month
-                            var actionUpdate = ite.IAPActionUpdates.FirstOrDefault(x => x.UpdateType == IAPActionUpdateRepository.IAPActionUpdateTypes.ActionUpdate && x.UpdateDate.Value.Month == DateTime.Now.Month && x.UpdateDate.Value.Year == DateTime.Now.Year);
+                            var actionUpdate = ite.IAPActionUpdates.FirstOrDefault
+                                (x => x.UpdateType == IAPActionUpdateRepository.IAPActionUpdateTypes.ActionUpdate 
+                                    && x.UpdateDate != null
+                                    &&  x.UpdateDate.Value.Month == DateTime.Now.Month && x.UpdateDate.Value.Year == DateTime.Now.Year);
                             if (actionUpdate == null)
                             {
                                 //there is no update provided for current month, so updateStatus is Required
