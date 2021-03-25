@@ -1490,70 +1490,55 @@ namespace ControlAssuranceAPI.Libs
 
             Style normalStyle = document.Styles.AddStyle("normalStyle", "Normal");
             normalStyle.Font.Name = "calibri";
+            normalStyle.Font.Size = 11;
 
             Style rightTextStyle1 = document.Styles.AddStyle("rightTextStyle1", "normalStyle");
             //rightTextStyle1.Font.Name = "calibri";
-            rightTextStyle1.Font.Size = 15;
+            rightTextStyle1.Font.Size = 16;
+            rightTextStyle1.Font.Bold = true;
             //rightTextStyle1.Font.Bold = true;
             //rightTextStyle1.Font.Color = Color.FromRgb(255, 0, 0);
             //rightTextStyle1.ParagraphFormat.Alignment = ParagraphAlignment.Right;
             //rightTextStyle1.ParagraphFormat.SpaceAfter = new Unit(-18, UnitType.Point);
 
             Style boldItalic1 = document.Styles.AddStyle("boldItalic1", "normalStyle");
-            //boldItalic1.Font.Name = "calibri";
             boldItalic1.Font.Bold = true;
             boldItalic1.Font.Italic = true;
 
             Style bold1 = document.Styles.AddStyle("bold1", "normalStyle");
-            //bold1.Font.Name = "calibri";
             bold1.Font.Bold = true;
 
             Style boldunderline1 = document.Styles.AddStyle("boldunderline1", "normalStyle");
-            //boldunderline1.Font.Name = "calibri";
             boldunderline1.Font.Bold = true;
             boldunderline1.Font.Underline = Underline.Single;
-
 
             Style styleFooter = document.Styles[StyleNames.Footer];
             styleFooter.Font.Name = "calibri";
             styleFooter.ParagraphFormat.AddTabStop("8cm", TabAlignment.Center);
 
-
             Style heading1 = document.Styles.AddStyle("heading1", "normalStyle");
             heading1.Font.Size = 48;
-            //heading1.Font.Name = "Calibri (Body)";
             heading1.Font.Color = Color.FromRgb(0, 126, 192);
 
             Style heading2 = document.Styles.AddStyle("heading2", "normalStyle");
             heading2.Font.Size = 26;
-            //heading2.Font.Name = "Calibri (Body)";
             heading2.Font.Color = Color.FromRgb(196, 89, 17);
 
             Style heading3 = document.Styles.AddStyle("heading3", "normalStyle");
             heading3.Font.Size = 14;
-            //heading3.Font.Name = "Calibri (Body)";
             heading3.Font.Color = Color.FromRgb(0, 0, 0);
 
             Style mainHeading = document.Styles.AddStyle("mainHeading", "normalStyle");
             mainHeading.Font.Size = 20;
-            //mainHeading.Font.Name = "Calibri Light (Headings)";
             mainHeading.Font.Bold = true;
-            //mainHeading.Font.Color = Color.FromRgb(0, 126, 192);
 
-
-
-            Style normalTxt = document.Styles.AddStyle("normalTxt", "normalStyle");
-            //normalTxt.Font.Size = 11;
-            //normalTxt.Font.Name = "Calibri (Body)";
-
-            Style normalTxtLink = document.Styles.AddStyle("normalTxtLink", "normalStyle");
-            //normalTxtLink.Font.Name = "Calibri (Body)";
+            Style normalTxt = document.Styles.AddStyle("normalTxt", "normalStyle");            
+            
+            Style normalTxtLink = document.Styles.AddStyle("normalTxtLink", "normalStyle");            
             normalTxtLink.Font.Color = Color.FromRgb(0, 0, 255);
             normalTxtLink.Font.Underline = Underline.Single;
-
+            
             Style normalItalicTxt = document.Styles.AddStyle("normalItalicTxt", "normalStyle");
-            //normalItalicTxt.Font.Size = 12;
-            //normalItalicTxt.Font.Name = "Calibri (Body)";
             normalItalicTxt.Font.Italic = true;
 
             var bulletList = document.AddStyle("BulletList", "normalStyle");
@@ -1563,11 +1548,11 @@ namespace ControlAssuranceAPI.Libs
             bulletList.ParagraphFormat.ListInfo = new ListInfo
             {
                 ContinuePreviousList = true,
-                ListType = ListType.BulletList1,
+                ListType = ListType.BulletList2,
                 NumberPosition = 1,
-                 
-
+                
             };
+            
 
             #endregion styles
 
@@ -1624,7 +1609,9 @@ namespace ControlAssuranceAPI.Libs
             string inside_outside = cLWorker.CLCase.FinIR35ScopeId == 1 ? "Inside" : "Outside";
             string empployed_selfEmployed = cLWorker.CLCase.FinIR35ScopeId == 1 ? "Employed" : "Self-Employed";
             paragraph.AddFormattedText($"We have assessed that this engagement falls {inside_outside} of Intermediaries legislation (IR35) and you are therefore {empployed_selfEmployed} for tax purposes.", "normalTxt");
-            paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak();
+            paragraph.AddLineBreak(); paragraph.AddLineBreak();
+
+            
 
             paragraph.AddFormattedText($"This status determination was arrived at with the support of the HMRC Check Employment Status for Tax Tool, the output of which is attached.", "normalTxt");
             paragraph.AddLineBreak(); paragraph.AddLineBreak();
@@ -1637,10 +1624,6 @@ namespace ControlAssuranceAPI.Libs
 
             paragraph.AddFormattedText($"Please note, you may only raise a dispute if you deliver your services through a limited company. Umbrella companies and PAYE workers have no right to open dispute.", "bold1");
             paragraph.AddLineBreak(); paragraph.AddLineBreak();
-            paragraph.AddLineBreak(); paragraph.AddLineBreak();
-
-    
-            
             
             paragraph.AddFormattedText($"This status determination statement is provided in accordance with the requirements of Chapter 10, Part 2 of ITEPA 2003.", "normalTxt");
             paragraph.AddLineBreak();
