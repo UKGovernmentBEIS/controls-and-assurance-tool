@@ -1511,7 +1511,7 @@ namespace ControlAssuranceAPI.Libs
             Style boldunderline1 = document.Styles.AddStyle("boldunderline1", "normalStyle");
             boldunderline1.Font.Name = "calibri";
             boldunderline1.Font.Bold = true;
-            boldunderline1.Font.Underline = Underline.Single;
+            //boldunderline1.Font.Underline = Underline.Single;
 
 
             Style styleFooter = document.Styles[StyleNames.Footer];
