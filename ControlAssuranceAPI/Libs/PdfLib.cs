@@ -1542,13 +1542,13 @@ namespace ControlAssuranceAPI.Libs
             normalItalicTxt.Font.Italic = true;
 
             var bulletList = document.AddStyle("BulletList", "normalStyle");
-            bulletList.ParagraphFormat.LeftIndent = "0.25cm";
+            bulletList.ParagraphFormat.LeftIndent = "0.5cm";
             bulletList.ParagraphFormat.KeepTogether = true;
             bulletList.ParagraphFormat.KeepWithNext = true;
             bulletList.ParagraphFormat.ListInfo = new ListInfo
             {
                 ContinuePreviousList = true,
-                ListType = ListType.BulletList2,
+                ListType = ListType.BulletList3,
                 NumberPosition = 1,
                 
             };
@@ -1627,6 +1627,7 @@ namespace ControlAssuranceAPI.Libs
             
             paragraph.AddFormattedText($"This status determination statement is provided in accordance with the requirements of Chapter 10, Part 2 of ITEPA 2003.", "normalTxt");
             paragraph.AddLineBreak();
+            paragraph.AddLineBreak();
 
             paragraph.AddFormattedText($"SDS - Example Reasons (Inside-of-Scope)", "boldunderline1");
             paragraph.AddLineBreak(); paragraph.AddLineBreak();
@@ -1639,7 +1640,7 @@ namespace ControlAssuranceAPI.Libs
             //need new paragraph now
             paragraph = section.AddParagraph();
 
-            paragraph.AddLineBreak();
+            paragraph.AddLineBreak(); 
             paragraph.AddFormattedText("Control & Direction:", "bold1");
             paragraph.AddLineBreak();
             section.AddParagraph("We would like to be able to utilise your skills and expertise on other projects or other aspects of this project during your engagement should our organisation’s priorities change – we therefore have a right of control over what you are working on;", "BulletList");
