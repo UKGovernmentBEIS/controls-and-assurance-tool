@@ -35,7 +35,9 @@ namespace ControlAssuranceAPI.Libs
 
             // We pass all other font requests to the default handler.
             // When running on a web server without sufficient permission, you can return a default font at this stage.
-            return PlatformFontResolver.ResolveTypeface(familyName, isBold, isItalic);
+            // comment this out to see if it solves the issue
+            //return PlatformFontResolver.ResolveTypeface(familyName, isBold, isItalic);
+            return new FontResolverInfo("calibri");
         }
 
         public byte[] GetFont(string faceName)
