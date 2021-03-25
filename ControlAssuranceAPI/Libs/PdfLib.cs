@@ -1511,7 +1511,7 @@ namespace ControlAssuranceAPI.Libs
             Style boldunderline1 = document.Styles.AddStyle("boldunderline1", "normalStyle");
             //boldunderline1.Font.Name = "calibri";
             boldunderline1.Font.Bold = true;
-            //boldunderline1.Font.Underline = Underline.Single;
+            boldunderline1.Font.Underline = Underline.Single;
 
 
             Style styleFooter = document.Styles[StyleNames.Footer];
@@ -1549,7 +1549,7 @@ namespace ControlAssuranceAPI.Libs
             Style normalTxtLink = document.Styles.AddStyle("normalTxtLink", "normalStyle");
             //normalTxtLink.Font.Name = "Calibri (Body)";
             normalTxtLink.Font.Color = Color.FromRgb(0, 0, 255);
-            //normalTxtLink.Font.Underline = Underline.Single;
+            normalTxtLink.Font.Underline = Underline.Single;
 
             Style normalItalicTxt = document.Styles.AddStyle("normalItalicTxt", "normalStyle");
             //normalItalicTxt.Font.Size = 12;
