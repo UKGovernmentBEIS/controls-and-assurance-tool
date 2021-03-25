@@ -1543,8 +1543,8 @@ namespace ControlAssuranceAPI.Libs
 
             var bulletList = document.AddStyle("BulletList", "normalStyle");
             bulletList.ParagraphFormat.LeftIndent = "0.5cm";
-            bulletList.ParagraphFormat.KeepTogether = true;
-            bulletList.ParagraphFormat.KeepWithNext = true;
+            bulletList.ParagraphFormat.KeepTogether = false;
+            bulletList.ParagraphFormat.KeepWithNext = false;
             bulletList.ParagraphFormat.ListInfo = new ListInfo
             {
                 ContinuePreviousList = true,
@@ -1640,7 +1640,8 @@ namespace ControlAssuranceAPI.Libs
             //need new paragraph now
             paragraph = section.AddParagraph();
 
-            paragraph.AddLineBreak(); 
+            
+            paragraph.AddLineBreak();
             paragraph.AddFormattedText("Control & Direction:", "bold1");
             paragraph.AddLineBreak();
             section.AddParagraph("We would like to be able to utilise your skills and expertise on other projects or other aspects of this project during your engagement should our organisation’s priorities change – we therefore have a right of control over what you are working on;", "BulletList");
