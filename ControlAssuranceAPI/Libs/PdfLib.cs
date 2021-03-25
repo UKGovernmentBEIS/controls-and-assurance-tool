@@ -1492,7 +1492,7 @@ namespace ControlAssuranceAPI.Libs
             normalStyle.Font.Name = "calibri";
 
             Style rightTextStyle1 = document.Styles.AddStyle("rightTextStyle1", "normalStyle");
-            rightTextStyle1.Font.Name = "calibri";
+            //rightTextStyle1.Font.Name = "calibri";
             rightTextStyle1.Font.Size = 15;
             //rightTextStyle1.Font.Bold = true;
             //rightTextStyle1.Font.Color = Color.FromRgb(255, 0, 0);
@@ -1500,16 +1500,16 @@ namespace ControlAssuranceAPI.Libs
             //rightTextStyle1.ParagraphFormat.SpaceAfter = new Unit(-18, UnitType.Point);
 
             Style boldItalic1 = document.Styles.AddStyle("boldItalic1", "normalStyle");
-            boldItalic1.Font.Name = "calibri";
+            //boldItalic1.Font.Name = "calibri";
             boldItalic1.Font.Bold = true;
             boldItalic1.Font.Italic = true;
 
             Style bold1 = document.Styles.AddStyle("bold1", "normalStyle");
-            bold1.Font.Name = "calibri";
+            //bold1.Font.Name = "calibri";
             bold1.Font.Bold = true;
 
             Style boldunderline1 = document.Styles.AddStyle("boldunderline1", "normalStyle");
-            boldunderline1.Font.Name = "calibri";
+            //boldunderline1.Font.Name = "calibri";
             boldunderline1.Font.Bold = true;
             //boldunderline1.Font.Underline = Underline.Single;
 
