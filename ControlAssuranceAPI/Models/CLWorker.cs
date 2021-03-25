@@ -82,6 +82,10 @@ namespace ControlAssuranceAPI.Models
         public string OnbRecruitersEmail { get; set; }
         public string EngPONumber { get; set; }
         public string EngPONote { get; set; }
+        public string SDSPdfStatus { get; set; }
+        public Nullable<System.DateTime> SDSPdfDate { get; set; }
+        public string SDSPdfName { get; set; }
+        public string SDSPdfLastActionUser { get; set; }
     
         public virtual CLCase CLCase { get; set; }
         public virtual CLDeclarationConflict CLDeclarationConflict { get; set; }

@@ -12,6 +12,12 @@ export class CLWorkerService extends EntityService<ICLWorker> {
         super(spfxContext, api, `/CLWorkers`);
     }
 
+    public createSDSPDF(clWorkerId: number, spSiteUrl): Promise<string> {
+        
+        return super.readString(`?clWorkerId=${clWorkerId}&createPdf=&spSiteUrl=${spSiteUrl}`).then((result:string): string => {
+            return result;
+        });
+    }
 
 
 

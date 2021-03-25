@@ -75,6 +75,11 @@ export interface ICLWorker  extends IEntity {
     LePassCheckedById?: number;
     LePassCheckedOn?: Date;
 
+    SDSPdfStatus?: string;
+    SDSPdfDate?: Date;
+    SDSPdfName?: string;
+    SDSPdfLastActionUser?: string;
+
 
 }
 
@@ -146,6 +151,11 @@ export class CLWorker implements ICLWorker{
     public LeUKSBSCheckedOn?: Date = null;
     public LePassCheckedById?: number = null;
     public LePassCheckedOn?: Date = null;
+
+    public SDSPdfStatus?: string = null;
+    public SDSPdfDate?: Date = null;
+    public SDSPdfName?: string = null;
+    public SDSPdfLastActionUser?: string = null;
 
 
     constructor() {

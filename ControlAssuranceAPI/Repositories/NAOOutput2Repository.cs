@@ -79,6 +79,8 @@ namespace ControlAssuranceAPI.Repositories
                     string outputPdfName = "NAO_Output_By_Publication.pdf";
 
 
+
+
                     Libs.PdfLib pdfLib = new Libs.PdfLib();
                     pdfLib.CreatetNaoPdf2(publicationIds, nAOPublicationRepository, nAOPeriodRepository, tempLocation, outputPdfName, spSiteUrl, spAccessDetails);
 

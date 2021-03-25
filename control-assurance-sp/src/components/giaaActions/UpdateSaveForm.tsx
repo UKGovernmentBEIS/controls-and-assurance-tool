@@ -110,12 +110,13 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
     public render(): React.ReactElement<IUpdatesSaveFormProps> {
         //const errors = this.state.ValidationErrors;
         return (
-            <Panel isOpen={this.props.showForm} headerText={this.getHeaderText()} type={PanelType.medium} onRenderNavigation={() => <FormCommandBar onSave={this.saveData} onCancel={this.props.onCancelled} />}>
+            <Panel isOpen={this.props.showForm} headerText={this.getHeaderText()} type={PanelType.medium} onRenderNavigation={() => <FormCommandBar onSave={this.saveData} onCancel={this.props.onCancelled} saveDisabled={this.state.ShowUploadProgress} />}>
                 <div className={styles.cr}>
                     {this.renderFormFields()}
                     <FormButtons
                         primaryText={"Save"}
                         onPrimaryClick={() => this.saveData()}
+                        primaryDisabled={this.state.ShowUploadProgress}
                         onSecondaryClick={this.props.onCancelled}
                     />
                 </div>

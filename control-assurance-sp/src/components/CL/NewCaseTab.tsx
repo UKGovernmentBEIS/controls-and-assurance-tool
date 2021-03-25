@@ -24,6 +24,7 @@ import { changeDatePicker, changeDatePickerV2 } from '../../types/AppGlobals';
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import '../../styles/CustomFabric.scss';
 import { IContextualMenuProps } from 'office-ui-fabric-react';
+import { getUploadFolder_Report } from '../../types/AppGlobals';
 
 
 
@@ -174,6 +175,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     //private clDefFormService: services.CLDefFormService = new services.CLDefFormService(this.props.spfxContext, this.props.api);
 
     private UploadFolder_Evidence: string = "";
+    private UploadFolder_Report: string = "";
 
     //IChoiceGroupOption
     private approvalDecisionItems: any[] = [
@@ -190,10 +192,13 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         { ObjectParentProperty: 'CLHiringMembers', ParentIdProperty: 'CLCaseId', ChildIdProperty: 'UserId', ChildService: this.clHiringMemberService },
     ];
 
+    
+
     constructor(props: INewCaseTabProps, state: INewCaseTabState) {
         super(props);
         this.state = new NewCaseTabState('New Case');
         this.UploadFolder_Evidence = getUploadFolder_CLEvidence(props.spfxContext);
+        this.UploadFolder_Report = getUploadFolder_Report(props.spfxContext);
 
     }
 
@@ -4608,6 +4613,13 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                     </table>
                 </div>
 
+                <div style={{marginTop:'5px'}}>
+                    {fd.SDSPdfStatus !== "Working... Please Wait" && <div style={{color:'blue', cursor:'pointer'}} onClick={()=> this.createSDSPdf() }>Create SDS PDF</div>}
+                    {fd.SDSPdfStatus === "Working... Please Wait" &&  <div>Creating SDS... Please Wait.. To refresh status <span style={{color:'blue', cursor:'pointer'}} onClick={()=> this.refreshSDSPdfStatus() }>Click Here</span></div> }
+                    {fd.SDSPdfStatus === "Cr" && <div>Last PDF created by {fd.SDSPdfLastActionUser} on { services.DateService.dateToUkDateTime( fd.SDSPdfDate)} <span style={{color:'blue', cursor:'pointer'}} onClick={()=> this.downloadSDSPdf() }>Download</span>  </div> }
+                </div>
+
+
             </React.Fragment>
         );
     }
@@ -6337,6 +6349,66 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     private handleAllowChangeHM = (): void => {
         this.setState({
             ShowAllowChangeHM: !this.state.ShowAllowChangeHM,
+        });
+    }
+
+    private createSDSPdf = (): void => {
+        const spSiteUrl: string = this.props.spfxContext.pageContext.web.absoluteUrl;
+        //console.log('spSiteUrl', spSiteUrl);
+        this.clWorkerService.createSDSPDF(this.state.FormDataWorker.ID, spSiteUrl).then((res: string): void => {
+
+            console.log('Pdf creation initialized', res);
+            this.loadCLWorker();
+            // this.setState({
+            //     PDFStatus: res,
+            //     EnableDownloadPdf: false,
+            //     EnableDeletePdf: false,
+            //     EnableCreatePdf: false,
+            // });
+            //this.loadData(); //no need
+
+
+        }, (err) => {
+            if (this.props.onError)
+                this.props.onError(`Error creating PDF`, err.message);
+
+        });
+    }
+
+    private refreshSDSPdfStatus = (): void => {
+        this.loadCLWorker();
+    }
+
+    private downloadSDSPdf = (): void => {
+        console.log('download sds pdf');
+        const fileName:string = this.state.FormDataWorker.SDSPdfName;
+
+        const f = sp.web.getFolderByServerRelativeUrl(this.UploadFolder_Report).files.getByName(fileName);
+
+        f.get().then(t => {
+            console.log(t);
+            const serverRelativeUrl = t["ServerRelativeUrl"];
+            console.log(serverRelativeUrl);
+
+            const a = document.createElement('a');
+            //document.body.appendChild(a);
+            a.href = serverRelativeUrl;
+            a.target = "_blank";
+            a.download = fileName;
+
+            document.body.appendChild(a);
+            console.log(a);
+            //a.click();
+            //document.body.removeChild(a);
+
+
+            setTimeout(() => {
+                window.URL.revokeObjectURL(serverRelativeUrl);
+                window.open(serverRelativeUrl, '_blank');
+                document.body.removeChild(a);
+            }, 1);
+
+
         });
     }
 

@@ -89,12 +89,13 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
     public render(): React.ReactElement<IEvidenceSaveFormProps> {
         //const errors = this.state.ValidationErrors;
         return (
-            <Panel isOpen={this.props.showForm} headerText={"Evidence"} type={PanelType.medium} onRenderNavigation={() => <FormCommandBar onSave={this.saveEvidence} onCancel={this.props.onCancelled} />}>
+            <Panel isOpen={this.props.showForm} headerText={"Evidence"} type={PanelType.medium} onRenderNavigation={() => <FormCommandBar onSave={this.saveEvidence} onCancel={this.props.onCancelled} saveDisabled={this.state.ShowUploadProgress} />}>
                 <div className={styles.cr}>
                     {this.renderFormFields()}
                     <FormButtons
                         primaryText={"Save"}
                         onPrimaryClick={() => this.saveEvidence()}
+                        primaryDisabled={this.state.ShowUploadProgress}
                         onSecondaryClick={this.props.onCancelled}
                     />
                     {this.renderInfoText()}

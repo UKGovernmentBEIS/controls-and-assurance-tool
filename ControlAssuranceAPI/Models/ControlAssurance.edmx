@@ -270,6 +270,10 @@
           <Property Name="OnbRecruitersEmail" Type="nvarchar" MaxLength="1000" />
           <Property Name="EngPONumber" Type="nvarchar" MaxLength="200" />
           <Property Name="EngPONote" Type="nvarchar(max)" />
+          <Property Name="SDSPdfStatus" Type="nvarchar(max)" />
+          <Property Name="SDSPdfDate" Type="datetime" />
+          <Property Name="SDSPdfName" Type="nvarchar" MaxLength="4000" />
+          <Property Name="SDSPdfLastActionUser" Type="nvarchar" MaxLength="500" />
         </EntityType>
         <EntityType Name="CLWorkLocation">
           <Key>
@@ -3196,6 +3200,10 @@
           <Property Name="OnbRecruitersEmail" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
           <Property Name="EngPONumber" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="EngPONote" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SDSPdfStatus" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SDSPdfDate" Type="DateTime" Precision="3" />
+          <Property Name="SDSPdfName" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
+          <Property Name="SDSPdfLastActionUser" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="CLCase" Relationship="Self.FK_CLWorker_CLCase" FromRole="CLWorker" ToRole="CLCase" />
           <NavigationProperty Name="CLDeclarationConflict" Relationship="Self.FK_CLWorker_CLDeclarationConflict" FromRole="CLWorker" ToRole="CLDeclarationConflict" />
           <NavigationProperty Name="CLSecurityClearance" Relationship="Self.FK_CLWorker_CLSecurityClearance" FromRole="CLWorker" ToRole="CLSecurityClearance" />
@@ -6477,6 +6485,10 @@
                 <ScalarProperty Name="OnbRecruitersEmail" ColumnName="OnbRecruitersEmail" />
                 <ScalarProperty Name="EngPONumber" ColumnName="EngPONumber" />
                 <ScalarProperty Name="EngPONote" ColumnName="EngPONote" />
+                <ScalarProperty Name="SDSPdfStatus" ColumnName="SDSPdfStatus" />
+                <ScalarProperty Name="SDSPdfDate" ColumnName="SDSPdfDate" />
+                <ScalarProperty Name="SDSPdfName" ColumnName="SDSPdfName" />
+                <ScalarProperty Name="SDSPdfLastActionUser" ColumnName="SDSPdfLastActionUser" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

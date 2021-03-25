@@ -1466,6 +1466,295 @@ namespace ControlAssuranceAPI.Libs
 
         #endregion Nao
 
+
+        #region CL
+
+        public void CreateCLSDSPdf(Models.CLWorker cLWorker, UserRepository userRepository, string tempLocation, string outputPdfName, string spSiteUrl, string spAccessDetails)
+        {
+            SharepointLib sharepointLib = new SharepointLib(spSiteUrl, spAccessDetails);
+
+            Document document = new Document();
+            Section section = document.AddSection();
+
+            Paragraph paragraph = new Paragraph();
+            paragraph.AddTab();
+            paragraph.AddText("Page ");
+            paragraph.AddPageField();
+            paragraph.AddText(" of ");
+            paragraph.AddNumPagesField();
+
+            section.Footers.Primary.Add(paragraph);
+
+            #region styles
+
+
+            Style normalStyle = document.Styles.AddStyle("normalStyle", "Normal");
+            normalStyle.Font.Name = "calibri";
+
+            Style rightTextStyle1 = document.Styles.AddStyle("rightTextStyle1", "normalStyle");
+            rightTextStyle1.Font.Name = "calibri";
+            rightTextStyle1.Font.Size = 15;
+            //rightTextStyle1.Font.Bold = true;
+            //rightTextStyle1.Font.Color = Color.FromRgb(255, 0, 0);
+            //rightTextStyle1.ParagraphFormat.Alignment = ParagraphAlignment.Right;
+            //rightTextStyle1.ParagraphFormat.SpaceAfter = new Unit(-18, UnitType.Point);
+
+            Style boldItalic1 = document.Styles.AddStyle("boldItalic1", "normalStyle");
+            boldItalic1.Font.Name = "calibri";
+            boldItalic1.Font.Bold = true;
+            boldItalic1.Font.Italic = true;
+
+            Style bold1 = document.Styles.AddStyle("bold1", "normalStyle");
+            bold1.Font.Name = "calibri";
+            bold1.Font.Bold = true;
+
+            Style boldunderline1 = document.Styles.AddStyle("boldunderline1", "normalStyle");
+            boldunderline1.Font.Name = "calibri";
+            boldunderline1.Font.Bold = true;
+            boldunderline1.Font.Underline = Underline.Single;
+
+
+            Style styleFooter = document.Styles[StyleNames.Footer];
+            styleFooter.Font.Name = "calibri";
+            styleFooter.ParagraphFormat.AddTabStop("8cm", TabAlignment.Center);
+
+
+            Style heading1 = document.Styles.AddStyle("heading1", "normalStyle");
+            heading1.Font.Size = 48;
+            //heading1.Font.Name = "Calibri (Body)";
+            heading1.Font.Color = Color.FromRgb(0, 126, 192);
+
+            Style heading2 = document.Styles.AddStyle("heading2", "normalStyle");
+            heading2.Font.Size = 26;
+            //heading2.Font.Name = "Calibri (Body)";
+            heading2.Font.Color = Color.FromRgb(196, 89, 17);
+
+            Style heading3 = document.Styles.AddStyle("heading3", "normalStyle");
+            heading3.Font.Size = 14;
+            //heading3.Font.Name = "Calibri (Body)";
+            heading3.Font.Color = Color.FromRgb(0, 0, 0);
+
+            Style mainHeading = document.Styles.AddStyle("mainHeading", "normalStyle");
+            mainHeading.Font.Size = 20;
+            //mainHeading.Font.Name = "Calibri Light (Headings)";
+            mainHeading.Font.Bold = true;
+            //mainHeading.Font.Color = Color.FromRgb(0, 126, 192);
+
+
+
+            Style normalTxt = document.Styles.AddStyle("normalTxt", "normalStyle");
+            //normalTxt.Font.Size = 11;
+            //normalTxt.Font.Name = "Calibri (Body)";
+
+            Style normalTxtLink = document.Styles.AddStyle("normalTxtLink", "normalStyle");
+            //normalTxtLink.Font.Name = "Calibri (Body)";
+            normalTxtLink.Font.Color = Color.FromRgb(0, 0, 255);
+            normalTxtLink.Font.Underline = Underline.Single;
+
+            Style normalItalicTxt = document.Styles.AddStyle("normalItalicTxt", "normalStyle");
+            //normalItalicTxt.Font.Size = 12;
+            //normalItalicTxt.Font.Name = "Calibri (Body)";
+            normalItalicTxt.Font.Italic = true;
+
+            var bulletList = document.AddStyle("BulletList", "normalStyle");
+            bulletList.ParagraphFormat.LeftIndent = "0.25cm";
+            bulletList.ParagraphFormat.KeepTogether = true;
+            bulletList.ParagraphFormat.KeepWithNext = true;
+            bulletList.ParagraphFormat.ListInfo = new ListInfo
+            {
+                ContinuePreviousList = true,
+                ListType = ListType.BulletList1,
+                NumberPosition = 1,
+                 
+
+            };
+
+            #endregion styles
+
+
+            paragraph = section.AddParagraph();
+
+            paragraph.Format.Alignment = ParagraphAlignment.Right;
+
+            paragraph.AddFormattedText("Department for", "rightTextStyle1");
+            paragraph.AddLineBreak();
+            paragraph.AddFormattedText("Business, Energy", "rightTextStyle1");
+            paragraph.AddLineBreak();
+            paragraph.AddFormattedText("& Industrial Strategy", "rightTextStyle1");
+            paragraph.AddLineBreak();
+            paragraph.AddLineBreak();
+
+            paragraph.AddFormattedText("1 Victoria St", "normalTxt");
+            paragraph.AddLineBreak();
+            paragraph.AddFormattedText("Westminster", "normalTxt");
+            paragraph.AddLineBreak();
+            paragraph.AddFormattedText("London ", "normalTxt");
+            paragraph.AddLineBreak();
+            paragraph.AddFormattedText("SW1H 0ET ", "normalTxt");
+            paragraph.AddLineBreak();
+            paragraph.AddLineBreak();
+
+            paragraph = section.AddParagraph();
+            paragraph.AddFormattedText("Status Determination Statement", "mainHeading");
+            paragraph.AddLineBreak();
+            paragraph.AddFormattedText($"Worker Name: {cLWorker.OnbContractorFirstname} {cLWorker.OnbContractorSurname}", "normalTxt");
+            paragraph.AddLineBreak();
+            paragraph.AddFormattedText($"Worker Email: {cLWorker.OnbContractorEmail}", "normalTxt");
+            paragraph.AddLineBreak();
+            paragraph.AddFormattedText($"Work Order number: {cLWorker.OnbWorkOrderNumber}", "normalTxt");
+            paragraph.AddLineBreak(); paragraph.AddLineBreak();
+            paragraph.AddFormattedText($"Contract/Extension Start Date: {cLWorker.OnbStartDate?.ToString("dd/MM/yyyy") ??""}", "normalTxt");
+            paragraph.AddLineBreak();
+            paragraph.AddFormattedText($"Contract End Date: {cLWorker.OnbEndDate?.ToString("dd/MM/yyyy") ?? ""}", "normalTxt");
+            paragraph.AddLineBreak(); paragraph.AddLineBreak();
+
+            paragraph.AddFormattedText($"Agency: {cLWorker.CLCase.CLComFramework.Title?.ToString() ?? ""}", "normalTxt");
+            paragraph.AddLineBreak(); paragraph.AddLineBreak();
+
+            string hmUser = "";
+            hmUser = userRepository.Find(cLWorker.CLCase.ApplHMUserId.Value).Title;
+            paragraph.AddFormattedText($"Completed by: {hmUser}", "normalTxt");
+            paragraph.AddLineBreak();
+            paragraph.AddFormattedText("On behalf of: BEIS", "normalTxt");
+            paragraph.AddLineBreak();
+            paragraph.AddFormattedText($"Date Completed: {DateTime.Now.ToString("dd/MM/yyyy")}", "normalTxt");
+
+            paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak();
+
+            string inside_outside = cLWorker.CLCase.FinIR35ScopeId == 1 ? "Inside" : "Outside";
+            string empployed_selfEmployed = cLWorker.CLCase.FinIR35ScopeId == 1 ? "Employed" : "Self-Employed";
+            paragraph.AddFormattedText($"We have assessed that this engagement falls {inside_outside} of Intermediaries legislation (IR35) and you are therefore {empployed_selfEmployed} for tax purposes.", "normalTxt");
+            paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak();
+
+            paragraph.AddFormattedText($"This status determination was arrived at with the support of the HMRC Check Employment Status for Tax Tool, the output of which is attached.", "normalTxt");
+            paragraph.AddLineBreak(); paragraph.AddLineBreak();
+
+            paragraph.AddFormattedText($"If you wish to dispute the result of this determination, please contact:", "normalTxt");
+            paragraph.AddLineBreak(); paragraph.AddLineBreak();
+
+            paragraph.AddFormattedText($"contingentlabour@beis.gov.uk", "boldItalic1");
+            paragraph.AddLineBreak(); paragraph.AddLineBreak();
+
+            paragraph.AddFormattedText($"Please note, you may only raise a dispute if you deliver your services through a limited company. Umbrella companies and PAYE workers have no right to open dispute.", "bold1");
+            paragraph.AddLineBreak(); paragraph.AddLineBreak();
+            paragraph.AddLineBreak(); paragraph.AddLineBreak();
+
+    
+            
+            
+            paragraph.AddFormattedText($"This status determination statement is provided in accordance with the requirements of Chapter 10, Part 2 of ITEPA 2003.", "normalTxt");
+            paragraph.AddLineBreak();
+
+            paragraph.AddFormattedText($"SDS - Example Reasons (Inside-of-Scope)", "boldunderline1");
+            paragraph.AddLineBreak(); paragraph.AddLineBreak();
+            paragraph.AddFormattedText($"Personal Service:", "bold1");
+            paragraph.AddLineBreak();
+
+            section.AddParagraph("We retain a right of veto over any proposed substitute worker for this engagement, which means you do not have an unrestricted right to send a substitute;", "BulletList");
+            section.AddParagraph("We require personal service from you for the duration of this engagement due to your specific established experience and knowledge of the systems being developed and Departmental processes;", "BulletList");
+
+            //need new paragraph now
+            paragraph = section.AddParagraph();
+
+            paragraph.AddLineBreak();
+            paragraph.AddFormattedText("Control & Direction:", "bold1");
+            paragraph.AddLineBreak();
+            section.AddParagraph("We would like to be able to utilise your skills and expertise on other projects or other aspects of this project during your engagement should our organisation’s priorities change – we therefore have a right of control over what you are working on;", "BulletList");
+            section.AddParagraph("As part of the agile development framework you will operate within, tasks will be prioritised and allocated to you by the Product Owner which means there is control and direction in terms of what you are working on;", "BulletList");
+            section.AddParagraph("Throughout your engagement you will work as part of an Agile development team.  Close team working is important and we will require you to work from the same location and similar hours as the rest of the team, indicating control and direction;", "BulletList");
+            section.AddParagraph("You will be expected to follow Departmental processes and checklists in delivery of your engagement so there will be some control and direction from the Department in terms of how you deliver your engagement;", "BulletList");
+            section.AddParagraph("In your project manager / delivery manager role you will be expected to follow established Departmental project governance and reporting processes so there will be control and direction from the Department in terms of how you deliver your engagement;", "BulletList");
+
+            //need new paragraph now
+            paragraph = section.AddParagraph();
+            paragraph.AddLineBreak();
+            paragraph.AddFormattedText("Part & Parcel:", "bold1");
+            paragraph.AddLineBreak();
+
+            section.AddParagraph("The end client has employees that undertake roles very similar to this one with working practices that are expected to be consistent, indicating that through this engagement we are augmenting our own in-house resource capability;", "BulletList");
+            section.AddParagraph("You will be undertaking a senior leadership role within our organisation and will therefore be very much part & parcel of the organisation.  You will be expected to react to key organisational priorities as they arise and adapt to and promote our culture and ways of working.  This also demonstrates control from the Department in terms of what you work on and the way that you perform the role;", "BulletList");
+            section.AddParagraph("You will be expected to recruit and manage staff as part of your engagement indicating that you will be part & parcel of our organisation.", "BulletList");
+
+
+            //need new paragraph now
+            paragraph = section.AddParagraph();
+            paragraph.AddLineBreak();
+            paragraph.AddFormattedText("Financial Risk:", "bold1");
+            paragraph.AddLineBreak();
+            section.AddParagraph("There is no realistic financial risk for you or your business in delivering this engagement.  You will be paid a daily rate, all business expenses will be covered and you are not required to invest in any equipment or anything else in order to undertake the work;", "BulletList");
+
+
+            //need new paragraph now
+            paragraph = section.AddParagraph();
+            paragraph.AddLineBreak();
+
+            paragraph.AddFormattedText($"SDS - Example Reasons (Outside-of-Scope)", "boldunderline1");
+            paragraph.AddLineBreak(); paragraph.AddLineBreak();
+            paragraph.AddFormattedText($"Personal Service:", "bold1");
+            paragraph.AddLineBreak();
+            section.AddParagraph("You have a genuine unrestricted right to provide a substitute worker at any point during this engagement as we are engaging your business to provide services and not you as an individual.  We have discussed availability of additional resource in your business to provide cover and assistance and will put in place security clearances in preparation;", "BulletList");
+            section.AddParagraph("Your business would pay any substitute provided;", "BulletList");
+            section.AddParagraph("Your business may engage helpers to assist you as and when you see fit demonstrating a lack of requirement for personal service;", "BulletList");
+
+            //need new paragraph now
+            paragraph = section.AddParagraph();
+            paragraph.AddLineBreak();
+            paragraph.AddFormattedText("Control & Direction:", "bold1");
+            paragraph.AddLineBreak();
+            section.AddParagraph("You are not subject to ongoing monitoring or supervision in your delivery of this engagement indicating self-employment;", "BulletList");
+            section.AddParagraph("You will determine the tasks required to deliver this engagement and schedule them as you see fit in order to deliver the outcomes required by X date.  There will be no control or direction in this respect;", "BulletList");
+            section.AddParagraph("You will determine how to deliver this engagement and your working methods are up to you to determine, indicating no control & direction;", "BulletList");
+            section.AddParagraph("It would not be possible for us to provide any control & direction in terms of how you deliver the engagement due to the specialist nature of the tasks required;", "BulletList");
+            section.AddParagraph("There are no employees that are undertaking this role within the organisation – we have engaged your business for the specialist skills it can provide;", "BulletList");
+            section.AddParagraph("The role is not reliant on close working with our members of staff and you may therefore undertake the work at a time and place of your choosing with no control or direction in this respect;", "BulletList");
+            section.AddParagraph("The role can only be performed from one specific location and there can therefore be no control or direction in terms of where the engagement is undertaken;", "BulletList");
+
+
+            //need new paragraph now
+            paragraph = section.AddParagraph();
+            paragraph.AddLineBreak();
+            paragraph.AddFormattedText("Financial Risk:", "bold1");
+            paragraph.AddLineBreak();
+            section.AddParagraph("We acknowledge the need for you to invest a significant sum of money in up-front training and equipment required to undertake this engagement which indicates financial risk for your business;", "BulletList");
+            section.AddParagraph("There are significant travel expenses expected in this engagement which will not be reimbursed and which you will be expected to cover from your fee;", "BulletList");
+            section.AddParagraph("You would be expected to correct defective work in your own time and at your own cost – this is part of your contractual terms and conditions and indicates some financial risk for your business;", "BulletList");
+
+
+            //need new paragraph now
+            paragraph = section.AddParagraph();
+            paragraph.AddLineBreak();
+            paragraph.AddFormattedText("Business on Own Account:", "bold1");
+            paragraph.AddLineBreak();
+            section.AddParagraph("You are providing multiple contracts for multiple different clients and the call on your time from this engagement makes this practical, which is indicative of being in business / self-employment.", "BulletList");
+
+
+
+
+
+
+
+
+
+            //final creation steps
+            document.UseCmykColor = true;
+            const bool unicode = false;
+            const PdfFontEmbedding embedding = PdfFontEmbedding.Always;
+            PdfDocumentRenderer pdfRenderer = new PdfDocumentRenderer(unicode, embedding);
+            pdfRenderer.Document = document;
+            pdfRenderer.RenderDocument();
+
+
+            string outputPdfPath = System.IO.Path.Combine(tempLocation, outputPdfName);
+            pdfRenderer.PdfDocument.Save(outputPdfPath);
+
+
+            //then upload final out final to the sharepoint
+            sharepointLib.UploadFinalReport1(outputPdfPath, outputPdfName);
+        }
+
+        #endregion CL
+
+
         #region Test PDF
         public void CreateTestPdf(string tempLocation, string outputPdfName)
         {
@@ -1499,6 +1788,7 @@ namespace ControlAssuranceAPI.Libs
 
         #endregion
 
+        #region Util methods
 
         private void MergePDFs(string targetPath, List<string> pdfs)
         {
@@ -1538,9 +1828,9 @@ namespace ControlAssuranceAPI.Libs
             }
         }
 
+        #endregion Util methods
 
-        
     }
 
-    
+
 }

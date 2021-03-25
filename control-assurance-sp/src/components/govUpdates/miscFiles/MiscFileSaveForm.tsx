@@ -74,11 +74,12 @@ export default class MiscFileSaveForm extends React.Component<IMiscFileSaveFormP
     public render(): React.ReactElement<IMiscFileSaveFormProps> {
         //const errors = this.state.ValidationErrors;
         return (
-            <Panel isOpen={this.props.showForm} headerText={"Misc File"} type={PanelType.medium} onRenderNavigation={() => <FormCommandBar onSave={this.saveMiscFile} onCancel={this.props.onCancelled} />}>
+            <Panel isOpen={this.props.showForm} headerText={"Misc File"} type={PanelType.medium} onRenderNavigation={() => <FormCommandBar onSave={this.saveMiscFile} onCancel={this.props.onCancelled} saveDisabled={this.state.ShowUploadProgress} />}>
                 <div className={styles.cr}>
                     {this.renderFormFields()}
                     <FormButtons
                         primaryText={"Save"}
+                        primaryDisabled={this.state.ShowUploadProgress}
                         onPrimaryClick={() => this.saveMiscFile()}
                         onSecondaryClick={this.props.onCancelled}
                     />

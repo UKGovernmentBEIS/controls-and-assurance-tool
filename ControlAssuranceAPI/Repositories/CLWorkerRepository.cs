@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Principal;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace ControlAssuranceAPI.Repositories
@@ -174,6 +176,71 @@ namespace ControlAssuranceAPI.Repositories
             return clWorker;
         }
 
+        public string CreateSDSPdf(int clWorkerId, string spSiteUrl)
+        {
+            string initialReturnStatus = "Working... Please Wait";
+            this.ChangeSDSPdfStatus(clWorkerId, initialReturnStatus, null);
+            Task.Run(() =>
+            {
+                CLWorkerRepository cLWorkerRepository = new CLWorkerRepository(base.user);
+                try
+                {
+                    string tempFolder = @"c:\local\temp\";
+                    string guid = System.Guid.NewGuid().ToString();
+                    string tempLocation = System.IO.Path.Combine(tempFolder, guid);
+                    System.IO.Directory.CreateDirectory(tempLocation);
+
+                    
+                    var worker = cLWorkerRepository.Find(clWorkerId);
+
+                    UserRepository userRepository = new UserRepository(base.user);
+
+                    GoDefFormRepository goDFR = new GoDefFormRepository(base.user);
+                    string spAccessDetails = goDFR.GoDefForms.FirstOrDefault(x => x.ID == 1).Access;
+
+                    string outputPdfName = $"CL_SDS_{clWorkerId}.pdf";
+
+
+                    Libs.PdfLib pdfLib = new Libs.PdfLib();
+                    pdfLib.CreateCLSDSPdf(worker, userRepository, tempLocation, outputPdfName, spSiteUrl, spAccessDetails);
+
+                    Thread.Sleep(500);
+                    //delete temp folder which we created earlier
+                    System.IO.Directory.Delete(tempLocation, true);
+
+                    cLWorkerRepository.ChangeSDSPdfStatus(clWorkerId, "Cr", outputPdfName);
+
+                    //should add log
+                }
+                catch (Exception ex)
+                {
+                    //should add log
+                    string msg = "Err: " + ex.Message;
+                    cLWorkerRepository.ChangeSDSPdfStatus(clWorkerId, msg, null);
+
+                }
+
+
+            });
+
+
+            return initialReturnStatus;
+        }
+
+
+        private void ChangeSDSPdfStatus(int clWorkerId, string pdfStatus, string outputPdfName)
+        {
+            var worker = db.CLWorkers.FirstOrDefault(x => x.ID == clWorkerId);
+
+            worker.SDSPdfStatus = pdfStatus;
+            if (pdfStatus == "Cr")
+            {
+                worker.SDSPdfName = outputPdfName;
+            }
+            worker.SDSPdfDate = DateTime.Now;
+            worker.SDSPdfLastActionUser = base.ApiUser.Title;
+            db.SaveChanges();
+        }
 
 
     }
