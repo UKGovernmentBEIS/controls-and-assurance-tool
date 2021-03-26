@@ -91,6 +91,7 @@ namespace ControlAssuranceAPI.Models
         private CLDefFormRepository cLDefFormRepository;
         private CLCaseRepository cLCaseRepository;
         private CLComFrameworkRepository cLComFrameworkRepository;
+        private CLGenderRepository cLGenderRepository;
         private CLIR35ScopeRepository cLIR35ScopeRepository;
         private CLProfessionalCatRepository cLProfessionalCatRepository;
         private CLStaffGradeRepository cLStaffGradeRepository;
@@ -786,6 +787,14 @@ namespace ControlAssuranceAPI.Models
             get
             {
                 return cLComFrameworkRepository = cLComFrameworkRepository ?? new CLComFrameworkRepository(user, context);
+            }
+        }
+
+        public CLGenderRepository CLGenderRepository
+        {
+            get
+            {
+                return cLGenderRepository = cLGenderRepository ?? new CLGenderRepository(user, context);
             }
         }
 

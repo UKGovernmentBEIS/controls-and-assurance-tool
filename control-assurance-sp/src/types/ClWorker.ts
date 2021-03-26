@@ -19,7 +19,7 @@ export interface ICLWorker  extends IEntity {
     OnbSecurityClearanceId?: number;
 
     OnbContractorTitleId?: number;
-    OnbContractorGender?: string;
+    OnbContractorGenderId?: number;
     OnbContractorDob?: Date;
     OnbContractorNINum?: string;
     OnbContractorPostCode?: string;
@@ -102,7 +102,7 @@ export class CLWorker implements ICLWorker{
     public OnbSecurityClearanceId?: number = null;
 
     public OnbContractorTitleId?: number = null;
-    public OnbContractorGender?: string = null;
+    public OnbContractorGenderId?: number = null;
     public OnbContractorDob?: Date = null;
     public OnbContractorNINum?: string = null;
     public OnbContractorPostCode?: string = null;

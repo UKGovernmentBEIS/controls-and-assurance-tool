@@ -28,7 +28,7 @@ export interface IClPropertiesState extends types.IUserContextWebPartState {
 }
 export class ClPropertiesState extends types.UserContextWebPartState implements IClPropertiesState {
   public LookupData = new LookupData();
-  public SelectedDropList = "Grades";
+  public SelectedDropList = "Gender";
   //public CLStaffGrades: IEntity[] = [];
   //public CLProfessionalCats: IEntity[] = [];
   constructor() {
@@ -41,6 +41,7 @@ export class ClPropertiesState extends types.UserContextWebPartState implements 
 export default class ClProperties extends BaseUserContextWebPartComponent<types.IWebPartComponentProps, ClPropertiesState> {
 
   private periodService: services.PeriodService = new services.PeriodService(this.props.spfxContext, this.props.api);
+  private clGenderService: services.CLGenderService = new services.CLGenderService(this.props.spfxContext, this.props.api);
   private clStaffGradeService: services.CLStaffGradeService = new services.CLStaffGradeService(this.props.spfxContext, this.props.api);
   private clProfessionalCatService: services.CLProfessionalCatService = new services.CLProfessionalCatService(this.props.spfxContext, this.props.api);
   private clWorkLocationService: services.CLWorkLocationService = new services.CLWorkLocationService(this.props.spfxContext, this.props.api);
@@ -186,6 +187,7 @@ export default class ClProperties extends BaseUserContextWebPartComponent<types.
     ];
 
     const drpOptions: IDropdownOption[] = [
+      { key: 'Gender', text: 'Gender' },
       { key: 'Grades', text: 'Grades' },
       { key: 'Professional Categories', text: 'Professional Categories' },
       { key: 'Locations', text: 'Locations' },
@@ -277,6 +279,9 @@ export default class ClProperties extends BaseUserContextWebPartComponent<types.
       //console.log('getEntityServiceDropList - Grades');
       return this.clStaffGradeService;
     }
+    else if (this.state.SelectedDropList === "Gender") {
+      return this.clGenderService;
+    }
     else if (this.state.SelectedDropList === "Professional Categories") {
       //console.log('getEntityServiceDropList - Professional Categories');
       return this.clProfessionalCatService;
@@ -308,6 +313,9 @@ export default class ClProperties extends BaseUserContextWebPartComponent<types.
     if (this.state.SelectedDropList === "Grades") {
       return "Grades";
     }
+    else if (this.state.SelectedDropList === "Gender") {
+      return "Gender";
+    }
     else if (this.state.SelectedDropList === "Professional Categories") {
       return "Professional Categories";
     }
@@ -336,6 +344,9 @@ export default class ClProperties extends BaseUserContextWebPartComponent<types.
   private getEntityNameSingular = (): string => {
     if (this.state.SelectedDropList === "Grades") {
       return "Grade";
+    }
+    else if (this.state.SelectedDropList === "Gender") {
+      return "Gender";
     }
     else if (this.state.SelectedDropList === "Professional Categories") {
       return "Professional Category";

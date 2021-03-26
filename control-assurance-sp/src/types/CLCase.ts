@@ -111,6 +111,7 @@ export interface IClCaseInfo  extends IEntity {
     FBPDecisionByAndDate?: string;
     HRBPDecisionByAndDate?: string;
 
+    OnbContractorGender?: string;
     OnbContractorTitle?: string;
     OnbContractorDobStr?: string;
     OnbStartDateStr?: string;
@@ -180,6 +181,7 @@ export class ClCaseInfo  implements IClCaseInfo {
     public HRBPDecisionByAndDate?: string = "";
 
     public OnbContractorTitle?: string = "";
+    public OnbContractorGender?: string = "";
     public OnbContractorDobStr?: string = "";
     public OnbStartDateStr?: string = "";
     public OnbEndDateStr?: string = "";

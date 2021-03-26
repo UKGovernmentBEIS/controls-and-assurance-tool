@@ -114,6 +114,7 @@ namespace ControlAssuranceAPI
             builder.EntitySet<IAPActionDirectorate>("IAPActionDirectorates");
 
             builder.EntitySet<CLDefForm>("CLDefForms");
+            builder.EntitySet<CLGender>("CLGenders");
             builder.EntitySet<CLCase>("CLCases");
             builder.EntitySet<CLComFramework>("CLComFrameworks");
             builder.EntitySet<CLIR35Scope>("CLIR35Scopes");

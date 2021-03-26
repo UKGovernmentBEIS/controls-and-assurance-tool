@@ -38,6 +38,7 @@ namespace ControlAssuranceAPI.Models
         public virtual DbSet<CLComFramework> CLComFrameworks { get; set; }
         public virtual DbSet<CLDeclarationConflict> CLDeclarationConflicts { get; set; }
         public virtual DbSet<CLDefForm> CLDefForms { get; set; }
+        public virtual DbSet<CLGender> CLGenders { get; set; }
         public virtual DbSet<CLHiringMember> CLHiringMembers { get; set; }
         public virtual DbSet<CLIR35Scope> CLIR35Scope { get; set; }
         public virtual DbSet<CLProfessionalCat> CLProfessionalCats { get; set; }

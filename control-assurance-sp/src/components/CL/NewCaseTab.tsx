@@ -28,6 +28,8 @@ import { getUploadFolder_Report } from '../../types/AppGlobals';
 
 
 
+
+
 export interface INewCaseTabProps extends types.IBaseComponentProps {
 
     //filteredItems: any[];
@@ -53,6 +55,7 @@ export interface INewCaseTabProps extends types.IBaseComponentProps {
 }
 
 export interface ILookupData {
+    CLGenders: IEntity[];
     CLStaffGrades: IEntity[];
     Directorates: IEntity[];
     CLProfessionalCats: IEntity[];
@@ -67,6 +70,7 @@ export interface ILookupData {
 
 export class LookupData implements ILookupData {
 
+    public CLGenders: IEntity[] = [];
     public CLStaffGrades: IEntity[] = [];
     public Directorates: IEntity[] = [];
     public CLProfessionalCats: IEntity[] = [];
@@ -159,6 +163,7 @@ export interface IExtHistroyLink {
 export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCaseTabState> {
 
     private clCaseService: services.CLCaseService = new services.CLCaseService(this.props.spfxContext, this.props.api);
+    private clGenderService: services.CLGenderService = new services.CLGenderService(this.props.spfxContext, this.props.api);
     private clWorkerService: services.CLWorkerService = new services.CLWorkerService(this.props.spfxContext, this.props.api);
     private clCaseEvidenceService: services.CLCaseEvidenceService = new services.CLCaseEvidenceService(this.props.spfxContext, this.props.api);
     private userService: services.UserService = new services.UserService(this.props.spfxContext, this.props.api);
@@ -192,7 +197,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         { ObjectParentProperty: 'CLHiringMembers', ParentIdProperty: 'CLCaseId', ChildIdProperty: 'UserId', ChildService: this.clHiringMemberService },
     ];
 
-    
+
 
     constructor(props: INewCaseTabProps, state: INewCaseTabState) {
         super(props);
@@ -294,6 +299,10 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     }
 
     private renderSectionTitle() {
+
+
+
+
         return (
             <React.Fragment>
                 <h1 style={{ fontFamily: 'Calibri', fontSize: '36px' }}>Contingent Labour Business Case</h1>
@@ -2708,16 +2717,16 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         //if (this.state.Stage !== "Onboarding") return;
         if (this.props.defForm === null) return;
 
-        const genderOptions: IDropdownOption[] = [
-            { key: 'Male', text: 'Male' },
-            { key: 'Female', text: 'Female' },
-        ];
+        // const genderOptions: IDropdownOption[] = [
+        //     { key: 'Male', text: 'Male' },
+        //     { key: 'Female', text: 'Female' },
+        // ];
 
         const fd = this.state.FormDataWorker;
 
 
 
-        const req_OnbContractorGender_Img = fd.OnbContractorGender !== null ? this.checkIconGreen : this.checkIconRed;
+        const req_OnbContractorGender_Img = fd.OnbContractorGenderId !== null ? this.checkIconGreen : this.checkIconRed;
         const req_OnbContractorTitleId_Img = fd.OnbContractorTitleId !== null ? this.checkIconGreen : this.checkIconRed;
         const req_OnbContractorFirstname_Img = fd.OnbContractorFirstname !== null && fd.OnbContractorFirstname.length > 1 ? this.checkIconGreen : this.checkIconRed;
         const req_OnbContractorSurname_Img = fd.OnbContractorSurname !== null && fd.OnbContractorSurname.length > 1 ? this.checkIconGreen : this.checkIconRed;
@@ -2797,9 +2806,9 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                             <div style={{ width: '50%', paddingRight: '5px' }}>
                                 <CrDropdown
                                     placeholder="Select an Option"
-                                    options={genderOptions}
-                                    selectedKey={fd.OnbContractorGender}
-                                    onChanged={(v) => this.changeDropdown_Worker(v, "OnbContractorGender")}
+                                    options={this.state.LookupData.CLGenders.map((p) => { return { key: p.ID, text: p.Title }; })}
+                                    selectedKey={fd.OnbContractorGenderId}
+                                    onChanged={(v) => this.changeDropdown_Worker(v, "OnbContractorGenderId")}
                                 />
 
 
@@ -3651,7 +3660,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                     Contractor gender
                                 </td>
                                 <td style={{ width: '31%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)' }}>
-                                    {fd.OnbContractorGender}
+                                    {caseInfo.OnbContractorGender}
                                 </td>
                                 <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
                                     Contractor title
@@ -4613,10 +4622,10 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                     </table>
                 </div>
 
-                <div style={{marginTop:'5px'}}>
-                    {fd.SDSPdfStatus !== "Working... Please Wait" && <div style={{color:'blue', cursor:'pointer'}} onClick={()=> this.createSDSPdf() }>Create SDS PDF</div>}
-                    {fd.SDSPdfStatus === "Working... Please Wait" &&  <div>Creating SDS... Please Wait.. To refresh status <span style={{color:'blue', cursor:'pointer'}} onClick={()=> this.refreshSDSPdfStatus() }>Click Here</span></div> }
-                    {fd.SDSPdfStatus === "Cr" && <div>Last PDF created by {fd.SDSPdfLastActionUser} on { services.DateService.dateToUkDateTime( fd.SDSPdfDate)} <span style={{color:'blue', cursor:'pointer'}} onClick={()=> this.downloadSDSPdf() }>Download</span>  </div> }
+                <div style={{ marginTop: '5px' }}>
+                    {fd.SDSPdfStatus !== "Working... Please Wait" && <div style={{ color: 'blue', cursor: 'pointer' }} onClick={() => this.createSDSPdf()}>Create SDS PDF</div>}
+                    {fd.SDSPdfStatus === "Working... Please Wait" && <div>Creating SDS... Please Wait.. To refresh status <span style={{ color: 'blue', cursor: 'pointer' }} onClick={() => this.refreshSDSPdfStatus()}>Click Here</span></div>}
+                    {fd.SDSPdfStatus === "Cr" && <div>Last PDF created by {fd.SDSPdfLastActionUser} on {services.DateService.dateToUkDateTime(fd.SDSPdfDate)} <span style={{ color: 'blue', cursor: 'pointer' }} onClick={() => this.downloadSDSPdf()}>Download</span>  </div>}
                 </div>
 
 
@@ -5313,7 +5322,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         if (submitToEngaged === true) {
 
             const fd = this.state.FormDataWorker;
-            if (fd.OnbContractorGender === null) return false;
+            if (fd.OnbContractorGenderId === null) return false;
             if (fd.OnbContractorTitleId === null) return false;
             if (fd.OnbContractorFirstname !== null && fd.OnbContractorFirstname.length > 1) { } else return false;
             if (fd.OnbContractorSurname !== null && fd.OnbContractorSurname.length > 1) { } else return false;
@@ -5537,27 +5546,34 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         }, (err) => { if (this.props.onError) this.props.onError(`Error loading Users lookup data`, err.message); });
     }
 
+    private loadCLGenders = (): void => {
+        this.clGenderService.readAll().then((data: IEntity[]): IEntity[] => {
+            this.setState({ LookupData: this.cloneObject(this.state.LookupData, "CLGenders", data) });
+            return data;
+        }, (err) => { if (this.props.onError) this.props.onError(`Error loading CLGenders lookup data`, err.message); });
+    }
+
     private loadCLStaffGrades = (): void => {
-        this.clStaffGradeService.readAll().then((data: IUser[]): IUser[] => {
+        this.clStaffGradeService.readAll().then((data: IEntity[]): IEntity[] => {
             this.setState({ LookupData: this.cloneObject(this.state.LookupData, "CLStaffGrades", data) });
             return data;
         }, (err) => { if (this.props.onError) this.props.onError(`Error loading CLStaffGrades lookup data`, err.message); });
     }
     private loadDirectorates = (): void => {
-        this.directorateService.readAll().then((data: IUser[]): IUser[] => {
+        this.directorateService.readAll().then((data: IEntity[]): IEntity[] => {
             this.setState({ LookupData: this.cloneObject(this.state.LookupData, "Directorates", data) });
             return data;
         }, (err) => { if (this.props.onError) this.props.onError(`Error loading Directorates lookup data`, err.message); });
     }
     private loadCLProfessionalCats = (): void => {
-        this.clProfessionalCatService.readAll().then((data: IUser[]): IUser[] => {
+        this.clProfessionalCatService.readAll().then((data: IEntity[]): IEntity[] => {
             this.setState({ LookupData: this.cloneObject(this.state.LookupData, "CLProfessionalCats", data) });
             return data;
         }, (err) => { if (this.props.onError) this.props.onError(`Error loading CLProfessionalCats lookup data`, err.message); });
     }
 
     private loadCLWorkLocations = (): void => {
-        this.clWorkLocationService.readAll().then((data: IUser[]): IUser[] => {
+        this.clWorkLocationService.readAll().then((data: IEntity[]): IEntity[] => {
             this.setState({ LookupData: this.cloneObject(this.state.LookupData, "CLWorkLocations", data) });
             return data;
         }, (err) => { if (this.props.onError) this.props.onError(`Error loading CLWorkLocations lookup data`, err.message); });
@@ -5570,7 +5586,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         }, (err) => { if (this.props.onError) this.props.onError(`Error loading CLWorkLocations lookup data`, err.message); });
     }
     private loadCLIR35Scopes = (): void => {
-        this.clIR35ScopeService.readAll().then((data: IUser[]): IUser[] => {
+        this.clIR35ScopeService.readAll().then((data: IEntity[]): IEntity[] => {
             this.setState({ LookupData: this.cloneObject(this.state.LookupData, "CLIR35Scopes", data) });
             return data;
         }, (err) => { if (this.props.onError) this.props.onError(`Error loading CLIR35Scopes lookup data`, err.message); });
@@ -5609,6 +5625,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
         return Promise.all([
             this.loadUsers(),
+            this.loadCLGenders(),
             this.loadCLStaffGrades(),
             this.loadDirectorates(),
             this.loadCLProfessionalCats(),
@@ -6381,7 +6398,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
     private downloadSDSPdf = (): void => {
         console.log('download sds pdf');
-        const fileName:string = this.state.FormDataWorker.SDSPdfName;
+        const fileName: string = this.state.FormDataWorker.SDSPdfName;
 
         const f = sp.web.getFolderByServerRelativeUrl(this.UploadFolder_Report).files.getByName(fileName);
 

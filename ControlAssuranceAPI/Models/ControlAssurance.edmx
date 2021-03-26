@@ -153,6 +153,13 @@
           <Property Name="OnboardingStageFormText" Type="nvarchar(max)" />
           <Property Name="LeavingStageFormText" Type="nvarchar(max)" />
         </EntityType>
+        <EntityType Name="CLGender">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="500" />
+        </EntityType>
         <EntityType Name="CLHiringMember">
           <Key>
             <PropertyRef Name="ID" />
@@ -219,7 +226,6 @@
           <Property Name="PurchaseOrderNum" Type="nvarchar" MaxLength="200" />
           <Property Name="OnbSecurityClearanceId" Type="int" />
           <Property Name="OnbContractorTitleId" Type="int" />
-          <Property Name="OnbContractorGender" Type="nvarchar" MaxLength="50" />
           <Property Name="OnbContractorDob" Type="datetime" />
           <Property Name="OnbContractorNINum" Type="nvarchar" MaxLength="100" />
           <Property Name="OnbContractorPostCode" Type="nvarchar" MaxLength="50" />
@@ -274,6 +280,7 @@
           <Property Name="SDSPdfDate" Type="datetime" />
           <Property Name="SDSPdfName" Type="nvarchar" MaxLength="4000" />
           <Property Name="SDSPdfLastActionUser" Type="nvarchar" MaxLength="500" />
+          <Property Name="OnbContractorGenderId" Type="int" />
         </EntityType>
         <EntityType Name="CLWorkLocation">
           <Key>
@@ -1348,6 +1355,18 @@
             </Principal>
             <Dependent Role="CLWorker">
               <PropertyRef Name="OnbDecConflictId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CLWorker_CLGender">
+          <End Role="CLGender" Type="Self.CLGender" Multiplicity="0..1" />
+          <End Role="CLWorker" Type="Self.CLWorker" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CLGender">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CLWorker">
+              <PropertyRef Name="OnbContractorGenderId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2429,6 +2448,7 @@
           <EntitySet Name="CLComFramework" EntityType="Self.CLComFramework" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CLDeclarationConflict" EntityType="Self.CLDeclarationConflict" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CLDefForm" EntityType="Self.CLDefForm" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CLGender" EntityType="Self.CLGender" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CLHiringMember" EntityType="Self.CLHiringMember" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CLIR35Scope" EntityType="Self.CLIR35Scope" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CLProfessionalCat" EntityType="Self.CLProfessionalCat" Schema="dbo" store:Type="Tables" />
@@ -2558,6 +2578,10 @@
           </AssociationSet>
           <AssociationSet Name="FK_CLWorker_CLDeclarationConflict" Association="Self.FK_CLWorker_CLDeclarationConflict">
             <End Role="CLDeclarationConflict" EntitySet="CLDeclarationConflict" />
+            <End Role="CLWorker" EntitySet="CLWorker" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CLWorker_CLGender" Association="Self.FK_CLWorker_CLGender">
+            <End Role="CLGender" EntitySet="CLGender" />
             <End Role="CLWorker" EntitySet="CLWorker" />
           </AssociationSet>
           <AssociationSet Name="FK_CLWorker_CLSecurityClearance" Association="Self.FK_CLWorker_CLSecurityClearance">
@@ -3076,6 +3100,14 @@
           <Property Name="OnboardingStageFormText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="LeavingStageFormText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EntityType Name="CLGender">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="CLWorkers" Relationship="Self.FK_CLWorker_CLGender" FromRole="CLGender" ToRole="CLWorker" />
+        </EntityType>
         <EntityType Name="CLHiringMember">
           <Key>
             <PropertyRef Name="ID" />
@@ -3149,7 +3181,6 @@
           <Property Name="PurchaseOrderNum" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="OnbSecurityClearanceId" Type="Int32" />
           <Property Name="OnbContractorTitleId" Type="Int32" />
-          <Property Name="OnbContractorGender" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="OnbContractorDob" Type="DateTime" Precision="3" />
           <Property Name="OnbContractorNINum" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="OnbContractorPostCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -3204,8 +3235,10 @@
           <Property Name="SDSPdfDate" Type="DateTime" Precision="3" />
           <Property Name="SDSPdfName" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
           <Property Name="SDSPdfLastActionUser" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="OnbContractorGenderId" Type="Int32" />
           <NavigationProperty Name="CLCase" Relationship="Self.FK_CLWorker_CLCase" FromRole="CLWorker" ToRole="CLCase" />
           <NavigationProperty Name="CLDeclarationConflict" Relationship="Self.FK_CLWorker_CLDeclarationConflict" FromRole="CLWorker" ToRole="CLDeclarationConflict" />
+          <NavigationProperty Name="CLGender" Relationship="Self.FK_CLWorker_CLGender" FromRole="CLWorker" ToRole="CLGender" />
           <NavigationProperty Name="CLSecurityClearance" Relationship="Self.FK_CLWorker_CLSecurityClearance" FromRole="CLWorker" ToRole="CLSecurityClearance" />
           <NavigationProperty Name="CLStaffGrade" Relationship="Self.FK_CLWorker_CLStaffGrade" FromRole="CLWorker" ToRole="CLStaffGrade" />
           <NavigationProperty Name="PersonTitle" Relationship="Self.FK_CLWorker_PersonTitle" FromRole="CLWorker" ToRole="PersonTitle" />
@@ -4450,6 +4483,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_CLWorker_CLGender">
+          <End Role="CLGender" Type="Self.CLGender" Multiplicity="0..1" />
+          <End Role="CLWorker" Type="Self.CLWorker" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CLGender">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CLWorker">
+              <PropertyRef Name="OnbContractorGenderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_CLHiringMember_User">
           <End Role="User" Type="Self.User" Multiplicity="0..1" />
           <End Role="CLHiringMember" Type="Self.CLHiringMember" Multiplicity="*" />
@@ -5522,6 +5567,7 @@
           <EntitySet Name="CLComFrameworks" EntityType="Self.CLComFramework" />
           <EntitySet Name="CLDeclarationConflicts" EntityType="Self.CLDeclarationConflict" />
           <EntitySet Name="CLDefForms" EntityType="Self.CLDefForm" />
+          <EntitySet Name="CLGenders" EntityType="Self.CLGender" />
           <EntitySet Name="CLHiringMembers" EntityType="Self.CLHiringMember" />
           <EntitySet Name="CLIR35Scope" EntityType="Self.CLIR35Scope" />
           <EntitySet Name="CLProfessionalCats" EntityType="Self.CLProfessionalCat" />
@@ -5647,6 +5693,10 @@
           </AssociationSet>
           <AssociationSet Name="FK_CLWorker_CLDeclarationConflict" Association="Self.FK_CLWorker_CLDeclarationConflict">
             <End Role="CLDeclarationConflict" EntitySet="CLDeclarationConflicts" />
+            <End Role="CLWorker" EntitySet="CLWorkers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CLWorker_CLGender" Association="Self.FK_CLWorker_CLGender">
+            <End Role="CLGender" EntitySet="CLGenders" />
             <End Role="CLWorker" EntitySet="CLWorkers" />
           </AssociationSet>
           <AssociationSet Name="FK_CLHiringMember_User" Association="Self.FK_CLHiringMember_User">
@@ -6363,6 +6413,14 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="CLGenders">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.CLGender">
+              <MappingFragment StoreEntitySet="CLGender">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="CLHiringMembers">
             <EntityTypeMapping TypeName="ControlAssuranceModel.CLHiringMember">
               <MappingFragment StoreEntitySet="CLHiringMember">
@@ -6434,7 +6492,6 @@
                 <ScalarProperty Name="PurchaseOrderNum" ColumnName="PurchaseOrderNum" />
                 <ScalarProperty Name="OnbSecurityClearanceId" ColumnName="OnbSecurityClearanceId" />
                 <ScalarProperty Name="OnbContractorTitleId" ColumnName="OnbContractorTitleId" />
-                <ScalarProperty Name="OnbContractorGender" ColumnName="OnbContractorGender" />
                 <ScalarProperty Name="OnbContractorDob" ColumnName="OnbContractorDob" />
                 <ScalarProperty Name="OnbContractorNINum" ColumnName="OnbContractorNINum" />
                 <ScalarProperty Name="OnbContractorPostCode" ColumnName="OnbContractorPostCode" />
@@ -6489,6 +6546,7 @@
                 <ScalarProperty Name="SDSPdfDate" ColumnName="SDSPdfDate" />
                 <ScalarProperty Name="SDSPdfName" ColumnName="SDSPdfName" />
                 <ScalarProperty Name="SDSPdfLastActionUser" ColumnName="SDSPdfLastActionUser" />
+                <ScalarProperty Name="OnbContractorGenderId" ColumnName="OnbContractorGenderId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

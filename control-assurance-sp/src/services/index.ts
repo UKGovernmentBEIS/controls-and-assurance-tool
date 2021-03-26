@@ -86,6 +86,7 @@ export { IAPActionUpdateService } from './IAPActionUpdateService';
 export { IAPActionDirectorateService } from './IAPActionDirectorateService';
 
 export { CLDefFormService } from './CLDefFormService';
+export { CLGenderService } from './CLGenderService';
 export { CLCaseService } from './CLCaseService';
 export { CLStaffGradeService } from './CLStaffGradeService';
 export { CLProfessionalCatService } from './CLProfessionalCatService';

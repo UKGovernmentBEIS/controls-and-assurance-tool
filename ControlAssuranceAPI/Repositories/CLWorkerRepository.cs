@@ -138,7 +138,7 @@ namespace ControlAssuranceAPI.Repositories
 
             }
 
-            clWorker.OnbContractorGender = inputWorker.OnbContractorGender;
+            clWorker.OnbContractorGenderId = inputWorker.OnbContractorGenderId;
             clWorker.OnbContractorTitleId = inputWorker.OnbContractorTitleId;
             clWorker.OnbContractorFirstname = inputWorker.OnbContractorFirstname;
             clWorker.OnbContractorSurname = inputWorker.OnbContractorSurname;

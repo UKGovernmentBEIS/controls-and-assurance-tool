@@ -193,6 +193,7 @@ namespace ControlAssuranceAPI.Repositories
                 if((CaseStages.GetStageNumber(ret.Stage) >= CaseStages.Onboarding.Number) || clViewer == true)
                 {
                     ret.OnbContractorTitle = w.PersonTitle?.Title ?? "";
+                    ret.OnbContractorGender = w.CLGender?.Title ?? "";
                     ret.OnbContractorDobStr = w.OnbContractorDob?.ToString("dd/MM/yyyy") ?? "";
                     ret.OnbStartDateStr = w.OnbStartDate?.ToString("dd/MM/yyyy") ?? "";
                     ret.OnbEndDateStr = w.OnbEndDate?.ToString("dd/MM/yyyy") ?? "";
@@ -838,7 +839,7 @@ namespace ControlAssuranceAPI.Repositories
             cLWorker.Stage = CaseStages.Draft.Name;
             cLWorker.ExtendedFromWorkerId = existingWorkerId;
 
-            cLWorker.OnbContractorGender = existingWorker.OnbContractorGender;
+            cLWorker.OnbContractorGenderId = existingWorker.OnbContractorGenderId;
             cLWorker.OnbContractorTitleId = existingWorker.OnbContractorTitleId;
             cLWorker.OnbContractorFirstname = existingWorker.OnbContractorFirstname;
             cLWorker.OnbContractorSurname = existingWorker.OnbContractorSurname;

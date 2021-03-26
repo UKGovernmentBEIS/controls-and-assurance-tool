@@ -31,7 +31,6 @@ namespace ControlAssuranceAPI.Models
         public string PurchaseOrderNum { get; set; }
         public Nullable<int> OnbSecurityClearanceId { get; set; }
         public Nullable<int> OnbContractorTitleId { get; set; }
-        public string OnbContractorGender { get; set; }
         public Nullable<System.DateTime> OnbContractorDob { get; set; }
         public string OnbContractorNINum { get; set; }
         public string OnbContractorPostCode { get; set; }
@@ -86,9 +85,11 @@ namespace ControlAssuranceAPI.Models
         public Nullable<System.DateTime> SDSPdfDate { get; set; }
         public string SDSPdfName { get; set; }
         public string SDSPdfLastActionUser { get; set; }
+        public Nullable<int> OnbContractorGenderId { get; set; }
     
         public virtual CLCase CLCase { get; set; }
         public virtual CLDeclarationConflict CLDeclarationConflict { get; set; }
+        public virtual CLGender CLGender { get; set; }
         public virtual CLSecurityClearance CLSecurityClearance { get; set; }
         public virtual CLStaffGrade CLStaffGrade { get; set; }
         public virtual PersonTitle PersonTitle { get; set; }
