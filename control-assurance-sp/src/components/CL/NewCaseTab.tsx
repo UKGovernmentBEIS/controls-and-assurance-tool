@@ -4603,6 +4603,24 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                             </tr>
 
                             <tr>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)', borderBottom: '1px solid rgb(166,166,166)' }}>
+                                    Pass checked by
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)' }}>
+                                    {caseInfo.PassCheckedBy}
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)', borderBottom: '1px solid rgb(166,166,166)' }}>
+                                    Pass checked on
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)' }}>
+                                    {caseInfo.PassCheckedOn}
+                                </td>
+
+                            </tr>
+
+                            {/*
+
+                            <tr>
                                 <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
                                     Pass checked by
                                 </td>
@@ -4617,7 +4635,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                 </td>
 
                             </tr>
-                            {/*
+                            
                             <tr>
                                 <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)', borderBottom: '1px solid rgb(166,166,166)' }}>
                                     Contract checked by
