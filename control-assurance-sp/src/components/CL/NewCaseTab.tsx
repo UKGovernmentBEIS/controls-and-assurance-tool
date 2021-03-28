@@ -1019,8 +1019,8 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                     onChanged={(v) => this.changeDropdown(v, "ComPSRAccountId")}
                                 />
 
-                                {fd.ComPSRAccountId === 'No' && <div style={{ fontSize: '12px', fontStyle: 'italic', paddingTop: '5px', marginTop: '0px', paddingLeft: '0px' }}>
-                                    Note: Please contact PSR help desk to have one arranged, you will have to raise a worker requirement on Fieldglass.
+                                {fd.ComPSRAccountId === 'No' && <div style={{ color: 'green' ,  fontSize: '14px', fontStyle: 'italic', paddingTop: '5px', marginTop: '0px', paddingLeft: '0px' }}>
+                                    Note: Please contact PSR help desk to have one arranged, you will have to raise a worker requirement on Fieldglass. Email: helpdesk@publicsectorresourcing.co.uk  Phone: 0203 862 2487"
                                 </div>}
 
                             </div>}
