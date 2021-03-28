@@ -2730,8 +2730,8 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         const req_OnbContractorTitleId_Img = fd.OnbContractorTitleId !== null ? this.checkIconGreen : this.checkIconRed;
         const req_OnbContractorFirstname_Img = fd.OnbContractorFirstname !== null && fd.OnbContractorFirstname.length > 1 ? this.checkIconGreen : this.checkIconRed;
         const req_OnbContractorSurname_Img = fd.OnbContractorSurname !== null && fd.OnbContractorSurname.length > 1 ? this.checkIconGreen : this.checkIconRed;
-        const req_OnbContractorDob_Img = fd.OnbContractorDob !== null ? this.checkIconGreen : this.checkIconRed;
-        const req_OnbContractorNINum_Img = fd.OnbContractorNINum !== null && fd.OnbContractorNINum.length > 1 ? this.checkIconGreen : this.checkIconRed;
+        //const req_OnbContractorDob_Img = fd.OnbContractorDob !== null ? this.checkIconGreen : this.checkIconRed;
+        //const req_OnbContractorNINum_Img = fd.OnbContractorNINum !== null && fd.OnbContractorNINum.length > 1 ? this.checkIconGreen : this.checkIconRed;
         const req_OnbContractorPhone_Img = fd.OnbContractorPhone !== null && fd.OnbContractorPhone.length > 1 ? this.checkIconGreen : this.checkIconRed;
         const req_OnbContractorEmail_Img = fd.OnbContractorEmail !== null && fd.OnbContractorEmail.length > 1 ? this.checkIconGreen : this.checkIconRed;
         const req_OnbContractorHomeAddress_Img = fd.OnbContractorHomeAddress !== null && fd.OnbContractorHomeAddress.length > 1 ? this.checkIconGreen : this.checkIconRed;
@@ -2760,10 +2760,12 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         const req_OnbDecConflictId_Img = fd.OnbDecConflictId !== null ? this.checkIconGreen : this.checkIconRed;
 
         const req_OnbLineManagerUserId_Img = fd.OnbLineManagerUserId !== null ? this.checkIconGreen : this.checkIconRed;
+
+        /*
         const req_OnbLineManagerGradeId_Img = fd.OnbLineManagerGradeId !== null ? this.checkIconGreen : this.checkIconRed;
         const req_OnbLineManagerEmployeeNum_Img = fd.OnbLineManagerEmployeeNum !== null && fd.OnbLineManagerEmployeeNum.length > 1 ? this.checkIconGreen : this.checkIconRed;
         const req_OnbLineManagerPhone_Img = fd.OnbLineManagerPhone !== null && fd.OnbLineManagerPhone.length > 1 ? this.checkIconGreen : this.checkIconRed;
-
+        */
 
 
         return (
@@ -2905,9 +2907,11 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                                 <div className={styles.flexContainerSectionQuestion}>
                                     <div className={styles.sectionQuestionCol1}><span>Contractor NI Number</span></div>
+                                    {/*
                                     <div className={styles.sectionQuestionCol2}>
                                         <img src={req_OnbContractorNINum_Img} />
                                     </div>
+                                    */}
                                 </div>
 
                             </div>
@@ -3433,9 +3437,11 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                                 <div className={styles.flexContainerSectionQuestion}>
                                     <div className={styles.sectionQuestionCol1}><span>Line Manager grade</span></div>
+                                    {/*
                                     <div className={styles.sectionQuestionCol2}>
                                         <img src={req_OnbLineManagerGradeId_Img} />
                                     </div>
+                                    */}
                                 </div>
 
                             </div>
@@ -3483,9 +3489,11 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                                 <div className={styles.flexContainerSectionQuestion}>
                                     <div className={styles.sectionQuestionCol1}><span>Line Manager Employee Number</span></div>
+                                    {/*
                                     <div className={styles.sectionQuestionCol2}>
                                         <img src={req_OnbLineManagerEmployeeNum_Img} />
                                     </div>
+                                    */}
                                 </div>
 
                             </div>
@@ -3493,9 +3501,11 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                                 <div className={styles.flexContainerSectionQuestion}>
                                     <div className={styles.sectionQuestionCol1}><span>Line Manager telephone number</span></div>
+                                    {/*
                                     <div className={styles.sectionQuestionCol2}>
                                         <img src={req_OnbLineManagerPhone_Img} />
                                     </div>
+                                    */}
                                 </div>
 
                             </div>
@@ -3895,11 +3905,13 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         const req_UKSBSCheckedById_Img = fd.UKSBSCheckedById !== null ? this.checkIconGreen : this.checkIconRed;
         const req_UKSBSCheckedByOn_Img = fd.UKSBSCheckedOn !== null ? this.checkIconGreen : this.checkIconRed;
 
+        /*
         const req_PassCheckedById_Img = fd.PassCheckedById !== null ? this.checkIconGreen : this.checkIconRed;
         const req_PassCheckedOn_Img = fd.PassCheckedOn !== null ? this.checkIconGreen : this.checkIconRed;
 
         const req_ContractCheckedById_Img = fd.ContractCheckedById !== null ? this.checkIconGreen : this.checkIconRed;
         const req_ContractCheckedOn_Img = fd.ContractCheckedOn !== null ? this.checkIconGreen : this.checkIconRed;
+        */
 
 
 
@@ -4302,9 +4314,11 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                                 <div className={styles.flexContainerSectionQuestion}>
                                     <div className={styles.sectionQuestionCol1}><span>Pass checked by</span></div>
+                                    {/*
                                     <div className={styles.sectionQuestionCol2}>
                                         <img src={req_PassCheckedById_Img} />
                                     </div>
+                                    */}
                                 </div>
 
                             </div>
@@ -4312,9 +4326,11 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                                 <div className={styles.flexContainerSectionQuestion}>
                                     <div className={styles.sectionQuestionCol1}><span>Pass checked on</span></div>
+                                    {/*
                                     <div className={styles.sectionQuestionCol2}>
                                         <img src={req_PassCheckedOn_Img} />
                                     </div>
+                                    */}
                                 </div>
 
                             </div>
@@ -4351,7 +4367,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                     </div>
 
 
-                    {/* 8th row */}
+                    {/* 8th row - remove for now - Tas 28 Mar 2021
 
                     <div className={styles.formField}>
 
@@ -4406,6 +4422,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                         </div>
                     </div>
+                    */}
 
 
 
@@ -4600,7 +4617,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                 </td>
 
                             </tr>
-
+                            {/*
                             <tr>
                                 <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)', borderBottom: '1px solid rgb(166,166,166)' }}>
                                     Contract checked by
@@ -4616,6 +4633,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                 </td>
 
                             </tr>
+                            */}
 
 
                         </tbody>
@@ -4658,9 +4676,10 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         const req_LeUKSBSCheckedById_Img = fd.LeUKSBSCheckedById !== null ? this.checkIconGreen : this.checkIconRed;
         const req_LeUKSBSCheckedOn_Img = fd.LeUKSBSCheckedOn !== null ? this.checkIconGreen : this.checkIconRed;
 
+        /*
         const req_LePassCheckedById_Img = fd.LePassCheckedById !== null ? this.checkIconGreen : this.checkIconRed;
         const req_LePassCheckedOn_Img = fd.LePassCheckedOn !== null ? this.checkIconGreen : this.checkIconRed;
-
+        */
 
 
         return (
@@ -4993,9 +5012,11 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                                 <div className={styles.flexContainerSectionQuestion}>
                                     <div className={styles.sectionQuestionCol1}><span>Pass checked by</span></div>
+                                    {/*
                                     <div className={styles.sectionQuestionCol2}>
                                         <img src={req_LePassCheckedById_Img} />
                                     </div>
+                                    */}
                                 </div>
 
                             </div>
@@ -5003,9 +5024,11 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                                 <div className={styles.flexContainerSectionQuestion}>
                                     <div className={styles.sectionQuestionCol1}><span>Pass checked on</span></div>
+                                    {/*
                                     <div className={styles.sectionQuestionCol2}>
                                         <img src={req_LePassCheckedOn_Img} />
                                     </div>
+                                    */}
                                 </div>
 
                             </div>
@@ -5212,7 +5235,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                 </td>
 
                             </tr>
-
+                            {/*
                             <tr>
                                 <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)', borderBottom: '1px solid rgb(166,166,166)' }}>
                                     Contract checked by
@@ -5228,7 +5251,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                 </td>
 
                             </tr>
-
+                            */}
 
                         </tbody>
 
@@ -5331,7 +5354,9 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
             /*
             if (fd.OnbContractorDob === null) return false;
             */
+            /*
             if (fd.OnbContractorNINum !== null && fd.OnbContractorNINum.length > 1) { } else return false;
+            */
             if (fd.OnbContractorPhone !== null && fd.OnbContractorPhone.length > 1) { } else return false;
             if (fd.OnbContractorEmail !== null && fd.OnbContractorEmail.length > 1) { } else return false;
             if (fd.OnbContractorHomeAddress !== null && fd.OnbContractorHomeAddress.length > 1) { } else return false;
@@ -5359,9 +5384,11 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
             if (fd.OnbDecConflictId === null) return false;
 
             if (fd.OnbLineManagerUserId === null) return false;
+            /*
             if (fd.OnbLineManagerGradeId === null) return false;
             if (fd.OnbLineManagerEmployeeNum !== null && fd.OnbLineManagerEmployeeNum.length > 1) { } else return false;
             if (fd.OnbLineManagerPhone !== null && fd.OnbLineManagerPhone.length > 1) { } else return false;
+            */
 
 
 
@@ -5981,9 +6008,9 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         if (fd.BPSSCheckedById !== null && fd.BPSSCheckedOn !== null &&
             fd.POCheckedById !== null && fd.POCheckedOn !== null &&
             fd.ITCheckedById !== null && fd.ITCheckedOn !== null &&
-            fd.UKSBSCheckedById !== null && fd.UKSBSCheckedOn !== null &&
-            fd.PassCheckedById !== null && fd.PassCheckedOn !== null &&
-            fd.ContractCheckedById !== null && fd.ContractCheckedOn !== null) {
+            fd.UKSBSCheckedById !== null && fd.UKSBSCheckedOn !== null) {
+            //fd.PassCheckedById !== null && fd.PassCheckedOn !== null &&
+            //fd.ContractCheckedById !== null && fd.ContractCheckedOn !== null) {
             console.log('engaged all checks ok');
             this.setState({ Engaged_MoveToChecksDoneBtn: true });
         }
@@ -6004,8 +6031,8 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
             fd.LeContractorDetailsCheckedById !== null && fd.LeContractorDetailsCheckedOn !== null &&
             fd.LeITCheckedById !== null && fd.LeITCheckedOn !== null &&
-            fd.LeUKSBSCheckedById !== null && fd.LeUKSBSCheckedOn !== null &&
-            fd.LePassCheckedById !== null && fd.LePassCheckedOn !== null) {
+            fd.LeUKSBSCheckedById !== null && fd.LeUKSBSCheckedOn !== null) { 
+            //fd.LePassCheckedById !== null && fd.LePassCheckedOn !== null) {
             console.log('leaving all checks ok');
             this.setState({ Leaving_MoveToArchiveBtn: true });
         }
