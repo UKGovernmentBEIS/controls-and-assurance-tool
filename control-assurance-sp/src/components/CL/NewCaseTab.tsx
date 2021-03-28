@@ -1019,7 +1019,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                     onChanged={(v) => this.changeDropdown(v, "ComPSRAccountId")}
                                 />
 
-                                {fd.ComPSRAccountId === 'No' && <div style={{ color: 'limegreen' ,  fontSize: '14px', fontStyle: 'italic', paddingTop: '5px', marginTop: '0px', paddingLeft: '0px' }}>
+                                {fd.ComPSRAccountId === 'No' && <div style={{ color: 'navy' ,  fontSize: '14px', fontStyle: 'italic', paddingTop: '5px', marginTop: '0px', paddingLeft: '0px' }}>
                                     Note: Please contact PSR help desk to have one arranged, you will have to raise a worker requirement on Fieldglass. Email: helpdesk@publicsectorresourcing.co.uk  Phone: 0203 862 2487"
                                 </div>}
 
@@ -2893,9 +2893,11 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                                 <div className={styles.flexContainerSectionQuestion}>
                                     <div className={styles.sectionQuestionCol1}><span>Contractor date of birth</span></div>
+                                    {/*
                                     <div className={styles.sectionQuestionCol2}>
                                         <img src={req_OnbContractorDob_Img} />
                                     </div>
+                                    */}
                                 </div>
 
                             </div>
