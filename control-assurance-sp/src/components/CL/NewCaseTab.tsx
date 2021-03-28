@@ -907,7 +907,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                     fd.CaseType !== "Extension" &&
                                     <div style={{ width: '50%', }}>
 
-                                        <div style={{ fontSize: '12px', fontStyle: 'italic', paddingTop: '0px', marginTop: '0px', paddingLeft: '10px' }}>
+                                        <div style={{ fontSize: '14px', color: 'limegreen', fontStyle: 'italic', paddingTop: '0px', marginTop: '0px', paddingLeft: '10px' }}>
                                             Note: if case has multiple positions, the system will only show it as one case to the approvers. Once the case has been approved, it will create multiple records for onboarding each worker individually.
                                         </div>
                                     </div>
@@ -1019,7 +1019,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                     onChanged={(v) => this.changeDropdown(v, "ComPSRAccountId")}
                                 />
 
-                                {fd.ComPSRAccountId === 'No' && <div style={{ color: 'green' ,  fontSize: '14px', fontStyle: 'italic', paddingTop: '5px', marginTop: '0px', paddingLeft: '0px' }}>
+                                {fd.ComPSRAccountId === 'No' && <div style={{ color: 'limegreen' ,  fontSize: '14px', fontStyle: 'italic', paddingTop: '5px', marginTop: '0px', paddingLeft: '0px' }}>
                                     Note: Please contact PSR help desk to have one arranged, you will have to raise a worker requirement on Fieldglass. Email: helpdesk@publicsectorresourcing.co.uk  Phone: 0203 862 2487"
                                 </div>}
 
@@ -2436,7 +2436,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                             </div>
                             {fd.BHApprovalDecision === 'RequireDetails' && <div style={{ width: 'auto' }}>
 
-                                <div style={{ textAlign: 'right', fontSize: '12px', fontStyle: 'italic', paddingTop: '0px', marginTop: '0px', paddingLeft: '10px', paddingRight: '10px' }}>
+                                <div style={{ textAlign: 'right', color: 'limegreen', fontSize: '14px', fontStyle: 'italic', paddingTop: '0px', marginTop: '0px', paddingLeft: '0px', paddingRight: '10px' }}>
                                     Note: Please use the discussion box at the bottom of the page to specify what further information you require.
                                 </div>
 
@@ -2529,7 +2529,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                             </div>
                             {fd.FBPApprovalDecision === 'RequireDetails' && <div style={{ width: 'auto' }}>
 
-                                <div style={{ textAlign: 'right', fontSize: '12px', fontStyle: 'italic', paddingTop: '0px', marginTop: '0px', paddingLeft: '10px', paddingRight: '10px' }}>
+                                <div style={{ textAlign: 'right', color: 'limegreen', fontSize: '14px', fontStyle: 'italic', paddingTop: '0px', marginTop: '0px', paddingLeft: '0px', paddingRight: '10px' }}>
                                     Note: Please use the discussion box at the bottom of the page to specify what further information you require.
                                 </div>
 
@@ -2621,7 +2621,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                             </div>
                             {fd.HRBPApprovalDecision === 'RequireDetails' && <div style={{ width: 'auto' }}>
 
-                                <div style={{ textAlign: 'right', fontSize: '12px', fontStyle: 'italic', paddingTop: '0px', marginTop: '0px', paddingLeft: '10px', paddingRight: '10px' }}>
+                                <div style={{ textAlign: 'right', color: 'limegreen', fontSize: '14px', fontStyle: 'italic', paddingTop: '0px', marginTop: '0px', paddingLeft: '0px', paddingRight: '10px' }}>
                                     Note: Please use the discussion box at the bottom of the page to specify what further information you require.
                                 </div>
 
