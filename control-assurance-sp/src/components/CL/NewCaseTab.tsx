@@ -5328,7 +5328,9 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
             if (fd.OnbContractorTitleId === null) return false;
             if (fd.OnbContractorFirstname !== null && fd.OnbContractorFirstname.length > 1) { } else return false;
             if (fd.OnbContractorSurname !== null && fd.OnbContractorSurname.length > 1) { } else return false;
+            /*
             if (fd.OnbContractorDob === null) return false;
+            */
             if (fd.OnbContractorNINum !== null && fd.OnbContractorNINum.length > 1) { } else return false;
             if (fd.OnbContractorPhone !== null && fd.OnbContractorPhone.length > 1) { } else return false;
             if (fd.OnbContractorEmail !== null && fd.OnbContractorEmail.length > 1) { } else return false;
