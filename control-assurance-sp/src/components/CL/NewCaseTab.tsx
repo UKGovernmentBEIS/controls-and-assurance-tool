@@ -3612,10 +3612,15 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                         <div style={{ display: 'flex' }}>
 
                             <div style={{ width: '50%', fontSize: '12px', fontStyle: 'italic', paddingTop: '5px', marginTop: '0px', paddingLeft: '0px' }}>
-                                some help text here 1
+                               - If your contractor is from PSR, the work order number will begin with “PSR1WO” followed by 8 digits. Please insert this into this field. Please do not use any other order number such as “PSR1JP. This will not be accepted.
+                               <br />
+                               -  If you are using RM6160 framework, please type on the initials of the worker e.g. for example, joe blogs, worker order number will be “JB”.   
                             </div>
                             <div style={{ width: '50%', fontSize: '12px', fontStyle: 'italic', paddingTop: '5px', marginTop: '0px', paddingLeft: '0px' }}>
-                                some help text here 2
+                             - Please inform us of your recruiters email address from the agency. We will need this email address to send the SDS letter to. The recruiter will be the person who deals with your candidate/CV short listing, interview set up, candidate set up, etc.
+                             <br />
+	                        - If you are extending a current contractor on PSR, please type in “Extensions@publicsectorresourcing.co.uk”, else please refer to the step above for all other instances.
+
                             </div>
                         </div>
 
