@@ -60,11 +60,13 @@ export interface IFilteredMainListProps {
     selection?: ISelection;
 
     onAdd: () => void;
+    onDelete: () => void;
 
     editDisabled: boolean;
     deleteDisabled: boolean;
 
     createPermission: boolean;
+    deletePermission: boolean;
 
     caseType: string;
     moveToLeavingPermission?: boolean;
@@ -111,6 +113,13 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
                             onClick={props.onAdd}
                         />}
 
+                    {props.caseType === "BusinessCases" && props.deletePermission && (props.editDisabled === false) &&
+                        <CommandBarButton
+                            iconProps={{ iconName: 'Delete' }}
+                            className={classNames.cmdBtn}
+                            text="Delete"
+                            onClick={props.onDelete}
+                        />}
 
 
 

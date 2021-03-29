@@ -217,6 +217,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
             4: Engaged
             5: Leaving
             6: Left
+            7: Extended
         
         */
 
@@ -232,7 +233,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                 {this.renderSectionTitle()}
                 {this.renderInfoTable()}
 
-                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || isViewOnly === true) && this.renderDetailsOfApplicant_info()}
+                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || stage === "Extended" || isViewOnly === true) && this.renderDetailsOfApplicant_info()}
                 {/*stage === "Draft" && */isViewOnly === false && this.renderDetailsOfApplicant()}
                 {stage === "Draft" && isViewOnly === false && this.renderRequirement()}
                 {stage === "Draft" && isViewOnly === false && this.renderCommercial()}
@@ -244,16 +245,16 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
 
 
-                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || isViewOnly === true) && this.renderRequirement_info()}
-                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || isViewOnly === true) && this.renderCommercial_info()}
-                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || isViewOnly === true) && this.renderResourcingJustification_info()}
-                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || isViewOnly === true) && this.renderFinance_info()}
-                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || isViewOnly === true) && this.renderOther_info()}
-                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || isViewOnly === true) && this.renderApprovers_info()}
+                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || stage === "Extended" || isViewOnly === true) && this.renderRequirement_info()}
+                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || stage === "Extended" || isViewOnly === true) && this.renderCommercial_info()}
+                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || stage === "Extended" || isViewOnly === true) && this.renderResourcingJustification_info()}
+                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || stage === "Extended" || isViewOnly === true) && this.renderFinance_info()}
+                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || stage === "Extended" || isViewOnly === true) && this.renderOther_info()}
+                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || stage === "Extended" || isViewOnly === true) && this.renderApprovers_info()}
 
-                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || isViewOnly === true) && this.renderBudgetHolderApprovalDecision_info()}
-                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || isViewOnly === true) && this.renderFinanceBusinessPartnerApprovalDecision_info()}
-                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || isViewOnly === true) && this.renderHRBusinessPartnerApprovalDecision_info()}
+                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || stage === "Extended" || isViewOnly === true) && this.renderBudgetHolderApprovalDecision_info()}
+                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || stage === "Extended" || isViewOnly === true) && this.renderFinanceBusinessPartnerApprovalDecision_info()}
+                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || stage === "Extended" || isViewOnly === true) && this.renderHRBusinessPartnerApprovalDecision_info()}
 
                 {(stage === "Approval") && this.renderBudgetHolderApprovalDecision()}
                 {(stage === "Approval") && this.renderFinanceBusinessPartnerApprovalDecision()}
@@ -262,11 +263,13 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                 {stage === "Onboarding" && isViewOnly === false && this.renderOnboarding()}
                 {stage === "Onboarding" && isViewOnly === false && this.renderFormButtons_OnboardingStage()}
-                {((stage === "Onboarding" && isViewOnly === true) || (stage === "Engaged" || stage === "Leaving" || stage === "Left")) && this.renderOnboarding_info()}
+                {((stage === "Onboarding" && isViewOnly === true) || (stage === "Engaged" || stage === "Leaving" || stage === "Left" || stage === "Extended")) && this.renderOnboarding_info()}
 
                 {stage === "Engaged" && isViewOnly === false && this.renderEngaged()}
                 {stage === "Engaged" && isViewOnly === false && this.renderFormButtons_EngagedStage()}
-                {((stage === "Engaged" || stage === "Leaving" || stage === "Left") && (isViewOnly === true || fdw.EngagedChecksDone === true)) && this.renderEngaged_info()}
+
+                {((stage === "Engaged" || stage === "Leaving" || stage === "Left" || stage === "Extended") && (isViewOnly === true || fdw.EngagedChecksDone === true)) && this.renderEngaged_info()}
+
 
                 {stage === "Leaving" && isViewOnly === false && this.renderLeaving()}
                 {stage === "Leaving" && isViewOnly === false && this.renderFormButtons_LeavingStage()}
@@ -1019,7 +1022,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                     onChanged={(v) => this.changeDropdown(v, "ComPSRAccountId")}
                                 />
 
-                                {fd.ComPSRAccountId === 'No' && <div style={{ color: 'navy' ,  fontSize: '14px', fontStyle: 'italic', paddingTop: '5px', marginTop: '0px', paddingLeft: '0px' }}>
+                                {fd.ComPSRAccountId === 'No' && <div style={{ color: 'navy', fontSize: '14px', fontStyle: 'italic', paddingTop: '5px', marginTop: '0px', paddingLeft: '0px' }}>
                                     Note: Please contact PSR help desk to have one arranged, you will have to raise a worker requirement on Fieldglass. Email: helpdesk@publicsectorresourcing.co.uk  Phone: 0203 862 2487"
                                 </div>}
 
@@ -2767,6 +2770,8 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         const req_OnbLineManagerPhone_Img = fd.OnbLineManagerPhone !== null && fd.OnbLineManagerPhone.length > 1 ? this.checkIconGreen : this.checkIconRed;
         */
 
+        const req_OnbWorkOrderNumber_Img = fd.OnbWorkOrderNumber !== null && fd.OnbWorkOrderNumber.length > 1 ? this.checkIconGreen : this.checkIconRed;
+        const req_OnbRecruitersEmail_Img = fd.OnbRecruitersEmail !== null && fd.OnbRecruitersEmail.length > 1 ? this.checkIconGreen : this.checkIconRed;
 
         return (
             <div>
@@ -3557,7 +3562,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                 <div className={styles.flexContainerSectionQuestion}>
                                     <div className={styles.sectionQuestionCol1}><span>Work Order Number</span></div>
                                     <div className={styles.sectionQuestionCol2}>
-
+                                        <img src={req_OnbWorkOrderNumber_Img} />
                                     </div>
                                 </div>
 
@@ -3567,7 +3572,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                 <div className={styles.flexContainerSectionQuestion}>
                                     <div className={styles.sectionQuestionCol1}><span>Recruiters email</span></div>
                                     <div className={styles.sectionQuestionCol2}>
-
+                                        <img src={req_OnbRecruitersEmail_Img} />
                                     </div>
                                 </div>
 
@@ -3603,6 +3608,17 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
 
                         </div>
+
+                        <div style={{ display: 'flex' }}>
+
+                            <div style={{ width: '50%', fontSize: '12px', fontStyle: 'italic', paddingTop: '5px', marginTop: '0px', paddingLeft: '0px' }}>
+                                some help text here 1
+                            </div>
+                            <div style={{ width: '50%', fontSize: '12px', fontStyle: 'italic', paddingTop: '5px', marginTop: '0px', paddingLeft: '0px' }}>
+                                some help text here 2
+                            </div>
+                        </div>
+
                     </div>
 
 
@@ -4473,8 +4489,11 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
     private renderEngaged_info() {
 
+        console.log('in renderEngaged_info');
         const caseInfo = this.state.CaseInfo;
         const fd = this.state.FormDataWorker;
+
+        console.log('in renderEngaged_info 2', fd.EngagedChecksDone);
 
         return (
 
@@ -5425,6 +5444,8 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
             if (fd.OnbLineManagerPhone !== null && fd.OnbLineManagerPhone.length > 1) { } else return false;
             */
 
+            if (fd.OnbWorkOrderNumber !== null && fd.OnbWorkOrderNumber.length > 1) { } else { return false; }
+            if (fd.OnbRecruitersEmail !== null && fd.OnbRecruitersEmail.length > 1) { } else { return false; }
 
 
         }
@@ -5850,7 +5871,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     private loadCLWorker = (): void => {
 
         const stage = this.state.Stage;
-        if (stage === "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left") {
+        if (stage === "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || stage === "Extended") {
             //ok - load data
         }
         else {
@@ -5880,7 +5901,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     private loadContractorSecurityCheckEvidence = (): void => {
 
         const stage = this.state.Stage;
-        if (stage === "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left") {
+        if (stage === "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || stage === "Extended") {
             //ok - load data
         }
         else {
@@ -6066,7 +6087,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
             fd.LeContractorDetailsCheckedById !== null && fd.LeContractorDetailsCheckedOn !== null &&
             fd.LeITCheckedById !== null && fd.LeITCheckedOn !== null &&
-            fd.LeUKSBSCheckedById !== null && fd.LeUKSBSCheckedOn !== null) { 
+            fd.LeUKSBSCheckedById !== null && fd.LeUKSBSCheckedOn !== null) {
             //fd.LePassCheckedById !== null && fd.LePassCheckedOn !== null) {
             console.log('leaving all checks ok');
             this.setState({ Leaving_MoveToArchiveBtn: true });

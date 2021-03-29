@@ -35,6 +35,7 @@ namespace ControlAssuranceAPI.Repositories
             public static CaseStage Engaged = new CaseStage { Name = "Engaged", Number = 4 };
             public static CaseStage Leaving = new CaseStage { Name = "Leaving", Number = 5 };
             public static CaseStage Left = new CaseStage { Name = "Left", Number = 6 };
+            public static CaseStage Extended = new CaseStage { Name = "Extended", Number = 7 };
 
             public static int GetStageNumber(string stageName)
             {
@@ -50,6 +51,8 @@ namespace ControlAssuranceAPI.Repositories
                     return CaseStages.Leaving.Number;
                 else if (stageName == CaseStages.Left.Name)
                     return CaseStages.Left.Number;
+                else if (stageName == CaseStages.Extended.Name)
+                    return CaseStages.Extended.Number;
                 else
                     return 0;
             }
@@ -332,7 +335,7 @@ namespace ControlAssuranceAPI.Repositories
 
             if (caseType == "BusinessCases") //just a word to show all cases apart from the engaged
             {
-                qry = qry.Where(x => x.Stage != CaseStages.Engaged.Name && x.Stage != CaseStages.Leaving.Name && x.Stage != CaseStages.Left.Name);
+                qry = qry.Where(x => x.Stage != CaseStages.Engaged.Name && x.Stage != CaseStages.Leaving.Name && x.Stage != CaseStages.Left.Name && x.Stage != CaseStages.Extended.Name);
             }
             else if (caseType == CaseStages.Engaged.Name)
             {
@@ -341,7 +344,7 @@ namespace ControlAssuranceAPI.Repositories
 
             else if(caseType == "Archived")
             {
-                qry = qry.Where(x => x.Stage == CaseStages.Left.Name);
+                qry = qry.Where(x => x.Stage == CaseStages.Left.Name || x.Stage == CaseStages.Extended.Name);
             }
 
             if (isSuperUserOrViewer == true)
@@ -452,15 +455,15 @@ namespace ControlAssuranceAPI.Repositories
                 else if(ite.Stage == CaseStages.Engaged.Name)
                 {
                     stageActions1 = "Complete Checks";
-                    int remainingChecks = 6;
-                    //count how many checks are completed from out of 6
+                    int remainingChecks = 5;
+                    //count how many checks are completed from out of 5
 
                     if (ite.BPSSCheckedById != null && ite.BPSSCheckedOn != null) remainingChecks--;
                     if (ite.POCheckedById != null && ite.POCheckedOn != null) remainingChecks--;
                     if (ite.ITCheckedById != null && ite.ITCheckedOn != null) remainingChecks--;
                     if (ite.UKSBSCheckedById != null && ite.UKSBSCheckedOn != null) remainingChecks--;
                     if (ite.PassCheckedById != null && ite.PassCheckedOn != null) remainingChecks--;
-                    if (ite.ContractCheckedById != null && ite.ContractCheckedOn != null) remainingChecks--;
+                    //if (ite.ContractCheckedById != null && ite.ContractCheckedOn != null) remainingChecks--;
 
                     stageAction2 = $"Remaining Chks: {remainingChecks}";
 
@@ -552,9 +555,9 @@ namespace ControlAssuranceAPI.Repositories
             }
 
 
-            int totalBusinessCases = qry.Count(x => x.Stage != CaseStages.Engaged.Name && x.Stage != CaseStages.Leaving.Name && x.Stage != CaseStages.Left.Name);
+            int totalBusinessCases = qry.Count(x => x.Stage != CaseStages.Engaged.Name && x.Stage != CaseStages.Leaving.Name && x.Stage != CaseStages.Left.Name && x.Stage != CaseStages.Extended.Name);
             int totalEngagedCases = qry.Count(x => x.Stage == CaseStages.Engaged.Name || x.Stage == CaseStages.Leaving.Name);
-            int totalArchivedCases = qry.Count(x => x.Stage == CaseStages.Left.Name);
+            int totalArchivedCases = qry.Count(x => x.Stage == CaseStages.Left.Name || x.Stage == CaseStages.Extended.Name);
 
             CLCaseCounts_Result cLCaseCounts = new CLCaseCounts_Result
             {
@@ -767,6 +770,13 @@ namespace ControlAssuranceAPI.Repositories
         
         public CLWorker CreateExtension(int existingWorkerId)
         {
+
+            var workerAlreadyExist = db.CLWorkers.FirstOrDefault(x => x.ExtendedFromWorkerId == existingWorkerId);
+            if(workerAlreadyExist != null)
+            {
+                return new CLWorker();
+            }
+
             var apiUser = ApiUser;
             int apiUserId = apiUser.ID;
 
@@ -814,24 +824,24 @@ namespace ControlAssuranceAPI.Repositories
             db.CLCases.Add(cLCase);
             db.SaveChanges();
 
-            //create ir35 evidence record
-            var existingIR35Ev = db.CLCaseEvidences.FirstOrDefault(x => x.ParentId == existingCase.ID && x.EvidenceType == "IR35" && x.RecordCreated == true);
-            if(existingIR35Ev != null)
-            {
-                CLCaseEvidence newIR35Ev = new CLCaseEvidence();
-                newIR35Ev.Title = existingIR35Ev.Title;
-                newIR35Ev.Details = existingIR35Ev.Details;
-                newIR35Ev.ParentId = cLCase.ID;
-                newIR35Ev.DateUploaded = existingIR35Ev.DateUploaded;
-                newIR35Ev.UploadedByUserId = existingIR35Ev.UploadedByUserId;
-                newIR35Ev.EvidenceType = existingIR35Ev.EvidenceType;
-                newIR35Ev.AttachmentType = existingIR35Ev.AttachmentType;
-                newIR35Ev.RecordCreated = existingIR35Ev.RecordCreated;
+            ////create ir35 evidence record
+            //var existingIR35Ev = db.CLCaseEvidences.FirstOrDefault(x => x.ParentId == existingCase.ID && x.EvidenceType == "IR35" && x.RecordCreated == true);
+            //if(existingIR35Ev != null)
+            //{
+            //    CLCaseEvidence newIR35Ev = new CLCaseEvidence();
+            //    newIR35Ev.Title = existingIR35Ev.Title;
+            //    newIR35Ev.Details = existingIR35Ev.Details;
+            //    newIR35Ev.ParentId = cLCase.ID;
+            //    newIR35Ev.DateUploaded = existingIR35Ev.DateUploaded;
+            //    newIR35Ev.UploadedByUserId = existingIR35Ev.UploadedByUserId;
+            //    newIR35Ev.EvidenceType = existingIR35Ev.EvidenceType;
+            //    newIR35Ev.AttachmentType = existingIR35Ev.AttachmentType;
+            //    newIR35Ev.RecordCreated = existingIR35Ev.RecordCreated;
 
-                db.CLCaseEvidences.Add(newIR35Ev);
-                //db.SaveChanges();
+            //    db.CLCaseEvidences.Add(newIR35Ev);
+            //    //db.SaveChanges();
 
-            }
+            //}
 
             //create new worker bases on existing worker record
             CLWorker cLWorker = new CLWorker();
@@ -873,8 +883,8 @@ namespace ControlAssuranceAPI.Repositories
             //engaged data
             cLWorker.BPSSCheckedById = existingWorker.BPSSCheckedById;
             cLWorker.BPSSCheckedOn = existingWorker.BPSSCheckedOn;
-            cLWorker.POCheckedById = existingWorker.POCheckedById;
-            cLWorker.POCheckedOn = existingWorker.POCheckedOn;
+            //cLWorker.POCheckedById = existingWorker.POCheckedById;
+            //cLWorker.POCheckedOn = existingWorker.POCheckedOn;
             cLWorker.ITCheckedById = existingWorker.ITCheckedById;
             cLWorker.ITCheckedOn = existingWorker.ITCheckedOn;
             cLWorker.UKSBSCheckedById = existingWorker.UKSBSCheckedById;
@@ -920,7 +930,12 @@ namespace ControlAssuranceAPI.Repositories
         
         public CLCase Remove(CLCase cLCase)
         {
-            return db.CLCases.Remove(cLCase);
+            db.CLHiringMembers.RemoveRange(db.CLHiringMembers.Where(x => x.CLCaseId == cLCase.ID));
+            db.CLWorkers.RemoveRange(db.CLWorkers.Where(x => x.CLCaseId == cLCase.ID));
+            var caseRemoved = db.CLCases.Remove(cLCase);
+            db.SaveChanges();
+
+            return caseRemoved;
         }
 
     }

@@ -89,5 +89,24 @@ namespace ControlAssuranceAPI.Controllers
 
             return Updated(cLCase);
         }
+
+        // DELETE: odata/CLCases(1)
+        public IHttpActionResult Delete([FromODataUri] int key)
+        {
+            CLWorker cLWorker = db.CLWorkerRepository.Find(key);
+            if (cLWorker == null)
+            {
+                return NotFound();
+            }
+
+            var cLCase = cLWorker.CLCase;
+
+            var x = db.CLCaseRepository.Remove(cLCase);
+            if (x == null) return Unauthorized();
+
+            //db.SaveChanges();
+
+            return StatusCode(HttpStatusCode.NoContent);
+        }
     }
 }

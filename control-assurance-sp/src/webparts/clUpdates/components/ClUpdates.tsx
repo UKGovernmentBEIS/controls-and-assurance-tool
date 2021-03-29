@@ -4,14 +4,14 @@ import { CrDropdown, IDropdownOption } from '../../../components/cr/CrDropdown';
 import Section from '../../../components/CL/Section';
 
 import NewCaseTab from '../../../components/CL/NewCaseTab';
-import ActionUpdatesTab from '../../../components/giaaActions/ActionUpdatesTab';
+import { MessageDialog } from '../../../components/cr/MessageDialog';
 
 import * as types from '../../../types';
 import BaseUserContextWebPartComponent from '../../../components/BaseUserContextWebPartComponent';
 import * as services from '../../../services';
 import EntityList from '../../../components/entity/EntityList';
 import { IGenColumn, ColumnType, ColumnDisplayType } from '../../../types/GenColumn';
-import { IUserPermission, IDefForm, IGIAAPeriod, IEntity, IDirectorateGroup, IGoDefForm, GoForm, IGoForm, CLCase, ICLCase, IClCaseCounts, ICLDefForm } from '../../../types';
+import { IUserPermission, IDefForm, IGIAAPeriod, IEntity, IDirectorateGroup, IGoDefForm, GoForm, IGoForm, CLCase, ICLCase, IClCaseCounts, ICLDefForm, ICLWorker } from '../../../types';
 import { CrLoadingOverlayWelcome } from '../../../components/cr/CrLoadingOverlayWelcome';
 import styles from '../../../styles/cr.module.scss';
 import { PrimaryButton } from 'office-ui-fabric-react/lib/Button';
@@ -52,6 +52,8 @@ export interface IClUpdatesState extends types.IUserContextWebPartState {
   TotalArchivedCases: number;
   DefForm: ICLDefForm;
 
+  HideCantCreateExtensionMessage: boolean;
+
 
 }
 export class ClUpdatesState extends types.UserContextWebPartState implements IClUpdatesState {
@@ -79,6 +81,8 @@ export class ClUpdatesState extends types.UserContextWebPartState implements ICl
   public TotalEngagedCases = null;
   public TotalArchivedCases = null;
   public DefForm: ICLDefForm = null;
+
+  public HideCantCreateExtensionMessage = true;
 
 
 
@@ -109,15 +113,22 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
 
     return (
 
-      <Pivot onLinkClick={this.handlePivotClick} selectedKey={`${this.state.SelectedPivotKey}`}>
-        <PivotItem headerText={this.headerTxt_MainTab} itemKey={this.headerTxt_MainTab}>
-          {this.renderMainTab()}
-        </PivotItem>
-        {this.renderNewCaseTab()}
-        {this.renderHistoricCaseTab()}
+      <React.Fragment>
+        <Pivot onLinkClick={this.handlePivotClick} selectedKey={`${this.state.SelectedPivotKey}`}>
+          <PivotItem headerText={this.headerTxt_MainTab} itemKey={this.headerTxt_MainTab}>
+            {this.renderMainTab()}
+          </PivotItem>
+          {this.renderNewCaseTab()}
+          {this.renderHistoricCaseTab()}
 
 
-      </Pivot>
+        </Pivot>
+
+        {/* submit for approval - done */}
+        <MessageDialog hidden={this.state.HideCantCreateExtensionMessage} title={null} /*title="Validation Successful"*/ content="Cannot create extension. This case already has an extension in the system." handleOk={() => { this.setState({ HideCantCreateExtensionMessage: true }, ); }} />
+
+      </React.Fragment>
+
     );
   }
 
@@ -482,8 +493,14 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
 
     console.log('in handleCreateExtensionClick');
 
-    this.clCaseService.createExtension(ID).then((x: ICLCase) => {
+    this.clCaseService.createExtension(ID).then((x: ICLWorker) => {
       console.log('Case', x);
+
+      if (x.ID === 0) {
+        console.log('extension already created');
+        this.setState({ HideCantCreateExtensionMessage: false });
+        return;
+      }
 
       this.setState({
         SelectedPivotKey: this.headerTxt_NewCaseTab,
@@ -501,7 +518,7 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
 
   }
 
-  private handleShowHistoricCaseClick = (workerId: number, caseId: number, stage:string): void => {
+  private handleShowHistoricCaseClick = (workerId: number, caseId: number, stage: string): void => {
 
     console.log('in handleShowHistoricCaseClick', caseId, workerId, stage);
 

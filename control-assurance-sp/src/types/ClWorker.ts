@@ -119,6 +119,9 @@ export class CLWorker implements ICLWorker{
     public OnbLineManagerEmployeeNum?: string = null;
     public OnbLineManagerPhone?: string = null;
 
+    public OnbWorkOrderNumber?: string = null;
+    public OnbRecruitersEmail?: string = null;
+
     public BPSSCheckedById?: number = null;
     public BPSSCheckedOn?: Date = null;
     public POCheckedById?: number = null;

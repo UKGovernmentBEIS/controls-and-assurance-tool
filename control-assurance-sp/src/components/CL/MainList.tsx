@@ -47,6 +47,7 @@ export interface IMainListState<T> {
     InitDataLoaded: boolean;
     MoveToLeavingPermission:boolean;
     CreateExtensionPermission:boolean;
+    DeletePermission:boolean;
 }
 export class MainListState<T> implements IMainListState<T>{
     public SelectedEntity = null;
@@ -67,6 +68,7 @@ export class MainListState<T> implements IMainListState<T>{
     public InitDataLoaded = false;
     public MoveToLeavingPermission = false;
     public CreateExtensionPermission = false;
+    public DeletePermission = false;
 }
 
 export default class MainList extends React.Component<IMainListProps, IMainListState<IEntity>> {
@@ -275,11 +277,19 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
                         moveToLeavingPermission = true;
                     }
 
+                    let deletePermission:boolean;
+                    const stage: string = sel["Stage"];
+                    if(stage === "Draft" && (this.props.superUserPermission === true || (this.props.currentUserId === hiringMgrUserId))){
+                    
+                        console.log('deletePermission is true');
+                        deletePermission = true;
+                    }
 
-                    this.setState({ SelectedEntity: key, SelectedEntityTitle: title, EnableEdit: true, EnableDelete: true, MoveToLeavingPermission: moveToLeavingPermission, CreateExtensionPermission: moveToLeavingPermission });
+
+                    this.setState({ SelectedEntity: key, SelectedEntityTitle: title, EnableEdit: true, EnableDelete: true, MoveToLeavingPermission: moveToLeavingPermission, CreateExtensionPermission: moveToLeavingPermission, DeletePermission: deletePermission });
                 }
                 else {
-                    this.setState({ SelectedEntity: null, SelectedEntityTitle: null, EnableEdit: false, EnableDelete: false, MoveToLeavingPermission: false, CreateExtensionPermission: false });
+                    this.setState({ SelectedEntity: null, SelectedEntityTitle: null, EnableEdit: false, EnableDelete: false, MoveToLeavingPermission: false, CreateExtensionPermission: false, DeletePermission: false, });
                 }
             }
         });
@@ -294,6 +304,7 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
                 <div style={{ position: 'relative' }}>
                     <CrLoadingOverlay isLoading={this.state.Loading} />
                     {this.renderList()}
+                    <ConfirmDialog hidden={this.state.HideDeleteDialog} title={`Are you sure you want to delete this case?`} content={`This action cannot be reversed.`} confirmButtonText="Delete" handleConfirm={this.onDelete} handleCancel={this.toggleDeleteConfirm} />
                 </div>
             </div>
         );
@@ -329,6 +340,9 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
 
                 createExtensionPermission={this.state.CreateExtensionPermission}
                 onCreateExtension={this.createExtension}
+
+                deletePermission={this.state.DeletePermission}
+                onDelete={this.toggleDeleteConfirm}
 
             />
         );
@@ -418,6 +432,17 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
         // if (this.state.SelectedEntity)
         //     this._selection.setKeySelected(this.state.SelectedEntity.toString(), false, false);
         // this.setState({ SelectedEntity: null, ShowForm: true });
+    }
+
+    private onDelete = (): void => {
+        console.log('on delete');
+
+        this.setState({ HideDeleteDialog: true });
+        if (this.state.SelectedEntity) {
+            this.mainService.delete(this.state.SelectedEntity).then(this.loadData, (err) => {
+                if (this.props.onError) this.props.onError(`Error deleting item ${this.state.SelectedEntity}`, err.message);
+            });
+        }
     }
 
     private moveToLeaving = (): void => {

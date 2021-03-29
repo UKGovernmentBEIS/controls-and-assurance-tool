@@ -119,6 +119,14 @@ namespace ControlAssuranceAPI.Repositories
 
                 clWorker.EngPONumber = inputWorker.PurchaseOrderNum;
 
+                if(clWorker.CLCase.CaseType == "Extension")
+                {
+                    //move the case extended from to archive - make stage to Extended
+                    var parentWorker = db.CLWorkers.FirstOrDefault(x => x.ID == clWorker.ExtendedFromWorkerId);
+                    parentWorker.Stage = CLCaseRepository.CaseStages.Extended.Name;
+                    db.SaveChanges();
+                }
+
 
 
                 //newChangeLog = $"{cLcase.CaseChangeLog}{date} Case submitted for Approval by {user},";
