@@ -101,6 +101,8 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
   private readonly headerTxt_NewCaseTab: string = "Case";
   private readonly headerTxt_HistoricCaseTab: string = "Extension Of";
 
+  private newCaseSaveInProgress:boolean = false;
+
 
   constructor(props: types.IWebPartComponentProps) {
     super(props);
@@ -439,23 +441,32 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
     //ID from parameter is workerID
 
     if (ID === 0) {
-      let caseId: number = 0;
-      const newCase = new CLCase("New Case");
-      this.clCaseService.create(newCase).then((x: ICLCase): void => {
-        console.log('case created', x);
-        caseId = x.ID;
 
-        this.setState({
-          SelectedPivotKey: this.headerTxt_NewCaseTab,
-          Section_MainList_SelectedId: 0, //worker id
-          Section_MainList_SelectedCaseId: caseId,
-          Section_MainList_SelectedStage: 'Draft',
-          //Section_MainList_SelectedTitle: title,
-          //Section_MainList_FilteredItems: filteredItems
-        });
+      if(this.newCaseSaveInProgress === false){
+        this.newCaseSaveInProgress = true;
+
+        let caseId: number = 0;
+        const newCase = new CLCase("New Case");
+        this.clCaseService.create(newCase).then((x: ICLCase): void => {
+          console.log('case created', x);
+          caseId = x.ID;
+          this.newCaseSaveInProgress = false;
+  
+          this.setState({
+            SelectedPivotKey: this.headerTxt_NewCaseTab,
+            Section_MainList_SelectedId: 0, //worker id
+            Section_MainList_SelectedCaseId: caseId,
+            Section_MainList_SelectedStage: 'Draft',
+            //Section_MainList_SelectedTitle: title,
+            //Section_MainList_FilteredItems: filteredItems
+          });
+  
+  
+        }, (err) => { this.newCaseSaveInProgress = false; });
+      }
 
 
-      }, (err) => { });
+
     }
     else {
       const caseF = (filteredItems.filter(x => x['ID'] === ID))[0];

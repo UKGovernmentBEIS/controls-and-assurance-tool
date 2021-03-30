@@ -455,14 +455,14 @@ namespace ControlAssuranceAPI.Repositories
                 else if(ite.Stage == CaseStages.Engaged.Name)
                 {
                     stageActions1 = "Complete Checks";
-                    int remainingChecks = 4;
+                    int remainingChecks = 5;
                     //count how many checks are completed from out of 5
 
                     if (ite.BPSSCheckedById != null && ite.BPSSCheckedOn != null) remainingChecks--;
                     if (ite.POCheckedById != null && ite.POCheckedOn != null) remainingChecks--;
                     if (ite.ITCheckedById != null && ite.ITCheckedOn != null) remainingChecks--;
                     if (ite.UKSBSCheckedById != null && ite.UKSBSCheckedOn != null) remainingChecks--;
-                    //if (ite.PassCheckedById != null && ite.PassCheckedOn != null) remainingChecks--;
+                    if (ite.PassCheckedById != null && ite.PassCheckedOn != null) remainingChecks--;
                     //if (ite.ContractCheckedById != null && ite.ContractCheckedOn != null) remainingChecks--;
 
                     stageAction2 = $"Remaining Chks: {remainingChecks}";
