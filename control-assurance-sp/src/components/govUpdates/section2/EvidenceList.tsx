@@ -22,7 +22,7 @@ export interface IEvidenceListProps extends types.IBaseComponentProps {
     filterText?: string;
     onChangeFilterText: (value: string) => void;
 
-    isViewOnlyGoForm:boolean;
+    isViewOnlyGoForm: boolean;
 
 }
 
@@ -60,7 +60,7 @@ export class EvidenceListState<T> implements IEvidenceListState<T>{
 }
 
 export default class EvidenceList extends React.Component<IEvidenceListProps, IEvidenceListState<IEntity>> {
-    private UploadFolder_Evidence:string = "";
+    private UploadFolder_Evidence: string = "";
     private _selection: Selection;
     private goElementEvidenceService: services.GoElementEvidenceService = new services.GoElementEvidenceService(this.props.spfxContext, this.props.api);
 
@@ -222,7 +222,7 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
                 onView={this.viewFile}
                 editDisabled={!this.state.EnableEdit}
                 deleteDisabled={!this.state.EnableDelete}
-                
+
             />
         );
     }
@@ -235,7 +235,7 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
                 showForm={this.state.ShowForm}
                 //goElementId={this.props.goElementId}
                 goElementId={this.props.entityReadAllWithArg1}
-                
+
                 goElementEvidenceId={this.state.SelectedEntity}
                 onSaved={this.fileSaved}
                 onCancelled={this.closePanel}
@@ -262,7 +262,7 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
                     ...item
                 };
             }
-            else{
+            else {
                 item = {
                     [c.fieldName]: fieldContent,
                     ...item
@@ -300,8 +300,8 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
 
     private viewFile = (): void => {
         console.log('in view.');
-        const fileName:string = this.state.SelectedEntityTitle;
-        if(this.isSelectedEntityALink() === true){
+        const fileName: string = this.state.SelectedEntityTitle;
+        if (this.isSelectedEntityALink() === true) {
             console.log('selected evidence is a link');
 
             const a = document.createElement('a');
@@ -309,55 +309,55 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
             a.href = fileName;
             a.target = "_blank";
             //a.download = fileName;
-            
+
             document.body.appendChild(a);
             console.log(a);
             //a.click();
             //document.body.removeChild(a);
-            
-            
+
+
             setTimeout(() => {
-              window.URL.revokeObjectURL(fileName);
-              window.open(fileName, '_blank');
-              document.body.removeChild(a);
+                window.URL.revokeObjectURL(fileName);
+                window.open(fileName, '_blank');
+                document.body.removeChild(a);
             }, 1);
 
 
 
 
         }
-        else{
+        else {
             const f = sp.web.getFolderByServerRelativeUrl(this.UploadFolder_Evidence).files.getByName(fileName);
-    
+
             f.get().then(t => {
                 console.log(t);
                 const serverRelativeUrl = t["ServerRelativeUrl"];
                 console.log(serverRelativeUrl);
-          
+
                 const a = document.createElement('a');
                 //document.body.appendChild(a);
                 a.href = serverRelativeUrl;
                 a.target = "_blank";
                 a.download = fileName;
-                
+
                 document.body.appendChild(a);
                 console.log(a);
                 //a.click();
                 //document.body.removeChild(a);
-                
-                
+
+
                 setTimeout(() => {
-                  window.URL.revokeObjectURL(serverRelativeUrl);
-                  window.open(serverRelativeUrl, '_blank');
-                  document.body.removeChild(a);
+                    window.URL.revokeObjectURL(serverRelativeUrl);
+                    window.open(serverRelativeUrl, '_blank');
+                    document.body.removeChild(a);
                 }, 1);
-                
-          
-              });
+
+
+            });
         }
 
 
-  
+
 
     }
 
@@ -391,22 +391,28 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
             const fileName: string = this.state.SelectedEntityTitle;
             //console.log(fileName);
 
-            if(this.isSelectedEntityALink() === true){
+            if (this.isSelectedEntityALink() === true) {
 
                 console.log('deleting eveidence (link)');
                 this.goElementEvidenceService.delete(this.state.SelectedEntity).then(this.loadEvidences, (err) => {
                     if (this.props.onError) this.props.onError(`Cannot delete this evidence. `, err.message);
                 });
             }
-            else{
+            else {
 
-                sp.web.getFolderByServerRelativeUrl(this.UploadFolder_Evidence).files.getByName(fileName).delete().then(df => {
-                    //console.log('file deleted', df);
-    
-                    this.goElementEvidenceService.delete(this.state.SelectedEntity).then(this.loadEvidences, (err) => {
-                        if (this.props.onError) this.props.onError(`Cannot delete this evidence. `, err.message);
+                this.goElementEvidenceService.delete(this.state.SelectedEntity).then(() => {
+                    this.loadEvidences();
+
+                    sp.web.getFolderByServerRelativeUrl(this.UploadFolder_Evidence).files.getByName(fileName).delete().then(df => {
+                        //console.log('file deleted', df);
                     });
+
+
+                }, (err) => {
+                    if (this.props.onError) this.props.onError(`Cannot delete this evidence. `, err.message);
                 });
+
+
             }
 
 
@@ -442,7 +448,7 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
     }
     public componentDidUpdate(prevProps: IEvidenceListProps): void {
         console.log("in component DidUpdate", this.props.entityReadAllWithArg1);
-        if(prevProps.entityReadAllWithArg1 !== this.props.entityReadAllWithArg1){
+        if (prevProps.entityReadAllWithArg1 !== this.props.entityReadAllWithArg1) {
             console.log("in component DidUpdate load");
             this.loadEvidences();
         }

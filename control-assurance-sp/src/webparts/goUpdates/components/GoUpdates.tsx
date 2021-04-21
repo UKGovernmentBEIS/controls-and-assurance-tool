@@ -36,7 +36,7 @@ export interface IGoUpdatesState extends types.IUserContextWebPartState {
   LookupData: ILookupData;
   PeriodId: string | number;
   DirectorateGroupId: string | number;
-  IsArchivedPeriod:boolean;
+  IsArchivedPeriod: boolean;
   //GoFormId: number;
   GoForm: IGoForm;
   SelectedPivotKey: string;
@@ -293,80 +293,96 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
     return false;
   }
 
-  private isViewOnlyGoForm = () :boolean => {
+  private isViewOnlyGoForm = (): boolean => {
 
-    if(this.state.GoForm && this.state.GoForm.DGSignOffStatus === "Completed") {
-      return true;   
+    if (this.state.GoForm && this.state.GoForm.DGSignOffStatus === "Completed") {
+      return true;
     }
 
     //DirectorateGroup member check
     let dgms = this.state.DirectorateGroupMembers;
-    for(let i=0; i<dgms.length; i++){
+    for (let i = 0; i < dgms.length; i++) {
       let dgm: types.IDirectorateGroupMember = dgms[i];
-      if(dgm.ViewOnly === true){
-        if(this.state.DirectorateGroupId === dgm.DirectorateGroupID){
-          return true; 
+      if (dgm.ViewOnly === true) {
+        if (this.state.DirectorateGroupId === dgm.DirectorateGroupID) {
+          return true;
         }
-        
+
       }
-        
+
     }
 
     return false;
 
   }
 
-  private canSignOff(): boolean{
+  private canSignOff(): boolean {
 
     //Archived Period check - dont allow if period is archived
-    if(this.state.IsArchivedPeriod === true)
+    if (this.state.IsArchivedPeriod === true)
       return false;
 
     //DirectorateGroups check
-    if(this.state.DirectorateGroups.length > 0){
+    if (this.state.DirectorateGroups.length > 0) {
       return true;
     }
-     
-    // //DirectorateGroup member check
-    // let dgms = this.state.DirectorateGroupMembers;
-    // for(let i=0; i<dgms.length; i++){
-    //   let dgm: types.IDirectorateGroupMember = dgms[i];
-    //   if(dgm.CanSignOff === true)
-    //     return true; 
-    // }
 
-    return false;
-  }
 
-  private canUnSign(): boolean{
-
-    //Archived Period check - dont allow if period is archived
-    if(this.state.IsArchivedPeriod === true)
-      return false;
-
-    //DirectorateGroups check
-    if(this.state.DirectorateGroups.length > 0){
-      return true;
-    }
-     
     //DirectorateGroup member check
     let dgms = this.state.DirectorateGroupMembers;
-    for(let i=0; i<dgms.length; i++){
+    for (let i = 0; i < dgms.length; i++) {
       let dgm: types.IDirectorateGroupMember = dgms[i];
-      if(this.state.DirectorateGroupId === dgm.DirectorateGroupID){
-        if(dgm.ViewOnly === true){
+      if (Number(this.state.DirectorateGroupId) === dgm.DirectorateGroupID) {
+        if (dgm.ViewOnly === true) {
           return false;
         }
-        else{
-          //may need is admin check here
-          return true;
-        }  
+        else {
+          //admin check
+          if (dgm.IsAdmin === true) {
+            return true;
+          }
+
+        }
       }
 
     }
 
-    if(this.isSuperUser() === true)
+    return false;
+  }
+
+  private canUnSign(): boolean {
+
+    //Archived Period check - dont allow if period is archived
+    if (this.state.IsArchivedPeriod === true)
+      return false;
+
+    //DirectorateGroups check
+    if (this.state.DirectorateGroups.length > 0) {
       return true;
+    }
+
+    if (this.isSuperUser() === true)
+      return true;
+
+    //DirectorateGroup member check
+    let dgms = this.state.DirectorateGroupMembers;
+    for (let i = 0; i < dgms.length; i++) {
+      let dgm: types.IDirectorateGroupMember = dgms[i];
+      if (Number(this.state.DirectorateGroupId) === dgm.DirectorateGroupID) {
+        if (dgm.ViewOnly === true) {
+          return false;
+        }
+        else {
+          //admin check
+          if (dgm.IsAdmin === true) {
+            return true;
+          }
+        }
+      }
+
+    }
+
+
 
     return false;
   }

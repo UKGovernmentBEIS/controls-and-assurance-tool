@@ -538,13 +538,19 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
                 }
                 else {
                     console.log("selected file is an attachment");
-                    sp.web.getFolderByServerRelativeUrl(this.UploadFolder_Evidence).files.getByName(fileName).delete().then(df => {
-                        //console.log('file deleted', df);
 
-                        this.updateService.delete(this.state.SelectedEntity).then(this.loadData, (err) => {
-                            if (this.props.onError) this.props.onError(`Cannot delete record. `, err.message);
+                    this.updateService.delete(this.state.SelectedEntity).then(() => {
+                        this.loadData();
+    
+                        sp.web.getFolderByServerRelativeUrl(this.UploadFolder_Evidence).files.getByName(fileName).delete().then(df => {
+                            //console.log('file deleted', df);
                         });
+    
+    
+                    }, (err) => {
+                        if (this.props.onError) this.props.onError(`Cannot delete record. `, err.message);
                     });
+
                 }
 
             }

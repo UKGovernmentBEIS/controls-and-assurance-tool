@@ -400,13 +400,20 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
             }
             else{
 
-                sp.web.getFolderByServerRelativeUrl(this.UploadFolder_Evidence).files.getByName(fileName).delete().then(df => {
-                    //console.log('file deleted', df);
-    
-                    this.naoUpdateEvidenceService.delete(this.state.SelectedEntity).then(this.loadEvidences, (err) => {
-                        if (this.props.onError) this.props.onError(`Cannot delete this evidence. `, err.message);
+                this.naoUpdateEvidenceService.delete(this.state.SelectedEntity).then(() => {
+                    this.loadEvidences();
+
+                    sp.web.getFolderByServerRelativeUrl(this.UploadFolder_Evidence).files.getByName(fileName).delete().then(df => {
+                        //console.log('file deleted', df);
                     });
+
+
+                }, (err) => {
+                    if (this.props.onError) this.props.onError(`Cannot delete this evidence. `, err.message);
                 });
+
+
+
             }
 
 

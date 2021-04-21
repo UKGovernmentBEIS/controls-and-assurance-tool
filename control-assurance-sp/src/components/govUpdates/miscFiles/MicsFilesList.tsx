@@ -181,7 +181,7 @@ export default class MiscFilesList extends React.Component<IMiscFilesListProps, 
                 onEdit={this.editFile}
                 onDelete={this.toggleDeleteConfirm}
                 onView={this.viewFile}
-                onView2={this.viewFile2}
+                //onView2={this.viewFile2}
                 editDisabled={!this.state.EnableEdit}
                 deleteDisabled={!this.state.EnableDelete}
                 
@@ -336,12 +336,17 @@ export default class MiscFilesList extends React.Component<IMiscFilesListProps, 
             const fileName: string = this.state.SelectedEntityTitle;
             //console.log(fileName);
 
-            sp.web.getFolderByServerRelativeUrl(this.UploadFolder_MiscFiles).files.getByName(fileName).delete().then(df => {
-                //console.log('file deleted', df);
 
-                this.goMiscFileService.delete(this.state.SelectedEntity).then(this.loadMiscFiles, (err) => {
-                    if (this.props.onError) this.props.onError(`Cannot delete this file. `, err.message);
+            this.goMiscFileService.delete(this.state.SelectedEntity).then(() => {
+                this.loadMiscFiles();
+
+                sp.web.getFolderByServerRelativeUrl(this.UploadFolder_MiscFiles).files.getByName(fileName).delete().then(df => {
+                    //console.log('file deleted', df);
                 });
+
+
+            }, (err) => {
+                if (this.props.onError) this.props.onError(`Cannot delete this file. `, err.message);
             });
 
 

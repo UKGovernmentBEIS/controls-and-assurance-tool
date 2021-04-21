@@ -58,7 +58,7 @@ export interface IFilteredMiscFilesListProps {
     onEdit: () => void;
     onDelete: () => void;
     onView: () => void;
-    onView2: () => void;
+    //onView2: () => void;
 
     editDisabled: boolean;
     deleteDisabled: boolean;
@@ -124,13 +124,13 @@ export class FilteredMiscFilesList extends React.Component<IFilteredMiscFilesLis
                             onClick={this.props.onView}
                         />}
 
-                    {(props.editDisabled === false) &&
+                    {/* {(props.editDisabled === false) &&
                         <CommandBarButton
                             iconProps={{ iconName: 'View' }}
                             className={classNames.cmdBtn}
                             text="View2"
                             onClick={this.props.onView2}
-                        />}
+                        />} */}
 
                     <span style={controlStyles2}>
 

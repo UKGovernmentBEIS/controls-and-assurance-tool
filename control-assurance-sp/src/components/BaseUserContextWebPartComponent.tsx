@@ -4,6 +4,7 @@ import BaseWebPartComponent from './BaseWebPartComponent';
 
 export default abstract class BaseUserContextWebPartComponent<P extends types.IWebPartComponentProps, S extends types.IUserContextWebPartState> extends BaseWebPartComponent<P, S> {
     protected userService: services.UserService = new services.UserService(this.props.spfxContext, this.props.api);
+    private giaaDefFormService_bucontext: services.GIAADefFormService = new services.GIAADefFormService(this.props.spfxContext, this.props.api);
 
 
 
@@ -13,10 +14,10 @@ export default abstract class BaseUserContextWebPartComponent<P extends types.IW
         this.firstRequestToAPI();
         //let loadingPromises = [this.loadUserPermissions(), this.loadLookups()];
         //Promise.all(loadingPromises).then(p => this.onAfterLoad()).then(p => this.setState({ Loading: false })).catch(err => this.setState({ Loading: false }));
-            
+
     }
     //6Nov19 End
-    
+
 
     protected loadLookups(): Promise<any> { return Promise.resolve(); }
 
@@ -45,12 +46,27 @@ export default abstract class BaseUserContextWebPartComponent<P extends types.IW
     private firstRequestToAPI = (): Promise<any> => {
 
         return this.userService.firstRequestToAPI().then((res: string): void => {
-    
-            if(res==="ok"){
+
+            if (res === "ok") {
                 let loadingPromises = [this.loadUserPermissions(), this.loadLookups()];
-                Promise.all(loadingPromises).then(p => this.onAfterLoad()).then(p => this.setState({ Loading: false } )).catch(err => this.setState({ Loading: false}));
+                Promise.all(loadingPromises).then(p => this.onAfterLoad()).then(p => this.setState({ Loading: false })).catch(err => this.setState({ Loading: false }));
+
+                setInterval(() => {
+                    //to keep api alive
+                    this.giaaDefFormService_bucontext.getTestDateTime().then((x: any) => {
+                        //console.log('after every 5 minutes DateTime Info', x);
+
+
+                    }, (err) => {
+
+                    });
+
+
+                }, 5*60*1000); //5 minutes
+                
+
             }
-            else{
+            else {
                 // error res can be a) user_not_found b) db_connect_error
                 this.onFirstAPIRequestError(res);
             }
@@ -59,13 +75,17 @@ export default abstract class BaseUserContextWebPartComponent<P extends types.IW
             console.log('api_connect_error', err);
             this.onFirstAPIRequestError("api_connect_error");
         });
+
+
     }
     //6Nov19 End
-    
+
 
     protected cloneObject(obj, changeProp?, changeValue?) {
         if (changeProp)
             return { ...obj, [changeProp]: changeValue };
         return { ...obj };
     }
+
+
 }
