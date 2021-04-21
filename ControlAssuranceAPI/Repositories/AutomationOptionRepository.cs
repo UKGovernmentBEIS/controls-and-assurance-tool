@@ -41,6 +41,11 @@ namespace ControlAssuranceAPI.Repositories
 
         public string ProcessAsAutoFunction()
         {
+
+            //this.CL_Reminders(DateTime.Now, new ControlAssuranceEntities(), db.AutomationOptions.ToList());
+            //return "";
+
+
             #region Commented
 
             //try
@@ -91,7 +96,7 @@ namespace ControlAssuranceAPI.Repositories
                     autoFunctionLastRun.Title = "Working";
                     dbThread.SaveChanges();
 
-
+                    bool cl_Done = false;
 
                     while (autoFunctionLastRun.LastRunDate < yesterdaysDate)
                     {
@@ -103,6 +108,13 @@ namespace ControlAssuranceAPI.Repositories
                         this.GIAA_Reminders(autoFunctionLastRun.LastRunDate, dbThread, automationOptions);
                         this.MA_Reminders(autoFunctionLastRun.LastRunDate, dbThread, automationOptions);
 
+                        //just need to run once
+                        if(cl_Done == false)
+                        {
+                            this.CL_Reminders(autoFunctionLastRun.LastRunDate, dbThread, automationOptions);
+                            cl_Done = true;
+                        }
+                        
 
                     }
 
@@ -856,6 +868,406 @@ namespace ControlAssuranceAPI.Repositories
 
         }
 
+        private void CL_Reminders(DateTime runDate, ControlAssuranceEntities db, List<AutomationOption> automationOptions)
+        {
+            //db.CLWorkers.Where(x => x.Stage == CLCaseRepository.CaseStages.Draft.Name)
+            //var c = db.CLCases.Where(x => x.CLWorkers.Any(w => w.Stage == CLCaseRepository.CaseStages.Draft.Name)).Select(x => x.ApplHMUserId).Distinct();
+            //var lst = c.ToList();
+
+            var send_CLHiringManagerAndStaff = automationOptions.FirstOrDefault(x => x.Title == "CL-HiringManagerAndStaff").Active;
+            var send_CLApprovers = automationOptions.FirstOrDefault(x => x.Title == "CL-Approvers").Active;
+            var send_CLSuperusers = automationOptions.FirstOrDefault(x => x.Title == "CL-Superusers").Active;
+
+            if(send_CLHiringManagerAndStaff == false && send_CLApprovers == false && send_CLSuperusers == false)
+            {
+                return;
+            }
+
+            List<CL_HiringManagerAndStaff> lst1 = new List<CL_HiringManagerAndStaff>();
+            List<CL_Approver> lst2 = new List<CL_Approver>();
+            //list3 Item
+            CL_Superusers lst3_Item = new CL_Superusers();
+
+
+            foreach (var worker in db.CLWorkers)
+            {
+                CL_HiringManagerAndStaff lst1_Item = lst1.FirstOrDefault(x => x.UserId == worker.CLCase.ApplHMUserId && x.UserType == "Hiring Manager");
+                
+                //list 2
+                CL_Approver lst2_Item = lst2.FirstOrDefault(x => x.UserId == worker.CLCase.BHUserId && x.ApproverType == "Budget Holder");
+
+
+
+
+                if (lst1_Item == null)
+                {
+                    lst1_Item = new CL_HiringManagerAndStaff();
+                    lst1.Add(lst1_Item);
+
+                    lst1_Item.UserId = worker.CLCase.ApplHMUserId.Value;
+                    lst1_Item.UserType = "Hiring Manager";
+                    var hmUser = db.Users.FirstOrDefault(x => x.ID == worker.CLCase.ApplHMUserId);
+                    if (hmUser != null)
+                    {
+                        lst1_Item.PersonEmail = hmUser.Username;
+                        lst1_Item.PersonName = hmUser.Title;
+                    }
+                }
+
+
+                //case ref
+                string caseRef = $"{worker.CLCase.CLComFramework?.Title ?? ""}{worker.CLCase.CaseRef}";
+                if (CLCaseRepository.CaseStages.GetStageNumber(worker.Stage) >= CLCaseRepository.CaseStages.Onboarding.Number && worker.CLCase.ReqNumPositions > 1)
+                {
+                    caseRef += $"/{worker.CLCase.ReqNumPositions}/{worker.WorkerNumber?.ToString() ?? ""}";
+                }
+
+                //run for Hiring Manager
+                localFuncBuild_HiringManagerAndStaff("lst1");
+
+                //run for Hiring Memeber
+                foreach(var hiringMember in worker.CLCase.CLHiringMembers)
+                {
+                    lst1_Item = lst1.FirstOrDefault(x => x.UserId == hiringMember.UserId && x.UserType == "Hiring Memeber");
+                    if (lst1_Item == null)
+                    {
+                        lst1_Item = new CL_HiringManagerAndStaff();
+                        lst1.Add(lst1_Item);
+
+                        lst1_Item.UserId = hiringMember.UserId.Value;
+                        lst1_Item.UserType = "Hiring Memeber";
+                        var hmUser = db.Users.FirstOrDefault(x => x.ID == hiringMember.UserId);
+                        if (hmUser != null)
+                        {
+                            lst1_Item.PersonEmail = hmUser.Username;
+                            lst1_Item.PersonName = hmUser.Title;
+                        }
+                    }
+
+                    localFuncBuild_HiringManagerAndStaff("lst1");
+                }
+
+
+
+
+
+                if(worker.Stage == CLCaseRepository.CaseStages.Approval.Name)
+                {
+                    //CL_Approver "Budget Holder" - 
+                    lst2_Item = lst2.FirstOrDefault(x => x.UserId == worker.CLCase.BHUserId && x.ApproverType == "Budget Holder");
+                    if (lst2_Item == null)
+                    {
+                        lst2_Item = new CL_Approver();
+                        lst2.Add(lst2_Item);
+
+                        lst2_Item.UserId = worker.CLCase.BHUserId.Value;
+                        lst2_Item.ApproverType = "Budget Holder";
+                        var bhUser = db.Users.FirstOrDefault(x => x.ID == worker.CLCase.BHUserId);
+                        if (bhUser != null)
+                        {
+                            lst2_Item.PersonEmail = bhUser.Username;
+                            lst2_Item.PersonName = bhUser.Title;
+                        }
+                    }
+
+                    //run function for CL_Approver "Budget Holder"
+                    localFuncBuild_HiringManagerAndStaff("lst2");
+
+
+                    //CL_Approver "Finance Business Partner" - following line we have on top
+                    lst2_Item = lst2.FirstOrDefault(x => x.UserId == worker.CLCase.FBPUserId && x.ApproverType == "Finance Business Partner");
+                    if (lst2_Item == null)
+                    {
+                        lst2_Item = new CL_Approver();
+                        lst2.Add(lst2_Item);
+
+                        lst2_Item.UserId = worker.CLCase.FBPUserId.Value;
+                        lst2_Item.ApproverType = "Finance Business Partner";
+                        var fbpUser = db.Users.FirstOrDefault(x => x.ID == worker.CLCase.FBPUserId);
+                        if (fbpUser != null)
+                        {
+                            lst2_Item.PersonEmail = fbpUser.Username;
+                            lst2_Item.PersonName = fbpUser.Title;
+                        }
+                    }
+
+                    //run function for CL_Approver "Finance Business Partner"
+                    localFuncBuild_HiringManagerAndStaff("lst2");
+
+
+                    //CL_Approver "HR Business Partner"
+                    lst2_Item = lst2.FirstOrDefault(x => x.UserId == worker.CLCase.HRBPUserId && x.ApproverType == "HR Business Partner");
+                    if (lst2_Item == null)
+                    {
+                        lst2_Item = new CL_Approver();
+                        lst2.Add(lst2_Item);
+
+                        lst2_Item.UserId = worker.CLCase.HRBPUserId.Value;
+                        lst2_Item.ApproverType = "HR Business Partner";
+                        var hrbpUser = db.Users.FirstOrDefault(x => x.ID == worker.CLCase.HRBPUserId);
+                        if (hrbpUser != null)
+                        {
+                            lst2_Item.PersonEmail = hrbpUser.Username;
+                            lst2_Item.PersonName = hrbpUser.Title;
+                        }
+                    }
+
+                    //run function for CL_Approver "HR Business Partner"
+                    localFuncBuild_HiringManagerAndStaff("lst2");
+                }
+
+
+                if(worker.Stage == CLCaseRepository.CaseStages.Engaged.Name)
+                {
+                    if(worker.EngagedChecksDone != true)
+                    {
+                        int remainingChecks = 4;
+                        //count how many checks are completed from out of 4
+
+                        if (worker.BPSSCheckedById != null && worker.BPSSCheckedOn != null) remainingChecks--;
+                        if (worker.POCheckedById != null && worker.POCheckedOn != null) remainingChecks--;
+                        if (worker.ITCheckedById != null && worker.ITCheckedOn != null) remainingChecks--;
+                        if (worker.UKSBSCheckedById != null && worker.UKSBSCheckedOn != null) remainingChecks--;
+
+                        if(remainingChecks > 0)
+                        {
+                            lst3_Item.EngagedChecksReq += $"{caseRef}, ";
+                        }
+                    }
+                }
+                if(worker.Stage == CLCaseRepository.CaseStages.Leaving.Name)
+                {
+                    int remainingChecks = 3;
+                    if (worker.LeContractorDetailsCheckedById != null && worker.LeContractorDetailsCheckedOn != null) remainingChecks--;
+                    if (worker.LeITCheckedById != null && worker.LeITCheckedOn != null) remainingChecks--;
+                    if (worker.LeUKSBSCheckedById != null && worker.LeUKSBSCheckedOn != null) remainingChecks--;
+
+                    if (remainingChecks > 0)
+                    {
+                        lst3_Item.LeavingChecksReq += $"{caseRef}, ";
+                    }
+                }
+
+
+                void localFuncBuild_HiringManagerAndStaff(string lstType)
+                {
+
+
+
+                    //CasesInDraft
+                    if (lstType == "lst1" && worker.Stage == CLCaseRepository.CaseStages.Draft.Name)
+                    {
+                        lst1_Item.CasesInDraft += $"{caseRef}, ";
+                    }
+
+
+                    //CasesRejected, CasesReqInfo
+                    else if (worker.Stage == CLCaseRepository.CaseStages.Approval.Name)
+                    {
+                        int totalRejected = 0;
+                        int totalRequireDetails = 0;
+
+                        //BH
+                        bool bhApprovalReq = false;
+                        if (worker.CLCase.BHApprovalDecision == CLCaseRepository.ApprovalDecisions.Reject)
+                        {
+                            totalRejected++;
+                        }
+                        else if (worker.CLCase.BHApprovalDecision == CLCaseRepository.ApprovalDecisions.RequireDetails)
+                        {
+                            totalRequireDetails++;
+                        }
+                        else if (worker.CLCase.BHApprovalDecision == CLCaseRepository.ApprovalDecisions.Approve)
+                        {
+                            //stageAction2 += "BH-Ok, ";
+                        }
+                        else
+                        {
+                            bhApprovalReq = true;
+                        }
+
+
+                        //FBP
+                        bool fbpApprovalReq = false;
+                        if (worker.CLCase.FBPApprovalDecision == CLCaseRepository.ApprovalDecisions.Reject)
+                        {
+                            totalRejected++;
+                        }
+                        else if (worker.CLCase.FBPApprovalDecision == CLCaseRepository.ApprovalDecisions.RequireDetails)
+                        {
+                            totalRequireDetails++;
+                        }
+                        else if (worker.CLCase.FBPApprovalDecision == CLCaseRepository.ApprovalDecisions.Approve)
+                        {
+                            //stageAction2 += "FBP-Ok, ";
+                        }
+                        else
+                        {
+                            fbpApprovalReq = true;
+                        }
+
+
+                        //HRBP
+                        bool hrbpApprovalReq = false;
+                        if (worker.CLCase.HRBPApprovalDecision == CLCaseRepository.ApprovalDecisions.Reject)
+                        {
+                            totalRejected++;
+                        }
+                        else if (worker.CLCase.HRBPApprovalDecision == CLCaseRepository.ApprovalDecisions.RequireDetails)
+                        {
+                            totalRequireDetails++;
+                        }
+                        else if (worker.CLCase.HRBPApprovalDecision == CLCaseRepository.ApprovalDecisions.Approve)
+                        {
+                            //stageAction2 += "HRBP-Ok, ";
+                        }
+                        else
+                        {
+                            hrbpApprovalReq = true;
+                        }
+
+
+                        //1st list item
+                        if (lstType == "lst1" && totalRejected > 0)
+                        {
+                            lst1_Item.CasesRejected += $"{caseRef}, ";
+                        }
+                        else if (lstType == "lst1" && totalRequireDetails > 0)
+                        {
+                            lst1_Item.CasesReqInfo += $"{caseRef}, ";
+                        }
+
+                        
+                        //2nd list item
+                        if(lstType == "lst2" && lst2_Item.ApproverType == "Budget Holder" && bhApprovalReq == true)
+                        {
+                            lst2_Item.ApprovalsReq += $"{caseRef}, ";
+                        }
+                        else if (lstType == "lst2" && lst2_Item.ApproverType == "Finance Business Partner" && fbpApprovalReq == true)
+                        {
+                            lst2_Item.ApprovalsReq += $"{caseRef}, ";
+                        }
+                        else if (lstType == "lst2" && lst2_Item.ApproverType == "HR Business Partner" && hrbpApprovalReq == true)
+                        {
+                            lst2_Item.ApprovalsReq += $"{caseRef}, ";
+                        }
+                    }
+
+
+                    //CasesOnboarding
+                    //1st list item
+                    else if (lstType == "lst1" && worker.Stage == CLCaseRepository.CaseStages.Onboarding.Name)
+                    {
+                        lst1_Item.CasesOnboarding += $"{caseRef}, ";
+                    }
+
+                }
+
+            }
+
+
+
+
+
+
+            if(send_CLHiringManagerAndStaff == true)
+            {
+                //add lst1 (CL-HiringManagerAndStaff) to db
+                foreach (var item in lst1)
+                {
+                    if (item.CasesInDraft.Length > 0 || item.CasesRejected.Length > 0 || item.CasesReqInfo.Length > 0 || item.CasesOnboarding.Length > 0)
+                    {
+                        //add to EmailQueue
+                        //Name, PersonType, CasesInDraft, CasesRejected, CasesReqInfo, CasesInOnboarding
+
+                        EmailQueue emailQueue = new EmailQueue
+                        {
+                            Title = "CL-HiringManagerAndStaff",
+                            PersonName = item.PersonName,
+                            EmailTo = item.PersonEmail,
+                            EmailToUserId = item.UserId,
+                            emailCC = "",
+                            Custom1 = item.PersonName,
+                            Custom2 = item.UserType,
+                            Custom3 = item.CasesInDraft,
+                            Custom4 = item.CasesRejected,
+                            Custom5 = item.CasesReqInfo,
+                            Custom6 = item.CasesOnboarding,
+                            //MainEntityId = ite.ID,
+
+
+                        };
+                        db.EmailQueues.Add(emailQueue);
+                    }
+                }
+            }
+
+            if(send_CLApprovers == true)
+            {
+                //add lst2 (CL-Approvers) to db
+                foreach (var item in lst2)
+                {
+                    if (item.ApprovalsReq.Length > 0)
+                    {
+                        //add to EmailQueue
+                        //Name, ApproverType , ApprovalsReq
+
+                        EmailQueue emailQueue = new EmailQueue
+                        {
+                            Title = "CL-Approvers",
+                            PersonName = item.PersonName,
+                            EmailTo = item.PersonEmail,
+                            EmailToUserId = item.UserId,
+                            emailCC = "",
+                            Custom1 = item.PersonName,
+                            Custom2 = item.ApproverType,
+                            Custom3 = item.ApprovalsReq,
+                            //MainEntityId = ite.ID,
+
+
+                        };
+                        db.EmailQueues.Add(emailQueue);
+                    }
+                }
+            }
+
+            if(send_CLSuperusers == true)
+            {
+                if(lst3_Item.EngagedChecksReq.Length > 0 || lst3_Item.LeavingChecksReq.Length > 0)
+                {
+                    //get all CL superusers and send them
+                    var clSuperUsers = db.Users.Where(x => x.UserPermissions.Any(up => up.PermissionTypeId == 13));
+                    foreach(var su in clSuperUsers)
+                    {
+                        //add to EmailQueue
+                        //Name, EngagedChecksReq, LeavingChecksReq
+
+                        EmailQueue emailQueue = new EmailQueue
+                        {
+                            Title = "CL-Superusers",
+                            PersonName = su.Title,
+                            EmailTo = su.Username,
+                            EmailToUserId = su.ID,
+                            emailCC = "",
+                            Custom1 = su.Title,
+                            Custom2 = lst3_Item.EngagedChecksReq,
+                            Custom3 = lst3_Item.LeavingChecksReq,
+                            //MainEntityId = ite.ID,
+
+
+                        };
+                        db.EmailQueues.Add(emailQueue);
+                    }
+                }
+            }
+
+            db.SaveChanges();
+
+
+        }
+
+
+
         private void SendQueueToNotify(ControlAssuranceEntities db, List<AutomationOption> automationOptions)
         {
             UKGovNotify uKGovNotify = new UKGovNotify();
@@ -875,7 +1287,70 @@ namespace ControlAssuranceAPI.Repositories
 
                 switch (templateName)
                 {
-                    
+
+                    case "CL-HiringManagerAndStaff":
+                        {
+                            if (automationOption.Active == true)
+                            {
+                                var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                    { "Name", emailQueueItem.Custom1 },
+                                    { "PersonType", emailQueueItem.Custom2 },
+                                    { "CasesInDraft", emailQueueItem.Custom3 },
+                                    { "CasesRejected", emailQueueItem.Custom4 },
+                                    { "CasesReqInfo", emailQueueItem.Custom5 },
+                                    { "CasesInOnboarding", emailQueueItem.Custom6 },
+
+                                };
+
+
+                                templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+                                uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
+                            }
+
+                            db.EmailQueues.Remove(emailQueueItem);
+                            break;
+                        }
+
+                    case "CL-Approvers":
+                        {
+                            if (automationOption.Active == true)
+                            {
+                                var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                    { "Name", emailQueueItem.Custom1 },
+                                    { "ApproverType ", emailQueueItem.Custom2 },
+                                    { "ApprovalsReq", emailQueueItem.Custom3 },
+
+                                };
+
+
+                                templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+                                uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
+                            }
+
+                            db.EmailQueues.Remove(emailQueueItem);
+                            break;
+                        }
+
+                    case "CL-Superusers":
+                        {
+                            if (automationOption.Active == true)
+                            {
+                                var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                    { "Name", emailQueueItem.Custom1 },
+                                    { "EngagedChecksReq ", emailQueueItem.Custom2 },
+                                    { "LeavingChecksReq", emailQueueItem.Custom3 },
+
+                                };
+
+
+                                templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+                                uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
+                            }
+
+                            db.EmailQueues.Remove(emailQueueItem);
+                            break;
+                        }
+
 
                     case "IC-NewPeriodToDD":
                         {
@@ -1338,6 +1813,35 @@ namespace ControlAssuranceAPI.Repositories
             {
                 return this.PublicationId.GetHashCode() ^ this.UserId.GetHashCode();
             }
+        }
+
+        class CL_HiringManagerAndStaff
+        {
+            public int UserId { get; set; }
+            public string UserType { get; set; }
+            public string PersonName { get; set; }
+            public string PersonEmail { get; set; }
+            public string CasesInDraft { get; set; } = "";
+            public string CasesRejected { get; set; } = "";
+            public string CasesReqInfo { get; set; } = "";
+            public string CasesOnboarding { get; set; } = "";
+        }
+        class CL_Approver
+        {
+            public int UserId { get; set; }
+            public string PersonName { get; set; }
+            public string PersonEmail { get; set; }
+            public string ApproverType { get; set; }
+            public string ApprovalsReq { get; set; } = "";
+
+        }
+        class CL_Superusers
+        {
+            public int UserId { get; set; }
+            public string PersonName { get; set; }
+            public string PersonEmail { get; set; }
+            public string EngagedChecksReq { get; set; } = "";
+            public string LeavingChecksReq { get; set; } = "";
         }
 
         #endregion Auto Function Work
