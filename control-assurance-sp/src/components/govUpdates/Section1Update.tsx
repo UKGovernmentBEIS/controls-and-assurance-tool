@@ -192,7 +192,7 @@ export default class Section1Update extends React.Component<ISection1UpdateProps
                     multiline
                     placeholder="Enter details ..."
                     rows={10}
-                    maxLength={10000}
+                    maxLength={15000}
                     charCounter={true}
                     onChanged={(v) => this.changeTextField(v, "SummaryEvidenceStatement")}
                     value={this.state.FormData.SummaryEvidenceStatement}
