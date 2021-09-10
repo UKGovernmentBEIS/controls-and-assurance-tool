@@ -189,6 +189,13 @@ namespace ControlAssuranceAPI.Repositories
                         ret.HRBPDecisionByAndDate = hrbpDecisionByAndDate;
                     }
 
+                    string clDecisionByAndDate = "";
+                    if (w.CLCase.CLDecisionById != null)
+                    {
+                        clDecisionByAndDate = db.Users.FirstOrDefault(x => x.ID == w.CLCase.CLDecisionById)?.Title + ", " + w.CLCase.CLDecisionDate?.ToString("dd/MM/yyyy HH:mm") ?? "";
+                        ret.CLDecisionByAndDate = clDecisionByAndDate;
+                    }
+
                 }
                 
                 
@@ -231,6 +238,7 @@ namespace ControlAssuranceAPI.Repositories
                     ret.UKSBSCheckedBy = w.UKSBSCheckedById != null ? db.Users.FirstOrDefault(x => x.ID == w.UKSBSCheckedById)?.Title ?? "" : "";
                     ret.PassCheckedBy = w.PassCheckedById != null ? db.Users.FirstOrDefault(x => x.ID == w.PassCheckedById)?.Title ?? "" : "";
                     ret.ContractCheckedBy = w.ContractCheckedById != null ? db.Users.FirstOrDefault(x => x.ID == w.ContractCheckedById)?.Title ?? "" : "";
+                    ret.SDSCheckedBy = w.SDSCheckedById != null ? db.Users.FirstOrDefault(x => x.ID == w.SDSCheckedById)?.Title ?? "" : "";
 
                     ret.BPSSCheckedOn = w.BPSSCheckedOn?.ToString("dd/MM/yyyy") ?? "";
                     ret.POCheckedOn = w.POCheckedOn?.ToString("dd/MM/yyyy") ?? "";
@@ -238,6 +246,8 @@ namespace ControlAssuranceAPI.Repositories
                     ret.UKSBSCheckedOn = w.UKSBSCheckedOn?.ToString("dd/MM/yyyy") ?? "";
                     ret.PassCheckedOn = w.PassCheckedOn?.ToString("dd/MM/yyyy") ?? "";
                     ret.ContractCheckedOn = w.ContractCheckedOn?.ToString("dd/MM/yyyy") ?? "";
+                    ret.SDSCheckedOn = w.SDSCheckedOn?.ToString("dd/MM/yyyy") ?? "";
+                    ret.SDSNotes = w.SDSNotes?.ToString() ?? "";
 
                     ret.EngPONumber = w.EngPONumber?.ToString() ?? "";
                     ret.EngPONote = w.EngPONote?.ToString() ?? "";
@@ -320,6 +330,7 @@ namespace ControlAssuranceAPI.Repositories
 
                           w.BPSSCheckedById,
                           w.BPSSCheckedOn,
+
                           w.POCheckedById,
                           w.POCheckedOn,
                           w.ITCheckedById,
@@ -330,6 +341,9 @@ namespace ControlAssuranceAPI.Repositories
                           w.PassCheckedOn,
                           w.ContractCheckedById,
                           w.ContractCheckedOn,
+                          w.SDSCheckedById,
+                          w.SDSCheckedOn,
+                          w.SDSNotes,
                           w.EngagedChecksDone,
                       };
 
@@ -435,6 +449,26 @@ namespace ControlAssuranceAPI.Repositories
                         stageAction2 += "HRBP-Req, ";
                     }
 
+                    //CL
+                    if (ite.CLCase.CLApprovalDecision == ApprovalDecisions.Reject)
+                    {
+                        stageAction2 += "CL-Rej, ";
+                        totalRejected++;
+                    }
+                    else if (ite.CLCase.CLApprovalDecision == ApprovalDecisions.Approve)
+                    {
+                        stageAction2 += "CL-Ok, ";
+                    }
+                    else if (ite.CLCase.CLApprovalDecision == ApprovalDecisions.RequireDetails)
+                    {
+                        stageAction2 += "CL-Cng, ";
+                        totalRequireDetails++;
+                    }
+                    else
+                    {
+                        stageAction2 += "CL-Req, ";
+                    }
+
                     stageAction2 = stageAction2.Substring(0, stageAction2.Length - 2); //remove ", " at the end
 
 
@@ -455,13 +489,15 @@ namespace ControlAssuranceAPI.Repositories
                 else if(ite.Stage == CaseStages.Engaged.Name)
                 {
                     stageActions1 = "Complete Checks";
-                    int remainingChecks = 4;
-                    //count how many checks are completed from out of 5
+                    int remainingChecks = 6;
+                    //count how many checks are completed from out of 6
 
                     if (ite.BPSSCheckedById != null && ite.BPSSCheckedOn != null) remainingChecks--;
                     if (ite.POCheckedById != null && ite.POCheckedOn != null) remainingChecks--;
                     if (ite.ITCheckedById != null && ite.ITCheckedOn != null) remainingChecks--;
                     if (ite.UKSBSCheckedById != null && ite.UKSBSCheckedOn != null) remainingChecks--;
+                    if (ite.SDSCheckedById != null && ite.SDSCheckedOn != null) remainingChecks--;
+                    if (string.IsNullOrEmpty(ite.SDSNotes) == false && ite.SDSNotes.Length > 5) remainingChecks--;
                     //if (ite.PassCheckedById != null && ite.PassCheckedOn != null) remainingChecks--;
                     //if (ite.ContractCheckedById != null && ite.ContractCheckedOn != null) remainingChecks--;
 
@@ -664,13 +700,22 @@ namespace ControlAssuranceAPI.Repositories
                     cLcase.HRBPDecisionDate = DateTime.Now;
                 }
 
+                //CL
+                if (inputCase.CLApprovalDecision != cLcase.CLApprovalDecision)
+                {
+                    cLcase.CLApprovalDecision = inputCase.CLApprovalDecision;
+                    cLcase.CLDecisionById = apiUserId;
+                    cLcase.CLDecisionDate = DateTime.Now;
+                }
+
                 cLcase.BHApprovalComments = inputCase.BHApprovalComments;
                 cLcase.FBPApprovalComments = inputCase.FBPApprovalComments;
                 cLcase.HRBPApprovalComments = inputCase.HRBPApprovalComments;
 
                 if(cLcase.BHApprovalDecision == ApprovalDecisions.Approve
                     && cLcase.FBPApprovalDecision == ApprovalDecisions.Approve
-                    && cLcase.HRBPApprovalDecision == ApprovalDecisions.Approve)
+                    && cLcase.HRBPApprovalDecision == ApprovalDecisions.Approve
+                    && cLcase.CLApprovalDecision == ApprovalDecisions.Approve)
                 {
                     //all approved, now move stage to OnBoarding and create nn worker records
 
@@ -751,16 +796,19 @@ namespace ControlAssuranceAPI.Repositories
             cLcase.FinEstCost = inputCase.FinEstCost;
             cLcase.FinIR35ScopeId = inputCase.FinIR35ScopeId;
             cLcase.FinIR35AssessmentId = inputCase.FinIR35AssessmentId;
+            cLcase.FinSummaryIR35Just = inputCase.FinSummaryIR35Just;
+            cLcase.FinApproachAgreeingRate = inputCase.FinApproachAgreeingRate;
             cLcase.OtherComments = inputCase.OtherComments;
             cLcase.BHUserId = inputCase.BHUserId;
             cLcase.FBPUserId = inputCase.FBPUserId;
             cLcase.HRBPUserId = inputCase.HRBPUserId;
             cLcase.BHApprovalDecision = inputCase.BHApprovalDecision;
             cLcase.BHApprovalComments = inputCase.BHApprovalComments;
-            cLcase.FBPApprovalDecision = inputCase.FBPApprovalDecision;
+            cLcase.FBPApprovalDecision = inputCase.FBPApprovalDecision;            
             cLcase.FBPApprovalComments = inputCase.FBPApprovalComments;
             cLcase.HRBPApprovalDecision = inputCase.HRBPApprovalDecision;
             cLcase.HRBPApprovalComments = inputCase.HRBPApprovalComments;
+            cLcase.CLApprovalDecision = inputCase.CLApprovalDecision;
 
 
             db.SaveChanges();

@@ -30,12 +30,21 @@ namespace ControlAssuranceAPI.Controllers
             return SingleResult.Create(db.CLWorkerRepository.CLWorkers.Where(x => x.ID == key));
         }
 
-        //GET: odata/CLWorkers?clWorkerId=1&createPdf=&spSiteUrl=[url]
+        //GET: odata/CLWorkers?clWorkerId=1&createPdf=[pdftype]&spSiteUrl=[url]
         public string Get(int clWorkerId, string createPdf, string spSiteUrl)
         {
             //return db.IAPActionRepository.GetActions(userIds, isArchive);
-            string msg = db.CLWorkerRepository.CreateSDSPdf(clWorkerId, spSiteUrl);
-            return msg;
+            if(createPdf == "SDSPdf")
+            {
+                string msg = db.CLWorkerRepository.CreateSDSPdf(clWorkerId, spSiteUrl);
+                return msg;
+            }
+            else
+            {
+                string msg = db.CLWorkerRepository.CreateCasePdf(clWorkerId, spSiteUrl);
+                return msg;
+            }
+
         }
 
         // PATCH: odata/CLWorkers(1)

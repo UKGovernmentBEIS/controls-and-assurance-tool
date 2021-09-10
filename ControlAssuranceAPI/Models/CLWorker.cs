@@ -86,6 +86,13 @@ namespace ControlAssuranceAPI.Models
         public string SDSPdfName { get; set; }
         public string SDSPdfLastActionUser { get; set; }
         public Nullable<int> OnbContractorGenderId { get; set; }
+        public Nullable<int> SDSCheckedById { get; set; }
+        public Nullable<System.DateTime> SDSCheckedOn { get; set; }
+        public string SDSNotes { get; set; }
+        public string CasePdfStatus { get; set; }
+        public Nullable<System.DateTime> CasePdfDate { get; set; }
+        public string CasePdfName { get; set; }
+        public string CasePdfLastActionUser { get; set; }
     
         public virtual CLCase CLCase { get; set; }
         public virtual CLDeclarationConflict CLDeclarationConflict { get; set; }

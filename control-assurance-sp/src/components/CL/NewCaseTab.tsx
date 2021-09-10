@@ -112,6 +112,9 @@ export interface INewCaseTabState {
     ShowAllowChangeHM: boolean;
     //DefForm: ICLDefForm;
 
+    ShowHelpPanel: boolean;
+    UserHelpText: string;
+
 
 }
 
@@ -139,6 +142,9 @@ export class NewCaseTabState implements INewCaseTabState {
     public Stage: string = ""; //set in componentDidMount
     public HideRequirementInfoSection = false;
     public ShowAllowChangeHM: boolean = true;
+
+    public ShowHelpPanel = false;
+    public UserHelpText = "";
 
     //public DefForm: ICLDefForm = null;
 
@@ -191,6 +197,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
     private checkIconGreen: string = require('../../images/greentick1212.png');
     private checkIconRed: string = require('../../images/redtick1212.png');
+    private helpIcon: string = require('../../images/help2.png');
 
 
     private childEntities: types.IFormDataChildEntities[] = [
@@ -255,10 +262,12 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                 {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || stage === "Extended" || isViewOnly === true) && this.renderBudgetHolderApprovalDecision_info()}
                 {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || stage === "Extended" || isViewOnly === true) && this.renderFinanceBusinessPartnerApprovalDecision_info()}
                 {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || stage === "Extended" || isViewOnly === true) && this.renderHRBusinessPartnerApprovalDecision_info()}
+                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || stage === "Extended" || isViewOnly === true) && this.renderCLApprovalDecision_info()}
 
                 {(stage === "Approval") && this.renderBudgetHolderApprovalDecision()}
                 {(stage === "Approval") && this.renderFinanceBusinessPartnerApprovalDecision()}
                 {(stage === "Approval") && this.renderHRBusinessPartnerApprovalDecision()}
+                {(stage === "Approval") && this.renderCLApprovalDecision()}
                 {stage === "Approval" && this.renderFormButtons_ApprovalStage()}
 
                 {stage === "Onboarding" && isViewOnly === false && this.renderOnboarding()}
@@ -296,6 +305,10 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                 {/* submit to engaged - done */}
                 <MessageDialog hidden={this.state.HideSubmitEngagedDoneMessage} title="Validation Successful" content="Validation checks completed successfully. This case is being moved to the engaged stage." handleOk={() => { this.setState({ HideSubmitEngagedDoneMessage: true }, () => this.afterSubmitEngagedSuccessMsg()); }} />
 
+
+                <Panel isOpen={this.state.ShowHelpPanel} headerText="" type={PanelType.medium} onDismiss={this.hideHelpPanel} >
+                    <div dangerouslySetInnerHTML={{ __html: this.state.UserHelpText }}></div>
+                </Panel>
 
             </React.Fragment>
         );
@@ -563,6 +576,9 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     }
 
     private renderRequirement() {
+
+        if (this.props.defForm === null) return;
+
         const fd = this.state.FormData;
 
         let numPositionsLength: number = 1; //default for hiring manager
@@ -657,7 +673,14 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                     <div className={styles.flexContainerSectionQuestion}>
                                         <div className={styles.sectionQuestionCol1}><span>Work proposal (what will they be doing? )</span></div>
                                         <div className={styles.sectionQuestionCol2}>
-                                            <img src={reqWorkPurposeValidationImg} />
+
+                                            {/* inner flex to line 2 images */}
+                                            <div style={{ display: 'flex' }}>
+                                                <div><img src={reqWorkPurposeValidationImg} /></div>
+                                                <div style={{ paddingLeft: '10px', paddingTop: '2px' }} >{(this.props.defForm.WorkProposalHelpText && this.props.defForm.WorkProposalHelpText.length > 0) && <a style={{ cursor: "pointer" }} onClick={() => this.showHelpPanel(this.props.defForm.WorkProposalHelpText)}><img src={this.helpIcon} /></a>}</div>
+                                            </div>
+
+
                                         </div>
                                     </div>
 
@@ -1091,7 +1114,13 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
         return (
             <div>
-                <div style={{ marginBottom: '10px', marginTop: '30px' }} className={styles.sectionATitle}>Resourcing Justification</div>
+                <div style={{ marginBottom: '10px', marginTop: '30px' }} >
+                    <div style={{ display: 'flex' }}>
+                        <div className={styles.sectionATitle}>Resourcing Justification</div>
+                        <div style={{ paddingLeft: '10px', paddingTop: '12px' }} >{(this.props.defForm.ResourcingJustificationHelpText && this.props.defForm.ResourcingJustificationHelpText.length > 0) && <a style={{ cursor: "pointer" }} onClick={() => this.showHelpPanel(this.props.defForm.ResourcingJustificationHelpText)}><img src={this.helpIcon} /></a>}</div>
+                    </div>
+
+                </div>
 
                 <div style={{ width: '100%', marginLeft: 'auto', marginRight: 'auto', paddingRight: '10px', paddingLeft: '10px', paddingTop: '20px', paddingBottom: '0px', backgroundColor: 'rgb(245,245,245)', border: '1px solid rgb(230,230,230)', }}>
 
@@ -1282,7 +1311,46 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                         </div>
                     </div>
 
+
+
                     {/* 2nd row */}
+
+                    <div className={styles.formField}>
+
+                        <div style={{ display: 'flex' }}>
+                            <div style={{ width: '100%', fontWeight: 'bold' }}>
+
+                                <div style={{ display: 'flex' }}>
+                                    <div><span>Approach to agreeing rate</span></div>
+                                    <div style={{ paddingLeft: '10px', paddingTop:'2px' }} >{(this.props.defForm.ApproachAgreeingRateHelpText && this.props.defForm.ApproachAgreeingRateHelpText.length > 0) && <a style={{ cursor: "pointer" }} onClick={() => this.showHelpPanel(this.props.defForm.ApproachAgreeingRateHelpText)}><img src={this.helpIcon} /></a>}</div>
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+                        <div style={{ display: 'flex', marginTop: '5px' }}>
+                            <div style={{ width: '100%' }}>
+                                <CrTextField
+                                    multiline={true}
+                                    rows={6}
+                                    //className={styles.formField}
+                                    onChanged={(v) => this.changeTextField(v, "FinApproachAgreeingRate")}
+                                    value={fd.FinApproachAgreeingRate}
+
+                                />
+
+
+
+                            </div>
+
+                        </div>
+                    </div>
+
+
+
+                    {/* 3rd row */}
 
 
                     <div className={styles.formField}>
@@ -1301,7 +1369,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                             <div style={{ width: '50%', fontWeight: 'bold' }}>
 
                                 <div className={styles.flexContainerSectionQuestion}>
-                                    <div className={styles.sectionQuestionCol1}><span>Attach IR35 assesment evidence</span></div>
+                                    <div className={styles.sectionQuestionCol1}><span>Attach IR35 evidence</span></div>
                                     <div className={styles.sectionQuestionCol2}>
                                         <img src={iR35EvidenceValidationImg} />
                                     </div>
@@ -1387,6 +1455,41 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                     </div>
 
+
+                    {/* 4th row */}
+
+                    <div className={styles.formField}>
+
+                        <div style={{ display: 'flex' }}>
+                            <div style={{ width: '100%', fontWeight: 'bold' }}>
+
+                                <div style={{ display: 'flex' }}>
+                                    <div><span>Summary IR35 justification</span></div>
+                                    <div style={{ paddingLeft: '10px', paddingTop:'2px' }} >{(this.props.defForm.SummaryIR35JustificationHelpText && this.props.defForm.SummaryIR35JustificationHelpText.length > 0) && <a style={{ cursor: "pointer" }} onClick={() => this.showHelpPanel(this.props.defForm.SummaryIR35JustificationHelpText)}><img src={this.helpIcon} /></a>}</div>
+                                </div>
+                                
+
+                            </div>
+
+
+                        </div>
+                        <div style={{ display: 'flex', marginTop: '5px' }}>
+                            <div style={{ width: '100%' }}>
+                                <CrTextField
+                                    multiline={true}
+                                    rows={6}
+                                    //className={styles.formField}
+                                    onChanged={(v) => this.changeTextField(v, "FinSummaryIR35Just")}
+                                    value={fd.FinSummaryIR35Just}
+
+                                />
+
+
+
+                            </div>
+
+                        </div>
+                    </div>
 
 
                 </div>
@@ -1661,6 +1764,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     }
 
     private renderChangeLogs() {
+        const fdw = this.state.FormDataWorker;
         const fd = this.state.FormData;
         let changeLog = fd.CaseChangeLog ? fd.CaseChangeLog : "";
         let changeLogArr = changeLog.split(',');
@@ -1674,6 +1778,18 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
         return (
             <React.Fragment>
+
+                <div style={{ marginTop: '30px' }}>
+                    {fdw.CasePdfStatus !== "Working... Please Wait" && <div style={{ color: 'blue', cursor: 'pointer' }} onClick={() => this.createCasePdf()}>Create Case PDF</div>}
+                    {fdw.CasePdfStatus === "Working... Please Wait" && <div>Creating Case PDF... Please Wait.. To refresh status <span style={{ color: 'blue', cursor: 'pointer' }} onClick={() => this.refreshCasePdfStatus()}>Click Here</span></div>}
+                    {fdw.CasePdfStatus === "Cr" && <div>Last PDF created by {fdw.CasePdfLastActionUser} on {services.DateService.dateToUkDateTime(fdw.CasePdfDate)} <span style={{ color: 'blue', cursor: 'pointer' }} onClick={() => this.downloadCasePdf()}>Download</span>  </div>}
+
+                    {fdw.CasePdfStatus && fdw.CasePdfStatus.search("Err:") === 0 && <div>Last PDF creation error. Attempted by {fdw.CasePdfLastActionUser} on {services.DateService.dateToUkDateTime(fdw.CasePdfDate)} <br />{fdw.CasePdfStatus}  </div>}
+
+                </div>
+
+
+
                 <div style={{ marginTop: "30px" }}>
                     <div style={{ fontWeight: 'bold' }}>Change Log:</div>
                     <div style={{ marginTop: "20px" }} dangerouslySetInnerHTML={{ __html: changeLogs }} />
@@ -1831,13 +1947,13 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                 <tr>
                                     <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
                                         Title of vacancy
-                                </td>
+                                    </td>
                                     <td style={{ width: '31%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)' }}>
                                         {this.state.FormData.ReqVacancyTitle}
                                     </td>
                                     <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
                                         Grade of vacancy
-                                </td>
+                                    </td>
                                     <td style={{ width: '31%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
                                         {this.state.CaseInfo.ReqGrade}
                                     </td>
@@ -1847,7 +1963,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                 <tr>
                                     <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
                                         Work proposal (what will they be doing? )
-                                </td>
+                                    </td>
                                     <td colSpan={3} style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
                                         <div dangerouslySetInnerHTML={{ __html: this.state.FormData.ReqWorkPurpose && this.state.FormData.ReqWorkPurpose.split('\n').join('<br/>') }} ></div>
                                     </td>
@@ -1858,13 +1974,13 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                 <tr>
                                     <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
                                         Cost Centre for this role
-                                </td>
+                                    </td>
                                     <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', }}>
                                         {this.state.FormData.ReqCostCentre}
                                     </td>
                                     <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
                                         Directorate this role will be in
-                                </td>
+                                    </td>
                                     <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
                                         {this.state.CaseInfo.Directorate}
                                     </td>
@@ -1874,13 +1990,13 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                 <tr>
                                     <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
                                         Estimated start date
-                                </td>
+                                    </td>
                                     <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', }}>
                                         {this.state.CaseInfo.ReqEstStartDate}
                                     </td>
                                     <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
                                         Estimated end date
-                                </td>
+                                    </td>
                                     <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
                                         {this.state.CaseInfo.ReqEstEndDate}
                                     </td>
@@ -1890,13 +2006,13 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                 <tr>
                                     <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
                                         Professional Category
-                                </td>
+                                    </td>
                                     <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', }}>
                                         {this.state.CaseInfo.ReqProfessionalCat}
                                     </td>
                                     <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
                                         Work location
-                                </td>
+                                    </td>
                                     <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
                                         {this.state.CaseInfo.ReqWorkLocation}
                                     </td>
@@ -1908,7 +2024,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                 <tr>
                                     <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
                                         Number of positions
-                                </td>
+                                    </td>
                                     <td colSpan={3} style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
                                         {this.state.FormData.ReqNumPositions}
                                     </td>
@@ -2055,6 +2171,18 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                             </tr>
 
+                            <tr>
+                                <td style={{ width: '19%', borderLeft: '1px solid rgb(166,166,166)', borderTop: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Approach to agreeing rate
+                                </td>
+                                <td colSpan={3} style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+
+                                    <div dangerouslySetInnerHTML={{ __html: this.state.FormData.FinApproachAgreeingRate && this.state.FormData.FinApproachAgreeingRate.split('\n').join('<br/>') }} ></div>
+                                </td>
+
+
+                            </tr>
+
 
                             <tr>
                                 <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
@@ -2064,7 +2192,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                     {this.state.CaseInfo.FinIR35Scope}
                                 </td>
                                 <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
-                                    Attach IR35 assesment evidence
+                                    Attach IR35 evidence
                                 </td>
                                 <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
                                     {this.state.IR35Evidence &&
@@ -2081,6 +2209,20 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                 </td>
 
                             </tr>
+
+
+                            <tr>
+                                <td style={{ width: '19%', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Summary IR35 justification
+                                </td>
+                                <td colSpan={3} style={{ borderBottom: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+
+                                    <div dangerouslySetInnerHTML={{ __html: this.state.FormData.FinSummaryIR35Just && this.state.FormData.FinSummaryIR35Just.split('\n').join('<br/>') }} ></div>
+                                </td>
+
+
+                            </tr>
+
 
 
                         </tbody>
@@ -2396,6 +2538,78 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         );
     }
 
+    private renderCLApprovalDecision_info() {
+
+        // //hide this section if user is SU
+        // if (this.props.superUserPermission === false && this.props.currentUserId === this.state.FormData.HRBPUserId) {
+        //     console.log('user is HRBP, hide renderHRBusinessPartnerApprovalDecision_info');
+        //     return null;
+        // }
+
+        let decision: string = "";
+        if (this.state.FormData.CLApprovalDecision !== null) {
+            const x1 = this.approvalDecisionItems.filter(x => x.key === this.state.FormData.CLApprovalDecision);
+            if (x1.length > 0) {
+                decision = x1[0].afterDecisionText;
+            }
+        }
+
+        if (decision === "") {
+            decision = "Decision not made yet";
+        }
+
+        return (
+
+            <React.Fragment>
+
+                <div style={{ marginBottom: '10px', marginTop: '30px' }} className={styles.sectionATitle}>Internal Controls Approval Decision</div>
+
+                <div style={{ width: '100%', marginLeft: 'auto', marginRight: 'auto', paddingRight: '5px', overflowX: 'hidden' }}>
+
+                    <table cellSpacing="0" cellPadding="10" style={{ width: '100%' }}>
+
+                        <tbody>
+
+                            <tr>
+                                <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Decision
+                                </td>
+                                <td style={{ width: '31%', borderTop: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)' }}>
+                                    {decision}
+                                </td>
+                                <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    By/Date
+                                </td>
+                                <td style={{ width: '31%', borderTop: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                    {this.state.CaseInfo.CLDecisionByAndDate}
+                                </td>
+
+                            </tr>
+
+
+                            {/* <tr>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Comments
+                                </td>
+                                <td colSpan={3} style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                    <div dangerouslySetInnerHTML={{ __html: this.state.FormData.HRBPApprovalComments && this.state.FormData.HRBPApprovalComments.split('\n').join('<br/>') }} ></div>
+                                </td>
+
+                            </tr> */}
+
+
+                        </tbody>
+
+
+                    </table>
+                </div>
+
+            </React.Fragment>
+        );
+    }
+
+
+
 
     private renderBudgetHolderApprovalDecision() {
 
@@ -2663,6 +2877,70 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                         </div>
                     </div> */}
+
+
+
+                </div>
+
+
+
+
+
+            </div>
+        );
+    }
+
+    private renderCLApprovalDecision() {
+
+        //show this section if user is super user
+        if (this.props.superUserPermission === true) {
+            console.log('user is super user, show renderCLApprovalDecision');
+        }
+        else {
+            return null;
+        }
+
+        const fd = this.state.FormData;
+        return (
+            <div>
+                <div style={{ marginBottom: '10px', marginTop: '30px' }} className={styles.sectionATitle}>Internal Controls Approval Decision</div>
+
+                <div style={{ width: '100%', marginLeft: 'auto', marginRight: 'auto', paddingRight: '10px', paddingLeft: '10px', paddingTop: '20px', paddingBottom: '0px', backgroundColor: 'rgb(245,245,245)', border: '1px solid rgb(230,230,230)', }}>
+
+                    <div /*className={styles.formField}*/>
+
+                        <div style={{ display: 'flex' }}>
+                            <div style={{ width: '100%', fontWeight: 'bold' }}>
+                                <span>Case Decision</span>
+
+                            </div>
+
+                        </div>
+                        <div style={{ display: 'flex', marginTop: '5px' }}>
+                            <div style={{ minWidth: '50%', }}>
+                                <CrChoiceGroup
+                                    className="inlineflex"
+                                    options={this.approvalDecisionItems}
+                                    selectedKey={fd.CLApprovalDecision}
+                                    onChange={(ev, option) => this.changeChoiceGroup(ev, option, "CLApprovalDecision")}
+                                />
+
+
+
+                            </div>
+                            {fd.CLApprovalDecision === 'RequireDetails' && <div style={{ width: 'auto' }}>
+
+                                <div style={{ textAlign: 'right', color: 'navy', fontSize: '14px', fontStyle: 'italic', paddingTop: '0px', marginTop: '0px', paddingLeft: '0px', paddingRight: '10px' }}>
+                                    Note: Please use the discussion box at the bottom of the page to specify what further information you require.
+                                </div>
+
+                            </div>}
+
+
+                        </div>
+                    </div>
+
+
 
 
 
@@ -3142,7 +3420,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                 <div style={{ width: '50%' }}>&nbsp;</div>
                                 <div style={{ width: '50%', fontSize: '12px', fontStyle: 'italic', paddingTop: '5px', marginTop: '0px', paddingLeft: '0px' }}>
                                     End date should be greater than start date
-                                    </div>
+                                </div>
                             </div>
                         }
 
@@ -3612,14 +3890,14 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                         <div style={{ display: 'flex' }}>
 
                             <div style={{ width: '50%', fontSize: '14px', fontStyle: 'italic', paddingTop: '10px', marginTop: '0px', paddingLeft: '10px' }}>
-                               - If your contractor is from PSR, the work order number will begin with “PSR1WO” followed by 8 digits. Please insert this into this field. Please do not use any other order number such as “PSR1JP. This will not be accepted.
-                               <br /> <br />
-                               -  If you are using RM6160 framework, please type on the initials of the worker e.g. for example, joe blogs, worker order number will be “JB”.   
+                                - If your contractor is from PSR, the work order number will begin with “PSR1WO” followed by 8 digits. Please insert this into this field. Please do not use any other order number such as “PSR1JP. This will not be accepted.
+                                <br /> <br />
+                                -  If you are using RM6160 framework, please type on the initials of the worker e.g. for example, joe blogs, worker order number will be “JB”.
                             </div>
                             <div style={{ width: '50%', fontSize: '14px', fontStyle: 'italic', paddingTop: '10px', marginTop: '0px', paddingLeft: '10px' }}>
-                             - Please inform us of your recruiters email address from the agency. We will need this email address to send the SDS letter to. The recruiter will be the person who deals with your candidate/CV short listing, interview set up, candidate set up, etc.
-                             <br /> <br />
-	                        - If you are extending a current contractor on PSR, please type in “Extensions@publicsectorresourcing.co.uk”, else please refer to the step above for all other instances.
+                                - Please inform us of your recruiters email address from the agency. We will need this email address to send the SDS letter to. The recruiter will be the person who deals with your candidate/CV short listing, interview set up, candidate set up, etc.
+                                <br /> <br />
+                                - If you are extending a current contractor on PSR, please type in “Extensions@publicsectorresourcing.co.uk”, else please refer to the step above for all other instances.
 
                             </div>
                         </div>
@@ -3926,6 +4204,10 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         const req_UKSBSCheckedById_Img = fd.UKSBSCheckedById !== null ? this.checkIconGreen : this.checkIconRed;
         const req_UKSBSCheckedByOn_Img = fd.UKSBSCheckedOn !== null ? this.checkIconGreen : this.checkIconRed;
 
+        const req_SDSCheckedById_Img = fd.SDSCheckedById !== null ? this.checkIconGreen : this.checkIconRed;
+        const req_SDSCheckedOn_Img = fd.SDSCheckedOn !== null ? this.checkIconGreen : this.checkIconRed;
+        const req_SDSNotes_Img = fd.SDSNotes !== null && fd.SDSNotes.length > 5 ? this.checkIconGreen : this.checkIconRed;
+
         /*
         const req_PassCheckedById_Img = fd.PassCheckedById !== null ? this.checkIconGreen : this.checkIconRed;
         const req_PassCheckedOn_Img = fd.PassCheckedOn !== null ? this.checkIconGreen : this.checkIconRed;
@@ -4106,7 +4388,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                         </div>
                     </div>
 
-                    {/* 3rd row */}
+                    {/* 4th row */}
                     <div className={styles.formField}>
 
                         <div style={{ display: 'flex' }}>
@@ -4161,7 +4443,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                         </div>
                     </div>
 
-                    {/* 4th row */}
+                    {/* 5th row */}
                     <div className={styles.formField}>
 
                         <div style={{ display: 'flex' }}>
@@ -4214,7 +4496,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                         </div>
                     </div>
 
-                    {/* 5th row */}
+                    {/* 6th row */}
                     <div className={styles.formField}>
 
                         <div style={{ display: 'flex' }}>
@@ -4271,7 +4553,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                     </div>
 
 
-                    {/* 6th row */}
+                    {/* 7th row */}
                     <div className={styles.formField}>
 
                         <div style={{ display: 'flex' }}>
@@ -4324,9 +4606,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                         </div>
                     </div>
 
-
-
-                    {/* 7th row */}
+                    {/* 8th row */}
 
                     <div className={styles.formField}>
 
@@ -4386,6 +4666,96 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                         </div>
                     </div>
+
+                    {/* 9th row */}
+
+                    <div className={styles.formField}>
+
+                        <div style={{ display: 'flex' }}>
+                            <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>SDS checked by</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={req_SDSCheckedById_Img} />
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div style={{ width: '50%', fontWeight: 'bold' }}>
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>SDS checked on</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={req_SDSCheckedOn_Img} />
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                        <div style={{ display: 'flex', marginTop: '5px' }}>
+                            <div style={{ width: '50%', paddingRight: '5px' }}>
+                                <CrEntityPicker
+                                    displayForUser={true}
+                                    entities={this.state.LookupData.Users}
+                                    itemLimit={1}
+                                    selectedEntities={fd.SDSCheckedById && [fd.SDSCheckedById]}
+                                    onChange={(v) => this.changeUserPicker_Worker(v, 'SDSCheckedById', true)}
+                                />
+
+
+                            </div>
+
+                            <div style={{ width: '50%', }}>
+                                <CrDatePicker
+                                    maxWidth='100%'
+                                    value={fd.SDSCheckedOn}
+                                    onSelectDate={(v) => changeDatePickerV2(this, 'FormDataWorker', v, "SDSCheckedOn", this.engaged_Checks)}
+                                />
+
+                            </div>
+
+
+
+
+                        </div>
+                    </div>
+
+
+
+                    {/* 10th row */}
+                    <div className={styles.formField}>
+
+                        <div style={{ display: 'flex' }}>
+                            <div style={{ width: '100%', fontWeight: 'bold' }}>
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>SDS notes</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={req_SDSNotes_Img} />
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div style={{ display: 'flex', marginTop: '5px' }}>
+                            <div style={{ width: '100%', }}>
+                                <CrTextField
+                                    onChanged={(v) => this.changeTextField_Worker(v, "SDSNotes", true)}
+                                    value={fd.SDSNotes}
+
+                                />
+
+
+                            </div>
+
+
+                        </div>
+                    </div>
+
 
 
                     {/* 8th row - remove for now - Tas 28 Mar 2021
@@ -4627,18 +4997,45 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                             </tr>
 
                             <tr>
-                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)', borderBottom: '1px solid rgb(166,166,166)' }}>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
                                     Pass checked by
                                 </td>
-                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)' }}>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)' }}>
                                     {caseInfo.PassCheckedBy}
                                 </td>
-                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)', borderBottom: '1px solid rgb(166,166,166)' }}>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
                                     Pass checked on
                                 </td>
-                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)' }}>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
                                     {caseInfo.PassCheckedOn}
                                 </td>
+
+                            </tr>
+
+                            <tr>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    SDS checked by
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)' }}>
+                                    {caseInfo.SDSCheckedBy}
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    SDS checked on
+                                </td>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                    {caseInfo.SDSCheckedOn}
+                                </td>
+
+                            </tr>
+
+                            <tr>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)', borderBottom: '1px solid rgb(166,166,166)' }}>
+                                    SDS notes
+                                </td>
+                                <td colSpan={3} style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                    {caseInfo.SDSNotes}
+                                </td>
+
 
                             </tr>
 
@@ -4688,6 +5085,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                     {fd.SDSPdfStatus !== "Working... Please Wait" && <div style={{ color: 'blue', cursor: 'pointer' }} onClick={() => this.createSDSPdf()}>Create SDS PDF</div>}
                     {fd.SDSPdfStatus === "Working... Please Wait" && <div>Creating SDS... Please Wait.. To refresh status <span style={{ color: 'blue', cursor: 'pointer' }} onClick={() => this.refreshSDSPdfStatus()}>Click Here</span></div>}
                     {fd.SDSPdfStatus === "Cr" && <div>Last PDF created by {fd.SDSPdfLastActionUser} on {services.DateService.dateToUkDateTime(fd.SDSPdfDate)} <span style={{ color: 'blue', cursor: 'pointer' }} onClick={() => this.downloadSDSPdf()}>Download</span>  </div>}
+                    {fd.SDSPdfStatus && fd.SDSPdfStatus.search("Err:") === 0 && <div>Last PDF creation error. Attempted by {fd.SDSPdfLastActionUser} on {services.DateService.dateToUkDateTime(fd.SDSPdfDate)} <br />{fd.SDSPdfStatus}  </div>}
                 </div>
 
 
@@ -5875,13 +6273,14 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
     private loadCLWorker = (): void => {
 
-        const stage = this.state.Stage;
-        if (stage === "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || stage === "Extended") {
-            //ok - load data
-        }
-        else {
-            return;
-        }
+        //comment following condition cause we want case pdf available in every stage - 08-Sep-2021
+        // const stage = this.state.Stage;
+        // if (stage === "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || stage === "Extended") {
+        //     //ok - load data
+        // }
+        // else {
+        //     return;
+        // }
 
         this.clWorkerService.read(this.props.clWorkerId).then((w: ICLWorker) => {
             console.log('CLWorker', w);
@@ -6002,8 +6401,16 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, value)/*, FormIsDirty: true*/ });
     }
 
-    private changeTextField_Worker = (value: string, f: string): void => {
-        this.setState({ FormDataWorker: this.cloneObject(this.state.FormDataWorker, f, value)/*, FormIsDirty: true*/ });
+    private changeTextField_Worker = (value: string, f: string, engagedChecks?: boolean): void => {
+        this.setState({ FormDataWorker: this.cloneObject(this.state.FormDataWorker, f, value)/*, FormIsDirty: true*/ },
+
+            () => {
+                if (engagedChecks === true) {
+                    this.engaged_Checks();
+                }
+            }
+
+        );
     }
 
 
@@ -6069,7 +6476,9 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         if (fd.BPSSCheckedById !== null && fd.BPSSCheckedOn !== null &&
             fd.POCheckedById !== null && fd.POCheckedOn !== null &&
             fd.ITCheckedById !== null && fd.ITCheckedOn !== null &&
-            fd.UKSBSCheckedById !== null && fd.UKSBSCheckedOn !== null) {
+            fd.UKSBSCheckedById !== null && fd.UKSBSCheckedOn !== null &&
+            fd.SDSCheckedById !== null && fd.SDSCheckedOn !== null &&
+            fd.SDSNotes !== null && fd.SDSNotes.length > 5) {
             //fd.PassCheckedById !== null && fd.PassCheckedOn !== null &&
             //fd.ContractCheckedById !== null && fd.ContractCheckedOn !== null) {
             console.log('engaged all checks ok');
@@ -6519,6 +6928,82 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
 
         });
+    }
+
+
+
+
+
+
+
+    private createCasePdf = (): void => {
+        const spSiteUrl: string = this.props.spfxContext.pageContext.web.absoluteUrl;
+        //console.log('spSiteUrl', spSiteUrl);
+        this.clWorkerService.createCasePDF(this.props.clWorkerId, spSiteUrl).then((res: string): void => {
+
+            console.log('case Pdf creation initialized', res);
+            this.loadCLWorker();
+            // this.setState({
+            //     PDFStatus: res,
+            //     EnableDownloadPdf: false,
+            //     EnableDeletePdf: false,
+            //     EnableCreatePdf: false,
+            // });
+            //this.loadData(); //no need
+
+
+        }, (err) => {
+            if (this.props.onError)
+                this.props.onError(`Error creating PDF`, err.message);
+
+        });
+    }
+
+    private refreshCasePdfStatus = (): void => {
+        this.loadCLWorker();
+    }
+
+    private downloadCasePdf = (): void => {
+        console.log('download case pdf');
+        const fileName: string = this.state.FormDataWorker.CasePdfName;
+
+        const f = sp.web.getFolderByServerRelativeUrl(this.UploadFolder_Report).files.getByName(fileName);
+
+        f.get().then(t => {
+            console.log(t);
+            const serverRelativeUrl = t["ServerRelativeUrl"];
+            console.log(serverRelativeUrl);
+
+            const a = document.createElement('a');
+            //document.body.appendChild(a);
+            a.href = serverRelativeUrl;
+            a.target = "_blank";
+            a.download = fileName;
+
+            document.body.appendChild(a);
+            console.log(a);
+            //a.click();
+            //document.body.removeChild(a);
+
+
+            setTimeout(() => {
+                window.URL.revokeObjectURL(serverRelativeUrl);
+                window.open(serverRelativeUrl, '_blank');
+                document.body.removeChild(a);
+            }, 1);
+
+
+        });
+    }
+
+    private showHelpPanel = (helpText?: string) => {
+        console.log('show help panel');
+        this.setState({ UserHelpText: helpText, ShowHelpPanel: true });
+    }
+
+    private hideHelpPanel = () => {
+        console.log('hide help panel');
+        this.setState({ ShowHelpPanel: false });
     }
 
 }

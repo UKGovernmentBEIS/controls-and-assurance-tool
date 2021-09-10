@@ -14,7 +14,14 @@ export class CLWorkerService extends EntityService<ICLWorker> {
 
     public createSDSPDF(clWorkerId: number, spSiteUrl): Promise<string> {
         
-        return super.readString(`?clWorkerId=${clWorkerId}&createPdf=&spSiteUrl=${spSiteUrl}`).then((result:string): string => {
+        return super.readString(`?clWorkerId=${clWorkerId}&createPdf=SDSPdf&spSiteUrl=${spSiteUrl}`).then((result:string): string => {
+            return result;
+        });
+    }
+
+    public createCasePDF(clWorkerId: number, spSiteUrl): Promise<string> {
+        
+        return super.readString(`?clWorkerId=${clWorkerId}&createPdf=CasePdf&spSiteUrl=${spSiteUrl}`).then((result:string): string => {
             return result;
         });
     }

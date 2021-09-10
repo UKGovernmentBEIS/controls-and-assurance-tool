@@ -25,7 +25,9 @@ export interface ICLCase  extends IEntity {
     FinMaxRate?: number;
     FinEstCost?: number;
     FinIR35ScopeId?: number;
-    FinIR35AssessmentId?: number;
+    FinIR35AssessmentId?: number;    
+    FinApproachAgreeingRate?: string;
+    FinSummaryIR35Just?: string;
     OtherComments?: string;
     BHUserId?: number;
     FBPUserId?: number;
@@ -36,6 +38,7 @@ export interface ICLCase  extends IEntity {
     FBPApprovalComments?: string;
     HRBPApprovalDecision?: string;
     HRBPApprovalComments?: string;
+    CLApprovalDecision?: string;
     CaseChangeLog?: string;
 
 
@@ -67,6 +70,8 @@ export class CLCase implements ICLCase{
     public FinEstCost?: number = null;
     public FinIR35ScopeId?: number = null;
     public FinIR35AssessmentId?: number = null;
+    public FinApproachAgreeingRate?: string = null;
+    public FinSummaryIR35Just?: string = null;
     public OtherComments?: string = null;
     public BHUserId?: number = null;
     public FBPUserId?: number = null;
@@ -77,6 +82,7 @@ export class CLCase implements ICLCase{
     public FBPApprovalComments?: string = null;
     public HRBPApprovalDecision?: string = null;
     public HRBPApprovalComments?: string = null;
+    public CLApprovalDecision?: string = null;
     public CaseChangeLog?: string = null;
 
     constructor(caseType: string) {
@@ -110,6 +116,7 @@ export interface IClCaseInfo  extends IEntity {
     BHDecisionByAndDate?: string;
     FBPDecisionByAndDate?: string;
     HRBPDecisionByAndDate?: string;
+    CLDecisionByAndDate?: string;
 
     OnbContractorGender?: string;
     OnbContractorTitle?: string;
@@ -138,6 +145,9 @@ export interface IClCaseInfo  extends IEntity {
     ContractCheckedOn?: string;
     EngPONumber?:string;
     EngPONote?:string;
+    SDSCheckedBy?:string;
+    SDSCheckedOn?:string;
+    SDSNotes?:string;
 
 
     LeEndDateStr?: string;
@@ -203,6 +213,9 @@ export class ClCaseInfo  implements IClCaseInfo {
     public PassCheckedOn?: string = "";
     public ContractCheckedBy?: string = "";
     public ContractCheckedOn?: string = "";
+    public SDSCheckedBy?:string = "";
+    public SDSCheckedOn?:string = "";
+    public SDSNotes?:string = "";
 
     public LeStartDateStr?: string = "";
     public LeContractorDetailsCheckedBy?: string = "";

@@ -134,6 +134,56 @@ export default class ClProperties extends BaseUserContextWebPartComponent<types.
       },
 
 
+      {
+        key: 'WorkProposalHelpText',
+        columnType: ColumnType.TextBox,
+        columnDisplayType: ColumnDisplayType.FormOnly,
+        name: 'Work Proposal Help Text',
+        fieldName: 'WorkProposalHelpText',
+        minWidth: 300,
+        isResizable: true,
+        isRequired: false,
+        fieldMaxLength: 5000,
+        numRows: 10
+      },
+      {
+        key: 'ResourcingJustificationHelpText',
+        columnType: ColumnType.TextBox,
+        columnDisplayType: ColumnDisplayType.FormOnly,
+        name: 'Resourcing Justification Help Text',
+        fieldName: 'ResourcingJustificationHelpText',
+        minWidth: 300,
+        isResizable: true,
+        isRequired: false,
+        fieldMaxLength: 5000,
+        numRows: 10
+      },
+      {
+        key: 'ApproachAgreeingRateHelpText',
+        columnType: ColumnType.TextBox,
+        columnDisplayType: ColumnDisplayType.FormOnly,
+        name: 'Approach Agreeing Rate Help Text',
+        fieldName: 'ApproachAgreeingRateHelpText',
+        minWidth: 300,
+        isResizable: true,
+        isRequired: false,
+        fieldMaxLength: 5000,
+        numRows: 10
+      },
+      {
+        key: 'SummaryIR35JustificationHelpText',
+        columnType: ColumnType.TextBox,
+        columnDisplayType: ColumnDisplayType.FormOnly,
+        name: 'Summary IR35 Justification Help Text',
+        fieldName: 'SummaryIR35JustificationHelpText',
+        minWidth: 300,
+        isResizable: true,
+        isRequired: false,
+        fieldMaxLength: 5000,
+        numRows: 10
+      },
+
+
     ];
 
 
@@ -145,6 +195,8 @@ export default class ClProperties extends BaseUserContextWebPartComponent<types.
 
         <EntityList
           allowAdd={this.superUserPermission()}
+          //allowAdd={true}
+          //onRowSelectionCheckEditDel={this.editPermission}
           columns={listColumns}
           {...this.props}
           onError={this.onError}
@@ -164,6 +216,10 @@ export default class ClProperties extends BaseUserContextWebPartComponent<types.
     );
   }
 
+  private editPermission = (key: number) : Promise<boolean> => {
+    const su:boolean = this.superUserPermission();
+    return Promise.resolve(su);
+  }
 
   private renderDefLists() {
 

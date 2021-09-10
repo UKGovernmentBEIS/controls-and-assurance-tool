@@ -20,5 +20,9 @@ namespace ControlAssuranceAPI.Models
         public string EngagedStageFormText { get; set; }
         public string OnboardingStageFormText { get; set; }
         public string LeavingStageFormText { get; set; }
+        public string WorkProposalHelpText { get; set; }
+        public string ResourcingJustificationHelpText { get; set; }
+        public string ApproachAgreeingRateHelpText { get; set; }
+        public string SummaryIR35JustificationHelpText { get; set; }
     }
 }

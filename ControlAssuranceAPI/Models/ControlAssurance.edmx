@@ -112,6 +112,11 @@
           <Property Name="BHDecisionDate" Type="datetime" />
           <Property Name="FBPDecisionDate" Type="datetime" />
           <Property Name="HRBPDecisionDate" Type="datetime" />
+          <Property Name="FinApproachAgreeingRate" Type="nvarchar(max)" />
+          <Property Name="FinSummaryIR35Just" Type="nvarchar(max)" />
+          <Property Name="CLApprovalDecision" Type="nvarchar" MaxLength="50" />
+          <Property Name="CLDecisionById" Type="int" />
+          <Property Name="CLDecisionDate" Type="datetime" />
         </EntityType>
         <EntityType Name="CLCaseEvidence">
           <Key>
@@ -152,6 +157,10 @@
           <Property Name="EngagedStageFormText" Type="nvarchar(max)" />
           <Property Name="OnboardingStageFormText" Type="nvarchar(max)" />
           <Property Name="LeavingStageFormText" Type="nvarchar(max)" />
+          <Property Name="WorkProposalHelpText" Type="nvarchar(max)" />
+          <Property Name="ResourcingJustificationHelpText" Type="nvarchar(max)" />
+          <Property Name="ApproachAgreeingRateHelpText" Type="nvarchar(max)" />
+          <Property Name="SummaryIR35JustificationHelpText" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="CLGender">
           <Key>
@@ -281,6 +290,13 @@
           <Property Name="SDSPdfName" Type="nvarchar" MaxLength="4000" />
           <Property Name="SDSPdfLastActionUser" Type="nvarchar" MaxLength="500" />
           <Property Name="OnbContractorGenderId" Type="int" />
+          <Property Name="SDSCheckedById" Type="int" />
+          <Property Name="SDSCheckedOn" Type="datetime" />
+          <Property Name="SDSNotes" Type="nvarchar(max)" />
+          <Property Name="CasePdfStatus" Type="nvarchar(max)" />
+          <Property Name="CasePdfDate" Type="datetime" />
+          <Property Name="CasePdfName" Type="nvarchar" MaxLength="4000" />
+          <Property Name="CasePdfLastActionUser" Type="nvarchar" MaxLength="500" />
         </EntityType>
         <EntityType Name="CLWorkLocation">
           <Key>
@@ -3048,6 +3064,11 @@
           <Property Name="BHDecisionDate" Type="DateTime" Precision="3" />
           <Property Name="FBPDecisionDate" Type="DateTime" Precision="3" />
           <Property Name="HRBPDecisionDate" Type="DateTime" Precision="3" />
+          <Property Name="FinApproachAgreeingRate" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="FinSummaryIR35Just" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CLApprovalDecision" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CLDecisionById" Type="Int32" />
+          <Property Name="CLDecisionDate" Type="DateTime" Precision="3" />
           <NavigationProperty Name="CLComFramework" Relationship="Self.FK_CLCase_CLComFramework" FromRole="CLCase" ToRole="CLComFramework" />
           <NavigationProperty Name="CLIR35Scope" Relationship="Self.FK_CLCase_CLIR35Scope" FromRole="CLCase" ToRole="CLIR35Scope" />
           <NavigationProperty Name="CLProfessionalCat" Relationship="Self.FK_CLCase_CLProfessionalCat" FromRole="CLCase" ToRole="CLProfessionalCat" />
@@ -3099,6 +3120,10 @@
           <Property Name="EngagedStageFormText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="OnboardingStageFormText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="LeavingStageFormText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="WorkProposalHelpText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ResourcingJustificationHelpText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ApproachAgreeingRateHelpText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SummaryIR35JustificationHelpText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="CLGender">
           <Key>
@@ -3236,6 +3261,13 @@
           <Property Name="SDSPdfName" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
           <Property Name="SDSPdfLastActionUser" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="OnbContractorGenderId" Type="Int32" />
+          <Property Name="SDSCheckedById" Type="Int32" />
+          <Property Name="SDSCheckedOn" Type="DateTime" Precision="3" />
+          <Property Name="SDSNotes" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CasePdfStatus" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CasePdfDate" Type="DateTime" Precision="3" />
+          <Property Name="CasePdfName" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
+          <Property Name="CasePdfLastActionUser" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="CLCase" Relationship="Self.FK_CLWorker_CLCase" FromRole="CLWorker" ToRole="CLCase" />
           <NavigationProperty Name="CLDeclarationConflict" Relationship="Self.FK_CLWorker_CLDeclarationConflict" FromRole="CLWorker" ToRole="CLDeclarationConflict" />
           <NavigationProperty Name="CLGender" Relationship="Self.FK_CLWorker_CLGender" FromRole="CLWorker" ToRole="CLGender" />
@@ -6366,6 +6398,11 @@
                 <ScalarProperty Name="BHDecisionDate" ColumnName="BHDecisionDate" />
                 <ScalarProperty Name="FBPDecisionDate" ColumnName="FBPDecisionDate" />
                 <ScalarProperty Name="HRBPDecisionDate" ColumnName="HRBPDecisionDate" />
+                <ScalarProperty Name="FinApproachAgreeingRate" ColumnName="FinApproachAgreeingRate" />
+                <ScalarProperty Name="FinSummaryIR35Just" ColumnName="FinSummaryIR35Just" />
+                <ScalarProperty Name="CLApprovalDecision" ColumnName="CLApprovalDecision" />
+                <ScalarProperty Name="CLDecisionById" ColumnName="CLDecisionById" />
+                <ScalarProperty Name="CLDecisionDate" ColumnName="CLDecisionDate" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -6410,6 +6447,10 @@
                 <ScalarProperty Name="EngagedStageFormText" ColumnName="EngagedStageFormText" />
                 <ScalarProperty Name="OnboardingStageFormText" ColumnName="OnboardingStageFormText" />
                 <ScalarProperty Name="LeavingStageFormText" ColumnName="LeavingStageFormText" />
+                <ScalarProperty Name="WorkProposalHelpText" ColumnName="WorkProposalHelpText" />
+                <ScalarProperty Name="ResourcingJustificationHelpText" ColumnName="ResourcingJustificationHelpText" />
+                <ScalarProperty Name="ApproachAgreeingRateHelpText" ColumnName="ApproachAgreeingRateHelpText" />
+                <ScalarProperty Name="SummaryIR35JustificationHelpText" ColumnName="SummaryIR35JustificationHelpText" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -6547,6 +6588,13 @@
                 <ScalarProperty Name="SDSPdfName" ColumnName="SDSPdfName" />
                 <ScalarProperty Name="SDSPdfLastActionUser" ColumnName="SDSPdfLastActionUser" />
                 <ScalarProperty Name="OnbContractorGenderId" ColumnName="OnbContractorGenderId" />
+                <ScalarProperty Name="SDSCheckedById" ColumnName="SDSCheckedById" />
+                <ScalarProperty Name="SDSCheckedOn" ColumnName="SDSCheckedOn" />
+                <ScalarProperty Name="SDSNotes" ColumnName="SDSNotes" />
+                <ScalarProperty Name="CasePdfStatus" ColumnName="CasePdfStatus" />
+                <ScalarProperty Name="CasePdfDate" ColumnName="CasePdfDate" />
+                <ScalarProperty Name="CasePdfName" ColumnName="CasePdfName" />
+                <ScalarProperty Name="CasePdfLastActionUser" ColumnName="CasePdfLastActionUser" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -51,6 +51,11 @@ export interface ICLWorker  extends IEntity {
     PassCheckedOn?: Date;
     ContractCheckedById?: number;
     ContractCheckedOn?: Date;
+
+    SDSCheckedById?: number;
+    SDSCheckedOn?: Date;
+    SDSNotes?:string;
+
     EngagedChecksDone: boolean;
 
     ITSystemRef?:string;
@@ -79,6 +84,11 @@ export interface ICLWorker  extends IEntity {
     SDSPdfDate?: Date;
     SDSPdfName?: string;
     SDSPdfLastActionUser?: string;
+
+    CasePdfStatus?: string;
+    CasePdfDate?: Date;
+    CasePdfName?: string;
+    CasePdfLastActionUser?: string;
 
 
 }
@@ -134,6 +144,11 @@ export class CLWorker implements ICLWorker{
     public PassCheckedOn?: Date = null;
     public ContractCheckedById?: number = null;
     public ContractCheckedOn?: Date = null;
+
+    public SDSCheckedById?: number = null;
+    public SDSCheckedOn?: Date = null;
+    public SDSNotes?:string = null;
+
     public EngagedChecksDone: boolean = null;
 
     public ITSystemRef?:string = "";
@@ -159,6 +174,11 @@ export class CLWorker implements ICLWorker{
     public SDSPdfDate?: Date = null;
     public SDSPdfName?: string = null;
     public SDSPdfLastActionUser?: string = null;
+
+    public CasePdfStatus?: string = null;
+    public CasePdfDate?: Date = null;
+    public CasePdfName?: string = null;
+    public CasePdfLastActionUser?: string = null;
 
 
     constructor() {

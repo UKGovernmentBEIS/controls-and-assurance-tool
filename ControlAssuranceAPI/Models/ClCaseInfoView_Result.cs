@@ -31,6 +31,7 @@ namespace ControlAssuranceAPI.Models
         public string BHDecisionByAndDate { get; set; }
         public string FBPDecisionByAndDate { get; set; }
         public string HRBPDecisionByAndDate { get; set; }
+        public string CLDecisionByAndDate { get; set; }
 
         public string OnbContractorGender { get; set; }
         public string OnbContractorTitle { get; set; }
@@ -59,6 +60,10 @@ namespace ControlAssuranceAPI.Models
         public string ContractCheckedOn { get; set; }
         public string EngPONumber { get; set; }
         public string EngPONote { get; set; }
+        public string SDSCheckedBy { get; set; }
+        public string SDSCheckedOn { get; set; }
+        public string SDSNotes { get; set; }
+
 
         public string LeEndDateStr { get; set; }
         public string LeContractorDetailsCheckedBy { get; set; }

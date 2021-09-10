@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Web;
+using static ControlAssuranceAPI.Repositories.CLCaseRepository;
 
 namespace ControlAssuranceAPI.Libs
 {
@@ -1735,6 +1736,985 @@ namespace ControlAssuranceAPI.Libs
 
             //then upload final out final to the sharepoint
             sharepointLib.UploadFinalReport1(outputPdfPath, outputPdfName);
+        }
+
+
+        public void CreateCLCasePdf(Models.CLWorker cLWorker, CLCaseEvidenceRepository cLCaseEvidenceRepository, UserRepository userRepository, string tempLocation, string outputPdfName, string spSiteUrl, string spAccessDetails)
+        {
+            SharepointLib sharepointLib = new SharepointLib(spSiteUrl, spAccessDetails);
+
+            Document document = new Document();
+
+            //document.DefaultPageSetup.LeftMargin = "1.5cm";
+            //document.DefaultPageSetup.RightMargin = "1.5cm";
+            Section section = document.AddSection();
+
+            section.PageSetup = document.DefaultPageSetup.Clone();
+            section.PageSetup.LeftMargin = "1.5cm";
+            section.PageSetup.RightMargin = "1.5cm";
+
+            //var ss1 = document.DefaultPageSetup.LeftMargin;
+
+            Paragraph paragraph = new Paragraph();
+            paragraph.AddTab();
+            paragraph.AddText("Page ");
+            paragraph.AddPageField();
+            paragraph.AddText(" of ");
+            paragraph.AddNumPagesField();
+
+            section.Footers.Primary.Add(paragraph);
+
+            #region styles
+
+
+            Style normalStyle = document.Styles.AddStyle("normalStyle", "Normal");
+            normalStyle.Font.Name = "calibri";
+            normalStyle.Font.Size = 11;
+
+            Style rightTextStyle1 = document.Styles.AddStyle("rightTextStyle1", "normalStyle");
+            //rightTextStyle1.Font.Name = "calibri";
+            rightTextStyle1.Font.Size = 16;
+            rightTextStyle1.Font.Bold = true;
+            //rightTextStyle1.Font.Bold = true;
+            //rightTextStyle1.Font.Color = Color.FromRgb(255, 0, 0);
+            //rightTextStyle1.ParagraphFormat.Alignment = ParagraphAlignment.Right;
+            //rightTextStyle1.ParagraphFormat.SpaceAfter = new Unit(-18, UnitType.Point);
+
+            Style boldItalic1 = document.Styles.AddStyle("boldItalic1", "normalStyle");
+            boldItalic1.Font.Bold = true;
+            boldItalic1.Font.Italic = true;
+
+            Style bold1 = document.Styles.AddStyle("bold1", "normalStyle");
+            bold1.Font.Bold = true;
+
+            Style boldunderline1 = document.Styles.AddStyle("boldunderline1", "normalStyle");
+            boldunderline1.Font.Bold = true;
+            boldunderline1.Font.Underline = Underline.Single;
+
+            Style styleFooter = document.Styles[StyleNames.Footer];
+            styleFooter.Font.Name = "calibri";
+            styleFooter.ParagraphFormat.AddTabStop("8cm", TabAlignment.Center);
+
+            Style heading1 = document.Styles.AddStyle("heading1", "normalStyle");
+            heading1.Font.Size = 48;
+            heading1.Font.Color = Color.FromRgb(0, 126, 192);
+
+            Style heading2 = document.Styles.AddStyle("heading2", "normalStyle");
+            heading2.Font.Size = 26;
+            heading2.Font.Color = Color.FromRgb(196, 89, 17);
+
+
+
+            Style mainHeading = document.Styles.AddStyle("mainHeading", "normalStyle");
+            mainHeading.Font.Size = 20;
+            mainHeading.Font.Bold = true;
+
+            Style subHeading1 = document.Styles.AddStyle("subHeading1", "normalStyle");
+            subHeading1.Font.Size = 17;
+
+            Style tblText = document.Styles.AddStyle("tblText", "normalStyle");
+            tblText.Font.Size = 10;
+
+
+            Style normalTxt = document.Styles.AddStyle("normalTxt", "normalStyle");
+
+            Style normalTxtLink = document.Styles.AddStyle("normalTxtLink", "normalStyle");
+            normalTxtLink.Font.Color = Color.FromRgb(0, 0, 255);
+            normalTxtLink.Font.Underline = Underline.Single;
+
+            Style normalItalicTxt = document.Styles.AddStyle("normalItalicTxt", "normalStyle");
+            normalItalicTxt.Font.Italic = true;
+
+            var bulletList = document.AddStyle("BulletList", "normalStyle");
+            bulletList.ParagraphFormat.LeftIndent = "0.5cm";
+            bulletList.ParagraphFormat.KeepTogether = false;
+            bulletList.ParagraphFormat.KeepWithNext = false;
+            bulletList.ParagraphFormat.ListInfo = new ListInfo
+            {
+                ContinuePreviousList = true,
+                ListType = ListType.BulletList3,
+                NumberPosition = 1,
+
+            };
+
+
+            #endregion styles
+
+
+            #region content tables
+
+            paragraph = section.AddParagraph();
+            paragraph.AddFormattedText("Contingent Labour Business Case", "mainHeading");
+            paragraph.AddLineBreak();
+            paragraph.AddLineBreak();
+            paragraph.AddLineBreak();
+
+
+            #region Case Details
+
+            paragraph.AddFormattedText("Case Details", "subHeading1");
+            paragraph.AddLineBreak();
+
+            MigraDoc.DocumentObjectModel.Tables.Table table = section.AddTable();
+            SetTableStyle(ref table);
+
+            Column column = AddColumnInTable(ref table, "3.5cm", true);
+            column = AddColumnInTable(ref table, "5.5cm");
+            column = AddColumnInTable(ref table, "3.5cm", true);
+            column = AddColumnInTable(ref table, "5.5cm");
+
+            Row row = table.AddRow();
+            row.Format.Alignment = ParagraphAlignment.Left;
+
+            row.Cells[0].AddParagraph("Stage");
+            row.Cells[1].AddParagraph(cLWorker.Stage);
+            row.Cells[2].AddParagraph("Case Ref");
+
+            string caseRef = "";
+            if (cLWorker.CLCase.CaseCreated == true)
+            {
+                caseRef = $"{cLWorker.CLCase.CLComFramework?.Title ?? ""}{cLWorker.CLCase.CaseRef}";
+                if (CaseStages.GetStageNumber(cLWorker.Stage) >= CaseStages.Onboarding.Number && cLWorker.CLCase.ReqNumPositions > 1)
+                {
+                    caseRef += $"/{cLWorker.CLCase.ReqNumPositions}/{cLWorker.WorkerNumber?.ToString() ?? ""}";
+                }
+            }
+            else
+            {
+                caseRef = "Available after creation";
+            }
+
+            row.Cells[3].AddParagraph(caseRef);
+
+            //2nd row
+            row = table.AddRow();
+            row.Cells[0].AddParagraph("Created By");
+            row.Cells[1].AddParagraph(userRepository.Users.FirstOrDefault(x => x.ID == cLWorker.CLCase.CreatedById).Title);
+            row.Cells[2].AddParagraph("Created On");
+            row.Cells[3].AddParagraph(cLWorker.CLCase.CreatedOn.Value.ToString("dd/MM/yyyy HH:mm"));
+
+            #endregion Case Details
+
+            #region Details of applicant
+
+            //Details of applicant
+            paragraph = section.AddParagraph();
+            paragraph.AddLineBreak();
+            paragraph.AddLineBreak();
+            paragraph.AddLineBreak();
+
+            paragraph.AddFormattedText("Details of Applicant", "subHeading1");
+            paragraph.AddLineBreak();
+            table = section.AddTable();
+
+            SetTableStyle(ref table);
+
+            column = AddColumnInTable(ref table, "3.5cm", true);
+            column = AddColumnInTable(ref table, "14.5cm");
+
+
+            row = table.AddRow();
+            //row.Format.Alignment = ParagraphAlignment.Left;
+            row.Cells[0].AddParagraph("Name of hiring manager");
+
+            string applHMUser = "";
+            if (cLWorker.CLCase.ApplHMUserId != null)
+            {
+                applHMUser = userRepository.Users.FirstOrDefault(x => x.ID == cLWorker.CLCase.ApplHMUserId)?.Title ?? "";
+            }
+
+            row.Cells[1].AddParagraph(applHMUser);
+
+            row = table.AddRow();
+            row.Cells[0].AddParagraph("Hiring team member");
+
+            //hiring memebers
+            string hiringMembers = "";
+            foreach (var hm in cLWorker.CLCase.CLHiringMembers)
+            {
+                hiringMembers += $"{hm.User.Title}, ";
+            }
+            if (hiringMembers.Length > 0)
+                hiringMembers = hiringMembers.Substring(0, hiringMembers.Length - 2);
+
+            row.Cells[1].AddParagraph(hiringMembers);
+
+            #endregion Details of applicant
+
+            #region Requirement
+
+            //requirement
+            paragraph = section.AddParagraph();
+            paragraph.AddLineBreak();
+            paragraph.AddLineBreak();
+            paragraph.AddLineBreak();
+
+            paragraph.AddFormattedText("Requirement", "subHeading1");
+            paragraph.AddLineBreak();
+
+            table = section.AddTable();
+
+            SetTableStyle(ref table);
+
+            column = AddColumnInTable(ref table, "3.5cm", true);
+            column = AddColumnInTable(ref table, "5.5cm");
+            column = AddColumnInTable(ref table, "3.5cm", true);
+            column = AddColumnInTable(ref table, "5.5cm");
+
+
+            //1st row
+            row = table.AddRow();
+            row.Cells[0].AddParagraph("Title of vacancy");
+            row.Cells[1].AddParagraph(cLWorker.CLCase.ReqVacancyTitle?.ToString() ?? "");
+            row.Cells[2].AddParagraph("Grade of vacancy");
+            row.Cells[3].AddParagraph(cLWorker.CLCase.CLStaffGrade?.Title ?? "");
+
+            //2nd row
+            row = table.AddRow();
+            row.Cells[0].AddParagraph("Work proposal (what will they be doing? )");
+            row.Cells[1].MergeRight = 2;
+            row.Cells[1].AddParagraph(cLWorker.CLCase.ReqWorkPurpose?.ToString() ?? "");
+
+            //3rd row
+            row = table.AddRow();
+            row.Cells[0].AddParagraph("Cost Centre for this role");
+            row.Cells[1].AddParagraph(cLWorker.CLCase.ReqCostCentre?.ToString() ?? "");
+            row.Cells[2].AddParagraph("Directorate this role will be in");
+            row.Cells[3].AddParagraph(cLWorker.CLCase.Directorate?.Title ?? "");
+
+            //4th row
+            row = table.AddRow();
+            row.Cells[0].AddParagraph("Estimated start date");
+            row.Cells[1].AddParagraph(cLWorker.CLCase.ReqEstStartDate?.ToString("dd/MM/yyyy") ?? "");
+            row.Cells[2].AddParagraph("Estimated end date");
+            row.Cells[3].AddParagraph(cLWorker.CLCase.ReqEstEndDate?.ToString("dd/MM/yyyy") ?? "");
+
+            //5th row
+            row = table.AddRow();
+            row.Cells[0].AddParagraph("Professional Category");
+            row.Cells[1].AddParagraph(cLWorker.CLCase.CLProfessionalCat?.Title ?? "");
+            row.Cells[2].AddParagraph("Work location");
+            row.Cells[3].AddParagraph(cLWorker.CLCase.CLWorkLocation?.Title ?? "");
+
+            //6th row
+            row = table.AddRow();
+            row.Cells[0].AddParagraph("Number of positions");
+            row.Cells[1].MergeRight = 2;
+            row.Cells[1].AddParagraph(cLWorker.CLCase.ReqNumPositions?.ToString() ?? "");
+
+            #endregion Requirement
+
+            #region Commercial
+
+            //Commercial
+            paragraph = section.AddParagraph();
+            paragraph.AddLineBreak();
+            paragraph.AddLineBreak();
+            paragraph.AddLineBreak();
+
+            paragraph.AddFormattedText("Commercial", "subHeading1");
+            paragraph.AddLineBreak();
+
+            table = section.AddTable();
+            SetTableStyle(ref table);
+
+            column = AddColumnInTable(ref table, "3.5cm", true);
+            column = AddColumnInTable(ref table, "5.5cm");
+            column = AddColumnInTable(ref table, "3.5cm", true);
+            column = AddColumnInTable(ref table, "5.5cm");
+
+            //1st row
+            row = table.AddRow();
+            row.Cells[0].AddParagraph("Framework");
+            row.Cells[1].AddParagraph(cLWorker.CLCase.CLComFramework?.Title ?? "");
+            row.Cells[2].AddParagraph("Confirm if you have a Fieldglass account");
+            row.Cells[3].AddParagraph(cLWorker.CLCase.ComPSRAccountId?.ToString() ?? "");
+
+            //2nd row
+            row = table.AddRow();
+            row.Cells[0].AddParagraph("Justification if not PSR");
+            row.Cells[1].MergeRight = 2;
+            row.Cells[1].AddParagraph(cLWorker.CLCase.ComJustification?.ToString() ?? "");
+
+            #endregion Commercial
+
+            #region Resourcing Justification
+           
+            //Resourcing Justification
+            paragraph = section.AddParagraph();
+            paragraph.AddLineBreak();
+            paragraph.AddLineBreak();
+            paragraph.AddLineBreak();
+
+            paragraph.AddFormattedText("Resourcing Justification", "subHeading1");
+            paragraph.AddLineBreak();
+
+            table = section.AddTable();
+            SetTableStyle(ref table);
+
+            column = AddColumnInTable(ref table, "3.5cm", true);
+            column = AddColumnInTable(ref table, "14.5cm");
+
+
+            //1st row
+            row = table.AddRow();
+            row.Cells[0].AddParagraph("Alternative resourcing options");
+            row.Cells[1].AddParagraph(cLWorker.CLCase.JustAltOptions?.ToString() ?? "");
+
+            //2nd row
+            row = table.AddRow();
+            row.Cells[0].AddParagraph("Succession planning");
+            row.Cells[1].AddParagraph(cLWorker.CLCase.JustSuccessionPlanning?.ToString() ?? "");
+
+            #endregion Resourcing Justification
+
+            #region Finance
+
+            
+            //Finance
+            paragraph = section.AddParagraph();
+            paragraph.AddLineBreak();
+            paragraph.AddLineBreak();
+            paragraph.AddLineBreak();
+
+            paragraph.AddFormattedText("Finance", "subHeading1");
+            paragraph.AddLineBreak();
+
+            table = section.AddTable();
+            SetTableStyle(ref table);
+
+            column = AddColumnInTable(ref table, "3.5cm", true);
+            column = AddColumnInTable(ref table, "5.5cm");
+            column = AddColumnInTable(ref table, "3.5cm", true);
+            column = AddColumnInTable(ref table, "5.5cm");
+
+
+            //1st row
+            row = table.AddRow();
+            row.Cells[0].AddParagraph("Expected daily rate including fee (excluding vat)");
+            row.Cells[1].AddParagraph(cLWorker.CLCase.FinMaxRate?.ToString() ?? "");
+            row.Cells[2].AddParagraph("Estimated cost");
+            row.Cells[3].AddParagraph(cLWorker.CLCase.FinEstCost?.ToString() ?? "");
+
+            //2nd row
+            row = table.AddRow();
+            row.Cells[0].AddParagraph("Approach to agreeing rate");
+            row.Cells[1].MergeRight = 2;
+            row.Cells[1].AddParagraph(cLWorker.CLCase.FinApproachAgreeingRate?.ToString() ?? "");
+
+            //3rd row
+            row = table.AddRow();
+            row.Cells[0].AddParagraph("Confirm whether in-scope of IR35");
+            row.Cells[1].AddParagraph(cLWorker.CLCase.CLIR35Scope?.Title ?? "");
+            row.Cells[2].AddParagraph("IR35 evidence");
+
+
+            var ir35Ev = cLCaseEvidenceRepository.CLCaseEvidences.FirstOrDefault(x => x.ParentId == cLWorker.CLCaseId && x.EvidenceType == "IR35" && x.RecordCreated == true);
+
+            string evCellText = "";
+
+            if(ir35Ev != null)
+            {
+                if (ir35Ev.AttachmentType == "Link") evCellText = "Linked ";
+                else evCellText = "PDF ";
+
+                evCellText += "evidence available.";
+            }
+            
+
+            row.Cells[3].AddParagraph(evCellText);
+
+            //4th row
+            row = table.AddRow();
+            row.Cells[0].AddParagraph("Summary IR35 justification");
+            row.Cells[1].MergeRight = 2;
+            row.Cells[1].AddParagraph(cLWorker.CLCase.FinSummaryIR35Just?.ToString() ?? "");
+
+            #endregion Finance
+
+            #region Other
+            
+            //Other
+            paragraph = section.AddParagraph();
+            paragraph.AddLineBreak();
+            paragraph.AddLineBreak();
+            paragraph.AddLineBreak();
+
+            paragraph.AddFormattedText("Other", "subHeading1");
+            paragraph.AddLineBreak();
+
+            table = section.AddTable();
+            SetTableStyle(ref table);
+
+            column = AddColumnInTable(ref table, "3.5cm", true);
+            column = AddColumnInTable(ref table, "14.5cm");
+
+
+            //1st row
+            row = table.AddRow();
+            row.Cells[0].AddParagraph("Any additional comments");
+            row.Cells[1].AddParagraph(cLWorker.CLCase.OtherComments?.ToString() ?? "");
+
+            #endregion Other
+
+            #region Approvers
+            
+            //Approvers
+            paragraph = section.AddParagraph();
+            paragraph.AddLineBreak();
+            paragraph.AddLineBreak();
+            paragraph.AddLineBreak();
+
+            paragraph.AddFormattedText("Approvers", "subHeading1");
+            paragraph.AddLineBreak();
+
+            table = section.AddTable();
+            SetTableStyle(ref table);
+
+            column = AddColumnInTable(ref table, "3.5cm", true);
+            column = AddColumnInTable(ref table, "5.5cm");
+            column = AddColumnInTable(ref table, "3.5cm", true);
+            column = AddColumnInTable(ref table, "5.5cm");
+
+            string bhUser = "";
+            if (cLWorker.CLCase.BHUserId != null)
+                bhUser = userRepository.Users.FirstOrDefault(x => x.ID == cLWorker.CLCase.BHUserId)?.Title ?? "";
+
+            string fbpUser = "";
+            if (cLWorker.CLCase.FBPUserId != null)
+                fbpUser = userRepository.Users.FirstOrDefault(x => x.ID == cLWorker.CLCase.FBPUserId)?.Title ?? "";
+
+            string hrbpUser = "";
+            if (cLWorker.CLCase.HRBPUserId != null)
+                hrbpUser = userRepository.Users.FirstOrDefault(x => x.ID == cLWorker.CLCase.HRBPUserId)?.Title ?? "";
+
+
+
+
+            //1st row
+            row = table.AddRow();
+            row.Cells[0].AddParagraph("Budget holder");
+            row.Cells[1].AddParagraph(bhUser);
+            row.Cells[2].AddParagraph("Finance business partner");
+            row.Cells[3].AddParagraph(fbpUser);
+
+            //2nd row
+            row = table.AddRow();
+            row.Cells[0].AddParagraph("HR business partner");
+            row.Cells[1].MergeRight = 2;
+            row.Cells[1].AddParagraph(hrbpUser);
+
+            #endregion Approvers
+
+            #region Budget Holder Approval Decision
+            
+            //Budget Holder Approval Decision
+            paragraph = section.AddParagraph();
+            paragraph.AddLineBreak();
+            paragraph.AddLineBreak();
+            paragraph.AddLineBreak();
+
+            paragraph.AddFormattedText("Budget Holder Approval Decision", "subHeading1");
+            paragraph.AddLineBreak();
+
+            table = section.AddTable();
+            SetTableStyle(ref table);
+
+            column = AddColumnInTable(ref table, "3.5cm", true);
+            column = AddColumnInTable(ref table, "5.5cm");
+            column = AddColumnInTable(ref table, "3.5cm", true);
+            column = AddColumnInTable(ref table, "5.5cm");
+
+
+            //1st row
+            row = table.AddRow();
+            row.Cells[0].AddParagraph("Decision");
+            row.Cells[1].AddParagraph( GetApprovalDecision(cLWorker.CLCase.BHApprovalDecision) );
+            row.Cells[2].AddParagraph("By/Date");
+
+            string bhDecisionByAndDate = "";
+            if (cLWorker.CLCase.BHDecisionById != null)
+                bhDecisionByAndDate = userRepository.Users.FirstOrDefault(x => x.ID == cLWorker.CLCase.BHDecisionById)?.Title + ", " + cLWorker.CLCase.BHDecisionDate?.ToString("dd/MM/yyyy HH:mm") ?? "";
+
+            row.Cells[3].AddParagraph(bhDecisionByAndDate);
+
+            #endregion Budget Holder Approval Decision
+
+            #region Finance Business Partner Approval Decision
+            
+            //Finance Business Partner Approval Decision
+            paragraph = section.AddParagraph();
+            paragraph.AddLineBreak();
+            paragraph.AddLineBreak();
+            paragraph.AddLineBreak();
+
+            paragraph.AddFormattedText("Finance Business Partner Approval Decision", "subHeading1");
+            paragraph.AddLineBreak();
+
+            table = section.AddTable();
+            SetTableStyle(ref table);
+
+            column = AddColumnInTable(ref table, "3.5cm", true);
+            column = AddColumnInTable(ref table, "5.5cm");
+            column = AddColumnInTable(ref table, "3.5cm", true);
+            column = AddColumnInTable(ref table, "5.5cm");
+
+
+            //1st row
+            row = table.AddRow();
+            row.Cells[0].AddParagraph("Decision");
+            row.Cells[1].AddParagraph(GetApprovalDecision(cLWorker.CLCase.FBPApprovalDecision));
+            row.Cells[2].AddParagraph("By/Date");
+
+            string fbpDecisionByAndDate = "";
+            if (cLWorker.CLCase.FBPDecisionById != null)
+                fbpDecisionByAndDate = userRepository.Users.FirstOrDefault(x => x.ID == cLWorker.CLCase.FBPDecisionById)?.Title + ", " + cLWorker.CLCase.FBPDecisionDate?.ToString("dd/MM/yyyy HH:mm") ?? "";
+
+            row.Cells[3].AddParagraph(fbpDecisionByAndDate);
+
+            #endregion Finance Business Partner Approval Decision
+
+            #region HR Business Partner Approval Decision
+            
+            //HR Business Partner Approval Decision
+            paragraph = section.AddParagraph();
+            paragraph.AddLineBreak();
+            paragraph.AddLineBreak();
+            paragraph.AddLineBreak();
+
+            paragraph.AddFormattedText("HR Business Partner Approval Decision", "subHeading1");
+            paragraph.AddLineBreak();
+
+            table = section.AddTable();
+            SetTableStyle(ref table);
+
+            column = AddColumnInTable(ref table, "3.5cm", true);
+            column = AddColumnInTable(ref table, "5.5cm");
+            column = AddColumnInTable(ref table, "3.5cm", true);
+            column = AddColumnInTable(ref table, "5.5cm");
+
+            //1st row
+            row = table.AddRow();
+            row.Cells[0].AddParagraph("Decision");
+            row.Cells[1].AddParagraph(GetApprovalDecision(cLWorker.CLCase.HRBPApprovalDecision));
+            row.Cells[2].AddParagraph("By/Date");
+
+            string hrbpDecisionByAndDate = "";
+            if (cLWorker.CLCase.HRBPDecisionById != null)
+                hrbpDecisionByAndDate = userRepository.Users.FirstOrDefault(x => x.ID == cLWorker.CLCase.HRBPDecisionById)?.Title + ", " + cLWorker.CLCase.HRBPDecisionDate?.ToString("dd/MM/yyyy HH:mm") ?? "";
+
+            row.Cells[3].AddParagraph(hrbpDecisionByAndDate);
+
+            #endregion HR Business Partner Approval Decision
+
+            #region Internal Controls Approval Decision
+            
+            //Internal Controls Approval Decision
+            paragraph = section.AddParagraph();
+            paragraph.AddLineBreak();
+            paragraph.AddLineBreak();
+            paragraph.AddLineBreak();
+
+            paragraph.AddFormattedText("Internal Controls Approval Decision", "subHeading1");
+            paragraph.AddLineBreak();
+
+            table = section.AddTable();
+            SetTableStyle(ref table);
+
+            column = AddColumnInTable(ref table, "3.5cm", true);
+            column = AddColumnInTable(ref table, "5.5cm");
+            column = AddColumnInTable(ref table, "3.5cm", true);
+            column = AddColumnInTable(ref table, "5.5cm");
+
+            //1st row
+            row = table.AddRow();
+            row.Cells[0].AddParagraph("Decision");
+            row.Cells[1].AddParagraph(GetApprovalDecision(cLWorker.CLCase.CLApprovalDecision));
+            row.Cells[2].AddParagraph("By/Date");
+
+            string clDecisionByAndDate = "";
+            if (cLWorker.CLCase.CLDecisionById != null)
+                clDecisionByAndDate = userRepository.Users.FirstOrDefault(x => x.ID == cLWorker.CLCase.CLDecisionById)?.Title + ", " + cLWorker.CLCase.CLDecisionDate?.ToString("dd/MM/yyyy HH:mm") ?? "";
+
+            row.Cells[3].AddParagraph(clDecisionByAndDate);
+
+            #endregion Internal Controls Approval Decision
+
+            #region Onboarding
+
+            //Onboarding
+
+            if ((CaseStages.GetStageNumber(cLWorker.Stage) >= CaseStages.Onboarding.Number))
+            {
+                paragraph = section.AddParagraph();
+                paragraph.AddLineBreak();
+                paragraph.AddLineBreak();
+                paragraph.AddLineBreak();
+
+                paragraph.AddFormattedText("Onboarding", "subHeading1");
+                paragraph.AddLineBreak();
+
+                table = section.AddTable();
+                SetTableStyle(ref table);
+
+                column = AddColumnInTable(ref table, "3.5cm", true);
+                column = AddColumnInTable(ref table, "5.5cm");
+                column = AddColumnInTable(ref table, "3.5cm", true);
+                column = AddColumnInTable(ref table, "5.5cm");
+
+                //1st row
+                row = table.AddRow();
+                row.Cells[0].AddParagraph("Contractor gender");
+                row.Cells[1].AddParagraph(cLWorker.CLGender?.Title ?? "");
+                row.Cells[2].AddParagraph("Contractor title");
+                row.Cells[3].AddParagraph(cLWorker.PersonTitle?.Title ?? "");
+
+                //2nd row
+                row = table.AddRow();
+                row.Cells[0].AddParagraph("Contractor firstname");
+                row.Cells[1].AddParagraph(cLWorker.OnbContractorFirstname?.ToString() ?? "");
+                row.Cells[2].AddParagraph("Contractor surname");
+                row.Cells[3].AddParagraph(cLWorker.OnbContractorSurname?.ToString() ?? "");
+
+                //3rd row
+                row = table.AddRow();
+                row.Cells[0].AddParagraph("Contractor date of birth");
+                row.Cells[1].AddParagraph(cLWorker.OnbContractorDob?.ToString("dd/MM/yyyy") ?? "");
+                row.Cells[2].AddParagraph("Contractor NI Number");
+                row.Cells[3].AddParagraph(cLWorker.OnbContractorNINum?.ToString() ?? "");
+
+                //4th row
+                row = table.AddRow();
+                row.Cells[0].AddParagraph("Contractor telephone (personal)");
+                row.Cells[1].AddParagraph(cLWorker.OnbContractorPhone?.ToString() ?? "");
+                row.Cells[2].AddParagraph("Contractor email (personal)");
+                row.Cells[3].AddParagraph(cLWorker.OnbContractorEmail?.ToString() ?? "");
+
+                //5th row
+                row = table.AddRow();
+                row.Cells[0].AddParagraph("Contractor home address (personal)");
+                row.Cells[1].AddParagraph(cLWorker.OnbContractorHomeAddress?.ToString() ?? "");
+                row.Cells[2].AddParagraph("Contractor post code (personal)");
+                row.Cells[3].AddParagraph(cLWorker.OnbContractorPostCode?.ToString() ?? "");
+
+                //6th row
+                row = table.AddRow();
+                row.Cells[0].AddParagraph("Start date");
+                row.Cells[1].AddParagraph(cLWorker.OnbStartDate?.ToString("dd/MM/yyyy") ?? "");
+                row.Cells[2].AddParagraph("End date");
+                row.Cells[3].AddParagraph(cLWorker.OnbEndDate?.ToString("dd/MM/yyyy") ?? "");
+
+                //7th row
+                row = table.AddRow();
+                row.Cells[0].AddParagraph("Daily rate (including fee) agreed");
+                row.Cells[1].AddParagraph(cLWorker.OnbDayRate?.ToString() ?? "");
+                row.Cells[2].AddParagraph("Purchase order number");
+                row.Cells[3].AddParagraph(cLWorker.PurchaseOrderNum?.ToString() ?? "");
+
+                //8th row
+                row = table.AddRow();
+                row.Cells[0].AddParagraph("Security clearance");
+                row.Cells[1].AddParagraph(cLWorker.CLSecurityClearance?.Title ?? "");
+                row.Cells[2].AddParagraph("Security checks confirmation evidence");
+
+                var contractorSecurityCheckEv = cLCaseEvidenceRepository.CLCaseEvidences.FirstOrDefault(x => x.ParentId == cLWorker.ID && x.EvidenceType == "ContractorSecurityCheck" && x.RecordCreated == true);
+                string contractorSecurityCheckEvCellText = "";
+
+                if (contractorSecurityCheckEv != null)
+                {
+                    if (contractorSecurityCheckEv.AttachmentType == "Link") contractorSecurityCheckEvCellText = "Linked ";
+                    else contractorSecurityCheckEvCellText = "PDF ";
+
+                    contractorSecurityCheckEvCellText += "evidence available.";
+                }
+
+                row.Cells[3].AddParagraph(contractorSecurityCheckEvCellText);
+
+                //9th row
+                row = table.AddRow();
+                row.Cells[0].AddParagraph("Work days");
+                row.Cells[1].MergeRight = 2;
+
+                string workDays = "";
+                if (cLWorker.OnbWorkingDayMon == true) workDays += "Monday, ";
+                if (cLWorker.OnbWorkingDayTue == true) workDays += "Tuesday, ";
+                if (cLWorker.OnbWorkingDayWed == true) workDays += "Wednesday, ";
+                if (cLWorker.OnbWorkingDayThu == true) workDays += "Thursday, ";
+                if (cLWorker.OnbWorkingDayFri == true) workDays += "Friday, ";
+                if (cLWorker.OnbWorkingDaySat == true) workDays += "Saturday, ";
+                if (cLWorker.OnbWorkingDaySun == true) workDays += "Sunday, ";
+
+                if (workDays.Length > 0)
+                    workDays = workDays.Substring(0, workDays.Length - 2);
+
+                row.Cells[1].AddParagraph(workDays);
+
+                //10th row
+                row = table.AddRow();
+                row.Cells[0].AddParagraph("Declaration of conflict of interest");
+                row.Cells[1].MergeRight = 2;
+                row.Cells[1].AddParagraph(cLWorker.CLDeclarationConflict?.Title ?? "");
+
+                //11th row
+                row = table.AddRow();
+                row.Cells[0].AddParagraph("Name of Line Manager");
+                row.Cells[1].AddParagraph(cLWorker.OnbLineManagerUserId != null ? userRepository.Users.FirstOrDefault(x => x.ID == cLWorker.OnbLineManagerUserId)?.Title ?? "" : "");
+                row.Cells[2].AddParagraph("Line Manager grade");
+                row.Cells[3].AddParagraph(cLWorker.CLStaffGrade?.Title ?? "");
+
+                //12th row
+                row = table.AddRow();
+                row.Cells[0].AddParagraph("Line Manager Employee Number");
+                row.Cells[1].AddParagraph(cLWorker.OnbLineManagerEmployeeNum?.ToString() ?? "");
+                row.Cells[2].AddParagraph("Line Manager telephone number");
+                row.Cells[3].AddParagraph(cLWorker.OnbLineManagerPhone?.ToString() ?? "");
+
+                //13th row
+                row = table.AddRow();
+                row.Cells[0].AddParagraph("Work Order Number");
+                row.Cells[1].AddParagraph(cLWorker.OnbWorkOrderNumber?.ToString() ?? "");
+                row.Cells[2].AddParagraph("Recruiters email");
+                row.Cells[3].AddParagraph(cLWorker.OnbRecruitersEmail?.ToString() ?? "");
+            }
+
+
+
+            #endregion Onboarding
+
+            #region Engaged
+
+            //Engaged
+
+            if ((CaseStages.GetStageNumber(cLWorker.Stage) >= CaseStages.Engaged.Number))
+            {
+                paragraph = section.AddParagraph();
+                paragraph.AddLineBreak();
+                paragraph.AddLineBreak();
+                paragraph.AddLineBreak();
+
+                paragraph.AddFormattedText("Engaged", "subHeading1");
+                paragraph.AddLineBreak();
+
+                table = section.AddTable();
+                SetTableStyle(ref table);
+
+                column = AddColumnInTable(ref table, "3.5cm", true);
+                column = AddColumnInTable(ref table, "5.5cm");
+                column = AddColumnInTable(ref table, "3.5cm", true);
+                column = AddColumnInTable(ref table, "5.5cm");
+
+                //1st row
+                row = table.AddRow();
+                row.Cells[0].AddParagraph("Security clearance checked by");
+                row.Cells[1].AddParagraph(cLWorker.BPSSCheckedById != null ? userRepository.Users.FirstOrDefault(x => x.ID == cLWorker.BPSSCheckedById)?.Title ?? "" : "");
+                row.Cells[2].AddParagraph("Security clearance checked on");
+                row.Cells[3].AddParagraph(cLWorker.BPSSCheckedOn?.ToString("dd/MM/yyyy") ?? "");
+
+                //2nd row
+                row = table.AddRow();
+                row.Cells[0].AddParagraph("PO checked by");
+                row.Cells[1].AddParagraph(cLWorker.POCheckedById != null ? userRepository.Users.FirstOrDefault(x => x.ID == cLWorker.POCheckedById)?.Title ?? "" : "");
+                row.Cells[2].AddParagraph("PO checked on");
+                row.Cells[3].AddParagraph(cLWorker.POCheckedOn?.ToString("dd/MM/yyyy") ?? "");
+
+                //3rd row
+                row = table.AddRow();
+                row.Cells[0].AddParagraph("PO Number");
+                row.Cells[1].AddParagraph(cLWorker.EngPONumber?.ToString() ?? "");
+                row.Cells[2].AddParagraph("PO Note");
+                row.Cells[3].AddParagraph(cLWorker.EngPONote?.ToString() ?? "");
+
+                //4th row
+                row = table.AddRow();
+                row.Cells[0].AddParagraph("IT checked by");
+                row.Cells[1].AddParagraph(cLWorker.ITCheckedById != null ? userRepository.Users.FirstOrDefault(x => x.ID == cLWorker.ITCheckedById)?.Title ?? "" : "");
+                row.Cells[2].AddParagraph("IT checked on");
+                row.Cells[3].AddParagraph(cLWorker.ITCheckedOn?.ToString("dd/MM/yyyy") ?? "");
+
+                //5th row
+                row = table.AddRow();
+                row.Cells[0].AddParagraph("IT System Reference");
+                row.Cells[1].AddParagraph(cLWorker.ITSystemRef?.ToString() ?? "");
+                row.Cells[2].AddParagraph("IT System notes");
+                row.Cells[3].AddParagraph(cLWorker.ITSystemNotes?.ToString() ?? "");
+
+                //6th row
+                row = table.AddRow();
+                row.Cells[0].AddParagraph("UKSBS/Oracle checked by");
+                row.Cells[1].AddParagraph(cLWorker.UKSBSCheckedById != null ? userRepository.Users.FirstOrDefault(x => x.ID == cLWorker.UKSBSCheckedById)?.Title ?? "" : "");
+                row.Cells[2].AddParagraph("UKSBS/Oracle checked on");
+                row.Cells[3].AddParagraph(cLWorker.UKSBSCheckedOn?.ToString("dd/MM/yyyy") ?? "");
+
+                //7th row
+                row = table.AddRow();
+                row.Cells[0].AddParagraph("UKSBS Reference");
+                row.Cells[1].AddParagraph(cLWorker.UKSBSRef?.ToString() ?? "");
+                row.Cells[2].AddParagraph("UKSBS notes");
+                row.Cells[3].AddParagraph(cLWorker.UKSBSNotes?.ToString() ?? "");
+
+                //8th row
+                row = table.AddRow();
+                row.Cells[0].AddParagraph("Pass checked by");
+                row.Cells[1].AddParagraph(cLWorker.PassCheckedById != null ? userRepository.Users.FirstOrDefault(x => x.ID == cLWorker.PassCheckedById)?.Title ?? "" : "");
+                row.Cells[2].AddParagraph("Pass checked on");
+                row.Cells[3].AddParagraph(cLWorker.PassCheckedOn?.ToString("dd/MM/yyyy") ?? "");
+
+                //9th row
+                row = table.AddRow();
+                row.Cells[0].AddParagraph("SDS checked by");
+                row.Cells[1].AddParagraph(cLWorker.SDSCheckedById != null ? userRepository.Users.FirstOrDefault(x => x.ID == cLWorker.SDSCheckedById)?.Title ?? "" : "");
+                row.Cells[2].AddParagraph("SDS checked on");
+                row.Cells[3].AddParagraph(cLWorker.SDSCheckedOn?.ToString("dd/MM/yyyy") ?? "");
+
+                //10th row
+                row = table.AddRow();
+                row.Cells[0].AddParagraph("SDS notes");
+                row.Cells[1].MergeRight = 2;
+                row.Cells[1].AddParagraph(cLWorker.SDSNotes?.ToString() ?? "");
+            }
+
+
+            #endregion Engaged
+
+            #region Leaving
+
+            //Leaving
+
+            if ((CaseStages.GetStageNumber(cLWorker.Stage) >= CaseStages.Leaving.Number))
+            {
+                paragraph = section.AddParagraph();
+                paragraph.AddLineBreak();
+                paragraph.AddLineBreak();
+                paragraph.AddLineBreak();
+
+                paragraph.AddFormattedText("Leaving", "subHeading1");
+                paragraph.AddLineBreak();
+
+                table = section.AddTable();
+                SetTableStyle(ref table);
+
+                column = AddColumnInTable(ref table, "3.5cm", true);
+                column = AddColumnInTable(ref table, "5.5cm");
+                column = AddColumnInTable(ref table, "3.5cm", true);
+                column = AddColumnInTable(ref table, "5.5cm");
+
+                //1st row
+                row = table.AddRow();
+                row.Cells[0].AddParagraph("End Date");
+                row.Cells[1].MergeRight = 2;
+                row.Cells[1].AddParagraph(cLWorker.LeEndDate?.ToString("dd/MM/yyyy") ?? "");
+
+                //2nd row
+                row = table.AddRow();
+                row.Cells[0].AddParagraph("Contractor telephone (personal)");
+                row.Cells[1].AddParagraph(cLWorker.LeContractorPhone?.ToString() ?? "");
+                row.Cells[2].AddParagraph("Contractor email (personal)");
+                row.Cells[3].AddParagraph(cLWorker.LeContractorEmail?.ToString() ?? "");
+
+                //3rd row
+                row = table.AddRow();
+                row.Cells[0].AddParagraph("Contractor home address (personal)");
+                row.Cells[1].AddParagraph(cLWorker.LeContractorHomeAddress?.ToString() ?? "");
+                row.Cells[2].AddParagraph("Contractor post code (personal)");
+                row.Cells[3].AddParagraph(cLWorker.LeContractorPostCode?.ToString() ?? "");
+
+                //4th row
+                row = table.AddRow();
+                row.Cells[0].AddParagraph("Contractor details above checked by");
+                row.Cells[1].AddParagraph(cLWorker.LeContractorDetailsCheckedById != null ? userRepository.Users.FirstOrDefault(x => x.ID == cLWorker.LeContractorDetailsCheckedById)?.Title ?? "" : "");
+                row.Cells[2].AddParagraph("Contractor details above checked on");
+                row.Cells[3].AddParagraph(cLWorker.LeContractorDetailsCheckedOn?.ToString("dd/MM/yyyy") ?? "");
+
+                //5th row
+                row = table.AddRow();
+                row.Cells[0].AddParagraph("IT checked by");
+                row.Cells[1].AddParagraph(cLWorker.LeITCheckedById != null ? userRepository.Users.FirstOrDefault(x => x.ID == cLWorker.LeITCheckedById)?.Title ?? "" : "");
+                row.Cells[2].AddParagraph("IT checked on");
+                row.Cells[3].AddParagraph(cLWorker.LeITCheckedOn?.ToString("dd/MM/yyyy") ?? "");
+
+                //6th row
+                row = table.AddRow();
+                row.Cells[0].AddParagraph("UKSBS/Oracle checked by");
+                row.Cells[1].AddParagraph(cLWorker.LeUKSBSCheckedById != null ? userRepository.Users.FirstOrDefault(x => x.ID == cLWorker.LeUKSBSCheckedById)?.Title ?? "" : "");
+                row.Cells[2].AddParagraph("UKSBS/Oracle checked on");
+                row.Cells[3].AddParagraph(cLWorker.LeUKSBSCheckedOn?.ToString("dd/MM/yyyy") ?? "");
+
+                //7th row
+                row = table.AddRow();
+                row.Cells[0].AddParagraph("Pass checked by");
+                row.Cells[1].AddParagraph(cLWorker.LePassCheckedById != null ? userRepository.Users.FirstOrDefault(x => x.ID == cLWorker.LePassCheckedById)?.Title ?? "" : "");
+                row.Cells[2].AddParagraph("Pass checked on");
+                row.Cells[3].AddParagraph(cLWorker.LePassCheckedOn?.ToString("dd/MM/yyyy") ?? "");
+            }
+
+
+            #endregion Leaving
+
+            #endregion content tables
+
+
+
+            //final creation steps
+            document.UseCmykColor = true;
+            const bool unicode = false;
+            const PdfFontEmbedding embedding = PdfFontEmbedding.Always;
+            PdfDocumentRenderer pdfRenderer = new PdfDocumentRenderer(unicode, embedding);
+            pdfRenderer.Document = document;
+            pdfRenderer.RenderDocument();
+
+
+            string outputPdfPath = System.IO.Path.Combine(tempLocation, outputPdfName);
+            pdfRenderer.PdfDocument.Save(outputPdfPath);
+
+            document = null;
+
+            //then upload final out final to the sharepoint
+            sharepointLib.UploadFinalReport1(outputPdfPath, outputPdfName);
+
+
+            #region local function
+
+            void SetTableStyle(ref Table tbl)
+            {
+                tbl.Style = "tblText";
+
+                tbl.Borders.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(127, 127, 127); //TableBorder;
+                tbl.Borders.Width = 0.25;
+                tbl.LeftPadding = 3; //10;
+                tbl.RightPadding = 3; //10;
+                tbl.TopPadding = 3; //5;
+                tbl.BottomPadding = 3; //5;
+                //tbl.Borders.Left.Width = 0.5;
+                //tbl.Borders.Right.Width = 0.5;
+                tbl.Rows.LeftIndent = 0;
+            }
+
+            Column AddColumnInTable(ref Table tbl, string colSize, bool labelCol = false)
+            {
+                Column col = tbl.AddColumn(colSize);
+                if(labelCol)
+                    col.Shading.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(229, 229, 229);
+                col.Format.Alignment = ParagraphAlignment.Left;
+
+                return col;
+            }
+
+            string GetApprovalDecision(string decision)
+            {
+                string ret = "Decision not made yet"; //default value
+                if(string.IsNullOrEmpty(decision) == false)
+                {
+                    decision = decision.Trim();
+                    if (decision == "Approve")
+                        ret = "Approved";
+                    else if (decision == "Reject")
+                        ret = "Rejected";
+                    else if (decision == "RequireDetails")
+                        ret = "Require further details";
+                }
+                return ret;
+            }
+            #endregion local function
         }
 
         #endregion CL

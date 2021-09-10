@@ -65,6 +65,11 @@ namespace ControlAssuranceAPI.Models
         public Nullable<System.DateTime> BHDecisionDate { get; set; }
         public Nullable<System.DateTime> FBPDecisionDate { get; set; }
         public Nullable<System.DateTime> HRBPDecisionDate { get; set; }
+        public string FinApproachAgreeingRate { get; set; }
+        public string FinSummaryIR35Just { get; set; }
+        public string CLApprovalDecision { get; set; }
+        public Nullable<int> CLDecisionById { get; set; }
+        public Nullable<System.DateTime> CLDecisionDate { get; set; }
     
         public virtual CLComFramework CLComFramework { get; set; }
         public virtual CLIR35Scope CLIR35Scope { get; set; }

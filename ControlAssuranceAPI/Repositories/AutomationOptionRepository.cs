@@ -1021,15 +1021,17 @@ namespace ControlAssuranceAPI.Repositories
                 {
                     if(worker.EngagedChecksDone != true)
                     {
-                        int remainingChecks = 4;
-                        //count how many checks are completed from out of 4
+                        int remainingChecks = 5;
+                        //count how many checks are completed from out of 5
 
                         if (worker.BPSSCheckedById != null && worker.BPSSCheckedOn != null) remainingChecks--;
                         if (worker.POCheckedById != null && worker.POCheckedOn != null) remainingChecks--;
                         if (worker.ITCheckedById != null && worker.ITCheckedOn != null) remainingChecks--;
                         if (worker.UKSBSCheckedById != null && worker.UKSBSCheckedOn != null) remainingChecks--;
+                        if (worker.SDSCheckedById != null && worker.SDSCheckedOn != null) remainingChecks--;
+                        if (string.IsNullOrEmpty(worker.SDSNotes) == false && worker.SDSNotes.Length > 5) remainingChecks--;
 
-                        if(remainingChecks > 0)
+                        if (remainingChecks > 0)
                         {
                             lst3_Item.EngagedChecksReq += $"{caseRef}, ";
                         }
