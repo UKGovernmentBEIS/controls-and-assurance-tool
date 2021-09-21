@@ -369,7 +369,13 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
             <React.Fragment>
 
-                <div style={{ marginBottom: '10px', marginTop: '50px' }} className={styles.sectionATitle}>Case Details</div>
+                <div style={{ marginBottom: '10px', marginTop: '50px' }}>
+                    <div style={{ display: 'flex' }}>
+                        <div className={styles.sectionATitle}>Case Details</div>
+                        <div style={{ paddingLeft: '10px', paddingTop: '12px' }} >{(this.props.defForm.CaseDetailsHelpText && this.props.defForm.CaseDetailsHelpText.length > 0) && <a style={{ cursor: "pointer" }} onClick={() => this.showHelpPanel(this.props.defForm.CaseDetailsHelpText)}><img src={this.helpIcon} /></a>}</div>
+                    </div>
+
+                </div>
 
                 <div style={{ width: '100%', marginLeft: 'auto', marginRight: 'auto', paddingRight: '5px', overflowX: 'hidden' }}>
 
@@ -472,7 +478,12 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
         return (
             <div>
-                <div style={{ marginBottom: '10px', marginTop: '30px' }} className={styles.sectionATitle}>Details of Applicant</div>
+                <div style={{ marginBottom: '10px', marginTop: '30px' }}>
+                    <div style={{ display: 'flex' }}>
+                        <div className={styles.sectionATitle}>Details of Applicant</div>
+                        <div style={{ paddingLeft: '10px', paddingTop: '12px' }} >{(this.props.defForm.DetailsOfApplicantEditHelpText && this.props.defForm.DetailsOfApplicantEditHelpText.length > 0) && <a style={{ cursor: "pointer" }} onClick={() => this.showHelpPanel(this.props.defForm.DetailsOfApplicantEditHelpText)}><img src={this.helpIcon} /></a>}</div>
+                    </div>
+                </div>
 
                 <div style={{ width: '100%', marginLeft: 'auto', marginRight: 'auto', paddingRight: '10px', paddingLeft: '10px', paddingTop: '20px', paddingBottom: '0px', backgroundColor: 'rgb(245,245,245)', border: '1px solid rgb(230,230,230)', }}>
 
@@ -552,6 +563,12 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                             </div>
 
                         </div>
+
+
+                        <div style={{ fontSize: '14px', color: 'navy', fontStyle: 'italic', paddingTop: '0px', marginTop: '2px' }}>
+                            Include only essential team members as this form contains personal information.
+                        </div>
+
                     </div>
 
                     <div style={{ marginBottom: '10px' }}>
@@ -604,8 +621,11 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
         return (
             <div>
-                <div style={{ marginBottom: '10px', marginTop: '30px' }} className={styles.sectionATitle}>
-                    <span>Requirement</span>
+                <div style={{ marginBottom: '10px', marginTop: '30px' }}>
+                    <div style={{ display: 'flex' }}>
+                        <div className={styles.sectionATitle}>Requirement</div>
+                        <div style={{ paddingLeft: '10px', paddingTop: '12px' }} >{(this.props.defForm.RequirementEditHelpText && this.props.defForm.RequirementEditHelpText.length > 0) && <a style={{ cursor: "pointer" }} onClick={() => this.showHelpPanel(this.props.defForm.RequirementEditHelpText)}><img src={this.helpIcon} /></a>}</div>
+                    </div>
                 </div>
                 {
                     <div style={{ width: '100%', marginLeft: 'auto', marginRight: 'auto', paddingRight: '10px', paddingLeft: '10px', paddingTop: '20px', paddingBottom: '0px', backgroundColor: 'rgb(245,245,245)', border: '1px solid rgb(230,230,230)', }}>
@@ -677,7 +697,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                             {/* inner flex to line 2 images */}
                                             <div style={{ display: 'flex' }}>
                                                 <div><img src={reqWorkPurposeValidationImg} /></div>
-                                                <div style={{ paddingLeft: '10px', paddingTop: '2px' }} >{(this.props.defForm.WorkProposalHelpText && this.props.defForm.WorkProposalHelpText.length > 0) && <a style={{ cursor: "pointer" }} onClick={() => this.showHelpPanel(this.props.defForm.WorkProposalHelpText)}><img src={this.helpIcon} /></a>}</div>
+                                                {/* <div style={{ paddingLeft: '10px', paddingTop: '2px' }} >{(this.props.defForm.WorkProposalHelpText && this.props.defForm.WorkProposalHelpText.length > 0) && <a style={{ cursor: "pointer" }} onClick={() => this.showHelpPanel(this.props.defForm.WorkProposalHelpText)}><img src={this.helpIcon} /></a>}</div> */}
                                             </div>
 
 
@@ -995,7 +1015,12 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
         return (
             <div>
-                <div style={{ marginBottom: '10px', marginTop: '30px' }} className={styles.sectionATitle}>Commercial</div>
+                <div style={{ marginBottom: '10px', marginTop: '30px' }}>
+                    <div style={{ display: 'flex' }}>
+                        <div className={styles.sectionATitle}>Commercial</div>
+                        <div style={{ paddingLeft: '10px', paddingTop: '12px' }} >{(this.props.defForm.CommercialEditHelpText && this.props.defForm.CommercialEditHelpText.length > 0) && <a style={{ cursor: "pointer" }} onClick={() => this.showHelpPanel(this.props.defForm.CommercialEditHelpText)}><img src={this.helpIcon} /></a>}</div>
+                    </div>
+                </div>
 
                 <div style={{ width: '100%', marginLeft: 'auto', marginRight: 'auto', paddingRight: '10px', paddingLeft: '10px', paddingTop: '20px', paddingBottom: '0px', backgroundColor: 'rgb(245,245,245)', border: '1px solid rgb(230,230,230)', }}>
 
@@ -1117,7 +1142,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                 <div style={{ marginBottom: '10px', marginTop: '30px' }} >
                     <div style={{ display: 'flex' }}>
                         <div className={styles.sectionATitle}>Resourcing Justification</div>
-                        <div style={{ paddingLeft: '10px', paddingTop: '12px' }} >{(this.props.defForm.ResourcingJustificationHelpText && this.props.defForm.ResourcingJustificationHelpText.length > 0) && <a style={{ cursor: "pointer" }} onClick={() => this.showHelpPanel(this.props.defForm.ResourcingJustificationHelpText)}><img src={this.helpIcon} /></a>}</div>
+                        <div style={{ paddingLeft: '10px', paddingTop: '12px' }} >{(this.props.defForm.ResourcingJustificationEditHelpText && this.props.defForm.ResourcingJustificationEditHelpText.length > 0) && <a style={{ cursor: "pointer" }} onClick={() => this.showHelpPanel(this.props.defForm.ResourcingJustificationEditHelpText)}><img src={this.helpIcon} /></a>}</div>
                     </div>
 
                 </div>
@@ -1236,7 +1261,13 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
         return (
             <div>
-                <div style={{ marginBottom: '10px', marginTop: '30px' }} className={styles.sectionATitle}>Finance</div>
+                <div style={{ marginBottom: '10px', marginTop: '30px' }}>
+                    <div style={{ display: 'flex' }}>
+                        <div className={styles.sectionATitle}>Finance</div>
+                        <div style={{ paddingLeft: '10px', paddingTop: '12px' }} >{(this.props.defForm.FinanceEditHelpText && this.props.defForm.FinanceEditHelpText.length > 0) && <a style={{ cursor: "pointer" }} onClick={() => this.showHelpPanel(this.props.defForm.FinanceEditHelpText)}><img src={this.helpIcon} /></a>}</div>
+                    </div>
+
+                </div>
 
                 <div style={{ width: '100%', marginLeft: 'auto', marginRight: 'auto', paddingRight: '10px', paddingLeft: '10px', paddingTop: '20px', paddingBottom: '0px', backgroundColor: 'rgb(245,245,245)', border: '1px solid rgb(230,230,230)', }}>
 
@@ -1322,7 +1353,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                                 <div style={{ display: 'flex' }}>
                                     <div><span>Approach to agreeing rate</span></div>
-                                    <div style={{ paddingLeft: '10px', paddingTop:'2px' }} >{(this.props.defForm.ApproachAgreeingRateHelpText && this.props.defForm.ApproachAgreeingRateHelpText.length > 0) && <a style={{ cursor: "pointer" }} onClick={() => this.showHelpPanel(this.props.defForm.ApproachAgreeingRateHelpText)}><img src={this.helpIcon} /></a>}</div>
+                                    {/* <div style={{ paddingLeft: '10px', paddingTop: '2px' }} >{(this.props.defForm.ApproachAgreeingRateHelpText && this.props.defForm.ApproachAgreeingRateHelpText.length > 0) && <a style={{ cursor: "pointer" }} onClick={() => this.showHelpPanel(this.props.defForm.ApproachAgreeingRateHelpText)}><img src={this.helpIcon} /></a>}</div> */}
                                 </div>
 
 
@@ -1465,9 +1496,9 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                                 <div style={{ display: 'flex' }}>
                                     <div><span>Summary IR35 justification</span></div>
-                                    <div style={{ paddingLeft: '10px', paddingTop:'2px' }} >{(this.props.defForm.SummaryIR35JustificationHelpText && this.props.defForm.SummaryIR35JustificationHelpText.length > 0) && <a style={{ cursor: "pointer" }} onClick={() => this.showHelpPanel(this.props.defForm.SummaryIR35JustificationHelpText)}><img src={this.helpIcon} /></a>}</div>
+                                    {/* <div style={{ paddingLeft: '10px', paddingTop: '2px' }} >{(this.props.defForm.SummaryIR35JustificationHelpText && this.props.defForm.SummaryIR35JustificationHelpText.length > 0) && <a style={{ cursor: "pointer" }} onClick={() => this.showHelpPanel(this.props.defForm.SummaryIR35JustificationHelpText)}><img src={this.helpIcon} /></a>}</div> */}
                                 </div>
-                                
+
 
                             </div>
 
@@ -1508,7 +1539,12 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
         return (
             <div>
-                <div style={{ marginBottom: '10px', marginTop: '30px' }} className={styles.sectionATitle}>Other</div>
+                <div style={{ marginBottom: '10px', marginTop: '30px' }}>
+                    <div style={{ display: 'flex' }}>
+                        <div className={styles.sectionATitle}>Other</div>
+                        <div style={{ paddingLeft: '10px', paddingTop: '12px' }} >{(this.props.defForm.OtherEditHelpText && this.props.defForm.OtherEditHelpText.length > 0) && <a style={{ cursor: "pointer" }} onClick={() => this.showHelpPanel(this.props.defForm.OtherEditHelpText)}><img src={this.helpIcon} /></a>}</div>
+                    </div>
+                </div>
 
                 <div style={{ width: '100%', marginLeft: 'auto', marginRight: 'auto', paddingRight: '10px', paddingLeft: '10px', paddingTop: '20px', paddingBottom: '0px', backgroundColor: 'rgb(245,245,245)', border: '1px solid rgb(230,230,230)', }}>
 
@@ -1563,7 +1599,12 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
         return (
             <div>
-                <div style={{ marginBottom: '10px', marginTop: '30px' }} className={styles.sectionATitle}>Approvers</div>
+                <div style={{ marginBottom: '10px', marginTop: '30px' }}>
+                    <div style={{ display: 'flex' }}>
+                        <div className={styles.sectionATitle}>Approvers</div>
+                        <div style={{ paddingLeft: '10px', paddingTop: '12px' }} >{(this.props.defForm.ApproversEditHelpText && this.props.defForm.ApproversEditHelpText.length > 0) && <a style={{ cursor: "pointer" }} onClick={() => this.showHelpPanel(this.props.defForm.ApproversEditHelpText)}><img src={this.helpIcon} /></a>}</div>
+                    </div>
+                </div>
 
                 <div style={{ width: '100%', marginLeft: 'auto', marginRight: 'auto', paddingRight: '10px', paddingLeft: '10px', paddingTop: '20px', paddingBottom: '0px', backgroundColor: 'rgb(245,245,245)', border: '1px solid rgb(230,230,230)', }}>
 
@@ -1800,8 +1841,11 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
     private renderListsMainTitle() {
         return (
-            <div style={{ marginBottom: '20px', marginTop: '50px' }} className={styles.sectionATitle}>
-                Case Discussion, General Comments and File Attachments
+            <div style={{ marginBottom: '20px', marginTop: '50px' }}>
+                <div style={{ display: 'flex' }}>
+                    <div className={styles.sectionATitle}>Case Discussion, General Comments and File Attachments</div>
+                    <div style={{ paddingLeft: '10px', paddingTop: '12px' }} >{(this.props.defForm.CaseDiscussionHelpText && this.props.defForm.CaseDiscussionHelpText.length > 0) && <a style={{ cursor: "pointer" }} onClick={() => this.showHelpPanel(this.props.defForm.CaseDiscussionHelpText)}><img src={this.helpIcon} /></a>}</div>
+                </div>
             </div>
         );
     }
@@ -1870,7 +1914,12 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
             <React.Fragment>
 
-                <div style={{ marginBottom: '10px', marginTop: '50px' }} className={styles.sectionATitle}>Details of Applicant</div>
+                <div style={{ marginBottom: '10px', marginTop: '50px' }}>
+                    <div style={{ display: 'flex' }}>
+                        <div className={styles.sectionATitle}>Details of Applicant</div>
+                        <div style={{ paddingLeft: '10px', paddingTop: '12px' }} >{(this.props.defForm.DetailsOfApplicantViewHelpText && this.props.defForm.DetailsOfApplicantViewHelpText.length > 0) && <a style={{ cursor: "pointer" }} onClick={() => this.showHelpPanel(this.props.defForm.DetailsOfApplicantViewHelpText)}><img src={this.helpIcon} /></a>}</div>
+                    </div>
+                </div>
 
                 <div style={{ width: '100%', marginLeft: 'auto', marginRight: 'auto', paddingRight: '5px', overflowX: 'hidden' }}>
 
@@ -1932,9 +1981,12 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                     </div>
                 </div> */}
 
-                <div style={{ marginBottom: '10px', marginTop: '30px', }} className={styles.sectionATitle} >
+                <div style={{ marginBottom: '10px', marginTop: '30px', }}>
 
-                    Requirement
+                    <div style={{ display: 'flex' }}>
+                        <div className={styles.sectionATitle}>Requirement</div>
+                        <div style={{ paddingLeft: '10px', paddingTop: '12px' }} >{(this.props.defForm.RequirementViewHelpText && this.props.defForm.RequirementViewHelpText.length > 0) && <a style={{ cursor: "pointer" }} onClick={() => this.showHelpPanel(this.props.defForm.RequirementViewHelpText)}><img src={this.helpIcon} /></a>}</div>
+                    </div>
                 </div>
 
                 {(this.state.HideRequirementInfoSection === false) &&
@@ -2048,7 +2100,13 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
             <React.Fragment>
 
-                <div style={{ marginBottom: '10px', marginTop: '30px' }} className={styles.sectionATitle}>Commercial</div>
+                <div style={{ marginBottom: '10px', marginTop: '30px' }}>
+
+                    <div style={{ display: 'flex' }}>
+                        <div className={styles.sectionATitle}>Commercial</div>
+                        <div style={{ paddingLeft: '10px', paddingTop: '12px' }} >{(this.props.defForm.CommercialViewHelpText && this.props.defForm.CommercialViewHelpText.length > 0) && <a style={{ cursor: "pointer" }} onClick={() => this.showHelpPanel(this.props.defForm.CommercialViewHelpText)}><img src={this.helpIcon} /></a>}</div>
+                    </div>
+                </div>
 
                 <div style={{ width: '100%', marginLeft: 'auto', marginRight: 'auto', paddingRight: '5px', overflowX: 'hidden' }}>
 
@@ -2100,7 +2158,12 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
             <React.Fragment>
 
-                <div style={{ marginBottom: '10px', marginTop: '30px' }} className={styles.sectionATitle}>Resourcing Justification</div>
+                <div style={{ marginBottom: '10px', marginTop: '30px' }}>
+                    <div style={{ display: 'flex' }}>
+                        <div className={styles.sectionATitle}>Resourcing Justification</div>
+                        <div style={{ paddingLeft: '10px', paddingTop: '12px' }} >{(this.props.defForm.ResourcingJustificationViewHelpText && this.props.defForm.ResourcingJustificationViewHelpText.length > 0) && <a style={{ cursor: "pointer" }} onClick={() => this.showHelpPanel(this.props.defForm.ResourcingJustificationViewHelpText)}><img src={this.helpIcon} /></a>}</div>
+                    </div>
+                </div>
 
                 <div style={{ width: '100%', marginLeft: 'auto', marginRight: 'auto', paddingRight: '5px', overflowX: 'hidden' }}>
 
@@ -2147,7 +2210,12 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
             <React.Fragment>
 
-                <div style={{ marginBottom: '10px', marginTop: '30px' }} className={styles.sectionATitle}>Finance</div>
+                <div style={{ marginBottom: '10px', marginTop: '30px' }}>
+                    <div style={{ display: 'flex' }}>
+                        <div className={styles.sectionATitle}>Finance</div>
+                        <div style={{ paddingLeft: '10px', paddingTop: '12px' }} >{(this.props.defForm.FinanceViewHelpText && this.props.defForm.FinanceViewHelpText.length > 0) && <a style={{ cursor: "pointer" }} onClick={() => this.showHelpPanel(this.props.defForm.FinanceViewHelpText)}><img src={this.helpIcon} /></a>}</div>
+                    </div>
+                </div>
 
                 <div style={{ width: '100%', marginLeft: 'auto', marginRight: 'auto', paddingRight: '5px', overflowX: 'hidden' }}>
 
@@ -2241,7 +2309,12 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
             <React.Fragment>
 
-                <div style={{ marginBottom: '10px', marginTop: '30px' }} className={styles.sectionATitle}>Other</div>
+                <div style={{ marginBottom: '10px', marginTop: '30px' }}>
+                    <div style={{ display: 'flex' }}>
+                        <div className={styles.sectionATitle}>Other</div>
+                        <div style={{ paddingLeft: '10px', paddingTop: '12px' }} >{(this.props.defForm.OtherViewHelpText && this.props.defForm.OtherViewHelpText.length > 0) && <a style={{ cursor: "pointer" }} onClick={() => this.showHelpPanel(this.props.defForm.OtherViewHelpText)}><img src={this.helpIcon} /></a>}</div>
+                    </div>
+                </div>
 
                 <div style={{ width: '100%', marginLeft: 'auto', marginRight: 'auto', paddingRight: '5px', overflowX: 'hidden' }}>
 
@@ -2280,7 +2353,12 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
             <React.Fragment>
 
-                <div style={{ marginBottom: '10px', marginTop: '30px' }} className={styles.sectionATitle}>Approvers</div>
+                <div style={{ marginBottom: '10px', marginTop: '30px' }}>
+                    <div style={{ display: 'flex' }}>
+                        <div className={styles.sectionATitle}>Approvers</div>
+                        <div style={{ paddingLeft: '10px', paddingTop: '12px' }} >{(this.props.defForm.ApproversViewHelpText && this.props.defForm.ApproversViewHelpText.length > 0) && <a style={{ cursor: "pointer" }} onClick={() => this.showHelpPanel(this.props.defForm.ApproversViewHelpText)}><img src={this.helpIcon} /></a>}</div>
+                    </div>
+                </div>
 
                 <div style={{ width: '100%', marginLeft: 'auto', marginRight: 'auto', paddingRight: '5px', overflowX: 'hidden' }}>
 
@@ -2352,7 +2430,12 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
             <React.Fragment>
 
-                <div style={{ marginBottom: '10px', marginTop: '30px' }} className={styles.sectionATitle}>Budget Holder Approval Decision</div>
+                <div style={{ marginBottom: '10px', marginTop: '30px' }}>
+                    <div style={{ display: 'flex' }}>
+                        <div className={styles.sectionATitle}>Budget Holder Approval Decision</div>
+                        <div style={{ paddingLeft: '10px', paddingTop: '12px' }} >{(this.props.defForm.BHApprovalDecisionViewHelpText && this.props.defForm.BHApprovalDecisionViewHelpText.length > 0) && <a style={{ cursor: "pointer" }} onClick={() => this.showHelpPanel(this.props.defForm.BHApprovalDecisionViewHelpText)}><img src={this.helpIcon} /></a>}</div>
+                    </div>
+                </div>
 
                 <div style={{ width: '100%', marginLeft: 'auto', marginRight: 'auto', paddingRight: '5px', overflowX: 'hidden' }}>
 
@@ -2422,7 +2505,12 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
             <React.Fragment>
 
-                <div style={{ marginBottom: '10px', marginTop: '30px' }} className={styles.sectionATitle}>Finance Business Partner Approval Decision</div>
+                <div style={{ marginBottom: '10px', marginTop: '30px' }}>
+                    <div style={{ display: 'flex' }}>
+                        <div className={styles.sectionATitle}>Finance Business Partner Approval Decision</div>
+                        <div style={{ paddingLeft: '10px', paddingTop: '12px' }} >{(this.props.defForm.FBPApprovalDecisionViewHelpText && this.props.defForm.FBPApprovalDecisionViewHelpText.length > 0) && <a style={{ cursor: "pointer" }} onClick={() => this.showHelpPanel(this.props.defForm.FBPApprovalDecisionViewHelpText)}><img src={this.helpIcon} /></a>}</div>
+                    </div>
+                </div>
 
                 <div style={{ width: '100%', marginLeft: 'auto', marginRight: 'auto', paddingRight: '5px', overflowX: 'hidden' }}>
 
@@ -2492,7 +2580,13 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
             <React.Fragment>
 
-                <div style={{ marginBottom: '10px', marginTop: '30px' }} className={styles.sectionATitle}>HR Business Partner Approval Decision</div>
+                <div style={{ marginBottom: '10px', marginTop: '30px' }}>
+                    <div style={{ display: 'flex' }}>
+                        <div className={styles.sectionATitle}>HR Business Partner Approval Decision</div>
+                        <div style={{ paddingLeft: '10px', paddingTop: '12px' }} >{(this.props.defForm.HRBPApprovalDecisionViewHelpText && this.props.defForm.HRBPApprovalDecisionViewHelpText.length > 0) && <a style={{ cursor: "pointer" }} onClick={() => this.showHelpPanel(this.props.defForm.HRBPApprovalDecisionViewHelpText)}><img src={this.helpIcon} /></a>}</div>
+                    </div>
+
+                </div>
 
                 <div style={{ width: '100%', marginLeft: 'auto', marginRight: 'auto', paddingRight: '5px', overflowX: 'hidden' }}>
 
@@ -2562,7 +2656,12 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
             <React.Fragment>
 
-                <div style={{ marginBottom: '10px', marginTop: '30px' }} className={styles.sectionATitle}>Internal Controls Approval Decision</div>
+                <div style={{ marginBottom: '10px', marginTop: '30px' }}>
+                    <div style={{ display: 'flex' }}>
+                        <div className={styles.sectionATitle}>Internal Controls Approval Decision</div>
+                        <div style={{ paddingLeft: '10px', paddingTop: '12px' }} >{(this.props.defForm.ICApprovalDecisionViewHelpText && this.props.defForm.ICApprovalDecisionViewHelpText.length > 0) && <a style={{ cursor: "pointer" }} onClick={() => this.showHelpPanel(this.props.defForm.ICApprovalDecisionViewHelpText)}><img src={this.helpIcon} /></a>}</div>
+                    </div>
+                </div>
 
                 <div style={{ width: '100%', marginLeft: 'auto', marginRight: 'auto', paddingRight: '5px', overflowX: 'hidden' }}>
 
@@ -2626,7 +2725,12 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
         return (
             <div>
-                <div style={{ marginBottom: '10px', marginTop: '30px' }} className={styles.sectionATitle}>Budget Holder Approval Decision</div>
+                <div style={{ marginBottom: '10px', marginTop: '30px' }}>
+                    <div style={{ display: 'flex' }}>
+                        <div className={styles.sectionATitle}>Budget Holder Approval Decision</div>
+                        <div style={{ paddingLeft: '10px', paddingTop: '12px' }} >{(this.props.defForm.BHApprovalDecisionEditHelpText && this.props.defForm.BHApprovalDecisionEditHelpText.length > 0) && <a style={{ cursor: "pointer" }} onClick={() => this.showHelpPanel(this.props.defForm.BHApprovalDecisionEditHelpText)}><img src={this.helpIcon} /></a>}</div>
+                    </div>
+                </div>
 
                 <div style={{ width: '100%', marginLeft: 'auto', marginRight: 'auto', paddingRight: '10px', paddingLeft: '10px', paddingTop: '20px', paddingBottom: '0px', backgroundColor: 'rgb(245,245,245)', border: '1px solid rgb(230,230,230)', }}>
 
@@ -2719,7 +2823,12 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         const fd = this.state.FormData;
         return (
             <div>
-                <div style={{ marginBottom: '10px', marginTop: '30px' }} className={styles.sectionATitle}>Finance Business Partner Approval Decision</div>
+                <div style={{ marginBottom: '10px', marginTop: '30px' }}>
+                    <div style={{ display: 'flex' }}>
+                        <div className={styles.sectionATitle}>Finance Business Partner Approval Decision</div>
+                        <div style={{ paddingLeft: '10px', paddingTop: '12px' }} >{(this.props.defForm.FBPApprovalDecisionEditHelpText && this.props.defForm.FBPApprovalDecisionEditHelpText.length > 0) && <a style={{ cursor: "pointer" }} onClick={() => this.showHelpPanel(this.props.defForm.FBPApprovalDecisionEditHelpText)}><img src={this.helpIcon} /></a>}</div>
+                    </div>
+                </div>
 
                 <div style={{ width: '100%', marginLeft: 'auto', marginRight: 'auto', paddingRight: '10px', paddingLeft: '10px', paddingTop: '20px', paddingBottom: '0px', backgroundColor: 'rgb(245,245,245)', border: '1px solid rgb(230,230,230)', }}>
 
@@ -2811,7 +2920,12 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         const fd = this.state.FormData;
         return (
             <div>
-                <div style={{ marginBottom: '10px', marginTop: '30px' }} className={styles.sectionATitle}>HR Business Partner Approval Decision</div>
+                <div style={{ marginBottom: '10px', marginTop: '30px' }}>
+                    <div style={{ display: 'flex' }}>
+                        <div className={styles.sectionATitle}>HR Business Partner Approval Decision</div>
+                        <div style={{ paddingLeft: '10px', paddingTop: '12px' }} >{(this.props.defForm.HRBPApprovalDecisionEditHelpText && this.props.defForm.HRBPApprovalDecisionEditHelpText.length > 0) && <a style={{ cursor: "pointer" }} onClick={() => this.showHelpPanel(this.props.defForm.HRBPApprovalDecisionEditHelpText)}><img src={this.helpIcon} /></a>}</div>
+                    </div>
+                </div>
 
                 <div style={{ width: '100%', marginLeft: 'auto', marginRight: 'auto', paddingRight: '10px', paddingLeft: '10px', paddingTop: '20px', paddingBottom: '0px', backgroundColor: 'rgb(245,245,245)', border: '1px solid rgb(230,230,230)', }}>
 
@@ -2903,7 +3017,12 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         const fd = this.state.FormData;
         return (
             <div>
-                <div style={{ marginBottom: '10px', marginTop: '30px' }} className={styles.sectionATitle}>Internal Controls Approval Decision</div>
+                <div style={{ marginBottom: '10px', marginTop: '30px' }}>
+                    <div style={{ display: 'flex' }}>
+                        <div className={styles.sectionATitle}>Internal Controls Approval Decision</div>
+                        <div style={{ paddingLeft: '10px', paddingTop: '12px' }} >{(this.props.defForm.ICApprovalDecisionEditHelpText && this.props.defForm.ICApprovalDecisionEditHelpText.length > 0) && <a style={{ cursor: "pointer" }} onClick={() => this.showHelpPanel(this.props.defForm.ICApprovalDecisionEditHelpText)}><img src={this.helpIcon} /></a>}</div>
+                    </div>
+                </div>
 
                 <div style={{ width: '100%', marginLeft: 'auto', marginRight: 'auto', paddingRight: '10px', paddingLeft: '10px', paddingTop: '20px', paddingBottom: '0px', backgroundColor: 'rgb(245,245,245)', border: '1px solid rgb(230,230,230)', }}>
 
@@ -3053,7 +3172,13 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
         return (
             <div>
-                <div style={{ marginBottom: '10px', marginTop: '30px' }} className={styles.sectionATitle}>Onboarding</div>
+                <div style={{ marginBottom: '10px', marginTop: '30px' }}>
+                    <div style={{ display: 'flex' }}>
+                        <div className={styles.sectionATitle}>Onboarding</div>
+                        <div style={{ paddingLeft: '10px', paddingTop: '12px' }} >{(this.props.defForm.OnboardingEditHelpText && this.props.defForm.OnboardingEditHelpText.length > 0) && <a style={{ cursor: "pointer" }} onClick={() => this.showHelpPanel(this.props.defForm.OnboardingEditHelpText)}><img src={this.helpIcon} /></a>}</div>
+                    </div>
+
+                </div>
 
                 <div style={{ width: '100%', marginLeft: 'auto', marginRight: 'auto', paddingRight: '10px', paddingLeft: '10px', paddingTop: '20px', paddingBottom: '0px', backgroundColor: 'rgb(245,245,245)', border: '1px solid rgb(230,230,230)', }}>
 
@@ -3122,7 +3247,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                         <div style={{ display: 'flex' }}>
                             <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
                                 <div className={styles.flexContainerSectionQuestion}>
-                                    <div className={styles.sectionQuestionCol1}><span>Contractor firstname</span></div>
+                                    <div className={styles.sectionQuestionCol1}><span>Contractor first name</span></div>
                                     <div className={styles.sectionQuestionCol2}>
                                         <img src={req_OnbContractorFirstname_Img} />
                                     </div>
@@ -3958,7 +4083,13 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
             <React.Fragment>
 
-                <div style={{ marginBottom: '10px', marginTop: '30px' }} className={styles.sectionATitle}>Onboarding</div>
+                <div style={{ marginBottom: '10px', marginTop: '30px' }}>
+                    <div style={{ display: 'flex' }}>
+                        <div className={styles.sectionATitle}>Onboarding</div>
+                        <div style={{ paddingLeft: '10px', paddingTop: '12px' }} >{(this.props.defForm.OnboardingViewHelpText && this.props.defForm.OnboardingViewHelpText.length > 0) && <a style={{ cursor: "pointer" }} onClick={() => this.showHelpPanel(this.props.defForm.OnboardingViewHelpText)}><img src={this.helpIcon} /></a>}</div>
+                    </div>
+
+                </div>
 
                 <div style={{ width: '100%', marginLeft: 'auto', marginRight: 'auto', paddingRight: '5px', overflowX: 'hidden' }}>
 
@@ -3984,7 +4115,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                             <tr>
                                 <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
-                                    Contractor firstname
+                                    Contractor first name
                                 </td>
                                 <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', }}>
                                     {fd.OnbContractorFirstname}
@@ -4221,7 +4352,13 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
         return (
             <div>
-                <div style={{ marginBottom: '10px', marginTop: '30px' }} className={styles.sectionATitle}>Engaged</div>
+                <div style={{ marginBottom: '10px', marginTop: '30px' }}>
+                    <div style={{ display: 'flex' }}>
+                        <div className={styles.sectionATitle}>Engaged</div>
+                        <div style={{ paddingLeft: '10px', paddingTop: '12px' }} >{(this.props.defForm.EngagedEditHelpText && this.props.defForm.EngagedEditHelpText.length > 0) && <a style={{ cursor: "pointer" }} onClick={() => this.showHelpPanel(this.props.defForm.EngagedEditHelpText)}><img src={this.helpIcon} /></a>}</div>
+                    </div>
+
+                </div>
 
                 <div style={{ width: '100%', marginLeft: 'auto', marginRight: 'auto', paddingRight: '10px', paddingLeft: '10px', paddingTop: '20px', paddingBottom: '0px', backgroundColor: 'rgb(245,245,245)', border: '1px solid rgb(230,230,230)', }}>
 
@@ -4874,7 +5011,13 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
             <React.Fragment>
 
-                <div style={{ marginBottom: '10px', marginTop: '30px' }} className={styles.sectionATitle}>Engaged</div>
+                <div style={{ marginBottom: '10px', marginTop: '30px' }}>
+                    <div style={{ display: 'flex' }}>
+                        <div className={styles.sectionATitle}>Engaged</div>
+                        <div style={{ paddingLeft: '10px', paddingTop: '12px' }} >{(this.props.defForm.EngagedViewHelpText && this.props.defForm.EngagedViewHelpText.length > 0) && <a style={{ cursor: "pointer" }} onClick={() => this.showHelpPanel(this.props.defForm.EngagedViewHelpText)}><img src={this.helpIcon} /></a>}</div>
+                    </div>
+
+                </div>
 
                 <div style={{ width: '100%', marginLeft: 'auto', marginRight: 'auto', paddingRight: '5px', overflowX: 'hidden' }}>
 
@@ -5124,7 +5267,12 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
         return (
             <div>
-                <div style={{ marginBottom: '10px', marginTop: '30px' }} className={styles.sectionATitle}>Leaving</div>
+                <div style={{ marginBottom: '10px', marginTop: '30px' }}>
+                    <div style={{ display: 'flex' }}>
+                        <div className={styles.sectionATitle}>Leaving</div>
+                        <div style={{ paddingLeft: '10px', paddingTop: '12px' }} >{(this.props.defForm.LeavingEditHelpText && this.props.defForm.LeavingEditHelpText.length > 0) && <a style={{ cursor: "pointer" }} onClick={() => this.showHelpPanel(this.props.defForm.LeavingEditHelpText)}><img src={this.helpIcon} /></a>}</div>
+                    </div>
+                </div>
 
                 <div style={{ width: '100%', marginLeft: 'auto', marginRight: 'auto', paddingRight: '10px', paddingLeft: '10px', paddingTop: '20px', paddingBottom: '0px', backgroundColor: 'rgb(245,245,245)', border: '1px solid rgb(230,230,230)', }}>
 
@@ -5562,7 +5710,12 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
             <React.Fragment>
 
-                <div style={{ marginBottom: '10px', marginTop: '30px' }} className={styles.sectionATitle}>Leaving</div>
+                <div style={{ marginBottom: '10px', marginTop: '30px' }}>
+                    <div style={{ display: 'flex' }}>
+                        <div className={styles.sectionATitle}>Leaving</div>
+                        <div style={{ paddingLeft: '10px', paddingTop: '12px' }} >{(this.props.defForm.LeavingViewHelpText && this.props.defForm.LeavingViewHelpText.length > 0) && <a style={{ cursor: "pointer" }} onClick={() => this.showHelpPanel(this.props.defForm.LeavingViewHelpText)}><img src={this.helpIcon} /></a>}</div>
+                    </div>
+                </div>
 
                 <div style={{ width: '100%', marginLeft: 'auto', marginRight: 'auto', paddingRight: '5px', overflowX: 'hidden' }}>
 

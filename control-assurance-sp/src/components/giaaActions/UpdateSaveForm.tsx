@@ -394,10 +394,10 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
         return (
             <div style={{ marginTop: '20px', marginBottom: '20px' }}>
                 <div>
-                    <input type="file" name="fileUpload" id="fileUpload" accept="application/pdf"></input>
+                    <input type="file" name="fileUpload" id="fileUpload" accept=".pdf,.xlsx,.xls"></input>
                     {this.state.ErrMessages.FileUpload && <FieldErrorMessage value={this.state.ErrMessages.FileUpload} />}
-                    <div style={{ paddingTop: '10px' }}>
-                        Please upload all evidence files as PDFs. For guidance on savings documents as PDFs, please click <span onClick={this.viewHelpPDF} style={{ textDecoration: 'underline', cursor: 'pointer' }}>here</span>.
+                    <div style={{ paddingTop: '10px' }}>                        
+                        Upload evidence files as Excel XLSX files or as PDFs. For guidance on savings documents as PDFs, please click <span onClick={this.viewHelpPDF} style={{ textDecoration: 'underline', cursor: 'pointer' }}>here</span>.
                     </div>
                 </div>
                 {this.state.ShowUploadProgress && <div style={{ minHeight: '80px', marginTop: '15px' }}>

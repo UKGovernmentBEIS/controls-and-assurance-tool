@@ -175,7 +175,7 @@ namespace ControlAssuranceAPI
             //register IAPActionView_Result for the customer display of individual action plans list
             builder.EntitySet<IAPActionView_Result>("IAPActionViewResult");
 
-            builder.EntitySet<APIInfo>("APIInfo26Jan21");
+            builder.EntitySet<APIInfo>("APIInfo21Sep21");
             builder.EntitySet<TestDateTime>("TestDateTime");
 
 

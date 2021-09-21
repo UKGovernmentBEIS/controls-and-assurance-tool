@@ -245,19 +245,25 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
                 txt = "Advisory";
             }
             else if (fieldContent === 'Limited') {
-                bgColor = "rgb(242,231,2)";
-                txtColor = "black";
+
+                bgColor = "rgb(255,128,41)";
+                txtColor = "white";
                 txt = "Limited";
             }
             else if (fieldContent === 'Moderate') {
-                bgColor = "rgb(255,128,41)";
-                txtColor = "white";
+                bgColor = "rgb(242,231,2)";
+                txtColor = "black";
                 txt = "Moderate";
             }
             else if (fieldContent === 'Substantial') {
                 bgColor = "rgb(31,148,67)";
                 txtColor = "white";
                 txt = "Substantial";
+            }
+            else if (fieldContent === 'Unsatisfactory') {
+                bgColor = "rgb(255,0,0)";
+                txtColor = "white";
+                txt = "Unsatisfactory";
             }
             else {
                 bgColor = "rgb(166,166,166)";

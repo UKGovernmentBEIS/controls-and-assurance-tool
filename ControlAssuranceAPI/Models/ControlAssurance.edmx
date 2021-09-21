@@ -157,10 +157,36 @@
           <Property Name="EngagedStageFormText" Type="nvarchar(max)" />
           <Property Name="OnboardingStageFormText" Type="nvarchar(max)" />
           <Property Name="LeavingStageFormText" Type="nvarchar(max)" />
-          <Property Name="WorkProposalHelpText" Type="nvarchar(max)" />
-          <Property Name="ResourcingJustificationHelpText" Type="nvarchar(max)" />
-          <Property Name="ApproachAgreeingRateHelpText" Type="nvarchar(max)" />
-          <Property Name="SummaryIR35JustificationHelpText" Type="nvarchar(max)" />
+          <Property Name="CaseDetailsHelpText" Type="nvarchar(max)" />
+          <Property Name="DetailsOfApplicantEditHelpText" Type="nvarchar(max)" />
+          <Property Name="DetailsOfApplicantViewHelpText" Type="nvarchar(max)" />
+          <Property Name="RequirementEditHelpText" Type="nvarchar(max)" />
+          <Property Name="RequirementViewHelpText" Type="nvarchar(max)" />
+          <Property Name="CommercialEditHelpText" Type="nvarchar(max)" />
+          <Property Name="CommercialViewHelpText" Type="nvarchar(max)" />
+          <Property Name="ResourcingJustificationEditHelpText" Type="nvarchar(max)" />
+          <Property Name="ResourcingJustificationViewHelpText" Type="nvarchar(max)" />
+          <Property Name="FinanceEditHelpText" Type="nvarchar(max)" />
+          <Property Name="FinanceViewHelpText" Type="nvarchar(max)" />
+          <Property Name="OtherEditHelpText" Type="nvarchar(max)" />
+          <Property Name="OtherViewHelpText" Type="nvarchar(max)" />
+          <Property Name="ApproversEditHelpText" Type="nvarchar(max)" />
+          <Property Name="ApproversViewHelpText" Type="nvarchar(max)" />
+          <Property Name="BHApprovalDecisionEditHelpText" Type="nvarchar(max)" />
+          <Property Name="BHApprovalDecisionViewHelpText" Type="nvarchar(max)" />
+          <Property Name="FBPApprovalDecisionEditHelpText" Type="nvarchar(max)" />
+          <Property Name="FBPApprovalDecisionViewHelpText" Type="nvarchar(max)" />
+          <Property Name="HRBPApprovalDecisionEditHelpText" Type="nvarchar(max)" />
+          <Property Name="HRBPApprovalDecisionViewHelpText" Type="nvarchar(max)" />
+          <Property Name="ICApprovalDecisionEditHelpText" Type="nvarchar(max)" />
+          <Property Name="ICApprovalDecisionViewHelpText" Type="nvarchar(max)" />
+          <Property Name="OnboardingEditHelpText" Type="nvarchar(max)" />
+          <Property Name="OnboardingViewHelpText" Type="nvarchar(max)" />
+          <Property Name="EngagedEditHelpText" Type="nvarchar(max)" />
+          <Property Name="EngagedViewHelpText" Type="nvarchar(max)" />
+          <Property Name="LeavingEditHelpText" Type="nvarchar(max)" />
+          <Property Name="LeavingViewHelpText" Type="nvarchar(max)" />
+          <Property Name="CaseDiscussionHelpText" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="CLGender">
           <Key>
@@ -3120,10 +3146,36 @@
           <Property Name="EngagedStageFormText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="OnboardingStageFormText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="LeavingStageFormText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="WorkProposalHelpText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="ResourcingJustificationHelpText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="ApproachAgreeingRateHelpText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="SummaryIR35JustificationHelpText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CaseDetailsHelpText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DetailsOfApplicantEditHelpText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DetailsOfApplicantViewHelpText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="RequirementEditHelpText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="RequirementViewHelpText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CommercialEditHelpText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CommercialViewHelpText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ResourcingJustificationEditHelpText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ResourcingJustificationViewHelpText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="FinanceEditHelpText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="FinanceViewHelpText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="OtherEditHelpText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="OtherViewHelpText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ApproversEditHelpText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ApproversViewHelpText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="BHApprovalDecisionEditHelpText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="BHApprovalDecisionViewHelpText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="FBPApprovalDecisionEditHelpText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="FBPApprovalDecisionViewHelpText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="HRBPApprovalDecisionEditHelpText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="HRBPApprovalDecisionViewHelpText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ICApprovalDecisionEditHelpText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ICApprovalDecisionViewHelpText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="OnboardingEditHelpText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="OnboardingViewHelpText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="EngagedEditHelpText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="EngagedViewHelpText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="LeavingEditHelpText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="LeavingViewHelpText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CaseDiscussionHelpText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="CLGender">
           <Key>
@@ -6447,10 +6499,36 @@
                 <ScalarProperty Name="EngagedStageFormText" ColumnName="EngagedStageFormText" />
                 <ScalarProperty Name="OnboardingStageFormText" ColumnName="OnboardingStageFormText" />
                 <ScalarProperty Name="LeavingStageFormText" ColumnName="LeavingStageFormText" />
-                <ScalarProperty Name="WorkProposalHelpText" ColumnName="WorkProposalHelpText" />
-                <ScalarProperty Name="ResourcingJustificationHelpText" ColumnName="ResourcingJustificationHelpText" />
-                <ScalarProperty Name="ApproachAgreeingRateHelpText" ColumnName="ApproachAgreeingRateHelpText" />
-                <ScalarProperty Name="SummaryIR35JustificationHelpText" ColumnName="SummaryIR35JustificationHelpText" />
+                <ScalarProperty Name="CaseDetailsHelpText" ColumnName="CaseDetailsHelpText" />
+                <ScalarProperty Name="DetailsOfApplicantEditHelpText" ColumnName="DetailsOfApplicantEditHelpText" />
+                <ScalarProperty Name="DetailsOfApplicantViewHelpText" ColumnName="DetailsOfApplicantViewHelpText" />
+                <ScalarProperty Name="RequirementEditHelpText" ColumnName="RequirementEditHelpText" />
+                <ScalarProperty Name="RequirementViewHelpText" ColumnName="RequirementViewHelpText" />
+                <ScalarProperty Name="CommercialEditHelpText" ColumnName="CommercialEditHelpText" />
+                <ScalarProperty Name="CommercialViewHelpText" ColumnName="CommercialViewHelpText" />
+                <ScalarProperty Name="ResourcingJustificationEditHelpText" ColumnName="ResourcingJustificationEditHelpText" />
+                <ScalarProperty Name="ResourcingJustificationViewHelpText" ColumnName="ResourcingJustificationViewHelpText" />
+                <ScalarProperty Name="FinanceEditHelpText" ColumnName="FinanceEditHelpText" />
+                <ScalarProperty Name="FinanceViewHelpText" ColumnName="FinanceViewHelpText" />
+                <ScalarProperty Name="OtherEditHelpText" ColumnName="OtherEditHelpText" />
+                <ScalarProperty Name="OtherViewHelpText" ColumnName="OtherViewHelpText" />
+                <ScalarProperty Name="ApproversEditHelpText" ColumnName="ApproversEditHelpText" />
+                <ScalarProperty Name="ApproversViewHelpText" ColumnName="ApproversViewHelpText" />
+                <ScalarProperty Name="BHApprovalDecisionEditHelpText" ColumnName="BHApprovalDecisionEditHelpText" />
+                <ScalarProperty Name="BHApprovalDecisionViewHelpText" ColumnName="BHApprovalDecisionViewHelpText" />
+                <ScalarProperty Name="FBPApprovalDecisionEditHelpText" ColumnName="FBPApprovalDecisionEditHelpText" />
+                <ScalarProperty Name="FBPApprovalDecisionViewHelpText" ColumnName="FBPApprovalDecisionViewHelpText" />
+                <ScalarProperty Name="HRBPApprovalDecisionEditHelpText" ColumnName="HRBPApprovalDecisionEditHelpText" />
+                <ScalarProperty Name="HRBPApprovalDecisionViewHelpText" ColumnName="HRBPApprovalDecisionViewHelpText" />
+                <ScalarProperty Name="ICApprovalDecisionEditHelpText" ColumnName="ICApprovalDecisionEditHelpText" />
+                <ScalarProperty Name="ICApprovalDecisionViewHelpText" ColumnName="ICApprovalDecisionViewHelpText" />
+                <ScalarProperty Name="OnboardingEditHelpText" ColumnName="OnboardingEditHelpText" />
+                <ScalarProperty Name="OnboardingViewHelpText" ColumnName="OnboardingViewHelpText" />
+                <ScalarProperty Name="EngagedEditHelpText" ColumnName="EngagedEditHelpText" />
+                <ScalarProperty Name="EngagedViewHelpText" ColumnName="EngagedViewHelpText" />
+                <ScalarProperty Name="LeavingEditHelpText" ColumnName="LeavingEditHelpText" />
+                <ScalarProperty Name="LeavingViewHelpText" ColumnName="LeavingViewHelpText" />
+                <ScalarProperty Name="CaseDiscussionHelpText" ColumnName="CaseDiscussionHelpText" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

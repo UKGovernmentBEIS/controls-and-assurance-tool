@@ -134,12 +134,17 @@ export default class ClProperties extends BaseUserContextWebPartComponent<types.
       },
 
 
+
+
+      // help texts for "i" icons
+
+
       {
-        key: 'WorkProposalHelpText',
+        key: 'CaseDetailsHelpText',
         columnType: ColumnType.TextBox,
         columnDisplayType: ColumnDisplayType.FormOnly,
-        name: 'Work Proposal Help Text',
-        fieldName: 'WorkProposalHelpText',
+        name: 'Case Details Help Text',
+        fieldName: 'CaseDetailsHelpText',
         minWidth: 300,
         isResizable: true,
         isRequired: false,
@@ -147,11 +152,11 @@ export default class ClProperties extends BaseUserContextWebPartComponent<types.
         numRows: 10
       },
       {
-        key: 'ResourcingJustificationHelpText',
+        key: 'DetailsOfApplicantEditHelpText',
         columnType: ColumnType.TextBox,
         columnDisplayType: ColumnDisplayType.FormOnly,
-        name: 'Resourcing Justification Help Text',
-        fieldName: 'ResourcingJustificationHelpText',
+        name: 'Details of Applicant Add/Edit Help Text',
+        fieldName: 'DetailsOfApplicantEditHelpText',
         minWidth: 300,
         isResizable: true,
         isRequired: false,
@@ -159,11 +164,24 @@ export default class ClProperties extends BaseUserContextWebPartComponent<types.
         numRows: 10
       },
       {
-        key: 'ApproachAgreeingRateHelpText',
+        key: 'DetailsOfApplicantViewHelpText',
         columnType: ColumnType.TextBox,
         columnDisplayType: ColumnDisplayType.FormOnly,
-        name: 'Approach Agreeing Rate Help Text',
-        fieldName: 'ApproachAgreeingRateHelpText',
+        name: 'Details of Applicant View Help Text',
+        fieldName: 'DetailsOfApplicantViewHelpText',
+        minWidth: 300,
+        isResizable: true,
+        isRequired: false,
+        fieldMaxLength: 5000,
+        numRows: 10
+      },
+      
+      {
+        key: 'RequirementEditHelpText',
+        columnType: ColumnType.TextBox,
+        columnDisplayType: ColumnDisplayType.FormOnly,
+        name: 'Requirement Add/Edit Help Text',
+        fieldName: 'RequirementEditHelpText',
         minWidth: 300,
         isResizable: true,
         isRequired: false,
@@ -171,11 +189,324 @@ export default class ClProperties extends BaseUserContextWebPartComponent<types.
         numRows: 10
       },
       {
-        key: 'SummaryIR35JustificationHelpText',
+        key: 'RequirementViewHelpText',
         columnType: ColumnType.TextBox,
         columnDisplayType: ColumnDisplayType.FormOnly,
-        name: 'Summary IR35 Justification Help Text',
-        fieldName: 'SummaryIR35JustificationHelpText',
+        name: 'Requirement View Help Text',
+        fieldName: 'RequirementViewHelpText',
+        minWidth: 300,
+        isResizable: true,
+        isRequired: false,
+        fieldMaxLength: 5000,
+        numRows: 10
+      },
+
+      {
+        key: 'CommercialEditHelpText',
+        columnType: ColumnType.TextBox,
+        columnDisplayType: ColumnDisplayType.FormOnly,
+        name: 'Commercial Add/Edit HelpText',
+        fieldName: 'CommercialEditHelpText',
+        minWidth: 300,
+        isResizable: true,
+        isRequired: false,
+        fieldMaxLength: 5000,
+        numRows: 10
+      },
+      {
+        key: 'CommercialViewHelpText',
+        columnType: ColumnType.TextBox,
+        columnDisplayType: ColumnDisplayType.FormOnly,
+        name: 'Commercial View HelpText',
+        fieldName: 'CommercialViewHelpText',
+        minWidth: 300,
+        isResizable: true,
+        isRequired: false,
+        fieldMaxLength: 5000,
+        numRows: 10
+      },
+
+      {
+        key: 'ResourcingJustificationEditHelpText',
+        columnType: ColumnType.TextBox,
+        columnDisplayType: ColumnDisplayType.FormOnly,
+        name: 'Resourcing Justification Add/Edit Help Text',
+        fieldName: 'ResourcingJustificationEditHelpText',
+        minWidth: 300,
+        isResizable: true,
+        isRequired: false,
+        fieldMaxLength: 5000,
+        numRows: 10
+      },
+      {
+        key: 'ResourcingJustificationViewHelpText',
+        columnType: ColumnType.TextBox,
+        columnDisplayType: ColumnDisplayType.FormOnly,
+        name: 'Resourcing Justification View Help Text',
+        fieldName: 'ResourcingJustificationViewHelpText',
+        minWidth: 300,
+        isResizable: true,
+        isRequired: false,
+        fieldMaxLength: 5000,
+        numRows: 10
+      },
+
+      {
+        key: 'FinanceEditHelpText',
+        columnType: ColumnType.TextBox,
+        columnDisplayType: ColumnDisplayType.FormOnly,
+        name: 'Finance Add/Edit Help Text',
+        fieldName: 'FinanceEditHelpText',
+        minWidth: 300,
+        isResizable: true,
+        isRequired: false,
+        fieldMaxLength: 5000,
+        numRows: 10
+      },
+      {
+        key: 'FinanceViewHelpText',
+        columnType: ColumnType.TextBox,
+        columnDisplayType: ColumnDisplayType.FormOnly,
+        name: 'Finance View Help Text',
+        fieldName: 'FinanceViewHelpText',
+        minWidth: 300,
+        isResizable: true,
+        isRequired: false,
+        fieldMaxLength: 5000,
+        numRows: 10
+      },
+
+      {
+        key: 'OtherEditHelpText',
+        columnType: ColumnType.TextBox,
+        columnDisplayType: ColumnDisplayType.FormOnly,
+        name: 'Other Add/Edit Help Text',
+        fieldName: 'OtherEditHelpText',
+        minWidth: 300,
+        isResizable: true,
+        isRequired: false,
+        fieldMaxLength: 5000,
+        numRows: 10
+      },
+      {
+        key: 'OtherViewHelpText',
+        columnType: ColumnType.TextBox,
+        columnDisplayType: ColumnDisplayType.FormOnly,
+        name: 'Other View Help Text',
+        fieldName: 'OtherViewHelpText',
+        minWidth: 300,
+        isResizable: true,
+        isRequired: false,
+        fieldMaxLength: 5000,
+        numRows: 10
+      },
+
+      {
+        key: 'ApproversEditHelpText',
+        columnType: ColumnType.TextBox,
+        columnDisplayType: ColumnDisplayType.FormOnly,
+        name: 'Approvers Add/Edit Help Text',
+        fieldName: 'ApproversEditHelpText',
+        minWidth: 300,
+        isResizable: true,
+        isRequired: false,
+        fieldMaxLength: 5000,
+        numRows: 10
+      },
+      {
+        key: 'ApproversViewHelpText',
+        columnType: ColumnType.TextBox,
+        columnDisplayType: ColumnDisplayType.FormOnly,
+        name: 'Approvers View Help Text',
+        fieldName: 'ApproversViewHelpText',
+        minWidth: 300,
+        isResizable: true,
+        isRequired: false,
+        fieldMaxLength: 5000,
+        numRows: 10
+      },
+
+      {
+        key: 'BHApprovalDecisionEditHelpText',
+        columnType: ColumnType.TextBox,
+        columnDisplayType: ColumnDisplayType.FormOnly,
+        name: 'BH Approval Decision Add/Edit Help Text',
+        fieldName: 'BHApprovalDecisionEditHelpText',
+        minWidth: 300,
+        isResizable: true,
+        isRequired: false,
+        fieldMaxLength: 5000,
+        numRows: 10
+      },
+      {
+        key: 'BHApprovalDecisionViewHelpText',
+        columnType: ColumnType.TextBox,
+        columnDisplayType: ColumnDisplayType.FormOnly,
+        name: 'BH Approval Decision View Help Text',
+        fieldName: 'BHApprovalDecisionViewHelpText',
+        minWidth: 300,
+        isResizable: true,
+        isRequired: false,
+        fieldMaxLength: 5000,
+        numRows: 10
+      },
+
+      {
+        key: 'FBPApprovalDecisionEditHelpText',
+        columnType: ColumnType.TextBox,
+        columnDisplayType: ColumnDisplayType.FormOnly,
+        name: 'FBP Approval Decision Add/Edit Help Text',
+        fieldName: 'FBPApprovalDecisionEditHelpText',
+        minWidth: 300,
+        isResizable: true,
+        isRequired: false,
+        fieldMaxLength: 5000,
+        numRows: 10
+      },
+      {
+        key: 'FBPApprovalDecisionViewHelpText',
+        columnType: ColumnType.TextBox,
+        columnDisplayType: ColumnDisplayType.FormOnly,
+        name: 'FBP Approval Decision View Help Text',
+        fieldName: 'FBPApprovalDecisionViewHelpText',
+        minWidth: 300,
+        isResizable: true,
+        isRequired: false,
+        fieldMaxLength: 5000,
+        numRows: 10
+      },
+
+      {
+        key: 'HRBPApprovalDecisionEditHelpText',
+        columnType: ColumnType.TextBox,
+        columnDisplayType: ColumnDisplayType.FormOnly,
+        name: 'HRBP Approval Decision Add/Edit Help Text',
+        fieldName: 'HRBPApprovalDecisionEditHelpText',
+        minWidth: 300,
+        isResizable: true,
+        isRequired: false,
+        fieldMaxLength: 5000,
+        numRows: 10
+      },
+      {
+        key: 'HRBPApprovalDecisionViewHelpText',
+        columnType: ColumnType.TextBox,
+        columnDisplayType: ColumnDisplayType.FormOnly,
+        name: 'HRBP Approval Decision View Help Text',
+        fieldName: 'HRBPApprovalDecisionViewHelpText',
+        minWidth: 300,
+        isResizable: true,
+        isRequired: false,
+        fieldMaxLength: 5000,
+        numRows: 10
+      },
+
+      {
+        key: 'ICApprovalDecisionEditHelpText',
+        columnType: ColumnType.TextBox,
+        columnDisplayType: ColumnDisplayType.FormOnly,
+        name: 'Internal Controls Approval Decision Add/Edit Help Text',
+        fieldName: 'ICApprovalDecisionEditHelpText',
+        minWidth: 300,
+        isResizable: true,
+        isRequired: false,
+        fieldMaxLength: 5000,
+        numRows: 10
+      },
+      {
+        key: 'ICApprovalDecisionViewHelpText',
+        columnType: ColumnType.TextBox,
+        columnDisplayType: ColumnDisplayType.FormOnly,
+        name: 'Internal Controls Approval Decision View Help Text',
+        fieldName: 'ICApprovalDecisionViewHelpText',
+        minWidth: 300,
+        isResizable: true,
+        isRequired: false,
+        fieldMaxLength: 5000,
+        numRows: 10
+      },
+
+      {
+        key: 'OnboardingEditHelpText',
+        columnType: ColumnType.TextBox,
+        columnDisplayType: ColumnDisplayType.FormOnly,
+        name: 'Onboarding Add/Edit Help Text',
+        fieldName: 'OnboardingEditHelpText',
+        minWidth: 300,
+        isResizable: true,
+        isRequired: false,
+        fieldMaxLength: 5000,
+        numRows: 10
+      },
+      {
+        key: 'OnboardingViewHelpText',
+        columnType: ColumnType.TextBox,
+        columnDisplayType: ColumnDisplayType.FormOnly,
+        name: 'Onboarding View Help Text',
+        fieldName: 'OnboardingViewHelpText',
+        minWidth: 300,
+        isResizable: true,
+        isRequired: false,
+        fieldMaxLength: 5000,
+        numRows: 10
+      },
+
+      {
+        key: 'EngagedEditHelpText',
+        columnType: ColumnType.TextBox,
+        columnDisplayType: ColumnDisplayType.FormOnly,
+        name: 'Engaged Add/Edit Help Text',
+        fieldName: 'EngagedEditHelpText',
+        minWidth: 300,
+        isResizable: true,
+        isRequired: false,
+        fieldMaxLength: 5000,
+        numRows: 10
+      },
+      {
+        key: 'EngagedViewHelpText',
+        columnType: ColumnType.TextBox,
+        columnDisplayType: ColumnDisplayType.FormOnly,
+        name: 'Engaged View Help Text',
+        fieldName: 'EngagedViewHelpText',
+        minWidth: 300,
+        isResizable: true,
+        isRequired: false,
+        fieldMaxLength: 5000,
+        numRows: 10
+      },
+
+      {
+        key: 'LeavingEditHelpText',
+        columnType: ColumnType.TextBox,
+        columnDisplayType: ColumnDisplayType.FormOnly,
+        name: 'Leaving Add/Edit Help Text',
+        fieldName: 'LeavingEditHelpText',
+        minWidth: 300,
+        isResizable: true,
+        isRequired: false,
+        fieldMaxLength: 5000,
+        numRows: 10
+      },
+      {
+        key: 'LeavingViewHelpText',
+        columnType: ColumnType.TextBox,
+        columnDisplayType: ColumnDisplayType.FormOnly,
+        name: 'Leaving View Help Text',
+        fieldName: 'LeavingViewHelpText',
+        minWidth: 300,
+        isResizable: true,
+        isRequired: false,
+        fieldMaxLength: 5000,
+        numRows: 10
+      },
+
+      {
+        key: 'CaseDiscussionHelpText',
+        columnType: ColumnType.TextBox,
+        columnDisplayType: ColumnDisplayType.FormOnly,
+        name: 'Case Discussion, General Comments and File Attachments Help Text',
+        fieldName: 'CaseDiscussionHelpText',
         minWidth: 300,
         isResizable: true,
         isRequired: false,

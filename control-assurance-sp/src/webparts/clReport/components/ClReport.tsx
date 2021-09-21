@@ -80,21 +80,33 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
 
   private renderGenExport(): React.ReactElement<types.IWebPartComponentProps> {
 
-    if(this.state.User){
+    if (this.state.User) {
+
+      const isSuperUserPermission = this.isSuperUser();
+      console.log('isSuperUserPermission', isSuperUserPermission);
+
 
       return (
         <div>
 
           <div style={{ paddingTop: "10px" }}>
-  
-            <GenExport
-              {...this.props}
-              onError={this.onError}
-              moduleName="CL"
-  
-            />
-  
-  
+
+            {(isSuperUserPermission === true) &&
+              <GenExport
+                {...this.props}
+                onError={this.onError}
+                moduleName="CL"
+
+              />
+            }
+
+            {
+              (isSuperUserPermission === false) &&
+              <div style={{ fontSize: '14px', color: 'navy', fontStyle: 'italic', paddingTop: '8px', paddingLeft:'5px' }}>
+                Export to Excel function is only available to the Super User.
+              </div>
+            }
+
           </div>
         </div>
       );
