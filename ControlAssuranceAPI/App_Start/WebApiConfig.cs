@@ -34,6 +34,7 @@ namespace ControlAssuranceAPI
             ODataConventionModelBuilder builder = new ODataConventionModelBuilder();
             config.Count().Filter().OrderBy().Expand().Select().MaxTop(null); //new line
 
+            builder.EntitySet<Models.EmailOutbox>("EmailOutboxes");
             builder.EntitySet<Models.AutomationOption>("AutomationOptions");
             builder.EntitySet<Models.PersonTitle>("PersonTitles");
             builder.EntitySet<Models.AutoFunctionLastRun>("AutoFunctionLastRuns");

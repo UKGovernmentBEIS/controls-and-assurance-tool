@@ -12,8 +12,8 @@ export class AutoFunctionLastRunService extends EntityService<IEntity> {
         super(spfxContext, api, `/AutoFunctionLastRuns`);
     }
 
-    public getLastRunMsg(): Promise<string> {
-        return super.readString(`?getLastRunMsg=`).then((result:string): string => {
+    public getLastRunMsg(stage:string): Promise<string> {
+        return super.readString(`?getLastRunMsg=${stage}`).then((result:string): string => {
             return result;
         });
     }

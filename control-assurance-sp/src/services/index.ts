@@ -8,6 +8,7 @@ export { LookupService } from './LookupService';
 
 export { PersonTitleService } from './PersonTitleService';
 export { AutomationOptionService } from './AutomationOptionService';
+export { EmailOutboxService } from './EmailOutboxService';
 export { AutoFunctionLastRunService } from './AutoFunctionLastRunService';
 export { DefFormService } from './DefFormService';
 export { GoDefFormService } from './GoDefFormService';

@@ -5,6 +5,7 @@ import BaseUserContextWebPartComponent from '../../../components/BaseUserContext
 import * as services from '../../../services';
 import EntityList from '../../../components/entity/EntityList';
 import AutomationOptionsList from '../../../components/automationOptions/AutomationOptionsList';
+import OutboxList from '../../../components/automationOptions/OutboxList';
 import { PrimaryButton } from 'office-ui-fabric-react/lib/Button';
 import PeriodList from '../../../components/period/PeriodList';
 import { IGenColumn, ColumnType, ColumnDisplayType } from '../../../types/GenColumn';
@@ -22,12 +23,18 @@ export class LookupData implements ILookupData {
 
 export interface IAppSettingsState extends types.IUserContextWebPartState {
   LookupData: ILookupData;
-  LastRunMsg: string;
+  LastRunMsg_Stage1: string;
+  LastRunMsg_Stage2: string;
+  OutboxListRefreshCounter: number;
+  Outbox_ListFilterText: string;
 
 }
 export class AppSettingsState extends types.UserContextWebPartState implements IAppSettingsState {
   public LookupData = new LookupData();
-  public LastRunMsg = "";
+  public LastRunMsg_Stage1 = "";
+  public LastRunMsg_Stage2 = "";
+  public OutboxListRefreshCounter = 0;
+  public Outbox_ListFilterText: string = null;
   constructor() {
     super();
   }
@@ -53,8 +60,11 @@ export default class AppSettings extends BaseUserContextWebPartComponent<types.I
 
       <Pivot onLinkClick={this.clearErrors}>
 
-        <PivotItem headerText="Automation Options">
+        <PivotItem headerText="Process Emails">
           {this.renderAutomationOptions()}
+        </PivotItem>
+        <PivotItem headerText="Email Outbox">
+          {this.renderOutboxList()}
         </PivotItem>
         <PivotItem headerText="Logs">
           {this.renderLogsList()}
@@ -82,21 +92,21 @@ export default class AppSettings extends BaseUserContextWebPartComponent<types.I
           <div style={{ paddingTop: '30px' }}>
             <div style={{ paddingBottom: '10px' }}>
               {
-                this.state.LastRunMsg !== "Working" &&
-                <span>Note: {this.state.LastRunMsg}</span>
+                this.state.LastRunMsg_Stage1 !== "Working" &&
+                <span>Note: {this.state.LastRunMsg_Stage1}</span>
               }
-              {this.state.LastRunMsg === "Working" &&
+              {this.state.LastRunMsg_Stage1 === "Working" &&
                 <div>
                   <span>Working... Please Wait</span><br />
-                  <span style={{ textDecoration: 'underline', color: 'blue', cursor: 'pointer' }} onClick={this.loadAutoFunctionLastRun} >Click to Refresh Status</span>
+                  <span style={{ textDecoration: 'underline', color: 'blue', cursor: 'pointer' }} onClick={this.loadAutoFunctionLastRun_Stage1} >Click to Refresh Status</span>
                 </div>
               }
 
             </div>
             <PrimaryButton
-              text="Send Emails Now"
-              onClick={this.handleProcessLnk}
-              disabled={this.state.LastRunMsg === "Working" ? true : false}
+              text="Send Emails to Outbox"
+              onClick={this.handleProcessLnk_Step1}
+              disabled={this.state.LastRunMsg_Stage1 === "Working" ? true : false}
             />
 
           </div>
@@ -106,6 +116,59 @@ export default class AppSettings extends BaseUserContextWebPartComponent<types.I
 
 
     );
+  }
+
+
+  private renderOutboxList(): React.ReactElement<types.IWebPartComponentProps> {
+
+    const superUserPermission = this.superUserPermission();
+
+    return (
+      <div>
+        {/* <CrLoadingOverlayWelcome isLoading={this.state.Loading} /> */}
+        <div style={{ paddingTop: "10px" }}>
+
+          <OutboxList
+            {...this.props}
+            onError={this.onError}
+            filterText={this.state.Outbox_ListFilterText}
+            onChangeFilterText={this.handleOutboxList_ChangeFilterText}
+            outboxListRefreshCounter={this.state.OutboxListRefreshCounter}
+
+          />
+
+{
+          (superUserPermission === true) &&
+
+          <div style={{ paddingTop: '30px' }}>
+            <div style={{ paddingBottom: '10px' }}>
+              {
+                this.state.LastRunMsg_Stage2 !== "Working" &&
+                <span>{this.state.LastRunMsg_Stage2}</span>
+              }
+              {this.state.LastRunMsg_Stage2 === "Working" &&
+                <div>
+                  <span>Working... Please Wait</span><br />
+                  <span style={{ textDecoration: 'underline', color: 'blue', cursor: 'pointer' }} onClick={this.loadAutoFunctionLastRun_Stage2} >Click to Refresh Data</span>
+                </div>
+              }
+
+            </div>
+            <PrimaryButton
+              text="Send Emails Now"
+              onClick={this.handleProcessLnk_Step2}
+              disabled={this.state.LastRunMsg_Stage2 === "Working" ? true : false}
+            />
+
+          </div>
+        }
+
+
+        </div>
+      </div>
+    );
+
+
   }
 
   private renderLogsList() {
@@ -234,7 +297,7 @@ export default class AppSettings extends BaseUserContextWebPartComponent<types.I
   }
 
 
-  private handleProcessLnk = (): void => {
+  private handleProcessLnk_Step1 = (): void => {
     console.log('In Process');
 
     this.automationOptionService.processAsAutoFunction().then((res: string): void => {
@@ -242,7 +305,25 @@ export default class AppSettings extends BaseUserContextWebPartComponent<types.I
       console.log('Result', res);
       //this.loadAutoFunctionLastRun();
       this.setState({
-        LastRunMsg: res, //res = "Working" at this stage
+        LastRunMsg_Stage1: res, //res = "Working" at this stage
+      });
+
+    }, (err) => {
+
+    });
+
+
+  }
+
+  private handleProcessLnk_Step2 = (): void => {
+    console.log('In Process step2');
+
+    this.automationOptionService.processAsAutoFunctionFromOutbox().then((res: string): void => {
+
+      console.log('Result', res);
+      //this.loadAutoFunctionLastRun();
+      this.setState({
+        LastRunMsg_Stage2: res, //res = "Working" at this stage
       });
 
     }, (err) => {
@@ -280,12 +361,27 @@ export default class AppSettings extends BaseUserContextWebPartComponent<types.I
 
   //#region Load Data
 
-  private loadAutoFunctionLastRun = (): void => {
-    this.autoFunctionLastRunService.getLastRunMsg().then((res: string): void => {
+  private loadAutoFunctionLastRun_Stage1 = (): void => {
+    this.autoFunctionLastRunService.getLastRunMsg("Stage1").then((res: string): void => {
 
       console.log('Last Run Msg', res);
       this.setState({
-        LastRunMsg: res,
+        LastRunMsg_Stage1: res,
+      });
+
+    }, (err) => {
+
+    });
+
+  }
+
+  private loadAutoFunctionLastRun_Stage2 = (): void => {
+    this.autoFunctionLastRunService.getLastRunMsg("Stage2").then((res: string): void => {
+
+      console.log('Last Run Msg', res);
+      this.setState({
+        LastRunMsg_Stage2: res,
+        OutboxListRefreshCounter: (this.state.OutboxListRefreshCounter+1),
       });
 
     }, (err) => {
@@ -298,7 +394,8 @@ export default class AppSettings extends BaseUserContextWebPartComponent<types.I
   protected loadLookups(): Promise<any> {
 
     return Promise.all([
-      this.loadAutoFunctionLastRun(),
+      this.loadAutoFunctionLastRun_Stage1(),
+      this.loadAutoFunctionLastRun_Stage2(),
     ]);
   }
 
@@ -306,6 +403,9 @@ export default class AppSettings extends BaseUserContextWebPartComponent<types.I
 
   //#region Event Handlers
 
+  private handleOutboxList_ChangeFilterText = (value: string): void => {
+    this.setState({ Outbox_ListFilterText: value });
+  }
 
 
   //#endregion Event Handlers

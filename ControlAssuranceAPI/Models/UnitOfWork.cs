@@ -112,6 +112,7 @@ namespace ControlAssuranceAPI.Models
         private ThemeStatRepository viewThemeStatRepository;
 
         private EmailRepository emailRepository;
+        private EmailOutboxRepository emailOutboxRepository;
 
         public UnitOfWork(IPrincipal user)
         {
@@ -954,6 +955,18 @@ namespace ControlAssuranceAPI.Models
                     emailRepository = new EmailRepository(user, context);
                 }
                 return emailRepository;
+            }
+        }
+
+        public EmailOutboxRepository EmailOutboxRepository
+        {
+            get
+            {
+                if (emailOutboxRepository == null)
+                {
+                    emailOutboxRepository = new EmailOutboxRepository(user, context);
+                }
+                return emailOutboxRepository;
             }
         }
 

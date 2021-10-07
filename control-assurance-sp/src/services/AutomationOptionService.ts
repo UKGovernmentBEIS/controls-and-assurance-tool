@@ -18,6 +18,12 @@ export class AutomationOptionService extends EntityService<IEntity> {
         });
     }
 
+    public processAsAutoFunctionFromOutbox(): Promise<string> {
+        return super.readString(`?processAsAutoFunctionFromOutbox=&sendFromOutbox=`).then((result:string): string => {
+            return result;
+        });
+    }
+
 
 
 }

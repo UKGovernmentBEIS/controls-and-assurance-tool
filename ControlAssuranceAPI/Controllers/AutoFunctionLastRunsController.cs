@@ -36,33 +36,65 @@ namespace ControlAssuranceAPI.Controllers
         [EnableQuery]
         public string Get(string getLastRunMsg)
         {
-            var lastRun = db.AutoFunctionLastRunRepository.Find(1);
-            DateTime yesterdaysDate = DateTime.Today.Subtract(new TimeSpan(1, 0, 0, 0));
-            string yesterdaysDateStr = yesterdaysDate.ToString("dd/MM/yyyy");
-            string msg = "";
-            if(lastRun != null)
+            if (getLastRunMsg == "Stage1")
             {
-                if(lastRun.Title == "Working")
+                var lastRun = db.AutoFunctionLastRunRepository.Find(1);
+                DateTime yesterdaysDate = DateTime.Today.Subtract(new TimeSpan(1, 0, 0, 0));
+                string yesterdaysDateStr = yesterdaysDate.ToString("dd/MM/yyyy");
+                string msg = "";
+                if (lastRun != null)
                 {
-                    return "Working"; //immediate return if working
-                }
-                if(lastRun.LastRunDate == yesterdaysDate)
-                {
-                    msg = "Necessary email already sent. Please try again tomorrow";
+                    if (lastRun.Title == "Working")
+                    {
+                        return "Working"; //immediate return if working
+                    }
+                    if (lastRun.LastRunDate == yesterdaysDate)
+                    {
+                        msg = "Necessary email already sent to outbox. Please try again tomorrow";
+                    }
+                    else
+                    {
+                        string lastRunDateStr = lastRun.LastRunDate.ToString("dd/MM/yyyy");
+                        msg = $"The system will process emails to be sent per day since {lastRunDateStr} up to {yesterdaysDateStr}. It will remove duplicates within this date range.";
+                    }
+
                 }
                 else
                 {
-                    string lastRunDateStr = lastRun.LastRunDate.ToString("dd/MM/yyyy");
-                    msg = $"The system will process emails to be sent per day since {lastRunDateStr} up to {yesterdaysDateStr}. It will remove duplicates within this date range.";
+                    msg = $"The system will process emails up to be sent each day up to {yesterdaysDateStr}. It will remove duplicates within this date range.";
                 }
 
+                return msg;
             }
-            else
+            else if (getLastRunMsg == "Stage2")
             {
-                msg = $"The system will process emails up to be sent each day up to {yesterdaysDateStr}. It will remove duplicates within this date range.";
+                var lastRun = db.AutoFunctionLastRunRepository.Find(2);
+                //DateTime yesterdaysDate = DateTime.Today.Subtract(new TimeSpan(1, 0, 0, 0));
+                //string yesterdaysDateStr = yesterdaysDate.ToString("dd/MM/yyyy");
+                string msg = "";
+                if (lastRun != null)
+                {
+                    if (lastRun.Title == "Working")
+                    {
+                        return "Working"; //immediate return if working
+                    }
+                    else
+                    {
+                        //string lastRunDateStr = lastRun.LastRunDate.ToString("dd/MM/yyyy");
+                        //msg = $"Last run date: {lastRunDateStr}";
+                    }
+
+                }
+                else
+                {
+                    //msg = $"Ready to Process";
+                }
+
+                return msg;
             }
-            
-            return msg;
+
+
+            return "";
         }
     }
 }

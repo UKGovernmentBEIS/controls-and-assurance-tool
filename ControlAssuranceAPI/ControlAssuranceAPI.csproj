@@ -347,6 +347,7 @@
     <Compile Include="Controllers\CLWorkLocationsController.cs" />
     <Compile Include="Controllers\DefElementGroupsController.cs" />
     <Compile Include="Controllers\DefElementsController.cs" />
+    <Compile Include="Controllers\EmailOutboxesController.cs" />
     <Compile Include="Controllers\EntityPrioritiesController.cs" />
     <Compile Include="Controllers\ExportDefinationsController.cs" />
     <Compile Include="Controllers\GIAAActionOwnersController.cs" />
@@ -528,6 +529,9 @@
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Element.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\EmailOutbox.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\EmailQueue.cs">
@@ -764,6 +768,7 @@
     <Compile Include="Repositories\CLWorkLocationRepository.cs" />
     <Compile Include="Repositories\DefElementGroupRespository.cs" />
     <Compile Include="Repositories\DefElementRepository.cs" />
+    <Compile Include="Repositories\EmailOutboxRepository.cs" />
     <Compile Include="Repositories\EmailQueueRepository.cs" />
     <Compile Include="Repositories\EntityPriorityRepository.cs" />
     <Compile Include="Repositories\ExportDefinationRepository.cs" />

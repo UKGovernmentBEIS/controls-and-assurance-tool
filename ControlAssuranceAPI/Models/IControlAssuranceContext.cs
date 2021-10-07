@@ -12,6 +12,7 @@ namespace ControlAssuranceAPI.Models
         DbSet<AutoFunctionLastRun> AutoFunctionLastRuns { get; set; }
 
         DbSet<EmailQueue> EmailQueues { get; set; }
+        DbSet<EmailOutbox> EmailOutboxes { get; set; }
         DbSet<PersonTitle> PersonTitles { get; set; }
         DbSet<DefElement> DefElements { get; set; }
         DbSet<DefElementGroup> DefElementGroups { get; set; }

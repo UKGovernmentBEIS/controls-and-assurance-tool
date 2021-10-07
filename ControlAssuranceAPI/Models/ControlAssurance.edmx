@@ -550,6 +550,39 @@
           <Property Name="ResponseB3EffectSubstantial" Type="bit" />
           <Property Name="ResponseB3EffectNotApplicable" Type="bit" />
         </EntityType>
+        <EntityType Name="EmailOutbox">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="100" />
+          <Property Name="ModuleName" Type="nvarchar" MaxLength="100" />
+          <Property Name="PersonName" Type="nvarchar" MaxLength="100" />
+          <Property Name="EmailTo" Type="nvarchar" MaxLength="1000" />
+          <Property Name="emailCC" Type="nvarchar(max)" />
+          <Property Name="Custom1" Type="nvarchar(max)" />
+          <Property Name="Custom2" Type="nvarchar(max)" />
+          <Property Name="Custom3" Type="nvarchar(max)" />
+          <Property Name="Custom4" Type="nvarchar(max)" />
+          <Property Name="Custom5" Type="nvarchar(max)" />
+          <Property Name="Custom6" Type="nvarchar(max)" />
+          <Property Name="Custom7" Type="nvarchar(max)" />
+          <Property Name="Custom8" Type="nvarchar(max)" />
+          <Property Name="Custom9" Type="nvarchar(max)" />
+          <Property Name="Custom10" Type="nvarchar(max)" />
+          <Property Name="Custom11" Type="nvarchar(max)" />
+          <Property Name="Custom12" Type="nvarchar(max)" />
+          <Property Name="Custom13" Type="nvarchar(max)" />
+          <Property Name="Custom14" Type="nvarchar(max)" />
+          <Property Name="Custom15" Type="nvarchar(max)" />
+          <Property Name="Custom16" Type="nvarchar(max)" />
+          <Property Name="Custom17" Type="nvarchar(max)" />
+          <Property Name="Custom18" Type="nvarchar(max)" />
+          <Property Name="Custom19" Type="nvarchar(max)" />
+          <Property Name="Custom20" Type="nvarchar(max)" />
+          <Property Name="MainEntityId" Type="int" />
+          <Property Name="EmailToUserId" Type="int" />
+        </EntityType>
         <EntityType Name="EmailQueue">
           <Key>
             <PropertyRef Name="ID" />
@@ -2507,6 +2540,7 @@
           <EntitySet Name="DirectorateGroupMember" EntityType="Self.DirectorateGroupMember" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DirectorateMember" EntityType="Self.DirectorateMember" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Element" EntityType="Self.Element" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EmailOutbox" EntityType="Self.EmailOutbox" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EmailQueue" EntityType="Self.EmailQueue" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntityPriority" EntityType="Self.EntityPriority" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntityStatusType" EntityType="Self.EntityStatusType" Schema="dbo" store:Type="Tables" />
@@ -3582,6 +3616,39 @@
           <Property Name="ResponseB3EffectNotApplicable" Type="Boolean" />
           <NavigationProperty Name="DefElement" Relationship="Self.FK_Element_DefElement" FromRole="Element" ToRole="DefElement" />
           <NavigationProperty Name="Form" Relationship="Self.FK_Element_Form" FromRole="Element" ToRole="Form" />
+        </EntityType>
+        <EntityType Name="EmailOutbox">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ModuleName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="PersonName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="EmailTo" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="emailCC" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Custom1" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Custom2" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Custom3" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Custom4" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Custom5" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Custom6" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Custom7" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Custom8" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Custom9" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Custom10" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Custom11" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Custom12" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Custom13" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Custom14" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Custom15" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Custom16" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Custom17" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Custom18" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Custom19" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Custom20" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="MainEntityId" Type="Int32" />
+          <Property Name="EmailToUserId" Type="Int32" />
         </EntityType>
         <EntityType Name="EmailQueue">
           <Key>
@@ -5668,6 +5735,7 @@
           <EntitySet Name="DirectorateGroupMembers" EntityType="Self.DirectorateGroupMember" />
           <EntitySet Name="DirectorateMembers" EntityType="Self.DirectorateMember" />
           <EntitySet Name="Elements" EntityType="Self.Element" />
+          <EntitySet Name="EmailOutboxes" EntityType="Self.EmailOutbox" />
           <EntitySet Name="EmailQueues" EntityType="Self.EmailQueue" />
           <EntitySet Name="EntityPriorities" EntityType="Self.EntityPriority" />
           <EntitySet Name="EntityStatusTypes" EntityType="Self.EntityStatusType" />
@@ -6908,6 +6976,40 @@
                 <ScalarProperty Name="ResponseB3EffectModerate" ColumnName="ResponseB3EffectModerate" />
                 <ScalarProperty Name="ResponseB3EffectSubstantial" ColumnName="ResponseB3EffectSubstantial" />
                 <ScalarProperty Name="ResponseB3EffectNotApplicable" ColumnName="ResponseB3EffectNotApplicable" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EmailOutboxes">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.EmailOutbox">
+              <MappingFragment StoreEntitySet="EmailOutbox">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="ModuleName" ColumnName="ModuleName" />
+                <ScalarProperty Name="PersonName" ColumnName="PersonName" />
+                <ScalarProperty Name="EmailTo" ColumnName="EmailTo" />
+                <ScalarProperty Name="emailCC" ColumnName="emailCC" />
+                <ScalarProperty Name="Custom1" ColumnName="Custom1" />
+                <ScalarProperty Name="Custom2" ColumnName="Custom2" />
+                <ScalarProperty Name="Custom3" ColumnName="Custom3" />
+                <ScalarProperty Name="Custom4" ColumnName="Custom4" />
+                <ScalarProperty Name="Custom5" ColumnName="Custom5" />
+                <ScalarProperty Name="Custom6" ColumnName="Custom6" />
+                <ScalarProperty Name="Custom7" ColumnName="Custom7" />
+                <ScalarProperty Name="Custom8" ColumnName="Custom8" />
+                <ScalarProperty Name="Custom9" ColumnName="Custom9" />
+                <ScalarProperty Name="Custom10" ColumnName="Custom10" />
+                <ScalarProperty Name="Custom11" ColumnName="Custom11" />
+                <ScalarProperty Name="Custom12" ColumnName="Custom12" />
+                <ScalarProperty Name="Custom13" ColumnName="Custom13" />
+                <ScalarProperty Name="Custom14" ColumnName="Custom14" />
+                <ScalarProperty Name="Custom15" ColumnName="Custom15" />
+                <ScalarProperty Name="Custom16" ColumnName="Custom16" />
+                <ScalarProperty Name="Custom17" ColumnName="Custom17" />
+                <ScalarProperty Name="Custom18" ColumnName="Custom18" />
+                <ScalarProperty Name="Custom19" ColumnName="Custom19" />
+                <ScalarProperty Name="Custom20" ColumnName="Custom20" />
+                <ScalarProperty Name="MainEntityId" ColumnName="MainEntityId" />
+                <ScalarProperty Name="EmailToUserId" ColumnName="EmailToUserId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

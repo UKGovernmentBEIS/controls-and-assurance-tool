@@ -80,6 +80,14 @@ namespace ControlAssuranceAPI.Controllers
             return msg;
         }
 
+        //GET: odata/AutomationOptions?processAsAutoFunctionFromOutbox=&sendFromOutbox=
+        [EnableQuery]
+        public string Get(string processAsAutoFunctionFromOutbox, string sendFromOutbox)
+        {
+            var msg = db.AutomationOptionRepository.ProcessAsAutoFunction_SendFromOutbox();
+            return msg;
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

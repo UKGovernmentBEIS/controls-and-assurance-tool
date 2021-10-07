@@ -37,6 +37,58 @@ namespace ControlAssuranceAPI.Repositories
 
         #region Auto Function Work
 
+        public string ProcessAsAutoFunction_SendFromOutbox()
+        {
+
+
+
+            
+
+            Task.Run(() => {
+                ControlAssuranceEntities dbThread = new ControlAssuranceEntities();
+                List<AutomationOption> automationOptions = dbThread.AutomationOptions.ToList();
+
+                var autoFunctionLastRun = dbThread.AutoFunctionLastRuns.FirstOrDefault(x => x.ID == 2);
+
+                try
+                {
+
+                    if (autoFunctionLastRun == null)
+                    {
+                        autoFunctionLastRun = new AutoFunctionLastRun();
+                        autoFunctionLastRun.ID = 2;
+                        //autoFunctionLastRun.LastRunDate = DateTime.Now;
+                        dbThread.AutoFunctionLastRuns.Add(autoFunctionLastRun);
+                        //dbThread.SaveChanges();
+                    }
+                    autoFunctionLastRun.Title = "Working";
+                    autoFunctionLastRun.LastRunDate = DateTime.Now;
+                    dbThread.SaveChanges();
+
+
+                    this.SendOutboxToNotify(dbThread, automationOptions);
+
+
+                    dbThread.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+
+                }
+                finally
+                {
+
+                    autoFunctionLastRun.Title = ""; //remove "Working" from title which means work done.
+                    dbThread.SaveChanges();
+                }
+
+            });
+
+
+
+
+            return "Working";
+        }
 
 
         public string ProcessAsAutoFunction()
@@ -118,7 +170,8 @@ namespace ControlAssuranceAPI.Repositories
 
                     }
 
-                    this.SendQueueToNotify(dbThread, automationOptions);
+                    //this.SendQueueToNotify(dbThread, automationOptions);
+                    this.SendQueueToOutbox(dbThread, automationOptions);
 
 
                     dbThread.SaveChanges();
@@ -1270,22 +1323,1005 @@ namespace ControlAssuranceAPI.Repositories
 
 
 
-        private void SendQueueToNotify(ControlAssuranceEntities db, List<AutomationOption> automationOptions)
+        //private void SendQueueToNotify(ControlAssuranceEntities db, List<AutomationOption> automationOptions)
+        //{
+        //    UKGovNotify uKGovNotify = new UKGovNotify();
+        //    var emailQueue = db.EmailQueues.OrderByDescending(x => x.ID).ToList();
+
+        //    if (emailQueue.Count == 0) return;
+
+
+        //    LogRepository logRepository = new LogRepository(base.user);
+
+        //    foreach (var emailQueueItem in emailQueue)
+        //    {
+        //        string templateName = emailQueueItem.Title; //like IC-NewPeriodToDD
+        //        var automationOption = automationOptions.FirstOrDefault(x => x.Title == templateName);
+        //        string templateId = automationOption.NotifyTemplateId;
+        //        string moduleName = automationOption.Module;
+
+
+        //        switch (templateName)
+        //        {
+
+        //            case "CL-HiringManagerAndStaff":
+        //                {
+        //                    if (automationOption.Active == true)
+        //                    {
+        //                        var templatePersonalisations = new Dictionary<string, dynamic>() {
+        //                            { "Name", emailQueueItem.Custom1 },
+        //                            { "PersonType", emailQueueItem.Custom2 },
+        //                            { "CasesInDraft", emailQueueItem.Custom3 },
+        //                            { "CasesRejected", emailQueueItem.Custom4 },
+        //                            { "CasesReqInfo", emailQueueItem.Custom5 },
+        //                            { "CasesInOnboarding", emailQueueItem.Custom6 },
+
+        //                        };
+
+
+        //                        templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+        //                        uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
+
+        //                        //db.EmailOutboxes.Add(new EmailOutbox
+        //                        //{
+        //                        //    Title = emailQueueItem.Title,
+        //                        //    ModuleName = "",
+        //                        //    PersonName = emailQueueItem.PersonName,
+        //                        //    EmailTo = emailQueueItem.EmailTo,
+        //                        //    emailCC = emailQueueItem.emailCC,
+        //                        //    MainEntityId = emailQueueItem.MainEntityId,
+        //                        //    EmailToUserId = emailQueueItem.EmailToUserId,
+        //                        //    Custom1 = emailQueueItem.Custom1,
+        //                        //    Custom2 = emailQueueItem.Custom2,
+        //                        //    Custom3 = emailQueueItem.Custom3,
+        //                        //    Custom4 = emailQueueItem.Custom4,
+        //                        //    Custom5 = emailQueueItem.Custom5,
+        //                        //    Custom6 = emailQueueItem.Custom6,
+        //                        //    Custom7 = emailQueueItem.Custom7,
+        //                        //    Custom8 = emailQueueItem.Custom8,
+        //                        //    Custom9 = emailQueueItem.Custom9,
+        //                        //    Custom10 = emailQueueItem.Custom10,
+        //                        //    Custom11 = emailQueueItem.Custom11,
+        //                        //    Custom12 = emailQueueItem.Custom12,
+        //                        //    Custom13 = emailQueueItem.Custom13,
+        //                        //    Custom14 = emailQueueItem.Custom14,
+        //                        //    Custom15 = emailQueueItem.Custom15,
+        //                        //    Custom16 = emailQueueItem.Custom16,
+        //                        //    Custom17 = emailQueueItem.Custom17,
+        //                        //    Custom18 = emailQueueItem.Custom18,
+        //                        //    Custom19 = emailQueueItem.Custom19,
+        //                        //    Custom20 = emailQueueItem.Custom20,
+
+        //                        //});
+        //                    }
+
+        //                    db.EmailQueues.Remove(emailQueueItem);
+        //                    break;
+        //                }
+
+        //            case "CL-Approvers":
+        //                {
+        //                    if (automationOption.Active == true)
+        //                    {
+        //                        var templatePersonalisations = new Dictionary<string, dynamic>() {
+        //                            { "Name", emailQueueItem.Custom1 },
+        //                            { "ApproverType ", emailQueueItem.Custom2 },
+        //                            { "ApprovalsReq", emailQueueItem.Custom3 },
+
+        //                        };
+
+
+        //                        templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+        //                        uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
+        //                    }
+
+        //                    db.EmailQueues.Remove(emailQueueItem);
+        //                    break;
+        //                }
+
+        //            case "CL-Superusers":
+        //                {
+        //                    if (automationOption.Active == true)
+        //                    {
+        //                        var templatePersonalisations = new Dictionary<string, dynamic>() {
+        //                            { "Name", emailQueueItem.Custom1 },
+        //                            { "EngagedChecksReq ", emailQueueItem.Custom2 },
+        //                            { "LeavingChecksReq", emailQueueItem.Custom3 },
+
+        //                        };
+
+
+        //                        templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+        //                        uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
+        //                    }
+
+        //                    db.EmailQueues.Remove(emailQueueItem);
+        //                    break;
+        //                }
+
+
+        //            case "IC-NewPeriodToDD":
+        //                {
+        //                    if (automationOption.Active == true)
+        //                    {
+        //                        var templatePersonalisations = new Dictionary<string, dynamic>() {
+        //                            { "DDName", emailQueueItem.Custom1 },
+        //                            { "DDDelegateList", emailQueueItem.Custom2 },
+        //                            { "DivisionTitle", emailQueueItem.Custom3 },
+        //                            { "PeriodStartDate", emailQueueItem.Custom4 },
+        //                            { "PeriodEndDate", emailQueueItem.Custom5 },
+
+        //                        };
+
+
+        //                        templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+        //                        uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
+        //                    }
+
+        //                    db.EmailQueues.Remove(emailQueueItem);
+        //                    break;
+        //                }
+
+
+        //            case "IC-NewPeriodToDirector":
+        //                {
+        //                    if (automationOption.Active == true)
+        //                    {
+        //                        var templatePersonalisations = new Dictionary<string, dynamic>() {
+        //                            { "DirectorName", emailQueueItem.Custom1 },
+        //                            { "DirectorDelegateList", emailQueueItem.Custom2 },
+        //                            { "DirectorateTitle", emailQueueItem.Custom3 },
+        //                            { "PeriodStartDate", emailQueueItem.Custom4 },
+        //                            { "PeriodEndDate", emailQueueItem.Custom5 },
+
+        //                        };
+
+
+        //                        templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+        //                        uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
+        //                    }
+
+        //                    db.EmailQueues.Remove(emailQueueItem);
+        //                    break;
+        //                }
+
+
+        //            case "IC-NewPeriodToDDDelegate":
+        //                {
+        //                    if (automationOption.Active == true)
+        //                    {
+        //                        var templatePersonalisations = new Dictionary<string, dynamic>() {
+        //                            { "DelegateName", emailQueueItem.Custom1 },
+        //                            { "DDName", emailQueueItem.Custom2 },
+        //                            { "DDDelegateList", emailQueueItem.Custom3 },
+        //                            { "DivisionTitle", emailQueueItem.Custom4 },
+        //                            { "PeriodStartDate", emailQueueItem.Custom5 },
+        //                            { "PeriodEndDate", emailQueueItem.Custom6 },
+
+        //                        };
+
+
+        //                        templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+        //                        uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
+        //                    }
+
+        //                    db.EmailQueues.Remove(emailQueueItem);
+        //                    break;
+        //                }
+
+
+        //            case "IC-NewPeriodToDirectorDelegate":
+        //                {
+        //                    if (automationOption.Active == true)
+        //                    {
+        //                        var templatePersonalisations = new Dictionary<string, dynamic>() {
+        //                            { "DelegateName", emailQueueItem.Custom1 },
+        //                            { "DirectorName", emailQueueItem.Custom2 },
+        //                            { "DirectorDelegateList", emailQueueItem.Custom3 },
+        //                            { "DirectorateTitle", emailQueueItem.Custom4 },
+        //                            { "PeriodStartDate", emailQueueItem.Custom5 },
+        //                            { "PeriodEndDate", emailQueueItem.Custom6 },
+
+        //                        };
+
+
+        //                        templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+        //                        uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
+        //                    }
+
+        //                    db.EmailQueues.Remove(emailQueueItem);
+        //                    break;
+        //                }
+
+
+        //            case "IC-UpdateToSuperUsers":
+        //                {
+        //                    if (automationOption.Active == true)
+        //                    {
+        //                        var templatePersonalisations = new Dictionary<string, dynamic>() {
+        //                            { "SuperUserName", emailQueueItem.Custom1 },
+        //                            { "PeriodStartDate", emailQueueItem.Custom2 },
+        //                            { "PeriodEndDate", emailQueueItem.Custom3 },
+        //                            { "NumTotal", emailQueueItem.Custom4 },
+        //                            { "NumCompleted", emailQueueItem.Custom5 },
+        //                            { "NumSignedByDD", emailQueueItem.Custom6 },
+        //                            { "NumSignedByDir", emailQueueItem.Custom7 },
+
+
+        //                        };
+
+
+        //                        templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+        //                        uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
+        //                    }
+
+        //                    db.EmailQueues.Remove(emailQueueItem);
+        //                    break;
+        //                }
+
+
+        //            case "IC-ReminderToDD":
+        //                {
+
+        //                    if (automationOption.Active == true)
+        //                    {
+        //                        var emailQueueItemAgain = db.EmailQueues.FirstOrDefault(x => x.ID == emailQueueItem.ID);
+        //                        if (emailQueueItemAgain != null)
+        //                        {
+        //                            var templatePersonalisations = new Dictionary<string, dynamic>() {
+        //                            { "DDName", emailQueueItem.Custom1 },
+        //                            { "DDDelegateList", emailQueueItem.Custom2 },
+        //                            { "DivisionTitle ", emailQueueItem.Custom3 },
+        //                            { "PeriodStartDate ", emailQueueItem.Custom4 },
+        //                            { "PeriodEndDate ", emailQueueItem.Custom5 },
+        //                            { "DaysLeft ", emailQueueItem.Custom6 },
+        //                            { "Completed  ", emailQueueItem.Custom7 },
+        //                            { "Signed  ", emailQueueItem.Custom8 },
+
+        //                        };
+        //                            templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+        //                            uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
+
+
+        //                            db.EmailQueues.RemoveRange(db.EmailQueues.Where(x => x.Title == emailQueueItem.Title && x.EmailTo == emailQueueItem.EmailTo && x.MainEntityId == emailQueueItem.MainEntityId));
+        //                            db.SaveChanges();
+        //                        }
+        //                    }
+
+
+
+        //                    break;
+        //                }
+
+
+
+        //            case "IC-ReminderToDirector":
+        //                {
+        //                    if (automationOption.Active == true)
+        //                    {
+        //                        var emailQueueItemAgain = db.EmailQueues.FirstOrDefault(x => x.ID == emailQueueItem.ID);
+
+        //                        if (emailQueueItemAgain != null)
+        //                        {
+        //                            var templatePersonalisations = new Dictionary<string, dynamic>() {
+        //                            { "DirectorName", emailQueueItem.Custom1 },
+        //                            { "DirectorDelegateList", emailQueueItem.Custom2 },
+        //                            { "DirectorateTitle ", emailQueueItem.Custom3 },
+        //                            { "PeriodStartDate ", emailQueueItem.Custom4 },
+        //                            { "PeriodEndDate ", emailQueueItem.Custom5 },
+        //                            { "DaysLeft ", emailQueueItem.Custom6 },
+        //                            { "NumTotal  ", emailQueueItem.Custom7 },
+        //                            { "NumCompleted  ", emailQueueItem.Custom8 },
+        //                            { "NumSignedByDD  ", emailQueueItem.Custom9 },
+        //                            { "NumSignedByDir  ", emailQueueItem.Custom10 },
+        //                            { "NumReqDirSig  ", emailQueueItem.Custom11 },
+
+        //                        };
+        //                            templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+        //                            uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
+
+
+        //                            db.EmailQueues.RemoveRange(db.EmailQueues.Where(x => x.Title == emailQueueItem.Title && x.EmailTo == emailQueueItem.EmailTo && x.MainEntityId == emailQueueItem.MainEntityId));
+        //                            db.SaveChanges();
+        //                        }
+        //                    }
+
+        //                    break;
+        //                }
+
+
+
+        //            case "IC-ReminderToDDDelegate":
+        //                {
+        //                    if (automationOption.Active == true)
+        //                    {
+        //                        var emailQueueItemAgain = db.EmailQueues.FirstOrDefault(x => x.ID == emailQueueItem.ID);
+
+        //                        if (emailQueueItemAgain != null)
+        //                        {
+        //                            var templatePersonalisations = new Dictionary<string, dynamic>() {
+        //                            { "DelegateName", emailQueueItem.Custom1 },
+        //                            { "DDName", emailQueueItem.Custom2 },
+        //                            { "DDDelegateList", emailQueueItem.Custom3 },
+        //                            { "DivisionTitle ", emailQueueItem.Custom4 },
+        //                            { "PeriodStartDate ", emailQueueItem.Custom5 },
+        //                            { "PeriodEndDate ", emailQueueItem.Custom6 },
+        //                            { "DaysLeft ", emailQueueItem.Custom7 },
+        //                            { "Completed  ", emailQueueItem.Custom8 },
+        //                            { "Signed  ", emailQueueItem.Custom9 },
+
+        //                        };
+        //                            templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+        //                            uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
+
+
+        //                            db.EmailQueues.RemoveRange(db.EmailQueues.Where(x => x.Title == emailQueueItem.Title && x.EmailTo == emailQueueItem.EmailTo && x.MainEntityId == emailQueueItem.MainEntityId));
+        //                            db.SaveChanges();
+        //                        }
+        //                    }
+
+        //                    break;
+        //                }
+
+
+
+        //            case "IC-ReminderToDirectorDelegate":
+        //                {
+        //                    if (automationOption.Active == true)
+        //                    {
+        //                        var emailQueueItemAgain = db.EmailQueues.FirstOrDefault(x => x.ID == emailQueueItem.ID);
+
+        //                        if (emailQueueItemAgain != null)
+        //                        {
+        //                            var templatePersonalisations = new Dictionary<string, dynamic>() {
+        //                            { "DelegateName", emailQueueItem.Custom1 },
+        //                            { "DirectorName", emailQueueItem.Custom2 },
+        //                            { "DirectorDelegateList", emailQueueItem.Custom3 },
+        //                            { "DirectorateTitle ", emailQueueItem.Custom4 },
+        //                            { "PeriodStartDate ", emailQueueItem.Custom5 },
+        //                            { "PeriodEndDate ", emailQueueItem.Custom6 },
+        //                            { "DaysLeft ", emailQueueItem.Custom7 },
+        //                            { "NumTotal  ", emailQueueItem.Custom8 },
+        //                            { "NumCompleted  ", emailQueueItem.Custom9 },
+        //                            { "NumSignedByDD  ", emailQueueItem.Custom10 },
+        //                            { "NumSignedByDir  ", emailQueueItem.Custom11 },
+        //                            { "NumReqDirSig  ", emailQueueItem.Custom12 },
+
+        //                        };
+        //                            templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+        //                            uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
+
+
+        //                            db.EmailQueues.RemoveRange(db.EmailQueues.Where(x => x.Title == emailQueueItem.Title && x.EmailTo == emailQueueItem.EmailTo && x.MainEntityId == emailQueueItem.MainEntityId));
+        //                            db.SaveChanges();
+        //                        }
+        //                    }
+
+        //                    break;
+        //                }
+
+
+
+        //            case "NP-NewPeriod":
+        //                {
+        //                    if (automationOption.Active == true)
+        //                    {
+        //                        var templatePersonalisations = new Dictionary<string, dynamic>() {
+        //                            { "Name", emailQueueItem.Custom1 },
+        //                            { "PublicationTitle", emailQueueItem.Custom2 },
+        //                            { "PeriodTitle", emailQueueItem.Custom3 },
+        //                            { "PeriodStartDate", emailQueueItem.Custom4 },
+        //                            { "PeriodEndDate", emailQueueItem.Custom5 },
+
+        //                        };
+
+
+        //                        templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+        //                        uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
+        //                    }
+
+        //                    db.EmailQueues.Remove(emailQueueItem);
+        //                    break;
+        //                }
+
+
+        //            case "NP-NewAssignee":
+        //                {
+        //                    if (automationOption.Active == true)
+        //                    {
+        //                        var templatePersonalisations = new Dictionary<string, dynamic>() {
+        //                            { "AssigneeName", emailQueueItem.Custom1 },
+        //                            { "PublicationTitle", emailQueueItem.Custom2 },
+        //                            { "Total", emailQueueItem.Custom3 },
+        //                            { "TotalNew", emailQueueItem.Custom4 },
+
+        //                        };
+        //                        templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+        //                        uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
+        //                    }
+
+        //                    db.EmailQueues.Remove(emailQueueItem);
+        //                    break;
+        //                }
+
+
+
+        //            case "NP-UpdateReminder":
+        //                {
+        //                    if (automationOption.Active == true)
+        //                    {
+        //                        var emailQueueItemAgain = db.EmailQueues.FirstOrDefault(x => x.ID == emailQueueItem.ID);
+
+        //                        if (emailQueueItemAgain != null)
+        //                        {
+        //                            var templatePersonalisations = new Dictionary<string, dynamic>() {
+        //                            { "PeriodStartDate", emailQueueItem.Custom1 },
+        //                            { "PeriodEndDate", emailQueueItem.Custom2 },
+        //                            { "DaysLeft", emailQueueItem.Custom3 },
+        //                            { "PublicationTitle", emailQueueItem.Custom4 },
+        //                            { "Total", emailQueueItem.Custom5 },
+        //                            { "TotalNotComplete", emailQueueItem.Custom6 },
+
+        //                        };
+        //                            templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+        //                            uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
+
+
+        //                            db.EmailQueues.RemoveRange(db.EmailQueues.Where(x => x.Title == emailQueueItem.Title && x.EmailTo == emailQueueItem.EmailTo && x.MainEntityId == emailQueueItem.MainEntityId));
+        //                            db.SaveChanges();
+        //                        }
+        //                    }
+
+        //                    break;
+        //                }
+
+
+
+
+        //            case "GIAA-NewActionOwner":
+        //                {
+        //                    if (automationOption.Active == true)
+        //                    {
+        //                        var templatePersonalisations = new Dictionary<string, dynamic>() {
+        //                            { "ActionOwnerName", emailQueueItem.Custom1 },
+        //                            { "ReportTitle", emailQueueItem.Custom2 },
+        //                            { "Total", emailQueueItem.Custom3 },
+        //                            { "TotalNew", emailQueueItem.Custom4 },
+
+        //                        };
+        //                        templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+        //                        uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
+        //                    }
+
+        //                    db.EmailQueues.Remove(emailQueueItem);
+        //                    break;
+        //                }
+
+
+
+
+        //            case "GIAA-UpdateReminder":
+        //                {
+        //                    if (automationOption.Active == true)
+        //                    {
+        //                        var emailQueueItemAgain = db.EmailQueues.FirstOrDefault(x => x.ID == emailQueueItem.ID);
+
+        //                        if (emailQueueItemAgain != null)
+        //                        {
+        //                            var templatePersonalisations = new Dictionary<string, dynamic>() {
+        //                                { "ActionOwnerName", emailQueueItem.Custom1 },
+        //                                { "ReportTitle", emailQueueItem.Custom2 },
+        //                                { "TotalUpdatesReq ", emailQueueItem.Custom3 },
+
+        //                            };
+        //                            templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+        //                            uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
+
+
+        //                            db.EmailQueues.RemoveRange(db.EmailQueues.Where(x => x.Title == emailQueueItem.Title && x.EmailTo == emailQueueItem.EmailTo && x.MainEntityId == emailQueueItem.MainEntityId));
+        //                            db.SaveChanges();
+        //                        }
+        //                    }
+
+        //                    break;
+        //                }
+
+
+
+
+        //            case "MA-NewAction":
+        //                {
+        //                    if (automationOption.Active == true)
+        //                    {
+        //                        var templatePersonalisations = new Dictionary<string, dynamic>() {
+        //                            { "ActionOwnerName", emailQueueItem.Custom1 },
+        //                            { "ActionTitle", emailQueueItem.Custom2 },
+
+        //                        };
+        //                        templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+        //                        uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
+        //                    }
+
+        //                    db.EmailQueues.Remove(emailQueueItem);
+        //                    break;
+        //                }
+
+
+
+
+        //            case "MA-UpdateReminder":
+        //                {
+        //                    if (automationOption.Active == true)
+        //                    {
+        //                        var emailQueueItemAgain = db.EmailQueues.FirstOrDefault(x => x.ID == emailQueueItem.ID);
+
+        //                        if (emailQueueItemAgain != null)
+        //                        {
+        //                            var templatePersonalisations = new Dictionary<string, dynamic>() {
+        //                                { "ActionOwnerName", emailQueueItem.Custom1 },
+        //                                { "ActionTitle", emailQueueItem.Custom2 },
+
+        //                            };
+        //                            templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+        //                            uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
+
+
+        //                            db.EmailQueues.RemoveRange(db.EmailQueues.Where(x => x.Title == emailQueueItem.Title && x.EmailTo == emailQueueItem.EmailTo && x.MainEntityId == emailQueueItem.MainEntityId));
+        //                            db.SaveChanges();
+        //                        }
+        //                    }
+
+        //                    break;
+        //                }
+
+
+        //        }
+
+
+        //    }
+        //    //at the end remove if any entry left
+        //    db.EmailQueues.RemoveRange(db.EmailQueues);
+        //    db.SaveChanges();
+        //}
+
+
+        private void SendOutboxToNotify(ControlAssuranceEntities db, List<AutomationOption> automationOptions)
         {
             UKGovNotify uKGovNotify = new UKGovNotify();
-            var emailQueue = db.EmailQueues.OrderByDescending(x => x.ID).ToList();
-            
-            if (emailQueue.Count == 0) return;
+            var emailOutboxes = db.EmailOutboxes.OrderByDescending(x => x.ID).ToList();
+
+            if (emailOutboxes.Count == 0) return;
 
 
             LogRepository logRepository = new LogRepository(base.user);
 
+            foreach (var emailOutboxItem in emailOutboxes)
+            {
+                string templateName = emailOutboxItem.Title; //like IC-NewPeriodToDD
+                var automationOption = automationOptions.FirstOrDefault(x => x.Title == templateName);
+                string templateId = automationOption.NotifyTemplateId;
+                string moduleName = automationOption.Module;
+
+
+                switch (templateName)
+                {
+
+                    case "CL-HiringManagerAndStaff":
+                        {
+
+                            var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                    { "Name", emailOutboxItem.Custom1 },
+                                    { "PersonType", emailOutboxItem.Custom2 },
+                                    { "CasesInDraft", emailOutboxItem.Custom3 },
+                                    { "CasesRejected", emailOutboxItem.Custom4 },
+                                    { "CasesReqInfo", emailOutboxItem.Custom5 },
+                                    { "CasesInOnboarding", emailOutboxItem.Custom6 },
+
+                                };
+
+
+                            templatePersonalisations["EmailToName"] = emailOutboxItem.PersonName;
+                            uKGovNotify.SendEmail(emailOutboxItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailOutboxItem.EmailToUserId.Value);
+
+                            break;
+                        }
+
+                    case "CL-Approvers":
+                        {
+
+                            var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                    { "Name", emailOutboxItem.Custom1 },
+                                    { "ApproverType ", emailOutboxItem.Custom2 },
+                                    { "ApprovalsReq", emailOutboxItem.Custom3 },
+
+                                };
+
+
+                            templatePersonalisations["EmailToName"] = emailOutboxItem.PersonName;
+                            uKGovNotify.SendEmail(emailOutboxItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailOutboxItem.EmailToUserId.Value);
+
+
+                            break;
+                        }
+
+                    case "CL-Superusers":
+                        {
+
+                            var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                    { "Name", emailOutboxItem.Custom1 },
+                                    { "EngagedChecksReq ", emailOutboxItem.Custom2 },
+                                    { "LeavingChecksReq", emailOutboxItem.Custom3 },
+
+                                };
+
+
+                            templatePersonalisations["EmailToName"] = emailOutboxItem.PersonName;
+                            uKGovNotify.SendEmail(emailOutboxItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailOutboxItem.EmailToUserId.Value);
+
+                            break;
+                        }
+
+
+                    case "IC-NewPeriodToDD":
+                        {
+
+                            var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                    { "DDName", emailOutboxItem.Custom1 },
+                                    { "DDDelegateList", emailOutboxItem.Custom2 },
+                                    { "DivisionTitle", emailOutboxItem.Custom3 },
+                                    { "PeriodStartDate", emailOutboxItem.Custom4 },
+                                    { "PeriodEndDate", emailOutboxItem.Custom5 },
+
+                                };
+
+
+                            templatePersonalisations["EmailToName"] = emailOutboxItem.PersonName;
+                            uKGovNotify.SendEmail(emailOutboxItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailOutboxItem.EmailToUserId.Value);
+
+                            break;
+                        }
+
+
+                    case "IC-NewPeriodToDirector":
+                        {
+
+                            var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                    { "DirectorName", emailOutboxItem.Custom1 },
+                                    { "DirectorDelegateList", emailOutboxItem.Custom2 },
+                                    { "DirectorateTitle", emailOutboxItem.Custom3 },
+                                    { "PeriodStartDate", emailOutboxItem.Custom4 },
+                                    { "PeriodEndDate", emailOutboxItem.Custom5 },
+
+                                };
+
+
+                            templatePersonalisations["EmailToName"] = emailOutboxItem.PersonName;
+                            uKGovNotify.SendEmail(emailOutboxItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailOutboxItem.EmailToUserId.Value);
+
+                            break;
+                        }
+
+
+                    case "IC-NewPeriodToDDDelegate":
+                        {
+
+                            var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                    { "DelegateName", emailOutboxItem.Custom1 },
+                                    { "DDName", emailOutboxItem.Custom2 },
+                                    { "DDDelegateList", emailOutboxItem.Custom3 },
+                                    { "DivisionTitle", emailOutboxItem.Custom4 },
+                                    { "PeriodStartDate", emailOutboxItem.Custom5 },
+                                    { "PeriodEndDate", emailOutboxItem.Custom6 },
+
+                                };
+
+
+                            templatePersonalisations["EmailToName"] = emailOutboxItem.PersonName;
+                            uKGovNotify.SendEmail(emailOutboxItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailOutboxItem.EmailToUserId.Value);
+
+                            break;
+                        }
+
+
+                    case "IC-NewPeriodToDirectorDelegate":
+                        {
+
+                            var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                    { "DelegateName", emailOutboxItem.Custom1 },
+                                    { "DirectorName", emailOutboxItem.Custom2 },
+                                    { "DirectorDelegateList", emailOutboxItem.Custom3 },
+                                    { "DirectorateTitle", emailOutboxItem.Custom4 },
+                                    { "PeriodStartDate", emailOutboxItem.Custom5 },
+                                    { "PeriodEndDate", emailOutboxItem.Custom6 },
+
+                                };
+
+
+                            templatePersonalisations["EmailToName"] = emailOutboxItem.PersonName;
+                            uKGovNotify.SendEmail(emailOutboxItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailOutboxItem.EmailToUserId.Value);
+
+                            break;
+                        }
+
+
+                    case "IC-UpdateToSuperUsers":
+                        {
+
+                            var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                    { "SuperUserName", emailOutboxItem.Custom1 },
+                                    { "PeriodStartDate", emailOutboxItem.Custom2 },
+                                    { "PeriodEndDate", emailOutboxItem.Custom3 },
+                                    { "NumTotal", emailOutboxItem.Custom4 },
+                                    { "NumCompleted", emailOutboxItem.Custom5 },
+                                    { "NumSignedByDD", emailOutboxItem.Custom6 },
+                                    { "NumSignedByDir", emailOutboxItem.Custom7 },
+
+
+                                };
+
+
+                            templatePersonalisations["EmailToName"] = emailOutboxItem.PersonName;
+                            uKGovNotify.SendEmail(emailOutboxItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailOutboxItem.EmailToUserId.Value);
+
+                            break;
+                        }
+
+
+                    case "IC-ReminderToDD":
+                        {
+
+
+                            var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                    { "DDName", emailOutboxItem.Custom1 },
+                                    { "DDDelegateList", emailOutboxItem.Custom2 },
+                                    { "DivisionTitle ", emailOutboxItem.Custom3 },
+                                    { "PeriodStartDate ", emailOutboxItem.Custom4 },
+                                    { "PeriodEndDate ", emailOutboxItem.Custom5 },
+                                    { "DaysLeft ", emailOutboxItem.Custom6 },
+                                    { "Completed  ", emailOutboxItem.Custom7 },
+                                    { "Signed  ", emailOutboxItem.Custom8 },
+
+                                };
+                            templatePersonalisations["EmailToName"] = emailOutboxItem.PersonName;
+                            uKGovNotify.SendEmail(emailOutboxItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailOutboxItem.EmailToUserId.Value);
+
+
+
+                            break;
+                        }
+
+
+
+                    case "IC-ReminderToDirector":
+                        {
+
+                            var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                    { "DirectorName", emailOutboxItem.Custom1 },
+                                    { "DirectorDelegateList", emailOutboxItem.Custom2 },
+                                    { "DirectorateTitle ", emailOutboxItem.Custom3 },
+                                    { "PeriodStartDate ", emailOutboxItem.Custom4 },
+                                    { "PeriodEndDate ", emailOutboxItem.Custom5 },
+                                    { "DaysLeft ", emailOutboxItem.Custom6 },
+                                    { "NumTotal  ", emailOutboxItem.Custom7 },
+                                    { "NumCompleted  ", emailOutboxItem.Custom8 },
+                                    { "NumSignedByDD  ", emailOutboxItem.Custom9 },
+                                    { "NumSignedByDir  ", emailOutboxItem.Custom10 },
+                                    { "NumReqDirSig  ", emailOutboxItem.Custom11 },
+
+                                };
+                            templatePersonalisations["EmailToName"] = emailOutboxItem.PersonName;
+                            uKGovNotify.SendEmail(emailOutboxItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailOutboxItem.EmailToUserId.Value);
+
+                            break;
+                        }
+
+
+
+                    case "IC-ReminderToDDDelegate":
+                        {
+
+                            var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                    { "DelegateName", emailOutboxItem.Custom1 },
+                                    { "DDName", emailOutboxItem.Custom2 },
+                                    { "DDDelegateList", emailOutboxItem.Custom3 },
+                                    { "DivisionTitle ", emailOutboxItem.Custom4 },
+                                    { "PeriodStartDate ", emailOutboxItem.Custom5 },
+                                    { "PeriodEndDate ", emailOutboxItem.Custom6 },
+                                    { "DaysLeft ", emailOutboxItem.Custom7 },
+                                    { "Completed  ", emailOutboxItem.Custom8 },
+                                    { "Signed  ", emailOutboxItem.Custom9 },
+
+                                };
+                            templatePersonalisations["EmailToName"] = emailOutboxItem.PersonName;
+                            uKGovNotify.SendEmail(emailOutboxItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailOutboxItem.EmailToUserId.Value);
+
+                            break;
+                        }
+
+
+
+                    case "IC-ReminderToDirectorDelegate":
+                        {
+
+                            var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                    { "DelegateName", emailOutboxItem.Custom1 },
+                                    { "DirectorName", emailOutboxItem.Custom2 },
+                                    { "DirectorDelegateList", emailOutboxItem.Custom3 },
+                                    { "DirectorateTitle ", emailOutboxItem.Custom4 },
+                                    { "PeriodStartDate ", emailOutboxItem.Custom5 },
+                                    { "PeriodEndDate ", emailOutboxItem.Custom6 },
+                                    { "DaysLeft ", emailOutboxItem.Custom7 },
+                                    { "NumTotal  ", emailOutboxItem.Custom8 },
+                                    { "NumCompleted  ", emailOutboxItem.Custom9 },
+                                    { "NumSignedByDD  ", emailOutboxItem.Custom10 },
+                                    { "NumSignedByDir  ", emailOutboxItem.Custom11 },
+                                    { "NumReqDirSig  ", emailOutboxItem.Custom12 },
+
+                                };
+                            templatePersonalisations["EmailToName"] = emailOutboxItem.PersonName;
+                            uKGovNotify.SendEmail(emailOutboxItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailOutboxItem.EmailToUserId.Value);
+
+                            break;
+                        }
+
+
+
+                    case "NP-NewPeriod":
+                        {
+
+                            var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                    { "Name", emailOutboxItem.Custom1 },
+                                    { "PublicationTitle", emailOutboxItem.Custom2 },
+                                    { "PeriodTitle", emailOutboxItem.Custom3 },
+                                    { "PeriodStartDate", emailOutboxItem.Custom4 },
+                                    { "PeriodEndDate", emailOutboxItem.Custom5 },
+
+                                };
+
+
+                            templatePersonalisations["EmailToName"] = emailOutboxItem.PersonName;
+                            uKGovNotify.SendEmail(emailOutboxItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailOutboxItem.EmailToUserId.Value);
+                            break;
+                        }
+
+
+                    case "NP-NewAssignee":
+                        {
+
+                            var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                    { "AssigneeName", emailOutboxItem.Custom1 },
+                                    { "PublicationTitle", emailOutboxItem.Custom2 },
+                                    { "Total", emailOutboxItem.Custom3 },
+                                    { "TotalNew", emailOutboxItem.Custom4 },
+
+                                };
+                            templatePersonalisations["EmailToName"] = emailOutboxItem.PersonName;
+                            uKGovNotify.SendEmail(emailOutboxItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailOutboxItem.EmailToUserId.Value);
+                            break;
+                        }
+
+
+
+                    case "NP-UpdateReminder":
+                        {
+
+                            var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                    { "PeriodStartDate", emailOutboxItem.Custom1 },
+                                    { "PeriodEndDate", emailOutboxItem.Custom2 },
+                                    { "DaysLeft", emailOutboxItem.Custom3 },
+                                    { "PublicationTitle", emailOutboxItem.Custom4 },
+                                    { "Total", emailOutboxItem.Custom5 },
+                                    { "TotalNotComplete", emailOutboxItem.Custom6 },
+
+                                };
+                            templatePersonalisations["EmailToName"] = emailOutboxItem.PersonName;
+                            uKGovNotify.SendEmail(emailOutboxItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailOutboxItem.EmailToUserId.Value);
+
+                            break;
+                        }
+
+
+
+
+                    case "GIAA-NewActionOwner":
+                        {
+
+                            var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                    { "ActionOwnerName", emailOutboxItem.Custom1 },
+                                    { "ReportTitle", emailOutboxItem.Custom2 },
+                                    { "Total", emailOutboxItem.Custom3 },
+                                    { "TotalNew", emailOutboxItem.Custom4 },
+
+                                };
+                            templatePersonalisations["EmailToName"] = emailOutboxItem.PersonName;
+                            uKGovNotify.SendEmail(emailOutboxItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailOutboxItem.EmailToUserId.Value);
+                            break;
+                        }
+
+
+
+
+                    case "GIAA-UpdateReminder":
+                        {
+
+                            var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                        { "ActionOwnerName", emailOutboxItem.Custom1 },
+                                        { "ReportTitle", emailOutboxItem.Custom2 },
+                                        { "TotalUpdatesReq ", emailOutboxItem.Custom3 },
+
+                                    };
+                            templatePersonalisations["EmailToName"] = emailOutboxItem.PersonName;
+                            uKGovNotify.SendEmail(emailOutboxItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailOutboxItem.EmailToUserId.Value);
+
+                            break;
+                        }
+
+
+
+
+                    case "MA-NewAction":
+                        {
+
+                            var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                    { "ActionOwnerName", emailOutboxItem.Custom1 },
+                                    { "ActionTitle", emailOutboxItem.Custom2 },
+
+                                };
+                            templatePersonalisations["EmailToName"] = emailOutboxItem.PersonName;
+                            uKGovNotify.SendEmail(emailOutboxItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailOutboxItem.EmailToUserId.Value);
+                            break;
+                        }
+
+
+
+
+                    case "MA-UpdateReminder":
+                        {
+
+                            var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                        { "ActionOwnerName", emailOutboxItem.Custom1 },
+                                        { "ActionTitle", emailOutboxItem.Custom2 },
+
+                                    };
+                            templatePersonalisations["EmailToName"] = emailOutboxItem.PersonName;
+                            uKGovNotify.SendEmail(emailOutboxItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailOutboxItem.EmailToUserId.Value);
+
+                            break;
+                        }
+
+
+                }
+
+                db.EmailOutboxes.Remove(emailOutboxItem);
+                db.SaveChanges();
+
+            }
+
+        }
+
+        private void SendQueueToOutbox(ControlAssuranceEntities db, List<AutomationOption> automationOptions)
+        {
+            //UKGovNotify uKGovNotify = new UKGovNotify();
+            var emailQueue = db.EmailQueues.OrderByDescending(x => x.ID).ToList();
+
+            if (emailQueue.Count == 0) return;
+
+
+            //LogRepository logRepository = new LogRepository(base.user);
+            EmailOutboxRepository emailOutboxRepository = new EmailOutboxRepository(base.user);
+
             foreach (var emailQueueItem in emailQueue)
-            {               
+            {
                 string templateName = emailQueueItem.Title; //like IC-NewPeriodToDD
                 var automationOption = automationOptions.FirstOrDefault(x => x.Title == templateName);
                 string templateId = automationOption.NotifyTemplateId;
-                
+                string moduleName = automationOption.Module;
+
+                if(automationOption.Active == true)
+                {
+                    emailOutboxRepository.Add(db, emailQueueItem, moduleName);
+                }
+
 
                 switch (templateName)
                 {
@@ -1294,19 +2330,51 @@ namespace ControlAssuranceAPI.Repositories
                         {
                             if (automationOption.Active == true)
                             {
-                                var templatePersonalisations = new Dictionary<string, dynamic>() {
-                                    { "Name", emailQueueItem.Custom1 },
-                                    { "PersonType", emailQueueItem.Custom2 },
-                                    { "CasesInDraft", emailQueueItem.Custom3 },
-                                    { "CasesRejected", emailQueueItem.Custom4 },
-                                    { "CasesReqInfo", emailQueueItem.Custom5 },
-                                    { "CasesInOnboarding", emailQueueItem.Custom6 },
+                                //var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                //    { "Name", emailQueueItem.Custom1 },
+                                //    { "PersonType", emailQueueItem.Custom2 },
+                                //    { "CasesInDraft", emailQueueItem.Custom3 },
+                                //    { "CasesRejected", emailQueueItem.Custom4 },
+                                //    { "CasesReqInfo", emailQueueItem.Custom5 },
+                                //    { "CasesInOnboarding", emailQueueItem.Custom6 },
 
-                                };
+                                //};
 
 
-                                templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
-                                uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
+                                //templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+                                //uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
+
+                                //db.EmailOutboxes.Add(new EmailOutbox
+                                //{
+                                //    Title = emailQueueItem.Title,
+                                //    ModuleName = "",
+                                //    PersonName = emailQueueItem.PersonName,
+                                //    EmailTo = emailQueueItem.EmailTo,
+                                //    emailCC = emailQueueItem.emailCC,
+                                //    MainEntityId = emailQueueItem.MainEntityId,
+                                //    EmailToUserId = emailQueueItem.EmailToUserId,
+                                //    Custom1 = emailQueueItem.Custom1,
+                                //    Custom2 = emailQueueItem.Custom2,
+                                //    Custom3 = emailQueueItem.Custom3,
+                                //    Custom4 = emailQueueItem.Custom4,
+                                //    Custom5 = emailQueueItem.Custom5,
+                                //    Custom6 = emailQueueItem.Custom6,
+                                //    Custom7 = emailQueueItem.Custom7,
+                                //    Custom8 = emailQueueItem.Custom8,
+                                //    Custom9 = emailQueueItem.Custom9,
+                                //    Custom10 = emailQueueItem.Custom10,
+                                //    Custom11 = emailQueueItem.Custom11,
+                                //    Custom12 = emailQueueItem.Custom12,
+                                //    Custom13 = emailQueueItem.Custom13,
+                                //    Custom14 = emailQueueItem.Custom14,
+                                //    Custom15 = emailQueueItem.Custom15,
+                                //    Custom16 = emailQueueItem.Custom16,
+                                //    Custom17 = emailQueueItem.Custom17,
+                                //    Custom18 = emailQueueItem.Custom18,
+                                //    Custom19 = emailQueueItem.Custom19,
+                                //    Custom20 = emailQueueItem.Custom20,
+
+                                //});
                             }
 
                             db.EmailQueues.Remove(emailQueueItem);
@@ -1317,16 +2385,16 @@ namespace ControlAssuranceAPI.Repositories
                         {
                             if (automationOption.Active == true)
                             {
-                                var templatePersonalisations = new Dictionary<string, dynamic>() {
-                                    { "Name", emailQueueItem.Custom1 },
-                                    { "ApproverType ", emailQueueItem.Custom2 },
-                                    { "ApprovalsReq", emailQueueItem.Custom3 },
+                                //var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                //    { "Name", emailQueueItem.Custom1 },
+                                //    { "ApproverType ", emailQueueItem.Custom2 },
+                                //    { "ApprovalsReq", emailQueueItem.Custom3 },
 
-                                };
+                                //};
 
 
-                                templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
-                                uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
+                                //templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+                                //uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
                             }
 
                             db.EmailQueues.Remove(emailQueueItem);
@@ -1337,16 +2405,16 @@ namespace ControlAssuranceAPI.Repositories
                         {
                             if (automationOption.Active == true)
                             {
-                                var templatePersonalisations = new Dictionary<string, dynamic>() {
-                                    { "Name", emailQueueItem.Custom1 },
-                                    { "EngagedChecksReq ", emailQueueItem.Custom2 },
-                                    { "LeavingChecksReq", emailQueueItem.Custom3 },
+                                //var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                //    { "Name", emailQueueItem.Custom1 },
+                                //    { "EngagedChecksReq ", emailQueueItem.Custom2 },
+                                //    { "LeavingChecksReq", emailQueueItem.Custom3 },
 
-                                };
+                                //};
 
 
-                                templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
-                                uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
+                                //templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+                                //uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
                             }
 
                             db.EmailQueues.Remove(emailQueueItem);
@@ -1356,20 +2424,20 @@ namespace ControlAssuranceAPI.Repositories
 
                     case "IC-NewPeriodToDD":
                         {
-                            if(automationOption.Active == true)
+                            if (automationOption.Active == true)
                             {
-                                var templatePersonalisations = new Dictionary<string, dynamic>() {
-                                    { "DDName", emailQueueItem.Custom1 },
-                                    { "DDDelegateList", emailQueueItem.Custom2 },
-                                    { "DivisionTitle", emailQueueItem.Custom3 },
-                                    { "PeriodStartDate", emailQueueItem.Custom4 },
-                                    { "PeriodEndDate", emailQueueItem.Custom5 },
+                                //var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                //    { "DDName", emailQueueItem.Custom1 },
+                                //    { "DDDelegateList", emailQueueItem.Custom2 },
+                                //    { "DivisionTitle", emailQueueItem.Custom3 },
+                                //    { "PeriodStartDate", emailQueueItem.Custom4 },
+                                //    { "PeriodEndDate", emailQueueItem.Custom5 },
 
-                                };
+                                //};
 
 
-                                templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
-                                uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
+                                //templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+                                //uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
                             }
 
                             db.EmailQueues.Remove(emailQueueItem);
@@ -1381,20 +2449,20 @@ namespace ControlAssuranceAPI.Repositories
                         {
                             if (automationOption.Active == true)
                             {
-                                var templatePersonalisations = new Dictionary<string, dynamic>() {
-                                    { "DirectorName", emailQueueItem.Custom1 },
-                                    { "DirectorDelegateList", emailQueueItem.Custom2 },
-                                    { "DirectorateTitle", emailQueueItem.Custom3 },
-                                    { "PeriodStartDate", emailQueueItem.Custom4 },
-                                    { "PeriodEndDate", emailQueueItem.Custom5 },
+                                //var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                //    { "DirectorName", emailQueueItem.Custom1 },
+                                //    { "DirectorDelegateList", emailQueueItem.Custom2 },
+                                //    { "DirectorateTitle", emailQueueItem.Custom3 },
+                                //    { "PeriodStartDate", emailQueueItem.Custom4 },
+                                //    { "PeriodEndDate", emailQueueItem.Custom5 },
 
-                                };
+                                //};
 
 
-                                templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
-                                uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
+                                //templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+                                //uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
                             }
-                                
+
                             db.EmailQueues.Remove(emailQueueItem);
                             break;
                         }
@@ -1404,19 +2472,19 @@ namespace ControlAssuranceAPI.Repositories
                         {
                             if (automationOption.Active == true)
                             {
-                                var templatePersonalisations = new Dictionary<string, dynamic>() {
-                                    { "DelegateName", emailQueueItem.Custom1 },
-                                    { "DDName", emailQueueItem.Custom2 },
-                                    { "DDDelegateList", emailQueueItem.Custom3 },
-                                    { "DivisionTitle", emailQueueItem.Custom4 },
-                                    { "PeriodStartDate", emailQueueItem.Custom5 },
-                                    { "PeriodEndDate", emailQueueItem.Custom6 },
+                                //var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                //    { "DelegateName", emailQueueItem.Custom1 },
+                                //    { "DDName", emailQueueItem.Custom2 },
+                                //    { "DDDelegateList", emailQueueItem.Custom3 },
+                                //    { "DivisionTitle", emailQueueItem.Custom4 },
+                                //    { "PeriodStartDate", emailQueueItem.Custom5 },
+                                //    { "PeriodEndDate", emailQueueItem.Custom6 },
 
-                                };
+                                //};
 
 
-                                templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
-                                uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
+                                //templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+                                //uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
                             }
 
                             db.EmailQueues.Remove(emailQueueItem);
@@ -1428,19 +2496,19 @@ namespace ControlAssuranceAPI.Repositories
                         {
                             if (automationOption.Active == true)
                             {
-                                var templatePersonalisations = new Dictionary<string, dynamic>() {
-                                    { "DelegateName", emailQueueItem.Custom1 },
-                                    { "DirectorName", emailQueueItem.Custom2 },
-                                    { "DirectorDelegateList", emailQueueItem.Custom3 },
-                                    { "DirectorateTitle", emailQueueItem.Custom4 },
-                                    { "PeriodStartDate", emailQueueItem.Custom5 },
-                                    { "PeriodEndDate", emailQueueItem.Custom6 },
+                                //var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                //    { "DelegateName", emailQueueItem.Custom1 },
+                                //    { "DirectorName", emailQueueItem.Custom2 },
+                                //    { "DirectorDelegateList", emailQueueItem.Custom3 },
+                                //    { "DirectorateTitle", emailQueueItem.Custom4 },
+                                //    { "PeriodStartDate", emailQueueItem.Custom5 },
+                                //    { "PeriodEndDate", emailQueueItem.Custom6 },
 
-                                };
+                                //};
 
 
-                                templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
-                                uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
+                                //templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+                                //uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
                             }
 
                             db.EmailQueues.Remove(emailQueueItem);
@@ -1452,21 +2520,21 @@ namespace ControlAssuranceAPI.Repositories
                         {
                             if (automationOption.Active == true)
                             {
-                                var templatePersonalisations = new Dictionary<string, dynamic>() {
-                                    { "SuperUserName", emailQueueItem.Custom1 },
-                                    { "PeriodStartDate", emailQueueItem.Custom2 },
-                                    { "PeriodEndDate", emailQueueItem.Custom3 },
-                                    { "NumTotal", emailQueueItem.Custom4 },
-                                    { "NumCompleted", emailQueueItem.Custom5 },
-                                    { "NumSignedByDD", emailQueueItem.Custom6 },
-                                    { "NumSignedByDir", emailQueueItem.Custom7 },
+                                //var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                //    { "SuperUserName", emailQueueItem.Custom1 },
+                                //    { "PeriodStartDate", emailQueueItem.Custom2 },
+                                //    { "PeriodEndDate", emailQueueItem.Custom3 },
+                                //    { "NumTotal", emailQueueItem.Custom4 },
+                                //    { "NumCompleted", emailQueueItem.Custom5 },
+                                //    { "NumSignedByDD", emailQueueItem.Custom6 },
+                                //    { "NumSignedByDir", emailQueueItem.Custom7 },
 
 
-                                };
+                                //};
 
 
-                                templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
-                                uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
+                                //templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+                                //uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
                             }
 
                             db.EmailQueues.Remove(emailQueueItem);
@@ -1476,32 +2544,32 @@ namespace ControlAssuranceAPI.Repositories
 
                     case "IC-ReminderToDD":
                         {
-                            
+
                             if (automationOption.Active == true)
                             {
                                 var emailQueueItemAgain = db.EmailQueues.FirstOrDefault(x => x.ID == emailQueueItem.ID);
                                 if (emailQueueItemAgain != null)
                                 {
-                                    var templatePersonalisations = new Dictionary<string, dynamic>() {
-                                    { "DDName", emailQueueItem.Custom1 },
-                                    { "DDDelegateList", emailQueueItem.Custom2 },
-                                    { "DivisionTitle ", emailQueueItem.Custom3 },
-                                    { "PeriodStartDate ", emailQueueItem.Custom4 },
-                                    { "PeriodEndDate ", emailQueueItem.Custom5 },
-                                    { "DaysLeft ", emailQueueItem.Custom6 },
-                                    { "Completed  ", emailQueueItem.Custom7 },
-                                    { "Signed  ", emailQueueItem.Custom8 },
+                                //    var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                //    { "DDName", emailQueueItem.Custom1 },
+                                //    { "DDDelegateList", emailQueueItem.Custom2 },
+                                //    { "DivisionTitle ", emailQueueItem.Custom3 },
+                                //    { "PeriodStartDate ", emailQueueItem.Custom4 },
+                                //    { "PeriodEndDate ", emailQueueItem.Custom5 },
+                                //    { "DaysLeft ", emailQueueItem.Custom6 },
+                                //    { "Completed  ", emailQueueItem.Custom7 },
+                                //    { "Signed  ", emailQueueItem.Custom8 },
 
-                                };
-                                    templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
-                                    uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
+                                //};
+                                //    templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+                                //    uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
 
 
                                     db.EmailQueues.RemoveRange(db.EmailQueues.Where(x => x.Title == emailQueueItem.Title && x.EmailTo == emailQueueItem.EmailTo && x.MainEntityId == emailQueueItem.MainEntityId));
                                     db.SaveChanges();
                                 }
                             }
-                            
+
 
 
                             break;
@@ -1517,22 +2585,22 @@ namespace ControlAssuranceAPI.Repositories
 
                                 if (emailQueueItemAgain != null)
                                 {
-                                    var templatePersonalisations = new Dictionary<string, dynamic>() {
-                                    { "DirectorName", emailQueueItem.Custom1 },
-                                    { "DirectorDelegateList", emailQueueItem.Custom2 },
-                                    { "DirectorateTitle ", emailQueueItem.Custom3 },
-                                    { "PeriodStartDate ", emailQueueItem.Custom4 },
-                                    { "PeriodEndDate ", emailQueueItem.Custom5 },
-                                    { "DaysLeft ", emailQueueItem.Custom6 },
-                                    { "NumTotal  ", emailQueueItem.Custom7 },
-                                    { "NumCompleted  ", emailQueueItem.Custom8 },
-                                    { "NumSignedByDD  ", emailQueueItem.Custom9 },
-                                    { "NumSignedByDir  ", emailQueueItem.Custom10 },
-                                    { "NumReqDirSig  ", emailQueueItem.Custom11 },
+                                //    var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                //    { "DirectorName", emailQueueItem.Custom1 },
+                                //    { "DirectorDelegateList", emailQueueItem.Custom2 },
+                                //    { "DirectorateTitle ", emailQueueItem.Custom3 },
+                                //    { "PeriodStartDate ", emailQueueItem.Custom4 },
+                                //    { "PeriodEndDate ", emailQueueItem.Custom5 },
+                                //    { "DaysLeft ", emailQueueItem.Custom6 },
+                                //    { "NumTotal  ", emailQueueItem.Custom7 },
+                                //    { "NumCompleted  ", emailQueueItem.Custom8 },
+                                //    { "NumSignedByDD  ", emailQueueItem.Custom9 },
+                                //    { "NumSignedByDir  ", emailQueueItem.Custom10 },
+                                //    { "NumReqDirSig  ", emailQueueItem.Custom11 },
 
-                                };
-                                    templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
-                                    uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
+                                //};
+                                //    templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+                                //    uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
 
 
                                     db.EmailQueues.RemoveRange(db.EmailQueues.Where(x => x.Title == emailQueueItem.Title && x.EmailTo == emailQueueItem.EmailTo && x.MainEntityId == emailQueueItem.MainEntityId));
@@ -1553,20 +2621,20 @@ namespace ControlAssuranceAPI.Repositories
 
                                 if (emailQueueItemAgain != null)
                                 {
-                                    var templatePersonalisations = new Dictionary<string, dynamic>() {
-                                    { "DelegateName", emailQueueItem.Custom1 },
-                                    { "DDName", emailQueueItem.Custom2 },
-                                    { "DDDelegateList", emailQueueItem.Custom3 },
-                                    { "DivisionTitle ", emailQueueItem.Custom4 },
-                                    { "PeriodStartDate ", emailQueueItem.Custom5 },
-                                    { "PeriodEndDate ", emailQueueItem.Custom6 },
-                                    { "DaysLeft ", emailQueueItem.Custom7 },
-                                    { "Completed  ", emailQueueItem.Custom8 },
-                                    { "Signed  ", emailQueueItem.Custom9 },
+                                //    var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                //    { "DelegateName", emailQueueItem.Custom1 },
+                                //    { "DDName", emailQueueItem.Custom2 },
+                                //    { "DDDelegateList", emailQueueItem.Custom3 },
+                                //    { "DivisionTitle ", emailQueueItem.Custom4 },
+                                //    { "PeriodStartDate ", emailQueueItem.Custom5 },
+                                //    { "PeriodEndDate ", emailQueueItem.Custom6 },
+                                //    { "DaysLeft ", emailQueueItem.Custom7 },
+                                //    { "Completed  ", emailQueueItem.Custom8 },
+                                //    { "Signed  ", emailQueueItem.Custom9 },
 
-                                };
-                                    templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
-                                    uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
+                                //};
+                                //    templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+                                //    uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
 
 
                                     db.EmailQueues.RemoveRange(db.EmailQueues.Where(x => x.Title == emailQueueItem.Title && x.EmailTo == emailQueueItem.EmailTo && x.MainEntityId == emailQueueItem.MainEntityId));
@@ -1587,30 +2655,30 @@ namespace ControlAssuranceAPI.Repositories
 
                                 if (emailQueueItemAgain != null)
                                 {
-                                    var templatePersonalisations = new Dictionary<string, dynamic>() {
-                                    { "DelegateName", emailQueueItem.Custom1 },
-                                    { "DirectorName", emailQueueItem.Custom2 },
-                                    { "DirectorDelegateList", emailQueueItem.Custom3 },
-                                    { "DirectorateTitle ", emailQueueItem.Custom4 },
-                                    { "PeriodStartDate ", emailQueueItem.Custom5 },
-                                    { "PeriodEndDate ", emailQueueItem.Custom6 },
-                                    { "DaysLeft ", emailQueueItem.Custom7 },
-                                    { "NumTotal  ", emailQueueItem.Custom8 },
-                                    { "NumCompleted  ", emailQueueItem.Custom9 },
-                                    { "NumSignedByDD  ", emailQueueItem.Custom10 },
-                                    { "NumSignedByDir  ", emailQueueItem.Custom11 },
-                                    { "NumReqDirSig  ", emailQueueItem.Custom12 },
+                                //    var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                //    { "DelegateName", emailQueueItem.Custom1 },
+                                //    { "DirectorName", emailQueueItem.Custom2 },
+                                //    { "DirectorDelegateList", emailQueueItem.Custom3 },
+                                //    { "DirectorateTitle ", emailQueueItem.Custom4 },
+                                //    { "PeriodStartDate ", emailQueueItem.Custom5 },
+                                //    { "PeriodEndDate ", emailQueueItem.Custom6 },
+                                //    { "DaysLeft ", emailQueueItem.Custom7 },
+                                //    { "NumTotal  ", emailQueueItem.Custom8 },
+                                //    { "NumCompleted  ", emailQueueItem.Custom9 },
+                                //    { "NumSignedByDD  ", emailQueueItem.Custom10 },
+                                //    { "NumSignedByDir  ", emailQueueItem.Custom11 },
+                                //    { "NumReqDirSig  ", emailQueueItem.Custom12 },
 
-                                };
-                                    templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
-                                    uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
+                                //};
+                                //    templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+                                //    uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
 
 
                                     db.EmailQueues.RemoveRange(db.EmailQueues.Where(x => x.Title == emailQueueItem.Title && x.EmailTo == emailQueueItem.EmailTo && x.MainEntityId == emailQueueItem.MainEntityId));
                                     db.SaveChanges();
                                 }
                             }
-                                
+
                             break;
                         }
 
@@ -1620,18 +2688,18 @@ namespace ControlAssuranceAPI.Repositories
                         {
                             if (automationOption.Active == true)
                             {
-                                var templatePersonalisations = new Dictionary<string, dynamic>() {
-                                    { "Name", emailQueueItem.Custom1 },
-                                    { "PublicationTitle", emailQueueItem.Custom2 },
-                                    { "PeriodTitle", emailQueueItem.Custom3 },
-                                    { "PeriodStartDate", emailQueueItem.Custom4 },
-                                    { "PeriodEndDate", emailQueueItem.Custom5 },
+                                //var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                //    { "Name", emailQueueItem.Custom1 },
+                                //    { "PublicationTitle", emailQueueItem.Custom2 },
+                                //    { "PeriodTitle", emailQueueItem.Custom3 },
+                                //    { "PeriodStartDate", emailQueueItem.Custom4 },
+                                //    { "PeriodEndDate", emailQueueItem.Custom5 },
 
-                                };
+                                //};
 
 
-                                templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
-                                uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
+                                //templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+                                //uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
                             }
 
                             db.EmailQueues.Remove(emailQueueItem);
@@ -1643,15 +2711,15 @@ namespace ControlAssuranceAPI.Repositories
                         {
                             if (automationOption.Active == true)
                             {
-                                var templatePersonalisations = new Dictionary<string, dynamic>() {
-                                    { "AssigneeName", emailQueueItem.Custom1 },
-                                    { "PublicationTitle", emailQueueItem.Custom2 },
-                                    { "Total", emailQueueItem.Custom3 },
-                                    { "TotalNew", emailQueueItem.Custom4 },
+                                //var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                //    { "AssigneeName", emailQueueItem.Custom1 },
+                                //    { "PublicationTitle", emailQueueItem.Custom2 },
+                                //    { "Total", emailQueueItem.Custom3 },
+                                //    { "TotalNew", emailQueueItem.Custom4 },
 
-                                };
-                                templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
-                                uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
+                                //};
+                                //templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+                                //uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
                             }
 
                             db.EmailQueues.Remove(emailQueueItem);
@@ -1668,17 +2736,17 @@ namespace ControlAssuranceAPI.Repositories
 
                                 if (emailQueueItemAgain != null)
                                 {
-                                    var templatePersonalisations = new Dictionary<string, dynamic>() {
-                                    { "PeriodStartDate", emailQueueItem.Custom1 },
-                                    { "PeriodEndDate", emailQueueItem.Custom2 },
-                                    { "DaysLeft", emailQueueItem.Custom3 },
-                                    { "PublicationTitle", emailQueueItem.Custom4 },
-                                    { "Total", emailQueueItem.Custom5 },
-                                    { "TotalNotComplete", emailQueueItem.Custom6 },
+                                //    var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                //    { "PeriodStartDate", emailQueueItem.Custom1 },
+                                //    { "PeriodEndDate", emailQueueItem.Custom2 },
+                                //    { "DaysLeft", emailQueueItem.Custom3 },
+                                //    { "PublicationTitle", emailQueueItem.Custom4 },
+                                //    { "Total", emailQueueItem.Custom5 },
+                                //    { "TotalNotComplete", emailQueueItem.Custom6 },
 
-                                };
-                                    templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
-                                    uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
+                                //};
+                                //    templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+                                //    uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
 
 
                                     db.EmailQueues.RemoveRange(db.EmailQueues.Where(x => x.Title == emailQueueItem.Title && x.EmailTo == emailQueueItem.EmailTo && x.MainEntityId == emailQueueItem.MainEntityId));
@@ -1696,15 +2764,15 @@ namespace ControlAssuranceAPI.Repositories
                         {
                             if (automationOption.Active == true)
                             {
-                                var templatePersonalisations = new Dictionary<string, dynamic>() {
-                                    { "ActionOwnerName", emailQueueItem.Custom1 },
-                                    { "ReportTitle", emailQueueItem.Custom2 },
-                                    { "Total", emailQueueItem.Custom3 },
-                                    { "TotalNew", emailQueueItem.Custom4 },
+                                //var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                //    { "ActionOwnerName", emailQueueItem.Custom1 },
+                                //    { "ReportTitle", emailQueueItem.Custom2 },
+                                //    { "Total", emailQueueItem.Custom3 },
+                                //    { "TotalNew", emailQueueItem.Custom4 },
 
-                                };
-                                templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
-                                uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
+                                //};
+                                //templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+                                //uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
                             }
 
                             db.EmailQueues.Remove(emailQueueItem);
@@ -1722,14 +2790,14 @@ namespace ControlAssuranceAPI.Repositories
 
                                 if (emailQueueItemAgain != null)
                                 {
-                                    var templatePersonalisations = new Dictionary<string, dynamic>() {
-                                        { "ActionOwnerName", emailQueueItem.Custom1 },
-                                        { "ReportTitle", emailQueueItem.Custom2 },
-                                        { "TotalUpdatesReq ", emailQueueItem.Custom3 },
+                                    //var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                    //    { "ActionOwnerName", emailQueueItem.Custom1 },
+                                    //    { "ReportTitle", emailQueueItem.Custom2 },
+                                    //    { "TotalUpdatesReq ", emailQueueItem.Custom3 },
 
-                                    };
-                                    templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
-                                    uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
+                                    //};
+                                    //templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+                                    //uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
 
 
                                     db.EmailQueues.RemoveRange(db.EmailQueues.Where(x => x.Title == emailQueueItem.Title && x.EmailTo == emailQueueItem.EmailTo && x.MainEntityId == emailQueueItem.MainEntityId));
@@ -1747,13 +2815,13 @@ namespace ControlAssuranceAPI.Repositories
                         {
                             if (automationOption.Active == true)
                             {
-                                var templatePersonalisations = new Dictionary<string, dynamic>() {
-                                    { "ActionOwnerName", emailQueueItem.Custom1 },
-                                    { "ActionTitle", emailQueueItem.Custom2 },
+                                //var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                //    { "ActionOwnerName", emailQueueItem.Custom1 },
+                                //    { "ActionTitle", emailQueueItem.Custom2 },
 
-                                };
-                                templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
-                                uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
+                                //};
+                                //templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+                                //uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
                             }
 
                             db.EmailQueues.Remove(emailQueueItem);
@@ -1771,13 +2839,13 @@ namespace ControlAssuranceAPI.Repositories
 
                                 if (emailQueueItemAgain != null)
                                 {
-                                    var templatePersonalisations = new Dictionary<string, dynamic>() {
-                                        { "ActionOwnerName", emailQueueItem.Custom1 },
-                                        { "ActionTitle", emailQueueItem.Custom2 },
+                                    //var templatePersonalisations = new Dictionary<string, dynamic>() {
+                                    //    { "ActionOwnerName", emailQueueItem.Custom1 },
+                                    //    { "ActionTitle", emailQueueItem.Custom2 },
 
-                                    };
-                                    templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
-                                    uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
+                                    //};
+                                    //templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
+                                    //uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
 
 
                                     db.EmailQueues.RemoveRange(db.EmailQueues.Where(x => x.Title == emailQueueItem.Title && x.EmailTo == emailQueueItem.EmailTo && x.MainEntityId == emailQueueItem.MainEntityId));
