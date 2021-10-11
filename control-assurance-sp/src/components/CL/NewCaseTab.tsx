@@ -1240,6 +1240,8 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         const finIR35ScopeIdValidationImg = fd.FinIR35ScopeId !== null ? this.checkIconGreen : this.checkIconRed;
 
         const iR35EvidenceValidationImg = this.state.IR35Evidence !== null ? this.checkIconGreen : this.checkIconRed;
+        const approachToAgreeingRateValidationImg = fd.FinApproachAgreeingRate !== null && fd.FinApproachAgreeingRate.length > 9 ? this.checkIconGreen : this.checkIconRed;
+        const summaryIR35JustificatValidationImg = fd.FinSummaryIR35Just !== null && fd.FinSummaryIR35Just.length > 9 ? this.checkIconGreen : this.checkIconRed;
 
         // const menuProps: IContextualMenuProps = {
         //     items: [
@@ -1348,19 +1350,24 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                     <div className={styles.formField}>
 
+
                         <div style={{ display: 'flex' }}>
                             <div style={{ width: '100%', fontWeight: 'bold' }}>
 
-                                <div style={{ display: 'flex' }}>
-                                    <div><span>Approach to agreeing rate</span></div>
-                                    {/* <div style={{ paddingLeft: '10px', paddingTop: '2px' }} >{(this.props.defForm.ApproachAgreeingRateHelpText && this.props.defForm.ApproachAgreeingRateHelpText.length > 0) && <a style={{ cursor: "pointer" }} onClick={() => this.showHelpPanel(this.props.defForm.ApproachAgreeingRateHelpText)}><img src={this.helpIcon} /></a>}</div> */}
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Approach to agreeing rate</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={approachToAgreeingRateValidationImg} />
+                                    </div>
                                 </div>
-
 
                             </div>
 
 
                         </div>
+
+
+
                         <div style={{ display: 'flex', marginTop: '5px' }}>
                             <div style={{ width: '100%' }}>
                                 <CrTextField
@@ -1491,19 +1498,23 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                     <div className={styles.formField}>
 
+
                         <div style={{ display: 'flex' }}>
                             <div style={{ width: '100%', fontWeight: 'bold' }}>
 
-                                <div style={{ display: 'flex' }}>
-                                    <div><span>Summary IR35 justification</span></div>
-                                    {/* <div style={{ paddingLeft: '10px', paddingTop: '2px' }} >{(this.props.defForm.SummaryIR35JustificationHelpText && this.props.defForm.SummaryIR35JustificationHelpText.length > 0) && <a style={{ cursor: "pointer" }} onClick={() => this.showHelpPanel(this.props.defForm.SummaryIR35JustificationHelpText)}><img src={this.helpIcon} /></a>}</div> */}
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Summary IR35 justification</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={summaryIR35JustificatValidationImg} />
+                                    </div>
                                 </div>
-
 
                             </div>
 
 
                         </div>
+
+
                         <div style={{ display: 'flex', marginTop: '5px' }}>
                             <div style={{ width: '100%' }}>
                                 <CrTextField
@@ -4130,7 +4141,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                             </tr>
 
-                            <tr>
+                            {/* <tr>
                                 <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
                                     Contractor date of birth
                                 </td>
@@ -4144,7 +4155,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                     {fd.OnbContractorNINum}
                                 </td>
 
-                            </tr>
+                            </tr> */}
 
                             <tr>
                                 <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
@@ -5940,6 +5951,8 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
             if (fd.FinEstCost !== null && fd.FinEstCost > 0) { } else { return false; }
             if (fd.FinIR35ScopeId !== null) { } else { return false; }
             if (this.state.IR35Evidence === null) { return false; }
+            if (fd.FinApproachAgreeingRate !== null && fd.FinApproachAgreeingRate.length > 9) { } else { return false; }
+            if (fd.FinSummaryIR35Just !== null && fd.FinSummaryIR35Just.length > 9) { } else { return false; }
 
             //Approvers
             if (this.state.FormData.BHUserId === null) return false;
