@@ -14,12 +14,9 @@ namespace ControlAssuranceAPI.Libs
     {
         //private static readonly string apiKey = ConfigurationManager.AppSettings["GovUkNotifyApiKey"];
         private static readonly string apiKey = "catlivenotifykey-23d16bd7-8041-4bfa-a9a8-3559d60902d3-c0eaa1c8-ac3d-4c0e-9e57-bc513f788ea7";
-
-        // This has been added here as an emergency. DevOps CI needs to be modified so this can be set from there and then removed from here.
-
         
+        // NOTE: the api key should be fetched from api configuration. This work is outstanding.
 
-        
 
         public UKGovNotify()
         {
