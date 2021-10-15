@@ -2316,10 +2316,11 @@ namespace ControlAssuranceAPI.Repositories
                 var automationOption = automationOptions.FirstOrDefault(x => x.Title == templateName);
                 string templateId = automationOption.NotifyTemplateId;
                 string moduleName = automationOption.Module;
+                string subjectAndDescription = automationOption.Description;
 
                 //if(automationOption.Active == true)
                 //{
-                //    emailOutboxRepository.Add(db, emailQueueItem, moduleName);
+                //    emailOutboxRepository.Add(db, emailQueueItem, moduleName, subjectAndDescription);
                 //}
 
 
@@ -2376,7 +2377,7 @@ namespace ControlAssuranceAPI.Repositories
 
                                 //});
 
-                                emailOutboxRepository.Add(db, emailQueueItem, moduleName);
+                                emailOutboxRepository.Add(db, emailQueueItem, moduleName, subjectAndDescription);
                             }
 
                             db.EmailQueues.Remove(emailQueueItem);
@@ -2397,7 +2398,7 @@ namespace ControlAssuranceAPI.Repositories
 
                                 //templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
                                 //uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
-                                emailOutboxRepository.Add(db, emailQueueItem, moduleName);
+                                emailOutboxRepository.Add(db, emailQueueItem, moduleName, subjectAndDescription);
                             }
 
                             db.EmailQueues.Remove(emailQueueItem);
@@ -2418,7 +2419,7 @@ namespace ControlAssuranceAPI.Repositories
 
                                 //templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
                                 //uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
-                                emailOutboxRepository.Add(db, emailQueueItem, moduleName);
+                                emailOutboxRepository.Add(db, emailQueueItem, moduleName, subjectAndDescription);
                             }
 
                             db.EmailQueues.Remove(emailQueueItem);
@@ -2442,7 +2443,7 @@ namespace ControlAssuranceAPI.Repositories
 
                                 //templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
                                 //uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
-                                emailOutboxRepository.Add(db, emailQueueItem, moduleName);
+                                emailOutboxRepository.Add(db, emailQueueItem, moduleName, subjectAndDescription);
                             }
 
                             db.EmailQueues.Remove(emailQueueItem);
@@ -2466,7 +2467,7 @@ namespace ControlAssuranceAPI.Repositories
 
                                 //templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
                                 //uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
-                                emailOutboxRepository.Add(db, emailQueueItem, moduleName);
+                                emailOutboxRepository.Add(db, emailQueueItem, moduleName, subjectAndDescription);
                             }
 
                             db.EmailQueues.Remove(emailQueueItem);
@@ -2491,7 +2492,7 @@ namespace ControlAssuranceAPI.Repositories
 
                                 //templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
                                 //uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
-                                emailOutboxRepository.Add(db, emailQueueItem, moduleName);
+                                emailOutboxRepository.Add(db, emailQueueItem, moduleName, subjectAndDescription);
                             }
 
                             db.EmailQueues.Remove(emailQueueItem);
@@ -2516,7 +2517,7 @@ namespace ControlAssuranceAPI.Repositories
 
                                 //templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
                                 //uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
-                                emailOutboxRepository.Add(db, emailQueueItem, moduleName);
+                                emailOutboxRepository.Add(db, emailQueueItem, moduleName, subjectAndDescription);
                             }
 
                             db.EmailQueues.Remove(emailQueueItem);
@@ -2543,7 +2544,7 @@ namespace ControlAssuranceAPI.Repositories
 
                                 //templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
                                 //uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
-                                emailOutboxRepository.Add(db, emailQueueItem, moduleName);
+                                emailOutboxRepository.Add(db, emailQueueItem, moduleName, subjectAndDescription);
                             }
 
                             db.EmailQueues.Remove(emailQueueItem);
@@ -2573,7 +2574,7 @@ namespace ControlAssuranceAPI.Repositories
                                     //    templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
                                     //    uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
 
-                                    emailOutboxRepository.Add(db, emailQueueItem, moduleName);
+                                    emailOutboxRepository.Add(db, emailQueueItem, moduleName, subjectAndDescription);
 
                                     db.EmailQueues.RemoveRange(db.EmailQueues.Where(x => x.Title == emailQueueItem.Title && x.EmailTo == emailQueueItem.EmailTo && x.MainEntityId == emailQueueItem.MainEntityId));
                                     db.SaveChanges();
@@ -2612,7 +2613,7 @@ namespace ControlAssuranceAPI.Repositories
                                     //    templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
                                     //    uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
 
-                                    emailOutboxRepository.Add(db, emailQueueItem, moduleName);
+                                    emailOutboxRepository.Add(db, emailQueueItem, moduleName, subjectAndDescription);
 
                                     db.EmailQueues.RemoveRange(db.EmailQueues.Where(x => x.Title == emailQueueItem.Title && x.EmailTo == emailQueueItem.EmailTo && x.MainEntityId == emailQueueItem.MainEntityId));
                                     db.SaveChanges();
@@ -2647,7 +2648,7 @@ namespace ControlAssuranceAPI.Repositories
                                     //    templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
                                     //    uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
 
-                                    emailOutboxRepository.Add(db, emailQueueItem, moduleName);
+                                    emailOutboxRepository.Add(db, emailQueueItem, moduleName, subjectAndDescription);
 
                                     db.EmailQueues.RemoveRange(db.EmailQueues.Where(x => x.Title == emailQueueItem.Title && x.EmailTo == emailQueueItem.EmailTo && x.MainEntityId == emailQueueItem.MainEntityId));
                                     db.SaveChanges();
@@ -2686,7 +2687,7 @@ namespace ControlAssuranceAPI.Repositories
                                     //    uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
 
 
-                                    emailOutboxRepository.Add(db, emailQueueItem, moduleName);
+                                    emailOutboxRepository.Add(db, emailQueueItem, moduleName, subjectAndDescription);
 
                                     db.EmailQueues.RemoveRange(db.EmailQueues.Where(x => x.Title == emailQueueItem.Title && x.EmailTo == emailQueueItem.EmailTo && x.MainEntityId == emailQueueItem.MainEntityId));
                                     db.SaveChanges();
@@ -2714,7 +2715,7 @@ namespace ControlAssuranceAPI.Repositories
 
                                 //templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
                                 //uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
-                                emailOutboxRepository.Add(db, emailQueueItem, moduleName);
+                                emailOutboxRepository.Add(db, emailQueueItem, moduleName, subjectAndDescription);
                             }
 
                             db.EmailQueues.Remove(emailQueueItem);
@@ -2735,7 +2736,7 @@ namespace ControlAssuranceAPI.Repositories
                                 //};
                                 //templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
                                 //uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
-                                emailOutboxRepository.Add(db, emailQueueItem, moduleName);
+                                emailOutboxRepository.Add(db, emailQueueItem, moduleName, subjectAndDescription);
                             }
 
                             db.EmailQueues.Remove(emailQueueItem);
@@ -2764,7 +2765,7 @@ namespace ControlAssuranceAPI.Repositories
                                     //    templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
                                     //    uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
 
-                                    emailOutboxRepository.Add(db, emailQueueItem, moduleName);
+                                    emailOutboxRepository.Add(db, emailQueueItem, moduleName, subjectAndDescription);
 
                                     db.EmailQueues.RemoveRange(db.EmailQueues.Where(x => x.Title == emailQueueItem.Title && x.EmailTo == emailQueueItem.EmailTo && x.MainEntityId == emailQueueItem.MainEntityId));
                                     db.SaveChanges();
@@ -2790,7 +2791,7 @@ namespace ControlAssuranceAPI.Repositories
                                 //};
                                 //templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
                                 //uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
-                                emailOutboxRepository.Add(db, emailQueueItem, moduleName);
+                                emailOutboxRepository.Add(db, emailQueueItem, moduleName, subjectAndDescription);
                             }
 
                             db.EmailQueues.Remove(emailQueueItem);
@@ -2817,7 +2818,7 @@ namespace ControlAssuranceAPI.Repositories
                                     //templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
                                     //uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
 
-                                    emailOutboxRepository.Add(db, emailQueueItem, moduleName);
+                                    emailOutboxRepository.Add(db, emailQueueItem, moduleName, subjectAndDescription);
                                     db.EmailQueues.RemoveRange(db.EmailQueues.Where(x => x.Title == emailQueueItem.Title && x.EmailTo == emailQueueItem.EmailTo && x.MainEntityId == emailQueueItem.MainEntityId));
                                     db.SaveChanges();
                                 }
@@ -2840,7 +2841,7 @@ namespace ControlAssuranceAPI.Repositories
                                 //};
                                 //templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
                                 //uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
-                                emailOutboxRepository.Add(db, emailQueueItem, moduleName);
+                                emailOutboxRepository.Add(db, emailQueueItem, moduleName, subjectAndDescription);
                             }
 
                             db.EmailQueues.Remove(emailQueueItem);
@@ -2866,7 +2867,7 @@ namespace ControlAssuranceAPI.Repositories
                                     //templatePersonalisations["EmailToName"] = emailQueueItem.PersonName;
                                     //uKGovNotify.SendEmail(emailQueueItem.EmailTo, templateId, templatePersonalisations, logRepository, templateName, emailQueueItem.EmailToUserId.Value);
 
-                                    emailOutboxRepository.Add(db, emailQueueItem, moduleName);
+                                    emailOutboxRepository.Add(db, emailQueueItem, moduleName, subjectAndDescription);
                                     db.EmailQueues.RemoveRange(db.EmailQueues.Where(x => x.Title == emailQueueItem.Title && x.EmailTo == emailQueueItem.EmailTo && x.MainEntityId == emailQueueItem.MainEntityId));
                                     db.SaveChanges();
                                 }

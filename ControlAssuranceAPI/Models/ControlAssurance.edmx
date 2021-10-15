@@ -582,6 +582,7 @@
           <Property Name="Custom20" Type="nvarchar(max)" />
           <Property Name="MainEntityId" Type="int" />
           <Property Name="EmailToUserId" Type="int" />
+          <Property Name="SubjectAndDescription" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="EmailQueue">
           <Key>
@@ -3649,6 +3650,7 @@
           <Property Name="Custom20" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="MainEntityId" Type="Int32" />
           <Property Name="EmailToUserId" Type="Int32" />
+          <Property Name="SubjectAndDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="EmailQueue">
           <Key>
@@ -7010,6 +7012,7 @@
                 <ScalarProperty Name="Custom20" ColumnName="Custom20" />
                 <ScalarProperty Name="MainEntityId" ColumnName="MainEntityId" />
                 <ScalarProperty Name="EmailToUserId" ColumnName="EmailToUserId" />
+                <ScalarProperty Name="SubjectAndDescription" ColumnName="SubjectAndDescription" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

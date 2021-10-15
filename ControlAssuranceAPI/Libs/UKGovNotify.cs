@@ -14,7 +14,7 @@ namespace ControlAssuranceAPI.Libs
     {
         //private static readonly string apiKey = ConfigurationManager.AppSettings["GovUkNotifyApiKey"];
         private static readonly string apiKey = "catlivenotifykey-23d16bd7-8041-4bfa-a9a8-3559d60902d3-c0eaa1c8-ac3d-4c0e-9e57-bc513f788ea7";
-        
+
         // NOTE: the api key should be fetched from api configuration. This work is outstanding.
 
 
@@ -40,7 +40,7 @@ namespace ControlAssuranceAPI.Libs
                 client.SendEmailAsync(emailSendTo, emailTemplateId, templatePersonalisations, null, null);
 
                 string details = $"";
-                foreach(var tp in templatePersonalisations)
+                foreach (var tp in templatePersonalisations)
                 {
                     details += $"{tp.Key}: {tp.Value}, ";
                 }

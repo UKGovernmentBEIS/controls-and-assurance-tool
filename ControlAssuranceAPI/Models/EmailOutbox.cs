@@ -42,5 +42,6 @@ namespace ControlAssuranceAPI.Models
         public string Custom20 { get; set; }
         public Nullable<int> MainEntityId { get; set; }
         public Nullable<int> EmailToUserId { get; set; }
+        public string SubjectAndDescription { get; set; }
     }
 }

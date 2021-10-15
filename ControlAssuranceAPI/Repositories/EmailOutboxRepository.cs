@@ -31,13 +31,14 @@ namespace ControlAssuranceAPI.Repositories
             return EmailOutboxes.Where(x => x.ID == keyValue).FirstOrDefault();
         }
 
-        public EmailOutbox Add(ControlAssuranceEntities db, EmailQueue emailQueueItem, string moduleName)
+        public EmailOutbox Add(ControlAssuranceEntities db, EmailQueue emailQueueItem, string moduleName, string subjectAndDescription)
         {
 
             var res = db.EmailOutboxes.Add(new EmailOutbox
             {
                 Title = emailQueueItem.Title,
                 ModuleName = moduleName,
+                SubjectAndDescription = subjectAndDescription?.ToString() ?? "",
                 PersonName = emailQueueItem.PersonName,
                 EmailTo = emailQueueItem.EmailTo,
                 emailCC = emailQueueItem.emailCC,
