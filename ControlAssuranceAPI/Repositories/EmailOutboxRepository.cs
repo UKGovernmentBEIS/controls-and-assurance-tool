@@ -38,7 +38,7 @@ namespace ControlAssuranceAPI.Repositories
             {
                 Title = emailQueueItem.Title,
                 ModuleName = moduleName,
-                SubjectAndDescription = subjectAndDescription?.ToString() ?? "",
+                SubjectAndDescription = subjectAndDescription?.ToString() ?? "" + " - "+ emailQueueItem.Custom2 + " - " + emailQueueItem.Custom3,
                 PersonName = emailQueueItem.PersonName,
                 EmailTo = emailQueueItem.EmailTo,
                 emailCC = emailQueueItem.emailCC,
