@@ -290,7 +290,7 @@ namespace ControlAssuranceAPI.Repositories
 
                         if(send_ICReminderToDDDelegate == true)
                         {
-                            //DD Memebers
+                            //DD Members
                             foreach (var ddM in team.TeamMembers)
                             {
                                 //IC-ReminderToDDDelegate
@@ -978,17 +978,17 @@ namespace ControlAssuranceAPI.Repositories
                 //run for Hiring Manager
                 localFuncBuild_HiringManagerAndStaff("lst1");
 
-                //run for Hiring Memeber
+                //run for Hiring Member
                 foreach(var hiringMember in worker.CLCase.CLHiringMembers)
                 {
-                    lst1_Item = lst1.FirstOrDefault(x => x.UserId == hiringMember.UserId && x.UserType == "Hiring Memeber");
+                    lst1_Item = lst1.FirstOrDefault(x => x.UserId == hiringMember.UserId && x.UserType == "Hiring Member");
                     if (lst1_Item == null)
                     {
                         lst1_Item = new CL_HiringManagerAndStaff();
                         lst1.Add(lst1_Item);
 
                         lst1_Item.UserId = hiringMember.UserId.Value;
-                        lst1_Item.UserType = "Hiring Memeber";
+                        lst1_Item.UserType = "Hiring Member";
                         var hmUser = db.Users.FirstOrDefault(x => x.ID == hiringMember.UserId);
                         if (hmUser != null)
                         {
