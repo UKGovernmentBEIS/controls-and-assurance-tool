@@ -33,12 +33,15 @@ namespace ControlAssuranceAPI.Repositories
 
         public EmailOutbox Add(ControlAssuranceEntities db, EmailQueue emailQueueItem, string moduleName, string subjectAndDescription)
         {
+            string subjectAndDesc = subjectAndDescription?.ToString()+ " - " ?? "";
+            subjectAndDesc += emailQueueItem.Custom2?.ToString() + " - " ?? "";
+            subjectAndDesc += emailQueueItem.Custom3?.ToString() ?? "";
 
             var res = db.EmailOutboxes.Add(new EmailOutbox
             {
                 Title = emailQueueItem.Title,
                 ModuleName = moduleName,
-                SubjectAndDescription = subjectAndDescription?.ToString() ?? "" + " - "+ emailQueueItem.Custom2 + " - " + emailQueueItem.Custom3,
+                SubjectAndDescription = subjectAndDescription,
                 PersonName = emailQueueItem.PersonName,
                 EmailTo = emailQueueItem.EmailTo,
                 emailCC = emailQueueItem.emailCC,
