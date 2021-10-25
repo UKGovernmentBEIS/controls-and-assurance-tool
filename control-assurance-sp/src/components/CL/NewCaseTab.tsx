@@ -23,7 +23,7 @@ import { CrEntityPicker } from '../cr/CrEntityPicker';
 import { changeDatePicker, changeDatePickerV2 } from '../../types/AppGlobals';
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import '../../styles/CustomFabric.scss';
-import { IContextualMenuProps } from 'office-ui-fabric-react';
+import { findScrollableParent, IContextualMenuProps } from 'office-ui-fabric-react';
 import { getUploadFolder_Report } from '../../types/AppGlobals';
 
 
@@ -110,6 +110,12 @@ export interface INewCaseTabState {
     Stage: string;
     HideRequirementInfoSection: boolean;
     ShowAllowChangeHM: boolean;
+    ShowAllowChangeRequirement: boolean;
+    ShowAllowChangeCommercial: boolean;
+    ShowAllowChangeResourcingJustification: boolean;
+    ShowAllowChangeFinance: boolean;
+    ShowAllowChangeOther: boolean;
+    ShowAllowChangeApprovers: boolean;
     //DefForm: ICLDefForm;
 
     ShowHelpPanel: boolean;
@@ -142,6 +148,13 @@ export class NewCaseTabState implements INewCaseTabState {
     public Stage: string = ""; //set in componentDidMount
     public HideRequirementInfoSection = false;
     public ShowAllowChangeHM: boolean = true;
+    public ShowAllowChangeRequirement: boolean = true;
+    public ShowAllowChangeCommercial: boolean = true;
+    public ShowAllowChangeResourcingJustification: boolean = true;
+    public ShowAllowChangeFinance: boolean = true;
+    public ShowAllowChangeOther: boolean = true;
+    public ShowAllowChangeApprovers: boolean = true;
+
 
     public ShowHelpPanel = false;
     public UserHelpText = "";
@@ -235,40 +248,67 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         const stage = this.state.Stage;
         const fdw = this.state.FormDataWorker;
 
+        let archived: boolean = false;
+        if (fdw.Archived === true) {
+            archived = true;
+        }
+
+
         return (
             <React.Fragment>
                 {this.renderSectionTitle()}
                 {this.renderInfoTable()}
 
+
+                {isViewOnly === false && this.renderDetailsOfApplicant()}
                 {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || stage === "Extended" || isViewOnly === true) && this.renderDetailsOfApplicant_info()}
-                {/*stage === "Draft" && */isViewOnly === false && this.renderDetailsOfApplicant()}
-                {stage === "Draft" && isViewOnly === false && this.renderRequirement()}
-                {stage === "Draft" && isViewOnly === false && this.renderCommercial()}
-                {stage === "Draft" && isViewOnly === false && this.renderResourcingJustification()}
-                {stage === "Draft" && isViewOnly === false && this.renderFinance()}
-                {stage === "Draft" && isViewOnly === false && this.renderOther()}
-                {stage === "Draft" && isViewOnly === false && this.renderApprovers()}
+
+                {isViewOnly === false && this.renderRequirement()}
+                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || stage === "Extended" || isViewOnly === true) && this.renderRequirement_info()}
+
+
+                {isViewOnly === false && this.renderCommercial()}
+                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || stage === "Extended" || isViewOnly === true) && this.renderCommercial_info()}
+
+
+                {isViewOnly === false && this.renderResourcingJustification()}
+                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || stage === "Extended" || isViewOnly === true) && this.renderResourcingJustification_info()}
+
+
+                {isViewOnly === false && this.renderFinance()}
+                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || stage === "Extended" || isViewOnly === true) && this.renderFinance_info()}
+
+
+                {isViewOnly === false && this.renderOther()}
+                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || stage === "Extended" || isViewOnly === true) && this.renderOther_info()}
+
+
+                {isViewOnly === false && this.renderApprovers()}
+                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || stage === "Extended" || isViewOnly === true) && this.renderApprovers_info()}
+
+
                 {stage === "Draft" && isViewOnly === false && this.renderFormButtons_DraftStage()}
 
 
 
-                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || stage === "Extended" || isViewOnly === true) && this.renderRequirement_info()}
-                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || stage === "Extended" || isViewOnly === true) && this.renderCommercial_info()}
-                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || stage === "Extended" || isViewOnly === true) && this.renderResourcingJustification_info()}
-                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || stage === "Extended" || isViewOnly === true) && this.renderFinance_info()}
-                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || stage === "Extended" || isViewOnly === true) && this.renderOther_info()}
-                {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || stage === "Extended" || isViewOnly === true) && this.renderApprovers_info()}
+
+
+
+
+
+
+
 
                 {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || stage === "Extended" || isViewOnly === true) && this.renderBudgetHolderApprovalDecision_info()}
                 {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || stage === "Extended" || isViewOnly === true) && this.renderFinanceBusinessPartnerApprovalDecision_info()}
                 {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || stage === "Extended" || isViewOnly === true) && this.renderHRBusinessPartnerApprovalDecision_info()}
                 {(stage === "Approval" || stage == "Onboarding" || stage === "Engaged" || stage === "Leaving" || stage === "Left" || stage === "Extended" || isViewOnly === true) && this.renderCLApprovalDecision_info()}
 
-                {(stage === "Approval") && this.renderBudgetHolderApprovalDecision()}
-                {(stage === "Approval") && this.renderFinanceBusinessPartnerApprovalDecision()}
-                {(stage === "Approval") && this.renderHRBusinessPartnerApprovalDecision()}
-                {(stage === "Approval") && this.renderCLApprovalDecision()}
-                {stage === "Approval" && this.renderFormButtons_ApprovalStage()}
+                {archived === false && (stage === "Approval") && this.renderBudgetHolderApprovalDecision()}
+                {archived === false && (stage === "Approval") && this.renderFinanceBusinessPartnerApprovalDecision()}
+                {archived === false && (stage === "Approval") && this.renderHRBusinessPartnerApprovalDecision()}
+                {archived === false && (stage === "Approval") && this.renderCLApprovalDecision()}
+                {archived === false && stage === "Approval" && this.renderFormButtons_ApprovalStage()}
 
                 {stage === "Onboarding" && isViewOnly === false && this.renderOnboarding()}
                 {stage === "Onboarding" && isViewOnly === false && this.renderFormButtons_OnboardingStage()}
@@ -462,6 +502,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
     private renderDetailsOfApplicant() {
         const fd = this.state.FormData;
+        //if(this.state.FormDataWorker.Archived === true) return;
 
 
         if (this.props.stage === "Draft" || (this.state.ShowAllowChangeHM === false)) {
@@ -574,8 +615,11 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                     <div style={{ marginBottom: '10px' }}>
                         {this.state.ShowAllowChangeHM === false &&
                             <div>
-                                <span style={{ cursor: 'pointer', color: 'blue' }} onClick={() => this.saveData(false, false)}>Save</span>&nbsp;&nbsp;
-                                <span style={{ cursor: 'pointer', color: 'blue' }} onClick={this.handleAllowChangeHM}>Cancel</span>
+                                <span style={{ cursor: 'pointer', color: 'blue' }} onClick={() => {
+                                    this.toggleAllowChangeHM();
+                                    this.saveData(false, false, true);
+                                }}>Save</span>&nbsp;&nbsp;
+                                <span style={{ cursor: 'pointer', color: 'blue' }} onClick={this.toggleAllowChangeHM}>Cancel</span>
                             </div>
                         }
                     </div>
@@ -597,6 +641,14 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         if (this.props.defForm === null) return;
 
         const fd = this.state.FormData;
+
+
+        if (this.props.stage === "Draft" || (this.state.ShowAllowChangeRequirement === false)) {
+            console.log('renderRequirement - 1');
+        }
+        else return null;
+
+
 
         let numPositionsLength: number = 1; //default for hiring manager
         if (this.props.superUserPermission === true) {
@@ -967,6 +1019,19 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                             </div>
                         </div>
 
+                        <div style={{ marginBottom: '10px' }}>
+                            {this.state.ShowAllowChangeRequirement === false &&
+                                <div>
+                                    <span style={{ cursor: 'pointer', color: 'blue' }} onClick={() => {
+                                        this.toggleAllowChangeRequirement();
+                                        this.saveData(false, false, true);
+
+                                    }}>Save</span>&nbsp;&nbsp;
+                                    <span style={{ cursor: 'pointer', color: 'blue' }} onClick={this.toggleAllowChangeRequirement}>Cancel</span>
+                                </div>
+                            }
+                        </div>
+
 
 
                     </div>
@@ -980,6 +1045,13 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     }
 
     private renderCommercial() {
+
+
+        if (this.props.stage === "Draft" || (this.state.ShowAllowChangeCommercial === false)) {
+            console.log('renderCommercial - 1');
+        }
+        else return null;
+
         const fd = this.state.FormData;
 
         const comFrameworkIdValidationImg = fd.ComFrameworkId !== null ? this.checkIconGreen : this.checkIconRed;
@@ -1119,6 +1191,20 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                     </div>}
 
 
+                    <div style={{ marginBottom: '10px' }}>
+                        {this.state.ShowAllowChangeCommercial === false &&
+                            <div>
+                                <span style={{ cursor: 'pointer', color: 'blue' }} onClick={() => {
+                                    this.toggleAllowChangeCommercial();
+                                    this.saveData(false, false, true);
+
+                                }}>Save</span>&nbsp;&nbsp;
+                                <span style={{ cursor: 'pointer', color: 'blue' }} onClick={this.toggleAllowChangeCommercial}>Cancel</span>
+                            </div>
+                        }
+                    </div>
+
+
 
                 </div>
 
@@ -1131,6 +1217,12 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     }
 
     private renderResourcingJustification() {
+
+        if (this.props.stage === "Draft" || (this.state.ShowAllowChangeResourcingJustification === false)) {
+            console.log('renderCommercial - 1');
+        }
+        else return null;
+
         const fd = this.state.FormData;
 
         const justAltOptionsValidationImg = fd.JustAltOptions !== null && fd.JustAltOptions.length > 9 ? this.checkIconGreen : this.checkIconRed;
@@ -1221,6 +1313,20 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                     </div>
 
 
+                    <div style={{ marginBottom: '10px' }}>
+                        {this.state.ShowAllowChangeResourcingJustification === false &&
+                            <div>
+                                <span style={{ cursor: 'pointer', color: 'blue' }} onClick={() => {
+                                    this.toggleAllowChangeResourcingJustification();
+                                    this.saveData(false, false, true);
+
+                                }}>Save</span>&nbsp;&nbsp;
+                                <span style={{ cursor: 'pointer', color: 'blue' }} onClick={this.toggleAllowChangeResourcingJustification}>Cancel</span>
+                            </div>
+                        }
+                    </div>
+
+
 
                 </div>
 
@@ -1233,6 +1339,13 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     }
 
     private renderFinance() {
+
+        if (this.props.stage === "Draft" || (this.state.ShowAllowChangeFinance === false)) {
+            console.log('renderFinance - 1');
+        }
+        else return null;
+
+
         const fd = this.state.FormData;
 
         const finMaxRateValidationImg = fd.FinMaxRate !== null && fd.FinMaxRate > 0 ? this.checkIconGreen : this.checkIconRed;
@@ -1534,6 +1647,20 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                     </div>
 
 
+                    <div style={{ marginBottom: '10px' }}>
+                        {this.state.ShowAllowChangeFinance === false &&
+                            <div>
+                                <span style={{ cursor: 'pointer', color: 'blue' }} onClick={() => {
+                                    this.toggleAllowChangeFinance();
+                                    this.saveData(false, false, true);
+
+                                }}>Save</span>&nbsp;&nbsp;
+                                <span style={{ cursor: 'pointer', color: 'blue' }} onClick={this.toggleAllowChangeFinance}>Cancel</span>
+                            </div>
+                        }
+                    </div>
+
+
                 </div>
 
 
@@ -1545,6 +1672,13 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     }
 
     private renderOther() {
+
+        if (this.props.stage === "Draft" || (this.state.ShowAllowChangeOther === false)) {
+            console.log('renderOther - 1');
+        }
+        else return null;
+
+
         const fd = this.state.FormData;
 
 
@@ -1589,6 +1723,20 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                     </div>
 
 
+                    <div style={{ marginBottom: '10px' }}>
+                        {this.state.ShowAllowChangeOther === false &&
+                            <div>
+                                <span style={{ cursor: 'pointer', color: 'blue' }} onClick={() => {
+                                    this.toggleAllowChangeOther();
+                                    this.saveData(false, false, true);
+
+                                }}>Save</span>&nbsp;&nbsp;
+                                <span style={{ cursor: 'pointer', color: 'blue' }} onClick={this.toggleAllowChangeOther}>Cancel</span>
+                            </div>
+                        }
+                    </div>
+
+
 
                 </div>
 
@@ -1601,6 +1749,12 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     }
 
     private renderApprovers() {
+
+        if (this.props.stage === "Draft" || (this.state.ShowAllowChangeApprovers === false)) {
+            console.log('renderApprovers - 1');
+        }
+        else return null;
+
         const fd = this.state.FormData;
 
         const bhUserIdValidationImg = this.state.FormData.BHUserId !== null ? this.checkIconGreen : this.checkIconRed;
@@ -1731,6 +1885,20 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                     </div>
 
 
+                    <div style={{ marginBottom: '10px' }}>
+                        {this.state.ShowAllowChangeApprovers === false &&
+                            <div>
+                                <span style={{ cursor: 'pointer', color: 'blue' }} onClick={() => {
+                                    this.toggleAllowChangeApprovers();
+                                    this.saveData(false, false, true);
+
+                                }}>Save</span>&nbsp;&nbsp;
+                                <span style={{ cursor: 'pointer', color: 'blue' }} onClick={this.toggleAllowChangeApprovers}>Cancel</span>
+                            </div>
+                        }
+                    </div>
+
+
 
 
 
@@ -1831,14 +1999,15 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         return (
             <React.Fragment>
 
-                <div style={{ marginTop: '30px' }}>
+
+                {this.props.superUserPermission === true && <div style={{ marginTop: '30px' }}>
                     {fdw.CasePdfStatus !== "Working... Please Wait" && <div style={{ color: 'blue', cursor: 'pointer' }} onClick={() => this.createCasePdf()}>Create Case PDF</div>}
                     {fdw.CasePdfStatus === "Working... Please Wait" && <div>Creating Case PDF... Please Wait.. To refresh status <span style={{ color: 'blue', cursor: 'pointer' }} onClick={() => this.refreshCasePdfStatus()}>Click Here</span></div>}
                     {fdw.CasePdfStatus === "Cr" && <div>Last PDF created by {fdw.CasePdfLastActionUser} on {services.DateService.dateToUkDateTime(fdw.CasePdfDate)} <span style={{ color: 'blue', cursor: 'pointer' }} onClick={() => this.downloadCasePdf()}>Download</span>  </div>}
 
                     {fdw.CasePdfStatus && fdw.CasePdfStatus.search("Err:") === 0 && <div>Last PDF creation error. Attempted by {fdw.CasePdfLastActionUser} on {services.DateService.dateToUkDateTime(fdw.CasePdfDate)} <br />{fdw.CasePdfStatus}  </div>}
 
-                </div>
+                </div>}
 
 
 
@@ -1971,13 +2140,18 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                 </div>
 
                 <div style={{ paddingTop: '5px' }}>
-                    {this.state.ShowAllowChangeHM === true && allowChange === true && <span style={{ cursor: 'pointer', color: 'blue' }} onClick={this.handleAllowChangeHM}>Change hiring manager/team member(s) </span>}
+                    {this.isViewOnlyPermission() === false && this.state.ShowAllowChangeHM === true && allowChange === true && <span style={{ cursor: 'pointer', color: 'blue' }} onClick={this.toggleAllowChangeHM}>Change hiring manager/team member(s) </span>}
                 </div>
             </React.Fragment>
         );
     }
 
     private renderRequirement_info() {
+
+        let allowChange: boolean = false;
+        if (this.props.superUserPermission === true) {
+            allowChange = true;
+        }
 
         return (
 
@@ -2100,12 +2274,26 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                         </table>
                     </div>
+
+
                 }
+
+
+
+
+                <div style={{ paddingTop: '5px' }}>
+                    {this.isViewOnlyPermission() === false && this.state.ShowAllowChangeRequirement === true && allowChange === true && <span style={{ cursor: 'pointer', color: 'blue' }} onClick={this.toggleAllowChangeRequirement}>Change Requirement</span>}
+                </div>
             </React.Fragment>
         );
     }
 
     private renderCommercial_info() {
+
+        let allowChange: boolean = false;
+        if (this.props.superUserPermission === true) {
+            allowChange = true;
+        }
 
         return (
 
@@ -2159,11 +2347,20 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                     </table>
                 </div>
 
+                <div style={{ paddingTop: '5px' }}>
+                    {this.isViewOnlyPermission() === false && this.state.ShowAllowChangeCommercial === true && allowChange === true && <span style={{ cursor: 'pointer', color: 'blue' }} onClick={this.toggleAllowChangeCommercial}>Change Commercial</span>}
+                </div>
+
             </React.Fragment>
         );
     }
 
     private renderResourcingJustification_info() {
+
+        let allowChange: boolean = false;
+        if (this.props.superUserPermission === true) {
+            allowChange = true;
+        }
 
         return (
 
@@ -2211,11 +2408,21 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                     </table>
                 </div>
 
+
+                <div style={{ paddingTop: '5px' }}>
+                    {this.isViewOnlyPermission() === false && this.state.ShowAllowChangeResourcingJustification === true && allowChange === true && <span style={{ cursor: 'pointer', color: 'blue' }} onClick={this.toggleAllowChangeResourcingJustification}>Change Resourcing Justification</span>}
+                </div>
+
             </React.Fragment>
         );
     }
 
     private renderFinance_info() {
+
+        let allowChange: boolean = false;
+        if (this.props.superUserPermission === true) {
+            allowChange = true;
+        }
 
         return (
 
@@ -2310,11 +2517,20 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                     </table>
                 </div>
 
+                <div style={{ paddingTop: '5px' }}>
+                    {this.isViewOnlyPermission() === false && this.state.ShowAllowChangeFinance === true && allowChange === true && <span style={{ cursor: 'pointer', color: 'blue' }} onClick={this.toggleAllowChangeFinance}>Change Finance</span>}
+                </div>
+
             </React.Fragment>
         );
     }
 
     private renderOther_info() {
+
+        let allowChange: boolean = false;
+        if (this.props.superUserPermission === true) {
+            allowChange = true;
+        }
 
         return (
 
@@ -2354,11 +2570,22 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                     </table>
                 </div>
 
+
+                <div style={{ paddingTop: '5px' }}>
+                    {this.isViewOnlyPermission() === false && this.state.ShowAllowChangeOther === true && allowChange === true && <span style={{ cursor: 'pointer', color: 'blue' }} onClick={this.toggleAllowChangeOther}>Change Other</span>}
+                </div>
+
             </React.Fragment>
         );
     }
 
     private renderApprovers_info() {
+
+        let allowChange: boolean = false;
+        if (this.props.superUserPermission === true) {
+            allowChange = true;
+        }
+
 
         return (
 
@@ -2409,6 +2636,10 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
 
                     </table>
+                </div>
+
+                <div style={{ paddingTop: '5px' }}>
+                    {this.isViewOnlyPermission() === false && this.state.ShowAllowChangeApprovers === true && allowChange === true && <span style={{ cursor: 'pointer', color: 'blue' }} onClick={this.toggleAllowChangeApprovers}>Change Approvers</span>}
                 </div>
 
             </React.Fragment>
@@ -6026,7 +6257,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     }
 
 
-    private saveData = (submitForApproval: boolean, submitDecision): void => {
+    private saveData = (submitForApproval: boolean, submitDecision, stayOnNewCaseTab?: boolean): void => {
         if (this.validateEntity(submitForApproval, submitDecision)) {
             console.log('in save data');
             if (this.props.onError) this.props.onError(null);
@@ -6073,7 +6304,14 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                     this.setState({ HideSubmitApprovalDoneMessage: false });
                 }
                 else {
-                    this.props.onShowList();
+                    if (stayOnNewCaseTab === true) {
+                        this.loadCaseInfo();
+                        this.loadClCase();
+                    }
+                    else {
+                        this.props.onShowList(true);
+                    }
+
                 }
 
 
@@ -6174,7 +6412,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                     this.setState({ HideSubmitEngagedDoneMessage: false });
                 }
                 else {
-                    this.props.onShowList();
+                    this.props.onShowList(true);
                 }
 
 
@@ -7003,6 +7241,10 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
         }
 
+        if (this.state.FormDataWorker.Archived === true) {
+            isViewOnly = true;
+        }
+
         return isViewOnly;
     }
 
@@ -7030,9 +7272,45 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         this.props.onShowHistoricCase(workerId, caseId, stage);
     }
 
-    private handleAllowChangeHM = (): void => {
+    private toggleAllowChangeHM = (): void => {
         this.setState({
             ShowAllowChangeHM: !this.state.ShowAllowChangeHM,
+        });
+    }
+
+    private toggleAllowChangeRequirement = (): void => {
+        this.setState({
+            ShowAllowChangeRequirement: !this.state.ShowAllowChangeRequirement,
+        });
+    }
+
+    private toggleAllowChangeCommercial = (): void => {
+        this.setState({
+            ShowAllowChangeCommercial: !this.state.ShowAllowChangeCommercial,
+        });
+    }
+
+    private toggleAllowChangeResourcingJustification = (): void => {
+        this.setState({
+            ShowAllowChangeResourcingJustification: !this.state.ShowAllowChangeResourcingJustification,
+        });
+    }
+
+    private toggleAllowChangeFinance = (): void => {
+        this.setState({
+            ShowAllowChangeFinance: !this.state.ShowAllowChangeFinance,
+        });
+    }
+
+    private toggleAllowChangeOther = (): void => {
+        this.setState({
+            ShowAllowChangeOther: !this.state.ShowAllowChangeOther,
+        });
+    }
+
+    private toggleAllowChangeApprovers = (): void => {
+        this.setState({
+            ShowAllowChangeApprovers: !this.state.ShowAllowChangeApprovers,
         });
     }
 

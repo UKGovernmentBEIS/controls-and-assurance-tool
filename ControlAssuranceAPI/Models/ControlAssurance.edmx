@@ -323,6 +323,7 @@
           <Property Name="CasePdfDate" Type="datetime" />
           <Property Name="CasePdfName" Type="nvarchar" MaxLength="4000" />
           <Property Name="CasePdfLastActionUser" Type="nvarchar" MaxLength="500" />
+          <Property Name="Archived" Type="bit" />
         </EntityType>
         <EntityType Name="CLWorkLocation">
           <Key>
@@ -3355,6 +3356,7 @@
           <Property Name="CasePdfDate" Type="DateTime" Precision="3" />
           <Property Name="CasePdfName" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
           <Property Name="CasePdfLastActionUser" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Archived" Type="Boolean" />
           <NavigationProperty Name="CLCase" Relationship="Self.FK_CLWorker_CLCase" FromRole="CLWorker" ToRole="CLCase" />
           <NavigationProperty Name="CLDeclarationConflict" Relationship="Self.FK_CLWorker_CLDeclarationConflict" FromRole="CLWorker" ToRole="CLDeclarationConflict" />
           <NavigationProperty Name="CLGender" Relationship="Self.FK_CLWorker_CLGender" FromRole="CLWorker" ToRole="CLGender" />
@@ -6743,6 +6745,7 @@
                 <ScalarProperty Name="CasePdfDate" ColumnName="CasePdfDate" />
                 <ScalarProperty Name="CasePdfName" ColumnName="CasePdfName" />
                 <ScalarProperty Name="CasePdfLastActionUser" ColumnName="CasePdfLastActionUser" />
+                <ScalarProperty Name="Archived" ColumnName="Archived" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

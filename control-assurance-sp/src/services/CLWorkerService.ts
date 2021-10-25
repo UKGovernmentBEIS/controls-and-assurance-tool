@@ -26,6 +26,13 @@ export class CLWorkerService extends EntityService<ICLWorker> {
         });
     }
 
+    public archive(clWorkerId: number): Promise<string> {
+        
+        return super.readString(`?clWorkerId=${clWorkerId}&archive=true`).then((result:string): string => {
+            return result;
+        });
+    }
+
 
 
 

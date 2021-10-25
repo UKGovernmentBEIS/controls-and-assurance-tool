@@ -89,6 +89,7 @@ export interface ICLWorker  extends IEntity {
     CasePdfDate?: Date;
     CasePdfName?: string;
     CasePdfLastActionUser?: string;
+    Archived?: boolean;
 
 
 }
@@ -179,6 +180,7 @@ export class CLWorker implements ICLWorker{
     public CasePdfDate?: Date = null;
     public CasePdfName?: string = null;
     public CasePdfLastActionUser?: string = null;
+    public Archived?: boolean = false;
 
 
     constructor() {

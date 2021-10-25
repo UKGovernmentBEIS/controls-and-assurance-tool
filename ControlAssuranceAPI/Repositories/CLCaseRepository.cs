@@ -322,6 +322,7 @@ namespace ControlAssuranceAPI.Repositories
                       {
                           w.ID,
                           w.Stage,
+                          w.Archived,
                           w.WorkerNumber,
                           w.CLCase,
                           HiringManagerObj = db.Users.FirstOrDefault(x => x.ID == w.CLCase.ApplHMUserId),                          
@@ -349,16 +350,19 @@ namespace ControlAssuranceAPI.Repositories
 
             if (caseType == "BusinessCases") //just a word to show all cases apart from the engaged
             {
-                qry = qry.Where(x => x.Stage != CaseStages.Engaged.Name && x.Stage != CaseStages.Leaving.Name && x.Stage != CaseStages.Left.Name && x.Stage != CaseStages.Extended.Name);
+                //qry = qry.Where(x => x.Stage != CaseStages.Engaged.Name && x.Stage != CaseStages.Leaving.Name && x.Stage != CaseStages.Left.Name && x.Stage != CaseStages.Extended.Name);
+                qry = qry.Where(x => x.Archived != true && x.Stage != CaseStages.Engaged.Name && x.Stage != CaseStages.Leaving.Name && x.Stage != CaseStages.Left.Name && x.Stage != CaseStages.Extended.Name);
             }
             else if (caseType == CaseStages.Engaged.Name)
             {
-                qry = qry.Where(x => x.Stage == CaseStages.Engaged.Name || x.Stage == CaseStages.Leaving.Name);
+                //qry = qry.Where(x => x.Stage == CaseStages.Engaged.Name || x.Stage == CaseStages.Leaving.Name);
+                qry = qry.Where(x => x.Archived != true && x.Stage == CaseStages.Engaged.Name || x.Stage == CaseStages.Leaving.Name);
             }
 
             else if(caseType == "Archived")
             {
-                qry = qry.Where(x => x.Stage == CaseStages.Left.Name || x.Stage == CaseStages.Extended.Name);
+                //qry = qry.Where(x => x.Stage == CaseStages.Left.Name || x.Stage == CaseStages.Extended.Name);
+                qry = qry.Where(x => x.Archived == true);
             }
 
             if (isSuperUserOrViewer == true)
@@ -571,6 +575,7 @@ namespace ControlAssuranceAPI.Repositories
                       {
                           w.ID,
                           w.Stage,
+                          w.Archived,
                           w.CLCase,
                       };
 
@@ -591,9 +596,9 @@ namespace ControlAssuranceAPI.Repositories
             }
 
 
-            int totalBusinessCases = qry.Count(x => x.Stage != CaseStages.Engaged.Name && x.Stage != CaseStages.Leaving.Name && x.Stage != CaseStages.Left.Name && x.Stage != CaseStages.Extended.Name);
-            int totalEngagedCases = qry.Count(x => x.Stage == CaseStages.Engaged.Name || x.Stage == CaseStages.Leaving.Name);
-            int totalArchivedCases = qry.Count(x => x.Stage == CaseStages.Left.Name || x.Stage == CaseStages.Extended.Name);
+            int totalBusinessCases = qry.Count(x => x.Archived != true && x.Stage != CaseStages.Engaged.Name && x.Stage != CaseStages.Leaving.Name && x.Stage != CaseStages.Left.Name && x.Stage != CaseStages.Extended.Name);
+            int totalEngagedCases = qry.Count(x => x.Archived != true && x.Stage == CaseStages.Engaged.Name || x.Stage == CaseStages.Leaving.Name);
+            int totalArchivedCases = qry.Count(x => x.Archived == true);// x.Stage == CaseStages.Left.Name || x.Stage == CaseStages.Extended.Name);
 
             CLCaseCounts_Result cLCaseCounts = new CLCaseCounts_Result
             {
@@ -831,6 +836,7 @@ namespace ControlAssuranceAPI.Repositories
             
 
             CLWorker existingWorker = db.CLWorkers.FirstOrDefault(x => x.ID == existingWorkerId);
+            //existingWorker.Archived = true; //this is done later when child case is moved to Engaged, then this parent stage is moved to Extended and archived is set to true
             CLCase existingCase = existingWorker.CLCase;
             //create new case based on existing case
             DateTime estStartDate = existingCase.ReqEstEndDate.Value.AddDays(1);

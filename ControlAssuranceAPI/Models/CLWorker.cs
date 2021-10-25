@@ -93,6 +93,7 @@ namespace ControlAssuranceAPI.Models
         public Nullable<System.DateTime> CasePdfDate { get; set; }
         public string CasePdfName { get; set; }
         public string CasePdfLastActionUser { get; set; }
+        public Nullable<bool> Archived { get; set; }
     
         public virtual CLCase CLCase { get; set; }
         public virtual CLDeclarationConflict CLDeclarationConflict { get; set; }

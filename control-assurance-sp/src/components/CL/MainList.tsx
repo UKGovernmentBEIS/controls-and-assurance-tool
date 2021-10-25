@@ -20,11 +20,13 @@ export interface IMainListProps extends types.IBaseComponentProps {
     onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
     onMoveToLeaving?: (ID: number, caseId: number) => void;
     onCreateExtension?: (ID: number, caseId: number) => void;
+    onAfterArchived?: () => void;
     //onMainSaved: () => void;
     currentUserId: number;
     superUserPermission: boolean;
     createPermission: boolean;
     caseType: string;
+    listRefreshCounter?:number;
 
 }
 
@@ -37,6 +39,7 @@ export interface IMainListState<T> {
     EnableEdit?: boolean;
     EnableDelete?: boolean;
     HideDeleteDialog: boolean;
+    HideArchiveDialogue: boolean;
     HideDeleteDisallowed: boolean;
     ShowChildForm: boolean;
     CurrentPage?: number;
@@ -45,9 +48,11 @@ export interface IMainListState<T> {
     Loading: boolean;
     ListFilterText?: string;
     InitDataLoaded: boolean;
-    MoveToLeavingPermission:boolean;
-    CreateExtensionPermission:boolean;
-    DeletePermission:boolean;
+    MoveToLeavingPermission: boolean;
+    CreateExtensionPermission: boolean;
+    DeletePermission: boolean;
+    ArchivedPermission: boolean;
+
 }
 export class MainListState<T> implements IMainListState<T>{
     public SelectedEntity = null;
@@ -56,6 +61,7 @@ export class MainListState<T> implements IMainListState<T>{
     public SelectedEntityChildren = null;
     public ShowForm = false;
     public HideDeleteDialog = true;
+    public HideArchiveDialogue = true;
     public HideDeleteDisallowed = true;
     public EnableEdit = false;
     public EnableDelete = false;
@@ -69,11 +75,13 @@ export class MainListState<T> implements IMainListState<T>{
     public MoveToLeavingPermission = false;
     public CreateExtensionPermission = false;
     public DeletePermission = false;
+    public ArchivedPermission = false;
 }
 
 export default class MainList extends React.Component<IMainListProps, IMainListState<IEntity>> {
     private _selection: Selection;
     private mainService: services.CLCaseService = new services.CLCaseService(this.props.spfxContext, this.props.api);
+    private workerService: services.CLWorkerService = new services.CLWorkerService(this.props.spfxContext, this.props.api);
 
     private ChildEntityName: { Plural: string, Singular: string } = { Plural: 'Recommendations', Singular: 'Recommendation' };
 
@@ -267,29 +275,38 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
 
                     //console.log('sel["EngagedChecksDone"]', sel["EngagedChecksDone"]);
                     //const engagedChecksDone:boolean =  sel["EngagedChecksDone"];
-                    const engagedChecksDone:boolean = (sel["EngagedChecksDone"] === '1');
+                    const engagedChecksDone: boolean = (sel["EngagedChecksDone"] === '1');
                     console.log('engagedChecksDone', engagedChecksDone);
 
-                    let moveToLeavingPermission:boolean = false;
-                    if(engagedChecksDone === true && (this.props.superUserPermission === true || (this.props.currentUserId === hiringMgrUserId))){
-                    
+                    let moveToLeavingPermission: boolean = false;
+                    if (engagedChecksDone === true && (this.props.superUserPermission === true || (this.props.currentUserId === hiringMgrUserId))) {
+
                         console.log('MoveToLeavingPermission is true');
                         moveToLeavingPermission = true;
                     }
 
-                    let deletePermission:boolean;
+                    let deletePermission: boolean;
                     const stage: string = sel["Stage"];
-                    if(stage === "Draft" && (this.props.superUserPermission === true || (this.props.currentUserId === hiringMgrUserId))){
-                    
+                    if (stage === "Draft" && (this.props.superUserPermission === true || (this.props.currentUserId === hiringMgrUserId))) {
+
                         console.log('deletePermission is true');
                         deletePermission = true;
                     }
 
+                    let archivedPermission: boolean;
+                    if (stage !== "Draft" && (this.props.superUserPermission === true || (this.props.currentUserId === hiringMgrUserId))) {
 
-                    this.setState({ SelectedEntity: key, SelectedEntityTitle: title, EnableEdit: true, EnableDelete: true, MoveToLeavingPermission: moveToLeavingPermission, CreateExtensionPermission: moveToLeavingPermission, DeletePermission: deletePermission });
+                        //archived is allowed for all cases except draft
+                        // or alredy archived cases(3rd section - this check is done if filtered list)
+                        console.log('archivedPermission is true');
+                        archivedPermission = true;
+                    }
+
+
+                    this.setState({ SelectedEntity: key, SelectedEntityTitle: title, EnableEdit: true, EnableDelete: true, MoveToLeavingPermission: moveToLeavingPermission, CreateExtensionPermission: moveToLeavingPermission, DeletePermission: deletePermission, ArchivedPermission: archivedPermission });
                 }
                 else {
-                    this.setState({ SelectedEntity: null, SelectedEntityTitle: null, EnableEdit: false, EnableDelete: false, MoveToLeavingPermission: false, CreateExtensionPermission: false, DeletePermission: false, });
+                    this.setState({ SelectedEntity: null, SelectedEntityTitle: null, EnableEdit: false, EnableDelete: false, MoveToLeavingPermission: false, CreateExtensionPermission: false, DeletePermission: false, ArchivedPermission: false, });
                 }
             }
         });
@@ -305,6 +322,7 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
                     <CrLoadingOverlay isLoading={this.state.Loading} />
                     {this.renderList()}
                     <ConfirmDialog hidden={this.state.HideDeleteDialog} title={`Are you sure you want to delete this case?`} content={`This action cannot be reversed.`} confirmButtonText="Delete" handleConfirm={this.onDelete} handleCancel={this.toggleDeleteConfirm} />
+                    <ConfirmDialog hidden={this.state.HideArchiveDialogue} title={`Are you sure you want to archive this case?`} content={`This action cannot be reversed.`} confirmButtonText="Archive" handleConfirm={this.onArchive} handleCancel={this.toggleArchiveConfirm} />
                 </div>
             </div>
         );
@@ -343,6 +361,9 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
 
                 deletePermission={this.state.DeletePermission}
                 onDelete={this.toggleDeleteConfirm}
+
+                archivedPermission={this.state.ArchivedPermission}
+                onArchive={this.toggleArchiveConfirm}
 
             />
         );
@@ -410,13 +431,13 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
         //console.log('web title: ', this.props.spfxContext.pageContext.web.title);
 
     }
-    // public componentDidUpdate(prevProps: IMainListProps): void {
-    //     if (prevProps.dgAreaId !== this.props.dgAreaId || prevProps.justMine !== this.props.justMine || prevProps.incompleteOnly !== this.props.incompleteOnly || prevProps.mainListsSaveCounter !== this.props.mainListsSaveCounter) {
-    //         //console.log('props changed, load data again');
-    //         this._selection.setAllSelected(false);
-    //         this.loadData();
-    //     }
-    // }
+
+    public componentDidUpdate(prevProps: IMainListProps): void {
+        if (prevProps.listRefreshCounter !== this.props.listRefreshCounter) {
+            this._selection.setAllSelected(false);
+            this.loadData();
+        }
+    }
 
 
 
@@ -439,11 +460,33 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
 
         this.setState({ HideDeleteDialog: true });
         if (this.state.SelectedEntity) {
-            this.mainService.delete(this.state.SelectedEntity).then(this.loadData, (err) => {
+            this.mainService.delete(this.state.SelectedEntity).then( ()=>{
+                this.loadData();
+                this.props.onAfterArchived(); //to refresh counters
+            } , (err) => {
                 if (this.props.onError) this.props.onError(`Error deleting item ${this.state.SelectedEntity}`, err.message);
             });
         }
     }
+
+    private onArchive = (): void => {
+        console.log('on onArchive');
+
+        this.setState({ HideArchiveDialogue: true });
+        if (this.state.SelectedEntity) {
+            console.log('selectedEntity', this.state.SelectedEntity);
+            //SelectedEntity is workerId not the caseId
+            this.workerService.archive(this.state.SelectedEntity).then(() => {
+                this.loadData();
+                this.props.onAfterArchived();
+            }, (err) => {
+                if (this.props.onError) this.props.onError(`Error archiving item ${this.state.SelectedEntity}`, err.message);
+
+            });
+        }
+    }
+
+
 
     private moveToLeaving = (): void => {
         console.log('on move to leaving', this.state.SelectedEntity, this.state.SelectedEntityTitle);
@@ -469,6 +512,9 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
     }
     private toggleDeleteConfirm = (): void => {
         this.setState({ HideDeleteDialog: !this.state.HideDeleteDialog });
+    }
+    private toggleArchiveConfirm = (): void => {
+        this.setState({ HideArchiveDialogue: !this.state.HideArchiveDialogue });
     }
 
 

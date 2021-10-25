@@ -32,6 +32,16 @@ namespace ControlAssuranceAPI.Repositories
             return CLWorkers.Where(x => x.ID == keyValue).FirstOrDefault();
         }
 
+        public void Archive(int clWorkerId)
+        {
+            var clWorker = db.CLWorkers.FirstOrDefault(x => x.ID == clWorkerId);
+            if(clWorker != null)
+            {
+                clWorker.Archived = true;
+                db.SaveChanges();
+            }
+        }
+
         public CLWorker Update(CLWorker inputWorker)
         {
             var clWorker = db.CLWorkers.FirstOrDefault(x => x.ID == inputWorker.ID);
@@ -105,6 +115,7 @@ namespace ControlAssuranceAPI.Repositories
                 if (inputWorker.Title == "SaveLeaving_MoveToArchive")
                 {
                     clWorker.Stage = CLCaseRepository.CaseStages.Left.Name;
+                    clWorker.Archived = true;
                 }
 
                 db.SaveChanges();
@@ -127,6 +138,7 @@ namespace ControlAssuranceAPI.Repositories
                     //move the case extended from to archive - make stage to Extended
                     var parentWorker = db.CLWorkers.FirstOrDefault(x => x.ID == clWorker.ExtendedFromWorkerId);
                     parentWorker.Stage = CLCaseRepository.CaseStages.Extended.Name;
+                    parentWorker.Archived = true;
                     db.SaveChanges();
                 }
 

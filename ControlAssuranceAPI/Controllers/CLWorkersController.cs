@@ -47,6 +47,19 @@ namespace ControlAssuranceAPI.Controllers
 
         }
 
+        //GET: odata/CLWorkers?clWorkerId=1&archive=true
+        public string Get(int clWorkerId, bool archive)
+        {
+            string msg = "";
+            if(archive == true)
+            {
+                db.CLWorkerRepository.Archive(clWorkerId);
+            }
+
+            return msg;
+
+        }
+
         // PATCH: odata/CLWorkers(1)
         [AcceptVerbs("PUT")]
         public IHttpActionResult Put([FromODataUri] int key, CLWorker cLWorker)

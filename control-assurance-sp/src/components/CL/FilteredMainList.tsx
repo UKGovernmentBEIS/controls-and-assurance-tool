@@ -61,12 +61,14 @@ export interface IFilteredMainListProps {
 
     onAdd: () => void;
     onDelete: () => void;
+    onArchive: () => void;
 
     editDisabled: boolean;
     deleteDisabled: boolean;
 
     createPermission: boolean;
     deletePermission: boolean;
+    archivedPermission: boolean;
 
     caseType: string;
     moveToLeavingPermission?: boolean;
@@ -138,6 +140,14 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
                             className={classNames.cmdBtn}
                             text="Create Extension"
                             onClick={props.onCreateExtension}
+                        />}
+
+                    {(props.caseType === "BusinessCases" || props.caseType === "Engaged") && props.archivedPermission && (props.editDisabled === false) &&
+                        <CommandBarButton
+                            iconProps={{ iconName: 'Archive' }}
+                            className={classNames.cmdBtn}
+                            text="Archive"
+                            onClick={props.onArchive}
                         />}
 
                     <span style={controlStyles2}>
@@ -226,7 +236,7 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
             return (
 
                 <span>{fieldContent}
-                    { stageActions2.length > 0 &&
+                    {stageActions2.length > 0 &&
                         <React.Fragment>
                             <br />
                             <span>{stageActions2}</span>

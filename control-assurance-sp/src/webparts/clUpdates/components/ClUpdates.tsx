@@ -53,6 +53,7 @@ export interface IClUpdatesState extends types.IUserContextWebPartState {
   DefForm: ICLDefForm;
 
   HideCantCreateExtensionMessage: boolean;
+  ArchivedListRefreshCounter:number;
 
 
 }
@@ -83,6 +84,7 @@ export class ClUpdatesState extends types.UserContextWebPartState implements ICl
   public DefForm: ICLDefForm = null;
 
   public HideCantCreateExtensionMessage = true;
+  public ArchivedListRefreshCounter:number = 0;
 
 
 
@@ -156,6 +158,7 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
                 onChangeFilterText={this.handleSection1_ChangeFilterText}
                 currentUserId={this.getCurrentUserId()}
                 superUserPermission={this.isSuperUser()}
+                onAfterArchived={this.handleAfterArchived}
 
                 {...this.props}
               />
@@ -173,6 +176,7 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
                 onCreateExtension={this.handleCreateExtensionClick}
                 currentUserId={this.getCurrentUserId()}
                 superUserPermission={this.isSuperUser()}
+                onAfterArchived={this.handleAfterArchived}
                 {...this.props}
               />
 
@@ -187,6 +191,7 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
                 onChangeFilterText={this.handleSection3_ChangeFilterText}
                 currentUserId={this.getCurrentUserId()}
                 superUserPermission={this.isSuperUser()}
+                listRefreshCounter={this.state.ArchivedListRefreshCounter}
                 {...this.props}
               />
 
@@ -549,6 +554,14 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
     console.log('in handleShowCaseTab');
     this.clearErrors();
     this.setState({ SelectedPivotKey: this.headerTxt_NewCaseTab });
+  }
+
+  private handleAfterArchived = (): void => {
+    console.log('in handleAfterArchived');
+    this.loadCaseCounts();
+    this.setState({ ArchivedListRefreshCounter: this.state.ArchivedListRefreshCounter+1 });
+    
+
   }
 
 
