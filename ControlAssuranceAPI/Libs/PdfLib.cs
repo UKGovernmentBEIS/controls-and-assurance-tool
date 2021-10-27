@@ -2650,6 +2650,49 @@ namespace ControlAssuranceAPI.Libs
 
             #endregion Leaving
 
+            #region Case Discussion, General Comments
+
+            //Details of applicant
+            paragraph = section.AddParagraph();
+            paragraph.AddLineBreak();
+            paragraph.AddLineBreak();
+            paragraph.AddLineBreak();
+
+            paragraph.AddFormattedText("Case Discussion, General Comments", "subHeading1");
+            paragraph.AddLineBreak();
+            table = section.AddTable();
+
+            SetTableStyle(ref table);
+
+            column = AddColumnInTable(ref table, "3cm");
+            column = AddColumnInTable(ref table, "3cm");
+            column = AddColumnInTable(ref table, "12cm");
+
+
+            row = table.AddRow();
+            row.Style = "bold1";
+            //row.Format.Alignment = ParagraphAlignment.Left;
+            row.Cells[0].AddParagraph("Date");            
+            row.Cells[1].AddParagraph("By");
+            row.Cells[2].AddParagraph("Details");
+
+            var generalComments = cLCaseEvidenceRepository.GetEvidences(cLWorker.CLCaseId.Value);
+
+            foreach(var iteComment in generalComments)
+            {
+                row = table.AddRow();
+                row.Cells[0].AddParagraph(iteComment.DateAdded);
+                row.Cells[1].AddParagraph(iteComment.AddedBy);
+                row.Cells[2].AddParagraph(iteComment.Details);
+            }
+
+
+
+            #endregion Case Discussion, General Comments
+
+
+
+
             #endregion content tables
 
 
