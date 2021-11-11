@@ -652,12 +652,29 @@ namespace ControlAssuranceAPI.Repositories
             bool newCase = false;
             if (cLcase.CaseCreated != true)
             {
-                newCase = true;
-                //new case
-                cLcase.CaseCreated = true;
                 int newCaseRef = this.GetNewCaseRef();
-                cLcase.CaseRef = newCaseRef;
-                cLcase.CaseChangeLog = $"{date} Case Added by {user},";
+
+                int tryAgain1_attempt = 0;
+
+                tryAgain1:
+                try
+                {
+                    newCase = true;
+                    //new case
+                    cLcase.CaseCreated = true;                   
+                    cLcase.CaseRef = newCaseRef;
+                    cLcase.CreatedOn = DateTime.Now;
+                    cLcase.CaseChangeLog = $"{date} Case Added by {user},";
+                    db.SaveChanges();
+                }
+                catch(Exception ex)
+                {
+                    string msg = ex.Message;
+                    newCaseRef = newCaseRef + 1;
+                    tryAgain1_attempt++;
+                    if(tryAgain1_attempt < 10)
+                        goto tryAgain1;
+                }
 
                 CLWorker cLWorker = new CLWorker();
                 cLWorker.CLCaseId = cLcase.ID;
@@ -873,10 +890,31 @@ namespace ControlAssuranceAPI.Repositories
             cLCase.HRBPUserId = existingCase.HRBPUserId;
             
             cLCase.CaseCreated = true;
+
+
+
+
+
             int newCaseRef = this.GetNewCaseRef();
-            cLCase.CaseRef = newCaseRef;
             db.CLCases.Add(cLCase);
-            db.SaveChanges();
+
+            int tryAgain1_attempt = 0;
+
+            tryAgain1:
+            try
+            {
+                cLCase.CaseRef = newCaseRef;                
+                db.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                string msg = ex.Message;
+                newCaseRef = newCaseRef + 1;
+                tryAgain1_attempt++;
+                if (tryAgain1_attempt < 10)
+                    goto tryAgain1;
+            }
+
 
             ////create ir35 evidence record
             //var existingIR35Ev = db.CLCaseEvidences.FirstOrDefault(x => x.ParentId == existingCase.ID && x.EvidenceType == "IR35" && x.RecordCreated == true);
