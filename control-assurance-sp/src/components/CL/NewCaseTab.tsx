@@ -116,6 +116,7 @@ export interface INewCaseTabState {
     ShowAllowChangeFinance: boolean;
     ShowAllowChangeOther: boolean;
     ShowAllowChangeApprovers: boolean;
+    ShowAllowChangeOnboarding: boolean;
     //DefForm: ICLDefForm;
 
     ShowHelpPanel: boolean;
@@ -154,6 +155,7 @@ export class NewCaseTabState implements INewCaseTabState {
     public ShowAllowChangeFinance: boolean = true;
     public ShowAllowChangeOther: boolean = true;
     public ShowAllowChangeApprovers: boolean = true;
+    public ShowAllowChangeOnboarding: boolean = true;
 
 
     public ShowHelpPanel = false;
@@ -310,7 +312,10 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                 {archived === false && (stage === "Approval") && this.renderCLApprovalDecision()}
                 {archived === false && stage === "Approval" && this.renderFormButtons_ApprovalStage()}
 
-                {stage === "Onboarding" && isViewOnly === false && this.renderOnboarding()}
+                {/*stage === "Onboarding" && */isViewOnly === false && this.renderOnboarding()}
+
+
+
                 {stage === "Onboarding" && isViewOnly === false && this.renderFormButtons_OnboardingStage()}
                 {((stage === "Onboarding" && isViewOnly === true) || (stage === "Engaged" || stage === "Leaving" || stage === "Left" || stage === "Extended")) && this.renderOnboarding_info()}
 
@@ -3359,6 +3364,14 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         //if (this.state.Stage !== "Onboarding") return;
         if (this.props.defForm === null) return;
 
+
+        if (this.props.stage === "Onboarding" || (this.state.ShowAllowChangeOnboarding === false)) {
+            console.log('renderOnboarding - 1');
+        }
+        else return null;
+
+
+
         // const genderOptions: IDropdownOption[] = [
         //     { key: 'Male', text: 'Male' },
         //     { key: 'Female', text: 'Female' },
@@ -4274,6 +4287,23 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
 
 
+
+                    <div style={{ marginBottom: '10px' }}>
+                        {this.state.ShowAllowChangeOnboarding === false &&
+                            <div>
+                                <span style={{ cursor: 'pointer', color: 'blue' }} onClick={() => {
+                                    this.toggleAllowChangeOnboarding();
+                                    this.saveData_Worker(false, false, false, false, false, true);
+
+                                }}>Save</span>&nbsp;&nbsp;
+                                <span style={{ cursor: 'pointer', color: 'blue' }} onClick={this.toggleAllowChangeOnboarding}>Cancel</span>
+                            </div>
+                        }
+                    </div>
+
+
+
+
                 </div>
 
 
@@ -4317,6 +4347,11 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     }
 
     private renderOnboarding_info() {
+
+        let allowChange: boolean = false;
+        if (this.props.superUserPermission === true) {
+            allowChange = true;
+        }
 
         const fd = this.state.FormDataWorker;
         const caseInfo = this.state.CaseInfo;
@@ -4550,6 +4585,11 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
 
                     </table>
+                </div>
+
+
+                <div style={{ paddingTop: '5px' }}>
+                    {this.isViewOnlyPermission() === false && this.state.ShowAllowChangeOnboarding === true && allowChange === true && <span style={{ cursor: 'pointer', color: 'blue' }} onClick={this.toggleAllowChangeOnboarding}>Change Onboarding</span>}
                 </div>
 
             </React.Fragment>
@@ -6358,7 +6398,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         }
     }
 
-    private saveData_Worker = (submitToEngaged: boolean, saveEngaged: boolean, moveToChecksDone: boolean, saveLeaving: boolean, moveToArchive: boolean): void => {
+    private saveData_Worker = (submitToEngaged: boolean, saveEngaged: boolean, moveToChecksDone: boolean, saveLeaving: boolean, moveToArchive: boolean, stayOnNewCaseTab?: boolean): void => {
         if (this.validateEntity_Onboarding(submitToEngaged)) {
 
             console.log('in saveData_Onboarding');
@@ -6412,7 +6452,14 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                     this.setState({ HideSubmitEngagedDoneMessage: false });
                 }
                 else {
-                    this.props.onShowList(true);
+
+                    if (stayOnNewCaseTab === true) {
+                        this.loadCaseInfo();
+                        this.loadCLWorker();
+                    }
+                    else {
+                        this.props.onShowList(true);
+                    }
                 }
 
 
@@ -6486,7 +6533,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         }, (err) => { if (this.props.onError) this.props.onError(`Error loading CLIR35Scopes lookup data`, err.message); });
     }
     private loadCLSecurityClearances = (): void => {
-        if (this.state.Stage !== "Onboarding") return;
+        //if (this.state.Stage !== "Onboarding") return;
 
         this.clSecurityClearanceService.readAll().then((data: IEntity[]): IEntity[] => {
             console.log('loadCLSecurityClearances - data', data);
@@ -6496,7 +6543,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     }
 
     private loadCLDeclarationConflicts = (): void => {
-        if (this.state.Stage !== "Onboarding") return;
+        //if (this.state.Stage !== "Onboarding") return;
 
         this.clDeclarationConflictService.readAll().then((data: IEntity[]): IEntity[] => {
             console.log('CLDeclarationConflicts - data', data);
@@ -6506,7 +6553,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     }
 
     private loadPersonTitles = (): void => {
-        if (this.state.Stage !== "Onboarding") return;
+        //if (this.state.Stage !== "Onboarding") return;
 
         this.personTitleService.readAll().then((data: IEntity[]): IEntity[] => {
             console.log('PersonTitles - data', data);
@@ -7311,6 +7358,12 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     private toggleAllowChangeApprovers = (): void => {
         this.setState({
             ShowAllowChangeApprovers: !this.state.ShowAllowChangeApprovers,
+        });
+    }
+
+    private toggleAllowChangeOnboarding = (): void => {
+        this.setState({
+            ShowAllowChangeOnboarding: !this.state.ShowAllowChangeOnboarding,
         });
     }
 

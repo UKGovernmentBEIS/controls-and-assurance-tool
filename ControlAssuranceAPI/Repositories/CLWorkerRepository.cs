@@ -116,6 +116,8 @@ namespace ControlAssuranceAPI.Repositories
                 {
                     clWorker.Stage = CLCaseRepository.CaseStages.Left.Name;
                     clWorker.Archived = true;
+                    //Date leaving details confirmed by hiring manager.
+                    clWorker.LeMoveToArchiveDate = DateTime.Now;
                 }
 
                 db.SaveChanges();
@@ -124,6 +126,8 @@ namespace ControlAssuranceAPI.Repositories
             else if (inputWorker.Title == "SubmitToEngaged")
             {
                 clWorker.Stage = CLCaseRepository.CaseStages.Engaged.Name;
+                //Date when On-boarding details are submitted
+                clWorker.OnbSubmitDate = DateTime.Now;
                 //copy few values for later usage for the leaving stage
                 clWorker.LeEndDate = inputWorker.OnbEndDate;
                 clWorker.LeContractorPhone = inputWorker.OnbContractorPhone;
