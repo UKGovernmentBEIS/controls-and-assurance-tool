@@ -317,7 +317,7 @@ namespace ControlAssuranceAPI.Repositories
             List<CLCaseView_Result> retList = new List<CLCaseView_Result>();
 
             var qry = from w in db.CLWorkers
-                      where w.CLCase.CaseCreated == true
+                      where w.CLCase.CaseCreated == true                     
                       select new
                       {
                           w.ID,
@@ -614,10 +614,15 @@ namespace ControlAssuranceAPI.Repositories
         private int GetNewCaseRef()
         {
             int newCaseRef = 1;
-            var lastRecord = db.CLCases.Where(x => x.CaseCreated == true).OrderByDescending(x => x.ID).FirstOrDefault();
-            if (lastRecord != null)
+            //var lastRecord = db.CLCases.Where(x => x.CaseCreated == true).OrderByDescending(x => x.ID).FirstOrDefault();
+
+            var lastCaseRef = db.CLCases.Max(x => x.CaseRef);
+
+            //if (lastRecord != null)
+            if(lastCaseRef.HasValue)
             {
-                newCaseRef = lastRecord.CaseRef.Value + 1;
+                //newCaseRef = lastRecord.CaseRef.Value + 1;
+                newCaseRef = lastCaseRef.Value + 1;
             }
             return newCaseRef;
         }
