@@ -941,8 +941,10 @@ namespace ControlAssuranceAPI.Repositories
             //list3 Item
             CL_Superusers lst3_Item = new CL_Superusers();
 
+            var clWorkres = db.CLWorkers.Where(x => x.Archived != true);
 
-            foreach (var worker in db.CLWorkers)
+            //foreach (var worker in db.CLWorkers)
+            foreach (var worker in clWorkres)
             {
                 CL_HiringManagerAndStaff lst1_Item = lst1.FirstOrDefault(x => x.UserId == worker.CLCase.ApplHMUserId && x.UserType == "Hiring Manager");
                 
