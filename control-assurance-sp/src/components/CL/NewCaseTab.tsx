@@ -655,10 +655,10 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
 
 
-        let numPositionsLength: number = 1; //default for hiring manager
-        if (this.props.superUserPermission === true) {
-            numPositionsLength = 2;
-        }
+        // let numPositionsLength: number = 1; //default for hiring manager
+        // if (this.props.superUserPermission === true) {
+        //     numPositionsLength = 2;
+        // }
         //dont show this section if user is viewer
 
         const reqVacancyTitleValidationImg = fd.ReqVacancyTitle !== null && fd.ReqVacancyTitle.length > 1 ? this.checkIconGreen : this.checkIconRed;
@@ -994,10 +994,11 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                             <div style={{ display: 'flex', marginTop: '5px' }}>
                                 <div style={{ width: '50%', paddingRight: '5px' }}>
                                     <CrTextField
-                                        onChanged={(v) => this.changeTextField(v, "ReqNumPositions")}
+                                        onChanged={(v) => this.changeTextField_ReqNumPositions(v, "ReqNumPositions")}
                                         value={String(fd.ReqNumPositions)}
-                                        numbersOnly={true}
-                                        maxLength={numPositionsLength}
+                                        //numbersOnly={true}
+                                        //maxLength={numPositionsLength}
+                                        maxLength={2}
                                         readOnly={fd.CaseType === "Extension" ? true : false}
 
                                     />
@@ -1011,7 +1012,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                     <div style={{ width: '50%', }}>
 
                                         <div style={{ fontSize: '14px', color: 'navy', fontStyle: 'italic', paddingTop: '0px', marginTop: '0px', paddingLeft: '10px' }}>
-                                            Note: if case has multiple positions, the system will only show it as one case to the approvers. Once the case has been approved, it will create multiple records for onboarding each worker individually.
+                                            Note: if case has multiple positions, the system will only show it as one case to the approvers. Once the case has been approved, it will create multiple records for onboarding each worker individually. Max limit is set to 30. Contact Internal Controls if you require more.
                                         </div>
                                     </div>
                                 }
@@ -4591,6 +4592,12 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                 <div style={{ paddingTop: '5px' }}>
                     {this.isViewOnlyPermission() === false && this.state.ShowAllowChangeOnboarding === true && allowChange === true && <span style={{ cursor: 'pointer', color: 'blue' }} onClick={this.toggleAllowChangeOnboarding}>Change Onboarding</span>}
                 </div>
+                <div style={{ marginTop: '5px' }}>
+                    {fd.SDSPdfStatus !== "Working... Please Wait" && <div style={{ color: 'blue', cursor: 'pointer' }} onClick={() => this.createSDSPdf()}>Create SDS PDF</div>}
+                    {fd.SDSPdfStatus === "Working... Please Wait" && <div>Creating SDS... Please Wait.. To refresh status <span style={{ color: 'blue', cursor: 'pointer' }} onClick={() => this.refreshSDSPdfStatus()}>Click Here</span></div>}
+                    {fd.SDSPdfStatus === "Cr" && <div>Last PDF created by {fd.SDSPdfLastActionUser} on {services.DateService.dateToUkDateTime(fd.SDSPdfDate)} <span style={{ color: 'blue', cursor: 'pointer' }} onClick={() => this.downloadSDSPdf()}>Download</span>  </div>}
+                    {fd.SDSPdfStatus && fd.SDSPdfStatus.search("Err:") === 0 && <div>Last PDF creation error. Attempted by {fd.SDSPdfLastActionUser} on {services.DateService.dateToUkDateTime(fd.SDSPdfDate)} <br />{fd.SDSPdfStatus}  </div>}
+                </div>
 
             </React.Fragment>
         );
@@ -5506,12 +5513,12 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                     </table>
                 </div>
 
-                <div style={{ marginTop: '5px' }}>
+                {/* <div style={{ marginTop: '5px' }}>
                     {fd.SDSPdfStatus !== "Working... Please Wait" && <div style={{ color: 'blue', cursor: 'pointer' }} onClick={() => this.createSDSPdf()}>Create SDS PDF</div>}
                     {fd.SDSPdfStatus === "Working... Please Wait" && <div>Creating SDS... Please Wait.. To refresh status <span style={{ color: 'blue', cursor: 'pointer' }} onClick={() => this.refreshSDSPdfStatus()}>Click Here</span></div>}
                     {fd.SDSPdfStatus === "Cr" && <div>Last PDF created by {fd.SDSPdfLastActionUser} on {services.DateService.dateToUkDateTime(fd.SDSPdfDate)} <span style={{ color: 'blue', cursor: 'pointer' }} onClick={() => this.downloadSDSPdf()}>Download</span>  </div>}
                     {fd.SDSPdfStatus && fd.SDSPdfStatus.search("Err:") === 0 && <div>Last PDF creation error. Attempted by {fd.SDSPdfLastActionUser} on {services.DateService.dateToUkDateTime(fd.SDSPdfDate)} <br />{fd.SDSPdfStatus}  </div>}
-                </div>
+                </div> */}
 
 
             </React.Fragment>
@@ -6807,6 +6814,45 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         if (changeProp)
             return { ...obj, [changeProp]: changeValue };
         return { ...obj };
+    }
+
+    private changeTextField_ReqNumPositions = (value: string, f: string): void => {
+
+        let maxLimit:number = 30;
+        if(this.props.superUserPermission === true)
+            maxLimit = 99;
+
+        if (value == null || value == '') {
+            console.log('set value to null');
+            this.setState({ FormData: this.cloneObject(this.state.FormData, f, value)/*, FormIsDirty: true*/ });
+        }
+        else {
+            const isNum: boolean = this.isNumeric(value);
+            console.log('isNumeric', isNum);
+            if (isNum === true) {
+                if( Number(value) <= maxLimit ){
+                    if( Number(value) == 0 ){
+                        //make 1 if they enter 0
+                        this.setState({ FormData: this.cloneObject(this.state.FormData, f, "1")/*, FormIsDirty: true*/ });
+                    }
+                    else{
+                        //set to value what they entered
+                        this.setState({ FormData: this.cloneObject(this.state.FormData, f, value)/*, FormIsDirty: true*/ });
+                    }
+                    
+                }
+                else{
+                    //set to max limit
+                    this.setState({ FormData: this.cloneObject(this.state.FormData, f, String(maxLimit))/*, FormIsDirty: true*/ });
+                }
+                
+            }
+            else {
+                this.setState({ FormData: this.cloneObject(this.state.FormData, f, this.state.FormData[f])/*, FormIsDirty: true*/ });
+            }
+
+        }
+
     }
 
     protected changeTextField_number = (value: string, f: string): void => {
