@@ -132,6 +132,7 @@
           <Property Name="EvidenceType" Type="nvarchar" MaxLength="50" />
           <Property Name="AttachmentType" Type="nvarchar" MaxLength="50" />
           <Property Name="RecordCreated" Type="bit" />
+          <Property Name="CLWorkerId" Type="int" />
         </EntityType>
         <EntityType Name="CLComFramework">
           <Key>
@@ -3156,6 +3157,7 @@
           <Property Name="EvidenceType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="AttachmentType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="RecordCreated" Type="Boolean" />
+          <Property Name="CLWorkerId" Type="Int32" />
           <NavigationProperty Name="User" Relationship="Self.FK_CLCaseEvidence_User" FromRole="CLCaseEvidence" ToRole="User" />
         </EntityType>
         <EntityType Name="CLComFramework">
@@ -6547,6 +6549,7 @@
                 <ScalarProperty Name="EvidenceType" ColumnName="EvidenceType" />
                 <ScalarProperty Name="AttachmentType" ColumnName="AttachmentType" />
                 <ScalarProperty Name="RecordCreated" ColumnName="RecordCreated" />
+                <ScalarProperty Name="CLWorkerId" ColumnName="CLWorkerId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

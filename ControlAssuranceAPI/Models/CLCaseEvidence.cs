@@ -24,6 +24,7 @@ namespace ControlAssuranceAPI.Models
         public string EvidenceType { get; set; }
         public string AttachmentType { get; set; }
         public Nullable<bool> RecordCreated { get; set; }
+        public Nullable<int> CLWorkerId { get; set; }
     
         public virtual User User { get; set; }
     }

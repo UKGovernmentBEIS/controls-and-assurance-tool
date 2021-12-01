@@ -2666,7 +2666,8 @@ namespace ControlAssuranceAPI.Libs
 
             column = AddColumnInTable(ref table, "3cm");
             column = AddColumnInTable(ref table, "3cm");
-            column = AddColumnInTable(ref table, "12cm");
+            column = AddColumnInTable(ref table, "3cm");
+            column = AddColumnInTable(ref table, "9cm");
 
 
             row = table.AddRow();
@@ -2674,16 +2675,18 @@ namespace ControlAssuranceAPI.Libs
             //row.Format.Alignment = ParagraphAlignment.Left;
             row.Cells[0].AddParagraph("Date");            
             row.Cells[1].AddParagraph("By");
-            row.Cells[2].AddParagraph("Details");
+            row.Cells[2].AddParagraph("Reference");
+            row.Cells[3].AddParagraph("Details");
 
-            var generalComments = cLCaseEvidenceRepository.GetEvidences(cLWorker.CLCaseId.Value);
+            var generalComments = cLCaseEvidenceRepository.GetEvidences(cLWorker.CLCaseId.Value, cLWorker.ID);
 
             foreach(var iteComment in generalComments)
             {
                 row = table.AddRow();
                 row.Cells[0].AddParagraph(iteComment.DateAdded);
                 row.Cells[1].AddParagraph(iteComment.AddedBy);
-                row.Cells[2].AddParagraph(iteComment.Details);
+                row.Cells[2].AddParagraph(iteComment.Reference);
+                row.Cells[3].AddParagraph(iteComment.Details);
             }
 
 

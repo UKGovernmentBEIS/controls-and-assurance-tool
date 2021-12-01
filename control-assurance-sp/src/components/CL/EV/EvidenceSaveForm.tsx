@@ -17,6 +17,7 @@ import { TooltipHost } from 'office-ui-fabric-react';
 
 export interface IEvidenceSaveFormProps extends types.IBaseComponentProps {
     parentId: number;
+    workerId?: number;
     evidenceId: number;
     showForm: boolean;
     evidenceType?:string;
@@ -65,13 +66,13 @@ export class EvidenceSaveFormState implements IEvidenceSaveFormState {
     public EditRequest = false;
     public ErrMessages = new ErrorMessage();
 
-    constructor(parentId: number, evidenceType:string) {
+    constructor(parentId: number, workerId:number, evidenceType:string) {
         let defaultAttachmentType:string = "None";
         if(evidenceType === "IR35" || evidenceType === "ContractorSecurityCheck"){
             defaultAttachmentType = "PDF";
         }
-        this.FormData = new CLCaseEvidence(parentId, evidenceType, defaultAttachmentType);
-        this.FormDataBeforeChanges = new CLCaseEvidence(parentId, evidenceType, defaultAttachmentType);
+        this.FormData = new CLCaseEvidence(parentId, evidenceType, defaultAttachmentType, workerId);
+        this.FormDataBeforeChanges = new CLCaseEvidence(parentId, evidenceType, defaultAttachmentType, workerId);
     }
 
 }
@@ -88,7 +89,7 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
         this.UploadFolder_Evidence = getUploadFolder_CLEvidence(props.spfxContext);
         this.Folder_Help = getFolder_Help(props.spfxContext);
 
-        this.state = new EvidenceSaveFormState(props.parentId, props.evidenceType);
+        this.state = new EvidenceSaveFormState(props.parentId, props.workerId, props.evidenceType);
     }
 
     //#region Render

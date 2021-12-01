@@ -13,6 +13,7 @@ namespace ControlAssuranceAPI.Models
         public string AddedBy { get; set; }
         public string Details { get; set; }
         public string AttachmentType { get; set; }
+        public string Reference { get; set; }
 
     }
 }

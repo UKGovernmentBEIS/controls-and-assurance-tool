@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Principal;
 using System.Web;
 
+
 namespace ControlAssuranceAPI.Repositories
 {
     public class CLCaseEvidenceRepository : BaseRepository
@@ -49,6 +50,22 @@ namespace ControlAssuranceAPI.Repositories
             {
                 cLCaseEvidence.RecordCreated = true;
             }
+
+            if(cLCaseEvidence.CLWorkerId != null)
+            {
+                var worker = db.CLWorkers.FirstOrDefault(w => w.ID == cLCaseEvidence.CLWorkerId);
+                if (CLCaseRepository.CaseStages.GetStageNumber(worker.Stage) >= CLCaseRepository.CaseStages.Onboarding.Number)
+                {
+                    //keep the worker id, means evidence is against that worker
+                }
+                else
+                {
+                    //make null, means evidence is against case, not the worker
+                    cLCaseEvidence.CLWorkerId = null;
+                }
+
+            }
+
             var x = db.CLCaseEvidences.Add(cLCaseEvidence);
             return x;
         }
@@ -71,7 +88,7 @@ namespace ControlAssuranceAPI.Repositories
             return db.CLCaseEvidences.Remove(cLCaseEvidence);
         }
 
-        public List<CLCaseEvidenceView_Result> GetEvidences(int parentId)
+        public List<CLCaseEvidenceView_Result> GetEvidences(int parentId, int workerId)
         {
             //var loggedInUser = ApiUser;
             ////string loggedInUserTitle = loggedInUser.Title;
@@ -81,20 +98,44 @@ namespace ControlAssuranceAPI.Repositories
 
             List<CLCaseEvidenceView_Result> retList = new List<CLCaseEvidenceView_Result>();
 
-            var qry = from w in db.CLCaseEvidences
-                      where w.ParentId == parentId
-                      && w.RecordCreated == true
-                      && w.EvidenceType != "IR35"
-                      && w.EvidenceType != "ContractorSecurityCheck"
+            if (parentId == 0 || workerId == 0)
+                return retList;
+
+            var worker = db.CLWorkers.FirstOrDefault(w => w.ID == workerId);
+            string caseRef = "";
+            string caseRef_BeforeOnB = "";
+            string caseRef_OnAndAfterOnB = "";
+
+            if (worker.CLCase.CaseCreated == true)
+            {
+                caseRef = $"{worker.CLCase.CLComFramework?.Title ?? ""}{worker.CLCase.CaseRef}";
+                
+                caseRef_BeforeOnB = caseRef;
+                caseRef_OnAndAfterOnB = caseRef;
+
+                if (CLCaseRepository.CaseStages.GetStageNumber(worker.Stage) >= CLCaseRepository.CaseStages.Onboarding.Number && worker.CLCase.ReqNumPositions > 1)
+                {
+                    caseRef += $"/{worker.CLCase.ReqNumPositions}/{worker.WorkerNumber?.ToString() ?? ""}";
+                    caseRef_OnAndAfterOnB = caseRef;
+                }
+            }
+
+            var qry = from ev in db.CLCaseEvidences
+                      where ev.ParentId == parentId
+                      && ev.RecordCreated == true
+                      && ev.EvidenceType != "IR35"
+                      && ev.EvidenceType != "ContractorSecurityCheck"
+                      && (ev.CLWorkerId == null || ev.CLWorkerId == workerId)
                       select new
                       {
-                          w.ID,
-                          w.Title,
+                          ev.ID,
+                          ev.Title,
                           //w.IsLink,
-                          w.Details,
-                          w.DateUploaded,
-                          User = w.User.Title,
-                          w.AttachmentType,
+                          ev.Details,
+                          ev.DateUploaded,
+                          User = ev.User.Title,
+                          ev.AttachmentType,
+                          ev.CLWorkerId
 
 
                       };
@@ -112,7 +153,8 @@ namespace ControlAssuranceAPI.Repositories
                 item.DateAdded = ite.DateUploaded?.ToString("dd/MM/yyyy HH:mm") ?? "";
                 item.AddedBy = ite.User;
                 item.AttachmentType = ite.AttachmentType;
-
+                //item.Reference = ite.CLWorkerId == null ? "Case" : $"Worker - {worker.OnbContractorFirstname?.Trim() ?? ""} {worker.OnbContractorSurname?.Trim() ?? ""}";
+                item.Reference = ite.CLWorkerId == null ? caseRef_BeforeOnB : caseRef_OnAndAfterOnB;
 
 
                 retList.Add(item);

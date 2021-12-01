@@ -2044,6 +2044,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                 <div style={{ minHeight: '120px', border: '1px solid rgb(166,166,166)' }}>
                     <EvidenceList
                         parentId={this.state.FormData.ID}
+                        workerId={this.state.FormDataWorker.ID}
                         isViewOnly={this.isViewOnlyPermission()}
                         filterText={this.state.Evidence_ListFilterText}
                         onChangeFilterText={this.handleEvidence_ChangeFilterText}

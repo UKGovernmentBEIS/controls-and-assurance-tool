@@ -17,6 +17,7 @@ import { getUploadFolder_CLEvidence } from '../../../types/AppGlobals';
 export interface IEvidenceListProps extends types.IBaseComponentProps {
 
     parentId: any;
+    workerId?: number;
     filterText?: string;
     onChangeFilterText: (value: string) => void;
 
@@ -100,6 +101,17 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
             minWidth: 100,
             maxWidth: 100,
             isResizable: true,
+            headerClassName: styles.bold,
+
+        },
+        {
+            key: 'Reference',
+            name: 'Reference',
+            fieldName: 'Reference',
+            minWidth: 100,
+            maxWidth: 100,
+            isResizable: true,
+            isMultiline: true,
             headerClassName: styles.bold,
 
         },
@@ -211,9 +223,8 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
 
             <EvidenceSaveForm
                 showForm={this.state.ShowForm}
-                //goElementId={this.props.goElementId}
                 parentId={this.props.parentId}
-
+                workerId={this.props.workerId}
                 evidenceId={this.state.SelectedEntity}
                 onSaved={this.fileSaved}
                 onCancelled={this.closePanel}
@@ -399,7 +410,7 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
 
     private loadEvidences = (): void => {
         this.setState({ Loading: true });
-        const read: Promise<IEntity[]> = this.cLCaseEvidenceService.readAllByParentId(this.props.parentId);
+        const read: Promise<IEntity[]> = this.cLCaseEvidenceService.readAllByParentId(this.props.parentId, this.props.workerId);
         read.then((entities: any): void => {
             console.log(entities);
             this.setState({
@@ -420,7 +431,7 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
     }
     public componentDidUpdate(prevProps: IEvidenceListProps): void {
         console.log("in component DidUpdate", this.props.parentId);
-        if (prevProps.parentId !== this.props.parentId || prevProps.evChangesCounter !== this.props.evChangesCounter) {
+        if (prevProps.parentId !== this.props.parentId || prevProps.workerId !== this.props.workerId || prevProps.evChangesCounter !== this.props.evChangesCounter) {
             console.log("in component DidUpdate load");
             this.loadEvidences();
         }
