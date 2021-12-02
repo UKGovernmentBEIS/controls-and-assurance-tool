@@ -430,11 +430,18 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
 
     }
     public componentDidUpdate(prevProps: IEvidenceListProps): void {
-        console.log("in component DidUpdate", this.props.parentId);
-        if (prevProps.parentId !== this.props.parentId || prevProps.workerId !== this.props.workerId || prevProps.evChangesCounter !== this.props.evChangesCounter) {
-            console.log("in component DidUpdate load");
-            this.loadEvidences();
+        console.log("in component DidUpdate", "parentId", this.props.parentId, "workerId", this.props.workerId, "counter", this.props.evChangesCounter);
+        if(this.props.parentId > 0 && this.props.workerId > 0){
+            if (prevProps.parentId !== this.props.parentId || prevProps.workerId !== this.props.workerId || prevProps.evChangesCounter !== this.props.evChangesCounter) {
+                console.log("in component DidUpdate load");
+                this.loadEvidences();
+            }
+
         }
+        else{
+            console.log('parentId or workerId is 0 or null')
+        }
+
     }
 
 
