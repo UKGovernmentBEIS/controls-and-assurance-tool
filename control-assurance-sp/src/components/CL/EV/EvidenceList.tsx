@@ -439,7 +439,7 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
 
         }
         else{
-            console.log('parentId or workerId is 0 or null')
+            console.log('parentId or workerId is 0 or null');
         }
 
     }
