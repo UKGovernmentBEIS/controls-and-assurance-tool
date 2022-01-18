@@ -188,10 +188,7 @@ namespace ControlAssuranceAPI.Repositories
                     var method = frame.GetMethod().ReflectedType.FullName;
                     //var path = frame.GetFileName();
 
-                    APILog aPILog = new APILog();
-                    aPILog.Title = $"{DateTime.Now} - AutomationOptionRepository.ProcessAsAutoFunction - {ex.Message} -Line: {line.ToString()} -Method: {method} -Stack: {st}";
-                    dbThread.APILogs.Add(aPILog);
-                    dbThread.SaveChanges();
+                    AddApiLog($"AutomationOptionRepository.ProcessAsAutoFunction - {ex.Message} -Line: {line.ToString()} -Method: {method} -Stack: {st}", dbThread);
                 }
                 finally
                 {
@@ -956,10 +953,7 @@ namespace ControlAssuranceAPI.Repositories
 
             var clWorkres = db.CLWorkers.Where(x => x.Archived != true);
 
-            APILog aPILog = new APILog();
-            aPILog.Title = $"{DateTime.Now} - AutomationOptionRepository.CL_Reminders 1";
-            db.APILogs.Add(aPILog);
-            db.SaveChanges();
+            AddApiLog("AutomationOptionRepository.CL_Reminders 1", db);
 
             //foreach (var worker in db.CLWorkers)
             foreach (var worker in clWorkres)
@@ -969,11 +963,7 @@ namespace ControlAssuranceAPI.Repositories
                 //list 2
                 CL_Approver lst2_Item = lst2.FirstOrDefault(x => x.UserId == worker.CLCase.BHUserId && x.ApproverType == "Budget Holder");
 
-
-                aPILog = new APILog();
-                aPILog.Title = $"{DateTime.Now} - AutomationOptionRepository.CL_Reminders 2.1";
-                db.APILogs.Add(aPILog);
-                db.SaveChanges();
+                AddApiLog("AutomationOptionRepository.CL_Reminders 2.1", db);
 
                 if (lst1_Item == null)
                 {
@@ -991,10 +981,7 @@ namespace ControlAssuranceAPI.Repositories
                 }
 
 
-                aPILog = new APILog();
-                aPILog.Title = $"{DateTime.Now} - AutomationOptionRepository.CL_Reminders 2.2";
-                db.APILogs.Add(aPILog);
-                db.SaveChanges();
+                AddApiLog("AutomationOptionRepository.CL_Reminders 2.2", db);
 
                 //case ref
                 string caseRef = $"{worker.CLCase.CLComFramework?.Title ?? ""}{worker.CLCase.CaseRef}";
@@ -1004,18 +991,12 @@ namespace ControlAssuranceAPI.Repositories
                 }
 
 
-                aPILog = new APILog();
-                aPILog.Title = $"{DateTime.Now} - AutomationOptionRepository.CL_Reminders 2.3";
-                db.APILogs.Add(aPILog);
-                db.SaveChanges();
+                AddApiLog("AutomationOptionRepository.CL_Reminders 2.3", db);
 
                 //run for Hiring Manager
                 localFuncBuild_HiringManagerAndStaff("lst1");
 
-                aPILog = new APILog();
-                aPILog.Title = $"{DateTime.Now} - AutomationOptionRepository.CL_Reminders 2.4";
-                db.APILogs.Add(aPILog);
-                db.SaveChanges();
+                AddApiLog("AutomationOptionRepository.CL_Reminders 2.4", db);
 
                 //run for Hiring Member
                 foreach (var hiringMember in worker.CLCase.CLHiringMembers)
@@ -1040,10 +1021,7 @@ namespace ControlAssuranceAPI.Repositories
                 }
 
 
-                aPILog = new APILog();
-                aPILog.Title = $"{DateTime.Now} - AutomationOptionRepository.CL_Reminders 2.5";
-                db.APILogs.Add(aPILog);
-                db.SaveChanges();
+                AddApiLog("AutomationOptionRepository.CL_Reminders 2.5", db);
 
 
 
@@ -1112,10 +1090,7 @@ namespace ControlAssuranceAPI.Repositories
                     localFuncBuild_HiringManagerAndStaff("lst2");
                 }
 
-                aPILog = new APILog();
-                aPILog.Title = $"{DateTime.Now} - AutomationOptionRepository.CL_Reminders 2.6";
-                db.APILogs.Add(aPILog);
-                db.SaveChanges();
+                AddApiLog("AutomationOptionRepository.CL_Reminders 2.6", db);
 
                 if (worker.Stage == CLCaseRepository.CaseStages.Engaged.Name)
                 {
@@ -1138,10 +1113,7 @@ namespace ControlAssuranceAPI.Repositories
                     }
                 }
 
-                aPILog = new APILog();
-                aPILog.Title = $"{DateTime.Now} - AutomationOptionRepository.CL_Reminders 2.7";
-                db.APILogs.Add(aPILog);
-                db.SaveChanges();
+                AddApiLog("AutomationOptionRepository.CL_Reminders 2.7", db);
 
                 if (worker.Stage == CLCaseRepository.CaseStages.Leaving.Name)
                 {
@@ -1156,10 +1128,7 @@ namespace ControlAssuranceAPI.Repositories
                     }
                 }
 
-                aPILog = new APILog();
-                aPILog.Title = $"{DateTime.Now} - AutomationOptionRepository.CL_Reminders 2.8";
-                db.APILogs.Add(aPILog);
-                db.SaveChanges();
+                AddApiLog("AutomationOptionRepository.CL_Reminders 2.8", db);
 
                 void localFuncBuild_HiringManagerAndStaff(string lstType)
                 {
@@ -1275,27 +1244,19 @@ namespace ControlAssuranceAPI.Repositories
 
                 }
 
-                aPILog = new APILog();
-                aPILog.Title = $"{DateTime.Now} - AutomationOptionRepository.CL_Reminders 2.9";
-                db.APILogs.Add(aPILog);
-                db.SaveChanges();
+                AddApiLog("AutomationOptionRepository.CL_Reminders 2.9", db);
 
             }
 
 
-            aPILog = new APILog();
-            aPILog.Title = $"{DateTime.Now} - AutomationOptionRepository.CL_Reminders 3";
-            db.APILogs.Add(aPILog);
-            db.SaveChanges();
+            AddApiLog("AutomationOptionRepository.CL_Reminders 3", db);
 
 
 
             if (send_CLHiringManagerAndStaff == true)
             {
-                aPILog = new APILog();
-                aPILog.Title = $"{DateTime.Now} - AutomationOptionRepository.CL_Reminders 4";
-                db.APILogs.Add(aPILog);
-                db.SaveChanges();
+                AddApiLog("AutomationOptionRepository.CL_Reminders 4", db);
+
                 //add lst1 (CL-HiringManagerAndStaff) to db
                 foreach (var item in lst1)
                 {
@@ -1392,6 +1353,13 @@ namespace ControlAssuranceAPI.Repositories
 
         }
 
+        private void AddApiLog(string log, ControlAssuranceEntities db)
+        {
+            APILog aPILog = new APILog();
+            aPILog.Title = $"{DateTime.Now} - {log}";
+            db.APILogs.Add(aPILog);
+            db.SaveChanges();
+        }
 
 
         //private void SendQueueToNotify(ControlAssuranceEntities db, List<AutomationOption> automationOptions)
