@@ -2,6 +2,7 @@
 using ControlAssuranceAPI.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Principal;
 using System.Threading.Tasks;
@@ -178,7 +179,19 @@ namespace ControlAssuranceAPI.Repositories
                 }
                 catch(Exception ex)
                 {
+                    var st = new StackTrace(ex, true);
 
+                    // Get the bottom stack frame
+                    var frame = st.GetFrame(st.FrameCount - 1);
+                    // Get the line number from the stack frame
+                    var line = frame.GetFileLineNumber();
+                    var method = frame.GetMethod().ReflectedType.FullName;
+                    //var path = frame.GetFileName();
+
+                    APILog aPILog = new APILog();
+                    aPILog.Title = $"{DateTime.Now} - AutomationOptionRepository.ProcessAsAutoFunction - {ex.Message} -Line: {line.ToString()} -Method: {method} -Stack: {st}";
+                    dbThread.APILogs.Add(aPILog);
+                    dbThread.SaveChanges();
                 }
                 finally
                 {
@@ -943,6 +956,11 @@ namespace ControlAssuranceAPI.Repositories
 
             var clWorkres = db.CLWorkers.Where(x => x.Archived != true);
 
+            APILog aPILog = new APILog();
+            aPILog.Title = $"{DateTime.Now} - AutomationOptionRepository.CL_Reminders 1";
+            db.APILogs.Add(aPILog);
+            db.SaveChanges();
+
             //foreach (var worker in db.CLWorkers)
             foreach (var worker in clWorkres)
             {
@@ -952,7 +970,10 @@ namespace ControlAssuranceAPI.Repositories
                 CL_Approver lst2_Item = lst2.FirstOrDefault(x => x.UserId == worker.CLCase.BHUserId && x.ApproverType == "Budget Holder");
 
 
-
+                aPILog = new APILog();
+                aPILog.Title = $"{DateTime.Now} - AutomationOptionRepository.CL_Reminders 2.1";
+                db.APILogs.Add(aPILog);
+                db.SaveChanges();
 
                 if (lst1_Item == null)
                 {
@@ -970,6 +991,11 @@ namespace ControlAssuranceAPI.Repositories
                 }
 
 
+                aPILog = new APILog();
+                aPILog.Title = $"{DateTime.Now} - AutomationOptionRepository.CL_Reminders 2.2";
+                db.APILogs.Add(aPILog);
+                db.SaveChanges();
+
                 //case ref
                 string caseRef = $"{worker.CLCase.CLComFramework?.Title ?? ""}{worker.CLCase.CaseRef}";
                 if (CLCaseRepository.CaseStages.GetStageNumber(worker.Stage) >= CLCaseRepository.CaseStages.Onboarding.Number && worker.CLCase.ReqNumPositions > 1)
@@ -977,11 +1003,22 @@ namespace ControlAssuranceAPI.Repositories
                     caseRef += $"/{worker.CLCase.ReqNumPositions}/{worker.WorkerNumber?.ToString() ?? ""}";
                 }
 
+
+                aPILog = new APILog();
+                aPILog.Title = $"{DateTime.Now} - AutomationOptionRepository.CL_Reminders 2.3";
+                db.APILogs.Add(aPILog);
+                db.SaveChanges();
+
                 //run for Hiring Manager
                 localFuncBuild_HiringManagerAndStaff("lst1");
 
+                aPILog = new APILog();
+                aPILog.Title = $"{DateTime.Now} - AutomationOptionRepository.CL_Reminders 2.4";
+                db.APILogs.Add(aPILog);
+                db.SaveChanges();
+
                 //run for Hiring Member
-                foreach(var hiringMember in worker.CLCase.CLHiringMembers)
+                foreach (var hiringMember in worker.CLCase.CLHiringMembers)
                 {
                     lst1_Item = lst1.FirstOrDefault(x => x.UserId == hiringMember.UserId && x.UserType == "Hiring Member");
                     if (lst1_Item == null)
@@ -1003,10 +1040,14 @@ namespace ControlAssuranceAPI.Repositories
                 }
 
 
+                aPILog = new APILog();
+                aPILog.Title = $"{DateTime.Now} - AutomationOptionRepository.CL_Reminders 2.5";
+                db.APILogs.Add(aPILog);
+                db.SaveChanges();
 
 
 
-                if(worker.Stage == CLCaseRepository.CaseStages.Approval.Name)
+                if (worker.Stage == CLCaseRepository.CaseStages.Approval.Name)
                 {
                     //CL_Approver "Budget Holder" - 
                     lst2_Item = lst2.FirstOrDefault(x => x.UserId == worker.CLCase.BHUserId && x.ApproverType == "Budget Holder");
@@ -1071,8 +1112,12 @@ namespace ControlAssuranceAPI.Repositories
                     localFuncBuild_HiringManagerAndStaff("lst2");
                 }
 
+                aPILog = new APILog();
+                aPILog.Title = $"{DateTime.Now} - AutomationOptionRepository.CL_Reminders 2.6";
+                db.APILogs.Add(aPILog);
+                db.SaveChanges();
 
-                if(worker.Stage == CLCaseRepository.CaseStages.Engaged.Name)
+                if (worker.Stage == CLCaseRepository.CaseStages.Engaged.Name)
                 {
                     if(worker.EngagedChecksDone != true)
                     {
@@ -1092,7 +1137,13 @@ namespace ControlAssuranceAPI.Repositories
                         }
                     }
                 }
-                if(worker.Stage == CLCaseRepository.CaseStages.Leaving.Name)
+
+                aPILog = new APILog();
+                aPILog.Title = $"{DateTime.Now} - AutomationOptionRepository.CL_Reminders 2.7";
+                db.APILogs.Add(aPILog);
+                db.SaveChanges();
+
+                if (worker.Stage == CLCaseRepository.CaseStages.Leaving.Name)
                 {
                     int remainingChecks = 3;
                     if (worker.LeContractorDetailsCheckedById != null && worker.LeContractorDetailsCheckedOn != null) remainingChecks--;
@@ -1105,6 +1156,10 @@ namespace ControlAssuranceAPI.Repositories
                     }
                 }
 
+                aPILog = new APILog();
+                aPILog.Title = $"{DateTime.Now} - AutomationOptionRepository.CL_Reminders 2.8";
+                db.APILogs.Add(aPILog);
+                db.SaveChanges();
 
                 void localFuncBuild_HiringManagerAndStaff(string lstType)
                 {
@@ -1220,15 +1275,27 @@ namespace ControlAssuranceAPI.Repositories
 
                 }
 
+                aPILog = new APILog();
+                aPILog.Title = $"{DateTime.Now} - AutomationOptionRepository.CL_Reminders 2.9";
+                db.APILogs.Add(aPILog);
+                db.SaveChanges();
+
             }
 
 
+            aPILog = new APILog();
+            aPILog.Title = $"{DateTime.Now} - AutomationOptionRepository.CL_Reminders 3";
+            db.APILogs.Add(aPILog);
+            db.SaveChanges();
 
 
 
-
-            if(send_CLHiringManagerAndStaff == true)
+            if (send_CLHiringManagerAndStaff == true)
             {
+                aPILog = new APILog();
+                aPILog.Title = $"{DateTime.Now} - AutomationOptionRepository.CL_Reminders 4";
+                db.APILogs.Add(aPILog);
+                db.SaveChanges();
                 //add lst1 (CL-HiringManagerAndStaff) to db
                 foreach (var item in lst1)
                 {
@@ -1258,6 +1325,8 @@ namespace ControlAssuranceAPI.Repositories
                     }
                 }
             }
+
+
 
             if(send_CLApprovers == true)
             {
