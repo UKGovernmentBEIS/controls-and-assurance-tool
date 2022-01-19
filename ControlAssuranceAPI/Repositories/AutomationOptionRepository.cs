@@ -966,19 +966,23 @@ namespace ControlAssuranceAPI.Repositories
 
                 //AddApiLog("AutomationOptionRepository.CL_Reminders 2.1", db);
 
-                if (lst1_Item == null && worker.CLCase.ApplHMUserId.HasValue)
+                if (lst1_Item == null)
                 {
                     lst1_Item = new CL_HiringManagerAndStaff();
-                    lst1.Add(lst1_Item);
-
-                    lst1_Item.UserId = worker.CLCase.ApplHMUserId.Value;
-                    lst1_Item.UserType = "Hiring Manager";
-                    var hmUser = db.Users.FirstOrDefault(x => x.ID == worker.CLCase.ApplHMUserId);
-                    if (hmUser != null)
+                    if (worker.CLCase.ApplHMUserId.HasValue)
                     {
-                        lst1_Item.PersonEmail = hmUser.Username;
-                        lst1_Item.PersonName = hmUser.Title;
+                        lst1.Add(lst1_Item);
+
+                        lst1_Item.UserId = worker.CLCase.ApplHMUserId.Value;
+                        lst1_Item.UserType = "Hiring Manager";
+                        var hmUser = db.Users.FirstOrDefault(x => x.ID == worker.CLCase.ApplHMUserId);
+                        if (hmUser != null)
+                        {
+                            lst1_Item.PersonEmail = hmUser.Username;
+                            lst1_Item.PersonName = hmUser.Title;
+                        }
                     }
+
                 }
 
 

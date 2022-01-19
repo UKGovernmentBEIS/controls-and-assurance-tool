@@ -55,7 +55,7 @@ namespace ControlAssuranceAPI.Controllers
                     else
                     {
                         string lastRunDateStr = lastRun.LastRunDate.ToString("dd/MM/yyyy");
-                        msg = $"The system will process emails to be sent per day since {lastRunDateStr} up to {yesterdaysDateStr}. It will remove duplicates within this date range.";
+                        msg = $"The system will process emails to be sent per day from {lastRunDateStr} up to {yesterdaysDateStr}. It will remove duplicates within this date range.";
                     }
 
                 }
