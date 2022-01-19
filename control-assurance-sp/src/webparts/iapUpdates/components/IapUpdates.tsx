@@ -74,7 +74,7 @@ export class IapUpdatesState extends types.UserContextWebPartState implements II
   public LookupData = new LookupData();
 
   public SelectedUserIds: number[] = [];
-  public SelectedPivotKey = "Management Action Plans"; //default, 1st tab selected
+  public SelectedPivotKey = "Management Actions"; //default, 1st tab selected
 
   public Section1_IsOpen: boolean = false;
   public Section1_MainList_ListFilterText: string = null;
@@ -114,7 +114,7 @@ export default class IapUpdates extends BaseUserContextWebPartComponent<types.IW
   //private userService: services.UserService = new services.UserService(this.props.spfxContext, this.props.api);
 
   //private isDefultUserSet:boolean = false;
-  private readonly headerTxt_MainTab: string = "Management Action Plans";
+  private readonly headerTxt_MainTab: string = "Management Actions";
   private readonly headerTxt_GroupActionsTab: string = "Group Actions";
   private readonly headerTxt_ActionUpdatesTab: string = "Action Updates";
 
