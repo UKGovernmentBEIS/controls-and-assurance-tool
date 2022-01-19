@@ -889,7 +889,8 @@ namespace ControlAssuranceAPI.Repositories
                         else
                         {
                             //check if there is an update for the current month
-                            var actionUpdate = ite.IAPActionUpdates.FirstOrDefault(x => x.UpdateType == IAPActionUpdateRepository.IAPActionUpdateTypes.ActionUpdate && x.UpdateDate.Value.Month == DateTime.Now.Month && x.UpdateDate.Value.Year == DateTime.Now.Year);
+                            //var actionUpdate = ite.IAPActionUpdates.FirstOrDefault(x => x.UpdateType == IAPActionUpdateRepository.IAPActionUpdateTypes.ActionUpdate && x.UpdateDate.Value.Month == DateTime.Now.Month && x.UpdateDate.Value.Year == DateTime.Now.Year);
+                            var actionUpdate = ite.IAPActionUpdates.FirstOrDefault(x => x.UpdateType == IAPActionUpdateRepository.IAPActionUpdateTypes.ActionUpdate && x.UpdateDate.HasValue && x.UpdateDate.Value.Month == DateTime.Now.Month && x.UpdateDate.Value.Year == DateTime.Now.Year);
                             if (actionUpdate == null)
                             {
                                 //there is no update provided for current month, so updateStatus is Required
@@ -1358,7 +1359,7 @@ namespace ControlAssuranceAPI.Repositories
             APILog aPILog = new APILog();
             aPILog.Title = $"{DateTime.Now} - {log}";
             db.APILogs.Add(aPILog);
-            db.SaveChanges();
+            //db.SaveChanges();
         }
 
 
