@@ -954,7 +954,7 @@ namespace ControlAssuranceAPI.Repositories
 
             var clWorkres = db.CLWorkers.Where(x => x.Archived != true);
 
-            AddApiLog("AutomationOptionRepository.CL_Reminders 1", db);
+            //AddApiLog("AutomationOptionRepository.CL_Reminders 1", db);
 
             //foreach (var worker in db.CLWorkers)
             foreach (var worker in clWorkres)
@@ -964,9 +964,9 @@ namespace ControlAssuranceAPI.Repositories
                 //list 2
                 CL_Approver lst2_Item = lst2.FirstOrDefault(x => x.UserId == worker.CLCase.BHUserId && x.ApproverType == "Budget Holder");
 
-                AddApiLog("AutomationOptionRepository.CL_Reminders 2.1", db);
+                //AddApiLog("AutomationOptionRepository.CL_Reminders 2.1", db);
 
-                if (lst1_Item == null)
+                if (lst1_Item == null && worker.CLCase.ApplHMUserId.HasValue)
                 {
                     lst1_Item = new CL_HiringManagerAndStaff();
                     lst1.Add(lst1_Item);
@@ -982,7 +982,7 @@ namespace ControlAssuranceAPI.Repositories
                 }
 
 
-                AddApiLog("AutomationOptionRepository.CL_Reminders 2.2", db);
+                //AddApiLog("AutomationOptionRepository.CL_Reminders 2.2", db);
 
                 //case ref
                 string caseRef = $"{worker.CLCase.CLComFramework?.Title ?? ""}{worker.CLCase.CaseRef}";
@@ -992,12 +992,12 @@ namespace ControlAssuranceAPI.Repositories
                 }
 
 
-                AddApiLog("AutomationOptionRepository.CL_Reminders 2.3", db);
+                //AddApiLog("AutomationOptionRepository.CL_Reminders 2.3", db);
 
                 //run for Hiring Manager
                 localFuncBuild_HiringManagerAndStaff("lst1");
 
-                AddApiLog("AutomationOptionRepository.CL_Reminders 2.4", db);
+                //AddApiLog("AutomationOptionRepository.CL_Reminders 2.4", db);
 
                 //run for Hiring Member
                 foreach (var hiringMember in worker.CLCase.CLHiringMembers)
@@ -1022,7 +1022,7 @@ namespace ControlAssuranceAPI.Repositories
                 }
 
 
-                AddApiLog("AutomationOptionRepository.CL_Reminders 2.5", db);
+                //AddApiLog("AutomationOptionRepository.CL_Reminders 2.5", db);
 
 
 
@@ -1091,7 +1091,7 @@ namespace ControlAssuranceAPI.Repositories
                     localFuncBuild_HiringManagerAndStaff("lst2");
                 }
 
-                AddApiLog("AutomationOptionRepository.CL_Reminders 2.6", db);
+                //AddApiLog("AutomationOptionRepository.CL_Reminders 2.6", db);
 
                 if (worker.Stage == CLCaseRepository.CaseStages.Engaged.Name)
                 {
@@ -1114,7 +1114,7 @@ namespace ControlAssuranceAPI.Repositories
                     }
                 }
 
-                AddApiLog("AutomationOptionRepository.CL_Reminders 2.7", db);
+                //AddApiLog("AutomationOptionRepository.CL_Reminders 2.7", db);
 
                 if (worker.Stage == CLCaseRepository.CaseStages.Leaving.Name)
                 {
@@ -1129,7 +1129,7 @@ namespace ControlAssuranceAPI.Repositories
                     }
                 }
 
-                AddApiLog("AutomationOptionRepository.CL_Reminders 2.8", db);
+                //AddApiLog("AutomationOptionRepository.CL_Reminders 2.8", db);
 
                 void localFuncBuild_HiringManagerAndStaff(string lstType)
                 {
@@ -1245,18 +1245,18 @@ namespace ControlAssuranceAPI.Repositories
 
                 }
 
-                AddApiLog("AutomationOptionRepository.CL_Reminders 2.9", db);
+                //AddApiLog("AutomationOptionRepository.CL_Reminders 2.9", db);
 
             }
 
 
-            AddApiLog("AutomationOptionRepository.CL_Reminders 3", db);
+            //AddApiLog("AutomationOptionRepository.CL_Reminders 3", db);
 
 
 
             if (send_CLHiringManagerAndStaff == true)
             {
-                AddApiLog("AutomationOptionRepository.CL_Reminders 4", db);
+                //AddApiLog("AutomationOptionRepository.CL_Reminders 4", db);
 
                 //add lst1 (CL-HiringManagerAndStaff) to db
                 foreach (var item in lst1)
