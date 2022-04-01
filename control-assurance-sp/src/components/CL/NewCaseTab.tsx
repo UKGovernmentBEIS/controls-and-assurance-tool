@@ -1398,7 +1398,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                             <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
 
                                 <div className={styles.flexContainerSectionQuestion}>
-                                    <div className={styles.sectionQuestionCol1}><span>Expected daily rate including fee (excluding vat)</span></div>
+                                    <div className={styles.sectionQuestionCol1}><span>Expected daily rate including fee and non-recoverable VAT</span></div>
                                     <div className={styles.sectionQuestionCol2}>
                                         <img src={finMaxRateValidationImg} />
                                     </div>
