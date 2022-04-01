@@ -2450,7 +2450,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                             <tr>
                                 <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
-                                    Expected daily rate including fee (excluding vat)
+                                    Expected daily rate including fee and non-recoverable VAT
                                 </td>
                                 <td style={{ width: '31%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)' }}>
                                     {this.state.FormData.FinMaxRate}
