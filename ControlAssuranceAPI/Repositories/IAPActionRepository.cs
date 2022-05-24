@@ -493,16 +493,19 @@ namespace ControlAssuranceAPI.Repositories
 
                       };
 
-            qry = qry.Where(x =>
-                x.IAPAssignments.Any(ass => lstUserIds.Contains(ass.UserId.Value)) ||
-                x.IAPAssignments.Any(ass => ass.UserId == loggedInUserID) ||
-                x.CreatedById == loggedInUserID ||
-                x.IAPActionDirectorates.Any(ad => ad.Directorate.DirectorUserID == loggedInUserID) ||
-                x.IAPActionDirectorates.Any(ad => ad.Directorate.DirectorateGroup.DirectorGeneralUserID == loggedInUserID) ||
-                x.IAPActionDirectorates.Any(ad => ad.Directorate.DirectorateMembers.Any(dm => dm.UserID == loggedInUserID)) ||
-                x.IAPActionDirectorates.Any(ad => ad.Directorate.DirectorateGroup.DirectorateGroupMembers.Any(dgm => dgm.UserID == loggedInUserID))
+            if (isSuperUser == false)
+            {
+                qry = qry.Where(x =>
+                    x.IAPAssignments.Any(ass => lstUserIds.Contains(ass.UserId.Value)) ||
+                    x.IAPAssignments.Any(ass => ass.UserId == loggedInUserID) ||
+                    x.CreatedById == loggedInUserID ||
+                    x.IAPActionDirectorates.Any(ad => ad.Directorate.DirectorUserID == loggedInUserID) ||
+                    x.IAPActionDirectorates.Any(ad => ad.Directorate.DirectorateGroup.DirectorGeneralUserID == loggedInUserID) ||
+                    x.IAPActionDirectorates.Any(ad => ad.Directorate.DirectorateMembers.Any(dm => dm.UserID == loggedInUserID)) ||
+                    x.IAPActionDirectorates.Any(ad => ad.Directorate.DirectorateGroup.DirectorateGroupMembers.Any(dgm => dgm.UserID == loggedInUserID))
 
-            );
+                );
+            }
 
             //if (string.IsNullOrEmpty(userIds) == false)
             //{
