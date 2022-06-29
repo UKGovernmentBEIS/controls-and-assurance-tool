@@ -11,10 +11,12 @@ import BaseUserContextWebPartComponent from '../../../components/BaseUserContext
 import * as services from '../../../services';
 import EntityList from '../../../components/entity/EntityList';
 import { IGenColumn, ColumnType, ColumnDisplayType } from '../../../types/GenColumn';
-import { IUserPermission, IDefForm, IGIAAPeriod, IEntity, IDirectorateGroup, IGoDefForm, GoForm, IGoForm, CLCase, ICLCase, IClCaseCounts, ICLDefForm, ICLWorker } from '../../../types';
+import { IUserPermission, IDefForm, IGIAAPeriod, IEntity, IDirectorateGroup, IGoDefForm, GoForm, IGoForm, CLCase, ICLCase, IClCaseCounts, ICLDefForm, ICLWorker, IUser, ICLHiringMember } from '../../../types';
 import { CrLoadingOverlayWelcome } from '../../../components/cr/CrLoadingOverlayWelcome';
 import styles from '../../../styles/cr.module.scss';
 import { PrimaryButton } from 'office-ui-fabric-react/lib/Button';
+import { sp, ChunkedFileUploadProgressData, Folder, SharePointQueryableSecurable } from '@pnp/sp';
+import { getUploadFolder_Evidence, getUploadFolder_CLRoot } from '../../../types/AppGlobals';
 
 //#region types defination
 
@@ -51,9 +53,14 @@ export interface IClUpdatesState extends types.IUserContextWebPartState {
   TotalEngagedCases: number;
   TotalArchivedCases: number;
   DefForm: ICLDefForm;
+  Users: IUser[];
+  SuperUsersAndViewers: IUser[];
 
   HideCantCreateExtensionMessage: boolean;
-  ArchivedListRefreshCounter:number;
+  ArchivedListRefreshCounter: number;
+
+  FullControlFolderRoleId: number;
+  CurrentUserPrincipalId: number;
 
 
 }
@@ -82,11 +89,14 @@ export class ClUpdatesState extends types.UserContextWebPartState implements ICl
   public TotalEngagedCases = null;
   public TotalArchivedCases = null;
   public DefForm: ICLDefForm = null;
+  public Users: IUser[] = [];
+  public SuperUsersAndViewers: IUser[] = [];
 
   public HideCantCreateExtensionMessage = true;
-  public ArchivedListRefreshCounter:number = 0;
+  public ArchivedListRefreshCounter: number = 0;
 
-
+  public FullControlFolderRoleId: number = 0;
+  public CurrentUserPrincipalId: number = 0;
 
   constructor() {
     super();
@@ -103,11 +113,15 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
   private readonly headerTxt_NewCaseTab: string = "Case";
   private readonly headerTxt_HistoricCaseTab: string = "Extension Of";
 
-  private newCaseSaveInProgress:boolean = false;
+  private newCaseSaveInProgress: boolean = false;
 
+  private UploadFolder_Evidence: string = "";
+  private UploadFolder_CLRoot: string = "";
 
   constructor(props: types.IWebPartComponentProps) {
     super(props);
+    this.UploadFolder_Evidence = getUploadFolder_Evidence(props.spfxContext);
+    this.UploadFolder_CLRoot = getUploadFolder_CLRoot(props.spfxContext);
     this.state = new ClUpdatesState();
   }
 
@@ -129,7 +143,12 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
         </Pivot>
 
         {/* submit for approval - done */}
-        <MessageDialog hidden={this.state.HideCantCreateExtensionMessage} title={null} /*title="Validation Successful"*/ content="Cannot create extension. This case already has an extension in the system." handleOk={() => { this.setState({ HideCantCreateExtensionMessage: true }, ); }} />
+        <MessageDialog hidden={this.state.HideCantCreateExtensionMessage} title={null} /*title="Validation Successful"*/ content="Cannot create extension. This case already has an extension in the system." handleOk={() => { this.setState({ HideCantCreateExtensionMessage: true },); }} />
+
+
+        <div>
+          <span onClick={this.testPermissionsGetAll}>test permission</span>
+        </div>
 
       </React.Fragment>
 
@@ -254,6 +273,8 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
         viewerPermission={this.isViewerPermission()}
         defForm={this.state.DefForm}
         onShowHistoricCase={this.handleShowHistoricCaseClick}
+        afterSaveFolderProcess={this.handleAfterSaveFolderProcess}
+        users={this.state.Users}
         {...this.props}
       />
 
@@ -280,6 +301,7 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
         historicCase={true}
         onShowCaseTab={this.handleShowCaseTab}
         defForm={this.state.DefForm}
+        users={this.state.Users}
         {...this.props}
       />
 
@@ -299,14 +321,229 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
   //#region Data Load
 
 
+  private testGetFolder = (): void => {
+    sp.web.getFolderByServerRelativeUrl(this.UploadFolder_Evidence).folders.getByName('Test1').getItem().then((folderItem: SharePointQueryableSecurable) => {
+      let users: string[] = ['user1@adnan1442.onmicrosoft.com', 'user2@adnan1442.onmicrosoft.com'];
+
+      let promisesRemove = [];
+      users.forEach(userEmail => {
+        promisesRemove.push(this.removeFolderRole(userEmail, folderItem));
+      });
+
+      Promise.all(promisesRemove).then(() => {
+
+        users.forEach(userEmail => {
+          this.addFolderRole(userEmail, folderItem);
+        });
+
+      });
+
+
+    });
+  }
+
+  private addFolderRole = (userEmail: string, folderItem: SharePointQueryableSecurable): Promise<any> => {
+
+    //let promises = [];
+
+    return sp.web.siteUsers.filter(`UserPrincipalName eq '${userEmail}'`).get().then(users => {
+
+      if (users.length <= 0)
+        return;
+
+      //otherwise continue                
+      const userId: number = users[0]['Id'];
+      console.log('userId', userId);
+
+      folderItem.roleAssignments.add(userId, this.state.FullControlFolderRoleId).then(roleAddedValue => {
+        console.log(`role added for user ${userEmail}`);
+      });
+
+    });
+
+  }
+
+  private removeFolderRole = (userEmail: string, folderItem: SharePointQueryableSecurable): Promise<any> => {
+
+    //let promises = [];
+
+    return sp.web.siteUsers.filter(`UserPrincipalName eq '${userEmail}'`).get().then(users => {
+
+      if (users.length <= 0)
+        return;
+
+      //otherwise continue                
+      const userId: number = users[0]['Id'];
+      console.log('userId', userId);
+
+      folderItem.roleAssignments.remove(userId, this.state.FullControlFolderRoleId).then(roleAddedValue => {
+        console.log(`role removed for user ${userEmail}`);
+      });
+
+    });
+
+  }
+
+  private removeFolderRoleBySiteUserId = (siteUserId: number, folderItem: SharePointQueryableSecurable): Promise<any> => {
+
+    return folderItem.roleAssignments.remove(siteUserId, this.state.FullControlFolderRoleId).then(roleAddedValue => {
+      console.log(`role removed for user ${siteUserId}`);
+    });
+  }
+
+  private testPermissions_roleass = (): void => {
+
+    console.log('in testPermissions');
+
+    // sp.web.siteUsers.get().then(users => {
+    //   console.log('users', users);
+    // });
+
+    // sp.web.siteUsers.filter("UserPrincipalName eq 'user2@adnan1442.onmicrosoft.com'").get().then(users2 => {
+    //   console.log('users2', users2);
+    // });
+
+    //following code is working 
+    sp.web.siteUsers.filter("UserPrincipalName eq 'user2@adnan1442.onmicrosoft.com'").get().then(users => {
+      console.log('users', users);
+      //const u = users.filter(x => x['UserPrincipalName'] == 'user2@adnan1442.onmicrosoft.com' );
+      //console.log('u', u);
+      if (users.length <= 0)
+        return;
+
+      //otherwise continue                
+      const userId: number = users[0]['Id'];
+      console.log('userId', userId);
+
+      sp.web.roleDefinitions.getByName('Full Control').get().then((r: any /*RoleDefinition*/) => {
+        console.log('r', r);
+        const roleId: number = r['Id'];
+
+        const ffFolder = sp.web.getFolderByServerRelativeUrl(this.UploadFolder_Evidence).folders.getByName('Test1');
+        const ffItem = ffFolder.getItem().then(item => {
+          //item.update({ Title: 'testFolder11', FileLeafRef: 'testFolder111111' });
+          console.log('after getting folder');
+          item.roleAssignments.remove(userId, roleId).then(rr => {
+            console.log('role removed', rr);
+          });
+
+        });
+      });
+    });
+
+  }
+
+
+  private testPermissions = (): void => {
+
+    console.log('in testPermissions');
+
+    // sp.web.siteUsers.get().then(users => {
+    //   console.log('users', users);
+    // });
+
+    // sp.web.siteUsers.filter("UserPrincipalName eq 'user2@adnan1442.onmicrosoft.com'").get().then(users2 => {
+    //   console.log('users2', users2);
+    // });
+
+    //following code is working 
+    sp.web.siteUsers.filter("UserPrincipalName eq 'user2@adnan1442.onmicrosoft.com'").get().then(users => {
+      console.log('users', users);
+      //const u = users.filter(x => x['UserPrincipalName'] == 'user2@adnan1442.onmicrosoft.com' );
+      //console.log('u', u);
+      if (users.length <= 0)
+        return;
+
+      //otherwise continue                
+      const userId: number = users[0]['Id'];
+      console.log('userId', userId);
+
+      sp.web.roleDefinitions.getByName('Full Control').get().then((r: any /*RoleDefinition*/) => {
+        console.log('r', r);
+        const roleId: number = r['Id'];
+
+        const ffFolder = sp.web.getFolderByServerRelativeUrl(this.UploadFolder_Evidence).folders.getByName('Test1');
+        const ffItem = ffFolder.getItem().then(item => {
+          //item.update({ Title: 'testFolder11', FileLeafRef: 'testFolder111111' });
+          console.log('after getting folder');
+          item.breakRoleInheritance(false).then(b => {
+            console.log('b', b);
+            item.roleAssignments.add(userId, roleId).then(ra => {
+              console.log('ra', ra);
+            });
+          });
+
+        });
+      });
+    });
+
+  }
+
+  private testPermissionsGetAll = (): void => {
+
+    console.log('in testPermissionsGetAll');
+
+    sp.web.siteUsers.get().then(u => {
+      console.log('u', u);
+    });
+
+    const ffFolder = sp.web.getFolderByServerRelativeUrl(this.UploadFolder_Evidence).folders.getByName('Test1');
+    const ffItem = ffFolder.getItem().then(item => {
+      //item.update({ Title: 'testFolder11', FileLeafRef: 'testFolder111111' });
+      console.log('after getting folder');
+      item.roleAssignments.expand('Member', 'RoleDefinitionBindings').get().then(rass => {
+        console.log('rass', rass);
+      });
+
+    });
+
+  }
 
 
   protected loadLookups(): Promise<any> {
 
     return Promise.all([
+      this.loadSPFoldersCoreStuff(),
       this.loadCaseCounts(),
       this.loadDefForm(),
+      this.loadUsers(),
+      this.loadAllSuperUsersAndViewers(),
     ]);
+  }
+
+  private loadSPFoldersCoreStuff = (): void => {
+
+    //get doc lib rolder role Full Control Id and set in state
+    sp.web.roleDefinitions.getByName('Full Control').get().then(r => {
+      //console.log('r', r);
+      const roleId: number = r['Id'];
+      this.setState({ FullControlFolderRoleId: roleId });
+    });
+
+    //get current user sharepoint id (PrincipalId) and set in state
+    sp.web.currentUser.get().then(u => {
+      console.log('currentSiteUser', u);
+      const currentUserPrincipalId: number = Number(u['Id']);
+      console.log('currentUserPrincipalId', currentUserPrincipalId);
+      this.setState({ CurrentUserPrincipalId: currentUserPrincipalId });
+    });
+
+    sp.web.siteUsers.get().then( users => {
+      console.log('allSiteUsers', users);
+    });
+
+
+    
+
+    // sp.web.siteUsers.filter(`UserPrincipalName eq '${currentUserEmail}'`).get().then(users => {
+
+    //   console.log('users', users);
+    //   if (users.length > 0) {
+    //     const currentUserPrincipalId: number = users[0]['Id'];
+    //     console.log('currentUserPrincipalId', currentUserPrincipalId);
+    //     this.setState({ CurrentUserPrincipalId: currentUserPrincipalId });
+    //   }
+    // });
   }
 
   private loadCaseCounts = (): void => {
@@ -335,6 +572,21 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
       this.setState({ DefForm: df });
 
     }, (err) => { if (this.onError) this.onError(`Error loading df`, err.message); });
+    return x;
+  }
+
+  private loadUsers = (): Promise<void> => {
+    let x = this.userService.readAll().then((data: IUser[]): void => {
+      this.setState({ Users: data });
+    }, (err) => { if (this.onError) this.onError(`Error loading Users`, err.message); });
+    return x;
+  }
+
+  private loadAllSuperUsersAndViewers = (): Promise<void> => {
+    let x = this.userService.readAll_CL_SuperUsers_Viewers().then((data: IUser[]): void => {
+      this.setState({ SuperUsersAndViewers: data });
+      //console.log('SuperUsersAndViewers', data);
+    }, (err) => { if (this.onError) this.onError(`Error loading super users`, err.message); });
     return x;
   }
 
@@ -400,6 +652,205 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
   //#region event handlers
 
 
+  private handleAfterSaveFolderProcess = (newCase: boolean, caseData: ICLCase, caseDataBeforeChanges: ICLCase): void => {
+    console.log('in handleAfterSaveFolderProcess', newCase, caseData, caseDataBeforeChanges);
+    //next todo 
+    //create folder when newCase is true and give permissions like HM, members etc and others like approvers 
+    const folderNewUsers: string[] = this.makeFolderNewUsersArr(caseData);
+
+    if (newCase === true) {
+      this.createNewCaseUploadFolder(String(caseData.ID), folderNewUsers);
+    }
+    else {
+      //const folderExistingsers: string[] = this.makeFolderExistingUsersArr(caseDataBeforeChanges);
+      this.resetFolderPermissionsAfterEditCase(String(caseData.ID), folderNewUsers);
+
+    }
+
+
+    //otherwise for existing folder remove all permissions then add all again
+
+  }
+
+  private makeFolderNewUsersArr = (caseData: ICLCase): string[] => {
+    let users: string[] = [];
+
+    //hiring manager
+    if (caseData.ApplHMUserId > 0) {
+      const u1 = this.state.Users.filter(x => x.ID === caseData.ApplHMUserId)[0];
+      users.push(u1.Username);
+    }
+
+    //hiring members
+    const hiringMembers: ICLHiringMember[] = caseData['CLHiringMembers'];
+    hiringMembers.forEach(m => {
+      const u1 = this.state.Users.filter(x => x.ID === m.UserId)[0];
+      users.push(u1.Username);
+    });
+
+    //BH
+    if (caseData.BHUserId > 0) {
+      const u1 = this.state.Users.filter(x => x.ID === caseData.BHUserId)[0];
+      users.push(u1.Username);
+    }
+
+    //FBP
+    if (caseData.FBPUserId > 0) {
+      const u1 = this.state.Users.filter(x => x.ID === caseData.FBPUserId)[0];
+      users.push(u1.Username);
+    }
+
+    //HRBP
+    if (caseData.HRBPUserId > 0) {
+      const u1 = this.state.Users.filter(x => x.ID === caseData.HRBPUserId)[0];
+      users.push(u1.Username);
+    }
+
+    //Superusers/viewers
+    this.state.SuperUsersAndViewers.forEach(su => {
+      users.push(su.Username);
+    });
+
+
+
+
+
+    return users;
+  }
+
+  private makeFolderExistingUsersArr = (caseData: ICLCase): string[] => {
+    let users: string[] = [];
+
+    //hiring manager
+    if (caseData.ApplHMUserId > 0) {
+      const u1 = this.state.Users.filter(x => x.ID === caseData.ApplHMUserId)[0];
+      users.push(u1.Username);
+    }
+
+    //hiring members
+    const hiringMembers: ICLHiringMember[] = caseData['CLHiringMembers'];
+    hiringMembers.forEach(m => {
+      const u1 = this.state.Users.filter(x => x.ID === m.UserId)[0];
+      users.push(u1.Username);
+    });
+
+    //BH
+    if (caseData.BHUserId > 0) {
+      const u1 = this.state.Users.filter(x => x.ID === caseData.BHUserId)[0];
+      users.push(u1.Username);
+    }
+
+    //FBP
+    if (caseData.FBPUserId > 0) {
+      const u1 = this.state.Users.filter(x => x.ID === caseData.FBPUserId)[0];
+      users.push(u1.Username);
+    }
+
+    //HRBP
+    if (caseData.HRBPUserId > 0) {
+      const u1 = this.state.Users.filter(x => x.ID === caseData.HRBPUserId)[0];
+      users.push(u1.Username);
+    }
+
+    //Superusers/viewers
+    // this.state.SuperUsersAndViewers.forEach(su => {
+    //   users.push(su.Username);
+    // });
+
+
+
+
+
+    return users;
+  }
+
+  private createNewCaseUploadFolder = (casefolderName: string, folderNewUsers: string[]) => {
+    sp.web.getFolderByServerRelativeUrl(this.UploadFolder_CLRoot).folders.add(casefolderName).then(folderAddRes => {
+      console.log('folder created', folderAddRes.data);
+      folderAddRes.folder.getItem().then((fItem: SharePointQueryableSecurable) => {
+        fItem.breakRoleInheritance(false).then(bri => {
+          console.log('folder bri done');
+
+          let promisesAddUser = [];
+          folderNewUsers.forEach(userEmail => {
+            promisesAddUser.push(this.addFolderRole(userEmail, fItem));
+          });
+
+          Promise.all(promisesAddUser).then(() => {
+            console.log('folder new users are added');
+          });
+
+
+
+
+        });
+      });
+    });
+  }
+
+  private resetFolderPermissionsAfterEditCase = (casefolderName: string, folderNewUsers: string[]) => {
+
+    sp.web.getFolderByServerRelativeUrl(this.UploadFolder_CLRoot).folders.getByName(casefolderName).getItem().then((folderItem: SharePointQueryableSecurable) => {
+
+      let promisesRemove = [];
+
+      //let folderSiteUserIds: number[] = [];
+      folderItem.roleAssignments.get().then(rass => {
+        //console.log('rass', rass);
+        //folderSiteUserIds.push( Number(rass['PrincipalId']));
+        rass.forEach(ra => {
+          const principalId: number = Number(ra['PrincipalId']);
+          console.log('principalId', principalId);
+          if(principalId !== this.state.CurrentUserPrincipalId)
+            promisesRemove.push(this.removeFolderRoleBySiteUserId(principalId, folderItem));
+          else
+            console.log('not adding current user in folder permission remove list');
+
+        });
+      }).then(() => {
+
+        Promise.all(promisesRemove).then(() => {
+
+          let promisesAddUser = [];
+          folderNewUsers.forEach(userEmail => {
+            promisesAddUser.push(this.addFolderRole(userEmail, folderItem));
+          });
+
+          Promise.all(promisesAddUser).then(() => {
+            console.log('folder new users are added');
+          });
+
+
+        });
+
+      });
+
+      //console.log('folderExistingUsers', folderSiteUserIds);
+
+
+
+      // folderExistingUsers.forEach( userEmail => {
+      //   promisesRemove.push(this.removeFolderRole(userEmail, folderItem));
+      // });
+
+      // Promise.all(promisesRemove).then(() =>{
+
+      //   let promisesAddUser = [];
+      //   folderNewUsers.forEach( userEmail => {
+      //     promisesAddUser.push(this.addFolderRole(userEmail, folderItem));
+      //   });
+
+      //   Promise.all(promisesAddUser).then(() => {
+      //     console.log('folder new users are added');
+      //   });
+
+
+      // });
+
+
+    });
+  }
+
   private handleShowMainTab = (refreshCounters?: boolean): void => {
     console.log('in handleShowMainTab');
     this.clearErrors();
@@ -447,7 +898,7 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
 
     if (ID === 0) {
 
-      if(this.newCaseSaveInProgress === false){
+      if (this.newCaseSaveInProgress === false) {
         this.newCaseSaveInProgress = true;
 
         let caseId: number = 0;
@@ -456,7 +907,7 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
           console.log('case created', x);
           caseId = x.ID;
           this.newCaseSaveInProgress = false;
-  
+
           this.setState({
             SelectedPivotKey: this.headerTxt_NewCaseTab,
             Section_MainList_SelectedId: 0, //worker id
@@ -465,8 +916,8 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
             //Section_MainList_SelectedTitle: title,
             //Section_MainList_FilteredItems: filteredItems
           });
-  
-  
+
+
         }, (err) => { this.newCaseSaveInProgress = false; });
       }
 
@@ -559,8 +1010,8 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
   private handleAfterArchived = (): void => {
     console.log('in handleAfterArchived');
     this.loadCaseCounts();
-    this.setState({ ArchivedListRefreshCounter: this.state.ArchivedListRefreshCounter+1 });
-    
+    this.setState({ ArchivedListRefreshCounter: this.state.ArchivedListRefreshCounter + 1 });
+
 
   }
 

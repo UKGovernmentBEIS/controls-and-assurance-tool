@@ -57,6 +57,13 @@ export function getUploadFolder_CLEvidence(context: WebPartContext): string {
     return path;
 }
 
+export function getUploadFolder_CLRoot(context: WebPartContext): string {
+    const serverRelativeUrl = context.pageContext.web.serverRelativeUrl;
+    const path: string = `${serverRelativeUrl}/Shared%20Documents/ContingentLabourFiles`;
+
+    return path;
+}
+
 
 export function changeDatePickerV2(currentClassRef: any, formDataObjName: string, date: Date, f: string, callBack?: any): void {
     console.log('original date', date);

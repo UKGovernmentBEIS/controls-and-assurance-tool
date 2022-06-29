@@ -27,4 +27,8 @@ export class UserService extends EntityService<IUser> {
         });
     }
     //6Nov19 End
+
+    public readAll_CL_SuperUsers_Viewers(): Promise<IUser[]> {
+        return this.readAll(`?$filter=UserPermissions/any(userPermission: userPermission/PermissionTypeId in(1,13,14))&$select=ID,Username`);
+    }
 }
