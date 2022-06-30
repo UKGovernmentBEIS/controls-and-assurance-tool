@@ -24,7 +24,7 @@ import { changeDatePicker, changeDatePickerV2 } from '../../types/AppGlobals';
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import '../../styles/CustomFabric.scss';
 import { findScrollableParent, IContextualMenuProps } from 'office-ui-fabric-react';
-import { getUploadFolder_Report, getUploadFolder_CLRoot } from '../../types/AppGlobals';
+import { getUploadFolder_Report } from '../../types/AppGlobals';
 
 
 
@@ -47,9 +47,6 @@ export interface INewCaseTabProps extends types.IBaseComponentProps {
     onShowHistoricCase?: (workerId: number, caseId: number, stage: string) => void;
     historicCase?: boolean;
     onShowCaseTab?: () => void;
-    afterSaveFolderProcess?: (newCase: boolean, caseData: ICLCase, caseDataBeforeChanges: ICLCase) => void;
-
-    users: IUser[];
 
     //onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
 
@@ -68,6 +65,7 @@ export interface ILookupData {
     CLSecurityClearances: IEntity[];
     CLDeclarationConflicts: IEntity[];
     PersonTitles: IEntity[];
+    Users: IUser[];
 }
 
 export class LookupData implements ILookupData {
@@ -82,6 +80,7 @@ export class LookupData implements ILookupData {
     public CLSecurityClearances: IEntity[] = [];
     public CLDeclarationConflicts: IEntity[] = [];
     public PersonTitles: IEntity[] = [];
+    public Users = [];
 
 }
 
@@ -203,7 +202,6 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
     private UploadFolder_Evidence: string = "";
     private UploadFolder_Report: string = "";
-    private UploadFolder_CLRoot: string = "";
 
     //IChoiceGroupOption
     private approvalDecisionItems: any[] = [
@@ -228,7 +226,6 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         this.state = new NewCaseTabState('New Case');
         this.UploadFolder_Evidence = getUploadFolder_CLEvidence(props.spfxContext);
         this.UploadFolder_Report = getUploadFolder_Report(props.spfxContext);
-        this.UploadFolder_CLRoot = getUploadFolder_CLRoot(props.spfxContext);
 
     }
 
@@ -560,7 +557,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                             <div style={{ width: '100%', }}>
                                 <CrEntityPicker
                                     displayForUser={true}
-                                    entities={this.props.users}
+                                    entities={this.state.LookupData.Users}
                                     itemLimit={1}
                                     selectedEntities={this.state.FormData.ApplHMUserId && [this.state.FormData.ApplHMUserId]}
                                     onChange={(v) => this.changeUserPicker(v, 'ApplHMUserId')}
@@ -600,7 +597,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                             <div style={{ width: '100%', }}>
                                 <CrEntityPicker
                                     displayForUser={true}
-                                    entities={this.props.users}
+                                    entities={this.state.LookupData.Users}
                                     itemLimit={10}
                                     selectedEntities={fd_users && fd_users.map((owner) => { return owner.UserId; })}
                                     onChange={(v) => this.changeMultiUserPicker(v, 'CLHiringMembers', new CLHiringMember(), 'UserId')}
@@ -1815,7 +1812,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                     //label="Assigned To"
                                     //className={styles.formField}
                                     displayForUser={true}
-                                    entities={this.props.users}
+                                    entities={this.state.LookupData.Users}
                                     itemLimit={1}
                                     selectedEntities={this.state.FormData.BHUserId && [this.state.FormData.BHUserId]}
                                     onChange={(v) => this.changeUserPicker(v, 'BHUserId')}
@@ -1830,7 +1827,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                     //label="Assigned To"
                                     //className={styles.formField}
                                     displayForUser={true}
-                                    entities={this.props.users}
+                                    entities={this.state.LookupData.Users}
                                     itemLimit={1}
                                     selectedEntities={this.state.FormData.FBPUserId && [this.state.FormData.FBPUserId]}
                                     onChange={(v) => this.changeUserPicker(v, 'FBPUserId')}
@@ -1872,7 +1869,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                     //label="Assigned To"
                                     //className={styles.formField}
                                     displayForUser={true}
-                                    entities={this.props.users}
+                                    entities={this.state.LookupData.Users}
                                     itemLimit={1}
                                     selectedEntities={this.state.FormData.HRBPUserId && [this.state.FormData.HRBPUserId]}
                                     onChange={(v) => this.changeUserPicker(v, 'HRBPUserId')}
@@ -4120,7 +4117,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                             <div style={{ width: '50%', paddingRight: '5px' }}>
                                 <CrEntityPicker
                                     displayForUser={true}
-                                    entities={this.props.users}
+                                    entities={this.state.LookupData.Users}
                                     itemLimit={1}
                                     selectedEntities={fd.OnbLineManagerUserId && [fd.OnbLineManagerUserId]}
                                     onChange={(v) => this.changeUserPicker_Worker(v, 'OnbLineManagerUserId')}
@@ -4686,7 +4683,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                             <div style={{ width: '50%', paddingRight: '5px' }}>
                                 <CrEntityPicker
                                     displayForUser={true}
-                                    entities={this.props.users}
+                                    entities={this.state.LookupData.Users}
                                     itemLimit={1}
                                     selectedEntities={fd.BPSSCheckedById && [fd.BPSSCheckedById]}
                                     onChange={(v) => this.changeUserPicker_Worker(v, 'BPSSCheckedById', true)}
@@ -4739,7 +4736,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                             <div style={{ width: '50%', paddingRight: '5px' }}>
                                 <CrEntityPicker
                                     displayForUser={true}
-                                    entities={this.props.users}
+                                    entities={this.state.LookupData.Users}
                                     itemLimit={1}
                                     selectedEntities={fd.POCheckedById && [fd.POCheckedById]}
                                     onChange={(v) => this.changeUserPicker_Worker(v, 'POCheckedById', true)}
@@ -4849,7 +4846,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                             <div style={{ width: '50%', paddingRight: '5px' }}>
                                 <CrEntityPicker
                                     displayForUser={true}
-                                    entities={this.props.users}
+                                    entities={this.state.LookupData.Users}
                                     itemLimit={1}
                                     selectedEntities={fd.ITCheckedById && [fd.ITCheckedById]}
                                     onChange={(v) => this.changeUserPicker_Worker(v, 'ITCheckedById', true)}
@@ -4957,7 +4954,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                             <div style={{ width: '50%', paddingRight: '5px' }}>
                                 <CrEntityPicker
                                     displayForUser={true}
-                                    entities={this.props.users}
+                                    entities={this.state.LookupData.Users}
                                     itemLimit={1}
                                     selectedEntities={fd.UKSBSCheckedById && [fd.UKSBSCheckedById]}
                                     onChange={(v) => this.changeUserPicker_Worker(v, 'UKSBSCheckedById', true)}
@@ -5072,7 +5069,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                             <div style={{ width: '50%', paddingRight: '5px' }}>
                                 <CrEntityPicker
                                     displayForUser={true}
-                                    entities={this.props.users}
+                                    entities={this.state.LookupData.Users}
                                     itemLimit={1}
                                     selectedEntities={fd.PassCheckedById && [fd.PassCheckedById]}
                                     onChange={(v) => this.changeUserPicker_Worker(v, 'PassCheckedById', true)}
@@ -5129,7 +5126,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                             <div style={{ width: '50%', paddingRight: '5px' }}>
                                 <CrEntityPicker
                                     displayForUser={true}
-                                    entities={this.props.users}
+                                    entities={this.state.LookupData.Users}
                                     itemLimit={1}
                                     selectedEntities={fd.SDSCheckedById && [fd.SDSCheckedById]}
                                     onChange={(v) => this.changeUserPicker_Worker(v, 'SDSCheckedById', true)}
@@ -5220,7 +5217,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                             <div style={{ width: '50%', paddingRight: '5px' }}>
                                 <CrEntityPicker
                                     displayForUser={true}
-                                    entities={this.props.users}
+                                    entities={this.state.LookupData.Users}
                                     itemLimit={1}
                                     selectedEntities={fd.ContractCheckedById && [fd.ContractCheckedById]}
                                     onChange={(v) => this.changeUserPicker_Worker(v, 'ContractCheckedById', true)}
@@ -5752,7 +5749,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                             <div style={{ width: '50%', paddingRight: '5px' }}>
                                 <CrEntityPicker
                                     displayForUser={true}
-                                    entities={this.props.users}
+                                    entities={this.state.LookupData.Users}
                                     itemLimit={1}
                                     selectedEntities={fd.LeContractorDetailsCheckedById && [fd.LeContractorDetailsCheckedById]}
                                     onChange={(v) => this.changeUserPicker_Worker(v, 'LeContractorDetailsCheckedById', false, true)}
@@ -5805,7 +5802,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                             <div style={{ width: '50%', paddingRight: '5px' }}>
                                 <CrEntityPicker
                                     displayForUser={true}
-                                    entities={this.props.users}
+                                    entities={this.state.LookupData.Users}
                                     itemLimit={1}
                                     selectedEntities={fd.LeITCheckedById && [fd.LeITCheckedById]}
                                     onChange={(v) => this.changeUserPicker_Worker(v, 'LeITCheckedById', false, true)}
@@ -5861,7 +5858,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                             <div style={{ width: '50%', paddingRight: '5px' }}>
                                 <CrEntityPicker
                                     displayForUser={true}
-                                    entities={this.props.users}
+                                    entities={this.state.LookupData.Users}
                                     itemLimit={1}
                                     selectedEntities={fd.LeUKSBSCheckedById && [fd.LeUKSBSCheckedById]}
                                     onChange={(v) => this.changeUserPicker_Worker(v, 'LeUKSBSCheckedById', false, true)}
@@ -5920,7 +5917,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                             <div style={{ width: '50%', paddingRight: '5px' }}>
                                 <CrEntityPicker
                                     displayForUser={true}
-                                    entities={this.props.users}
+                                    entities={this.state.LookupData.Users}
                                     itemLimit={1}
                                     selectedEntities={fd.LePassCheckedById && [fd.LePassCheckedById]}
                                     onChange={(v) => this.changeUserPicker_Worker(v, 'LePassCheckedById', false, true)}
@@ -6308,25 +6305,6 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     }
 
 
-    private createCaseUploadFolder = (casefolderName: string) => {
-        sp.web.getFolderByServerRelativeUrl(this.UploadFolder_CLRoot).folders.add(casefolderName).then(folderAddRes => {
-            console.log('folder created', folderAddRes.data);
-            folderAddRes.folder.getItem().then(fItem => {
-                fItem.breakRoleInheritance(false).then(bri => {
-                    console.log('folder bri done');
-                    //https://gist.github.com/nakkeerann/8a4dd4cfc7b2903c796d07107a91a7fc
-                    fItem.roleAssignments.expand('Member').get().then(rass => {
-                        console.log('rass', rass);
-                        rass.forEach(ra => {
-                            const userEmail:string = ra['Member']['UserPrincipalName'];
-                            console.log('ra Member UserPrincipalName', userEmail);
-                        });
-                    });
-                });
-            });
-        });
-    }
-
     private saveData = (submitForApproval: boolean, submitDecision, stayOnNewCaseTab?: boolean): void => {
         if (this.validateEntity(submitForApproval, submitDecision)) {
             console.log('in save data');
@@ -6359,21 +6337,11 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                 f.Title = "SubmitDecision";
             }
 
-            console.log('case before saving', f);
-
-            let newCase:boolean = false;
-            if (f['CaseCreated'] !== true) {
-                console.log('create case folder on sharepoint');
-                newCase = true;
-                //this.createCaseUploadFolder(String(f.ID));
-            }
-
             this.clCaseService.updatePut(f.ID, f).then((): void => {
                 //console.log('saved..');
 
                 this.saveChildEntitiesAfterUpdate();
-                //call to create folder or update folder permissions
-                this.props.afterSaveFolderProcess(newCase, this.state.FormData, this.state.FormDataBeforeChanges);
+
 
                 if (this.props.onError)
                     this.props.onError(null);
@@ -6851,8 +6819,8 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
     private changeTextField_ReqNumPositions = (value: string, f: string): void => {
 
-        let maxLimit: number = 30;
-        if (this.props.superUserPermission === true)
+        let maxLimit:number = 30;
+        if(this.props.superUserPermission === true)
             maxLimit = 99;
 
         if (value == null || value == '') {
@@ -6863,22 +6831,22 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
             const isNum: boolean = this.isNumeric(value);
             console.log('isNumeric', isNum);
             if (isNum === true) {
-                if (Number(value) <= maxLimit) {
-                    if (Number(value) == 0) {
+                if( Number(value) <= maxLimit ){
+                    if( Number(value) == 0 ){
                         //make 1 if they enter 0
                         this.setState({ FormData: this.cloneObject(this.state.FormData, f, "1")/*, FormIsDirty: true*/ });
                     }
-                    else {
+                    else{
                         //set to value what they entered
                         this.setState({ FormData: this.cloneObject(this.state.FormData, f, value)/*, FormIsDirty: true*/ });
                     }
-
+                    
                 }
-                else {
+                else{
                     //set to max limit
                     this.setState({ FormData: this.cloneObject(this.state.FormData, f, String(maxLimit))/*, FormIsDirty: true*/ });
                 }
-
+                
             }
             else {
                 this.setState({ FormData: this.cloneObject(this.state.FormData, f, this.state.FormData[f])/*, FormIsDirty: true*/ });
