@@ -220,13 +220,26 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
 
     return (
       <React.Fragment>
-      <div style={{ paddingTop: '15px' }} >
-        <div>
-          This information is for developers only and necessary for certain support tasks. Can be ignored by non developers.
+        <div style={{ paddingTop: '15px' }} >
+          <div>
+            This information is for developers only and necessary for certain support tasks. Can be ignored by non developers.
+          </div>
+          <br />
+          <span style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }} onClick={this.testCasesPermissions}>Click Here to List Active Directory Users in Log</span>
+          <br />
+          <span style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }} onClick={this.allSiteUsersLog}>All Users</span>
+          <br />
+          <span style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }} onClick={this.currentSiteUsersLog}>Current User</span>
+          <br />
+          <span style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }} onClick={this.siteUserByEmailLog}>User by Email</span>
+          <br />
+          <span style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }} onClick={this.siteUserByLoginLog}>User by Login</span>
+          <br />
+          <span style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }} onClick={this.siteUserByEmail2Log}>User by Email 2</span>
+          <br />
+          <span style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }} onClick={this.siteUserByUserPrincipalNameLog}>User by PrincipalName</span>
+
         </div>
-        <br/>
-        <span style={{ color: 'blue', textDecoration:'underline', cursor: 'pointer' }} onClick={this.testCasesPermissions}>Click Here to List Active Directory Users in Log</span>
-      </div>
       </React.Fragment>
     );
   }
@@ -499,6 +512,66 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
 
 
 
+    });
+
+  }
+
+  private allSiteUsersLog = (): void => {
+
+    sp.web.siteUsers.get().then(users => {
+      console.log('siteUsers', users);
+    });
+
+  }
+
+  private currentSiteUsersLog = (): void => {
+
+    sp.web.currentUser.get().then(user => {
+      console.log('currentSiteUser', user);
+    });
+
+  }
+
+  private siteUserByEmailLog = (): void => {
+
+    sp.web.siteUsers.getByEmail('tas.tasniem@beisdigitalsvc.onmicrosoft.com').get().then(user => {
+      console.log('currentSiteUser', user);
+    });
+
+  }
+
+  private siteUserByLoginLog = (): void => {
+
+    sp.web.siteUsers.getByLoginName('tas.tasniem@beisdigitalsvc.onmicrosoft.com').get().then(user => {
+      console.log('currentSiteUser', user);
+    });
+
+  }
+
+  private siteUserByEmail2Log = (): void => {
+
+    sp.web.siteUsers.filter("Email eq 'tas.tasniem@beisdigitalsvc.onmicrosoft.com'").get().then(user => {
+      if(user.length > 0){
+        console.log('user found', user[0]);
+      }
+      else{
+        console.log('user not found');
+      }
+      
+    });
+
+  }
+
+  private siteUserByUserPrincipalNameLog = (): void => {
+
+    sp.web.siteUsers.filter("UserPrincipalName eq 'tas.tasniem@beisdigitalsvc.onmicrosoft.com'").get().then(user => {
+      if(user.length > 0){
+        console.log('user found', user[0]);
+      }
+      else{
+        console.log('user not found');
+      }
+      
     });
 
   }
