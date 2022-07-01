@@ -10,6 +10,7 @@ import { IUserPermission } from '../../../types/UserPermissions';
 import { ICLCase, ICLHiringMember, IUser } from '../../../types';
 import { sp, ChunkedFileUploadProgressData, Folder, SharePointQueryableSecurable } from '@pnp/sp';
 import { Promise } from 'es6-promise';
+import { CrTextField } from '../../../components/cr/CrTextField';
 
 //#region types defination
 
@@ -18,6 +19,7 @@ export interface IUserManagementState extends types.IUserContextWebPartState {
   Cases: ICLCase[];
   Users: IUser[];
   CLSuperUsersAndViewers: IUser[];
+  SearchUser: string;
 
 }
 export class UserManagementState extends types.UserContextWebPartState {
@@ -25,6 +27,7 @@ export class UserManagementState extends types.UserContextWebPartState {
   public Cases: ICLCase[] = [];
   public Users: IUser[] = [];
   public CLSuperUsersAndViewers: IUser[] = [];
+  public SearchUser:string = "";
 
   constructor() {
     super();
@@ -238,6 +241,15 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
           <span style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }} onClick={this.siteUserByEmail2Log}>User by Email 2</span>
           <br />
           <span style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }} onClick={this.siteUserByUserPrincipalNameLog}>User by PrincipalName</span>
+
+          <br /><br /><br />
+          <CrTextField
+            //className={styles.formField}
+            onChanged={(v) => this.changeSearchUserTextField(v)}
+            value={this.state.SearchUser}
+
+          />
+          <span style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }} onClick={this.siteUserBySearchLog}>User by Search</span>
 
         </div>
       </React.Fragment>
@@ -551,13 +563,13 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
   private siteUserByEmail2Log = (): void => {
 
     sp.web.siteUsers.filter("Email eq 'tas.tasniem@beisdigitalsvc.onmicrosoft.com'").get().then(user => {
-      if(user.length > 0){
+      if (user.length > 0) {
         console.log('user found', user[0]);
       }
-      else{
+      else {
         console.log('user not found');
       }
-      
+
     });
 
   }
@@ -565,16 +577,41 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
   private siteUserByUserPrincipalNameLog = (): void => {
 
     sp.web.siteUsers.filter("UserPrincipalName eq 'tas.tasniem@beisdigitalsvc.onmicrosoft.com'").get().then(user => {
-      if(user.length > 0){
+      if (user.length > 0) {
         console.log('user found', user[0]);
       }
-      else{
+      else {
         console.log('user not found');
       }
-      
+
     });
 
   }
+
+  private siteUserBySearchLog = (): void => {
+
+    //many ways to search
+    //UserPrincipalName eq 'tas.tasniem@beisdigitalsvc.onmicrosoft.com'
+    //Id eq 12
+    //startswith(Email, 'adnan')
+    //endswith(Email, 'com') eq true - not worked
+
+
+    sp.web.siteUsers.filter(this.state.SearchUser).get().then(user => {
+      if (user.length > 0) {
+        console.log(`${user.length} user found`, user);
+      }
+      else {
+        console.log('user not found');
+      }
+
+    });
+
+  }
+
+  private changeSearchUserTextField = (value: string): void => {
+    this.setState({ SearchUser: value  });
+}
 
 
 }
