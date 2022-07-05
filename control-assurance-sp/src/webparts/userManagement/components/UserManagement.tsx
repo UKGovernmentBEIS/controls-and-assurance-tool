@@ -27,7 +27,7 @@ export class UserManagementState extends types.UserContextWebPartState {
   public Cases: ICLCase[] = [];
   public Users: IUser[] = [];
   public CLSuperUsersAndViewers: IUser[] = [];
-  public SearchUser:string = "";
+  public SearchUser: string = "";
 
   constructor() {
     super();
@@ -232,9 +232,11 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
           <br />
           <span style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }} onClick={this.allSiteUsersLog}>All Users</span>
           <br />
-          <span style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }} onClick={this.currentSiteUsersLog}>Current User</span>
+          <span style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }} onClick={this.allSiteUsersInfoListLog}>All Users Info List</span>
           <br />
-          <span style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }} onClick={this.siteUserByEmailLog}>User by Email</span>
+          <span style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }} onClick={this.allSiteUsersInfoList2Log}>All Users Info List 2</span>
+          <br />
+          <span style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }} onClick={this.currentSiteUsersLog}>Current User</span>
           <br />
           <span style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }} onClick={this.siteUserByLoginLog}>User by Login</span>
           <br />
@@ -250,6 +252,9 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
 
           />
           <span style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }} onClick={this.siteUserBySearchLog}>User by Search</span>
+          &nbsp;&nbsp;
+          <span style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }} onClick={this.siteUserByEmailLog}>User by Email</span>
+          <br />
 
         </div>
       </React.Fragment>
@@ -335,7 +340,7 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
 
     return Promise.all([
 
-      this.loadCases(),
+      //this.loadCases(),
       this.loadUsers(),
       this.loadAllCLSuperUsersAndViewers(),
     ]);
@@ -358,46 +363,46 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
     console.log('building unique users');
 
     //Superusers/viewers
-    this.state.CLSuperUsersAndViewers.forEach(su => {
+    this.state.Users.forEach(su => {
       users.push(su.Username);
     });
 
 
-    this.state.Cases.forEach(caseData => {
-      console.log('caseId', caseData.ID);
-      //hiring manager
-      if (caseData.ApplHMUserId > 0) {
-        const u1 = this.state.Users.filter(x => x.ID === caseData.ApplHMUserId)[0].Username;
-        if (users.indexOf(u1) === -1) users.push(u1);
-      }
+    // this.state.Cases.forEach(caseData => {
+    //   console.log('caseId', caseData.ID);
+    //   //hiring manager
+    //   if (caseData.ApplHMUserId > 0) {
+    //     const u1 = this.state.Users.filter(x => x.ID === caseData.ApplHMUserId)[0].Username;
+    //     if (users.indexOf(u1) === -1) users.push(u1);
+    //   }
 
-      //hiring members
-      const hiringMembers: ICLHiringMember[] = caseData['CLHiringMembers'];
-      hiringMembers.forEach(m => {
-        const u1 = this.state.Users.filter(x => x.ID === m.UserId)[0].Username;
-        if (users.indexOf(u1) === -1) users.push(u1);
-      });
+    //   //hiring members
+    //   const hiringMembers: ICLHiringMember[] = caseData['CLHiringMembers'];
+    //   hiringMembers.forEach(m => {
+    //     const u1 = this.state.Users.filter(x => x.ID === m.UserId)[0].Username;
+    //     if (users.indexOf(u1) === -1) users.push(u1);
+    //   });
 
-      //BH
-      if (caseData.BHUserId > 0) {
-        const u1 = this.state.Users.filter(x => x.ID === caseData.BHUserId)[0].Username;
-        if (users.indexOf(u1) === -1) users.push(u1);
-      }
+    //   //BH
+    //   if (caseData.BHUserId > 0) {
+    //     const u1 = this.state.Users.filter(x => x.ID === caseData.BHUserId)[0].Username;
+    //     if (users.indexOf(u1) === -1) users.push(u1);
+    //   }
 
-      //FBP
-      if (caseData.FBPUserId > 0) {
-        const u1 = this.state.Users.filter(x => x.ID === caseData.FBPUserId)[0].Username;
-        if (users.indexOf(u1) === -1) users.push(u1);
-      }
+    //   //FBP
+    //   if (caseData.FBPUserId > 0) {
+    //     const u1 = this.state.Users.filter(x => x.ID === caseData.FBPUserId)[0].Username;
+    //     if (users.indexOf(u1) === -1) users.push(u1);
+    //   }
 
-      //HRBP
-      if (caseData.HRBPUserId > 0) {
-        const u1 = this.state.Users.filter(x => x.ID === caseData.HRBPUserId)[0].Username;
-        if (users.indexOf(u1) === -1) users.push(u1);
-      }
+    //   //HRBP
+    //   if (caseData.HRBPUserId > 0) {
+    //     const u1 = this.state.Users.filter(x => x.ID === caseData.HRBPUserId)[0].Username;
+    //     if (users.indexOf(u1) === -1) users.push(u1);
+    //   }
 
 
-    });
+    // });
 
     console.log('after building unique users', users);
 
@@ -406,22 +411,9 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
     let promisesUsersByUserPrincipalName = [];
 
     users.forEach(userEmail => {
-      //promisesRemove.push(this.removeFolderRole(userEmail, folderItem));
+
       console.log(`trying to find sp user by email: ${userEmail}`);
       promisesUsersByEmail.push(this.findSPUserByEmail(userEmail));
-
-      // let xPromise = sp.web.siteUsers.filter(`Email eq '${userEmail}'`).get().then(spUs => {
-      //   if(spUs.length > 0){
-      //     //sp user found by email
-      //     this.userFoundByEmail++;
-      //     const currentUserPrincipalId: number = Number(spUs[0]['Id']);
-      //     console.log(`SP user found by email: ${userEmail}, SP User Id: ${currentUserPrincipalId}`);
-      //   }
-      //   else{
-      //     console.log(`SP user not found by email: ${userEmail}`);
-      //   }
-      // });
-
 
 
     });
@@ -473,28 +465,12 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
   private findSPUserByEmail = (userEmail: string): Promise<any> => {
 
 
-    // return sp.web.siteUsers.getByEmail(userEmail).get().then(user => {
+    return sp.web.siteUsers.getByEmail(userEmail).get().then(user => {
 
-    //   if (user) {
-
-    //     this.userFoundByEmail++;
-    //     const currentUserPrincipalId: number = user['Id'];
-    //     console.log(`SP user found by email: ${userEmail}, SP User Id: ${currentUserPrincipalId}`);
-    //   }
-    //   else {
-    //     console.log(`SP user not found by email: ${userEmail}`);
-    //   }
-
-
-
-    // });
-
-    return sp.web.siteUsers.filter(`Email eq '${userEmail}'`).get().then(users => {
-
-      if (users.length > 0) {
+      if (user) {
 
         this.userFoundByEmail++;
-        const currentUserPrincipalId: number = users[0]['Id'];
+        const currentUserPrincipalId: number = user['Id'];
         console.log(`SP user found by email: ${userEmail}, SP User Id: ${currentUserPrincipalId}`);
       }
       else {
@@ -502,9 +478,28 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
         this.usersToTryByUserPrincipalName.push(userEmail);
       }
 
-
+    }).catch(err => {
+      console.log(err, `Exception, SP user not found by email: ${userEmail}`);
+      this.usersToTryByUserPrincipalName.push(userEmail);
 
     });
+
+    // return sp.web.siteUsers.filter(`Email eq '${userEmail}'`).get().then(users => {
+
+    //   if (users.length > 0) {
+
+    //     this.userFoundByEmail++;
+    //     const currentUserPrincipalId: number = users[0]['Id'];
+    //     console.log(`SP user found by email: ${userEmail}, SP User Id: ${currentUserPrincipalId}`);
+    //   }
+    //   else {
+    //     console.log(`SP user not found by email: ${userEmail}`);
+    //     this.usersToTryByUserPrincipalName.push(userEmail);
+    //   }
+
+
+
+    // });
 
   }
 
@@ -536,6 +531,23 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
 
   }
 
+
+  private allSiteUsersInfoListLog = (): void => {
+
+    sp.web.siteUserInfoList.items.get().then(users => {
+      console.log('siteUserInfoList', users);
+    });
+
+  }
+
+  private allSiteUsersInfoList2Log = (): void => {
+
+    sp.web.siteUserInfoList.items.getAll().then(users => {
+      console.log('siteUserInfoList2', users);
+    });
+
+  }
+
   private currentSiteUsersLog = (): void => {
 
     sp.web.currentUser.get().then(user => {
@@ -546,8 +558,10 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
 
   private siteUserByEmailLog = (): void => {
 
-    sp.web.siteUsers.getByEmail('tas.tasniem@beisdigitalsvc.onmicrosoft.com').get().then(user => {
-      console.log('currentSiteUser', user);
+    sp.web.siteUsers.getByEmail(this.state.SearchUser).get().then(user => {
+      console.log('getByEmail', user);
+    }).catch(e => {
+      console.log('error', e);
     });
 
   }
@@ -590,10 +604,12 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
 
   private siteUserBySearchLog = (): void => {
 
+    //https://www.odata.org/documentation/odata-version-2-0/uri-conventions/
     //many ways to search
     //UserPrincipalName eq 'tas.tasniem@beisdigitalsvc.onmicrosoft.com'
     //Id eq 12
     //startswith(Email, 'adnan')
+    //substringof('tas_', LoginName) eq true - working for search in the middle on text example "i:0#.f|membership|tas_swiftpro.com#ext#@beisdigitalsvc.onmicrosoft.com"
     //endswith(Email, 'com') eq true - not worked
 
 
@@ -610,8 +626,8 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
   }
 
   private changeSearchUserTextField = (value: string): void => {
-    this.setState({ SearchUser: value  });
-}
+    this.setState({ SearchUser: value });
+  }
 
 
 }
