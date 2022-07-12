@@ -1398,7 +1398,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                             <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
 
                                 <div className={styles.flexContainerSectionQuestion}>
-                                    <div className={styles.sectionQuestionCol1}><span>Expected daily rate including fee (excluding vat)</span></div>
+                                    <div className={styles.sectionQuestionCol1}><span>Expected daily rate including fee (including vat)</span></div>
                                     <div className={styles.sectionQuestionCol2}>
                                         <img src={finMaxRateValidationImg} />
                                     </div>
@@ -2450,7 +2450,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                             <tr>
                                 <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
-                                    Expected daily rate including fee (excluding vat)
+                                    Expected daily rate including fee (including vat)
                                 </td>
                                 <td style={{ width: '31%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)' }}>
                                     {this.state.FormData.FinMaxRate}
