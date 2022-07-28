@@ -23,6 +23,7 @@ import { getUploadFolder_IAPFiles, getFolder_Help, changeDatePicker } from '../.
 export interface IUpdatesSaveFormProps extends types.IBaseComponentProps {
 
     iapUpdateId: number | string;
+    iapTypeId: number;
     updateType: string;
     defaultActionStatusTypeId: number;
     defaultRevDate:Date;
@@ -497,7 +498,15 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
 
     private loadIAPStatusTypes = (): void => {
         this.iapStatusTypeService.readAll().then((data: IEntity[]): IEntity[] => {
-            this.setState({ LookupData: this.cloneObject(this.state.LookupData, "IAPStatusTypes", data) });
+            let iapStatusTypes = data;
+            if(this.props.iapTypeId === 6){
+                iapStatusTypes = data.filter(x => x.ID > 1);
+                iapStatusTypes.forEach(x => {
+                    x.Title = x['Title2'];
+                });
+            }
+
+            this.setState({ LookupData: this.cloneObject(this.state.LookupData, "IAPStatusTypes", iapStatusTypes) });
             return data;
         }, (err) => { if (this.props.onError) this.props.onError(`Error loading IAPStatusTypes lookup data`, err.message); });
     }

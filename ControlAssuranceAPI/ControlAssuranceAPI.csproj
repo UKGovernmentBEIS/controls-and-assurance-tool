@@ -78,8 +78,8 @@
     <Reference Include="Google.Apis.PlatformServices, Version=1.49.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.1.49.0\lib\net45\Google.Apis.PlatformServices.dll</HintPath>
     </Reference>
-    <Reference Include="GovukNotify, Version=4.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\GovukNotify.4.0.1\lib\netstandard2.0\GovukNotify.dll</HintPath>
+    <Reference Include="GovukNotify, Version=6.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\GovukNotify.6.0.0\lib\netstandard2.0\GovukNotify.dll</HintPath>
     </Reference>
     <Reference Include="JWT, Version=7.0.0.0, Culture=neutral, PublicKeyToken=6f98bca0f40f2ecf, processorArchitecture=MSIL">
       <HintPath>..\packages\JWT.7.1.0\lib\net46\JWT.dll</HintPath>

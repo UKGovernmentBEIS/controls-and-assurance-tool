@@ -127,7 +127,7 @@ namespace ControlAssuranceAPI.Repositories
                           UpdateBy = u.User.Title,
                           u.UpdateDate,
                           u.UpdateDetails,
-                          Status = u.IAPStatusType.Title,
+                          Status = (u.IAPAction.IAPTypeId == 6) ? u.IAPStatusType.Title2 : u.IAPStatusType.Title,
                           u.RevisedDate,
                           u.EvFileName,
                           u.EvIsLink

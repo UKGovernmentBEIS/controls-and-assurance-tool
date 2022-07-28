@@ -22,6 +22,7 @@ export interface IUpdatesListProps extends types.IBaseComponentProps {
 
     //onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
     iapUpdateId: number | string;
+    iapTypeId: number;
     defaultIAPStatusTypeId: number;
     defaultCompletionDate: Date;
 
@@ -280,6 +281,7 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
         return (
             <UpdateSaveForm
                 iapUpdateId={this.props.iapUpdateId}
+                iapTypeId={this.props.iapTypeId}
                 defaultActionStatusTypeId={d1}
                 defaultRevDate={d2}
                 updateType={this.state.FormType}

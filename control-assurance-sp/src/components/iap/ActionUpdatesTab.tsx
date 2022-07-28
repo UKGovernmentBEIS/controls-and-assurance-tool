@@ -237,6 +237,7 @@ export default class ActionUpdatesTab extends React.Component<IActionUpdatesTabP
                         <UpdatesList
                             {...this.props}
                             iapUpdateId={this.state.IAPActionId}
+                            iapTypeId={this.state.IAPInfo.IAPTypeId}
                             defaultIAPStatusTypeId={iAPStatusTypeId}
                             defaultCompletionDate={completionDate}
                             onError={this.props.onError}

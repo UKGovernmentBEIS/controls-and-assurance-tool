@@ -639,7 +639,7 @@ export default class IapUpdates extends BaseUserContextWebPartComponent<types.IW
     else {
 
       //IAP Actions
-      const filteredItem_IAPActions = filteredItems.filter(x => Number(x["IAPTypeId"]) === 1 || Number(x["IAPTypeId"]) === 2 || Number(x["IAPTypeId"]) === 3);
+      const filteredItem_IAPActions = filteredItems.filter(x => Number(x["IAPTypeId"]) === 1 || Number(x["IAPTypeId"]) === 2 || Number(x["IAPTypeId"]) === 3 || Number(x["IAPTypeId"]) === 6);
       console.log('filteredItem_IAPActions', filteredItem_IAPActions);
 
       const ID:number = Number(ID_any);
@@ -676,7 +676,7 @@ export default class IapUpdates extends BaseUserContextWebPartComponent<types.IW
       console.log('IAPTypeId', iapTypeId);
 
       //const filteredItemWithoutGroupActions = filteredItems.filter(x => Number(x["IAPTypeId"]) !== 2);
-      const filteredItem_Type_1_3 = filteredItem_IAPActions.filter(x => Number(x["IAPTypeId"]) === 1 || Number(x["IAPTypeId"]) === 3);
+      const filteredItem_Type_1_3 = filteredItem_IAPActions.filter(x => Number(x["IAPTypeId"]) === 1 || Number(x["IAPTypeId"]) === 3 || Number(x["IAPTypeId"]) === 6);
       console.log('filteredItem_Type_1_3', filteredItem_Type_1_3);
 
 

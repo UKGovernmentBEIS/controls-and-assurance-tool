@@ -57,7 +57,7 @@ export interface IFilteredMainListProps {
 
     selection?: ISelection;
 
-    onAdd: () => void;
+    onAdd: (iapTypeId: number) => void;
     onAddGroupActions: () => void;
     onEdit: () => void;
     onDelete: () => void;
@@ -103,7 +103,7 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
                             iconProps={{ iconName: 'Add' }}
                             className={classNames.cmdBtn}
                             text="Add Action"
-                            onClick={props.onAdd}
+                            onClick={(ev) => props.onAdd(1)}
                         />}
 
                     {props.editDisabled && props.deleteDisabled &&
@@ -112,6 +112,13 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
                             className={classNames.cmdBtn}
                             text="Add Group Actions"
                             onClick={props.onAddGroupActions}
+                        />}
+                    {props.editDisabled && props.deleteDisabled &&
+                        <CommandBarButton
+                            iconProps={{ iconName: 'Add' }}
+                            className={classNames.cmdBtn}
+                            text="Add Compliance Action"
+                            onClick={(ev) => props.onAdd(6)}
                         />}
 
                     {(props.editDisabled === false) &&

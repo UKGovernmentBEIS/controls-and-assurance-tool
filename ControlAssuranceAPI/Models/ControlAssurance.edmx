@@ -996,6 +996,7 @@
           </Key>
           <Property Name="ID" Type="int" Nullable="false" />
           <Property Name="Title" Type="nvarchar" MaxLength="50" />
+          <Property Name="Title2" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="IAPType">
           <Key>
@@ -4131,6 +4132,7 @@
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" />
           <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Title2" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="IAPActions" Relationship="Self.FK_IAPAction_IAPStatusType" FromRole="IAPStatusType" ToRole="IAPAction" />
           <NavigationProperty Name="IAPActionUpdates" Relationship="Self.FK_IAPActionUpdate_IAPStatusType" FromRole="IAPStatusType" ToRole="IAPActionUpdate" />
         </EntityType>
@@ -7467,6 +7469,7 @@
               <MappingFragment StoreEntitySet="IAPStatusType">
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Title2" ColumnName="Title2" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

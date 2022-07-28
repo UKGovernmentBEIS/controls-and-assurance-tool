@@ -60,7 +60,7 @@ namespace ControlAssuranceAPI.Repositories
             iapInput.CreatedOn = DateTime.Now;
             iapInput.OriginalCompletionDate = iapInput.CompletionDate;
             iapInput.CreatedById = apiUser.ID;
-            if (iapInput.IAPTypeId == 1)
+            if (iapInput.IAPTypeId == 1 || iapInput.IAPTypeId == 6)
             {
                 var ret = db.IAPActions.Add(iapInput);
                 db.SaveChanges();
@@ -476,7 +476,7 @@ namespace ControlAssuranceAPI.Repositories
                           u.ID,
                           u.Title,
                           Priority = u.IAPPriority.Title,
-                          Status = u.IAPStatusType.Title,
+                          Status = (u.IAPTypeId == 6) ? u.IAPStatusType.Title2 : u.IAPStatusType.Title,
                           u.IAPStatusTypeId,
                           u.CreatedById,
                           CreatedBy = u.User.Title,

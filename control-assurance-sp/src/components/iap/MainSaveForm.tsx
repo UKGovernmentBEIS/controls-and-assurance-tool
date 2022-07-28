@@ -19,6 +19,7 @@ export interface IMainSaveFormProps extends types.IBaseComponentProps {
     //periodID: number | string;
     entityId: number;
     showForm: boolean;
+    formIAPTypeId: number;
     onSaved?: () => void;
     onCancelled?: () => void;
 }
@@ -69,8 +70,8 @@ export interface IMainSaveFormState {
 export class MainSaveFormState implements IMainSaveFormState {
     public Loading = false;
     public LookupData = new LookupData();
-    public FormData = new IAPAction(1, 1, 1);
-    public FormDataBeforeChanges = new IAPAction(1, 1, 1);
+    public FormData;
+    public FormDataBeforeChanges;
     public FormIsDirty = false;
     //public ClearSuggestedStatus = false;
     public ArrLinks: ILinkLocalType[] = [];
@@ -83,6 +84,11 @@ export class MainSaveFormState implements IMainSaveFormState {
 
 
     public ErrMessages = new ErrorMessage();
+
+    constructor(iapStatusTypeId:number, iapTypeId: number) {
+        this.FormData = new IAPAction(1, iapStatusTypeId, iapTypeId);
+        this.FormDataBeforeChanges = new IAPAction(1, iapStatusTypeId, iapTypeId);
+    }
 
 }
 
@@ -108,15 +114,27 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
         this.UploadFolder_Files = getUploadFolder_IAPFiles(props.spfxContext);
         this.Folder_Help = getFolder_Help(props.spfxContext);
 
-        this.state = new MainSaveFormState();
+        if(props.formIAPTypeId === 6){
+            //default status is 2 (Non-Compliant)
+            this.state = new MainSaveFormState(2 , props.formIAPTypeId);
+        }
+        else{
+            this.state = new MainSaveFormState(1, 1);
+        }
+        
+        console.log('props.formIAPTypeId', props.formIAPTypeId);
     }
 
     //#region Render
 
     public render(): React.ReactElement<IMainSaveFormProps> {
         //const errors = this.state.ValidationErrors;
+        let headerTxt:string = "Action";
+        if(this.props.formIAPTypeId === 6)
+            headerTxt = "Compliance Action";
+
         return (
-            <Panel isOpen={this.props.showForm} headerText={"Action"} type={PanelType.medium} onRenderNavigation={() => <FormCommandBar onSave={this.saveData} onCancel={this.props.onCancelled} />}>
+            <Panel isOpen={this.props.showForm} headerText={headerTxt} type={PanelType.medium} onRenderNavigation={() => <FormCommandBar onSave={this.saveData} onCancel={this.props.onCancelled} />}>
                 <div className={styles.cr}>
                     {this.renderFormFields()}
                     <FormButtons
@@ -593,7 +611,15 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
 
     private loadIAPStatusTypes = (): void => {
         this.iapStatusTypeService.readAll().then((data: IEntity[]): IEntity[] => {
-            this.setState({ LookupData: this.cloneObject(this.state.LookupData, "IAPStatusTypes", data) });
+            console.log('iapStatusTypes data', data);
+            let iapStatusTypes = data;
+            if(this.props.formIAPTypeId === 6){
+                iapStatusTypes = data.filter(x => x.ID > 1);
+                iapStatusTypes.forEach(x => {
+                    x.Title = x['Title2'];
+                });
+            }
+            this.setState({ LookupData: this.cloneObject(this.state.LookupData, "IAPStatusTypes", iapStatusTypes) });
             return data;
         }, (err) => { if (this.props.onError) this.props.onError(`Error loading IAPStatusTypes lookup data`, err.message); });
     }
