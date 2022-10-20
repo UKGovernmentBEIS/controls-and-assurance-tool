@@ -10,13 +10,14 @@ import { FormButtons } from '../../cr/FormButtons';
 import { Panel, PanelType } from 'office-ui-fabric-react/lib/Panel';
 import { FormCommandBar } from '../../cr/FormCommandBar';
 import { sp, ChunkedFileUploadProgressData } from '@pnp/sp';
-import { getUploadFolder_CLEvidence, getFolder_Help } from '../../../types/AppGlobals';
+import { getUploadFolder_CLRoot, getFolder_Help } from '../../../types/AppGlobals';
 import styles from '../../../styles/cr.module.scss';
 import '../../../styles/CustomFabric.scss';
 import { TooltipHost } from 'office-ui-fabric-react';
 
 export interface IEvidenceSaveFormProps extends types.IBaseComponentProps {
     parentId: number;
+    caseId: number;
     workerId?: number;
     evidenceId: number;
     showForm: boolean;
@@ -86,7 +87,7 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
 
     constructor(props: IEvidenceSaveFormProps, state: IEvidenceSaveFormState) {
         super(props);
-        this.UploadFolder_Evidence = getUploadFolder_CLEvidence(props.spfxContext);
+        this.UploadFolder_Evidence = `${getUploadFolder_CLRoot(props.spfxContext)}/${this.props.caseId}`;
         this.Folder_Help = getFolder_Help(props.spfxContext);
 
         this.state = new EvidenceSaveFormState(props.parentId, props.workerId, props.evidenceType);

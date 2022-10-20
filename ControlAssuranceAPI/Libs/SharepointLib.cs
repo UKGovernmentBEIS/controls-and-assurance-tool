@@ -132,20 +132,21 @@ namespace ControlAssuranceAPI.Libs
 
 
 
-        public Microsoft.SharePoint.Client.File UploadFinalReport1(string filePathToUpload, string uniqueFileName)
+        public Microsoft.SharePoint.Client.File UploadFinalReport1(string filePathToUpload, string uniqueFileName, string spFolderUrl="Shared Documents/Report/", string spLibListName= "Documents")
         {
 
             int fileChunkSizeInMB = 3;
             ClientContext ctx = this.clientContext;
             string fileName = filePathToUpload;
-            string libraryUrl = "Shared Documents/Report/";
+            //string spFolderUrl = "Shared Documents/Report/";
 
             // Each sliced upload requires a unique ID.
             Guid uploadId = Guid.NewGuid();
 
 
             // Get the folder to upload into.
-            List docs = ctx.Web.Lists.GetByTitle("Documents");
+            List docs = ctx.Web.Lists.GetByTitle(spLibListName);
+
             ctx.Load(docs, l => l.RootFolder);
             // Get the information about the folder that will hold the file.
             ctx.Load(docs.RootFolder, f => f.ServerRelativeUrl);
@@ -173,7 +174,7 @@ namespace ControlAssuranceAPI.Libs
                     FileCreationInformation fileInfo = new FileCreationInformation();
                     fileInfo.ContentStream = fs;
                     //fileInfo.Url = uniqueFileName;
-                    fileInfo.Url = ServerSiteUrl + libraryUrl + uniqueFileName;
+                    fileInfo.Url = ServerSiteUrl + spFolderUrl + uniqueFileName;
                     fileInfo.Overwrite = true;
                     uploadFile = docs.RootFolder.Files.Add(fileInfo);
                     ctx.Load(uploadFile);
@@ -223,7 +224,7 @@ namespace ControlAssuranceAPI.Libs
                                     FileCreationInformation fileInfo = new FileCreationInformation();
                                     fileInfo.ContentStream = contentStream;
                                     //fileInfo.Url = uniqueFileName;
-                                    fileInfo.Url = ServerSiteUrl + libraryUrl + uniqueFileName;
+                                    fileInfo.Url = ServerSiteUrl + spFolderUrl + uniqueFileName;
                                     fileInfo.Overwrite = true;
                                     uploadFile = docs.RootFolder.Files.Add(fileInfo);
 

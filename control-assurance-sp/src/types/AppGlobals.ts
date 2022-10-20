@@ -59,7 +59,7 @@ export function getUploadFolder_CLEvidence(context: WebPartContext): string {
 
 export function getUploadFolder_CLRoot(context: WebPartContext): string {
     const serverRelativeUrl = context.pageContext.web.serverRelativeUrl;
-    const path: string = `${serverRelativeUrl}/Shared%20Documents/ContingentLabourFiles`;
+    const path: string = `${serverRelativeUrl}/CATFiles/ContingentLabourFiles`;
 
     return path;
 }

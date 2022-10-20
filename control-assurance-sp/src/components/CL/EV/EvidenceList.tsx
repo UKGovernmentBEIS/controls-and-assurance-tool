@@ -11,7 +11,7 @@ import { Selection } from '../../cr/FilteredList';
 import { ConfirmDialog } from '../../cr/ConfirmDialog';
 import styles from '../../../styles/cr.module.scss';
 import { DateService } from '../../../services';
-import { getUploadFolder_CLEvidence } from '../../../types/AppGlobals';
+import { getUploadFolder_CLRoot } from '../../../types/AppGlobals';
 
 
 export interface IEvidenceListProps extends types.IBaseComponentProps {
@@ -145,7 +145,8 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
         super(props);
         this.state = new EvidenceListState<IEntity>();
 
-        this.UploadFolder_Evidence = getUploadFolder_CLEvidence(props.spfxContext);
+        this.UploadFolder_Evidence = `${getUploadFolder_CLRoot(props.spfxContext)}/${this.props.parentId}`;
+        console.log('UploadFolder_Evidence', this.UploadFolder_Evidence);
 
         this._selection = new Selection({
             onSelectionChanged: () => {
@@ -224,6 +225,7 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
             <EvidenceSaveForm
                 showForm={this.state.ShowForm}
                 parentId={this.props.parentId}
+                caseId={this.props.parentId}
                 workerId={this.props.workerId}
                 evidenceId={this.state.SelectedEntity}
                 onSaved={this.fileSaved}

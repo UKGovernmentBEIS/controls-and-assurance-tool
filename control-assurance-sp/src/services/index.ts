@@ -108,3 +108,5 @@ export { DirectorateStatService } from './DirectorateStatService';
 export { DivisionStatService } from './DivisionStatService';
 export { ThemeStatService } from './ThemeStatService';
 
+export { SPService } from './SPService';
+
