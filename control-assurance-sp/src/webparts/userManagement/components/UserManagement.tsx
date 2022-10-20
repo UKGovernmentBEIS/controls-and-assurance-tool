@@ -7,10 +7,11 @@ import * as services from '../../../services';
 import EntityList from '../../../components/entity/EntityList';
 import { IGenColumn, ColumnType } from '../../../types/GenColumn';
 import { IUserPermission } from '../../../types/UserPermissions';
-import { ICLCase, ICLHiringMember, IUser } from '../../../types';
+import { ICLCase, ICLCaseEvidence, ICLHiringMember, IUser } from '../../../types';
 import { sp, ChunkedFileUploadProgressData, Folder, SharePointQueryableSecurable } from '@pnp/sp';
 import { Promise } from 'es6-promise';
 import { CrTextField } from '../../../components/cr/CrTextField';
+import { getUploadFolder_CLEvidence, getUploadFolder_CLRoot, getUploadFolder_Report } from '../../../types/AppGlobals';
 
 //#region types defination
 
@@ -20,6 +21,7 @@ export interface IUserManagementState extends types.IUserContextWebPartState {
   Users: IUser[];
   CLSuperUsersAndViewers: IUser[];
   SearchUser: string;
+  FullControlFolderRoleId: number;
 
 }
 export class UserManagementState extends types.UserContextWebPartState {
@@ -28,6 +30,7 @@ export class UserManagementState extends types.UserContextWebPartState {
   public Users: IUser[] = [];
   public CLSuperUsersAndViewers: IUser[] = [];
   public SearchUser: string = "";
+  public FullControlFolderRoleId: number = 0;
 
   constructor() {
     super();
@@ -41,6 +44,7 @@ export class UserManagementState extends types.UserContextWebPartState {
 export default class UserManagement extends BaseUserContextWebPartComponent<types.IWebPartComponentProps, UserManagementState> {
 
   private clCaseService: services.CLCaseService = new services.CLCaseService(this.props.spfxContext, this.props.api);
+  private clWorkerService: services.CLWorkerService = new services.CLWorkerService(this.props.spfxContext, this.props.api);
 
   private userFoundByEmail: number = 0;
   private userFoundByUserPrincipalName: number = 0;
@@ -256,6 +260,18 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
           <span style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }} onClick={this.siteUserByEmailLog}>User by Email</span>
           <br />
 
+          <span style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }} onClick={this.copyFile}>Copy File test</span>
+          <br />
+
+          <span style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }} onClick={this.createExistingCLCasesFolders}>Create existing CLCases Folders</span>
+          <br />
+
+          <span style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }} onClick={this.copyAllCasesEvDocs}>Copy all CLCases EV docs</span>
+          <br />
+
+          <span style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }} onClick={this.copyAllCasesPDFs}>Copy all CLCases PDFs</span>
+          <br />
+
         </div>
       </React.Fragment>
     );
@@ -313,8 +329,7 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
   //#endregion Permissions
 
   private loadCases = (): Promise<void> => {
-    //const qryStr:string = "?$filter=ID eq 2176&$expand=CLHiringMembers($expand=User($select=Username,ID))";
-    const qryStr: string = "?$expand=CLHiringMembers($expand=User($select=Username,ID))";
+    const qryStr: string = "?$filter=CaseCreated eq true&$expand=CLHiringMembers($expand=User($select=Username,ID))";
     let x = this.clCaseService.readAll(qryStr).then((data: ICLCase[]): void => {
       console.log('cases', data);
       this.setState({ Cases: data });
@@ -336,11 +351,22 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
     return x;
   }
 
+  private loadSPFoldersCoreStuff = (): void => {
+
+    //get doc lib rolder role Full Control Id and set in state
+    sp.web.roleDefinitions.getByName('Full Control').get().then(r => {
+      //console.log('r', r);
+      const roleId: number = r['Id'];
+      this.setState({ FullControlFolderRoleId: roleId });
+    });
+
+  }
+
   protected loadLookups(): Promise<any> {
 
     return Promise.all([
-
-      //this.loadCases(),
+      this.loadSPFoldersCoreStuff(),
+      this.loadCases(),
       this.loadUsers(),
       this.loadAllCLSuperUsersAndViewers(),
     ]);
@@ -558,10 +584,18 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
 
   private siteUserByEmailLog = (): void => {
 
+
+
     sp.web.siteUsers.getByEmail(this.state.SearchUser).get().then(user => {
       console.log('getByEmail', user);
+      console.log('UserId', user['Id']);
     }).catch(e => {
       console.log('error', e);
+      sp.web.ensureUser(this.state.SearchUser).then(xx => {
+        console.log('xx', xx);
+        console.log('UserId', xx.data.Id);
+      });
+      
     });
 
   }
@@ -624,6 +658,95 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
     });
 
   }
+
+  private copyFile = (): void => {
+
+    const srcFolder = getUploadFolder_CLEvidence(this.props.spfxContext);
+    const destFolder = getUploadFolder_CLRoot(this.props.spfxContext) + "/Test1/" + this.state.SearchUser;
+
+    sp.web.getFolderByServerRelativeUrl(srcFolder).files.getByName(this.state.SearchUser).copyTo(destFolder).then(() => {
+      console.log('file copied');
+      
+    }).catch(err => {
+      console.log('error', err);
+    });
+
+  }
+
+  private createExistingCLCasesFolders = (): void => {
+    const spService = new services.SPService(this.props.spfxContext);
+    this.state.Cases.forEach(clCase => {
+      console.log('going to create folder for case ', clCase.ID);
+      const folderNewUsers: string[] = spService.makeCLFolderNewUsersArr(clCase, this.state.Users, this.state.CLSuperUsersAndViewers);
+      spService.createNewCaseUploadFolder(String(clCase.ID), folderNewUsers, this.state.FullControlFolderRoleId);
+    });
+  }
+
+  private copyAllCasesEvDocs = (): void => {
+    const srcFolder = getUploadFolder_CLEvidence(this.props.spfxContext);
+    const clRootFolder = getUploadFolder_CLRoot(this.props.spfxContext);
+    const caseEvService = new services.CLCaseEvidenceService(this.props.spfxContext, this.props.api);
+
+    caseEvService.readAll(`?$filter=AttachmentType eq 'PDF' and RecordCreated eq true`).then(evs => {
+      evs.forEach(ev => {
+        console.log(`going to copy ev with ID: ${ev.ID} and filename: ${ev.Title}`);
+        if(ev.EvidenceType === 'ContractorSecurityCheck'){
+          //parentID is worker id, get case id for that worker
+          this.clWorkerService.readAll(`?$filter=ID eq ${ev.ParentId}&$select=CLCaseId`).then(ws => {
+            if(ws.length > 0){
+              const caseId:number = ws[0].CLCaseId;
+              console.log('got caseId', caseId);
+              this.copyCaseFile(caseId, srcFolder, clRootFolder, ev.Title);
+            }
+          });
+          
+
+        }
+        else{
+          //parent id is case id
+          this.copyCaseFile(ev.ParentId, srcFolder, clRootFolder, ev.Title);
+        }
+
+      });
+
+    });
+
+  }
+
+  private copyAllCasesPDFs = (): void => {
+    const srcFolder = getUploadFolder_Report(this.props.spfxContext);
+    const clRootFolder = getUploadFolder_CLRoot(this.props.spfxContext);
+    const workerService = new services.CLWorkerService(this.props.spfxContext, this.props.api);
+    
+    //case pdf
+    workerService.readAll(`?$filter=CasePdfStatus eq 'Cr'&$select=ID,ClCaseId,CasePdfName`).then(workers => {
+      workers.forEach(worker =>{
+        this.copyCaseFile(worker.CLCaseId, srcFolder, clRootFolder, worker.CasePdfName);
+      });
+    });
+
+    //SDS pdf
+    workerService.readAll(`?$filter=SDSPdfStatus eq 'Cr'&$select=ID,ClCaseId,SDSPdfName`).then(workers => {
+      workers.forEach(worker =>{
+        this.copyCaseFile(worker.CLCaseId, srcFolder, clRootFolder, worker.SDSPdfName);
+      });
+    });
+
+  }
+
+  private copyCaseFile = (caseId: number, srcFolder: string, clRootFolder:string, fileName: string): void => {
+    const destFile = `${clRootFolder}/${caseId}/${fileName}`;
+
+    sp.web.getFolderByServerRelativeUrl(srcFolder).files.getByName(fileName).copyTo(destFile).then(() => {
+      console.log(`file copied ${destFile}`,);
+      
+    }).catch(err => {
+      console.log('error on copy', err);
+    });
+
+  }
+
+
 
   private changeSearchUserTextField = (value: string): void => {
     this.setState({ SearchUser: value });

@@ -1735,7 +1735,9 @@ namespace ControlAssuranceAPI.Libs
 
 
             //then upload final out final to the sharepoint
-            sharepointLib.UploadFinalReport1(outputPdfPath, outputPdfName);
+            string spLibListName = "CATFiles";
+            string spFolderUrl = $"CATFiles/ContingentLabourFiles/{cLWorker.CLCaseId}/";
+            sharepointLib.UploadFinalReport1(outputPdfPath, outputPdfName, spFolderUrl, spLibListName);
         }
 
 
@@ -2715,7 +2717,9 @@ namespace ControlAssuranceAPI.Libs
             document = null;
 
             //then upload final out final to the sharepoint
-            sharepointLib.UploadFinalReport1(outputPdfPath, outputPdfName);
+            string spLibListName = "CATFiles";
+            string spFolderUrl = $"CATFiles/ContingentLabourFiles/{cLWorker.CLCaseId}/";
+            sharepointLib.UploadFinalReport1(outputPdfPath, outputPdfName, spFolderUrl, spLibListName);
 
 
             #region local function
