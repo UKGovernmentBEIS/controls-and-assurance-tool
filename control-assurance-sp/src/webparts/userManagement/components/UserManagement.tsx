@@ -322,11 +322,11 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
           Progress: Folder permissions are being updates.
           <br/>
           <br/>
-          Please do not close this browser or click to another module from menu or press refresh, until this message changes. 
+          <strong>Please do not close this browser or click to another module from menu or press refresh, until this message changes. </strong>
           </div> }
 
         {this.state.SetFolderPermissionsCompleted && <div style={{ paddingTop: '15px' }}>
-          Progress: Folder permissions have being updated. You may close this browser now.
+          <strong>Progress: Folder permissions have being updated. You may close this browser now.</strong>
         </div> }
 
 
