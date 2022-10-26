@@ -12,6 +12,7 @@ import { sp, ChunkedFileUploadProgressData, Folder, SharePointQueryableSecurable
 import { Promise } from 'es6-promise';
 import { CrTextField } from '../../../components/cr/CrTextField';
 import { getUploadFolder_CLEvidence, getUploadFolder_CLRoot, getUploadFolder_Report } from '../../../types/AppGlobals';
+import { PrimaryButton } from 'office-ui-fabric-react/lib/Button';
 
 //#region types defination
 
@@ -22,6 +23,9 @@ export interface IUserManagementState extends types.IUserContextWebPartState {
   CLSuperUsersAndViewers: IUser[];
   SearchUser: string;
   FullControlFolderRoleId: number;
+  CurrentUserPrincipalId: number;
+  SetFolderPermissionsPressed:boolean;
+  SetFolderPermissionsCompleted:boolean;
 
 }
 export class UserManagementState extends types.UserContextWebPartState {
@@ -31,11 +35,13 @@ export class UserManagementState extends types.UserContextWebPartState {
   public CLSuperUsersAndViewers: IUser[] = [];
   public SearchUser: string = "";
   public FullControlFolderRoleId: number = 0;
+  public CurrentUserPrincipalId: number =0;
+  public SetFolderPermissionsPressed:boolean = false;
+  public SetFolderPermissionsCompleted:boolean = false;
+
 
   constructor() {
     super();
-
-
   }
 }
 
@@ -49,9 +55,13 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
   private userFoundByEmail: number = 0;
   private userFoundByUserPrincipalName: number = 0;
   private usersToTryByUserPrincipalName: string[] = [];
+  private UploadFolder_CLRoot: string = "";
+  private totalCases:number=0;
+  private totalCasesProcessed:number = 0;
 
   constructor(props: types.IWebPartComponentProps) {
     super(props);
+    this.UploadFolder_CLRoot = getUploadFolder_CLRoot(props.spfxContext);
     this.state = new UserManagementState();
   }
 
@@ -61,22 +71,35 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
 
     return (
 
-      <Pivot onLinkClick={this.clearErrors}>
-        <PivotItem headerText="Users">
-          {this.renderUsers()}
-        </PivotItem>
-        <PivotItem headerText="User Permissions">
-          {this.renderUserPermissions()}
-        </PivotItem>
-        <PivotItem headerText="Debug Info">
-          {this.renderTest1()}
-        </PivotItem>
-        {/* <PivotItem headerText="Permission Types">
-          {this.renderPermissionTypes()}
-        </PivotItem>  */}
+        <React.Fragment>
+          <div>
+            <strong>Important Note: </strong> If you change any user permissions, please go into Set Folder Permissions and follow the instructions to ensure Sharepoint level Folder permissions are adjusted.
+            <br/>
+            <br/>
+            <br/>
+          </div>
+          <Pivot onLinkClick={this.clearErrors}>
+            <PivotItem headerText="Users">
+              {this.renderUsers()}
+            </PivotItem>
+            <PivotItem headerText="User Permissions">
+              {this.renderUserPermissions()}
+            </PivotItem>
+            <PivotItem headerText="Set Folder Permissions">
+              {this.renderSetFolderPermissions()}
+            </PivotItem>
+            
+            <PivotItem headerText="Debug Info">
+              {this.renderTest1()}
+            </PivotItem>
+            
+            {/* <PivotItem headerText="Permission Types">
+              {this.renderPermissionTypes()}
+            </PivotItem>  */}
 
 
-      </Pivot>
+          </Pivot>
+        </React.Fragment>
     );
   }
 
@@ -223,7 +246,9 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
 
   private renderTest1(): React.ReactElement<types.IWebPartComponentProps> {
 
+    if(this.state.UserPermissions === null) return null;
 
+    if(this.sysManagerPermission() === false) return null;
 
     return (
       <React.Fragment>
@@ -277,6 +302,203 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
     );
   }
 
+  private renderSetFolderPermissions():React.ReactElement<types.IWebPartComponentProps>{
+    return (
+      <React.Fragment>
+      <div style={{ paddingTop: '15px' }}>
+        Click the 'Set Folder Permissions' button below to reset all Sharepoint folder level permissions for record level folder.
+        <br/>
+        Note this is necessary whenever you change User Permissions.
+
+        <br/>
+        <br/>
+        <PrimaryButton
+              text="Set Folder Permissions"
+              onClick={this.setFolderPermissions}
+              disabled={this.state.SetFolderPermissionsPressed}
+            />
+
+        {this.state.SetFolderPermissionsPressed === true && this.state.SetFolderPermissionsCompleted === false && <div style={{ paddingTop: '15px' }}>
+          Progress: Folder permissions are being updates.
+          <br/>
+          <br/>
+          Please do not close this browser or click to another module from menu or press refresh, until this message changes. 
+          </div> }
+
+        {this.state.SetFolderPermissionsCompleted && <div style={{ paddingTop: '15px' }}>
+          Progress: Folder permissions have being updated. You may close this browser now.
+        </div> }
+
+
+        </div>
+      
+
+      </React.Fragment>
+      );
+  }
+
+
+
+  private setFolderPermissions = (): void => {
+    
+      this.totalCases=0;
+      this.totalCasesProcessed=0;
+
+      this.setState({ SetFolderPermissionsPressed:true });
+
+      this.totalCases = this.state.Cases.length;
+      console.log('total cased:', this.totalCases);
+
+      let promisesReload = [];
+      promisesReload.push(this.loadUsers());
+      promisesReload.push(this.loadAllCLSuperUsersAndViewers());
+
+      Promise.all(promisesReload).then(() => {
+        console.log('users loaded');
+        this.state.Cases.forEach(c => {
+          console.log('start folder permission for case ', c.ID);        
+          const folderNewUsers: string[] = this.makeCLFolderNewUsersArr(c);
+          this.resetFolderPermissionsAfterEditCase(String(c.ID), folderNewUsers);
+
+        });
+
+      });
+
+
+
+      const interval = setInterval(()=> {
+        // method to be executed;
+        console.log('set interval called');
+        if(this.totalCases <= this.totalCasesProcessed){
+          clearInterval(interval);
+          console.log('all folders processed');
+          this.setState({ SetFolderPermissionsCompleted:true });
+        }
+      }, 2000);
+
+    
+  }
+
+  private makeCLFolderNewUsersArr = (caseData: ICLCase): string[] => {
+    let users: string[] = [];
+
+    //hiring manager
+    if (caseData.ApplHMUserId > 0) {
+      const u1 = this.state.Users.filter(x => x.ID === caseData.ApplHMUserId)[0];
+      users.push(u1.Username);
+    }
+
+    //hiring members
+    const hiringMembers: ICLHiringMember[] = caseData['CLHiringMembers'];
+    hiringMembers.forEach(m => {
+      const u1 = this.state.Users.filter(x => x.ID === m.UserId)[0];
+      users.push(u1.Username);
+    });
+
+    //BH
+    if (caseData.BHUserId > 0) {
+      const u1 = this.state.Users.filter(x => x.ID === caseData.BHUserId)[0];
+      users.push(u1.Username);
+    }
+
+    //FBP
+    if (caseData.FBPUserId > 0) {
+      const u1 = this.state.Users.filter(x => x.ID === caseData.FBPUserId)[0];
+      users.push(u1.Username);
+    }
+
+    //HRBP
+    if (caseData.HRBPUserId > 0) {
+      const u1 = this.state.Users.filter(x => x.ID === caseData.HRBPUserId)[0];
+      users.push(u1.Username);
+    }
+
+    //Superusers/viewers
+    this.state.CLSuperUsersAndViewers.forEach(su => {
+      users.push(su.Username);
+    });
+
+
+
+
+
+    return users;
+  }
+
+  private resetFolderPermissionsAfterEditCase = (casefolderName: string, folderNewUsers: string[]) => {
+
+    sp.web.getFolderByServerRelativeUrl(this.UploadFolder_CLRoot).folders.getByName(casefolderName).getItem().then((folderItem: SharePointQueryableSecurable) => {
+
+      let promisesRemove = [];
+
+      folderItem.roleAssignments.get().then(rass => {
+
+        rass.forEach(ra => {
+          const principalId: number = Number(ra['PrincipalId']);
+          console.log('principalId', principalId);
+          if(principalId !== this.state.CurrentUserPrincipalId)
+            promisesRemove.push(this.removeFolderRoleBySiteUserId(principalId, folderItem));
+          else
+            console.log('not adding current user in folder permission remove list');
+
+        });
+      }).then(() => {
+
+        Promise.all(promisesRemove).then(() => {
+
+          let promisesAddUser = [];
+          folderNewUsers.forEach(userEmail => {
+            promisesAddUser.push(this.addFolderRole(userEmail, folderItem));
+          });
+
+          Promise.all(promisesAddUser).then(() => {
+            console.log('folder new users are added');
+            this.totalCasesProcessed++;
+            console.log('total cases processed:', this.totalCasesProcessed);
+          });
+
+
+        });
+
+      });
+
+
+    });
+  }
+
+  private removeFolderRoleBySiteUserId = (siteUserId: number, folderItem: SharePointQueryableSecurable): Promise<any> => {
+
+    return folderItem.roleAssignments.remove(siteUserId, this.state.FullControlFolderRoleId).then(roleAddedValue => {
+      console.log(`role removed for user ${siteUserId}`);
+    });
+  }
+
+  private addFolderRole = (userEmail: string, folderItem: SharePointQueryableSecurable): Promise<any> => {
+
+    //let promises = [];
+
+    return sp.web.siteUsers.getByEmail(userEmail).get().then(user => {
+
+      const userId: number = Number(user['Id']);
+      console.log('userId', userId);
+
+      folderItem.roleAssignments.add(userId, this.state.FullControlFolderRoleId).then(roleAddedValue => {
+        console.log(`role added for user ${userEmail}`);
+      });
+
+    }).catch(e => {
+      console.log('error', e);
+      sp.web.ensureUser(userEmail).then(userEnsured => {
+        const userId: number = userEnsured.data.Id;
+        console.log('UserIdEnured', userId);
+        folderItem.roleAssignments.add(userId, this.state.FullControlFolderRoleId).then(roleAddedValue => {
+          console.log(`role added for ensured user ${userEmail}`);
+        });
+      });
+      
+    });
+
+  }
 
 
 
@@ -297,6 +519,20 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
       let up: IUserPermission = ups[i];
       if (up.PermissionTypeId == 1 || up.PermissionTypeId == 5 || up.PermissionTypeId == 6 || up.PermissionTypeId == 7 || up.PermissionTypeId == 8 || up.PermissionTypeId == 11) {
         //any super user is allowed to add/edit/del users
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  private sysManagerPermission(): boolean {
+
+    //SysManager check
+    let ups = this.state.UserPermissions;
+    for (let i = 0; i < ups.length; i++) {
+      let up: IUserPermission = ups[i];
+      if (up.PermissionTypeId == 2) {
         return true;
       }
     }
@@ -346,6 +582,7 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
   private loadAllCLSuperUsersAndViewers = (): Promise<void> => {
     let x = this.userService.readAll_CL_SuperUsers_Viewers().then((data: IUser[]): void => {
       this.setState({ CLSuperUsersAndViewers: data });
+      console.log('loadAllCLSuperUsersAndViewers loaded');
       //console.log('SuperUsersAndViewers', data);
     }, (err) => { if (this.onError) this.onError(`Error loading super users`, err.message); });
     return x;
@@ -359,6 +596,14 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
       const roleId: number = r['Id'];
       this.setState({ FullControlFolderRoleId: roleId });
     });
+
+        //get current user sharepoint id (PrincipalId) and set in state
+        sp.web.currentUser.get().then(u => {
+          console.log('currentSiteUser', u);
+          const currentUserPrincipalId: number = Number(u['Id']);
+          console.log('currentUserPrincipalId', currentUserPrincipalId);
+          this.setState({ CurrentUserPrincipalId: currentUserPrincipalId });
+        });
 
   }
 
