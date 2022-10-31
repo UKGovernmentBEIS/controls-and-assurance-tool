@@ -26,6 +26,7 @@ export interface IUserManagementState extends types.IUserContextWebPartState {
   CurrentUserPrincipalId: number;
   SetFolderPermissionsPressed:boolean;
   SetFolderPermissionsCompleted:boolean;
+  TotalCasesProcessed:number;
 
 }
 export class UserManagementState extends types.UserContextWebPartState {
@@ -38,6 +39,7 @@ export class UserManagementState extends types.UserContextWebPartState {
   public CurrentUserPrincipalId: number =0;
   public SetFolderPermissionsPressed:boolean = false;
   public SetFolderPermissionsCompleted:boolean = false;
+  public TotalCasesProcessed:number=0;
 
 
   constructor() {
@@ -58,6 +60,8 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
   private UploadFolder_CLRoot: string = "";
   private totalCases:number=0;
   private totalCasesProcessed:number = 0;
+  private caseProcessed:boolean = false;
+  private shortDelayCounter = 1;
 
   constructor(props: types.IWebPartComponentProps) {
     super(props);
@@ -318,11 +322,17 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
               disabled={this.state.SetFolderPermissionsPressed}
             />
 
+
+
         {this.state.SetFolderPermissionsPressed === true && this.state.SetFolderPermissionsCompleted === false && <div style={{ paddingTop: '15px' }}>
           Progress: Folder permissions are being updates.
           <br/>
           <br/>
           <strong>Please do not close this browser or click to another module from menu or press refresh, until this message changes. </strong>
+          <br/>
+          <br/>
+          Total cases processed {this.state.TotalCasesProcessed} of {this.totalCases}
+
           </div> }
 
         {this.state.SetFolderPermissionsCompleted && <div style={{ paddingTop: '15px' }}>
@@ -336,6 +346,8 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
       </React.Fragment>
       );
   }
+
+
 
 
 
@@ -355,14 +367,31 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
 
       Promise.all(promisesReload).then(() => {
         console.log('users loaded');
+        
+        let secDelay:number=2000;
         this.state.Cases.forEach(c => {
-          console.log('start folder permission for case ', c.ID);        
-          const folderNewUsers: string[] = this.makeCLFolderNewUsersArr(c);
-          this.resetFolderPermissionsAfterEditCase(String(c.ID), folderNewUsers);
+
+          setTimeout(()=>{
+            console.log('start folder permission for case ', c.ID, new Date().toLocaleString());        
+            const folderNewUsers: string[] = this.makeCLFolderNewUsersArr(c);
+            this.resetFolderPermissionsAfterEditCase(String(c.ID), folderNewUsers);
+            console.log('total cased', this.totalCases, 'total cases processed', this.totalCasesProcessed, 'case processed', this.caseProcessed);
+
+          }, secDelay);
+
+          secDelay = secDelay+2000;
+
+
+
+
+
+
 
         });
 
       });
+
+    
 
 
 
@@ -435,6 +464,7 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
 
         rass.forEach(ra => {
           const principalId: number = Number(ra['PrincipalId']);
+          console.log('role ass', ra);
           console.log('principalId', principalId);
           if(principalId !== this.state.CurrentUserPrincipalId)
             promisesRemove.push(this.removeFolderRoleBySiteUserId(principalId, folderItem));
@@ -454,7 +484,14 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
           Promise.all(promisesAddUser).then(() => {
             console.log('folder new users are added');
             this.totalCasesProcessed++;
+            this.setState({ TotalCasesProcessed: this.totalCasesProcessed });
+            this.caseProcessed = true;
             console.log('total cases processed:', this.totalCasesProcessed);
+
+
+
+
+
           });
 
 
@@ -465,6 +502,8 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
 
     });
   }
+
+
 
   private removeFolderRoleBySiteUserId = (siteUserId: number, folderItem: SharePointQueryableSecurable): Promise<any> => {
 
@@ -481,6 +520,7 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
 
       const userId: number = Number(user['Id']);
       console.log('userId', userId);
+
 
       folderItem.roleAssignments.add(userId, this.state.FullControlFolderRoleId).then(roleAddedValue => {
         console.log(`role added for user ${userEmail}`);
