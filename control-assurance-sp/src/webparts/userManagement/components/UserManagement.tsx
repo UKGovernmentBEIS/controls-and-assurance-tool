@@ -380,7 +380,7 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
           return this.doCaseRecursive( num-1, true); // yes, call recFun again which returns a promise
         }
         return this.doCaseRecursive( num, false); // yes, call recFun again which returns a promise
-    }
+    };
 
     return this.createCaseDelay(num).then(decide);
 }
@@ -409,8 +409,8 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
         console.log('users loaded');
         
         this.doCaseRecursive(this.totalCases-1, true)
-        .then( function(result) {console.log("done, result = " + result); })
-        .catch( function(err) {console.log("oops:" + err);});
+        .then( (result) => {console.log("done, result = " + result); })
+        .catch( (err) => {console.log("oops:" + err);});
         //this.setAFolderPermission(0);
 
         //let secDelay:number=2000;
@@ -524,7 +524,7 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
           return this.doPermissionRemoveRecursive( num-1, true, folderItem); // yes, call recFun again which returns a promise
         }
         return this.doPermissionRemoveRecursive( num, false, folderItem); // yes, call recFun again which returns a promise
-    }
+    };
 
     return this.createPermissionDelay(num).then(decide);
 }
@@ -592,7 +592,7 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
           return this.doPermissionAddRecursive( num-1, true, folderItem); // yes, call recFun again which returns a promise
         }
         return this.doPermissionAddRecursive( num, false, folderItem); // yes, call recFun again which returns a promise
-    }
+    };
 
     return this.createPermissionAddDelay(num).then(decide);
 }
