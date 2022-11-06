@@ -13,6 +13,7 @@ import { Promise } from 'es6-promise';
 import { CrTextField } from '../../../components/cr/CrTextField';
 import { getUploadFolder_CLEvidence, getUploadFolder_CLRoot, getUploadFolder_Report } from '../../../types/AppGlobals';
 import { PrimaryButton } from 'office-ui-fabric-react/lib/Button';
+//import { Promise } from 'es6-promise';
 
 //#region types defination
 
@@ -62,6 +63,10 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
   private totalCasesProcessed:number = 0;
   private caseProcessed:boolean = false;
   private shortDelayCounter = 1;
+  private RoleAssignmentsToRemove:number [] = [];
+  private roleAssignmentRemoved:boolean = false;
+  private roleAssignmentAdded:boolean = false;
+  private RoleAssignmentsToAdd:string [] = [];
 
   constructor(props: types.IWebPartComponentProps) {
     super(props);
@@ -350,7 +355,42 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
 
 
 
+  private setAFolderPermission = (caseRef:number): void =>{
+    const clCase =this.state.Cases[caseRef];
+    const folderNewUsers: string[] = this.makeCLFolderNewUsersArr(clCase);
+    this.resetFolderPermissionsAfterEditCase(String(clCase.ID), folderNewUsers);
+    console.log("setAFolderPermission: " + caseRef); 
+  }
 
+  private doCaseRecursive =( num, nextCase:boolean): Promise<any> => { 
+
+    console.log("start Rec Fun: " + num);
+    if(nextCase == true){
+      this.caseProcessed = false;
+      this.setAFolderPermission(num);
+    }
+
+    const decide = ( asyncResult) => {
+
+        console.log('decide called: ', asyncResult);
+        console.log('this.caseProcessed:', this.caseProcessed);
+        if( asyncResult < 0)
+            return "lift off"; // no, all done, return a non-promise result
+        if(this.caseProcessed == true){
+          return this.doCaseRecursive( num-1, true); // yes, call recFun again which returns a promise
+        }
+        return this.doCaseRecursive( num, false); // yes, call recFun again which returns a promise
+    }
+
+    return this.createCaseDelay(num).then(decide);
+}
+
+  private createCaseDelay = ( asyncParam): Promise<any> => { // example operation
+    const promiseDelay = (data,msec) => new Promise(res => setTimeout(res,msec,data));
+    console.log('asyncThing called: ', asyncParam);
+    return promiseDelay( asyncParam, 100); //resolve with argument in 1 second.
+  }
+  
   private setFolderPermissions = (): void => {
     
       this.totalCases=0;
@@ -368,32 +408,27 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
       Promise.all(promisesReload).then(() => {
         console.log('users loaded');
         
-        let secDelay:number=2000;
-        this.state.Cases.forEach(c => {
+        this.doCaseRecursive(this.totalCases-1, true)
+        .then( function(result) {console.log("done, result = " + result); })
+        .catch( function(err) {console.log("oops:" + err);});
+        //this.setAFolderPermission(0);
 
-          setTimeout(()=>{
-            console.log('start folder permission for case ', c.ID, new Date().toLocaleString());        
-            const folderNewUsers: string[] = this.makeCLFolderNewUsersArr(c);
-            this.resetFolderPermissionsAfterEditCase(String(c.ID), folderNewUsers);
-            console.log('total cased', this.totalCases, 'total cases processed', this.totalCasesProcessed, 'case processed', this.caseProcessed);
+        //let secDelay:number=2000;
+        // this.state.Cases.forEach(c => {
 
-          }, secDelay);
+        //   setTimeout(()=>{
+        //     console.log('start folder permission for case ', c.ID, new Date().toLocaleString());        
+        //     //const folderNewUsers: string[] = this.makeCLFolderNewUsersArr(c);
+        //     //this.resetFolderPermissionsAfterEditCase(String(c.ID), folderNewUsers);
+        //     console.log('total cased', this.totalCases, 'total cases processed', this.totalCasesProcessed, 'case processed', this.caseProcessed);
 
-          secDelay = secDelay+2000;
+        //   }, secDelay);
 
+        //   secDelay = secDelay+2000;
 
-
-
-
-
-
-        });
+        // });
 
       });
-
-    
-
-
 
       const interval = setInterval(()=> {
         // method to be executed;
@@ -454,7 +489,162 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
     return users;
   }
 
+  private folderPermissionRemove = (userRef:number, folderItem: SharePointQueryableSecurable): void =>{
+
+    const principalId =this.RoleAssignmentsToRemove[userRef];
+    console.log('folderPermissionRemove - folder permission remove: ', userRef);
+    console.log('principalId', principalId);
+    if(principalId !== this.state.CurrentUserPrincipalId)
+      folderItem.roleAssignments.remove(principalId, this.state.FullControlFolderRoleId).then(roleAddedValue => {
+        console.log(`folderPermissionRemove - role removed for user ${principalId}`);
+        this.roleAssignmentRemoved = true;
+      }).catch(err =>{
+        console.log(`folderPermissionRemove - failed ${err}`);
+        this.roleAssignmentRemoved = true;
+      });
+    else
+      console.log('not adding current user in folder permission remove list');
+      this.roleAssignmentRemoved = true;
+  }
+
+  private doPermissionRemoveRecursive =( num, nextRole:boolean, folderItem: SharePointQueryableSecurable): Promise<any> => { 
+
+    console.log("start doPermissionRemoveRecursive: " + num);
+    if(nextRole == true){
+      this.roleAssignmentRemoved = false;
+      this.folderPermissionRemove(num, folderItem);
+    }
+
+    const decide = ( asyncResult) => {
+
+        console.log('doPermissionRemoveRecursive decide called: ', asyncResult);
+        if( asyncResult < 0)
+            return "lift off"; // no, all done, return a non-promise result
+        if(this.roleAssignmentRemoved == true){
+          return this.doPermissionRemoveRecursive( num-1, true, folderItem); // yes, call recFun again which returns a promise
+        }
+        return this.doPermissionRemoveRecursive( num, false, folderItem); // yes, call recFun again which returns a promise
+    }
+
+    return this.createPermissionDelay(num).then(decide);
+}
+
+  private createPermissionDelay = ( asyncParam): Promise<any> => { // example operation
+    const promiseDelay = (data,msec) => new Promise(res => setTimeout(res,msec,data));
+    console.log('asyncThing called: ', asyncParam);
+    return promiseDelay( asyncParam, 100); //resolve with argument in 1 second.
+  }
+
+  private folderPermissionAdd = (userRef:number, folderItem: SharePointQueryableSecurable): void =>{
+
+    const userEmail =this.RoleAssignmentsToAdd[userRef];
+    console.log('folderPermissionAdd - folder permission add: ', userRef);
+    console.log('userEmail', userEmail);
+   
+    //sp.web.siteUsers.getByEmail(userEmail).get().then(user => {
+      sp.web.ensureUser(userEmail).then(user => {      
+
+      //const userId: number = Number(user['Id']);
+      const userId: number = user.data.Id;
+      console.log('userId', userId);
+
+
+      folderItem.roleAssignments.add(userId, this.state.FullControlFolderRoleId).then(roleAddedValue => {
+        console.log(`role added for user ${userEmail}`);
+        this.roleAssignmentAdded = true;
+      });
+
+    }).catch(e => {
+      console.log(`folderPermissionAdd - user doesnt exist ${userEmail}`);
+      this.roleAssignmentAdded = true;
+      // console.log('folderPermissionAdd - user ensured required');
+      // sp.web.ensureUser(userEmail).then(userEnsured => {
+      //   const userId: number = userEnsured.data.Id;
+      //   console.log('UserIdEnured', userId);
+      //   folderItem.roleAssignments.add(userId, this.state.FullControlFolderRoleId).then(roleAddedValue => {
+      //     console.log(`folderPermissionAdd - role added for ensured user ${userEmail}`);
+      //     this.roleAssignmentAdded = true;
+      //   }).catch(e => {
+      //     console.log(`folderPermissionAdd - user doesnt exist ${userEmail}`);
+      //     this.roleAssignmentAdded = true;
+      //   });
+      // });
+      
+    });
+
+
+  }
+
+  private doPermissionAddRecursive =( num, nextRole:boolean, folderItem: SharePointQueryableSecurable): Promise<any> => { 
+
+    console.log("start doPermissionAddRecursive: " + num);
+    if(nextRole == true){
+      this.roleAssignmentAdded = false;
+      this.folderPermissionAdd(num, folderItem);
+    }
+
+    const decide = ( asyncResult) => {
+
+        console.log('doPermissionAddRecursive decide called: ', asyncResult);
+        if( asyncResult < 0)
+            return "lift off"; // no, all done, return a non-promise result
+        if(this.roleAssignmentAdded == true){
+          return this.doPermissionAddRecursive( num-1, true, folderItem); // yes, call recFun again which returns a promise
+        }
+        return this.doPermissionAddRecursive( num, false, folderItem); // yes, call recFun again which returns a promise
+    }
+
+    return this.createPermissionAddDelay(num).then(decide);
+}
+
+  private createPermissionAddDelay = ( asyncParam): Promise<any> => { // example operation
+    const promiseDelay = (data,msec) => new Promise(res => setTimeout(res,msec,data));
+    console.log('asyncThing called: ', asyncParam);
+    return promiseDelay( asyncParam, 100); //resolve with argument in 1 second.
+  }
+  
   private resetFolderPermissionsAfterEditCase = (casefolderName: string, folderNewUsers: string[]) => {
+
+    sp.web.getFolderByServerRelativeUrl(this.UploadFolder_CLRoot).folders.getByName(casefolderName).getItem().then((folderItem: SharePointQueryableSecurable) => {
+
+      //let promisesRemove = [];
+      this.RoleAssignmentsToRemove = [];
+      folderItem.roleAssignments.get().then(rass => {
+        rass.forEach(ra => {
+          this.RoleAssignmentsToRemove.push(Number(ra['PrincipalId']));
+        });
+        
+      }).then(() => {
+        console.log('before calling doPermissionRemoveRecursive');
+        console.log(' before callRoleAssignmentsToRemoveing', this.RoleAssignmentsToRemove);
+
+        this.doPermissionRemoveRecursive(this.RoleAssignmentsToRemove.length-1, true, folderItem ).then(() => {
+
+          console.log('after calling doPermissionRemoveRecursive');
+          this.RoleAssignmentsToAdd = [];
+          folderNewUsers.forEach(userEmail => {
+            this.RoleAssignmentsToAdd.push(userEmail);
+          });
+
+          this.doPermissionAddRecursive(this.RoleAssignmentsToAdd.length-1, true, folderItem).then(() => {
+            console.log('resetFolderPermissionsAfterEditCase - folder new users are added for folder: ', casefolderName);
+            this.totalCasesProcessed++;
+            this.setState({ TotalCasesProcessed: this.totalCasesProcessed });
+            this.caseProcessed = true;
+            console.log('total cases processed:', this.totalCasesProcessed);
+
+          });
+
+
+        });
+
+      });
+
+
+    });
+  }
+
+  private resetFolderPermissionsAfterEditCase_Save = (casefolderName: string, folderNewUsers: string[]) => {
 
     sp.web.getFolderByServerRelativeUrl(this.UploadFolder_CLRoot).folders.getByName(casefolderName).getItem().then((folderItem: SharePointQueryableSecurable) => {
 
@@ -482,7 +672,7 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
           });
 
           Promise.all(promisesAddUser).then(() => {
-            console.log('folder new users are added');
+            console.log('folder new users are added for folder: ', casefolderName);
             this.totalCasesProcessed++;
             this.setState({ TotalCasesProcessed: this.totalCasesProcessed });
             this.caseProcessed = true;
