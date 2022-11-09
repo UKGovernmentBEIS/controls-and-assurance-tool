@@ -28,6 +28,7 @@ export interface IUserManagementState extends types.IUserContextWebPartState {
   SetFolderPermissionsPressed:boolean;
   SetFolderPermissionsCompleted:boolean;
   TotalCasesProcessed:number;
+  TotalFoldersCreated:number;
 
 }
 export class UserManagementState extends types.UserContextWebPartState {
@@ -41,6 +42,7 @@ export class UserManagementState extends types.UserContextWebPartState {
   public SetFolderPermissionsPressed:boolean = false;
   public SetFolderPermissionsCompleted:boolean = false;
   public TotalCasesProcessed:number=0;
+  public TotalFoldersCreated:number =0;
 
 
   constructor() {
@@ -61,12 +63,14 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
   private UploadFolder_CLRoot: string = "";
   private totalCases:number=0;
   private totalCasesProcessed:number = 0;
+  private totalFoldersCreated:number = 0;
   private caseProcessed:boolean = false;
   private shortDelayCounter = 1;
   private RoleAssignmentsToRemove:number [] = [];
   private roleAssignmentRemoved:boolean = false;
   private roleAssignmentAdded:boolean = false;
   private RoleAssignmentsToAdd:string [] = [];
+  private caseFolderCreated:boolean = false;
 
   constructor(props: types.IWebPartComponentProps) {
     super(props);
@@ -330,10 +334,13 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
 
 
         {this.state.SetFolderPermissionsPressed === true && this.state.SetFolderPermissionsCompleted === false && <div style={{ paddingTop: '15px' }}>
-          Progress: Folder permissions are being updates.
+        <strong>Please do not close this browser or click to another module from menu or press refresh, until this message changes. </strong>
+        <br/>
+        <br/>
+        Progress: Processing folders         
           <br/>
           <br/>
-          <strong>Please do not close this browser or click to another module from menu or press refresh, until this message changes. </strong>
+          Total folders created {this.state.TotalFoldersCreated} of {this.totalCases}
           <br/>
           <br/>
           Total cases processed {this.state.TotalCasesProcessed} of {this.totalCases}
@@ -363,8 +370,8 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
   }
 
   private doCaseRecursive =( num, nextCase:boolean): Promise<any> => { 
-
-    console.log("start Rec Fun: " + num);
+    const nameOfFunc:string = "doCaseRecursive - ";
+    console.log(nameOfFunc + "start: " + num);
     if(nextCase == true){
       this.caseProcessed = false;
       this.setAFolderPermission(num);
@@ -372,8 +379,8 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
 
     const decide = ( asyncResult) => {
 
-        console.log('decide called: ', asyncResult);
-        console.log('this.caseProcessed:', this.caseProcessed);
+        console.log(nameOfFunc + 'decide called: ', asyncResult);
+        console.log(nameOfFunc + 'this.caseProcessed:', this.caseProcessed);
         if( asyncResult < 0)
             return "lift off"; // no, all done, return a non-promise result
         if(this.caseProcessed == true){
@@ -387,7 +394,7 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
 
   private createCaseDelay = ( asyncParam): Promise<any> => { // example operation
     const promiseDelay = (data,msec) => new Promise(res => setTimeout(res,msec,data));
-    console.log('asyncThing called: ', asyncParam);
+    console.log('createCaseDelay called: ', asyncParam);
     return promiseDelay( asyncParam, 100); //resolve with argument in 1 second.
   }
   
@@ -407,10 +414,16 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
 
       Promise.all(promisesReload).then(() => {
         console.log('users loaded');
-        
-        this.doCaseRecursive(this.totalCases-1, true)
-        .then( (result) => {console.log("done, result = " + result); })
-        .catch( (err) => {console.log("oops:" + err);});
+        this.doFolderCreateRecursive(this.totalCases-1, true)
+        .then( (result) => 
+        {
+          this.doCaseRecursive(this.totalCases-1, true)
+          .then( (result2) => {console.log("doCaseRecursive done, result = " + result2); })
+          .catch( (err) => {console.log("doCaseRecursive: error trying to set folder permissions:" + err);});
+        });
+        //.catch( (err) => {console.log("doFolderCaseRecursive: error trying to create folders" + err);});
+
+
         //this.setAFolderPermission(0);
 
         //let secDelay:number=2000;
@@ -1148,13 +1161,84 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
 
   }
 
-  private createExistingCLCasesFolders = (): void => {
-    const spService = new services.SPService(this.props.spfxContext);
-    this.state.Cases.forEach(clCase => {
-      console.log('going to create folder for case ', clCase.ID);
-      const folderNewUsers: string[] = spService.makeCLFolderNewUsersArr(clCase, this.state.Users, this.state.CLSuperUsersAndViewers);
-      spService.createNewCaseUploadFolder(String(clCase.ID), folderNewUsers, this.state.FullControlFolderRoleId);
+  
+
+  public createNewCaseUploadFolder = (casefolderName: string, fullControlFolderRoleId: number) => {
+    sp.web.getFolderByServerRelativeUrl(this.UploadFolder_CLRoot).folders.add(casefolderName).then(folderAddRes => {
+      console.log('createNewCaseUploadFolder - folder created', folderAddRes.data);
+      folderAddRes.folder.getItem().then((fItem: SharePointQueryableSecurable) => {
+        fItem.breakRoleInheritance(false).then(bri => {
+          console.log('createNewCaseUploadFolder - folder bri done');
+          this.caseFolderCreated = true;
+          this.totalFoldersCreated++;
+          this.setState({ TotalFoldersCreated: this.totalFoldersCreated });
+        }).catch(err => {
+          console.log('createNewCaseUploadFolder - error', err);
+          this.caseFolderCreated = true;
+        });
+      });
     });
+  }
+
+  private createAFolder = (num): void =>{
+
+      const clCase = this.state.Cases[num];
+      const spService = new services.SPService(this.props.spfxContext);
+      //this.state.Cases.forEach(clCase => {
+      console.log('createAFolder - going to create folder for case ', clCase.ID);
+      //const folderNewUsers: string[] = this.makeCLFolderNewUsersArr(clCase);
+      this.createNewCaseUploadFolder(String(clCase.ID), this.state.FullControlFolderRoleId);
+    //});
+
+  }
+
+  private doFolderCreateRecursive =( num, nextCase:boolean): Promise<any> => { 
+    const nameOfFunc:string = "doFolderCreateRecursive - ";
+    console.log(nameOfFunc + "start: " + num);
+    if(nextCase == true){
+      this.caseFolderCreated = false;
+      this.createAFolder(num);
+    }
+
+    const decide = ( asyncResult) => {
+
+        console.log(nameOfFunc + 'decide called: ', asyncResult);
+        console.log(nameOfFunc + 'this.caseProcessed:', this.caseProcessed);
+        if( asyncResult < 0){
+            console.log(nameOfFunc + "end");
+            return "lift off"; // no, all done, return a non-promise result
+        }
+        if(this.caseFolderCreated == true){
+          if( asyncResult == 0){
+            console.log(nameOfFunc + "end");
+            return "lift off"; // no, all done, return a non-promise result
+          }
+          return this.doFolderCreateRecursive( num-1, true); // yes, call recFun again which returns a promise
+        }
+        return this.doFolderCreateRecursive( num, false); // yes, call recFun again which returns a promise
+    };
+
+    return this.createCaseFolderDelay(num).then(decide);
+}
+
+  private createCaseFolderDelay = ( asyncParam): Promise<any> => { // example operation
+    const promiseDelay = (data,msec) => new Promise(res => setTimeout(res,msec,data));
+    console.log('createCaseFolderDelay called: ', asyncParam);
+    return promiseDelay( asyncParam, 100); //resolve with argument in 1 second.
+  }
+
+  private createExistingCLCasesFolders = (): void => {
+    this.totalCases = this.state.Cases.length;
+    this.doFolderCreateRecursive(this.totalCases-1, true)
+    .then( (result) => {console.log("done, result = " + result); })
+    .catch( (err) => {console.log("oops:" + err);});
+
+    // const spService = new services.SPService(this.props.spfxContext);
+    // this.state.Cases.forEach(clCase => {
+    //   console.log('going to create folder for case ', clCase.ID);
+    //   const folderNewUsers: string[] = spService.makeCLFolderNewUsersArr(clCase, this.state.Users, this.state.CLSuperUsersAndViewers);
+    //   spService.createNewCaseUploadFolder(String(clCase.ID), folderNewUsers, this.state.FullControlFolderRoleId);
+    // });
   }
 
   private copyAllCasesEvDocs = (): void => {
