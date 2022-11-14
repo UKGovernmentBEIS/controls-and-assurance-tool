@@ -599,13 +599,13 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
 
     const decide = ( asyncResult) => {
 
-        console.log('doPermissionAddRecursive decide called: ', asyncResult);
+        console.log('doPermissionAddRecursive decide called: ', asyncResult, delayCount);
         if( asyncResult < 0)
             return "lift off"; // no, all done, return a non-promise result
         if(this.roleAssignmentAdded == true){
           return this.doPermissionAddRecursive( num-1, true, folderItem, delayCount); // yes, call recFun again which returns a promise
         }
-        
+        delayCount = delayCount +1;
         return this.doPermissionAddRecursive( num, false, folderItem, delayCount); // yes, call recFun again which returns a promise
     };
 
@@ -641,7 +641,7 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
             this.RoleAssignmentsToAdd.push(userEmail);
           });
 
-          this.doPermissionAddRecursive(this.RoleAssignmentsToAdd.length-1, true, folderItem).then(() => {
+          this.doPermissionAddRecursive(this.RoleAssignmentsToAdd.length-1, true, folderItem,0).then(() => {
             console.log('resetFolderPermissionsAfterEditCase - folder new users are added for folder: ', casefolderName);
             this.totalCasesProcessed++;
             this.setState({ TotalCasesProcessed: this.totalCasesProcessed });
