@@ -588,12 +588,13 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
 
   }
 
-  private doPermissionAddRecursive =( num, nextRole:boolean, folderItem: SharePointQueryableSecurable): Promise<any> => { 
+  private doPermissionAddRecursive =( num, nextRole:boolean, folderItem: SharePointQueryableSecurable, delayCount ): Promise<any> => { 
 
-    console.log("start doPermissionAddRecursive: " + num);
+    console.log("start doPermissionAddRecursive: " + num );
     if(nextRole == true){
       this.roleAssignmentAdded = false;
       this.folderPermissionAdd(num, folderItem);
+      delayCount = 0;
     }
 
     const decide = ( asyncResult) => {
@@ -602,17 +603,18 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
         if( asyncResult < 0)
             return "lift off"; // no, all done, return a non-promise result
         if(this.roleAssignmentAdded == true){
-          return this.doPermissionAddRecursive( num-1, true, folderItem); // yes, call recFun again which returns a promise
+          return this.doPermissionAddRecursive( num-1, true, folderItem, delayCount); // yes, call recFun again which returns a promise
         }
-        return this.doPermissionAddRecursive( num, false, folderItem); // yes, call recFun again which returns a promise
+        
+        return this.doPermissionAddRecursive( num, false, folderItem, delayCount); // yes, call recFun again which returns a promise
     };
 
-    return this.createPermissionAddDelay(num).then(decide);
+    return this.createPermissionAddDelay(num, delayCount ).then(decide);
 }
 
-  private createPermissionAddDelay = ( asyncParam): Promise<any> => { // example operation
+  private createPermissionAddDelay = ( asyncParam, delayCount): Promise<any> => { // example operation
     const promiseDelay = (data,msec) => new Promise(res => setTimeout(res,msec,data));
-    console.log('asyncThing called: ', asyncParam);
+    console.log('createPermissionAddDelay: ', asyncParam, delayCount);
     return promiseDelay( asyncParam, 100); //resolve with argument in 1 second.
   }
   
@@ -628,12 +630,12 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
         });
         
       }).then(() => {
-        console.log('before calling doPermissionRemoveRecursive');
-        console.log(' before callRoleAssignmentsToRemoveing', this.RoleAssignmentsToRemove);
+        //console.log('before calling doPermissionRemoveRecursive');
+        //console.log(' before callRoleAssignmentsToRemoveing', this.RoleAssignmentsToRemove);
 
         this.doPermissionRemoveRecursive(this.RoleAssignmentsToRemove.length-1, true, folderItem ).then(() => {
 
-          console.log('after calling doPermissionRemoveRecursive');
+          //console.log('after calling doPermissionRemoveRecursive');
           this.RoleAssignmentsToAdd = [];
           folderNewUsers.forEach(userEmail => {
             this.RoleAssignmentsToAdd.push(userEmail);
@@ -645,15 +647,9 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
             this.setState({ TotalCasesProcessed: this.totalCasesProcessed });
             this.caseProcessed = true;
             console.log('total cases processed:', this.totalCasesProcessed);
-
           });
-
-
         });
-
       });
-
-
     });
   }
 
