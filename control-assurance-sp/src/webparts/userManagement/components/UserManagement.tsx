@@ -606,6 +606,11 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
           return this.doPermissionAddRecursive( num-1, true, folderItem, delayCount); // yes, call recFun again which returns a promise
         }
         delayCount = delayCount +1;
+        if (delayCount > 20 )
+        {
+          // if we had to delay 20 times then something has gone wrong. we should try
+          return this.doPermissionAddRecursive( num, true, folderItem, delayCount);  
+        }
         return this.doPermissionAddRecursive( num, false, folderItem, delayCount); // yes, call recFun again which returns a promise
     };
 
