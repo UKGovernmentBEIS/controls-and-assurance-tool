@@ -369,33 +369,41 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
     console.log("setAFolderPermission: " + caseRef); 
   }
 
-  private doCaseRecursive =( num, nextCase:boolean): Promise<any> => { 
+  private doCaseRecursive =( num, nextCase:boolean, delayCount:number ): Promise<any> => { 
     const nameOfFunc:string = "doCaseRecursive - ";
     console.log(nameOfFunc + "start: " + num);
+
     if(nextCase == true){
       this.caseProcessed = false;
       this.setAFolderPermission(num);
+      delayCount = 0;
     }
 
     const decide = ( asyncResult) => {
 
-        console.log(nameOfFunc + 'decide called: ', asyncResult);
-        console.log(nameOfFunc + 'this.caseProcessed:', this.caseProcessed);
+        console.log(nameOfFunc + 'decide called: ', asyncResult, delayCount);
+        
         if( asyncResult < 0)
             return "lift off"; // no, all done, return a non-promise result
         if(this.caseProcessed == true){
-          return this.doCaseRecursive( num-1, true); // yes, call recFun again which returns a promise
+          return this.doCaseRecursive( num-1, true, delayCount); // yes, call recFun again which returns a promise
         }
-        return this.doCaseRecursive( num, false); // yes, call recFun again which returns a promise
+        delayCount = delayCount + 1;
+        if (delayCount > 20 )
+        {
+          console.log(nameOfFunc + 'CASE TIMEOUT: ');
+          return this.doCaseRecursive( num, true, delayCount);
+        }
+        return this.doCaseRecursive( num, false, delayCount); // yes, call recFun again which returns a promise
     };
 
-    return this.createCaseDelay(num).then(decide);
+    return this.createCaseDelay(num, delayCount).then(decide);
 }
 
-  private createCaseDelay = ( asyncParam): Promise<any> => { // example operation
+  private createCaseDelay = ( asyncParam, delayCount): Promise<any> => { // example operation
     const promiseDelay = (data,msec) => new Promise(res => setTimeout(res,msec,data));
     console.log('createCaseDelay called: ', asyncParam);
-    return promiseDelay( asyncParam, 100); //resolve with argument in 1 second.
+    return promiseDelay( asyncParam, 1000); //resolve with argument in 1 second.
   }
   
   private setFolderPermissions = (): void => {
@@ -620,7 +628,7 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
   private createPermissionAddDelay = ( asyncParam, delayCount): Promise<any> => { // example operation
     const promiseDelay = (data,msec) => new Promise(res => setTimeout(res,msec,data));
     console.log('createPermissionAddDelay: ', asyncParam, delayCount);
-    return promiseDelay( asyncParam, 100); //resolve with argument in 1 second.
+    return promiseDelay( asyncParam, 100); //resolve with argument in 100 millisecond.
   }
   
   private resetFolderPermissionsAfterEditCase = (casefolderName: string, folderNewUsers: string[]) => {
