@@ -403,7 +403,7 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
   private createCaseDelay = ( asyncParam, delayCount): Promise<any> => { // example operation
     const promiseDelay = (data,msec) => new Promise(res => setTimeout(res,msec,data));
     console.log('createCaseDelay called: ', asyncParam);
-    return promiseDelay( asyncParam, 1000); //resolve with argument in 1 second.
+    return promiseDelay( asyncParam, 3000); //resolve with argument in 3 second.
   }
   
   private setFolderPermissions = (): void => {
