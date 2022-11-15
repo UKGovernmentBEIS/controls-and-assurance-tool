@@ -425,7 +425,7 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
         this.doFolderCreateRecursive(this.totalCases-1, true)
         .then( (result) => 
         {
-          this.doCaseRecursive(this.totalCases-1, true)
+          this.doCaseRecursive(this.totalCases-1, true,0 )
           .then( (result2) => {console.log("doCaseRecursive done, result = " + result2); })
           .catch( (err) => {console.log("doCaseRecursive: error trying to set folder permissions:" + err);});
         });
