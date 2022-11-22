@@ -512,32 +512,41 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
       this.roleAssignmentRemoved = true;
   }
 
-  private doPermissionRemoveRecursive =( num, nextRole:boolean, folderItem: SharePointQueryableSecurable): Promise<any> => { 
+  private doPermissionRemoveRecursive =( num, nextRole:boolean, folderItem: SharePointQueryableSecurable, delayCount): Promise<any> => { 
 
-    console.log("start doPermissionRemoveRecursive: " + num);
+    console.log(">> doPermissionRemoveRecursive: " + num);
     if(nextRole == true){
       this.roleAssignmentRemoved = false;
       this.folderPermissionRemove(num, folderItem);
+      delayCount = 0;
     }
 
     const decide = ( asyncResult) => {
 
-        console.log('doPermissionRemoveRecursive decide called: ', asyncResult);
+        console.log('>> doPermissionRemoveRecursive decide: ', asyncResult, delayCount);
         if( asyncResult < 0)
+        {
+          console.log('>> doPermissionRemoveRecursive Completed: ', asyncResult, delayCount);
             return "lift off"; // no, all done, return a non-promise result
+          }
         if(this.roleAssignmentRemoved == true){
-          return this.doPermissionRemoveRecursive( num-1, true, folderItem); // yes, call recFun again which returns a promise
+          return this.doPermissionRemoveRecursive( num-1, true, folderItem, delayCount); 
         }
-        return this.doPermissionRemoveRecursive( num, false, folderItem); // yes, call recFun again which returns a promise
+        delayCount = delayCount + 1;
+        if (delayCount > 20)
+        {
+          return this.doPermissionRemoveRecursive( num, true, folderItem, delayCount);   
+        }
+        return this.doPermissionRemoveRecursive( num, false, folderItem, delayCount); 
     };
 
-    return this.createPermissionDelay(num).then(decide);
+    return this.createPermissionRemoveDelay(num, delayCount ).then(decide);
 }
 
-  private createPermissionDelay = ( asyncParam): Promise<any> => { // example operation
+  private createPermissionRemoveDelay = ( asyncParam, delayCount): Promise<any> => { // example operation
     const promiseDelay = (data,msec) => new Promise(res => setTimeout(res,msec,data));
-    console.log('asyncThing called: ', asyncParam);
-    return promiseDelay( asyncParam, 100); //resolve with argument in 1 second.
+    console.log('>> createPermissionRemoveDelay: ', asyncParam, delayCount);
+    return promiseDelay( asyncParam, 100); 
   }
 
   private folderPermissionAdd = (userRef:number, folderItem: SharePointQueryableSecurable): void =>{
