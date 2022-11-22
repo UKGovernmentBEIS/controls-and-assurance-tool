@@ -366,7 +366,7 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
     const clCase =this.state.Cases[caseRef];
     const folderNewUsers: string[] = this.makeCLFolderNewUsersArr(clCase);
     this.resetFolderPermissionsAfterEditCase(String(clCase.ID), folderNewUsers);
-    console.log("setAFolderPermission: " + caseRef); 
+    console.log("SetAFolderPermission - CaseID: ", String(clCase.ID), folderNewUsers ); 
   }
 
   private doCaseRecursive =( num, nextCase:boolean, delayCount:number ): Promise<any> => { 
@@ -381,12 +381,15 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
 
     const decide = ( asyncResult) => {
 
-        console.log(nameOfFunc + 'decide called: ', asyncResult, delayCount);
+        console.log(nameOfFunc + 'Decide: ', asyncResult, delayCount);
         
         if( asyncResult < 0)
-            return "lift off"; // no, all done, return a non-promise result
+        {
+            console.log(nameOfFunc + 'Completed: ');
+            return "Completed"; 
+        }
         if(this.caseProcessed == true){
-          return this.doCaseRecursive( num-1, true, delayCount); // yes, call recFun again which returns a promise
+          return this.doCaseRecursive( num-1, true, delayCount); 
         }
         delayCount = delayCount + 1;
         if (delayCount > 20 )
@@ -394,7 +397,7 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
           console.log(nameOfFunc + 'CASE TIMEOUT: ');
           return this.doCaseRecursive( num, true, delayCount);
         }
-        return this.doCaseRecursive( num, false, delayCount); // yes, call recFun again which returns a promise
+        return this.doCaseRecursive( num, false, delayCount); 
     };
 
     return this.createCaseDelay(num, delayCount).then(decide);
@@ -402,7 +405,7 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
 
   private createCaseDelay = ( asyncParam, delayCount): Promise<any> => { // example operation
     const promiseDelay = (data,msec) => new Promise(res => setTimeout(res,msec,data));
-    console.log('createCaseDelay called: ', asyncParam);
+    console.log('CreateCaseDelay: ', asyncParam, delayCount);
     return promiseDelay( asyncParam, 3000); //resolve with argument in 3 second.
   }
   
@@ -421,33 +424,14 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
       promisesReload.push(this.loadAllCLSuperUsersAndViewers());
 
       Promise.all(promisesReload).then(() => {
-        console.log('users loaded');
+        console.log('setFolderPermissions: User Details Loaded');
         this.doFolderCreateRecursive(this.totalCases-1, true)
         .then( (result) => 
         {
           this.doCaseRecursive(this.totalCases-1, true,0 )
-          .then( (result2) => {console.log("doCaseRecursive done, result = " + result2); })
-          .catch( (err) => {console.log("doCaseRecursive: error trying to set folder permissions:" + err);});
+          .then( (result2) => {console.log("setFolderPermissions: All Cases Completed, result = " + result2); })
+          .catch( (err) => {console.log("setFolderPermissions: error trying to set folder permissions:" + err);});
         });
-        //.catch( (err) => {console.log("doFolderCaseRecursive: error trying to create folders" + err);});
-
-
-        //this.setAFolderPermission(0);
-
-        //let secDelay:number=2000;
-        // this.state.Cases.forEach(c => {
-
-        //   setTimeout(()=>{
-        //     console.log('start folder permission for case ', c.ID, new Date().toLocaleString());        
-        //     //const folderNewUsers: string[] = this.makeCLFolderNewUsersArr(c);
-        //     //this.resetFolderPermissionsAfterEditCase(String(c.ID), folderNewUsers);
-        //     console.log('total cased', this.totalCases, 'total cases processed', this.totalCasesProcessed, 'case processed', this.caseProcessed);
-
-        //   }, secDelay);
-
-        //   secDelay = secDelay+2000;
-
-        // });
 
       });
 
@@ -559,24 +543,19 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
   private folderPermissionAdd = (userRef:number, folderItem: SharePointQueryableSecurable): void =>{
 
     const userEmail =this.RoleAssignmentsToAdd[userRef];
-    console.log('folderPermissionAdd - folder permission add: ', userRef);
-    console.log('userEmail', userEmail);
+    console.log('>> folderPermissionAdd: ', userRef, userEmail);
    
-    //sp.web.siteUsers.getByEmail(userEmail).get().then(user => {
-      sp.web.ensureUser(userEmail).then(user => {      
+    sp.web.ensureUser(userEmail).then(user => {      
 
       //const userId: number = Number(user['Id']);
-      const userId: number = user.data.Id;
-      console.log('userId', userId);
-
-
+      const userId: number = user.data.Id;    
       folderItem.roleAssignments.add(userId, this.state.FullControlFolderRoleId).then(roleAddedValue => {
-        console.log(`role added for user ${userEmail}`);
+        console.log(`>> folderPermissionAdd: role added for user ${userEmail}`);
         this.roleAssignmentAdded = true;
       });
 
-    }).catch(e => {
-      console.log(`folderPermissionAdd - user doesnt exist ${userEmail}`);
+    }).catch(e => {      
+      console.log(`>> folderPermissionAdd: user doesnt exist ${userEmail}`);
       this.roleAssignmentAdded = true;
       // console.log('folderPermissionAdd - user ensured required');
       // sp.web.ensureUser(userEmail).then(userEnsured => {
@@ -598,7 +577,7 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
 
   private doPermissionAddRecursive =( num, nextRole:boolean, folderItem: SharePointQueryableSecurable, delayCount ): Promise<any> => { 
 
-    console.log("start doPermissionAddRecursive: " + num );
+    console.log('>> doPermissionAddRecursive: ', num );
     if(nextRole == true){
       this.roleAssignmentAdded = false;
       this.folderPermissionAdd(num, folderItem);
@@ -607,9 +586,12 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
 
     const decide = ( asyncResult) => {
 
-        console.log('doPermissionAddRecursive decide called: ', asyncResult, delayCount);
+        console.log('>> doPermissionAddRecursive Decide: ', asyncResult, delayCount);
         if( asyncResult < 0)
+        {
+            console.log('>> doPermissionAddRecursive Completed: ', asyncResult, delayCount);
             return "lift off"; // no, all done, return a non-promise result
+        }
         if(this.roleAssignmentAdded == true){
           return this.doPermissionAddRecursive( num-1, true, folderItem, delayCount); // yes, call recFun again which returns a promise
         }
@@ -627,7 +609,7 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
 
   private createPermissionAddDelay = ( asyncParam, delayCount): Promise<any> => { // example operation
     const promiseDelay = (data,msec) => new Promise(res => setTimeout(res,msec,data));
-    console.log('createPermissionAddDelay: ', asyncParam, delayCount);
+    console.log('>> CreatePermissionAddDelay: ', asyncParam, delayCount);
     return promiseDelay( asyncParam, 100); //resolve with argument in 100 millisecond.
   }
   
@@ -655,11 +637,11 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
           });
 
           this.doPermissionAddRecursive(this.RoleAssignmentsToAdd.length-1, true, folderItem,0).then(() => {
-            console.log('resetFolderPermissionsAfterEditCase - folder new users are added for folder: ', casefolderName);
+            console.log('resetFolderPermissionsAfterEditCase - Permissions Sorted: ', casefolderName);
             this.totalCasesProcessed++;
             this.setState({ TotalCasesProcessed: this.totalCasesProcessed });
             this.caseProcessed = true;
-            console.log('total cases processed:', this.totalCasesProcessed);
+            console.log('total cases resetFolderPermissionsAfterEditCase: Total Processed', this.totalCasesProcessed);
           });
         });
       });
