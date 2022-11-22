@@ -637,7 +637,7 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
         //console.log('before calling doPermissionRemoveRecursive');
         //console.log(' before callRoleAssignmentsToRemoveing', this.RoleAssignmentsToRemove);
 
-        this.doPermissionRemoveRecursive(this.RoleAssignmentsToRemove.length-1, true, folderItem ).then(() => {
+        this.doPermissionRemoveRecursive(this.RoleAssignmentsToRemove.length-1, true, folderItem,0 ).then(() => {
 
           //console.log('after calling doPermissionRemoveRecursive');
           this.RoleAssignmentsToAdd = [];
