@@ -29,6 +29,7 @@ export interface IUserManagementState extends types.IUserContextWebPartState {
   SetFolderPermissionsCompleted:boolean;
   TotalCasesProcessed:number;
   TotalFoldersCreated:number;
+  ConsoleLogFlag: boolean;
 
 }
 export class UserManagementState extends types.UserContextWebPartState {
@@ -43,6 +44,7 @@ export class UserManagementState extends types.UserContextWebPartState {
   public SetFolderPermissionsCompleted:boolean = false;
   public TotalCasesProcessed:number=0;
   public TotalFoldersCreated:number =0;
+  public ConsoleLogFlag: boolean=false;
 
 
   constructor() {
@@ -71,6 +73,7 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
   private roleAssignmentAdded:boolean = false;
   private RoleAssignmentsToAdd:string [] = [];
   private caseFolderCreated:boolean = false;
+  private consoleLogFlag:boolean = false;
 
   constructor(props: types.IWebPartComponentProps) {
     super(props);
@@ -366,12 +369,15 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
     const clCase =this.state.Cases[caseRef];
     const folderNewUsers: string[] = this.makeCLFolderNewUsersArr(clCase);
     this.resetFolderPermissionsAfterEditCase(String(clCase.ID), folderNewUsers);
-    console.log("SetAFolderPermission - CaseID: ", String(clCase.ID), folderNewUsers ); 
+    
+    if (this.consoleLogFlag)
+      console.log("SetAFolderPermission - CaseID: ", String(clCase.ID), folderNewUsers ); 
   }
 
   private doCaseRecursive =( num, nextCase:boolean, delayCount:number ): Promise<any> => { 
     const nameOfFunc:string = "doCaseRecursive - ";
-    console.log(nameOfFunc + "start: " + num);
+    if (this.consoleLogFlag)
+      console.log(nameOfFunc + "start: " + num);
 
     if(nextCase == true){
       this.caseProcessed = false;
@@ -380,12 +386,13 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
     }
 
     const decide = ( asyncResult) => {
-
-        console.log(nameOfFunc + 'Decide: ', asyncResult, delayCount);
+        if (this.consoleLogFlag)
+          console.log(nameOfFunc + 'Decide: ', asyncResult, delayCount);
         
         if( asyncResult < 0)
         {
-            console.log(nameOfFunc + 'Completed: ');
+            if (this.consoleLogFlag)
+              console.log(nameOfFunc + 'Completed: ');
             return "Completed"; 
         }
         if(this.caseProcessed == true){
@@ -394,7 +401,8 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
         delayCount = delayCount + 1;
         if (delayCount > 20 )
         {
-          console.log(nameOfFunc + 'CASE TIMEOUT: ');
+          if (this.consoleLogFlag)
+            console.log(nameOfFunc + 'CASE TIMEOUT: ');
           return this.doCaseRecursive( num, true, delayCount);
         }
         return this.doCaseRecursive( num, false, delayCount); 
@@ -405,7 +413,8 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
 
   private createCaseDelay = ( asyncParam, delayCount): Promise<any> => { // example operation
     const promiseDelay = (data,msec) => new Promise(res => setTimeout(res,msec,data));
-    console.log('CreateCaseDelay: ', asyncParam, delayCount);
+    if (this.consoleLogFlag)
+      console.log('CreateCaseDelay: ', asyncParam, delayCount);
     return promiseDelay( asyncParam, 3000); //resolve with argument in 3 second.
   }
   
@@ -417,14 +426,16 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
       this.setState({ SetFolderPermissionsPressed:true });
 
       this.totalCases = this.state.Cases.length;
-      console.log('total cased:', this.totalCases);
+      if (this.consoleLogFlag)
+        console.log('total cased:', this.totalCases);
 
       let promisesReload = [];
       promisesReload.push(this.loadUsers());
       promisesReload.push(this.loadAllCLSuperUsersAndViewers());
 
       Promise.all(promisesReload).then(() => {
-        console.log('setFolderPermissions: User Details Loaded');
+        if (this.consoleLogFlag)
+          console.log('setFolderPermissions: User Details Loaded');
         this.doFolderCreateRecursive(this.totalCases-1, true)
         .then( (result) => 
         {
@@ -435,6 +446,7 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
 
       });
 
+      /*
       const interval = setInterval(()=> {
         // method to be executed;
         console.log('set interval called');
@@ -443,8 +455,8 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
           console.log('all folders processed');
           this.setState({ SetFolderPermissionsCompleted:true });
         }
-      }, 2000);
-
+      }, 2000); 
+      */
     
   }
 
