@@ -514,23 +514,29 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
       console.log('folderPermissionRemove - folder permission remove: ', userRef);
       console.log('principalId', principalId);
     }
+
     if(principalId !== this.state.CurrentUserPrincipalId)
       folderItem.roleAssignments.remove(principalId, this.state.FullControlFolderRoleId).then(roleAddedValue => {
-        console.log(`folderPermissionRemove - role removed for user ${principalId}`);
+        if (this.consoleLogFlag)
+          console.log(`folderPermissionRemove - role removed for user ${principalId}`);
         this.roleAssignmentRemoved = true;
-      }).catch(err =>{
-        console.log(`folderPermissionRemove - failed ${err}`);
+      }).catch(err =>{        
+        console.log(`>> folderPermissionRemove: - failed ${err}`);
         this.roleAssignmentRemoved = true;
       });
     else
-      console.log('not adding current user in folder permission remove list');
+    {
+      if (this.consoleLogFlag)
+        console.log('>> folderPermissionRemove: not adding current user in folder permission remove list');
       this.roleAssignmentRemoved = true;
+    }  
   }
 
   private doPermissionRemoveRecursive =( num, nextRole:boolean, folderItem: SharePointQueryableSecurable, delayCount): Promise<any> => { 
 
     if (this.consoleLogFlag)
       console.log(">> doPermissionRemoveRecursive: " + num);
+
     if(nextRole == true){
       this.roleAssignmentRemoved = false;
       this.folderPermissionRemove(num, folderItem);
@@ -579,7 +585,8 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
       //const userId: number = Number(user['Id']);
       const userId: number = user.data.Id;    
       folderItem.roleAssignments.add(userId, this.state.FullControlFolderRoleId).then(roleAddedValue => {
-        console.log(`>> folderPermissionAdd: role added for user ${userEmail}`);
+        if (this.consoleLogFlag)
+          console.log(`>> folderPermissionAdd: role added for user ${userEmail}`);
         this.roleAssignmentAdded = true;
       });
 
@@ -596,6 +603,7 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
 
     if (this.consoleLogFlag)
       console.log('>> doPermissionAddRecursive: ', num );
+
     if(nextRole == true){
       this.roleAssignmentAdded = false;
       this.folderPermissionAdd(num, folderItem);
@@ -606,10 +614,12 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
 
         if (this.consoleLogFlag)
           console.log('>> doPermissionAddRecursive Decide: ', asyncResult, delayCount);
+
         if( asyncResult < 0)
         {
           if (this.consoleLogFlag)
             console.log('>> doPermissionAddRecursive Completed: ', asyncResult, delayCount);
+
           return "lift off"; // no, all done, return a non-promise result
         }
         if(this.roleAssignmentAdded == true){
@@ -631,6 +641,7 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
     const promiseDelay = (data,msec) => new Promise(res => setTimeout(res,msec,data));
     if (this.consoleLogFlag)
       console.log('>> CreatePermissionAddDelay: ', asyncParam, delayCount);
+
     return promiseDelay( asyncParam, 100); //resolve with argument in 100 millisecond.
   }
   
@@ -646,12 +657,9 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
         });
         
       }).then(() => {
-        //console.log('before calling doPermissionRemoveRecursive');
-        //console.log(' before callRoleAssignmentsToRemoveing', this.RoleAssignmentsToRemove);
 
         this.doPermissionRemoveRecursive(this.RoleAssignmentsToRemove.length-1, true, folderItem,0 ).then(() => {
 
-          //console.log('after calling doPermissionRemoveRecursive');
           this.RoleAssignmentsToAdd = [];
           folderNewUsers.forEach(userEmail => {
             this.RoleAssignmentsToAdd.push(userEmail);
@@ -660,58 +668,13 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
           this.doPermissionAddRecursive(this.RoleAssignmentsToAdd.length-1, true, folderItem,0).then(() => {
             if (this.consoleLogFlag)
               console.log('resetFolderPermissionsAfterEditCase - Permissions Sorted: ', casefolderName);
+
             this.totalCasesProcessed++;
             this.setState({ TotalCasesProcessed: this.totalCasesProcessed });
             this.caseProcessed = true;
+
             if (this.consoleLogFlag)
               console.log('total cases resetFolderPermissionsAfterEditCase: Total Processed', this.totalCasesProcessed);
-          });
-        });
-      });
-    });
-  }
-
-  private resetFolderPermissionsAfterEditCase_Save = (casefolderName: string, folderNewUsers: string[]) => {
-
-    sp.web.getFolderByServerRelativeUrl(this.UploadFolder_CLRoot).folders.getByName(casefolderName).getItem().then((folderItem: SharePointQueryableSecurable) => {
-
-      let promisesRemove = [];
-
-      folderItem.roleAssignments.get().then(rass => {
-
-        rass.forEach(ra => {
-          const principalId: number = Number(ra['PrincipalId']);
-          if (this.consoleLogFlag)
-          {
-            console.log('role ass', ra);
-            console.log('principalId', principalId);
-          }
-          if(principalId !== this.state.CurrentUserPrincipalId)
-            promisesRemove.push(this.removeFolderRoleBySiteUserId(principalId, folderItem));
-          else
-          {
-            if (this.consoleLogFlag)
-              console.log('not adding current user in folder permission remove list');
-          }
-
-        });
-      }).then(() => {
-
-        Promise.all(promisesRemove).then(() => {
-
-          let promisesAddUser = [];
-          folderNewUsers.forEach(userEmail => {
-            promisesAddUser.push(this.addFolderRole(userEmail, folderItem));
-          });
-
-          Promise.all(promisesAddUser).then(() => {
-            if (this.consoleLogFlag)
-              console.log('folder new users are added for folder: ', casefolderName);
-            this.totalCasesProcessed++;
-            this.setState({ TotalCasesProcessed: this.totalCasesProcessed });
-            this.caseProcessed = true;
-            if (this.consoleLogFlag)
-              console.log('total cases processed:', this.totalCasesProcessed);
           });
         });
       });
@@ -724,7 +687,7 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
 
     return folderItem.roleAssignments.remove(siteUserId, this.state.FullControlFolderRoleId).then(roleAddedValue => {
       if (this.consoleLogFlag)
-        console.log(`role removed for user ${siteUserId}`);
+        console.log(`>> removeFolderRoleBySiteUserId: role removed for user ${siteUserId}`);
     });
   }
 
@@ -735,22 +698,23 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
     return sp.web.siteUsers.getByEmail(userEmail).get().then(user => {
 
       const userId: number = Number(user['Id']);
+
       if (this.consoleLogFlag)
-        console.log('userId', userId);
+        console.log('addFolderRole: userId', userId);
 
 
       folderItem.roleAssignments.add(userId, this.state.FullControlFolderRoleId).then(roleAddedValue => {
         if (this.consoleLogFlag)
-          console.log(`role added for user ${userEmail}`);
+          console.log(`addFolderRole: role added for user ${userEmail}`);
       });
 
     }).catch(e => {
-      console.log('error', e);
+      console.log('addFolderRole: error', e);
       sp.web.ensureUser(userEmail).then(userEnsured => {
         const userId: number = userEnsured.data.Id;
-        console.log('UserIdEnured', userId);
+        console.log('addFolderRole: UserIdEnured', userId);
         folderItem.roleAssignments.add(userId, this.state.FullControlFolderRoleId).then(roleAddedValue => {
-          console.log(`role added for ensured user ${userEmail}`);
+          console.log(`addFolderRole: role added for ensured user ${userEmail}`);
         });
       });
       
@@ -825,7 +789,8 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
   private loadCases = (): Promise<void> => {
     const qryStr: string = "?$filter=CaseCreated eq true&$expand=CLHiringMembers($expand=User($select=Username,ID))";
     let x = this.clCaseService.readAll(qryStr).then((data: ICLCase[]): void => {
-      console.log('cases', data);
+      if (this.consoleLogFlag)
+        console.log('cases', data);
       this.setState({ Cases: data });
     }, (err) => { if (this.onError) this.onError(`Error loading data`, err.message); });
     return x;
@@ -840,7 +805,8 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
   private loadAllCLSuperUsersAndViewers = (): Promise<void> => {
     let x = this.userService.readAll_CL_SuperUsers_Viewers().then((data: IUser[]): void => {
       this.setState({ CLSuperUsersAndViewers: data });
-      console.log('loadAllCLSuperUsersAndViewers loaded');
+      if (this.consoleLogFlag)
+        console.log('loadAllCLSuperUsersAndViewers loaded');
       //console.log('SuperUsersAndViewers', data);
     }, (err) => { if (this.onError) this.onError(`Error loading super users`, err.message); });
     return x;
@@ -850,16 +816,17 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
 
     //get doc lib rolder role Full Control Id and set in state
     sp.web.roleDefinitions.getByName('Full Control').get().then(r => {
-      //console.log('r', r);
       const roleId: number = r['Id'];
       this.setState({ FullControlFolderRoleId: roleId });
     });
 
         //get current user sharepoint id (PrincipalId) and set in state
         sp.web.currentUser.get().then(u => {
-          console.log('currentSiteUser', u);
+          if (this.consoleLogFlag)
+            console.log('loadSPFoldersCoreStuff: currentSiteUser', u);
           const currentUserPrincipalId: number = Number(u['Id']);
-          console.log('currentUserPrincipalId', currentUserPrincipalId);
+          if (this.consoleLogFlag)
+            console.log('loadSPFoldersCoreStuff: currentUserPrincipalId', currentUserPrincipalId);
           this.setState({ CurrentUserPrincipalId: currentUserPrincipalId });
         });
 
@@ -1200,7 +1167,8 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
       const clCase = this.state.Cases[num];
       const spService = new services.SPService(this.props.spfxContext);
       //this.state.Cases.forEach(clCase => {
-      console.log('createAFolder - going to create folder for case ', clCase.ID);
+        if (this.consoleLogFlag)
+          console.log('createAFolder - going to create folder for case ', clCase.ID);
       //const folderNewUsers: string[] = this.makeCLFolderNewUsersArr(clCase);
       this.createNewCaseUploadFolder(String(clCase.ID), this.state.FullControlFolderRoleId);
     //});
@@ -1209,7 +1177,8 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
 
   private doFolderCreateRecursive =( num, nextCase:boolean): Promise<any> => { 
     const nameOfFunc:string = "doFolderCreateRecursive - ";
-    console.log(nameOfFunc + "start: " + num);
+    if (this.consoleLogFlag)
+      console.log(nameOfFunc + "start: " + num);
     if(nextCase == true){
       this.caseFolderCreated = false;
       this.createAFolder(num);
@@ -1217,15 +1186,20 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
 
     const decide = ( asyncResult) => {
 
+      if (this.consoleLogFlag)
+      {
         console.log(nameOfFunc + 'decide called: ', asyncResult);
         console.log(nameOfFunc + 'this.caseProcessed:', this.caseProcessed);
+      }
         if( asyncResult < 0){
+          if (this.consoleLogFlag)
             console.log(nameOfFunc + "end");
             return "lift off"; // no, all done, return a non-promise result
         }
         if(this.caseFolderCreated == true){
           if( asyncResult == 0){
-            console.log(nameOfFunc + "end");
+            if (this.consoleLogFlag)
+              console.log(nameOfFunc + "end");
             return "lift off"; // no, all done, return a non-promise result
           }
           return this.doFolderCreateRecursive( num-1, true); // yes, call recFun again which returns a promise
@@ -1238,15 +1212,16 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
 
   private createCaseFolderDelay = ( asyncParam): Promise<any> => { // example operation
     const promiseDelay = (data,msec) => new Promise(res => setTimeout(res,msec,data));
-    console.log('createCaseFolderDelay called: ', asyncParam);
+    if (this.consoleLogFlag)
+      console.log('createCaseFolderDelay called: ', asyncParam);
     return promiseDelay( asyncParam, 100); //resolve with argument in 1 second.
   }
 
   private createExistingCLCasesFolders = (): void => {
     this.totalCases = this.state.Cases.length;
     this.doFolderCreateRecursive(this.totalCases-1, true)
-    .then( (result) => {console.log("done, result = " + result); })
-    .catch( (err) => {console.log("oops:" + err);});
+    .then( (result) => { if (this.consoleLogFlag) console.log("createExistingCLCasesFolders: done, result = " + result); })
+    .catch( (err) => {console.log("createExistingCLCasesFolders: oops:" + err);});
 
     // const spService = new services.SPService(this.props.spfxContext);
     // this.state.Cases.forEach(clCase => {
