@@ -521,20 +521,29 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
       console.log('principalId', principalId);
     }
 
-    if(principalId !== this.state.CurrentUserPrincipalId)
-      folderItem.roleAssignments.remove(principalId, this.state.FullControlFolderRoleId).then(roleAddedValue => {
+    if (principalId !== undefined)
+    {
+      if(principalId !== this.state.CurrentUserPrincipalId)
+        folderItem.roleAssignments.remove(principalId, this.state.FullControlFolderRoleId).then(roleAddedValue => {
+          if (this.consoleLogFlag)
+            console.log(`folderPermissionRemove - role removed for user ${principalId}`);
+          this.roleAssignmentRemoved = true;
+        }).catch(err =>{        
+          console.log(`>> folderPermissionRemove: - failed ${err}`);
+          this.roleAssignmentRemoved = true;
+        });
+      else
+      {
         if (this.consoleLogFlag)
-          console.log(`folderPermissionRemove - role removed for user ${principalId}`);
+          console.log('>> folderPermissionRemove: not adding current user in folder permission remove list');
         this.roleAssignmentRemoved = true;
-      }).catch(err =>{        
-        console.log(`>> folderPermissionRemove: - failed ${err}`);
-        this.roleAssignmentRemoved = true;
-      });
+      }
+    }
     else
     {
       if (this.consoleLogFlag)
-        console.log('>> folderPermissionRemove: not adding current user in folder permission remove list');
-      this.roleAssignmentRemoved = true;
+        console.log('>> folderPermissionRemove: principleid is undefined');
+      this.roleAssignmentRemoved = true;      
     }  
   }
 
