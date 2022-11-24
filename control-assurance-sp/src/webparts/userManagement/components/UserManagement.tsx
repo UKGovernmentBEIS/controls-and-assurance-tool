@@ -1173,10 +1173,12 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
 
   public createNewCaseUploadFolder = (casefolderName: string, fullControlFolderRoleId: number) => {
     sp.web.getFolderByServerRelativeUrl(this.UploadFolder_CLRoot).folders.add(casefolderName).then(folderAddRes => {
-      console.log('createNewCaseUploadFolder - folder created', folderAddRes.data);
+      if (this.consoleLogFlag)
+        console.log('createNewCaseUploadFolder - folder created', folderAddRes.data);
       folderAddRes.folder.getItem().then((fItem: SharePointQueryableSecurable) => {
         fItem.breakRoleInheritance(false).then(bri => {
-          console.log('createNewCaseUploadFolder - folder bri done');
+          if (this.consoleLogFlag)
+            console.log('createNewCaseUploadFolder - folder bri done');
           this.caseFolderCreated = true;
           this.totalFoldersCreated++;
           this.setState({ TotalFoldersCreated: this.totalFoldersCreated });
