@@ -396,6 +396,12 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
             return "Completed"; 
         }
         if(this.caseProcessed == true){
+          if (num == 0)
+          {
+            if (this.consoleLogFlag)
+              console.log(nameOfFunc + 'Completed: ');
+            return "Completed2";          
+          }
           return this.doCaseRecursive( num-1, true, delayCount); 
         }
         delayCount = delayCount + 1;
@@ -547,6 +553,7 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
 
         if (this.consoleLogFlag)
           console.log('>> doPermissionRemoveRecursive decide: ', asyncResult, delayCount);
+
         if( asyncResult < 0)
         {
           if (this.consoleLogFlag)
@@ -554,6 +561,12 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
           return "lift off"; // no, all done, return a non-promise result
         }
         if(this.roleAssignmentRemoved == true){
+          if (num = 0)
+          {
+            if (this.consoleLogFlag)
+            console.log('>> doPermissionRemoveRecursive Completed2: ', asyncResult, delayCount);
+            return "Completed"; // no, all done, return a non-promise result
+          }
           return this.doPermissionRemoveRecursive( num-1, true, folderItem, delayCount); 
         }
         delayCount = delayCount + 1;
@@ -595,8 +608,6 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
         console.log(`>> folderPermissionAdd: user doesnt exist ${userEmail}`);
       this.roleAssignmentAdded = true;      
     });
-
-
   }
 
   private doPermissionAddRecursive =( num, nextRole:boolean, folderItem: SharePointQueryableSecurable, delayCount ): Promise<any> => { 
@@ -620,9 +631,15 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
           if (this.consoleLogFlag)
             console.log('>> doPermissionAddRecursive Completed: ', asyncResult, delayCount);
 
-          return "lift off"; // no, all done, return a non-promise result
+          return "Completed"; // no, all done, return a non-promise result
         }
         if(this.roleAssignmentAdded == true){
+          if (num ==0)
+          {
+            if (this.consoleLogFlag)
+            console.log('>> doPermissionAddRecursive Completed2: ', asyncResult, delayCount);
+            return "Completed"; // no, all done, return a non-promise result
+          }
           return this.doPermissionAddRecursive( num-1, true, folderItem, delayCount); // yes, call recFun again which returns a promise
         }
         delayCount = delayCount +1;
@@ -649,7 +666,7 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
 
     sp.web.getFolderByServerRelativeUrl(this.UploadFolder_CLRoot).folders.getByName(casefolderName).getItem().then((folderItem: SharePointQueryableSecurable) => {
 
-      //let promisesRemove = [];
+ 
       this.RoleAssignmentsToRemove = [];
       folderItem.roleAssignments.get().then(rass => {
         rass.forEach(ra => {
