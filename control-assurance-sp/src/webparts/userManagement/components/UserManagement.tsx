@@ -74,7 +74,11 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
   private RoleAssignmentsToAdd:string [] = [];
   private caseFolderCreated:boolean = false;
   private consoleLogFlag:boolean = false;
-
+  
+  private EvidenceFilesToCopy:types.ICLCaseEvidence [] = [];
+  private copyFileProcessed:boolean = false;
+  
+  
   constructor(props: types.IWebPartComponentProps) {
     super(props);
     this.UploadFolder_CLRoot = getUploadFolder_CLRoot(props.spfxContext);
@@ -1259,35 +1263,134 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
     // });
   }
 
-  private copyAllCasesEvDocs = (): void => {
+
+// copy files one at a time.
+
+private copySharePointFile = (fileRef:number , srcFolder: string, clRootFolder:string ): void =>{
+
+  //console.log(`copyAllCasesEvDocs: going to copy ev with ID: ${ev.ID} and filename: ${ev.Title}`);
+
+  const evFile = this.EvidenceFilesToCopy[fileRef];
+
+  if(evFile.EvidenceType === 'ContractorSecurityCheck'){
+    //parentID is worker id, get case id for that worker
+    this.clWorkerService.readAll(`?$filter=ID eq ${evFile.ParentId}&$select=CLCaseId`).then(ws => {
+      if(ws.length > 0){
+        const caseId:number = ws[0].CLCaseId;
+        this.copyEvidenceFile(caseId, srcFolder, clRootFolder, evFile.Title);
+      }
+    });
+  }
+  else{
+    //parent id is case id
+    this.copyEvidenceFile(evFile.ParentId, srcFolder, clRootFolder, evFile.Title);
+  }
+}
+
+private copyEvidenceFile = (caseId: number, srcFolder: string, clRootFolder:string, fileName: string): void => {
+  const destFile = `${clRootFolder}/${caseId}/${fileName}`;
+
+  sp.web.getFolderByServerRelativeUrl(srcFolder).files.getByName(fileName).copyTo(destFile).then(() => {
+    console.log(`copyEvidenceFile Successful: ${destFile}`);
+    this.copyFileProcessed = true;
+    
+  }).catch(err => {
+    console.log(`copyEvidenceFile ERROR COULD NOT COPY: ${destFile}`);
+    console.log('copyEvidenceFile Error Was:', err);
+    this.copyFileProcessed = true;
+  });
+
+}
+
+private doCopyFileRecursive =( num, nextCase:boolean, delayCount:number, srcFolder: string, clRootFolder:string ): Promise<any> => { 
+  const nameOfFunc:string = "doCopyFileRecursive - ";
+  console.log(nameOfFunc + "start: " + num);
+
+  if(nextCase == true){
+    this.copyFileProcessed = false;
+    this.copySharePointFile(num , srcFolder, clRootFolder);
+    delayCount = 0;
+  }
+
+  const decide = ( asyncResult) => {
+      console.log(nameOfFunc + 'Decide: ', asyncResult, delayCount);
+      
+      if( asyncResult < 0)
+      {
+        console.log(nameOfFunc + 'Completed: ');
+        return "Completed"; 
+      }
+      if(this.copyFileProcessed == true){
+        if (num == 0)
+        {          
+          console.log(nameOfFunc + 'Completed: ');
+          return "Completed2";          
+        }
+        return this.doCopyFileRecursive( num-1, true, delayCount, srcFolder, clRootFolder); 
+      }
+      delayCount = delayCount + 1;
+      if (delayCount > 20 )
+      {        
+        console.log(nameOfFunc + 'CASE TIMEOUT: ');
+        return this.doCopyFileRecursive( num, true, delayCount, srcFolder, clRootFolder);
+      }
+      return this.doCopyFileRecursive( num, false, delayCount, srcFolder, clRootFolder); 
+  };
+
+  return this.createCopyFileDelay(num, delayCount).then(decide);
+}
+
+private createCopyFileDelay = ( asyncParam, delayCount): Promise<any> => { // example operation
+  const promiseDelay = (data,msec) => new Promise(res => setTimeout(res,msec,data));
+  console.log('createCopyFileDelay: ', asyncParam, delayCount);
+  return promiseDelay( asyncParam, 1000); //resolve with argument in 3 second.
+}
+
+
+
+
+// end copy files one at a time.
+
+
+private copyAllCasesEvDocs = (): void => {
+  const srcFolder = getUploadFolder_CLEvidence(this.props.spfxContext);
+  const clRootFolder = getUploadFolder_CLRoot(this.props.spfxContext);
+  const caseEvService = new services.CLCaseEvidenceService(this.props.spfxContext, this.props.api);
+
+  caseEvService.readAll(`?$filter=AttachmentType eq 'PDF' and RecordCreated eq true`).then(evs => {
+    evs.forEach(ev => {
+      this.EvidenceFilesToCopy.push(ev);
+    });
+    this.doCopyFileRecursive(this.EvidenceFilesToCopy.length-1, true, 0, srcFolder , clRootFolder);
+  });
+  
+}
+
+  private copyAllCasesEvDocs_save = (): void => {
     const srcFolder = getUploadFolder_CLEvidence(this.props.spfxContext);
     const clRootFolder = getUploadFolder_CLRoot(this.props.spfxContext);
     const caseEvService = new services.CLCaseEvidenceService(this.props.spfxContext, this.props.api);
 
+    // doCopyFileRecursive =( num, nextCase:boolean, delayCount:number, srcFolder: string, clRootFolder:string )
+
     caseEvService.readAll(`?$filter=AttachmentType eq 'PDF' and RecordCreated eq true`).then(evs => {
       evs.forEach(ev => {
-        console.log(`going to copy ev with ID: ${ev.ID} and filename: ${ev.Title}`);
+        console.log(`copyAllCasesEvDocs: going to copy ev with ID: ${ev.ID} and filename: ${ev.Title}`);
         if(ev.EvidenceType === 'ContractorSecurityCheck'){
           //parentID is worker id, get case id for that worker
           this.clWorkerService.readAll(`?$filter=ID eq ${ev.ParentId}&$select=CLCaseId`).then(ws => {
             if(ws.length > 0){
               const caseId:number = ws[0].CLCaseId;
-              console.log('got caseId', caseId);
               this.copyCaseFile(caseId, srcFolder, clRootFolder, ev.Title);
             }
           });
-          
-
         }
         else{
           //parent id is case id
           this.copyCaseFile(ev.ParentId, srcFolder, clRootFolder, ev.Title);
         }
-
       });
-
     });
-
   }
 
   private copyAllCasesPDFs = (): void => {
