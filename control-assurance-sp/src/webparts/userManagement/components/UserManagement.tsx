@@ -1304,7 +1304,6 @@ private copyEvidenceFile = (caseId: number, srcFolder: string, clRootFolder:stri
 
 private doCopyFileRecursive =( num, nextCase:boolean, delayCount:number, srcFolder: string, clRootFolder:string ): Promise<any> => { 
   const nameOfFunc:string = "doCopyFileRecursive - ";
-  console.log(nameOfFunc + "start: " + num);
 
   if(nextCase == true){
     this.copyFileProcessed = false;
@@ -1343,7 +1342,6 @@ private doCopyFileRecursive =( num, nextCase:boolean, delayCount:number, srcFold
 
 private createCopyFileDelay = ( asyncParam, delayCount): Promise<any> => { // example operation
   const promiseDelay = (data,msec) => new Promise(res => setTimeout(res,msec,data));
-  console.log('createCopyFileDelay: ', asyncParam, delayCount);
   return promiseDelay( asyncParam, 1000); //resolve with argument in 3 second.
 }
 
