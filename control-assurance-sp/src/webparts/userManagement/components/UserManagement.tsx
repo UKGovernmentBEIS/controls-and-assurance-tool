@@ -1329,10 +1329,11 @@ private doCopyFileRecursive =( num, nextCase:boolean, delayCount:number, srcFold
         return this.doCopyFileRecursive( num-1, true, delayCount, srcFolder, clRootFolder); 
       }
       delayCount = delayCount + 1;
-      if (delayCount > 20 )
-      {        
-        console.log(nameOfFunc + 'CASE TIMEOUT: ');
-        return this.doCopyFileRecursive( num, true, delayCount, srcFolder, clRootFolder);
+      if (delayCount > 50 )
+      { 
+        const evFile = this.EvidenceFilesToCopy[num];       
+        console.log(nameOfFunc + '>>> COPY FILE TIMEOUT: ', evFile.Title );
+        return this.doCopyFileRecursive( num-1, true, delayCount, srcFolder, clRootFolder);
       }
       return this.doCopyFileRecursive( num, false, delayCount, srcFolder, clRootFolder); 
   };
@@ -1356,6 +1357,8 @@ private copyAllCasesEvDocs = (): void => {
   const srcFolder = getUploadFolder_CLEvidence(this.props.spfxContext);
   const clRootFolder = getUploadFolder_CLRoot(this.props.spfxContext);
   const caseEvService = new services.CLCaseEvidenceService(this.props.spfxContext, this.props.api);
+
+  this.EvidenceFilesToCopy = [];
 
   caseEvService.readAll(`?$filter=AttachmentType eq 'PDF' and RecordCreated eq true`).then(evs => {
     evs.forEach(ev => {
