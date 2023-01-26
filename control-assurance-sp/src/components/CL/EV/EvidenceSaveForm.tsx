@@ -168,7 +168,7 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
         ];
 
         if(this.props.evidenceType === "IR35" || this.props.evidenceType === "ContractorSecurityCheck"){
-            options = options.filter(x => x.key !== 'None');
+            options = options.filter(x => x.key === 'PDF');
         }
 
         const fd = this.state.FormData;

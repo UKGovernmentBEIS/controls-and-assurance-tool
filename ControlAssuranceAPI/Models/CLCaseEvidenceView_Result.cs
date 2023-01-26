@@ -11,6 +11,7 @@ namespace ControlAssuranceAPI.Models
         public string Title { get; set; }
         public string DateAdded { get; set; }
         public string AddedBy { get; set; }
+        public int AddedById { get; set; }
         public string Details { get; set; }
         public string AttachmentType { get; set; }
         public string Reference { get; set; }

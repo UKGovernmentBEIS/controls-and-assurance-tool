@@ -134,6 +134,8 @@ namespace ControlAssuranceAPI.Repositories
                           ev.Details,
                           ev.DateUploaded,
                           User = ev.User.Title,
+                          UserID = ev.User.ID,
+                          
                           ev.AttachmentType,
                           ev.CLWorkerId
 
@@ -152,6 +154,7 @@ namespace ControlAssuranceAPI.Repositories
                 item.Details = ite.Details;
                 item.DateAdded = ite.DateUploaded?.ToString("dd/MM/yyyy HH:mm") ?? "";
                 item.AddedBy = ite.User;
+                item.AddedById = ite.UserID;
                 item.AttachmentType = ite.AttachmentType;
                 //item.Reference = ite.CLWorkerId == null ? "Case" : $"Worker - {worker.OnbContractorFirstname?.Trim() ?? ""} {worker.OnbContractorSurname?.Trim() ?? ""}";
                 item.Reference = ite.CLWorkerId == null ? caseRef_BeforeOnB : caseRef_OnAndAfterOnB;

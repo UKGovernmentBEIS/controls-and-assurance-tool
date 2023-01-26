@@ -1588,6 +1588,14 @@ namespace ControlAssuranceAPI.Libs
             paragraph.AddFormattedText($"Worker Email: {cLWorker.OnbContractorEmail}", "normalTxt");
             paragraph.AddLineBreak();
             paragraph.AddFormattedText($"Work Order number: {cLWorker.OnbWorkOrderNumber}", "normalTxt");
+            paragraph.AddLineBreak();
+
+            string caseRef = $"{cLWorker.CLCase.CLComFramework?.Title ?? ""}{cLWorker.CLCase.CaseRef}";
+            if (CaseStages.GetStageNumber(cLWorker.Stage) >= CaseStages.Onboarding.Number && cLWorker.CLCase.ReqNumPositions > 1)
+            {
+                caseRef += $"/{cLWorker.CLCase.ReqNumPositions}/{cLWorker.WorkerNumber?.ToString() ?? ""}";
+            }
+            paragraph.AddFormattedText($"Case Ref: {caseRef}", "normalTxt");
             paragraph.AddLineBreak(); paragraph.AddLineBreak();
             paragraph.AddFormattedText($"Contract/Extension Start Date: {cLWorker.OnbStartDate?.ToString("dd/MM/yyyy") ??""}", "normalTxt");
             paragraph.AddLineBreak();

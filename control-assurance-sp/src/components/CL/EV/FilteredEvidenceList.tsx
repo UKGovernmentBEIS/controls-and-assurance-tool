@@ -94,7 +94,7 @@ export class FilteredEvidenceList extends React.Component<IFilteredEvidenceListP
 
                 <div className={classNames.controlWrapper}>
 
-                    {(props.isViewOnly === false) && props.editDisabled && props.deleteDisabled &&
+                    {props.editDisabled && props.deleteDisabled &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Add' }}
                             className={classNames.cmdBtn}

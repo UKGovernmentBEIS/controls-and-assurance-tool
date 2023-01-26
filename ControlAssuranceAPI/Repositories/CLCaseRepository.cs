@@ -328,6 +328,8 @@ namespace ControlAssuranceAPI.Repositories
                           HiringManagerObj = db.Users.FirstOrDefault(x => x.ID == w.CLCase.ApplHMUserId),                          
                           w.OnbContractorFirstname,
                           w.OnbContractorSurname,
+                          w.OnbStartDate,
+                          w.OnbEndDate,
 
                           w.BPSSCheckedById,
                           w.BPSSCheckedOn,
@@ -542,8 +544,8 @@ namespace ControlAssuranceAPI.Repositories
                 item.Worker = worker;
                 item.CreatedOn = ite.CLCase.CreatedOn != null ? ite.CLCase.CreatedOn.Value.ToString("dd/MM/yyyy") : "";
                 item.CostCenter = $"{ite.CLCase.ReqCostCentre} - {ite.CLCase.Directorate?.Title?.ToString() ?? ""}";
-                item.StartDate = ite.CLCase.ReqEstStartDate != null ? ite.CLCase.ReqEstStartDate.Value.ToString("dd/MM/yyyy") : "";
-                item.EndDate = ite.CLCase.ReqEstEndDate != null ? ite.CLCase.ReqEstEndDate.Value.ToString("dd/MM/yyyy") : "";               
+                item.StartDate = ite.OnbStartDate != null ? ite.OnbStartDate.Value.ToString("dd/MM/yyyy") : ite.CLCase.ReqEstStartDate != null ? ite.CLCase.ReqEstStartDate.Value.ToString("dd/MM/yyyy") : "";
+                item.EndDate = ite.OnbEndDate != null ? ite.OnbEndDate.Value.ToString("dd/MM/yyyy") : ite.CLCase.ReqEstEndDate != null ? ite.CLCase.ReqEstEndDate.Value.ToString("dd/MM/yyyy") : "";               
                 item.HiringManager = ite.HiringManagerObj?.Title ?? "";
                 
                 item.HiringManagerId = ite.CLCase.ApplHMUserId;
