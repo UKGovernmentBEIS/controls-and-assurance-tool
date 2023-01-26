@@ -20,6 +20,8 @@ export interface IEvidenceListProps extends types.IBaseComponentProps {
     workerId?: number;
     filterText?: string;
     onChangeFilterText: (value: string) => void;
+    currentUserId: number;
+    superUserPermission: boolean;
 
     isViewOnly: boolean;
     evChangesCounter: number;
@@ -102,6 +104,17 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
             maxWidth: 100,
             isResizable: true,
             headerClassName: styles.bold,
+            columnDisplayType: ColumnDisplayTypes.Hidden,
+        },
+        {
+            key: 'AddedById',
+            name: 'AddedById',
+            fieldName: 'AddedById',
+            minWidth: 100,
+            maxWidth: 100,
+            isResizable: true,
+            headerClassName: styles.bold,
+            
 
         },
         {
@@ -156,13 +169,21 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
                     const key = Number(sel.key);
                     const title: string = sel["Title"];
                     const attachmentType: string = sel["AttachmentType"];
+                    const addedById: number = Number(sel["AddedById"]);
 
                     let enableView: boolean = true;
                     if(attachmentType === "None"){
                         enableView = false;                            
                     }
 
-                    this.setState({ SelectedEntity: key, SelectedEntityTitle: title, EnableEdit: true, EnableDelete: true, EnableView: enableView });
+
+                    let enableEditDel:boolean = false;
+
+                    if(this.props.superUserPermission === true || (this.props.currentUserId === addedById)){
+                        enableEditDel = true;                            
+                    }
+
+                    this.setState({ SelectedEntity: key, SelectedEntityTitle: title, EnableEdit: enableEditDel, EnableDelete: enableEditDel, EnableView: enableView });
                 }
                 else {
                     this.setState({ SelectedEntity: null, SelectedEntityTitle: null, EnableEdit: false, EnableDelete: false, EnableView: false });

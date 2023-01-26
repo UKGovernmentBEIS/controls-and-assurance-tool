@@ -1404,7 +1404,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                             <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
 
                                 <div className={styles.flexContainerSectionQuestion}>
-                                    <div className={styles.sectionQuestionCol1}><span>Expected daily rate including fee (including vat)</span></div>
+                                    <div className={styles.sectionQuestionCol1}><span>Expected daily rate including fees and non-recoverable VAT</span></div>
                                     <div className={styles.sectionQuestionCol2}>
                                         <img src={finMaxRateValidationImg} />
                                     </div>
@@ -2042,6 +2042,8 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                     <EvidenceList
                         parentId={this.state.FormData.ID}
                         workerId={this.state.FormDataWorker.ID}
+                        currentUserId={this.props.currentUserId}
+                        superUserPermission={this.props.superUserPermission}
                         isViewOnly={this.isViewOnlyPermission()}
                         filterText={this.state.Evidence_ListFilterText}
                         onChangeFilterText={this.handleEvidence_ChangeFilterText}
@@ -2448,7 +2450,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                             <tr>
                                 <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
-                                    Expected daily rate including fee (including vat)
+                                    Expected daily rate including fees and non-recoverable VAT
                                 </td>
                                 <td style={{ width: '31%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)' }}>
                                     {this.state.FormData.FinMaxRate}
@@ -7309,13 +7311,15 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         }
         else {
 
-            sp.web.getFolderByServerRelativeUrl(this.UploadFolder_Evidence).files.getByName(fileName).delete().then(df => {
-                //console.log('file deleted', df);
+            this.clCaseEvidenceService.delete(this.state.IR35Evidence.ID).then(d =>{
 
-                this.clCaseEvidenceService.delete(this.state.IR35Evidence.ID).then(this.loadIR35Evidence, (err) => {
-                    if (this.props.onError) this.props.onError(`Cannot delete this evidence. `, err.message);
+                sp.web.getFolderByServerRelativeUrl(this.UploadFolder_Evidence).files.getByName(fileName).delete().then(df => {
+                    this.loadIR35Evidence();
                 });
+            },(err) => {
+                if (this.props.onError) this.props.onError(`Cannot delete this evidence. `, err.message);
             });
+
         }
     }
 
@@ -7335,13 +7339,15 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         }
         else {
 
-            sp.web.getFolderByServerRelativeUrl(this.UploadFolder_Evidence).files.getByName(fileName).delete().then(df => {
-                //console.log('file deleted', df);
+            this.clCaseEvidenceService.delete(this.state.ContractorSecurityCheckEvidence.ID).then(d =>{
 
-                this.clCaseEvidenceService.delete(this.state.ContractorSecurityCheckEvidence.ID).then(this.loadContractorSecurityCheckEvidence, (err) => {
-                    if (this.props.onError) this.props.onError(`Cannot delete this evidence. `, err.message);
+                sp.web.getFolderByServerRelativeUrl(this.UploadFolder_Evidence).files.getByName(fileName).delete().then(df => {
+                    this.loadContractorSecurityCheckEvidence();
                 });
+            },(err) => {
+                if (this.props.onError) this.props.onError(`Cannot delete this evidence. `, err.message);
             });
+
         }
     }
 

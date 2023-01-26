@@ -19,11 +19,11 @@ export class CLCaseEvidenceService extends EntityService<ICLCaseEvidence> {
     }
 
     public readIR35Evidence(parentId:number): Promise<IEntity[]> {
-        return this.readAll(`?$orderby=ID&$filter=ParentId eq ${parentId} and EvidenceType eq 'IR35'`);
+        return this.readAll(`?$orderby=ID&$filter=ParentId eq ${parentId} and EvidenceType eq 'IR35' and RecordCreated eq true`);
     }
 
     public readContractorSecurityCheckEvidence(parentId:number): Promise<IEntity[]> {
-        return this.readAll(`?$orderby=ID&$filter=ParentId eq ${parentId} and EvidenceType eq 'ContractorSecurityCheck'`);
+        return this.readAll(`?$orderby=ID&$filter=ParentId eq ${parentId} and EvidenceType eq 'ContractorSecurityCheck' and RecordCreated eq true`);
     }
 
 }
