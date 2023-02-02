@@ -7,6 +7,7 @@ export interface IMessageDialogProps {
     title: string;
     content?: string;
     handleOk: () => void;
+    hideOKButton?: boolean;
 }
 
 export class MessageDialog extends React.Component<IMessageDialogProps> {
@@ -18,9 +19,9 @@ export class MessageDialog extends React.Component<IMessageDialogProps> {
         return (
             <Dialog hidden={this.props.hidden} onDismiss={this.props.handleOk} dialogContentProps={{ type: DialogType.normal, title: this.props.title }}>
                 {this.props.content}
-                <DialogFooter>
+                {this.props.hideOKButton === true ? null : <DialogFooter>
                     <PrimaryButton text="OK" onClick={this.props.handleOk} />
-                </DialogFooter>
+                </DialogFooter>}
             </Dialog>
         );
     }

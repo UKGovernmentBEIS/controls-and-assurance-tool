@@ -402,6 +402,31 @@ export default class ClProperties extends BaseUserContextWebPartComponent<types.
       },
 
       {
+        key: 'CBPApprovalDecisionEditHelpText',
+        columnType: ColumnType.TextBox,
+        columnDisplayType: ColumnDisplayType.FormOnly,
+        name: 'CBP Approval Decision Add/Edit Help Text',
+        fieldName: 'CBPApprovalDecisionEditHelpText',
+        minWidth: 300,
+        isResizable: true,
+        isRequired: false,
+        fieldMaxLength: 5000,
+        numRows: 10
+      },
+      {
+        key: 'CBPApprovalDecisionViewHelpText',
+        columnType: ColumnType.TextBox,
+        columnDisplayType: ColumnDisplayType.FormOnly,
+        name: 'CBP Approval Decision View Help Text',
+        fieldName: 'CBPApprovalDecisionViewHelpText',
+        minWidth: 300,
+        isResizable: true,
+        isRequired: false,
+        fieldMaxLength: 5000,
+        numRows: 10
+      },
+
+      {
         key: 'ICApprovalDecisionEditHelpText',
         columnType: ColumnType.TextBox,
         columnDisplayType: ColumnDisplayType.FormOnly,

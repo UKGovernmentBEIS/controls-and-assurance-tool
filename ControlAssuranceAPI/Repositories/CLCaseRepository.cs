@@ -189,6 +189,13 @@ namespace ControlAssuranceAPI.Repositories
                         ret.HRBPDecisionByAndDate = hrbpDecisionByAndDate;
                     }
 
+                    string cbpDecisionByAndDate = "";
+                    if (w.CLCase.CBPDecisionById != null)
+                    {
+                        cbpDecisionByAndDate = db.Users.FirstOrDefault(x => x.ID == w.CLCase.CBPDecisionById)?.Title + ", " + w.CLCase.CBPDecisionDate?.ToString("dd/MM/yyyy HH:mm") ?? "";
+                        ret.CBPDecisionByAndDate = cbpDecisionByAndDate;
+                    }
+
                     string clDecisionByAndDate = "";
                     if (w.CLCase.CLDecisionById != null)
                     {
@@ -453,6 +460,26 @@ namespace ControlAssuranceAPI.Repositories
                     else
                     {
                         stageAction2 += "HRBP-Req, ";
+                    }
+
+                    //CBP
+                    if (ite.CLCase.CBPApprovalDecision == ApprovalDecisions.Reject)
+                    {
+                        stageAction2 += "CBP-Rej, ";
+                        totalRejected++;
+                    }
+                    else if (ite.CLCase.CBPApprovalDecision == ApprovalDecisions.Approve)
+                    {
+                        stageAction2 += "CBP-Ok, ";
+                    }
+                    else if (ite.CLCase.CBPApprovalDecision == ApprovalDecisions.RequireDetails)
+                    {
+                        stageAction2 += "CBP-Cng, ";
+                        totalRequireDetails++;
+                    }
+                    else
+                    {
+                        stageAction2 += "CBP-Req, ";
                     }
 
                     //CL
@@ -729,6 +756,14 @@ namespace ControlAssuranceAPI.Repositories
                     cLcase.HRBPDecisionDate = DateTime.Now;
                 }
 
+                //CBP
+                if (inputCase.CBPApprovalDecision != cLcase.CBPApprovalDecision)
+                {
+                    cLcase.CBPApprovalDecision = inputCase.CBPApprovalDecision;
+                    cLcase.CBPDecisionById = apiUserId;
+                    cLcase.CBPDecisionDate = DateTime.Now;
+                }
+
                 //CL
                 if (inputCase.CLApprovalDecision != cLcase.CLApprovalDecision)
                 {
@@ -744,6 +779,7 @@ namespace ControlAssuranceAPI.Repositories
                 if(cLcase.BHApprovalDecision == ApprovalDecisions.Approve
                     && cLcase.FBPApprovalDecision == ApprovalDecisions.Approve
                     && cLcase.HRBPApprovalDecision == ApprovalDecisions.Approve
+                    && cLcase.CBPApprovalDecision == ApprovalDecisions.Approve
                     && cLcase.CLApprovalDecision == ApprovalDecisions.Approve)
                 {
                     //all approved, now move stage to OnBoarding and create nn worker records
@@ -831,11 +867,13 @@ namespace ControlAssuranceAPI.Repositories
             cLcase.BHUserId = inputCase.BHUserId;
             cLcase.FBPUserId = inputCase.FBPUserId;
             cLcase.HRBPUserId = inputCase.HRBPUserId;
+            cLcase.CBPUserId = inputCase.CBPUserId;
             cLcase.BHApprovalDecision = inputCase.BHApprovalDecision;
             cLcase.BHApprovalComments = inputCase.BHApprovalComments;
             cLcase.FBPApprovalDecision = inputCase.FBPApprovalDecision;            
             cLcase.FBPApprovalComments = inputCase.FBPApprovalComments;
             cLcase.HRBPApprovalDecision = inputCase.HRBPApprovalDecision;
+            cLcase.CBPApprovalDecision = inputCase.CBPApprovalDecision;
             cLcase.HRBPApprovalComments = inputCase.HRBPApprovalComments;
             cLcase.CLApprovalDecision = inputCase.CLApprovalDecision;
 
@@ -895,6 +933,7 @@ namespace ControlAssuranceAPI.Repositories
             cLCase.BHUserId = existingCase.BHUserId;
             cLCase.FBPUserId = existingCase.FBPUserId;
             cLCase.HRBPUserId = existingCase.HRBPUserId;
+            cLCase.CBPUserId = existingCase.CBPUserId;
             
             cLCase.CaseCreated = true;
 

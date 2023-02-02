@@ -50,5 +50,7 @@ namespace ControlAssuranceAPI.Models
         public string LeavingEditHelpText { get; set; }
         public string LeavingViewHelpText { get; set; }
         public string CaseDiscussionHelpText { get; set; }
+        public string CBPApprovalDecisionEditHelpText { get; set; }
+        public string CBPApprovalDecisionViewHelpText { get; set; }
     }
 }
