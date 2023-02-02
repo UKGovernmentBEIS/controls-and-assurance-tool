@@ -117,6 +117,10 @@
           <Property Name="CLApprovalDecision" Type="nvarchar" MaxLength="50" />
           <Property Name="CLDecisionById" Type="int" />
           <Property Name="CLDecisionDate" Type="datetime" />
+          <Property Name="CBPUserId" Type="int" />
+          <Property Name="CBPApprovalDecision" Type="nvarchar" MaxLength="50" />
+          <Property Name="CBPDecisionById" Type="int" />
+          <Property Name="CBPDecisionDate" Type="datetime" />
         </EntityType>
         <EntityType Name="CLCaseEvidence">
           <Key>
@@ -188,6 +192,8 @@
           <Property Name="LeavingEditHelpText" Type="nvarchar(max)" />
           <Property Name="LeavingViewHelpText" Type="nvarchar(max)" />
           <Property Name="CaseDiscussionHelpText" Type="nvarchar(max)" />
+          <Property Name="CBPApprovalDecisionEditHelpText" Type="nvarchar(max)" />
+          <Property Name="CBPApprovalDecisionViewHelpText" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="CLGender">
           <Key>
@@ -3135,6 +3141,10 @@
           <Property Name="CLApprovalDecision" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CLDecisionById" Type="Int32" />
           <Property Name="CLDecisionDate" Type="DateTime" Precision="3" />
+          <Property Name="CBPUserId" Type="Int32" />
+          <Property Name="CBPApprovalDecision" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CBPDecisionById" Type="Int32" />
+          <Property Name="CBPDecisionDate" Type="DateTime" Precision="3" />
           <NavigationProperty Name="CLComFramework" Relationship="Self.FK_CLCase_CLComFramework" FromRole="CLCase" ToRole="CLComFramework" />
           <NavigationProperty Name="CLIR35Scope" Relationship="Self.FK_CLCase_CLIR35Scope" FromRole="CLCase" ToRole="CLIR35Scope" />
           <NavigationProperty Name="CLProfessionalCat" Relationship="Self.FK_CLCase_CLProfessionalCat" FromRole="CLCase" ToRole="CLProfessionalCat" />
@@ -3217,6 +3227,8 @@
           <Property Name="LeavingEditHelpText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="LeavingViewHelpText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="CaseDiscussionHelpText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CBPApprovalDecisionEditHelpText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CBPApprovalDecisionViewHelpText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="CLGender">
           <Key>
@@ -6535,6 +6547,10 @@
                 <ScalarProperty Name="CLApprovalDecision" ColumnName="CLApprovalDecision" />
                 <ScalarProperty Name="CLDecisionById" ColumnName="CLDecisionById" />
                 <ScalarProperty Name="CLDecisionDate" ColumnName="CLDecisionDate" />
+                <ScalarProperty Name="CBPUserId" ColumnName="CBPUserId" />
+                <ScalarProperty Name="CBPApprovalDecision" ColumnName="CBPApprovalDecision" />
+                <ScalarProperty Name="CBPDecisionById" ColumnName="CBPDecisionById" />
+                <ScalarProperty Name="CBPDecisionDate" ColumnName="CBPDecisionDate" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -6610,6 +6626,8 @@
                 <ScalarProperty Name="LeavingEditHelpText" ColumnName="LeavingEditHelpText" />
                 <ScalarProperty Name="LeavingViewHelpText" ColumnName="LeavingViewHelpText" />
                 <ScalarProperty Name="CaseDiscussionHelpText" ColumnName="CaseDiscussionHelpText" />
+                <ScalarProperty Name="CBPApprovalDecisionEditHelpText" ColumnName="CBPApprovalDecisionEditHelpText" />
+                <ScalarProperty Name="CBPApprovalDecisionViewHelpText" ColumnName="CBPApprovalDecisionViewHelpText" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

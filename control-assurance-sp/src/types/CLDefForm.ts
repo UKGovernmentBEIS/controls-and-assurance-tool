@@ -38,6 +38,9 @@ export interface ICLDefForm extends IEntity {
     HRBPApprovalDecisionEditHelpText?: string;
     HRBPApprovalDecisionViewHelpText?: string;
 
+    CBPApprovalDecisionEditHelpText?: string;
+    CBPApprovalDecisionViewHelpText?: string;
+
     ICApprovalDecisionEditHelpText?: string;
     ICApprovalDecisionViewHelpText?: string;
 

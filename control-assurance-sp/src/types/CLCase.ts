@@ -32,6 +32,7 @@ export interface ICLCase  extends IEntity {
     BHUserId?: number;
     FBPUserId?: number;
     HRBPUserId?: number;
+    CBPUserId?: number;
     BHApprovalDecision?: string;
     BHApprovalComments?: string;
     FBPApprovalDecision?: string;
@@ -39,6 +40,7 @@ export interface ICLCase  extends IEntity {
     HRBPApprovalDecision?: string;
     HRBPApprovalComments?: string;
     CLApprovalDecision?: string;
+    CBPApprovalDecision?: string;
     CaseChangeLog?: string;
 
 
@@ -76,6 +78,7 @@ export class CLCase implements ICLCase{
     public BHUserId?: number = null;
     public FBPUserId?: number = null;
     public HRBPUserId?: number = null;
+    public CBPUserId?: number = null;
     public BHApprovalDecision?: string = null;
     public BHApprovalComments?: string = null;
     public FBPApprovalDecision?: string = null;
@@ -83,6 +86,7 @@ export class CLCase implements ICLCase{
     public HRBPApprovalDecision?: string = null;
     public HRBPApprovalComments?: string = null;
     public CLApprovalDecision?: string = null;
+    public CBPApprovalDecision?: string = null;
     public CaseChangeLog?: string = null;
 
     constructor(caseType: string) {
@@ -116,6 +120,7 @@ export interface IClCaseInfo  extends IEntity {
     BHDecisionByAndDate?: string;
     FBPDecisionByAndDate?: string;
     HRBPDecisionByAndDate?: string;
+    CBPDecisionByAndDate?: string;
     CLDecisionByAndDate?: string;
 
     OnbContractorGender?: string;

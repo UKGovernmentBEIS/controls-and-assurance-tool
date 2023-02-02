@@ -70,6 +70,10 @@ namespace ControlAssuranceAPI.Models
         public string CLApprovalDecision { get; set; }
         public Nullable<int> CLDecisionById { get; set; }
         public Nullable<System.DateTime> CLDecisionDate { get; set; }
+        public Nullable<int> CBPUserId { get; set; }
+        public string CBPApprovalDecision { get; set; }
+        public Nullable<int> CBPDecisionById { get; set; }
+        public Nullable<System.DateTime> CBPDecisionDate { get; set; }
     
         public virtual CLComFramework CLComFramework { get; set; }
         public virtual CLIR35Scope CLIR35Scope { get; set; }

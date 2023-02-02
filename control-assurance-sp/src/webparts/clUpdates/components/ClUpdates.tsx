@@ -281,6 +281,9 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
         onShowHistoricCase={this.handleShowHistoricCaseClick}
         afterSaveFolderProcess={this.handleAfterSaveFolderProcess}
         users={this.state.Users}
+        superUsersAndViewers={this.state.SuperUsersAndViewers}
+        fullControlFolderRoleId={this.state.FullControlFolderRoleId}
+        currentUserPrincipalId={this.state.CurrentUserPrincipalId}
         {...this.props}
       />
 
@@ -308,6 +311,9 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
         onShowCaseTab={this.handleShowCaseTab}
         defForm={this.state.DefForm}
         users={this.state.Users}
+        superUsersAndViewers={this.state.SuperUsersAndViewers}
+        fullControlFolderRoleId={this.state.FullControlFolderRoleId}
+        currentUserPrincipalId={this.state.CurrentUserPrincipalId}
         {...this.props}
       />
 
