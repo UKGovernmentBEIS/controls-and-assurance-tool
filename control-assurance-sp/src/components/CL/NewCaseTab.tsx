@@ -124,6 +124,7 @@ export interface INewCaseTabState {
     ShowHelpPanel: boolean;
     UserHelpText: string;
     ShowWaitMessage: boolean;
+    DisableFinEstCost:boolean;
 
 
 }
@@ -164,6 +165,7 @@ export class NewCaseTabState implements INewCaseTabState {
     public ShowHelpPanel = false;
     public UserHelpText = "";
     public ShowWaitMessage: boolean = false;
+    public DisableFinEstCost:boolean = true;
 
     //public DefForm: ICLDefForm = null;
 
@@ -898,7 +900,8 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                     <CrDatePicker
                                         maxWidth='100%'
                                         value={fd.ReqEstStartDate}
-                                        onSelectDate={(v) => changeDatePicker(this, v, "ReqEstStartDate")}
+                                        //onSelectDate={(v) => changeDatePicker(this, v, "ReqEstStartDate")}
+                                        onSelectDate={(v) => changeDatePickerV2(this, 'FormData', v, "ReqEstStartDate", this.calculateTotalDays)}
 
                                     />
 
@@ -910,7 +913,8 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                     <CrDatePicker
                                         maxWidth='100%'
                                         value={fd.ReqEstEndDate}
-                                        onSelectDate={(v) => changeDatePicker(this, v, "ReqEstEndDate")}
+                                        //onSelectDate={(v) => changeDatePicker(this, v, "ReqEstEndDate")}
+                                        onSelectDate={(v) => changeDatePickerV2(this, 'FormData', v, "ReqEstEndDate", this.calculateTotalDays)}
                                     />
 
                                 </div>
@@ -1016,6 +1020,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                     <CrTextField
                                         onChanged={(v) => this.changeTextField_ReqNumPositions(v, "ReqNumPositions")}
                                         value={String(fd.ReqNumPositions)}
+                                        onBlur={(ev) => this.blurFinBillableRate(ev, "FinBillableRate")}
                                         //numbersOnly={true}
                                         //maxLength={numPositionsLength}
                                         maxLength={2}
@@ -1375,9 +1380,13 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
         const fd = this.state.FormData;
 
+        const finBillableRateValidationImg = fd.FinBillableRate !== null && fd.FinBillableRate > 0 ? this.checkIconGreen : this.checkIconRed;
+        const finTotalDaysValidationImg = fd.FinTotalDays !== null && fd.FinTotalDays > 0 ? this.checkIconGreen : this.checkIconRed;
         const finMaxRateValidationImg = fd.FinMaxRate !== null && fd.FinMaxRate > 0 ? this.checkIconGreen : this.checkIconRed;
         const finEstCostValidationImg = fd.FinEstCost !== null && fd.FinEstCost > 0 ? this.checkIconGreen : this.checkIconRed;
+        const finCostPerWorkerValidationImg = fd.FinCostPerWorker !== null && fd.FinCostPerWorker > 0 ? this.checkIconGreen : this.checkIconRed;
         const finIR35ScopeIdValidationImg = fd.FinIR35ScopeId !== null ? this.checkIconGreen : this.checkIconRed;
+        const finCalcTypeValidationImg = fd.FinCalcType !== null ? this.checkIconGreen : this.checkIconRed;
 
         const iR35EvidenceValidationImg = this.state.IR35Evidence !== null ? this.checkIconGreen : this.checkIconRed;
         const approachToAgreeingRateValidationImg = fd.FinApproachAgreeingRate !== null && fd.FinApproachAgreeingRate.length > 9 ? this.checkIconGreen : this.checkIconRed;
@@ -1419,9 +1428,9 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                             <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
 
                                 <div className={styles.flexContainerSectionQuestion}>
-                                    <div className={styles.sectionQuestionCol1}><span>Expected daily rate including fees and non-recoverable VAT</span></div>
+                                    <div className={styles.sectionQuestionCol1}><span>Billable rate (pay rate plus fees)</span></div>
                                     <div className={styles.sectionQuestionCol2}>
-                                        <img src={finMaxRateValidationImg} />
+                                        <img src={finBillableRateValidationImg} />
                                     </div>
                                 </div>
 
@@ -1429,9 +1438,12 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                             <div style={{ width: '50%', fontWeight: 'bold' }}>
 
                                 <div className={styles.flexContainerSectionQuestion}>
-                                    <div className={styles.sectionQuestionCol1}><span>Estimated cost</span></div>
+                                    <div className={styles.sectionQuestionCol1}>
+                                        <span>Rate for approval (billable rate plus non-recoverable VAT)</span>
+                                        {this.state.FormData.FinMaxRate >= 750 && <span style={{ color: 'rgb(254,138,53)', fontStyle:'italic', paddingLeft:'15px' }}>Additional approval required</span>}
+                                    </div>
                                     <div className={styles.sectionQuestionCol2}>
-                                        <img src={finEstCostValidationImg} />
+                                        <img src={finMaxRateValidationImg} />
                                     </div>
                                 </div>
 
@@ -1444,9 +1456,9 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                 <CrTextField
                                     //className={styles.formField}
                                     //numbersOnly={true}
-                                    onBlur={(ev) => this.blurRateTextField(ev, "FinMaxRate")}
-                                    onChanged={(v) => this.changeTextField_number(v, "FinMaxRate")}
-                                    value={fd.FinMaxRate && String(fd.FinMaxRate)}
+                                    onBlur={(ev) => this.blurFinBillableRate(ev, "FinBillableRate")}
+                                    onChanged={(v) => this.changeTextField_number(v, "FinBillableRate")}
+                                    value={fd.FinBillableRate && String(fd.FinBillableRate)}
                                 //value=''
 
                                 />
@@ -1455,29 +1467,135 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                             </div>
 
-                            <div style={{ width: 'calc(100% - 50% - 130px)', paddingRight: '5px' }}>
+                            <div style={{ width: '50%', paddingRight: '5px' }}>
                                 <CrTextField
                                     //className={styles.formField}
                                     //numbersOnly={true}
-                                    onBlur={(ev) => this.blurRateTextField(ev, "FinEstCost")}
-                                    onChanged={(v) => this.changeTextField_number(v, "FinEstCost")}
-                                    value={fd.FinEstCost && String(fd.FinEstCost)}
+                                    readOnly={true}
+                                    onChanged={(v) => this.changeTextField_number(v, "FinMaxRate")}
+                                    value={fd.FinMaxRate && String(fd.FinMaxRate)}
+                                    style={{backgroundColor: this.state.FormData.FinMaxRate >= 750 ? 'rgb(255,242,230)' : 'white' }}
                                 //value=''
 
                                 />
 
+
                             </div>
-                            <div style={{ width: '130px', }}>
 
-                                <DefaultButton text="Calculate"
-                                    //className={styles.formButton} style={{ marginRight: '5px' }}
-                                    //style={{ border: '1px solid rgb(138,136,134)' }}
-                                    onClick={this.calculateRate}
 
+
+
+
+                        </div>
+                    </div>
+
+                    {/* 2nd row */}
+                    <div className={styles.formField}>
+
+                        <div style={{ display: 'flex' }}>
+                            <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Total days (Will be taken from start and end dates. Change if required)</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={finTotalDaysValidationImg} />
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div style={{ width: '50%', fontWeight: 'bold' }}>
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Total assignment cost per worker calculation</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={finCalcTypeValidationImg} />
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                        <div style={{ display: 'flex', marginTop: '5px' }}>
+                            <div style={{ width: '50%', paddingRight: '5px' }}>
+                                <CrTextField
+                                    //className={styles.formField}
+                                    //numbersOnly={true}
+                                    onBlur={(ev) => this.blurFinBillableRate(ev, "FinBillableRate")}
+                                    onChanged={(v) => this.changeTextField_number(v, "FinTotalDays")}
+                                    value={fd.FinTotalDays && String(fd.FinTotalDays)}
+                                //value=''
+
+                                />
+
+
+
+                            </div>
+
+                            <div style={{ width: '50%', paddingRight: '5px' }}>
+                                <CrDropdown
+                                    options={[{ key: 'Automatic', text: 'Automatic' },{ key: 'Manual', text: 'Manual' }]}
+                                    onChanged={(v) => this.changeDropdown_FinCalcType(v, "FinCalcType")}
+                                    selectedKey={this.state.FormData.FinCalcType}
                                 />
 
                             </div>
 
+                        </div>
+                    </div>
+
+                    {/* 3rd row */}
+                    <div className={styles.formField}>
+
+                        <div style={{ display: 'flex' }}>
+                            <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Total assignment cost</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={finEstCostValidationImg} />
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div style={{ width: '50%', fontWeight: 'bold' }}>
+
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Total assignment cost per worker</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+                                        <img src={finCostPerWorkerValidationImg} />
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                        <div style={{ display: 'flex', marginTop: '5px' }}>
+                            <div style={{ width: '50%', paddingRight: '5px' }}>
+                                <CrTextField
+                                    onBlur={(ev) => this.blurRateTextField(ev, "FinEstCost")}
+                                    onChanged={(v) => this.changeTextField_number(v, "FinEstCost")}
+                                    value={fd.FinEstCost && String(fd.FinEstCost)}
+                                    disabled={this.state.DisableFinEstCost}
+                                    style={{ border: '1px solid gray' }}
+
+                                />
+
+
+
+                            </div>
+
+                            <div style={{ width: '50%', paddingRight: '5px' }}>
+                                <CrTextField
+                                    onChanged={(v) => this.changeTextField_number(v, "FinCostPerWorker")}
+                                    value={fd.FinCostPerWorker && String(fd.FinCostPerWorker)}
+                                    disabled={this.state.DisableFinEstCost}
+                                    style={{ border: '1px solid gray' }}
+
+                                />
+
+                            </div>
 
 
 
@@ -1486,7 +1604,8 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
 
 
-                    {/* 2nd row */}
+
+                    {/* 4th row */}
 
                     <div className={styles.formField}>
 
@@ -2499,16 +2618,48 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                             <tr>
                                 <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
-                                    Expected daily rate including fees and non-recoverable VAT
+                                    Billable rate (pay rate plus fees)
                                 </td>
                                 <td style={{ width: '31%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)' }}>
-                                    {this.state.FormData.FinMaxRate}
+                                    {this.state.FormData.FinBillableRate}
                                 </td>
                                 <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
-                                    Estimated cost
+                                    <span>Rate for approval (billable rate plus non-recoverable VAT)</span>
+                                    {this.state.FormData.FinMaxRate >= 750 && <span style={{ color: 'rgb(254,138,53)', fontStyle:'italic', paddingLeft:'15px' }}>Additional approval required</span>}
+                                </td>
+                                <td style={{ width: '31%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)', backgroundColor: this.state.FormData.FinMaxRate >= 750 ? 'rgb(255,242,230)' : 'white' }}>
+                                    {this.state.FormData.FinMaxRate}
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Total days
+                                </td>
+                                <td style={{ width: '31%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)' }}>
+                                    {this.state.FormData.FinTotalDays}
+                                </td>
+                                <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Total assignment cost per worker calculation
                                 </td>
                                 <td style={{ width: '31%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                    {this.state.FormData.FinCalcType}
+                                </td>
+
+                            </tr>
+
+                            <tr>
+                                <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Total assignment cost
+                                </td>
+                                <td style={{ width: '31%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)' }}>
                                     {this.state.FormData.FinEstCost}
+                                </td>
+                                <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Total assignment cost per worker
+                                </td>
+                                <td style={{ width: '31%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                    {this.state.FormData.FinCostPerWorker}
                                 </td>
 
                             </tr>
@@ -2681,8 +2832,14 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                 <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
                                     HR business partner
                                 </td>
-                                <td colSpan={3} style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)' }}>
                                     {this.state.CaseInfo.HRBPUser}
+                                </td>
+                                <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)', borderBottom: '1px solid rgb(166,166,166)' }}>
+                                    Commercial business partner
+                                </td>
+                                <td style={{ width: '31%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)' }}>
+                                    {this.state.CaseInfo.CBPUser}
                                 </td>
 
                             </tr>
@@ -6403,8 +6560,12 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
             if (fd.JustSuccessionPlanning !== null && fd.JustSuccessionPlanning.length > 9) { } else { return false; }
 
             //Finance
+            if (fd.FinBillableRate !== null && fd.FinBillableRate > 0) { } else { return false; }
             if (fd.FinMaxRate !== null && fd.FinMaxRate > 0) { } else { return false; }
+            if (fd.FinTotalDays !== null && fd.FinTotalDays > 0) { } else { return false; }
+            if (fd.FinCalcType !== null) { } else { return false; }
             if (fd.FinEstCost !== null && fd.FinEstCost > 0) { } else { return false; }
+            if (fd.FinCostPerWorker !== null && fd.FinCostPerWorker > 0) { } else { return false; }
             if (fd.FinIR35ScopeId !== null) { } else { return false; }
             if (this.state.IR35Evidence === null) { return false; }
             if (fd.FinApproachAgreeingRate !== null && fd.FinApproachAgreeingRate.length > 9) { } else { return false; }
@@ -6524,11 +6685,31 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                 f.FinMaxRate = null;
             }
 
+            if (this.isNumeric(f.FinBillableRate) === true) {
+                f.FinBillableRate = Number(f.FinBillableRate);
+            }
+            else {
+                f.FinBillableRate = null;
+            }
+
+            if (this.isNumeric(f.FinTotalDays) === true) {
+                f.FinTotalDays = Number(f.FinTotalDays);
+            }
+            else {
+                f.FinTotalDays = null;
+            }
+
             if (this.isNumeric(f.FinEstCost) === true) {
                 f.FinEstCost = Number(f.FinEstCost);
             }
             else {
                 f.FinEstCost = null;
+            }
+            if (this.isNumeric(f.FinCostPerWorker) === true) {
+                f.FinCostPerWorker = Number(f.FinCostPerWorker);
+            }
+            else {
+                f.FinCostPerWorker = null;
             }
 
             //
@@ -6837,6 +7018,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                     FormDataBeforeChanges: c,
                 }, () => {
                     this.UploadFolder_Evidence = `${getUploadFolder_CLRoot(this.props.spfxContext)}/${this.state.FormData.ID}`;
+                    this.setDisableFinEstCost();
                     this.blurRateTextField(null, "FinMaxRate");
                     setTimeout(() => {
                         this.blurRateTextField(null, "FinEstCost");
@@ -7126,9 +7308,20 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         );
     }
 
+    private setDisableFinEstCost = () => {
+        if(this.state.FormData.FinCalcType === 'Manual'){
+            this.setState({ DisableFinEstCost: false });
+        }
+        else{
+            this.setState({ DisableFinEstCost: true }, this.calculateRate );
+        }
+    }
 
     private changeCheckbox_Worker = (value: boolean, f: string): void => {
         this.setState({ FormDataWorker: this.cloneObject(this.state.FormDataWorker, f, value)/*, FormIsDirty: true*/ });
+    }
+    private changeDropdown_FinCalcType = (option: IDropdownOption, f: string, index?: number): void => {
+        this.setState({ FormData: this.cloneObject(this.state.FormData, f, option.key), /*FormIsDirty: true*/ }, this.setDisableFinEstCost ) ;
     }
     private changeDropdown = (option: IDropdownOption, f: string, index?: number): void => {
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, option.key), /*FormIsDirty: true*/ });
@@ -7233,6 +7426,35 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
             !isNaN(parseFloat(str)); // ...and ensure strings of whitespace fail
     }
 
+    private blurFinBillableRate = (ev, f: string): void => {
+        console.log('blur', f);
+        const billableRate: number = Number(this.state.FormData.FinBillableRate);
+        if (billableRate > 0) {
+            const dayRateWithVAT:string = ((billableRate * 0.2) + (billableRate)).toFixed(2);
+            let obj = this.cloneObject(this.state.FormData, 'FinMaxRate', dayRateWithVAT);
+            this.setState({ FormData: obj/*, FormIsDirty: true*/ }, this.calculateRate);
+        }
+        else {
+            console.log('value is less than 0');
+            this.setState({ FormData: this.cloneObject(this.state.FormData, 'FinMaxRate', null)/*, FormIsDirty: true*/ });
+        }
+
+
+        // if (Number(this.state.FormData[f]) > 0) {
+        //     const rateStr = Number(this.state.FormData[f]).toFixed(2);
+        //     const dayRate:string = ((Number(this.state.FormData[f]) * 0.2) + (Number(this.state.FormData[f]))).toFixed(2);
+        //     console.log('dayRate', dayRate);
+        //     let obj = this.cloneObject(this.state.FormData, f, rateStr);
+        //     obj = this.cloneObject(obj, 'FinMaxRate', dayRate);
+        //     this.setState({ FormData: obj/*, FormIsDirty: true*/ }, this.calculateRate);
+        //     //this.setState({ FormData: this.cloneObject(this.state.FormData, 'FinMaxRate', dayRate)/*, FormIsDirty: true*/ });
+        // }
+        // else {
+        //     console.log('value is less than 0');
+        // }
+
+    }
+
     private blurRateTextField = (ev, f: string): void => {
         console.log('blur', f);
         if (Number(this.state.FormData[f]) > 0) {
@@ -7244,6 +7466,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         }
 
     }
+
     private blurRateTextField_Worker = (ev, f: string): void => {
         console.log('blur', f);
         if (Number(this.state.FormDataWorker[f]) > 0) {
@@ -7256,11 +7479,31 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
     }
 
+    private calculateTotalDays = (): void => {
+        if(this.state.FormData.FinTotalDays == null || this.state.FormData.FinTotalDays == 0){
+            if (this.state.FormData.ReqEstStartDate != null && this.state.FormData.ReqEstEndDate != null) {
+                const startDate: Date = new Date(this.state.FormData.ReqEstStartDate.getTime());
+                const endDate: Date = new Date(this.state.FormData.ReqEstEndDate.getTime());
+                const days: number = this.getBusinessDatesCount(startDate, endDate);
+                console.log('days', days);
+    
+    
+                this.setState({ FormData: this.cloneObject(this.state.FormData, 'FinTotalDays', days) });
+    
+    
+            }
+            else {
+                console.log('both dates and other values are not provided');
+            }
+        }
+
+    }
+
     private calculateRate = (): void => {
-        if (this.state.FormData.ReqEstStartDate != null && this.state.FormData.ReqEstEndDate != null && this.state.FormData.ReqNumPositions > 0 && this.state.FormData.FinMaxRate > 0) {
+        if (this.state.FormData.FinCalcType === 'Automatic' && this.state.FormData.ReqEstStartDate != null && this.state.FormData.ReqEstEndDate != null && this.state.FormData.ReqNumPositions > 0 && this.state.FormData.FinMaxRate > 0) {
             const startDate: Date = new Date(this.state.FormData.ReqEstStartDate.getTime());
             const endDate: Date = new Date(this.state.FormData.ReqEstEndDate.getTime());
-            const days: number = this.getBusinessDatesCount(startDate, endDate);
+            const days: number = this.state.FormData.FinTotalDays;
             console.log('days', days);
 
             const numPositions: number = this.state.FormData.ReqNumPositions;
@@ -7268,19 +7511,12 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
             const totalCost: string = (numPositions * dayRate * days).toFixed(2);
             console.log('totalCost', totalCost);
+            const totalCostPerWorker: string = (dayRate * days).toFixed(2);
 
-            //const fd: ICLCase = this.cloneObject(this.state.FormData);
-            //fd.FinEstCost = Number(totalCost);
+            let formObj = this.cloneObject(this.state.FormData, 'FinEstCost', totalCost);
+            formObj = this.cloneObject(formObj, 'FinCostPerWorker', totalCostPerWorker);
 
-            //this.setState({ FormData: fd });
-
-
-            this.setState({ FormData: this.cloneObject(this.state.FormData, 'FinEstCost', totalCost) });
-            //this.setState({ FormData: this.cloneObject(this.state.FormData, 'FinEstCost', totalCost) });
-
-
-
-
+            this.setState({ FormData: formObj });
 
         }
         else {

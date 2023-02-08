@@ -1,0 +1,15 @@
+
+Alter table CLCase
+Add FinBillableRate decimal(18,2),
+FinTotalDays int
+
+GO
+
+
+Alter table CLCase
+Add FinCalcType nvarchar(50), FinCostPerWorker decimal(18,2)
+GO
+
+Update CLCase set FinCalcType = 'Manual'
+
+GO

@@ -37,7 +37,10 @@ export class CrDatePicker extends React.Component<ICrDatePickerProps, {}> {
                         parseDateFromString={this._parseCrDate}
                         formatDate={(date: Date) => date && moment(date).format(services.DateService.ukDateFormat)}
                         value={this.props.value}
-                        onSelectDate={this.props.onSelectDate} />
+                        onSelectDate={this.props.onSelectDate}
+
+                         />
+                        
                 </div>
                 {this.props.history && <FieldHistory value={this.props.history} />}
                 {this.props.errorMessage && <FieldErrorMessage value={this.props.errorMessage} />}

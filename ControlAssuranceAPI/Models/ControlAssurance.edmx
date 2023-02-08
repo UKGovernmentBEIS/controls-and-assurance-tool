@@ -121,6 +121,10 @@
           <Property Name="CBPApprovalDecision" Type="nvarchar" MaxLength="50" />
           <Property Name="CBPDecisionById" Type="int" />
           <Property Name="CBPDecisionDate" Type="datetime" />
+          <Property Name="FinBillableRate" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="FinTotalDays" Type="int" />
+          <Property Name="FinCalcType" Type="nvarchar" MaxLength="50" />
+          <Property Name="FinCostPerWorker" Type="decimal" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="CLCaseEvidence">
           <Key>
@@ -3145,6 +3149,10 @@
           <Property Name="CBPApprovalDecision" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CBPDecisionById" Type="Int32" />
           <Property Name="CBPDecisionDate" Type="DateTime" Precision="3" />
+          <Property Name="FinBillableRate" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="FinTotalDays" Type="Int32" />
+          <Property Name="FinCalcType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="FinCostPerWorker" Type="Decimal" Precision="18" Scale="2" />
           <NavigationProperty Name="CLComFramework" Relationship="Self.FK_CLCase_CLComFramework" FromRole="CLCase" ToRole="CLComFramework" />
           <NavigationProperty Name="CLIR35Scope" Relationship="Self.FK_CLCase_CLIR35Scope" FromRole="CLCase" ToRole="CLIR35Scope" />
           <NavigationProperty Name="CLProfessionalCat" Relationship="Self.FK_CLCase_CLProfessionalCat" FromRole="CLCase" ToRole="CLProfessionalCat" />
@@ -6551,6 +6559,10 @@
                 <ScalarProperty Name="CBPApprovalDecision" ColumnName="CBPApprovalDecision" />
                 <ScalarProperty Name="CBPDecisionById" ColumnName="CBPDecisionById" />
                 <ScalarProperty Name="CBPDecisionDate" ColumnName="CBPDecisionDate" />
+                <ScalarProperty Name="FinBillableRate" ColumnName="FinBillableRate" />
+                <ScalarProperty Name="FinTotalDays" ColumnName="FinTotalDays" />
+                <ScalarProperty Name="FinCalcType" ColumnName="FinCalcType" />
+                <ScalarProperty Name="FinCostPerWorker" ColumnName="FinCostPerWorker" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

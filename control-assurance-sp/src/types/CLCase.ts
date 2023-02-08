@@ -24,6 +24,10 @@ export interface ICLCase  extends IEntity {
     JustSuccessionPlanning?: string;
     FinMaxRate?: number;
     FinEstCost?: number;
+    FinBillableRate?: number;
+    FinTotalDays?: number;
+    FinCalcType?: string;
+    FinCostPerWorker?: number;
     FinIR35ScopeId?: number;
     FinIR35AssessmentId?: number;    
     FinApproachAgreeingRate?: string;
@@ -70,6 +74,10 @@ export class CLCase implements ICLCase{
     public JustSuccessionPlanning?: string = null;
     public FinMaxRate?: number = null;
     public FinEstCost?: number = null;
+    public FinBillableRate?: number = null;
+    public FinTotalDays?: number = null;
+    public FinCalcType?: string = 'Automatic';
+    public FinCostPerWorker?: number = null;
     public FinIR35ScopeId?: number = null;
     public FinIR35AssessmentId?: number = null;
     public FinApproachAgreeingRate?: string = null;
@@ -117,6 +125,7 @@ export interface IClCaseInfo  extends IEntity {
     BHUser?: string;
     FBPUser?: string;
     HRBPUser?: string;
+    CBPUser?: string;
     BHDecisionByAndDate?: string;
     FBPDecisionByAndDate?: string;
     HRBPDecisionByAndDate?: string;
@@ -190,6 +199,7 @@ export class ClCaseInfo  implements IClCaseInfo {
     public BHUser?: string = "";
     public FBPUser?: string = "";
     public HRBPUser?: string = "";
+    public CBPUser?: string = "";
 
     public BHDecisionByAndDate?: string = "";
     public FBPDecisionByAndDate?: string = "";

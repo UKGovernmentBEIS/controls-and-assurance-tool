@@ -168,6 +168,13 @@ namespace ControlAssuranceAPI.Repositories
                         ret.HRBPUser = hrbpUser;
                     }
 
+                    string cbpUser = "";
+                    if (w.CLCase.CBPUserId != null)
+                    {
+                        cbpUser = db.Users.FirstOrDefault(x => x.ID == w.CLCase.CBPUserId)?.Title ?? "";
+                        ret.CBPUser = cbpUser;
+                    }
+
                     string bhDecisionByAndDate = "";
                     if(w.CLCase.BHDecisionById != null)
                     {
@@ -859,6 +866,10 @@ namespace ControlAssuranceAPI.Repositories
             cLcase.JustSuccessionPlanning = inputCase.JustSuccessionPlanning;
             cLcase.FinMaxRate = inputCase.FinMaxRate;
             cLcase.FinEstCost = inputCase.FinEstCost;
+            cLcase.FinBillableRate = inputCase.FinBillableRate;
+            cLcase.FinTotalDays = inputCase.FinTotalDays;
+            cLcase.FinCalcType = inputCase.FinCalcType;
+            cLcase.FinCostPerWorker = inputCase.FinCostPerWorker;
             cLcase.FinIR35ScopeId = inputCase.FinIR35ScopeId;
             cLcase.FinIR35AssessmentId = inputCase.FinIR35AssessmentId;
             cLcase.FinSummaryIR35Just = inputCase.FinSummaryIR35Just;
