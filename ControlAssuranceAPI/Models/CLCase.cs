@@ -74,6 +74,10 @@ namespace ControlAssuranceAPI.Models
         public string CBPApprovalDecision { get; set; }
         public Nullable<int> CBPDecisionById { get; set; }
         public Nullable<System.DateTime> CBPDecisionDate { get; set; }
+        public Nullable<decimal> FinBillableRate { get; set; }
+        public Nullable<int> FinTotalDays { get; set; }
+        public string FinCalcType { get; set; }
+        public Nullable<decimal> FinCostPerWorker { get; set; }
     
         public virtual CLComFramework CLComFramework { get; set; }
         public virtual CLIR35Scope CLIR35Scope { get; set; }

@@ -104,7 +104,7 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
             maxWidth: 100,
             isResizable: true,
             headerClassName: styles.bold,
-            columnDisplayType: ColumnDisplayTypes.Hidden,
+            
         },
         {
             key: 'AddedById',
@@ -114,7 +114,7 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
             maxWidth: 100,
             isResizable: true,
             headerClassName: styles.bold,
-            
+            columnDisplayType: ColumnDisplayTypes.Hidden,
 
         },
         {

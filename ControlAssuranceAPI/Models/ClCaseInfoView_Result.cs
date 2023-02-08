@@ -28,6 +28,7 @@ namespace ControlAssuranceAPI.Models
         public string BHUser { get; set; }
         public string FBPUser { get; set; }
         public string HRBPUser { get; set; }
+        public string CBPUser { get; set; }
         public string BHDecisionByAndDate { get; set; }
         public string FBPDecisionByAndDate { get; set; }
         public string HRBPDecisionByAndDate { get; set; }
