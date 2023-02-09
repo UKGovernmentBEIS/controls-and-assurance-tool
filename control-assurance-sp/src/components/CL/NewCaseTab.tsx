@@ -6,7 +6,7 @@ import { CrChoiceGroup, IChoiceGroupOption } from '../cr/CrChoiceGroup';
 import { CrDropdown, IDropdownOption } from '../cr/CrDropdown';
 import { CrCheckbox } from '../cr/CrCheckbox';
 import { FormButtons } from '../cr/FormButtons';
-import { MessageDialog } from '../cr/MessageDialog';
+import { MessageDialog, MessageDialogCreateSPFolderWait } from '../cr/MessageDialog';
 import { DefaultButton, PrimaryButton } from 'office-ui-fabric-react/lib/Button';
 import { Panel, PanelType } from 'office-ui-fabric-react/lib/Panel';
 import EvidenceList from './EV/EvidenceList';
@@ -347,7 +347,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                 {stage === "Leaving" && isViewOnly === false && this.renderFormButtons_LeavingStage()}
                 {((stage === "Left") || (stage === "Leaving" && isViewOnly === true)) && this.renderLeaving_info()}
 
-                <MessageDialog hidden={!this.state.ShowWaitMessage} title="Please wait" content="Please wait. System is ensuring we have a folder with appropriate permissions for this case. This can take some time, so please do not close this browser until this popup box has disappeared." hideOKButton={true} handleOk={() => {  }} />
+                <MessageDialogCreateSPFolderWait hidden={!this.state.ShowWaitMessage} title="Please wait" content="Please wait. System is ensuring we have a folder with appropriate permissions for this case. This can take some time, so please do not close this browser until this popup box has disappeared." hideOKButton={true} handleOk={() => {  }} />
                 {this.renderWaitMessage()}
 
                 {(caseCreated === true) && this.renderListsMainTitle()}
@@ -8033,7 +8033,31 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     
     
         //otherwise for existing folder remove all permissions then add all again
+
+        this.checkSPFolderExist(caseData, folderNewUsers);
     
+      }
+
+      private checkSPFolderExist = (caseData: ICLCase, folderNewUsers: string[]) => {
+        console.log('in checkSPFolderExist');
+
+        const folder = sp.web.getFolderByServerRelativePath(this.UploadFolder_CLRoot + '/' + String(caseData.ID)).select('Exists').get().then(ff => {
+            if(ff.Exists){
+                console.log('checkSPFolderExist - folder exist');
+                this.resetFolderPermissionsAfterEditCase(String(caseData.ID), folderNewUsers);
+            }
+            else{
+                console.log('checkSPFolderExist - folder doesnt exist so create new');
+                this.createNewCaseUploadFolder(String(caseData.ID), folderNewUsers);
+            }
+
+        }).catch(err => {
+            console.log('checkSPFolderExist - err', err);
+        });
+
+        // sp.web.getFolderByServerRelativeUrl(this.UploadFolder_CLRoot).folders.getByName(casefolderName).getItem().then((folderItem: SharePointQueryableSecurable) => {
+
+        // });
       }
 
       private makeFolderNewUsersArr = (caseData: ICLCase): string[] => {
