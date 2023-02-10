@@ -125,6 +125,7 @@ export interface INewCaseTabState {
     UserHelpText: string;
     ShowWaitMessage: boolean;
     DisableFinEstCost:boolean;
+    CreateFolderWaitMessage:string;
 
 
 }
@@ -166,6 +167,7 @@ export class NewCaseTabState implements INewCaseTabState {
     public UserHelpText = "";
     public ShowWaitMessage: boolean = false;
     public DisableFinEstCost:boolean = true;
+    public CreateFolderWaitMessage: string = "";
 
     //public DefForm: ICLDefForm = null;
 
@@ -347,7 +349,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                 {stage === "Leaving" && isViewOnly === false && this.renderFormButtons_LeavingStage()}
                 {((stage === "Left") || (stage === "Leaving" && isViewOnly === true)) && this.renderLeaving_info()}
 
-                <MessageDialogCreateSPFolderWait hidden={!this.state.ShowWaitMessage} title="Please wait" content="Please wait. System is ensuring we have a folder with appropriate permissions for this case. This can take some time, so please do not close this browser until this popup box has disappeared." hideOKButton={true} handleOk={() => {  }} />
+                <MessageDialogCreateSPFolderWait hidden={!this.state.ShowWaitMessage} title="Please wait" content={this.state.CreateFolderWaitMessage} hideOKButton={true} handleOk={() => {  }} />
                 {this.renderWaitMessage()}
 
                 {(caseCreated === true) && this.renderListsMainTitle()}
@@ -1469,13 +1471,11 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                             <div style={{ width: '50%', paddingRight: '5px' }}>
                                 <CrTextField
-                                    //className={styles.formField}
-                                    //numbersOnly={true}
-                                    readOnly={true}
+                                    disabled={true}
                                     onChanged={(v) => this.changeTextField_number(v, "FinMaxRate")}
                                     value={fd.FinMaxRate && String(fd.FinMaxRate)}
-                                    style={{backgroundColor: this.state.FormData.FinMaxRate >= 750 ? 'rgb(255,242,230)' : 'white' }}
-                                //value=''
+                                    style={{ border: '1px solid gray' }}
+
 
                                 />
 
@@ -8016,20 +8016,20 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
 
     private handleAfterSaveFolderProcess = (newCase: boolean, caseData: ICLCase, caseDataBeforeChanges: ICLCase): void => {
-        this.setState({ ShowWaitMessage: true });
+        this.setState({ ShowWaitMessage: true, CreateFolderWaitMessage: 'Checking if folder exists' });
         console.log('in handleAfterSaveFolderProcess', newCase, caseData, caseDataBeforeChanges);
         //next todo 
         //create folder when newCase is true and give permissions like HM, members etc and others like approvers 
         const folderNewUsers: string[] = this.makeFolderNewUsersArr(caseData);
     
-        if (newCase === true) {
-          this.createNewCaseUploadFolder(String(caseData.ID), folderNewUsers);
-        }
-        else {
-          //const folderExistingsers: string[] = this.makeFolderExistingUsersArr(caseDataBeforeChanges);
-          this.resetFolderPermissionsAfterEditCase(String(caseData.ID), folderNewUsers);
+        // if (newCase === true) {
+        //   this.createNewCaseUploadFolder(String(caseData.ID), folderNewUsers);
+        // }
+        // else {
+        //   //const folderExistingsers: string[] = this.makeFolderExistingUsersArr(caseDataBeforeChanges);
+        //   this.resetFolderPermissionsAfterEditCase(String(caseData.ID), folderNewUsers);
     
-        }
+        // }
     
     
         //otherwise for existing folder remove all permissions then add all again
@@ -8040,14 +8040,16 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
       private checkSPFolderExist = (caseData: ICLCase, folderNewUsers: string[]) => {
         console.log('in checkSPFolderExist');
-
+        this.setState({ CreateFolderWaitMessage: 'Checking for documents folder' });
         const folder = sp.web.getFolderByServerRelativePath(this.UploadFolder_CLRoot + '/' + String(caseData.ID)).select('Exists').get().then(ff => {
             if(ff.Exists){
                 console.log('checkSPFolderExist - folder exist');
+                //this.setState({ CreateFolderWaitMessage: 'Folder found, resetting premissions' });
                 this.resetFolderPermissionsAfterEditCase(String(caseData.ID), folderNewUsers);
             }
             else{
                 console.log('checkSPFolderExist - folder doesnt exist so create new');
+                this.setState({ CreateFolderWaitMessage: 'Creating folder for documents' });
                 this.createNewCaseUploadFolder(String(caseData.ID), folderNewUsers);
             }
 
@@ -8109,12 +8111,13 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
       private createNewCaseUploadFolder = (casefolderName: string, folderNewUsers: string[]) => {
         sp.web.getFolderByServerRelativeUrl(this.UploadFolder_CLRoot).folders.add(casefolderName).then(folderAddRes => {
           console.log('createNewCaseUploadFolder: folder created', folderAddRes.data);
+          this.setState({ CreateFolderWaitMessage: 'Folder created' });
           folderAddRes.folder.getItem().then((folderItem: SharePointQueryableSecurable) => {
             folderItem.breakRoleInheritance(false).then(bri => {
               console.log('createNewCaseUploadFolder: folder break inheritence done');
-    
+                
               this.RoleAssignmentsToAdd = [];
-    
+              this.setState({ CreateFolderWaitMessage: 'Adding users permissions' });
               folderNewUsers.forEach(userEmail => {
                 this.RoleAssignmentsToAdd.push(userEmail);
               });
@@ -8135,6 +8138,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
       private doPermissionAddRecursive =( num, nextRole:boolean, folderItem: SharePointQueryableSecurable, delayCount ): Promise<any> => { 
 
+        
         if (this.consoleLogFlag)
           console.log('>> doPermissionAddRecursive: ', num );
     
@@ -8145,7 +8149,10 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         }
     
         const decide = ( asyncResult) => {
-    
+            if(asyncResult >= 0){
+                this.setState({ CreateFolderWaitMessage: `Applying permission ${this.RoleAssignmentsToAdd.length - num} of ${this.RoleAssignmentsToAdd.length}` });
+            }
+            
             if (this.consoleLogFlag)
               console.log('>> doPermissionAddRecursive Decide: ', asyncResult, delayCount);
     
@@ -8209,7 +8216,9 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
        
           this.RoleAssignmentsToRemove = [];      
           folderItem.roleAssignments.get().then(rass => {
+            console.log('rass', rass);
             rass.forEach(ra => {
+
               this.RoleAssignmentsToRemove.push(Number(ra['PrincipalId']));
     
     /*           const principalId: number = Number(ra['PrincipalId']);
@@ -8249,6 +8258,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
       private doPermissionRemoveRecursive =( num, nextRole:boolean, folderItem: SharePointQueryableSecurable, delayCount): Promise<any> => { 
 
+        
         if (this.consoleLogFlag)
           console.log(">> doPermissionRemoveRecursive: " + num);
     
@@ -8259,6 +8269,10 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         }
     
         const decide = ( asyncResult) => {
+
+            if(asyncResult >= 0){
+                this.setState({ CreateFolderWaitMessage: `Checking user permission ${this.RoleAssignmentsToRemove.length-num} to ${this.RoleAssignmentsToRemove.length}` });
+            }
     
             if (this.consoleLogFlag)
               console.log('>> doPermissionRemoveRecursive decide: ', asyncResult, delayCount);

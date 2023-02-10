@@ -315,7 +315,8 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
           <br />
 
           <span style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }} onClick={this.copyAllCasesPDFs}>Copy all CLCases PDFs</span>
-          <br />
+          <br /><br />
+          <span style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }} onClick={this.calcHistoricCLCasesMissingFields}>calc historic CLCases missing fields</span>
 
         </div>
       </React.Fragment>
@@ -1394,6 +1395,71 @@ private copyAllCasesEvDocs = (): void => {
     });
   }
 
+  private getBusinessDatesCount = (startDate: Date, endDate: Date): number => {
+    var count = 0;
+    var curDate = startDate;
+    while (curDate <= endDate) {
+        var dayOfWeek = curDate.getDay();
+        if (!((dayOfWeek == 6) || (dayOfWeek == 0)))
+            count++;
+        curDate.setDate(curDate.getDate() + 1);
+    }
+    //alert(count)
+    return count;
+}
+
+  private calcHistoricCLCasesMissingFields = () =>{
+    this.state.Cases.forEach(clCase => {
+      const caseUpdated:ICLCase = {...clCase};
+
+      let updateRequired:boolean = false;
+
+      //FinBillableRate
+      if(clCase.FinBillableRate === null && clCase.FinMaxRate !== null) {
+        //console.log('case billable reate is null', clCase);
+        const billAbleRate:number = Number((clCase.FinMaxRate * 100/120).toFixed(2));
+        console.log('maxRate', clCase.FinMaxRate);
+        console.log('billable', billAbleRate);        
+        caseUpdated.FinBillableRate = billAbleRate;
+        updateRequired = true;
+      }
+
+      //FinCostPerWorker
+      if(clCase.FinCostPerWorker === null && clCase.FinEstCost !== null && clCase.ReqNumPositions !== null){
+        const costPerWorker:number = Number((clCase.FinEstCost / clCase.ReqNumPositions).toFixed(2));
+        caseUpdated.FinCostPerWorker = costPerWorker;
+        console.log('costPerWorker', costPerWorker);
+        updateRequired = true;
+      }
+
+      //FinTotalDays
+      if(clCase.FinTotalDays === null || clCase.FinTotalDays == 0){
+       
+        if (clCase.ReqEstStartDate != null && clCase.ReqEstEndDate != null) {
+          const startDate: Date = new Date(clCase.ReqEstStartDate.getTime());
+          const endDate: Date = new Date(clCase.ReqEstEndDate.getTime());
+          const days: number = this.getBusinessDatesCount(startDate, endDate);
+          console.log('days', days);
+          caseUpdated.FinTotalDays = days;
+          updateRequired = true;
+        }
+        
+      }
+
+      if(updateRequired === true){
+        this.clCaseService.updatePut(caseUpdated.ID, caseUpdated).then(():void =>{
+          console.log('case updated with ID', caseUpdated.ID);
+  
+        });
+      }
+      else{
+        console.log('update is not required for case with ID', clCase.ID);
+      }
+
+
+      
+    });
+  }
   private copyAllCasesPDFs = (): void => {
     const srcFolder = getUploadFolder_Report(this.props.spfxContext);
     const clRootFolder = getUploadFolder_CLRoot(this.props.spfxContext);

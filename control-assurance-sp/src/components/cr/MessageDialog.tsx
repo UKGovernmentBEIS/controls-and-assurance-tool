@@ -36,9 +36,9 @@ export class MessageDialogCreateSPFolderWait extends React.Component<IMessageDia
     public render(): JSX.Element {
         return (
             <Dialog hidden={this.props.hidden} onDismiss={this.props.handleOk} dialogContentProps={{ type: DialogType.normal, title: this.props.title }}>
-                Please wait.<br/><br/>
-                System is ensuring we have a folder with appropriate permissions for this case.<br/>
-                This can take some time, so please do not close this browser until this popup box has disappeared.
+
+
+                {this.props.content}
                 <br/><br/>
 
                 <DialogFooter>
