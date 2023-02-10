@@ -865,6 +865,7 @@ namespace ControlAssuranceAPI.Repositories
             cLcase.JustAltOptions = inputCase.JustAltOptions;
             cLcase.JustSuccessionPlanning = inputCase.JustSuccessionPlanning;
             cLcase.FinMaxRate = inputCase.FinMaxRate;
+            cLcase.FinBillableRate = inputCase.FinBillableRate;
             cLcase.FinEstCost = inputCase.FinEstCost;
             cLcase.FinBillableRate = inputCase.FinBillableRate;
             cLcase.FinTotalDays = inputCase.FinTotalDays;
