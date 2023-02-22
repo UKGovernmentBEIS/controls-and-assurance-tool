@@ -1093,6 +1093,26 @@ namespace ControlAssuranceAPI.Repositories
 
                     //run function for CL_Approver "HR Business Partner"
                     localFuncBuild_HiringManagerAndStaff("lst2");
+
+                    //CL_Approver "Commercial Business Partner"
+                    lst2_Item = lst2.FirstOrDefault(x => x.UserId == worker.CLCase.CBPUserId && x.ApproverType == "Commercial Business Partner");
+                    if (lst2_Item == null)
+                    {
+                        lst2_Item = new CL_Approver();
+                        lst2.Add(lst2_Item);
+
+                        lst2_Item.UserId = worker.CLCase.CBPUserId.Value;
+                        lst2_Item.ApproverType = "Commercial Business Partner";
+                        var cbpUser = db.Users.FirstOrDefault(x => x.ID == worker.CLCase.CBPUserId);
+                        if (cbpUser != null)
+                        {
+                            lst2_Item.PersonEmail = cbpUser.Username;
+                            lst2_Item.PersonName = cbpUser.Title;
+                        }
+                    }
+
+                    //run function for CL_Approver "Commercial Business Partner"
+                    localFuncBuild_HiringManagerAndStaff("lst2");
                 }
 
                 //AddApiLog("AutomationOptionRepository.CL_Reminders 2.6", db);
@@ -1212,6 +1232,25 @@ namespace ControlAssuranceAPI.Repositories
                             hrbpApprovalReq = true;
                         }
 
+                        //CBP
+                        bool cbpApprovalReq = false;
+                        if (worker.CLCase.CBPApprovalDecision == CLCaseRepository.ApprovalDecisions.Reject)
+                        {
+                            totalRejected++;
+                        }
+                        else if (worker.CLCase.CBPApprovalDecision == CLCaseRepository.ApprovalDecisions.RequireDetails)
+                        {
+                            totalRequireDetails++;
+                        }
+                        else if (worker.CLCase.CBPApprovalDecision == CLCaseRepository.ApprovalDecisions.Approve)
+                        {
+                            //stageAction2 += "CBP-Ok, ";
+                        }
+                        else
+                        {
+                            cbpApprovalReq = true;
+                        }
+
 
                         //1st list item
                         if (lstType == "lst1" && totalRejected > 0)
@@ -1234,6 +1273,10 @@ namespace ControlAssuranceAPI.Repositories
                             lst2_Item.ApprovalsReq += $"{caseRef}, ";
                         }
                         else if (lstType == "lst2" && lst2_Item.ApproverType == "HR Business Partner" && hrbpApprovalReq == true)
+                        {
+                            lst2_Item.ApprovalsReq += $"{caseRef}, ";
+                        }
+                        else if (lstType == "lst2" && lst2_Item.ApproverType == "Commercial Business Partner" && cbpApprovalReq == true)
                         {
                             lst2_Item.ApprovalsReq += $"{caseRef}, ";
                         }
