@@ -392,7 +392,8 @@ namespace ControlAssuranceAPI.Repositories
                                     || x.CLCase.CLHiringMembers.Any(m => m.UserId == loggedInUserID)
                                     || x.CLCase.BHUserId == loggedInUserID
                                     || x.CLCase.FBPUserId == loggedInUserID
-                                    || x.CLCase.HRBPUserId == loggedInUserID);
+                                    || x.CLCase.HRBPUserId == loggedInUserID
+                                    || x.CLCase.CBPUserId == loggedInUserID);
 
             }
 
@@ -627,7 +628,8 @@ namespace ControlAssuranceAPI.Repositories
                                     || x.CLCase.CLHiringMembers.Any(m => m.UserId == loggedInUserID)
                                     || x.CLCase.BHUserId == loggedInUserID
                                     || x.CLCase.FBPUserId == loggedInUserID
-                                    || x.CLCase.HRBPUserId == loggedInUserID);
+                                    || x.CLCase.HRBPUserId == loggedInUserID
+                                    || x.CLCase.CBPUserId == loggedInUserID);
 
             }
 
