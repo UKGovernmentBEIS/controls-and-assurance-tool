@@ -1095,24 +1095,28 @@ namespace ControlAssuranceAPI.Repositories
                     localFuncBuild_HiringManagerAndStaff("lst2");
 
                     //CL_Approver "Commercial Business Partner"
-                    lst2_Item = lst2.FirstOrDefault(x => x.UserId == worker.CLCase.CBPUserId && x.ApproverType == "Commercial Business Partner");
-                    if (lst2_Item == null)
+                    if(worker.CLCase.CBPUserId != null)
                     {
-                        lst2_Item = new CL_Approver();
-                        lst2.Add(lst2_Item);
-
-                        lst2_Item.UserId = worker.CLCase.CBPUserId.Value;
-                        lst2_Item.ApproverType = "Commercial Business Partner";
-                        var cbpUser = db.Users.FirstOrDefault(x => x.ID == worker.CLCase.CBPUserId);
-                        if (cbpUser != null)
+                        lst2_Item = lst2.FirstOrDefault(x => x.UserId == worker.CLCase.CBPUserId && x.ApproverType == "Commercial Business Partner");
+                        if (lst2_Item == null)
                         {
-                            lst2_Item.PersonEmail = cbpUser.Username;
-                            lst2_Item.PersonName = cbpUser.Title;
+                            lst2_Item = new CL_Approver();
+                            lst2.Add(lst2_Item);
+
+                            lst2_Item.UserId = worker.CLCase.CBPUserId.Value;
+                            lst2_Item.ApproverType = "Commercial Business Partner";
+                            var cbpUser = db.Users.FirstOrDefault(x => x.ID == worker.CLCase.CBPUserId);
+                            if (cbpUser != null)
+                            {
+                                lst2_Item.PersonEmail = cbpUser.Username;
+                                lst2_Item.PersonName = cbpUser.Title;
+                            }
                         }
+
+                        //run function for CL_Approver "Commercial Business Partner"
+                        localFuncBuild_HiringManagerAndStaff("lst2");
                     }
 
-                    //run function for CL_Approver "Commercial Business Partner"
-                    localFuncBuild_HiringManagerAndStaff("lst2");
                 }
 
                 //AddApiLog("AutomationOptionRepository.CL_Reminders 2.6", db);
