@@ -369,7 +369,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                 <MessageDialog hidden={this.state.HideFormValidationMessage} title="Validation Failed" content="Failed validation checks. Please ensure all fields marked with a red asterisk are completed." handleOk={() => { this.setState({ HideFormValidationMessage: true }); }} />
 
                 {/* submit for approval - done */}
-                <MessageDialog hidden={this.state.HideSubmitApprovalDoneMessage} title="Validation Successful" content="Validation checks completed successfully. This case is being moved to the approvals stage." handleOk={() => { this.setState({ HideSubmitApprovalDoneMessage: true }); }} />
+                <MessageDialog hidden={this.state.HideSubmitApprovalDoneMessage} title="Validation Successful" content="Validation checks completed successfully. This case is being moved to the approvals stage." handleOk={() => { this.setState({ HideSubmitApprovalDoneMessage: true }, () => this.handleAfterSaveFolderProcess(this.state.FormData, this.state.FormDataBeforeChanges) ); }} />
 
                 {/* submit to engaged - done */}
                 <MessageDialog hidden={this.state.HideSubmitEngagedDoneMessage} title="Validation Successful" content="Validation checks completed successfully. This case is being moved to the engaged stage." handleOk={() => { this.setState({ HideSubmitEngagedDoneMessage: true }, () => this.afterSubmitEngagedSuccessMsg()); }} />
@@ -6740,7 +6740,10 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                     this.props.onShowList(true);
                 }
                 else{
-                    this.handleAfterSaveFolderProcess(newCase, this.state.FormData, this.state.FormDataBeforeChanges);
+                    if(submitForApproval !== true){
+                        this.handleAfterSaveFolderProcess(this.state.FormData, this.state.FormDataBeforeChanges);
+                    }
+                    
                 }
                 
 
@@ -8022,9 +8025,9 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
 
 
-    private handleAfterSaveFolderProcess = (newCase: boolean, caseData: ICLCase, caseDataBeforeChanges: ICLCase): void => {
+    private handleAfterSaveFolderProcess = (caseData: ICLCase, caseDataBeforeChanges: ICLCase): void => {
         this.setState({ ShowWaitMessage: true, CreateFolderWaitMessage: 'Checking if folder exists' });
-        console.log('in handleAfterSaveFolderProcess', newCase, caseData, caseDataBeforeChanges);
+        console.log('in handleAfterSaveFolderProcess', caseData, caseDataBeforeChanges);
         //next todo 
         //create folder when newCase is true and give permissions like HM, members etc and others like approvers 
         const folderNewUsers: string[] = this.makeFolderNewUsersArr(caseData);
