@@ -915,7 +915,7 @@ namespace ControlAssuranceAPI.Repositories
             //existingWorker.Archived = true; //this is done later when child case is moved to Engaged, then this parent stage is moved to Extended and archived is set to true
             CLCase existingCase = existingWorker.CLCase;
             //create new case based on existing case
-            DateTime estStartDate = existingCase.ReqEstEndDate.Value.AddDays(1);
+            DateTime estStartDate = existingWorker.OnbStartDate.Value.AddDays(1);
 
 
             CLCase cLCase = new CLCase();
@@ -1012,7 +1012,7 @@ namespace ControlAssuranceAPI.Repositories
             cLWorker.OnbContractorHomeAddress = existingWorker.OnbContractorHomeAddress;
             cLWorker.OnbContractorPostCode = existingWorker.OnbContractorPostCode;
 
-            cLWorker.OnbStartDate = cLCase.ReqEstStartDate;
+            //cLWorker.OnbStartDate = null;
             //cLWorker.OnbEndDate = existingWorker.OnbEndDate; null
             cLWorker.OnbDayRate = existingWorker.OnbDayRate;
             //cLWorker.PurchaseOrderNum = existingWorker.PurchaseOrderNum; //TODO - need to ask
