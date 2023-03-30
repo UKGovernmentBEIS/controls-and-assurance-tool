@@ -59,6 +59,7 @@ export interface IUpdatesListState<T> {
     InitDataLoaded: boolean;
 
     HideActionUpdatePermissionDialog: boolean;
+    HideActionOwnersUpdatePermissionDialog: boolean;
     HideReviseImplementationDatePermissionDialogue: boolean;
     HideGiaaCommentsPermissionDialogue: boolean;
 }
@@ -84,6 +85,7 @@ export class UpdatesListState<T> implements IUpdatesListState<T>{
     public ListFilterText = null;
     public InitDataLoaded = false;
     public HideActionUpdatePermissionDialog = true;
+    public HideActionOwnersUpdatePermissionDialog = true;
     public HideReviseImplementationDatePermissionDialogue = true;
     public HideGiaaCommentsPermissionDialogue = true;
 }
@@ -248,6 +250,7 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
 
                     <ConfirmDialog hidden={this.state.HideDeleteDialog} title={`Are you sure you want to delete this record?`} content={`A deleted record cannot be un-deleted.`} confirmButtonText="Delete" handleConfirm={this.handleDelete} handleCancel={this.toggleDeleteConfirm} />
                     <MessageDialog hidden={this.state.HideActionUpdatePermissionDialog} title={`Not Allowed!`} content='Only the Super User, GIAA Actions Super User and recommendation Action Owners can provide updates.' handleOk={this.toggle_HideActionUpdatePermissionDialog} />
+                    <MessageDialog hidden={this.state.HideActionOwnersUpdatePermissionDialog} title={`Not Allowed!`} content='This function is only available to Super Users, from Internal Controls, because the recommendation is tagged as closed.' handleOk={this.toggle_HideActionOwnersUpdatePermissionDialog} />
                     {/* <MessageDialog hidden={this.state.HideReviseImplementationDatePermissionDialogue} title={`Not Allowed!`} content='Only the Super User, GIAA Actions Super User or GIAA Staff can revise the implementation date.' handleOk={this.toggle_HideReviseImplementationDatePermissionDialogue} /> */}
                     <MessageDialog hidden={this.state.HideGiaaCommentsPermissionDialogue} title={null} content='Only the Super User, GIAA Actions Super User and GIAA Staff can add GIAA Comments.' handleOk={this.toggle_HideGiaaCommentsPermissionDialogue} />
                 </div>
@@ -445,11 +448,19 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
 
 
         if (this.props.superUserPermission === true || this.props.actionOwnerPermission === true) {
-
-            if (this.state.SelectedEntity)
-                this._selection.setKeySelected(this.state.SelectedEntity.toString(), false, false);
+            if(this.props.defaultGIAAActionStatusTypeId === 2 && this.props.superUserPermission !== true){
+                //closed rec, dont allow action owners to update
+                console.log('This function is only available to Super Users, from Internal Controls, because the recommendation is tagged as closed.');
+                this.toggle_HideActionOwnersUpdatePermissionDialog();
+            }
+            else{
+                if (this.state.SelectedEntity)
+                    this._selection.setKeySelected(this.state.SelectedEntity.toString(), false, false);
             const formType: string = GIAAUpdateTypes.ActionUpdate;
             this.setState({ SelectedEntity: null, ShowForm: true, FormType: formType });
+            }
+
+
 
         }
         else {
@@ -463,10 +474,19 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
 
         if (this.props.superUserPermission === true || this.props.giaaStaffPermission === true) {
 
-            if (this.state.SelectedEntity)
-                this._selection.setKeySelected(this.state.SelectedEntity.toString(), false, false);
-            const formType: string = GIAAUpdateTypes.Status_DateUpdate;
-            this.setState({ SelectedEntity: null, ShowForm: true, FormType: formType });
+            if(this.props.defaultGIAAActionStatusTypeId === 2 && this.props.superUserPermission !== true){
+                //closed rec, dont allow action owners to update
+                console.log('This function is only available to Super Users, from Internal Controls, because the recommendation is tagged as closed.');
+                this.toggle_HideActionOwnersUpdatePermissionDialog();
+            }
+            else{
+                if (this.state.SelectedEntity)
+                    this._selection.setKeySelected(this.state.SelectedEntity.toString(), false, false);
+                const formType: string = GIAAUpdateTypes.Status_DateUpdate;
+                this.setState({ SelectedEntity: null, ShowForm: true, FormType: formType });
+            }
+
+
 
         }
         else {
@@ -651,6 +671,9 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
 
     private toggle_HideActionUpdatePermissionDialog = (): void => {
         this.setState({ HideActionUpdatePermissionDialog: !this.state.HideActionUpdatePermissionDialog });
+    }
+    private toggle_HideActionOwnersUpdatePermissionDialog = (): void => {
+        this.setState({ HideActionOwnersUpdatePermissionDialog: !this.state.HideActionOwnersUpdatePermissionDialog });
     }
 
     private toggle_HideReviseImplementationDatePermissionDialogue = (): void => {

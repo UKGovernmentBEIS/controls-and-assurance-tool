@@ -295,6 +295,7 @@ namespace ControlAssuranceAPI.Repositories
 
         public GIAAAuditReport Remove(GIAAAuditReport giaaAuditReport)
         {
+            db.GIAAAuditReportDirectorates.RemoveRange(db.GIAAAuditReportDirectorates.Where(x => x.GIAAAuditReportId == giaaAuditReport.ID));
             return db.GIAAAuditReports.Remove(giaaAuditReport);
         }
 
