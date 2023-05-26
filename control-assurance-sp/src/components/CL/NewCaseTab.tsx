@@ -557,8 +557,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                 <div style={{ width: '100%', marginLeft: 'auto', marginRight: 'auto', paddingRight: '10px', paddingLeft: '10px', paddingTop: '20px', paddingBottom: '0px', backgroundColor: 'rgb(245,245,245)', border: '1px solid rgb(230,230,230)', }}>
 
-                    <div className={styles.formField}>
-
+                    <div>
                         <div style={{ display: 'flex' }}>
                             <div style={{ width: '100%', fontWeight: 'bold' }}>
                                 <div className={styles.flexContainerSectionQuestion}>
