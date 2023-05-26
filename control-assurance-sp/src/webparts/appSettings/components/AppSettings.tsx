@@ -77,17 +77,17 @@ export default class AppSettings extends BaseUserContextWebPartComponent<types.I
 
   private renderAutomationOptions() {
 
-    const superUserPermission = this.superUserPermission();
+    const sendEmailsPermission = this.sendEmailsPermission();
     return (
       <div>
         <AutomationOptionsList
-          disabled={!superUserPermission}
+          disabled={!sendEmailsPermission}
           {...this.props}
 
         />
 
         {
-          (superUserPermission === true) &&
+          (sendEmailsPermission === true) &&
 
           <div style={{ paddingTop: '30px' }}>
             <div style={{ paddingBottom: '10px' }}>
@@ -121,7 +121,7 @@ export default class AppSettings extends BaseUserContextWebPartComponent<types.I
 
   private renderOutboxList(): React.ReactElement<types.IWebPartComponentProps> {
 
-    const superUserPermission = this.superUserPermission();
+    const sendEmailsPermission = this.sendEmailsPermission();
 
     return (
       <div>
@@ -138,7 +138,7 @@ export default class AppSettings extends BaseUserContextWebPartComponent<types.I
           />
 
 {
-          (superUserPermission === true) &&
+          (sendEmailsPermission === true) &&
 
           <div style={{ paddingTop: '30px' }}>
             <div style={{ paddingBottom: '10px' }}>
@@ -339,14 +339,14 @@ export default class AppSettings extends BaseUserContextWebPartComponent<types.I
   //#region Permissions
 
 
-  private superUserPermission(): boolean {
+  private sendEmailsPermission(): boolean {
 
     //super user/SysManager check
     let ups: IUserPermission[] = this.state.UserPermissions;
 
     for (let i = 0; i < ups.length; i++) {
       let up: IUserPermission = ups[i];
-      if (up.PermissionTypeId == 1) {
+      if (up.PermissionTypeId == 1 || up.PermissionTypeId == 15) {
         //super user or sys manager
         return true;
       }

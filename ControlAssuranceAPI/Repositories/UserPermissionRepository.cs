@@ -39,7 +39,7 @@ namespace ControlAssuranceAPI.Repositories
                 {
                     superUser = true;
                 }
-                else if (permissioin.PermissionTypeId == 5 || permissioin.PermissionTypeId == 6 || permissioin.PermissionTypeId == 7 || permissioin.PermissionTypeId == 8 || permissioin.PermissionTypeId == 11)
+                else if (permissioin.PermissionTypeId == 5 || permissioin.PermissionTypeId == 6 || permissioin.PermissionTypeId == 7 || permissioin.PermissionTypeId == 8 || permissioin.PermissionTypeId == 11 || permissioin.PermissionTypeId == 16)
                 {
                     moduleSuperUser = true;
                 }
@@ -52,7 +52,7 @@ namespace ControlAssuranceAPI.Repositories
             {
                 var userPermission = db.UserPermissions.FirstOrDefault(up => up.ID == key);
                 //module super user can't edit/del any UserPermission of type Super User (main super user or module super user)
-                if (userPermission.PermissionTypeId == 1 || userPermission.PermissionTypeId == 5 || userPermission.PermissionTypeId == 6 || userPermission.PermissionTypeId == 7 || userPermission.PermissionTypeId == 8 || userPermission.PermissionTypeId == 11)
+                if (userPermission.PermissionTypeId == 1 || userPermission.PermissionTypeId == 5 || userPermission.PermissionTypeId == 6 || userPermission.PermissionTypeId == 7 || userPermission.PermissionTypeId == 8 || userPermission.PermissionTypeId == 11 || userPermission.PermissionTypeId == 16)
                 {
                     return false;
                 }

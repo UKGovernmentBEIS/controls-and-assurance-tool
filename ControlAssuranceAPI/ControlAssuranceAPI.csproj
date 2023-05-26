@@ -725,6 +725,9 @@
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\SpecificAreaView_Result.cs" />
+    <Compile Include="Models\SPGetGender_Result.cs">
+	<DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\sysdiagram.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>

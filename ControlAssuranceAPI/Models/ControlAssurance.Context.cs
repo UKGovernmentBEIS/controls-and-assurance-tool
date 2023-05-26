@@ -170,5 +170,14 @@ namespace ControlAssuranceAPI
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SPDivisionStat2_Result>("SPDivisionStat2", periodIdParameter);
         }
+    
+        public virtual ObjectResult<SPGetGender_Result> SPGetGender(Nullable<int> iD)
+        {
+            var iDParameter = iD.HasValue ?
+                new ObjectParameter("ID", iD) :
+                new ObjectParameter("ID", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SPGetGender_Result>("SPGetGender", iDParameter);
+        }
     }
 }

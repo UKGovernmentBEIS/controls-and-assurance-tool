@@ -78,6 +78,7 @@ namespace ControlAssuranceAPI.Models
         public Nullable<int> FinTotalDays { get; set; }
         public string FinCalcType { get; set; }
         public Nullable<decimal> FinCostPerWorker { get; set; }
+        public string DeptTransferringTo { get; set; }
     
         public virtual CLComFramework CLComFramework { get; set; }
         public virtual CLIR35Scope CLIR35Scope { get; set; }

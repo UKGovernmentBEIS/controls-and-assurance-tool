@@ -15,6 +15,7 @@ namespace ControlAssuranceAPI.Repositories
 
         public CLCaseRepository(IControlAssuranceContext context) : base(context) { }
 
+        private readonly string DeptTransferringToDefault = "Unknown";
         public class ApprovalDecisions
         {
             public static string Approve = "Approve";
@@ -672,6 +673,7 @@ namespace ControlAssuranceAPI.Repositories
             cLCase.CreatedById = apiUserId;
             cLCase.ApplHMUserId = apiUserId; //set hiring manager default to current user
             cLCase.CreatedOn = DateTime.Now;
+            cLCase.DeptTransferringTo = DeptTransferringToDefault;
 
 
             var caseDb = db.CLCases.Add(cLCase);
@@ -708,6 +710,7 @@ namespace ControlAssuranceAPI.Repositories
                     cLcase.CaseRef = newCaseRef;
                     cLcase.CreatedOn = DateTime.Now;
                     cLcase.CaseChangeLog = $"{date} Case Added by {user},";
+                    cLcase.DeptTransferringTo = DeptTransferringToDefault;
                     db.SaveChanges();
                 }
                 catch(Exception ex)
@@ -851,6 +854,7 @@ namespace ControlAssuranceAPI.Repositories
             
 
             cLcase.ApplHMUserId = inputCase.ApplHMUserId;
+            cLcase.DeptTransferringTo = inputCase.DeptTransferringTo;
             cLcase.ReqCostCentre = inputCase.ReqCostCentre;
             cLcase.ReqDirectorateId = inputCase.ReqDirectorateId;
             cLcase.ReqVacancyTitle = inputCase.ReqVacancyTitle;

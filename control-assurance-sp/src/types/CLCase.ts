@@ -46,6 +46,7 @@ export interface ICLCase  extends IEntity {
     CLApprovalDecision?: string;
     CBPApprovalDecision?: string;
     CaseChangeLog?: string;
+    DeptTransferringTo?: string;
 
 
 }
@@ -96,9 +97,11 @@ export class CLCase implements ICLCase{
     public CLApprovalDecision?: string = null;
     public CBPApprovalDecision?: string = null;
     public CaseChangeLog?: string = null;
+    public DeptTransferringTo?: string = null;
 
     constructor(caseType: string) {
         this.CaseType = caseType;
+        this.DeptTransferringTo = 'Unknown';
 
     }
 

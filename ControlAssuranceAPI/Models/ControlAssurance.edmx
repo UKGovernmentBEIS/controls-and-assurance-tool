@@ -125,6 +125,7 @@
           <Property Name="FinTotalDays" Type="int" />
           <Property Name="FinCalcType" Type="nvarchar" MaxLength="50" />
           <Property Name="FinCostPerWorker" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="DeptTransferringTo" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="CLCaseEvidence">
           <Key>
@@ -2527,6 +2528,9 @@
         <Function Name="SPDivisionStat2" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="PeriodId" Type="int" Mode="In" />
         </Function>
+        <Function Name="SPGetGender" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ID" Type="int" Mode="In" />
+        </Function>
         <EntityContainer Name="ControlAssuranceModelStoreContainer">
           <EntitySet Name="APILog" EntityType="Self.APILog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AuditFeedback" EntityType="Self.AuditFeedback" Schema="dbo" store:Type="Tables" />
@@ -3153,6 +3157,7 @@
           <Property Name="FinTotalDays" Type="Int32" />
           <Property Name="FinCalcType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="FinCostPerWorker" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="DeptTransferringTo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="CLComFramework" Relationship="Self.FK_CLCase_CLComFramework" FromRole="CLCase" ToRole="CLComFramework" />
           <NavigationProperty Name="CLIR35Scope" Relationship="Self.FK_CLCase_CLIR35Scope" FromRole="CLCase" ToRole="CLIR35Scope" />
           <NavigationProperty Name="CLProfessionalCat" Relationship="Self.FK_CLCase_CLProfessionalCat" FromRole="CLCase" ToRole="CLProfessionalCat" />
@@ -6253,6 +6258,9 @@
           <FunctionImport Name="SPDivisionStat2" ReturnType="Collection(ControlAssuranceModel.SPDivisionStat2_Result)">
             <Parameter Name="PeriodId" Mode="In" Type="Int32" />
           </FunctionImport>
+          <FunctionImport Name="SPGetGender" ReturnType="Collection(ControlAssuranceModel.SPGetGender_Result)">
+            <Parameter Name="ID" Mode="In" Type="Int32" />
+          </FunctionImport>
         </EntityContainer>
         <ComplexType Name="SPDGAreaStat_Result">
           <Property Type="Int32" Name="ID" Nullable="false" />
@@ -6432,6 +6440,10 @@
           <Property Type="String" Name="ControlsBar" Nullable="false" MaxLength="1" />
           <Property Type="String" Name="AssuranceBar" Nullable="false" MaxLength="1" />
         </ComplexType>
+        <ComplexType Name="SPGetGender_Result">
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="String" Name="Title" Nullable="true" MaxLength="500" />
+        </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -6563,6 +6575,7 @@
                 <ScalarProperty Name="FinTotalDays" ColumnName="FinTotalDays" />
                 <ScalarProperty Name="FinCalcType" ColumnName="FinCalcType" />
                 <ScalarProperty Name="FinCostPerWorker" ColumnName="FinCostPerWorker" />
+                <ScalarProperty Name="DeptTransferringTo" ColumnName="DeptTransferringTo" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -8001,6 +8014,14 @@
                 <ScalarProperty Name="TotalQuestions" ColumnName="TotalQuestions" />
                 <ScalarProperty Name="ControlsBar" ColumnName="ControlsBar" />
                 <ScalarProperty Name="AssuranceBar" ColumnName="AssuranceBar" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SPGetGender" FunctionName="ControlAssuranceModel.Store.SPGetGender">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ControlAssuranceModel.SPGetGender_Result">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
