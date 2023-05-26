@@ -1,0 +1,11 @@
+  Alter table [dbo].[CLCase]
+  ADD DeptTransferringTo nvarchar(50)
+  GO
+
+  Update [dbo].[CLCase] Set DeptTransferringTo='Unknown'
+  GO
+
+insert into [dbo].[PermissionType] (ID, Title) values (15, 'CanSendEmails')
+  GO
+  insert into [dbo].[PermissionType] (ID, Title) values (16, 'CanManageUsers')
+  GO

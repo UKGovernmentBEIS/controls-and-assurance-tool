@@ -216,7 +216,7 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
 
     return (
       <EntityList
-        allowAdd={this.allowAdd_UserPermissions()}
+        allowAdd={this.allowAdd_Users()}
         onRowSelectionCheckEditDel={this.checkEditDel_UserPermissions}
         columns={listColumns}
         {...this.props}
@@ -770,7 +770,7 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
     let ups = this.state.UserPermissions;
     for (let i = 0; i < ups.length; i++) {
       let up: IUserPermission = ups[i];
-      if (up.PermissionTypeId == 1 || up.PermissionTypeId == 5 || up.PermissionTypeId == 6 || up.PermissionTypeId == 7 || up.PermissionTypeId == 8 || up.PermissionTypeId == 11) {
+      if (up.PermissionTypeId == 1 || up.PermissionTypeId == 5 || up.PermissionTypeId == 6 || up.PermissionTypeId == 7 || up.PermissionTypeId == 8 || up.PermissionTypeId == 11 || up.PermissionTypeId == 16) {
         //any super user is allowed to add/edit/del users
         return true;
       }
@@ -786,21 +786,6 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
     for (let i = 0; i < ups.length; i++) {
       let up: IUserPermission = ups[i];
       if (up.PermissionTypeId == 2) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  private allowAdd_UserPermissions(): boolean {
-
-    //super user/SysManager check
-    let ups = this.state.UserPermissions;
-    for (let i = 0; i < ups.length; i++) {
-      let up: IUserPermission = ups[i];
-      if (up.PermissionTypeId == 1 || up.PermissionTypeId == 5 || up.PermissionTypeId == 6 || up.PermissionTypeId == 7 || up.PermissionTypeId == 8 || up.PermissionTypeId == 11) {
-        //any super user is allowed to add/edit/del users
         return true;
       }
     }

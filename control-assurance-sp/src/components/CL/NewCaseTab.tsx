@@ -124,8 +124,8 @@ export interface INewCaseTabState {
     ShowHelpPanel: boolean;
     UserHelpText: string;
     ShowWaitMessage: boolean;
-    DisableFinEstCost:boolean;
-    CreateFolderWaitMessage:string;
+    DisableFinEstCost: boolean;
+    CreateFolderWaitMessage: string;
 
 
 }
@@ -166,7 +166,7 @@ export class NewCaseTabState implements INewCaseTabState {
     public ShowHelpPanel = false;
     public UserHelpText = "";
     public ShowWaitMessage: boolean = false;
-    public DisableFinEstCost:boolean = true;
+    public DisableFinEstCost: boolean = true;
     public CreateFolderWaitMessage: string = "";
 
     //public DefForm: ICLDefForm = null;
@@ -211,12 +211,12 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     private UploadFolder_Evidence: string = "";
     //private UploadFolder_Report: string = "";
     private UploadFolder_CLRoot: string = "";
-    private RoleAssignmentsToAdd:string [] = [];
-    private consoleLogFlag:boolean = true;
-    private roleAssignmentAdded:boolean = false;
-    private RoleAssignmentsToRemove:number [] = [];
-    private roleAssignmentRemoved:boolean = false;
-    private StayOnNewCaseTab:boolean = false;
+    private RoleAssignmentsToAdd: string[] = [];
+    private consoleLogFlag: boolean = true;
+    private roleAssignmentAdded: boolean = false;
+    private RoleAssignmentsToRemove: number[] = [];
+    private roleAssignmentRemoved: boolean = false;
+    private StayOnNewCaseTab: boolean = false;
 
     //IChoiceGroupOption
     private approvalDecisionItems: any[] = [
@@ -328,7 +328,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                 {archived === false && (stage === "Approval") && this.renderBudgetHolderApprovalDecision()}
                 {archived === false && (stage === "Approval") && this.renderFinanceBusinessPartnerApprovalDecision()}
                 {archived === false && (stage === "Approval") && this.renderHRBusinessPartnerApprovalDecision()}
-                {archived === false && (stage === "Approval") && this.renderCommercialBusinessPartnerApprovalDecision()}                
+                {archived === false && (stage === "Approval") && this.renderCommercialBusinessPartnerApprovalDecision()}
                 {archived === false && (stage === "Approval") && this.renderCLApprovalDecision()}
                 {archived === false && stage === "Approval" && this.renderFormButtons_ApprovalStage()}
 
@@ -349,13 +349,13 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                 {stage === "Leaving" && isViewOnly === false && this.renderFormButtons_LeavingStage()}
                 {((stage === "Left") || (stage === "Leaving" && isViewOnly === true)) && this.renderLeaving_info()}
 
-                <MessageDialogCreateSPFolderWait hidden={!this.state.ShowWaitMessage} title="Please wait" content={this.state.CreateFolderWaitMessage} hideOKButton={true} handleOk={() => {  }} />
+                <MessageDialogCreateSPFolderWait hidden={!this.state.ShowWaitMessage} title="Please wait" content={this.state.CreateFolderWaitMessage} hideOKButton={true} handleOk={() => { }} />
                 {this.renderWaitMessage()}
 
                 {(caseCreated === true) && this.renderListsMainTitle()}
-                
-                {(caseCreated === true) &&this.renderEvidencesList()}
-                {(caseCreated === true) &&this.renderChangeLogs()}
+
+                {(caseCreated === true) && this.renderEvidencesList()}
+                {(caseCreated === true) && this.renderChangeLogs()}
 
                 {this.props.historicCase === true && this.renderCloseButton_HistoricCase()}
 
@@ -369,7 +369,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                 <MessageDialog hidden={this.state.HideFormValidationMessage} title="Validation Failed" content="Failed validation checks. Please ensure all fields marked with a red asterisk are completed." handleOk={() => { this.setState({ HideFormValidationMessage: true }); }} />
 
                 {/* submit for approval - done */}
-                <MessageDialog hidden={this.state.HideSubmitApprovalDoneMessage} title="Validation Successful" content="Validation checks completed successfully. This case is being moved to the approvals stage." handleOk={() => { this.setState({ HideSubmitApprovalDoneMessage: true }, () => this.handleAfterSaveFolderProcess(this.state.FormData, this.state.FormDataBeforeChanges) ); }} />
+                <MessageDialog hidden={this.state.HideSubmitApprovalDoneMessage} title="Validation Successful" content="Validation checks completed successfully. This case is being moved to the approvals stage." handleOk={() => { this.setState({ HideSubmitApprovalDoneMessage: true }, () => this.handleAfterSaveFolderProcess(this.state.FormData, this.state.FormDataBeforeChanges)); }} />
 
                 {/* submit to engaged - done */}
                 <MessageDialog hidden={this.state.HideSubmitEngagedDoneMessage} title="Validation Successful" content="Validation checks completed successfully. This case is being moved to the engaged stage." handleOk={() => { this.setState({ HideSubmitEngagedDoneMessage: true }, () => this.afterSubmitEngagedSuccessMsg()); }} />
@@ -557,6 +557,48 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                 <div style={{ width: '100%', marginLeft: 'auto', marginRight: 'auto', paddingRight: '10px', paddingLeft: '10px', paddingTop: '20px', paddingBottom: '0px', backgroundColor: 'rgb(245,245,245)', border: '1px solid rgb(230,230,230)', }}>
 
+                    <div className={styles.formField}>
+
+                        <div style={{ display: 'flex' }}>
+                            <div style={{ width: '100%', fontWeight: 'bold' }}>
+                                <div className={styles.flexContainerSectionQuestion}>
+                                    <div className={styles.sectionQuestionCol1}><span>Dept transferring to</span></div>
+                                    <div className={styles.sectionQuestionCol2}>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style={{ display: 'flex', marginTop: '5px' }}>
+                            <div style={{ width: '100%', }}>
+                                <CrChoiceGroup
+                                    className="inlineflex"
+                                    options={[
+                                        {
+                                            key: 'Unknown',
+                                            text: 'Unknown',
+                                        },
+                                        {
+                                            key: 'DESNZ',
+                                            text: 'DESNZ'
+                                        },
+                                        {
+                                            key: 'DSIT',
+                                            text: 'DSIT'
+                                        },
+                                        {
+                                            key: 'DBAT',
+                                            text: 'DBAT'
+                                        }
+                                    ]}
+                                    selectedKey={fd.DeptTransferringTo}
+                                    onChange={(ev, option) => this.changeChoiceGroup(ev, option, "DeptTransferringTo")}
+                                />
+
+                            </div>
+
+                        </div>
+                    </div>
                     <div className={styles.formField}>
 
                         <div style={{ display: 'flex' }}>
@@ -1442,7 +1484,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                 <div className={styles.flexContainerSectionQuestion}>
                                     <div className={styles.sectionQuestionCol1}>
                                         <span>Rate for approval (billable day rate plus non-recoverable VAT)</span>
-                                        {this.state.FormData.FinMaxRate >= 750 && <span style={{ color: 'rgb(254,138,53)', fontStyle:'italic', paddingLeft:'15px' }}>Additional approval required</span>}
+                                        {this.state.FormData.FinMaxRate >= 750 && <span style={{ color: 'rgb(254,138,53)', fontStyle: 'italic', paddingLeft: '15px' }}>Additional approval required</span>}
                                     </div>
                                     <div className={styles.sectionQuestionCol2}>
                                         <img src={finMaxRateValidationImg} />
@@ -1534,7 +1576,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                             <div style={{ width: '50%', paddingRight: '5px' }}>
                                 <CrDropdown
-                                    options={[{ key: 'Automatic', text: 'Automatic' },{ key: 'Manual', text: 'Manual' }]}
+                                    options={[{ key: 'Automatic', text: 'Automatic' }, { key: 'Manual', text: 'Manual' }]}
                                     onChanged={(v) => this.changeDropdown_FinCalcType(v, "FinCalcType")}
                                     selectedKey={this.state.FormData.FinCalcType}
                                 />
@@ -1981,7 +2023,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                             </div>
                             <div style={{ width: '50%', fontWeight: 'bold' }}>
-                            <div className={styles.flexContainerSectionQuestion}>
+                                <div className={styles.flexContainerSectionQuestion}>
                                     <div className={styles.sectionQuestionCol1}><span>Commercial business partner</span></div>
                                     <div className={styles.sectionQuestionCol2}>
                                         <img src={cbpUserIdValidationImg} />
@@ -2093,7 +2135,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
     private renderIR35EvidenceForm() {
 
-        if(this.state.FormData === null || this.state.FormData.ID === 0) return null;
+        if (this.state.FormData === null || this.state.FormData.ID === 0) return null;
 
         return (
 
@@ -2113,7 +2155,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
     private renderContractorSecurityCheckEvidenceForm() {
 
-        if(this.state.FormData === null || this.state.FormData.ID === 0) return null;
+        if (this.state.FormData === null || this.state.FormData.ID === 0) return null;
 
         return (
 
@@ -2167,22 +2209,22 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         );
     }
 
-    private renderWaitMessage(){
-        if(this.state.ShowWaitMessage === true){
+    private renderWaitMessage() {
+        if (this.state.ShowWaitMessage === true) {
             return (
                 <React.Fragment>
-                    
+
                     <div style={{ marginBottom: '20px', marginTop: '20px' }}>
                         <div style={{ display: 'flex' }}>
-                        <div style={{ padding: '10px 5px', color: 'green', fontWeight: 'bold', backgroundColor: 'rgb(240,240,240)' }}>Please wait we are processing, you will be redirected to list after its done</div>
+                            <div style={{ padding: '10px 5px', color: 'green', fontWeight: 'bold', backgroundColor: 'rgb(240,240,240)' }}>Please wait we are processing, you will be redirected to list after its done</div>
                         </div>
                     </div>
 
                 </React.Fragment>
 
-            );        
+            );
         }
-        else{
+        else {
             return null;
         }
 
@@ -2201,7 +2243,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
     private renderEvidencesList() {
 
-        if(this.state.FormData === null || this.state.FormData.ID === 0) return null;
+        if (this.state.FormData === null || this.state.FormData.ID === 0) return null;
 
         return (
             <React.Fragment>
@@ -2281,12 +2323,19 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                     <table cellSpacing="0" cellPadding="10" style={{ width: '100%' }}>
 
                         <tbody>
-
                             <tr>
                                 <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
-                                    Name of hiring manager
+                                Dept transferring to
                                 </td>
                                 <td style={{ width: '81%', borderTop: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                    {this.state.FormData.DeptTransferringTo}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style={{ width: '19%', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Name of hiring manager
+                                </td>
+                                <td style={{ width: '81%', borderBottom: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
                                     {this.state.CaseInfo.ApplHMUser}
                                 </td>
 
@@ -2625,7 +2674,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                 </td>
                                 <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
                                     <span>Rate for approval (billable day rate plus non-recoverable VAT)</span>
-                                    {this.state.FormData.FinMaxRate >= 750 && <span style={{ color: 'rgb(254,138,53)', fontStyle:'italic', paddingLeft:'15px' }}>Additional approval required</span>}
+                                    {this.state.FormData.FinMaxRate >= 750 && <span style={{ color: 'rgb(254,138,53)', fontStyle: 'italic', paddingLeft: '15px' }}>Additional approval required</span>}
                                 </td>
                                 <td style={{ width: '31%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)', backgroundColor: this.state.FormData.FinMaxRate >= 750 ? 'rgb(255,242,230)' : 'white' }}>
                                     {this.state.FormData.FinMaxRate}
@@ -6653,7 +6702,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                     fItem.roleAssignments.expand('Member').get().then(rass => {
                         console.log('rass', rass);
                         rass.forEach(ra => {
-                            const userEmail:string = ra['Member']['UserPrincipalName'];
+                            const userEmail: string = ra['Member']['UserPrincipalName'];
                             console.log('ra Member UserPrincipalName', userEmail);
                         });
                     });
@@ -6663,9 +6712,9 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     }
 
     private checkCaseCreated = (): boolean => {
-        if(this.state.FormData['CaseCreated'] === true)
+        if (this.state.FormData['CaseCreated'] === true)
             return true;
-        
+
         return false;
     }
     private saveData = (submitForApproval: boolean, submitDecision, stayOnNewCaseTab?: boolean): void => {
@@ -6723,7 +6772,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
             console.log('case before saving', f);
 
-            let newCase:boolean = false;
+            let newCase: boolean = false;
             if (f['CaseCreated'] !== true) {
                 console.log('create case folder on sharepoint');
                 newCase = true;
@@ -6736,16 +6785,16 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                 this.saveChildEntitiesAfterUpdate();
                 //call to create folder or update folder permissions
                 //this.props.afterSaveFolderProcess(newCase, this.state.FormData, this.state.FormDataBeforeChanges);
-                if(submitDecision === true){
+                if (submitDecision === true) {
                     this.props.onShowList(true);
                 }
-                else{
-                    if(submitForApproval !== true){
+                else {
+                    if (submitForApproval !== true) {
                         this.handleAfterSaveFolderProcess(this.state.FormData, this.state.FormDataBeforeChanges);
                     }
-                    
+
                 }
-                
+
 
                 if (this.props.onError)
                     this.props.onError(null);
@@ -7318,11 +7367,11 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     }
 
     private setDisableFinEstCost = () => {
-        if(this.state.FormData.FinCalcType === 'Manual'){
+        if (this.state.FormData.FinCalcType === 'Manual') {
             this.setState({ DisableFinEstCost: false });
         }
-        else{
-            this.setState({ DisableFinEstCost: true }, this.calculateRate );
+        else {
+            this.setState({ DisableFinEstCost: true }, this.calculateRate);
         }
     }
 
@@ -7330,7 +7379,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         this.setState({ FormDataWorker: this.cloneObject(this.state.FormDataWorker, f, value)/*, FormIsDirty: true*/ });
     }
     private changeDropdown_FinCalcType = (option: IDropdownOption, f: string, index?: number): void => {
-        this.setState({ FormData: this.cloneObject(this.state.FormData, f, option.key), /*FormIsDirty: true*/ }, this.setDisableFinEstCost ) ;
+        this.setState({ FormData: this.cloneObject(this.state.FormData, f, option.key), /*FormIsDirty: true*/ }, this.setDisableFinEstCost);
     }
     private changeDropdown = (option: IDropdownOption, f: string, index?: number): void => {
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, option.key), /*FormIsDirty: true*/ });
@@ -7439,7 +7488,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         console.log('blur', f);
         const billableRate: number = Number(this.state.FormData.FinBillableRate);
         if (billableRate > 0) {
-            const dayRateWithVAT:string = ((billableRate * 0.2) + (billableRate)).toFixed(2);
+            const dayRateWithVAT: string = ((billableRate * 0.2) + (billableRate)).toFixed(2);
             let obj = this.cloneObject(this.state.FormData, 'FinMaxRate', dayRateWithVAT);
             this.setState({ FormData: obj/*, FormIsDirty: true*/ }, this.calculateRate);
         }
@@ -7489,17 +7538,17 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     }
 
     private calculateTotalDays = (): void => {
-        if(this.state.FormData.FinTotalDays == null || this.state.FormData.FinTotalDays == 0){
+        if (this.state.FormData.FinTotalDays == null || this.state.FormData.FinTotalDays == 0) {
             if (this.state.FormData.ReqEstStartDate != null && this.state.FormData.ReqEstEndDate != null) {
                 const startDate: Date = new Date(this.state.FormData.ReqEstStartDate.getTime());
                 const endDate: Date = new Date(this.state.FormData.ReqEstEndDate.getTime());
                 const days: number = this.getBusinessDatesCount(startDate, endDate);
                 console.log('days', days);
-    
-    
+
+
                 this.setState({ FormData: this.cloneObject(this.state.FormData, 'FinTotalDays', days) });
-    
-    
+
+
             }
             else {
                 console.log('both dates and other values are not provided');
@@ -7735,12 +7784,12 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         }
         else {
 
-            this.clCaseEvidenceService.delete(this.state.IR35Evidence.ID).then(d =>{
+            this.clCaseEvidenceService.delete(this.state.IR35Evidence.ID).then(d => {
 
                 sp.web.getFolderByServerRelativeUrl(this.UploadFolder_Evidence).files.getByName(fileName).delete().then(df => {
                     this.loadIR35Evidence();
                 });
-            },(err) => {
+            }, (err) => {
                 if (this.props.onError) this.props.onError(`Cannot delete this evidence. `, err.message);
             });
 
@@ -7763,12 +7812,12 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         }
         else {
 
-            this.clCaseEvidenceService.delete(this.state.ContractorSecurityCheckEvidence.ID).then(d =>{
+            this.clCaseEvidenceService.delete(this.state.ContractorSecurityCheckEvidence.ID).then(d => {
 
                 sp.web.getFolderByServerRelativeUrl(this.UploadFolder_Evidence).files.getByName(fileName).delete().then(df => {
                     this.loadContractorSecurityCheckEvidence();
                 });
-            },(err) => {
+            }, (err) => {
                 if (this.props.onError) this.props.onError(`Cannot delete this evidence. `, err.message);
             });
 
@@ -8031,33 +8080,33 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         //next todo 
         //create folder when newCase is true and give permissions like HM, members etc and others like approvers 
         const folderNewUsers: string[] = this.makeFolderNewUsersArr(caseData);
-    
+
         // if (newCase === true) {
         //   this.createNewCaseUploadFolder(String(caseData.ID), folderNewUsers);
         // }
         // else {
         //   //const folderExistingsers: string[] = this.makeFolderExistingUsersArr(caseDataBeforeChanges);
         //   this.resetFolderPermissionsAfterEditCase(String(caseData.ID), folderNewUsers);
-    
+
         // }
-    
-    
+
+
         //otherwise for existing folder remove all permissions then add all again
 
         this.checkSPFolderExist(caseData, folderNewUsers);
-    
-      }
 
-      private checkSPFolderExist = (caseData: ICLCase, folderNewUsers: string[]) => {
+    }
+
+    private checkSPFolderExist = (caseData: ICLCase, folderNewUsers: string[]) => {
         console.log('in checkSPFolderExist');
         this.setState({ CreateFolderWaitMessage: 'Checking for documents folder' });
         const folder = sp.web.getFolderByServerRelativePath(this.UploadFolder_CLRoot + '/' + String(caseData.ID)).select('Exists').get().then(ff => {
-            if(ff.Exists){
+            if (ff.Exists) {
                 console.log('checkSPFolderExist - folder exist');
                 //this.setState({ CreateFolderWaitMessage: 'Folder found, resetting premissions' });
                 this.resetFolderPermissionsAfterEditCase(String(caseData.ID), folderNewUsers);
             }
-            else{
+            else {
                 console.log('checkSPFolderExist - folder doesnt exist so create new');
                 this.setState({ CreateFolderWaitMessage: 'Creating folder for documents' });
                 this.createNewCaseUploadFolder(String(caseData.ID), folderNewUsers);
@@ -8070,274 +8119,268 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         // sp.web.getFolderByServerRelativeUrl(this.UploadFolder_CLRoot).folders.getByName(casefolderName).getItem().then((folderItem: SharePointQueryableSecurable) => {
 
         // });
-      }
+    }
 
-      private makeFolderNewUsersArr = (caseData: ICLCase): string[] => {
+    private makeFolderNewUsersArr = (caseData: ICLCase): string[] => {
         let users: string[] = [];
-    
+
         //hiring manager
         if (caseData.ApplHMUserId > 0) {
-          const u1 = this.props.users.filter(x => x.ID === caseData.ApplHMUserId)[0];
-          users.push(u1.Username);
+            const u1 = this.props.users.filter(x => x.ID === caseData.ApplHMUserId)[0];
+            users.push(u1.Username);
         }
-    
+
         //hiring members
         const hiringMembers: ICLHiringMember[] = caseData['CLHiringMembers'];
         hiringMembers.forEach(m => {
-          const u1 = this.props.users.filter(x => x.ID === m.UserId)[0];
-          users.push(u1.Username);
+            const u1 = this.props.users.filter(x => x.ID === m.UserId)[0];
+            users.push(u1.Username);
         });
-    
+
         //BH
         if (caseData.BHUserId > 0) {
-          const u1 = this.props.users.filter(x => x.ID === caseData.BHUserId)[0];
-          users.push(u1.Username);
+            const u1 = this.props.users.filter(x => x.ID === caseData.BHUserId)[0];
+            users.push(u1.Username);
         }
-    
+
         //FBP
         if (caseData.FBPUserId > 0) {
-          const u1 = this.props.users.filter(x => x.ID === caseData.FBPUserId)[0];
-          users.push(u1.Username);
+            const u1 = this.props.users.filter(x => x.ID === caseData.FBPUserId)[0];
+            users.push(u1.Username);
         }
-    
+
         //HRBP
         if (caseData.HRBPUserId > 0) {
-          const u1 = this.props.users.filter(x => x.ID === caseData.HRBPUserId)[0];
-          users.push(u1.Username);
+            const u1 = this.props.users.filter(x => x.ID === caseData.HRBPUserId)[0];
+            users.push(u1.Username);
         }
-    
+
         //Superusers/viewers
         this.props.superUsersAndViewers.forEach(su => {
-          users.push(su.Username);
+            users.push(su.Username);
         });
-    
-    
-    
-    
-    
+
+
+
+
+
         return users;
-      }
+    }
 
-      private createNewCaseUploadFolder = (casefolderName: string, folderNewUsers: string[]) => {
+    private createNewCaseUploadFolder = (casefolderName: string, folderNewUsers: string[]) => {
         sp.web.getFolderByServerRelativeUrl(this.UploadFolder_CLRoot).folders.add(casefolderName).then(folderAddRes => {
-          console.log('createNewCaseUploadFolder: folder created', folderAddRes.data);
-          this.setState({ CreateFolderWaitMessage: 'Folder created' });
-          folderAddRes.folder.getItem().then((folderItem: SharePointQueryableSecurable) => {
-            folderItem.breakRoleInheritance(false).then(bri => {
-              console.log('createNewCaseUploadFolder: folder break inheritence done');
-                
-              this.RoleAssignmentsToAdd = [];
-              this.setState({ CreateFolderWaitMessage: 'Adding users permissions' });
-              folderNewUsers.forEach(userEmail => {
-                this.RoleAssignmentsToAdd.push(userEmail);
-              });
-    
-              this.doPermissionAddRecursive(this.RoleAssignmentsToAdd.length-1, true, folderItem,0).then(() => {
-                
-                if (this.consoleLogFlag)
-                  console.log('createNewCaseUploadFolder - Permissions Sorted: ', casefolderName);
-                if(this.StayOnNewCaseTab !== true)
-                    this.props.onShowList(true);
-                this.setState({ ShowWaitMessage: false });                    
-              });
-    
+            console.log('createNewCaseUploadFolder: folder created', folderAddRes.data);
+            this.setState({ CreateFolderWaitMessage: 'Folder created' });
+            folderAddRes.folder.getItem().then((folderItem: SharePointQueryableSecurable) => {
+                folderItem.breakRoleInheritance(false).then(bri => {
+                    console.log('createNewCaseUploadFolder: folder break inheritence done');
+
+                    this.RoleAssignmentsToAdd = [];
+                    this.setState({ CreateFolderWaitMessage: 'Adding users permissions' });
+                    folderNewUsers.forEach(userEmail => {
+                        this.RoleAssignmentsToAdd.push(userEmail);
+                    });
+
+                    this.doPermissionAddRecursive(this.RoleAssignmentsToAdd.length - 1, true, folderItem, 0).then(() => {
+
+                        if (this.consoleLogFlag)
+                            console.log('createNewCaseUploadFolder - Permissions Sorted: ', casefolderName);
+                        if (this.StayOnNewCaseTab !== true)
+                            this.props.onShowList(true);
+                        this.setState({ ShowWaitMessage: false });
+                    });
+
+                });
             });
-          });
         });
-      }
+    }
 
-      private doPermissionAddRecursive =( num, nextRole:boolean, folderItem: SharePointQueryableSecurable, delayCount ): Promise<any> => { 
+    private doPermissionAddRecursive = (num, nextRole: boolean, folderItem: SharePointQueryableSecurable, delayCount): Promise<any> => {
 
-        
+
         if (this.consoleLogFlag)
-          console.log('>> doPermissionAddRecursive: ', num );
-    
-        if(nextRole == true){
-          this.roleAssignmentAdded = false;
-          this.folderPermissionAdd(num, folderItem);
-          delayCount = 0;
+            console.log('>> doPermissionAddRecursive: ', num);
+
+        if (nextRole == true) {
+            this.roleAssignmentAdded = false;
+            this.folderPermissionAdd(num, folderItem);
+            delayCount = 0;
         }
-    
-        const decide = ( asyncResult) => {
-            if(asyncResult >= 0){
+
+        const decide = (asyncResult) => {
+            if (asyncResult >= 0) {
                 this.setState({ CreateFolderWaitMessage: `Applying permission ${this.RoleAssignmentsToAdd.length - num} of ${this.RoleAssignmentsToAdd.length}` });
             }
-            
+
             if (this.consoleLogFlag)
-              console.log('>> doPermissionAddRecursive Decide: ', asyncResult, delayCount);
-    
-            if( asyncResult < 0)
-            {
-              if (this.consoleLogFlag)
-                console.log('>> doPermissionAddRecursive Completed: ', asyncResult, delayCount);
-    
-              return "lift off"; // no, all done, return a non-promise result
-            }
-            if(this.roleAssignmentAdded == true){
-              return this.doPermissionAddRecursive( num-1, true, folderItem, delayCount); // yes, call recFun again which returns a promise
-            }
-            delayCount = delayCount +1;
-            if (delayCount > 20 )
-            {
-              // if we had to delay 20 times then something has gone wrong. we should try
-              return this.doPermissionAddRecursive( num, true, folderItem, delayCount);  
-            }
-            return this.doPermissionAddRecursive( num, false, folderItem, delayCount); // yes, call recFun again which returns a promise
-        };
-    
-        return this.createPermissionAddDelay(num, delayCount ).then(decide);
-    }
+                console.log('>> doPermissionAddRecursive Decide: ', asyncResult, delayCount);
 
-    private folderPermissionAdd = (userRef:number, folderItem: SharePointQueryableSecurable): void =>{
-
-        const userEmail =this.RoleAssignmentsToAdd[userRef];
-        if (this.consoleLogFlag)
-          console.log('>> folderPermissionAdd: ', userRef, userEmail);
-       
-        sp.web.ensureUser(userEmail).then(user => {      
-    
-          //const userId: number = Number(user['Id']);
-          const userId: number = user.data.Id;    
-          folderItem.roleAssignments.add(userId, this.props.fullControlFolderRoleId).then(roleAddedValue => {
-            if (this.consoleLogFlag)
-              console.log(`>> folderPermissionAdd: role added for user ${userEmail}`);
-            this.roleAssignmentAdded = true;
-          });
-    
-        }).catch(e => {      
-          if (this.consoleLogFlag)
-            console.log(`>> folderPermissionAdd: user doesnt exist ${userEmail}`);
-          this.roleAssignmentAdded = true;      
-        });
-      }
-
-      private createPermissionAddDelay = ( asyncParam, delayCount): Promise<any> => { // example operation
-        const promiseDelay = (data,msec) => new Promise(res => setTimeout(res,msec,data));
-        if (this.consoleLogFlag)
-          console.log('>> CreatePermissionAddDelay: ', asyncParam, delayCount);
-    
-        return promiseDelay( asyncParam, 100); //resolve with argument in 100 millisecond.
-      }
-
-      private resetFolderPermissionsAfterEditCase = (casefolderName: string, folderNewUsers: string[]) => {
-
-        sp.web.getFolderByServerRelativeUrl(this.UploadFolder_CLRoot).folders.getByName(casefolderName).getItem().then((folderItem: SharePointQueryableSecurable) => {
-    
-       
-          this.RoleAssignmentsToRemove = [];      
-          folderItem.roleAssignments.get().then(rass => {
-            console.log('rass', rass);
-            rass.forEach(ra => {
-
-              this.RoleAssignmentsToRemove.push(Number(ra['PrincipalId']));
-    
-    /*           const principalId: number = Number(ra['PrincipalId']);
-              console.log('principalId', principalId);
-              if(principalId !== this.state.CurrentUserPrincipalId)
-                promisesRemove.push(this.removeFolderRoleBySiteUserId(principalId, folderItem));
-              else
-                console.log('not adding current user in folder permission remove list');
-     */
-            });
-          }).then(() => {
-    
-            this.doPermissionRemoveRecursive(this.RoleAssignmentsToRemove.length-1, true, folderItem,0 ).then(() => {
-    
-              this.RoleAssignmentsToAdd = [];
-    
-              folderNewUsers.forEach(userEmail => {
-                this.RoleAssignmentsToAdd.push(userEmail);
-              });
-    
-              this.doPermissionAddRecursive(this.RoleAssignmentsToAdd.length-1, true, folderItem,0).then(() => {
+            if (asyncResult < 0) {
                 if (this.consoleLogFlag)
-                  console.log('resetFolderPermissionsAfterEditCase - Permissions Sorted: ', casefolderName);
-                if(this.StayOnNewCaseTab !== true)
-                  this.props.onShowList(true);                  
-                this.setState({ ShowWaitMessage: false });                                      
-              });
-    
-            });
-    
-          });
+                    console.log('>> doPermissionAddRecursive Completed: ', asyncResult, delayCount);
 
-    
-    
-        });
-      }
-
-      private doPermissionRemoveRecursive =( num, nextRole:boolean, folderItem: SharePointQueryableSecurable, delayCount): Promise<any> => { 
-
-        
-        if (this.consoleLogFlag)
-          console.log(">> doPermissionRemoveRecursive: " + num);
-    
-        if(nextRole == true){
-          this.roleAssignmentRemoved = false;
-          this.folderPermissionRemove(num, folderItem);
-          delayCount = 0;
-        }
-    
-        const decide = ( asyncResult) => {
-
-            if(asyncResult >= 0){
-                this.setState({ CreateFolderWaitMessage: `Checking user permission ${this.RoleAssignmentsToRemove.length-num} to ${this.RoleAssignmentsToRemove.length}` });
+                return "lift off"; // no, all done, return a non-promise result
             }
-    
-            if (this.consoleLogFlag)
-              console.log('>> doPermissionRemoveRecursive decide: ', asyncResult, delayCount);
-            if( asyncResult < 0)
-            {
-              if (this.consoleLogFlag)
-                console.log('>> doPermissionRemoveRecursive Completed: ', asyncResult, delayCount);
-              return "lift off"; // no, all done, return a non-promise result
-            }
-            if(this.roleAssignmentRemoved == true){
-              return this.doPermissionRemoveRecursive( num-1, true, folderItem, delayCount); 
+            if (this.roleAssignmentAdded == true) {
+                return this.doPermissionAddRecursive(num - 1, true, folderItem, delayCount); // yes, call recFun again which returns a promise
             }
             delayCount = delayCount + 1;
-            if (delayCount > 20)
-            {
-              return this.doPermissionRemoveRecursive( num, true, folderItem, delayCount);   
+            if (delayCount > 20) {
+                // if we had to delay 20 times then something has gone wrong. we should try
+                return this.doPermissionAddRecursive(num, true, folderItem, delayCount);
             }
-            return this.doPermissionRemoveRecursive( num, false, folderItem, delayCount); 
+            return this.doPermissionAddRecursive(num, false, folderItem, delayCount); // yes, call recFun again which returns a promise
         };
-    
-        return this.createPermissionRemoveDelay(num, delayCount ).then(decide);
+
+        return this.createPermissionAddDelay(num, delayCount).then(decide);
     }
 
-    private folderPermissionRemove = (userRef:number, folderItem: SharePointQueryableSecurable): void =>{
+    private folderPermissionAdd = (userRef: number, folderItem: SharePointQueryableSecurable): void => {
 
-        const principalId =this.RoleAssignmentsToRemove[userRef];
+        const userEmail = this.RoleAssignmentsToAdd[userRef];
         if (this.consoleLogFlag)
-        {
-          console.log('folderPermissionRemove - folder permission remove: ', userRef);
-          console.log('principalId', principalId);
-        }
-    
-        if(principalId !== this.props.currentUserPrincipalId)
-          folderItem.roleAssignments.remove(principalId, this.props.fullControlFolderRoleId).then(roleAddedValue => {
+            console.log('>> folderPermissionAdd: ', userRef, userEmail);
+
+        sp.web.ensureUser(userEmail).then(user => {
+
+            //const userId: number = Number(user['Id']);
+            const userId: number = user.data.Id;
+            folderItem.roleAssignments.add(userId, this.props.fullControlFolderRoleId).then(roleAddedValue => {
+                if (this.consoleLogFlag)
+                    console.log(`>> folderPermissionAdd: role added for user ${userEmail}`);
+                this.roleAssignmentAdded = true;
+            });
+
+        }).catch(e => {
             if (this.consoleLogFlag)
-              console.log(`folderPermissionRemove - role removed for user ${principalId}`);
-            this.roleAssignmentRemoved = true;
-          }).catch(err =>{        
-            console.log(`>> folderPermissionRemove: - failed ${err}`);
-            this.roleAssignmentRemoved = true;
-          });
-        else
-        {
-          if (this.consoleLogFlag)
-            console.log('>> folderPermissionRemove: not adding current user in folder permission remove list');
-          this.roleAssignmentRemoved = true;
-        }  
-      }
+                console.log(`>> folderPermissionAdd: user doesnt exist ${userEmail}`);
+            this.roleAssignmentAdded = true;
+        });
+    }
 
-      private createPermissionRemoveDelay = ( asyncParam, delayCount): Promise<any> => { // example operation
-        const promiseDelay = (data,msec) => new Promise(res => setTimeout(res,msec,data));
+    private createPermissionAddDelay = (asyncParam, delayCount): Promise<any> => { // example operation
+        const promiseDelay = (data, msec) => new Promise(res => setTimeout(res, msec, data));
         if (this.consoleLogFlag)
-          console.log('>> createPermissionRemoveDelay: ', asyncParam, delayCount);
-        return promiseDelay( asyncParam, 100); 
-      }
-    
+            console.log('>> CreatePermissionAddDelay: ', asyncParam, delayCount);
+
+        return promiseDelay(asyncParam, 100); //resolve with argument in 100 millisecond.
+    }
+
+    private resetFolderPermissionsAfterEditCase = (casefolderName: string, folderNewUsers: string[]) => {
+
+        sp.web.getFolderByServerRelativeUrl(this.UploadFolder_CLRoot).folders.getByName(casefolderName).getItem().then((folderItem: SharePointQueryableSecurable) => {
+
+
+            this.RoleAssignmentsToRemove = [];
+            folderItem.roleAssignments.get().then(rass => {
+                console.log('rass', rass);
+                rass.forEach(ra => {
+
+                    this.RoleAssignmentsToRemove.push(Number(ra['PrincipalId']));
+
+                    /*           const principalId: number = Number(ra['PrincipalId']);
+                              console.log('principalId', principalId);
+                              if(principalId !== this.state.CurrentUserPrincipalId)
+                                promisesRemove.push(this.removeFolderRoleBySiteUserId(principalId, folderItem));
+                              else
+                                console.log('not adding current user in folder permission remove list');
+                     */
+                });
+            }).then(() => {
+
+                this.doPermissionRemoveRecursive(this.RoleAssignmentsToRemove.length - 1, true, folderItem, 0).then(() => {
+
+                    this.RoleAssignmentsToAdd = [];
+
+                    folderNewUsers.forEach(userEmail => {
+                        this.RoleAssignmentsToAdd.push(userEmail);
+                    });
+
+                    this.doPermissionAddRecursive(this.RoleAssignmentsToAdd.length - 1, true, folderItem, 0).then(() => {
+                        if (this.consoleLogFlag)
+                            console.log('resetFolderPermissionsAfterEditCase - Permissions Sorted: ', casefolderName);
+                        if (this.StayOnNewCaseTab !== true)
+                            this.props.onShowList(true);
+                        this.setState({ ShowWaitMessage: false });
+                    });
+
+                });
+
+            });
+
+
+
+        });
+    }
+
+    private doPermissionRemoveRecursive = (num, nextRole: boolean, folderItem: SharePointQueryableSecurable, delayCount): Promise<any> => {
+
+
+        if (this.consoleLogFlag)
+            console.log(">> doPermissionRemoveRecursive: " + num);
+
+        if (nextRole == true) {
+            this.roleAssignmentRemoved = false;
+            this.folderPermissionRemove(num, folderItem);
+            delayCount = 0;
+        }
+
+        const decide = (asyncResult) => {
+
+            if (asyncResult >= 0) {
+                this.setState({ CreateFolderWaitMessage: `Checking user permission ${this.RoleAssignmentsToRemove.length - num} to ${this.RoleAssignmentsToRemove.length}` });
+            }
+
+            if (this.consoleLogFlag)
+                console.log('>> doPermissionRemoveRecursive decide: ', asyncResult, delayCount);
+            if (asyncResult < 0) {
+                if (this.consoleLogFlag)
+                    console.log('>> doPermissionRemoveRecursive Completed: ', asyncResult, delayCount);
+                return "lift off"; // no, all done, return a non-promise result
+            }
+            if (this.roleAssignmentRemoved == true) {
+                return this.doPermissionRemoveRecursive(num - 1, true, folderItem, delayCount);
+            }
+            delayCount = delayCount + 1;
+            if (delayCount > 20) {
+                return this.doPermissionRemoveRecursive(num, true, folderItem, delayCount);
+            }
+            return this.doPermissionRemoveRecursive(num, false, folderItem, delayCount);
+        };
+
+        return this.createPermissionRemoveDelay(num, delayCount).then(decide);
+    }
+
+    private folderPermissionRemove = (userRef: number, folderItem: SharePointQueryableSecurable): void => {
+
+        const principalId = this.RoleAssignmentsToRemove[userRef];
+        if (this.consoleLogFlag) {
+            console.log('folderPermissionRemove - folder permission remove: ', userRef);
+            console.log('principalId', principalId);
+        }
+
+        if (principalId !== this.props.currentUserPrincipalId)
+            folderItem.roleAssignments.remove(principalId, this.props.fullControlFolderRoleId).then(roleAddedValue => {
+                if (this.consoleLogFlag)
+                    console.log(`folderPermissionRemove - role removed for user ${principalId}`);
+                this.roleAssignmentRemoved = true;
+            }).catch(err => {
+                console.log(`>> folderPermissionRemove: - failed ${err}`);
+                this.roleAssignmentRemoved = true;
+            });
+        else {
+            if (this.consoleLogFlag)
+                console.log('>> folderPermissionRemove: not adding current user in folder permission remove list');
+            this.roleAssignmentRemoved = true;
+        }
+    }
+
+    private createPermissionRemoveDelay = (asyncParam, delayCount): Promise<any> => { // example operation
+        const promiseDelay = (data, msec) => new Promise(res => setTimeout(res, msec, data));
+        if (this.consoleLogFlag)
+            console.log('>> createPermissionRemoveDelay: ', asyncParam, delayCount);
+        return promiseDelay(asyncParam, 100);
+    }
+
 
 }
