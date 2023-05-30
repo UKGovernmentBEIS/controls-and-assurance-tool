@@ -324,6 +324,10 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
   }
 
   private renderSetFolderPermissions():React.ReactElement<types.IWebPartComponentProps>{
+    
+    if(this.state.UserPermissions === null) return null;
+    if(this.sysManagerPermission() === false) return null;
+
     return (
       <React.Fragment>
       <div style={{ paddingTop: '15px' }}>

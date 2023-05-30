@@ -32,34 +32,33 @@ namespace ControlAssuranceAPI.Repositories
 
                 bool superUser = false;
                 bool moduleSuperUser = false;
+                bool canManageUsers = false;
 
                 var userPermissions = db.UserPermissions.Where(up => up.UserId == userId).ToList();
                 foreach (var permissioin in userPermissions)
                 {
-                    if (permissioin.PermissionTypeId == 1)
-                    {
-                        superUser = true;
-                    }
-                    else if (permissioin.PermissionTypeId == 5 || permissioin.PermissionTypeId == 6 || permissioin.PermissionTypeId == 7 || permissioin.PermissionTypeId == 8 || permissioin.PermissionTypeId == 11)
-                    {
-                        moduleSuperUser = true;
-                    }
+                    if (permissioin.PermissionTypeId == 1)                    
+                        superUser = true;                    
+                    else if (permissioin.PermissionTypeId == 5 || permissioin.PermissionTypeId == 6 || permissioin.PermissionTypeId == 7 || permissioin.PermissionTypeId == 8 || permissioin.PermissionTypeId == 11 || permissioin.PermissionTypeId == 13)
+                        moduleSuperUser = true;                    
+                    else if(permissioin.PermissionTypeId == 16)
+                        canManageUsers = true;
                 }
 
                 //if user has superUser permissoin then return all
-                if (superUser == true)
+                if (superUser)
                     return PermissionTypes;
 
                 //if user is a module super user then return all permissons apart from any super user permission
-                else if (moduleSuperUser == true)
+                else if (moduleSuperUser)
                 {
-                    return (from pt in db.PermissionTypes
-                            where pt.ID != 1 && pt.ID != 5 && pt.ID != 6 && pt.ID != 7 && pt.ID != 8 && pt.ID != 11
-                            select pt);
+                    return db.PermissionTypes.Where(pt => !new[] { 1, 5, 6, 7, 8, 11, 13, 16 }.Contains(pt.ID));
                 }
-
-
-
+                else if (canManageUsers)
+                {
+                    //exclude following ids and return
+                    return db.PermissionTypes.Where(pt => !new[] { 1, 2, 5, 6, 7, 8, 11, 13, 16 }.Contains(pt.ID));
+                }
 
                 //At the end if we reach here then return no data
                 return (from pt in db.PermissionTypes
