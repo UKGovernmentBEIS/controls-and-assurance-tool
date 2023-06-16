@@ -483,7 +483,21 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
                             </tr>
 
+                            <tr>
+                                <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Case ID
+                                </td>
+                                <td style={{ width: '31%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)' }}>
+                                    {this.state.FormDataWorker && (this.state.FormDataWorker.ID > 0) && this.state.FormData.ID}
+                                </td>
+                                <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
+                                    Worker ID
+                                </td>
+                                <td style={{ width: '31%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
+                                    {this.state.FormDataWorker && (this.state.FormDataWorker.ID > 0) && this.state.FormDataWorker.ID}
+                                </td>
 
+                            </tr>
 
                             <tr>
                                 <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
@@ -558,6 +572,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                 <div style={{ width: '100%', marginLeft: 'auto', marginRight: 'auto', paddingRight: '10px', paddingLeft: '10px', paddingTop: '20px', paddingBottom: '0px', backgroundColor: 'rgb(245,245,245)', border: '1px solid rgb(230,230,230)', }}>
 
                     <div>
+
                         <div style={{ display: 'flex' }}>
                             <div style={{ width: '100%', fontWeight: 'bold' }}>
                                 <div className={styles.flexContainerSectionQuestion}>
