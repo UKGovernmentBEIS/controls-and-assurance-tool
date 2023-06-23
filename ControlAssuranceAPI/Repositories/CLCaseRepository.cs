@@ -472,23 +472,26 @@ namespace ControlAssuranceAPI.Repositories
                     }
 
                     //CBP
-                    if (ite.CLCase.CBPApprovalDecision == ApprovalDecisions.Reject)
+                    if(ite.CLCase.ComFrameworkId != 1)
                     {
-                        stageAction2 += "CBP-Rej, ";
-                        totalRejected++;
-                    }
-                    else if (ite.CLCase.CBPApprovalDecision == ApprovalDecisions.Approve)
-                    {
-                        stageAction2 += "CBP-Ok, ";
-                    }
-                    else if (ite.CLCase.CBPApprovalDecision == ApprovalDecisions.RequireDetails)
-                    {
-                        stageAction2 += "CBP-Cng, ";
-                        totalRequireDetails++;
-                    }
-                    else
-                    {
-                        stageAction2 += "CBP-Req, ";
+                        if (ite.CLCase.CBPApprovalDecision == ApprovalDecisions.Reject)
+                        {
+                            stageAction2 += "CBP-Rej, ";
+                            totalRejected++;
+                        }
+                        else if (ite.CLCase.CBPApprovalDecision == ApprovalDecisions.Approve)
+                        {
+                            stageAction2 += "CBP-Ok, ";
+                        }
+                        else if (ite.CLCase.CBPApprovalDecision == ApprovalDecisions.RequireDetails)
+                        {
+                            stageAction2 += "CBP-Cng, ";
+                            totalRequireDetails++;
+                        }
+                        else
+                        {
+                            stageAction2 += "CBP-Req, ";
+                        }
                     }
 
                     //CL
@@ -571,6 +574,7 @@ namespace ControlAssuranceAPI.Repositories
                 CLCaseView_Result item = new CLCaseView_Result();
                 item.ID = ite.ID;
                 item.CaseId = ite.CLCase.ID;
+                item.DeptTransferringTo = ite.CLCase.DeptTransferringTo ?? "";
                 item.CaseRef = caseRef;
                 item.Title1 = ite.CLCase.ReqVacancyTitle?.ToString() ?? "Title Required";
                 item.Title2 = ite.CLCase.CaseType;
@@ -791,7 +795,7 @@ namespace ControlAssuranceAPI.Repositories
                 if(cLcase.BHApprovalDecision == ApprovalDecisions.Approve
                     && cLcase.FBPApprovalDecision == ApprovalDecisions.Approve
                     && cLcase.HRBPApprovalDecision == ApprovalDecisions.Approve
-                    && cLcase.CBPApprovalDecision == ApprovalDecisions.Approve
+                    && (cLcase.ComFrameworkId == 1 || cLcase.CBPApprovalDecision == ApprovalDecisions.Approve)
                     && cLcase.CLApprovalDecision == ApprovalDecisions.Approve)
                 {
                     //all approved, now move stage to OnBoarding and create nn worker records

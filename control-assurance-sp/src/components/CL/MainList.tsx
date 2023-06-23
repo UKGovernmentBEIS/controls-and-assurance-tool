@@ -10,7 +10,10 @@ import { Selection } from '../cr/FilteredList';
 import { ConfirmDialog } from '../cr/ConfirmDialog';
 import { MessageDialog } from '../cr/MessageDialog';
 import styles from '../../styles/cr.module.scss';
+import { DateService } from '../../services';
 
+export const renderDate = (date: Date | string, noDateText?: string): JSX.Element =>
+    <span>{date instanceof Date ? DateService.dateToUkDate(date) : date ? date : noDateText}</span>;
 
 export interface IMainListProps extends types.IBaseComponentProps {
 
@@ -116,11 +119,21 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
             headerClassName: styles.bold,
         },
         {
+            key: 'Dept',
+            name: 'Dept',
+            fieldName: 'DeptTransferringTo',
+            minWidth: 70,
+            maxWidth: 70,
+            isResizable: true,
+            isMultiline: true,
+            headerClassName: styles.bold,
+        },
+        {
             key: 'Title1',
             name: 'Title',
             fieldName: 'Title1',
-            minWidth: 230,
-            maxWidth: 230,
+            minWidth: 160,
+            maxWidth: 160,
             isResizable: true,
             isMultiline: true,
             headerClassName: styles.bold,
@@ -218,6 +231,7 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
             maxWidth: 85,
             isResizable: true,
             headerClassName: styles.bold,
+            //onRender: item => renderDate(item.StartDate)
         },
         {
             key: 'EndDate',
@@ -379,9 +393,25 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
     private makeItem = (e: IEntity, listColumns: IUpdatesListColumn[]): any => {
 
         let item: any = { key: e["ID"] };
+        // item = {
+        //     StartDateValue: e["StartDate"] ? e["StartDate"].valueOf() : null, // using StartDateValue as a computed property name
+        //     ...item
+        //   };
+
+
+        
 
         listColumns.map((c) => {
-            let fieldContent: string = String(e[c.fieldName]);
+            let fieldContent: any = '';
+            fieldContent = String(e[c.fieldName]);    
+
+            // if(c.fieldName === 'StartDate'){
+            //     fieldContent = Date.parse(e[c.fieldName]);                
+            // }
+            // else{
+            //     fieldContent = String(e[c.fieldName]);    
+            // }
+            
             item = {
                 [c.fieldName]: fieldContent,
                 ...item
