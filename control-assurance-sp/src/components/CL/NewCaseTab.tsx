@@ -2036,15 +2036,17 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                 </div>
 
                             </div>
-                            <div style={{ width: '50%', fontWeight: 'bold' }}>
-                                <div className={styles.flexContainerSectionQuestion}>
-                                    <div className={styles.sectionQuestionCol1}><span>Commercial business partner</span></div>
-                                    <div className={styles.sectionQuestionCol2}>
-                                        <img src={cbpUserIdValidationImg} />
+                            {(this.state.FormData.ComFrameworkId === 1) === false &&
+                                <div style={{ width: '50%', fontWeight: 'bold' }}>
+                                    <div className={styles.flexContainerSectionQuestion}>
+                                        <div className={styles.sectionQuestionCol1}><span>Commercial business partner</span></div>
+                                        <div className={styles.sectionQuestionCol2}>
+                                            <img src={cbpUserIdValidationImg} />
+                                        </div>
                                     </div>
-                                </div>
 
-                            </div>
+                                </div>
+                            }
 
 
                         </div>
@@ -2060,25 +2062,19 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                     onChange={(v) => this.changeUserPicker(v, 'HRBPUserId')}
                                 />
 
-
-
                             </div>
 
-                            <div style={{ width: '50%', }}>
-                                <CrEntityPicker
-                                    displayForUser={true}
-                                    entities={this.props.users}
-                                    itemLimit={1}
-                                    selectedEntities={this.state.FormData.CBPUserId && [this.state.FormData.CBPUserId]}
-                                    onChange={(v) => this.changeUserPicker(v, 'CBPUserId')}
-                                />
-
-
-                            </div>
-
-
-
-
+                            {(this.state.FormData.ComFrameworkId === 1) === false &&
+                                <div style={{ width: '50%', }}>
+                                    <CrEntityPicker
+                                        displayForUser={true}
+                                        entities={this.props.users}
+                                        itemLimit={1}
+                                        selectedEntities={this.state.FormData.CBPUserId && [this.state.FormData.CBPUserId]}
+                                        onChange={(v) => this.changeUserPicker(v, 'CBPUserId')}
+                                    />
+                                </div>
+                            }
                         </div>
                     </div>
 
@@ -2339,7 +2335,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                         <tbody>
                             <tr>
                                 <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
-                                Dept transferring to
+                                    Dept transferring to
                                 </td>
                                 <td style={{ width: '81%', borderTop: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
                                     {this.state.FormData.DeptTransferringTo}
@@ -2899,10 +2895,10 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
                                     {this.state.CaseInfo.HRBPUser}
                                 </td>
                                 <td style={{ width: '19%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)', borderBottom: '1px solid rgb(166,166,166)' }}>
-                                    Commercial business partner
+                                    {(this.state.FormData.ComFrameworkId === 1) === false && <span>Commercial business partner</span>}
                                 </td>
                                 <td style={{ width: '31%', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)' }}>
-                                    {this.state.CaseInfo.CBPUser}
+                                    {(this.state.FormData.ComFrameworkId === 1) === false && <span>{this.state.CaseInfo.CBPUser}</span>}
                                 </td>
 
                             </tr>
@@ -3151,6 +3147,9 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
     }
 
     private renderCommercialPartnerApprovalDecision_info() {
+
+        if (this.state.FormData.ComFrameworkId === 1)
+            return null;
 
         //hide this section if user is HRBP
         if (this.props.superUserPermission === false && this.props.currentUserId === this.state.FormData.CBPUserId) {
@@ -3589,6 +3588,9 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
 
     private renderCommercialBusinessPartnerApprovalDecision() {
 
+        if (this.state.FormData.ComFrameworkId === 1)
+            return null;
+            
         //show this section if user is HRBP/super user
         if (this.props.superUserPermission === true || this.props.currentUserId === this.state.FormData.CBPUserId) {
             console.log('user is CBP/super user, show renderCommercialBusinessPartnerApprovalDecision');
