@@ -207,8 +207,13 @@ namespace ControlAssuranceAPI.Repositories
 
                 try
                 {
-                    var completedPercentageD = (decimal)((decimal)(decimal)totalClosedRecs / (decimal)totalRecs) * 100;
-                    completedPercentage = (int)Math.Round(completedPercentageD);
+                    if (totalRecs == 0)
+                        completedPercentage = 100;
+                    else
+                    {
+                        var completedPercentageD = (decimal)((decimal)(decimal)totalClosedRecs / (decimal)totalRecs) * 100;
+                        completedPercentage = (int)Math.Round(completedPercentageD);
+                    }
                 }
                 catch { }
 
@@ -310,10 +315,15 @@ namespace ControlAssuranceAPI.Repositories
                 int percentClosed = 0;
                 try
                 {
-                    decimal a = (decimal)((decimal)totalClosed / (decimal)totalRec);
-                    decimal b = Math.Round((a * 100));
-                    percentClosed = (int)b;
-                    //percentClosed = (int)(((decimal)(totalClosed / totalRec)) * (decimal)100);
+                    if (totalRec == 0)
+                        percentClosed = 100;
+                    else
+                    {
+                        decimal a = (decimal)((decimal)totalClosed / (decimal)totalRec);
+                        decimal b = Math.Round((a * 100));
+                        percentClosed = (int)b;
+                        //percentClosed = (int)(((decimal)(totalClosed / totalRec)) * (decimal)100);
+                    }
                 }
                 catch (Exception ex)
                 {
