@@ -795,10 +795,9 @@ namespace ControlAssuranceAPI.Repositories
                         {
                             //total recs for this user of that report
                             var user = db.Users.FirstOrDefault(x => x.ID == thisRepActionOwner.UserId);
-                            int totalUpdatesReq = r.GIAARecommendations.Count(x => x.UpdateStatus == "ReqUpdate" && x.GIAAActionOwners.Any(a => a.UserId == user.ID));
+                            int totalUpdatesReq = r.GIAARecommendations.Count(x => !string.IsNullOrEmpty(x.UpdateStatus) && x.UpdateStatus.Contains("Action Owner") && x.GIAAActionOwners.Any(a => a.UserId == user.ID));
                             if (totalUpdatesReq > 0)
                             {
-                                //int totalAssignments = r.GIAARecommendations.Count(x => x.GIAAActionOwners.Any(a => a.UserId == user.ID));
                                 //send email - GIAA-UpdateReminder
                                 //ActionOwnerName, ReportTitle, TotalUpdatesReq (Total recommendations for this report for this action owner for which update status is “UpdateReq”)
 
@@ -813,8 +812,6 @@ namespace ControlAssuranceAPI.Repositories
                                     Custom2 = r.Title,
                                     Custom3 = totalUpdatesReq.ToString(),
                                     MainEntityId = r.ID,
-
-
                                 };
                                 db.EmailQueues.Add(emailQueue);
                             }

@@ -164,12 +164,56 @@ namespace ControlAssuranceAPI.Repositories
                     }
                 }
                 db.SaveChanges();
-                
+                              
             }
 
+            RecStatusUpdate(giaaUpdate.GIAARecommendationId);
 
 
             return ret;
+        }
+
+        private void RecStatusUpdate(int? recommendationId)
+        {
+            var rec = db.GIAARecommendations.FirstOrDefault(r => r.ID == recommendationId);
+            if (rec != null)
+            {
+                int totalUpdatesThisMonth = 0;
+                int totalRequestStatusOpen = 0;
+                DateTime todaysDate = DateTime.Now;
+                try
+                {
+                    totalUpdatesThisMonth = rec.GIAAUpdates.Count(x => (x.UpdateType == "Action Update") && x.UpdateDate.Value.Month == todaysDate.Month && x.UpdateDate.Value.Year == todaysDate.Year);
+                }
+                catch { }
+
+                try
+                {
+                    totalRequestStatusOpen = rec.GIAAUpdates.Count(x => x.RequestStatusOpen == true);
+                }
+                catch { }
+
+                if (rec.GIAAActionStatusTypeId == 2)
+                {
+                    //if rec is Closed
+                    rec.UpdateStatus = "Blank";
+                }
+                else if (totalRequestStatusOpen > 0)
+                {
+                    //if totalRequestStatusOpen > 1 then set ReqUpdateFrom to 'GIAA Staff'.
+                    rec.UpdateStatus = "GIAA Staff";
+                }
+                else if (rec.GIAAActionStatusTypeId == 3 && totalUpdatesThisMonth == 0)
+                {
+                    //If status is overdue and no 'Action Updates' found for this month then set ReqUpdateFrom to 'Action Owner'.
+                    rec.UpdateStatus = "Action Owner";
+                }
+                else
+                {
+                    rec.UpdateStatus = "Blank";
+                }
+                db.SaveChanges();
+            }
         }
 
         public GIAAUpdate Update(GIAAUpdate gIAAUpdate)

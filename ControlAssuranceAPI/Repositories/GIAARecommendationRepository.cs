@@ -72,7 +72,8 @@ namespace ControlAssuranceAPI.Repositories
             }
             if(incompleteOnly == true)
             {
-                qry = qry.Where(x => x.UpdateStatus == "ReqUpdate");
+                //we need records containing 'Action Owner' or 'GIAA Staff'
+                qry = qry.Where(x => !string.IsNullOrEmpty(x.UpdateStatus) && x.UpdateStatus != "Blank");
             }
             if(actionStatusTypeId > 0)
             {

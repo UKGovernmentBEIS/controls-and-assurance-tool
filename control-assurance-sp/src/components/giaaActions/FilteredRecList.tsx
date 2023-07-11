@@ -141,8 +141,8 @@ export class FilteredRecList extends React.Component<IFilteredRecListProps, IFil
                     />
 
                     <Toggle
-                        onText="Just Mine"
-                        offText="Just Mine"
+                        onText="Just my actions"
+                        offText="Just my actions"
                         styles={controlStyles}
                         checked={props.justMine}
                         onChanged={(isChecked) => props.onChangeJustMine(isChecked)}

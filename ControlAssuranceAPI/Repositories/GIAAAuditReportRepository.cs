@@ -183,7 +183,8 @@ namespace ControlAssuranceAPI.Repositories
             }
             else if (incompleteOnly == true)
             {
-                qry = qry.Where(x => x.GIAARecommendations.Any(r => r.UpdateStatus == "ReqUpdate"));
+                //we need records containing 'Action Owner' or 'GIAA Staff'
+                qry = qry.Where(x => x.GIAARecommendations.Any(r => !string.IsNullOrEmpty(r.UpdateStatus) && r.UpdateStatus != "Blank"));
             }
             int qryCount = qry.Count();
 
@@ -203,7 +204,8 @@ namespace ControlAssuranceAPI.Repositories
                 int totalClosedRecs = iteR.GIAARecommendations.Count(x => x.GIAAActionStatusTypeId == 2);
 
 
-                int reqUpdateRecs = iteR.GIAARecommendations.Count(r => r.UpdateStatus == "ReqUpdate");
+                int reqUpdateRecs_ActionOwner = iteR.GIAARecommendations.Count(r => !string.IsNullOrEmpty(r.UpdateStatus) && r.UpdateStatus.Contains("Action Owner"));
+                int reqUpdateRecs_GIAAStaff = iteR.GIAARecommendations.Count(r => !string.IsNullOrEmpty(r.UpdateStatus) && r.UpdateStatus.Contains("GIAA Staff"));
 
                 try
                 {
@@ -251,9 +253,17 @@ namespace ControlAssuranceAPI.Repositories
 
                 string updateStatus = "";
 
-                if (reqUpdateRecs > 0)
+                if (reqUpdateRecs_ActionOwner > 0 && reqUpdateRecs_GIAAStaff > 0)
                 {
-                    updateStatus = "ReqUpdate";
+                    updateStatus = "Action Owner, GIAA Staff";
+                }
+                else if (reqUpdateRecs_ActionOwner > 0)
+                {
+                    updateStatus = "Action Owner";
+                }
+                else if (reqUpdateRecs_GIAAStaff > 0)
+                {
+                    updateStatus = "GIAA Staff";
                 }
 
                 string directorates = "";

@@ -151,11 +151,12 @@ export default class RecommendationsList extends React.Component<IRecommendation
 
         {
             key: 'UpdateStatus',
-            name: 'Update Status',
+            name: 'ReqUpdFrom',
             fieldName: 'UpdateStatus',
             minWidth: 98,
             maxWidth: 98,
             isResizable: true,
+            isMultiline: true,
             headerClassName: styles.bold,
         },
 

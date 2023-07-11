@@ -109,12 +109,12 @@ export default class Section extends React.Component<ISectionProps, SectionState
 
 
                         {this.state.CheckUpdatesReqPressed && this.state.UpdatesReqInProgress === true && <div>{currentDateTime}: Working....Please wait.<br />
-                        All recommendations will now be checked and if necessary, will set the status to 'Overdue' and updates fields to 'Req Updates'.<br />
+                        All recommendations will now be checked and if necessary, will set the status to 'Overdue' and to ensure Action Owners and GIAA Staff know that they have tasks to complete.<br />
                             <span style={{ cursor: 'pointer', color: 'blue' }} onClick={() => this.loadImporInProgressInfo()} >Refresh</span></div>
                         }
 
                         {this.state.CheckUpdatesReqPressed && this.state.UpdatesReqInProgress === false && <div>{currentDateTime}: Completed<br />
-                        All recommendations have been checked and where necessary, the status has been set to 'Overdue' and update field to 'Req Updates'</div>
+                        All recommendations have been checked and where necessary, the status has been set to 'Overdue' and Action Owners and GIAA Staff can see that they have tasks to complete.</div>
                         }
 
 
