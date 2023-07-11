@@ -125,8 +125,8 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
                     />
 
                     <Toggle
-                        onText="Just Mine"
-                        offText="Just Mine"
+                        onText="Just my actions"
+                        offText="Just my actions"
                         styles={controlStyles}
                         checked={props.justMine}
                         onChanged={(isChecked) => props.onChangeJustMine(isChecked)}
@@ -152,7 +152,7 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
                         <CommandBarButton
                             iconProps={{ iconName: 'WorkFlow' }}
                             className={classNames.cmdBtn}
-                            text="Check Updates Req"
+                            text="Check if req upd"
                             onClick={props.onCheckUpdatesReq}
                             disabled={props.updatesReqInProgress}
                         />}

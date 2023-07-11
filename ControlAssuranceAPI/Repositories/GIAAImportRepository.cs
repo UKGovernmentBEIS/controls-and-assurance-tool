@@ -586,22 +586,38 @@ namespace ControlAssuranceAPI.Repositories
                         //}
 
                         int totalUpdatesThisMonth = 0;
+                        int totalRequestStatusOpen = 0;
                         try
                         {
                             totalUpdatesThisMonth = r.GIAAUpdates.Count(x => (x.UpdateType == "Action Update") && x.UpdateDate.Value.Month == todaysDate.Month && x.UpdateDate.Value.Year == todaysDate.Year);
                         }
                         catch { }
 
-                        //If status is overdue and no 'Action Updates' found for this month then set updates to 'Req Updates'.
-                        if (r.GIAAActionStatusTypeId == 3 && totalUpdatesThisMonth == 0)
+                        try
                         {
-                            r.UpdateStatus = "ReqUpdate";
+                            totalRequestStatusOpen = r.GIAAUpdates.Count(x => x.RequestStatusOpen == true);
+                        }
+                        catch { }
+                        
+                        if(r.GIAAActionStatusTypeId == 2)
+                        {
+                            //if rec is Closed
+                            r.UpdateStatus = "Blank";
+                        }
+                        else if(totalRequestStatusOpen > 0)
+                        {
+                            //if totalRequestStatusOpen > 1 then set ReqUpdateFrom to 'GIAA Staff'.
+                            r.UpdateStatus = "GIAA Staff";
+                        }
+                        else if (r.GIAAActionStatusTypeId == 3 && totalUpdatesThisMonth == 0)
+                        {
+                            //If status is overdue and no 'Action Updates' found for this month then set ReqUpdateFrom to 'Action Owner'.
+                            r.UpdateStatus = "Action Owner";
                         }
                         else
                         {
                             r.UpdateStatus = "Blank";
                         }
-
                     }
 
                     dbThread.SaveChanges();
