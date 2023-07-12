@@ -12,19 +12,11 @@ namespace ControlAssuranceAPI.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class PermissionType
+    public partial class Plateform
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public PermissionType()
-        {
-            this.UserPermissions = new HashSet<UserPermission>();
-        }
-    
         public int ID { get; set; }
         public string Title { get; set; }
-        public string Description { get; set; }
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<UserPermission> UserPermissions { get; set; }
+        public string Module { get; set; }
+        public string Link { get; set; }
     }
 }

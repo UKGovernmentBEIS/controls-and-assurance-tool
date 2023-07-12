@@ -353,6 +353,7 @@
     <Compile Include="Controllers\GIAAActionOwnersController.cs" />
     <Compile Include="Controllers\GIAAActionPrioritiesController.cs" />
     <Compile Include="Controllers\GIAAActionStatusTypesController.cs" />
+    <Compile Include="Controllers\PlateformsController.cs" />
     <Compile Include="Controllers\GIAAAssurancesController.cs" />
     <Compile Include="Controllers\GIAAAuditReportDirectoratesController.cs" />
     <Compile Include="Controllers\GIAAAuditReportsController.cs" />
@@ -706,6 +707,9 @@
     <Compile Include="Models\PersonTitle.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Plateform.cs">
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\SPDGAreaStat2_Result.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
@@ -726,7 +730,7 @@
     </Compile>
     <Compile Include="Models\SpecificAreaView_Result.cs" />
     <Compile Include="Models\SPGetGender_Result.cs">
-	<DependentUpon>ControlAssurance.tt</DependentUpon>
+      <DependentUpon>ControlAssurance.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\sysdiagram.cs">
       <DependentUpon>ControlAssurance.tt</DependentUpon>
@@ -779,6 +783,7 @@
     <Compile Include="Repositories\GIAAActionOwnerRepository.cs" />
     <Compile Include="Repositories\GIAAActionPriorityRepository.cs" />
     <Compile Include="Repositories\GIAAActionStatusTypeRepository.cs" />
+    <Compile Include="Repositories\PlateformRepository.cs" />
     <Compile Include="Repositories\GIAAAssuranceRepository.cs" />
     <Compile Include="Repositories\GIAAAuditReportDirectorateRepository.cs" />
     <Compile Include="Repositories\GIAAAuditReportRepository.cs" />

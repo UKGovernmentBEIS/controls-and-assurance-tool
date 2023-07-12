@@ -4,6 +4,7 @@ import { CrDropdown, IDropdownOption } from '../../../components/cr/CrDropdown';
 import Section from '../../../components/CL/Section';
 
 import NewCaseTab from '../../../components/CL/NewCaseTab';
+import PlateformLinks from '../../../components/PlateformLinks';
 import { MessageDialog } from '../../../components/cr/MessageDialog';
 
 import * as types from '../../../types';
@@ -11,7 +12,7 @@ import BaseUserContextWebPartComponent from '../../../components/BaseUserContext
 import * as services from '../../../services';
 import EntityList from '../../../components/entity/EntityList';
 import { IGenColumn, ColumnType, ColumnDisplayType } from '../../../types/GenColumn';
-import { IUserPermission, IDefForm, IGIAAPeriod, IEntity, IDirectorateGroup, IGoDefForm, GoForm, IGoForm, CLCase, ICLCase, IClCaseCounts, ICLDefForm, ICLWorker, IUser, ICLHiringMember } from '../../../types';
+import { IUserPermission, IDefForm, IGIAAPeriod, IEntity, IDirectorateGroup, IGoDefForm, GoForm, IGoForm, CLCase, ICLCase, IClCaseCounts, ICLDefForm, ICLWorker, IUser, ICLHiringMember, IPlateform } from '../../../types';
 import { CrLoadingOverlayWelcome } from '../../../components/cr/CrLoadingOverlayWelcome';
 import styles from '../../../styles/cr.module.scss';
 import { PrimaryButton } from 'office-ui-fabric-react/lib/Button';
@@ -117,12 +118,12 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
 
   private UploadFolder_Evidence: string = "";
   private UploadFolder_CLRoot: string = "";
-  private consoleLogFlag:boolean = true;
-  private roleAssignmentAdded:boolean = false;
-  private roleAssignmentRemoved:boolean = false;
+  private consoleLogFlag: boolean = true;
+  private roleAssignmentAdded: boolean = false;
+  private roleAssignmentRemoved: boolean = false;
 
-  private RoleAssignmentsToAdd:string [] = [];
-  private RoleAssignmentsToRemove:number [] = [];
+  private RoleAssignmentsToAdd: string[] = [];
+  private RoleAssignmentsToRemove: number[] = [];
 
   constructor(props: types.IWebPartComponentProps) {
     super(props);
@@ -138,6 +139,7 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
     return (
 
       <React.Fragment>
+        <PlateformLinks module='ContingentLabour-ManageCases' visible={this.isSuperUser()} {...this.props} />
         <Pivot onLinkClick={this.handlePivotClick} selectedKey={`${this.state.SelectedPivotKey}`}>
           <PivotItem headerText={this.headerTxt_MainTab} itemKey={this.headerTxt_MainTab}>
             {this.renderMainTab()}
@@ -376,7 +378,7 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
           console.log(`role added for ensured user ${userEmail}`);
         });
       });
-      
+
     });
 
   }
@@ -390,7 +392,7 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
   //     if (users.length > 0){
   //       const userId: number = users[0]['Id'];
   //       console.log('userId', userId);
-  
+
   //       folderItem.roleAssignments.add(userId, this.state.FullControlFolderRoleId).then(roleAddedValue => {
   //         console.log(`role added for user ${userEmail}`);
   //       });
@@ -403,11 +405,11 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
   //         if (users2.length > 0){
   //           const userId2: number = users2[0]['Id'];
   //           console.log('userId2', userId2);
-      
+
   //           folderItem.roleAssignments.add(userId2, this.state.FullControlFolderRoleId).then(roleAddedValue => {
   //             console.log(`role added for user2 ${userEmail}`);
   //           });
-    
+
   //         }
 
   //       });
@@ -800,142 +802,136 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
     return users;
   }
 
-  
-  private folderPermissionAdd = (userRef:number, folderItem: SharePointQueryableSecurable): void =>{
 
-    const userEmail =this.RoleAssignmentsToAdd[userRef];
+  private folderPermissionAdd = (userRef: number, folderItem: SharePointQueryableSecurable): void => {
+
+    const userEmail = this.RoleAssignmentsToAdd[userRef];
     if (this.consoleLogFlag)
       console.log('>> folderPermissionAdd: ', userRef, userEmail);
-   
-    sp.web.ensureUser(userEmail).then(user => {      
+
+    sp.web.ensureUser(userEmail).then(user => {
 
       //const userId: number = Number(user['Id']);
-      const userId: number = user.data.Id;    
+      const userId: number = user.data.Id;
       folderItem.roleAssignments.add(userId, this.state.FullControlFolderRoleId).then(roleAddedValue => {
         if (this.consoleLogFlag)
           console.log(`>> folderPermissionAdd: role added for user ${userEmail}`);
         this.roleAssignmentAdded = true;
       });
 
-    }).catch(e => {      
+    }).catch(e => {
       if (this.consoleLogFlag)
         console.log(`>> folderPermissionAdd: user doesnt exist ${userEmail}`);
-      this.roleAssignmentAdded = true;      
+      this.roleAssignmentAdded = true;
     });
   }
 
-  private doPermissionAddRecursive =( num, nextRole:boolean, folderItem: SharePointQueryableSecurable, delayCount ): Promise<any> => { 
+  private doPermissionAddRecursive = (num, nextRole: boolean, folderItem: SharePointQueryableSecurable, delayCount): Promise<any> => {
 
     if (this.consoleLogFlag)
-      console.log('>> doPermissionAddRecursive: ', num );
+      console.log('>> doPermissionAddRecursive: ', num);
 
-    if(nextRole == true){
+    if (nextRole == true) {
       this.roleAssignmentAdded = false;
       this.folderPermissionAdd(num, folderItem);
       delayCount = 0;
     }
 
-    const decide = ( asyncResult) => {
+    const decide = (asyncResult) => {
 
+      if (this.consoleLogFlag)
+        console.log('>> doPermissionAddRecursive Decide: ', asyncResult, delayCount);
+
+      if (asyncResult < 0) {
         if (this.consoleLogFlag)
-          console.log('>> doPermissionAddRecursive Decide: ', asyncResult, delayCount);
+          console.log('>> doPermissionAddRecursive Completed: ', asyncResult, delayCount);
 
-        if( asyncResult < 0)
-        {
-          if (this.consoleLogFlag)
-            console.log('>> doPermissionAddRecursive Completed: ', asyncResult, delayCount);
-
-          return "lift off"; // no, all done, return a non-promise result
-        }
-        if(this.roleAssignmentAdded == true){
-          return this.doPermissionAddRecursive( num-1, true, folderItem, delayCount); // yes, call recFun again which returns a promise
-        }
-        delayCount = delayCount +1;
-        if (delayCount > 20 )
-        {
-          // if we had to delay 20 times then something has gone wrong. we should try
-          return this.doPermissionAddRecursive( num, true, folderItem, delayCount);  
-        }
-        return this.doPermissionAddRecursive( num, false, folderItem, delayCount); // yes, call recFun again which returns a promise
+        return "lift off"; // no, all done, return a non-promise result
+      }
+      if (this.roleAssignmentAdded == true) {
+        return this.doPermissionAddRecursive(num - 1, true, folderItem, delayCount); // yes, call recFun again which returns a promise
+      }
+      delayCount = delayCount + 1;
+      if (delayCount > 20) {
+        // if we had to delay 20 times then something has gone wrong. we should try
+        return this.doPermissionAddRecursive(num, true, folderItem, delayCount);
+      }
+      return this.doPermissionAddRecursive(num, false, folderItem, delayCount); // yes, call recFun again which returns a promise
     };
 
-    return this.createPermissionAddDelay(num, delayCount ).then(decide);
-}
+    return this.createPermissionAddDelay(num, delayCount).then(decide);
+  }
 
-  private createPermissionAddDelay = ( asyncParam, delayCount): Promise<any> => { // example operation
-    const promiseDelay = (data,msec) => new Promise(res => setTimeout(res,msec,data));
+  private createPermissionAddDelay = (asyncParam, delayCount): Promise<any> => { // example operation
+    const promiseDelay = (data, msec) => new Promise(res => setTimeout(res, msec, data));
     if (this.consoleLogFlag)
       console.log('>> CreatePermissionAddDelay: ', asyncParam, delayCount);
 
-    return promiseDelay( asyncParam, 100); //resolve with argument in 100 millisecond.
+    return promiseDelay(asyncParam, 100); //resolve with argument in 100 millisecond.
   }
 
-  private folderPermissionRemove = (userRef:number, folderItem: SharePointQueryableSecurable): void =>{
+  private folderPermissionRemove = (userRef: number, folderItem: SharePointQueryableSecurable): void => {
 
-    const principalId =this.RoleAssignmentsToRemove[userRef];
-    if (this.consoleLogFlag)
-    {
+    const principalId = this.RoleAssignmentsToRemove[userRef];
+    if (this.consoleLogFlag) {
       console.log('folderPermissionRemove - folder permission remove: ', userRef);
       console.log('principalId', principalId);
     }
 
-    if(principalId !== this.state.CurrentUserPrincipalId)
+    if (principalId !== this.state.CurrentUserPrincipalId)
       folderItem.roleAssignments.remove(principalId, this.state.FullControlFolderRoleId).then(roleAddedValue => {
         if (this.consoleLogFlag)
           console.log(`folderPermissionRemove - role removed for user ${principalId}`);
         this.roleAssignmentRemoved = true;
-      }).catch(err =>{        
+      }).catch(err => {
         console.log(`>> folderPermissionRemove: - failed ${err}`);
         this.roleAssignmentRemoved = true;
       });
-    else
-    {
+    else {
       if (this.consoleLogFlag)
         console.log('>> folderPermissionRemove: not adding current user in folder permission remove list');
       this.roleAssignmentRemoved = true;
-    }  
+    }
   }
 
-  private doPermissionRemoveRecursive =( num, nextRole:boolean, folderItem: SharePointQueryableSecurable, delayCount): Promise<any> => { 
+  private doPermissionRemoveRecursive = (num, nextRole: boolean, folderItem: SharePointQueryableSecurable, delayCount): Promise<any> => {
 
     if (this.consoleLogFlag)
       console.log(">> doPermissionRemoveRecursive: " + num);
 
-    if(nextRole == true){
+    if (nextRole == true) {
       this.roleAssignmentRemoved = false;
       this.folderPermissionRemove(num, folderItem);
       delayCount = 0;
     }
 
-    const decide = ( asyncResult) => {
+    const decide = (asyncResult) => {
 
+      if (this.consoleLogFlag)
+        console.log('>> doPermissionRemoveRecursive decide: ', asyncResult, delayCount);
+      if (asyncResult < 0) {
         if (this.consoleLogFlag)
-          console.log('>> doPermissionRemoveRecursive decide: ', asyncResult, delayCount);
-        if( asyncResult < 0)
-        {
-          if (this.consoleLogFlag)
-            console.log('>> doPermissionRemoveRecursive Completed: ', asyncResult, delayCount);
-          return "lift off"; // no, all done, return a non-promise result
-        }
-        if(this.roleAssignmentRemoved == true){
-          return this.doPermissionRemoveRecursive( num-1, true, folderItem, delayCount); 
-        }
-        delayCount = delayCount + 1;
-        if (delayCount > 20)
-        {
-          return this.doPermissionRemoveRecursive( num, true, folderItem, delayCount);   
-        }
-        return this.doPermissionRemoveRecursive( num, false, folderItem, delayCount); 
+          console.log('>> doPermissionRemoveRecursive Completed: ', asyncResult, delayCount);
+        return "lift off"; // no, all done, return a non-promise result
+      }
+      if (this.roleAssignmentRemoved == true) {
+        return this.doPermissionRemoveRecursive(num - 1, true, folderItem, delayCount);
+      }
+      delayCount = delayCount + 1;
+      if (delayCount > 20) {
+        return this.doPermissionRemoveRecursive(num, true, folderItem, delayCount);
+      }
+      return this.doPermissionRemoveRecursive(num, false, folderItem, delayCount);
     };
 
-    return this.createPermissionRemoveDelay(num, delayCount ).then(decide);
-}
+    return this.createPermissionRemoveDelay(num, delayCount).then(decide);
+  }
 
-  private createPermissionRemoveDelay = ( asyncParam, delayCount): Promise<any> => { // example operation
-    const promiseDelay = (data,msec) => new Promise(res => setTimeout(res,msec,data));
+  private createPermissionRemoveDelay = (asyncParam, delayCount): Promise<any> => { // example operation
+    const promiseDelay = (data, msec) => new Promise(res => setTimeout(res, msec, data));
     if (this.consoleLogFlag)
       console.log('>> createPermissionRemoveDelay: ', asyncParam, delayCount);
-    return promiseDelay( asyncParam, 100); 
+    return promiseDelay(asyncParam, 100);
   }
 
 
@@ -953,9 +949,9 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
             this.RoleAssignmentsToAdd.push(userEmail);
           });
 
-          this.doPermissionAddRecursive(this.RoleAssignmentsToAdd.length-1, true, folderItem,0).then(() => {
+          this.doPermissionAddRecursive(this.RoleAssignmentsToAdd.length - 1, true, folderItem, 0).then(() => {
             if (this.consoleLogFlag)
-              console.log('createNewCaseUploadFolder - Permissions Sorted: ', casefolderName);                        
+              console.log('createNewCaseUploadFolder - Permissions Sorted: ', casefolderName);
           });
 
         });
@@ -967,23 +963,23 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
 
     sp.web.getFolderByServerRelativeUrl(this.UploadFolder_CLRoot).folders.getByName(casefolderName).getItem().then((folderItem: SharePointQueryableSecurable) => {
 
-   
-      this.RoleAssignmentsToRemove = [];      
+
+      this.RoleAssignmentsToRemove = [];
       folderItem.roleAssignments.get().then(rass => {
         rass.forEach(ra => {
           this.RoleAssignmentsToRemove.push(Number(ra['PrincipalId']));
 
-/*           const principalId: number = Number(ra['PrincipalId']);
-          console.log('principalId', principalId);
-          if(principalId !== this.state.CurrentUserPrincipalId)
-            promisesRemove.push(this.removeFolderRoleBySiteUserId(principalId, folderItem));
-          else
-            console.log('not adding current user in folder permission remove list');
- */
+          /*           const principalId: number = Number(ra['PrincipalId']);
+                    console.log('principalId', principalId);
+                    if(principalId !== this.state.CurrentUserPrincipalId)
+                      promisesRemove.push(this.removeFolderRoleBySiteUserId(principalId, folderItem));
+                    else
+                      console.log('not adding current user in folder permission remove list');
+           */
         });
       }).then(() => {
 
-        this.doPermissionRemoveRecursive(this.RoleAssignmentsToRemove.length-1, true, folderItem,0 ).then(() => {
+        this.doPermissionRemoveRecursive(this.RoleAssignmentsToRemove.length - 1, true, folderItem, 0).then(() => {
 
           this.RoleAssignmentsToAdd = [];
 
@@ -991,9 +987,9 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
             this.RoleAssignmentsToAdd.push(userEmail);
           });
 
-          this.doPermissionAddRecursive(this.RoleAssignmentsToAdd.length-1, true, folderItem,0).then(() => {
+          this.doPermissionAddRecursive(this.RoleAssignmentsToAdd.length - 1, true, folderItem, 0).then(() => {
             if (this.consoleLogFlag)
-              console.log('createNewCaseUploadFolder - Permissions Sorted: ', casefolderName);                        
+              console.log('createNewCaseUploadFolder - Permissions Sorted: ', casefolderName);
           });
 
         });

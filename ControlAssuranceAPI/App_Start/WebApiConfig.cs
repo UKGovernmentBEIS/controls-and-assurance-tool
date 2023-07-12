@@ -138,6 +138,7 @@ namespace ControlAssuranceAPI
 
             builder.EntitySet<ExportDefination>("ExportDefinations");
             builder.EntitySet<AvailableExport>("AvailableExports");
+            builder.EntitySet<Plateform>("Plateforms");
 
 
             builder.EntitySet<Models.SPDGAreaStat_Result>("DGAreaStats");
@@ -176,7 +177,7 @@ namespace ControlAssuranceAPI
             //register IAPActionView_Result for the customer display of individual action plans list
             builder.EntitySet<IAPActionView_Result>("IAPActionViewResult");
 
-            builder.EntitySet<APIInfo>("APIInfo17Nov21");
+            builder.EntitySet<APIInfo>("APIInfo12Jul23");
             builder.EntitySet<TestDateTime>("TestDateTime");
 
 
