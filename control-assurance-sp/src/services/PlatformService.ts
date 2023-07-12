@@ -1,13 +1,13 @@
 import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { EntityService } from './EntityService';
-import { IDataAPI, IPlateform } from '../types';
+import { IDataAPI, IPlatform } from '../types';
 
 
 
-export class PlateformService extends EntityService<IPlateform> {
+export class PlatformService extends EntityService<IPlatform> {
 
     constructor(spfxContext: WebPartContext, api: IDataAPI) {
-        super(spfxContext, api, `/Plateforms`);
+        super(spfxContext, api, `/Platforms`);
     }
 
 

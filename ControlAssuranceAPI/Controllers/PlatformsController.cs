@@ -10,24 +10,24 @@ using Microsoft.AspNet.OData;
 
 namespace ControlAssuranceAPI.Controllers
 {
-    public class PlateformsController : BaseController
+    public class PlatformsController : BaseController
     {
-        public PlateformsController() : base() { }
+        public PlatformsController() : base() { }
 
-        public PlateformsController(IControlAssuranceContext context) : base(context) { }
+        public PlatformsController(IControlAssuranceContext context) : base(context) { }
 
         [EnableQuery]
-        public IQueryable<Plateform> Get()
+        public IQueryable<Platform> Get()
         {
 
-            return db.PlateformRepository.Plateforms;
+            return db.PlateformRepository.Platforms;
         }
 
-        // GET: odata/Plateforms(1)
+        // GET: odata/Platforms(1)
         [EnableQuery]
-        public SingleResult<Plateform> Get([FromODataUri] int key)
+        public SingleResult<Platform> Get([FromODataUri] int key)
         {
-            return SingleResult.Create(db.PlateformRepository.Plateforms.Where(x => x.ID == key));
+            return SingleResult.Create(db.PlateformRepository.Platforms.Where(x => x.ID == key));
         }
 
         protected override void Dispose(bool disposing)

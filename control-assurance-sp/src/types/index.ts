@@ -1,4 +1,4 @@
-export { IPlateform } from './Plateform';
+export { IPlatform } from './Platform';
 export { IAutomationOption } from './AutomationOption';
 export { IUserHelp } from './UserHelp';
 export { IPeriod, Period } from './Period';

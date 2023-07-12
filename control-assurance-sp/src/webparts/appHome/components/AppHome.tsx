@@ -9,7 +9,7 @@ import { IUserPermission, IDefForm, IPeriod, IEntity } from '../../../types';
 import { CrLoadingOverlayWelcome } from '../../../components/cr/CrLoadingOverlayWelcome';
 import styles from '../../../styles/cr.module.scss';
 import { PrimaryButton } from 'office-ui-fabric-react/lib/Button';
-import PlateformLinks from '../../../components/PlateformLinks';
+import PlatformLinks from '../../../components/PlatformLinks';
 
 
 
@@ -57,7 +57,7 @@ export default class AppHome extends BaseUserContextWebPartComponent<types.IWebP
     return (
 
       <div style={{ paddingLeft: '0px', paddingTop: '0px' }}>
-        <PlateformLinks module='Home' visible={this.isSuperUser()} {...this.props} />
+        <PlatformLinks module='Home' visible={this.isSuperUser()} {...this.props} />
         <div style={{ display: 'flex', flexWrap: 'wrap' }}>
 
           {/* giaa individual actions */}

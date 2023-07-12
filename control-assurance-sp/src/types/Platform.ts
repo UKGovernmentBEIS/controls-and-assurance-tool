@@ -1,6 +1,6 @@
 import { IEntity } from "./Entity";
 
-export interface IPlateform extends IEntity {
+export interface IPlatform extends IEntity {
     Module?: string;
     Link?: string;
 }

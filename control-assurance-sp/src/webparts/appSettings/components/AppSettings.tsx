@@ -11,7 +11,7 @@ import PeriodList from '../../../components/period/PeriodList';
 import { IGenColumn, ColumnType, ColumnDisplayType } from '../../../types/GenColumn';
 import { IUserPermission, IPeriod, IEntity } from '../../../types';
 import { CrDropdown, IDropdownOption } from '../../../components/cr/CrDropdown';
-import PlateformLinks from '../../../components/PlateformLinks';
+import PlatformLinks from '../../../components/PlatformLinks';
 
 //#region types defination
 
@@ -59,7 +59,7 @@ export default class AppSettings extends BaseUserContextWebPartComponent<types.I
 
     return (
       <React.Fragment>
-        <PlateformLinks module='Users' visible={this.isSuperUser()} {...this.props} />
+        <PlatformLinks module='Users' visible={this.isSuperUser()} {...this.props} />
         <Pivot onLinkClick={this.clearErrors}>
           <PivotItem headerText="Process Emails">
             {this.renderAutomationOptions()}

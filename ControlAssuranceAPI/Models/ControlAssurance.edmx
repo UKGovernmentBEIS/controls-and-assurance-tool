@@ -1224,7 +1224,7 @@
           <Property Name="ID" Type="int" Nullable="false" />
           <Property Name="Title" Type="nvarchar" MaxLength="50" />
         </EntityType>
-        <EntityType Name="Plateform">
+        <EntityType Name="Platform">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
@@ -2624,7 +2624,7 @@
           <EntitySet Name="Period" EntityType="Self.Period" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PermissionType" EntityType="Self.PermissionType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PersonTitle" EntityType="Self.PersonTitle" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Plateform" EntityType="Self.Plateform" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Platform" EntityType="Self.Platform" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Team" EntityType="Self.Team" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TeamMember" EntityType="Self.TeamMember" Schema="dbo" store:Type="Tables" />
@@ -4431,7 +4431,7 @@
           <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="CLWorkers" Relationship="Self.FK_CLWorker_PersonTitle" FromRole="PersonTitle" ToRole="CLWorker" />
         </EntityType>
-        <EntityType Name="Plateform">
+        <EntityType Name="Platform">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
@@ -5847,7 +5847,7 @@
           <EntitySet Name="Periods" EntityType="Self.Period" />
           <EntitySet Name="PermissionTypes" EntityType="Self.PermissionType" />
           <EntitySet Name="PersonTitles" EntityType="Self.PersonTitle" />
-          <EntitySet Name="Plateforms" EntityType="Self.Plateform" />
+          <EntitySet Name="Platforms" EntityType="Self.Platform" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
           <EntitySet Name="Teams" EntityType="Self.Team" />
           <EntitySet Name="TeamMembers" EntityType="Self.TeamMember" />
@@ -7773,9 +7773,9 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Plateforms">
-            <EntityTypeMapping TypeName="ControlAssuranceModel.Plateform">
-              <MappingFragment StoreEntitySet="Plateform">
+          <EntitySetMapping Name="Platforms">
+            <EntityTypeMapping TypeName="ControlAssuranceModel.Platform">
+              <MappingFragment StoreEntitySet="Platform">
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Title" ColumnName="Title" />
                 <ScalarProperty Name="Module" ColumnName="Module" />

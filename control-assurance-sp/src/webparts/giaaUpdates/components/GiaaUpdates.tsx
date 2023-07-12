@@ -17,7 +17,7 @@ import { IUserPermission, IDefForm, IGIAAPeriod, IEntity, IDirectorateGroup, IGo
 import { CrLoadingOverlayWelcome } from '../../../components/cr/CrLoadingOverlayWelcome';
 import styles from '../../../styles/cr.module.scss';
 import { PrimaryButton } from 'office-ui-fabric-react/lib/Button';
-import PlateformLinks from '../../../components/PlateformLinks';
+import PlatformLinks from '../../../components/PlatformLinks';
 
 //#region types defination
 
@@ -132,7 +132,7 @@ export default class GiaaUpdates extends BaseUserContextWebPartComponent<types.I
 
     return (
       <React.Fragment>
-        <PlateformLinks module='GIaaActions-Updates' visible={this.isSuperUser()} {...this.props} />
+        <PlatformLinks module='GIaaActions-Updates' visible={this.isSuperUser()} {...this.props} />
         <Pivot onLinkClick={this.handlePivotClick} selectedKey={`${this.state.SelectedPivotKey}`}>
           <PivotItem headerText={this.headerTxt_MainTab} itemKey={this.headerTxt_MainTab}>
             {this.renderMainTab()}

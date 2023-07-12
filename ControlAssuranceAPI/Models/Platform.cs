@@ -12,7 +12,7 @@ namespace ControlAssuranceAPI.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Plateform
+    public partial class Platform
     {
         public int ID { get; set; }
         public string Title { get; set; }

@@ -110,7 +110,7 @@ namespace ControlAssuranceAPI
         public virtual DbSet<Period> Periods { get; set; }
         public virtual DbSet<PermissionType> PermissionTypes { get; set; }
         public virtual DbSet<PersonTitle> PersonTitles { get; set; }
-        public virtual DbSet<Plateform> Plateforms { get; set; }
+        public virtual DbSet<Platform> Platforms { get; set; }
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<Team> Teams { get; set; }
         public virtual DbSet<TeamMember> TeamMembers { get; set; }

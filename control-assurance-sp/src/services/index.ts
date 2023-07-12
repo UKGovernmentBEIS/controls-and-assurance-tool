@@ -7,7 +7,7 @@ export { EntityService } from './EntityService';
 export { EntityUpdateService } from './EntityUpdateService';
 export { LookupService } from './LookupService';
 
-export { PlateformService } from './PlateformService';
+export { PlatformService } from './PlatformService';
 export { PersonTitleService } from './PersonTitleService';
 export { AutomationOptionService } from './AutomationOptionService';
 export { EmailOutboxService } from './EmailOutboxService';
