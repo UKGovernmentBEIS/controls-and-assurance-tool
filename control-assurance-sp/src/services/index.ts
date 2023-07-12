@@ -1,3 +1,4 @@
+export { ArrayService } from './ArrayService';
 export { SearchObjectService } from './SearchObjectService';
 export { ContextService } from './ContextService';
 export { DateService } from './DateService';
@@ -6,6 +7,7 @@ export { EntityService } from './EntityService';
 export { EntityUpdateService } from './EntityUpdateService';
 export { LookupService } from './LookupService';
 
+export { PlateformService } from './PlateformService';
 export { PersonTitleService } from './PersonTitleService';
 export { AutomationOptionService } from './AutomationOptionService';
 export { EmailOutboxService } from './EmailOutboxService';

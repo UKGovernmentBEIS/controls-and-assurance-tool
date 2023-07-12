@@ -17,6 +17,7 @@ import { IUserPermission, IDefForm, IGIAAPeriod, IEntity, IDirectorateGroup, IGo
 import { CrLoadingOverlayWelcome } from '../../../components/cr/CrLoadingOverlayWelcome';
 import styles from '../../../styles/cr.module.scss';
 import { PrimaryButton } from 'office-ui-fabric-react/lib/Button';
+import PlateformLinks from '../../../components/PlateformLinks';
 
 //#region types defination
 
@@ -62,7 +63,7 @@ export interface IGiaaUpdatesState extends types.IUserContextWebPartState {
   RecList_SelectedId: number;
   RecList_SelectedTitle: string;
   RecList_FilteredItems: any[];
-  RecList_SelectedItem_ActionOwnerPermission:boolean;
+  RecList_SelectedItem_ActionOwnerPermission: boolean;
 
   RecList_IncompleteOnly: boolean;
   RecList_JustMine: boolean;
@@ -97,7 +98,7 @@ export class GiaaUpdatesState extends types.UserContextWebPartState implements I
   public RecList_SelectedId: number;
   public RecList_SelectedTitle: string;
   public RecList_FilteredItems: any[];
-  public RecList_SelectedItem_ActionOwnerPermission:boolean = false;
+  public RecList_SelectedItem_ActionOwnerPermission: boolean = false;
 
   public RecList_IncompleteOnly = false;
   public RecList_JustMine = false;
@@ -130,15 +131,17 @@ export default class GiaaUpdates extends BaseUserContextWebPartComponent<types.I
   public renderWebPart(): React.ReactElement<types.IWebPartComponentProps> {
 
     return (
+      <React.Fragment>
+        <PlateformLinks module='GIaaActions-Updates' visible={this.isSuperUser()} {...this.props} />
+        <Pivot onLinkClick={this.handlePivotClick} selectedKey={`${this.state.SelectedPivotKey}`}>
+          <PivotItem headerText={this.headerTxt_MainTab} itemKey={this.headerTxt_MainTab}>
+            {this.renderMainTab()}
+          </PivotItem>
+          {this.renderRecommendationsTab()}
+          {this.renderActionUpdatesTab()}
 
-      <Pivot onLinkClick={this.handlePivotClick} selectedKey={`${this.state.SelectedPivotKey}`}>
-        <PivotItem headerText={this.headerTxt_MainTab} itemKey={this.headerTxt_MainTab}>
-          {this.renderMainTab()}
-        </PivotItem>
-        {this.renderRecommendationsTab()}
-        {this.renderActionUpdatesTab()}
-
-      </Pivot>
+        </Pivot>
+      </React.Fragment>
     );
   }
 
@@ -390,9 +393,9 @@ export default class GiaaUpdates extends BaseUserContextWebPartComponent<types.I
 
   //#region Permissions
 
-  private getCurrentUserId = ():number =>{
-    let userId:number = 0;
-    if(this.state.User){
+  private getCurrentUserId = (): number => {
+    let userId: number = 0;
+    if (this.state.User) {
       userId = this.state.User.ID;
     }
 
@@ -404,7 +407,7 @@ export default class GiaaUpdates extends BaseUserContextWebPartComponent<types.I
     let ups = this.state.UserPermissions;
     //console.log('ups is: ', ups);
     for (let i = 0; i < ups.length; i++) {
-      
+
       let up: IUserPermission = ups[i];
       console.log('in isSuperUser loop', ups);
       if (up.PermissionTypeId == 1 || up.PermissionTypeId == 7) {
@@ -420,7 +423,7 @@ export default class GiaaUpdates extends BaseUserContextWebPartComponent<types.I
 
     let ups = this.state.UserPermissions;
     for (let i = 0; i < ups.length; i++) {
-      
+
       let up: IUserPermission = ups[i];
       if (up.PermissionTypeId == 4) {
         //giaa staff
@@ -509,7 +512,7 @@ export default class GiaaUpdates extends BaseUserContextWebPartComponent<types.I
     console.log('on handleSection_MainListSelectedID', ID);
     this.setState({
       Section_MainList_SelectedId: ID,
-      
+
     });
   }
 
@@ -575,27 +578,27 @@ export default class GiaaUpdates extends BaseUserContextWebPartComponent<types.I
 
   private handle_RecListItemTitleClick = (ID: number, title: string, filteredItems: any[]): void => {
 
-    const currentUderId:number = this.getCurrentUserId();
+    const currentUderId: number = this.getCurrentUserId();
     console.log('on rec list current user id ', currentUderId);
     console.log('on rec list item title click ', ID, title, filteredItems);
 
-    let actionOwnerPermission:boolean = false;
+    let actionOwnerPermission: boolean = false;
 
     const currentRec = filteredItems.filter(x => x['ID'] === ID);
     //console.log('currectRec', currentRec);
-    let ownerIdsStr:string = "";
-    if(currentRec.length > 0){
+    let ownerIdsStr: string = "";
+    if (currentRec.length > 0) {
       ownerIdsStr = currentRec[0]["OwnerIds"];
       //console.log('ownerIdsStr', ownerIdsStr);
-      const ownerIdsArr:string[] = ownerIdsStr.split(',');
+      const ownerIdsArr: string[] = ownerIdsStr.split(',');
       //console.log('ownerIdsArr', ownerIdsArr);
 
 
-      
+
       for (let i = 0; i < ownerIdsArr.length; i++) {
-      
-        let ownerId:number = Number(ownerIdsArr[i]);
-        if(ownerId === currentUderId){
+
+        let ownerId: number = Number(ownerIdsArr[i]);
+        if (ownerId === currentUderId) {
           actionOwnerPermission = true;
           break;
         }

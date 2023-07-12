@@ -1,3 +1,4 @@
+export { IPlateform } from './Plateform';
 export { IAutomationOption } from './AutomationOption';
 export { IUserHelp } from './UserHelp';
 export { IPeriod, Period } from './Period';

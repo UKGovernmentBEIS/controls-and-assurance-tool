@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="8ffe8c6a25c545748b01c3bfc7f098d6" Name="Diagram1">
+      <Diagram DiagramId="d5e0b6c3cd394f269b4b60c966f13dbb" Name="Diagram1">
         <EntityTypeShape EntityType="ControlAssuranceModel.APILog" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.AuditFeedback" Width="1.5" PointX="6" PointY="65.125" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.AutoFunctionLastRun" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
@@ -85,13 +85,14 @@
         <EntityTypeShape EntityType="ControlAssuranceModel.NAOUpdateFeedbackType" Width="1.5" PointX="9" PointY="50.625" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.NAOUpdateStatusType" Width="1.5" PointX="1.5" PointY="41.875" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.Period" Width="1.5" PointX="14.25" PointY="80.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.PermissionType" Width="1.5" PointX="3.75" PointY="74.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.PermissionType" Width="1.5" PointX="3.75" PointY="74.625" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.PersonTitle" Width="1.5" PointX="14.25" PointY="36.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.sysdiagram" Width="1.5" PointX="10.75" PointY="10.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.Plateform" Width="1.5" PointX="10.75" PointY="10.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.sysdiagram" Width="1.5" PointX="12.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.Team" Width="1.5" PointX="11.25" PointY="69" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.TeamMember" Width="1.5" PointX="16.5" PointY="70.375" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.User" Width="1.5" PointX="0.75" PointY="63" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAssuranceModel.UserHelp" Width="1.5" PointX="12.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ControlAssuranceModel.UserHelp" Width="1.5" PointX="12.75" PointY="3.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAssuranceModel.UserPermission" Width="1.5" PointX="6" PointY="72.5" IsExpanded="true" />
         <AssociationConnector Association="ControlAssuranceModel.FK_AuditFeedback_Period" ManuallyRouted="false" />
         <AssociationConnector Association="ControlAssuranceModel.FK_AuditFeedback_Team" ManuallyRouted="false" />

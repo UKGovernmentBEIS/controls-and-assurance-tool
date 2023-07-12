@@ -13,6 +13,7 @@ import { Promise } from 'es6-promise';
 import { CrTextField } from '../../../components/cr/CrTextField';
 import { getUploadFolder_CLEvidence, getUploadFolder_CLRoot, getUploadFolder_Report } from '../../../types/AppGlobals';
 import { PrimaryButton } from 'office-ui-fabric-react/lib/Button';
+import PlateformLinks from '../../../components/PlateformLinks';
 //import { Promise } from 'es6-promise';
 
 //#region types defination
@@ -25,10 +26,10 @@ export interface IUserManagementState extends types.IUserContextWebPartState {
   SearchUser: string;
   FullControlFolderRoleId: number;
   CurrentUserPrincipalId: number;
-  SetFolderPermissionsPressed:boolean;
-  SetFolderPermissionsCompleted:boolean;
-  TotalCasesProcessed:number;
-  TotalFoldersCreated:number;
+  SetFolderPermissionsPressed: boolean;
+  SetFolderPermissionsCompleted: boolean;
+  TotalCasesProcessed: number;
+  TotalFoldersCreated: number;
   ConsoleLogFlag: boolean;
 
 }
@@ -39,12 +40,12 @@ export class UserManagementState extends types.UserContextWebPartState {
   public CLSuperUsersAndViewers: IUser[] = [];
   public SearchUser: string = "";
   public FullControlFolderRoleId: number = 0;
-  public CurrentUserPrincipalId: number =0;
-  public SetFolderPermissionsPressed:boolean = false;
-  public SetFolderPermissionsCompleted:boolean = false;
-  public TotalCasesProcessed:number=0;
-  public TotalFoldersCreated:number =0;
-  public ConsoleLogFlag: boolean=false;
+  public CurrentUserPrincipalId: number = 0;
+  public SetFolderPermissionsPressed: boolean = false;
+  public SetFolderPermissionsCompleted: boolean = false;
+  public TotalCasesProcessed: number = 0;
+  public TotalFoldersCreated: number = 0;
+  public ConsoleLogFlag: boolean = false;
 
 
   constructor() {
@@ -63,22 +64,22 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
   private userFoundByUserPrincipalName: number = 0;
   private usersToTryByUserPrincipalName: string[] = [];
   private UploadFolder_CLRoot: string = "";
-  private totalCases:number=0;
-  private totalCasesProcessed:number = 0;
-  private totalFoldersCreated:number = 0;
-  private caseProcessed:boolean = false;
+  private totalCases: number = 0;
+  private totalCasesProcessed: number = 0;
+  private totalFoldersCreated: number = 0;
+  private caseProcessed: boolean = false;
   private shortDelayCounter = 1;
-  private RoleAssignmentsToRemove:number [] = [];
-  private roleAssignmentRemoved:boolean = false;
-  private roleAssignmentAdded:boolean = false;
-  private RoleAssignmentsToAdd:string [] = [];
-  private caseFolderCreated:boolean = false;
-  private consoleLogFlag:boolean = false;
-  
-  private EvidenceFilesToCopy:types.ICLCaseEvidence [] = [];
-  private copyFileProcessed:boolean = false;
-  
-  
+  private RoleAssignmentsToRemove: number[] = [];
+  private roleAssignmentRemoved: boolean = false;
+  private roleAssignmentAdded: boolean = false;
+  private RoleAssignmentsToAdd: string[] = [];
+  private caseFolderCreated: boolean = false;
+  private consoleLogFlag: boolean = false;
+
+  private EvidenceFilesToCopy: types.ICLCaseEvidence[] = [];
+  private copyFileProcessed: boolean = false;
+
+
   constructor(props: types.IWebPartComponentProps) {
     super(props);
     this.UploadFolder_CLRoot = getUploadFolder_CLRoot(props.spfxContext);
@@ -91,35 +92,36 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
 
     return (
 
-        <React.Fragment>
-          <div>
-            <strong>Important Note: </strong> If you change any user permissions, please go into Set Folder Permissions and follow the instructions to ensure Sharepoint level Folder permissions are adjusted.
-            <br/>
-            <br/>
-            <br/>
-          </div>
-          <Pivot onLinkClick={this.clearErrors}>
-            <PivotItem headerText="Users">
-              {this.renderUsers()}
-            </PivotItem>
-            <PivotItem headerText="User Permissions">
-              {this.renderUserPermissions()}
-            </PivotItem>
-            <PivotItem headerText="Set Folder Permissions">
-              {this.renderSetFolderPermissions()}
-            </PivotItem>
-            
-            <PivotItem headerText="Debug Info">
-              {this.renderTest1()}
-            </PivotItem>
-            
-            {/* <PivotItem headerText="Permission Types">
+      <React.Fragment>
+        <PlateformLinks module='Users' visible={this.allowAdd_Users()} {...this.props} />
+        <div style={{ paddingTop: '10px' }}>
+          <strong>Important Note: </strong> If you change any user permissions, please go into Set Folder Permissions and follow the instructions to ensure Sharepoint level Folder permissions are adjusted.
+          <br />
+          <br />
+          <br />
+        </div>
+        <Pivot onLinkClick={this.clearErrors}>
+          <PivotItem headerText="Users">
+            {this.renderUsers()}
+          </PivotItem>
+          <PivotItem headerText="User Permissions">
+            {this.renderUserPermissions()}
+          </PivotItem>
+          <PivotItem headerText="Set Folder Permissions">
+            {this.renderSetFolderPermissions()}
+          </PivotItem>
+
+          <PivotItem headerText="Debug Info">
+            {this.renderDebugInfo()}
+          </PivotItem>
+
+          {/* <PivotItem headerText="Permission Types">
               {this.renderPermissionTypes()}
             </PivotItem>  */}
 
 
-          </Pivot>
-        </React.Fragment>
+        </Pivot>
+      </React.Fragment>
     );
   }
 
@@ -264,11 +266,11 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
     );
   }
 
-  private renderTest1(): React.ReactElement<types.IWebPartComponentProps> {
+  private renderDebugInfo(): React.ReactElement<types.IWebPartComponentProps> {
 
-    if(this.state.UserPermissions === null) return null;
+    if (this.state.UserPermissions === null) return null;
 
-    if(this.sysManagerPermission() === false) return null;
+    if (this.sysManagerPermission() === false) return null;
 
     return (
       <React.Fragment>
@@ -323,156 +325,152 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
     );
   }
 
-  private renderSetFolderPermissions():React.ReactElement<types.IWebPartComponentProps>{
-    
-    if(this.state.UserPermissions === null) return null;
-    if(this.sysManagerPermission() === false) return null;
+  private renderSetFolderPermissions(): React.ReactElement<types.IWebPartComponentProps> {
+
+    if (this.state.UserPermissions === null) return null;
+    if (this.sysManagerPermission() === false) return null;
 
     return (
       <React.Fragment>
-      <div style={{ paddingTop: '15px' }}>
-        Click the 'Set Folder Permissions' button below to reset all Sharepoint folder level permissions for record level folder.
-        <br/>
-        Note this is necessary whenever you change User Permissions.
+        <div style={{ paddingTop: '15px' }}>
+          Click the 'Set Folder Permissions' button below to reset all Sharepoint folder level permissions for record level folder.
+          <br />
+          Note this is necessary whenever you change User Permissions.
 
-        <br/>
-        <br/>
-        <PrimaryButton
-              text="Set Folder Permissions"
-              onClick={this.setFolderPermissions}
-              disabled={this.state.SetFolderPermissionsPressed}
-            />
+          <br />
+          <br />
+          <PrimaryButton
+            text="Set Folder Permissions"
+            onClick={this.setFolderPermissions}
+            disabled={this.state.SetFolderPermissionsPressed}
+          />
 
 
 
-        {this.state.SetFolderPermissionsPressed === true && this.state.SetFolderPermissionsCompleted === false && <div style={{ paddingTop: '15px' }}>
-        <strong>Please do not close this browser or click to another module from menu or press refresh, until this message changes. </strong>
-        <br/>
-        <br/>
-        Progress: Processing folders         
-          <br/>
-          <br/>
-          Total folders created {this.state.TotalFoldersCreated} of {this.totalCases}
-          <br/>
-          <br/>
-          Total cases processed {this.state.TotalCasesProcessed} of {this.totalCases}
+          {this.state.SetFolderPermissionsPressed === true && this.state.SetFolderPermissionsCompleted === false && <div style={{ paddingTop: '15px' }}>
+            <strong>Please do not close this browser or click to another module from menu or press refresh, until this message changes. </strong>
+            <br />
+            <br />
+            Progress: Processing folders
+            <br />
+            <br />
+            Total folders created {this.state.TotalFoldersCreated} of {this.totalCases}
+            <br />
+            <br />
+            Total cases processed {this.state.TotalCasesProcessed} of {this.totalCases}
 
-          </div> }
+          </div>}
 
-        {this.state.SetFolderPermissionsCompleted && <div style={{ paddingTop: '15px' }}>
-          <strong>Progress: Folder permissions have being updated. You may close this browser now.</strong>
-        </div> }
+          {this.state.SetFolderPermissionsCompleted && <div style={{ paddingTop: '15px' }}>
+            <strong>Progress: Folder permissions have being updated. You may close this browser now.</strong>
+          </div>}
 
 
         </div>
-      
+
 
       </React.Fragment>
-      );
+    );
   }
 
 
 
 
-  private setAFolderPermission = (caseRef:number): void =>{
-    const clCase =this.state.Cases[caseRef];
+  private setAFolderPermission = (caseRef: number): void => {
+    const clCase = this.state.Cases[caseRef];
     const folderNewUsers: string[] = this.makeCLFolderNewUsersArr(clCase);
     this.resetFolderPermissionsAfterEditCase(String(clCase.ID), folderNewUsers);
-    
+
     if (this.consoleLogFlag)
-      console.log("SetAFolderPermission - CaseID: ", String(clCase.ID), folderNewUsers ); 
+      console.log("SetAFolderPermission - CaseID: ", String(clCase.ID), folderNewUsers);
   }
 
-  private doCaseRecursive =( num, nextCase:boolean, delayCount:number ): Promise<any> => { 
-    const nameOfFunc:string = "doCaseRecursive - ";
+  private doCaseRecursive = (num, nextCase: boolean, delayCount: number): Promise<any> => {
+    const nameOfFunc: string = "doCaseRecursive - ";
     if (this.consoleLogFlag)
       console.log(nameOfFunc + "start: " + num);
 
-    if(nextCase == true){
+    if (nextCase == true) {
       this.caseProcessed = false;
       this.setAFolderPermission(num);
       delayCount = 0;
     }
 
-    const decide = ( asyncResult) => {
+    const decide = (asyncResult) => {
+      if (this.consoleLogFlag)
+        console.log(nameOfFunc + 'Decide: ', asyncResult, delayCount);
+
+      if (asyncResult < 0) {
         if (this.consoleLogFlag)
-          console.log(nameOfFunc + 'Decide: ', asyncResult, delayCount);
-        
-        if( asyncResult < 0)
-        {
-            if (this.consoleLogFlag)
-              console.log(nameOfFunc + 'Completed: ');
-            return "Completed"; 
-        }
-        if(this.caseProcessed == true){
-          if (num == 0)
-          {
-            if (this.consoleLogFlag)
-              console.log(nameOfFunc + 'Completed: ');
-            return "Completed2";          
-          }
-          return this.doCaseRecursive( num-1, true, delayCount); 
-        }
-        delayCount = delayCount + 1;
-        if (delayCount > 20 )
-        {
+          console.log(nameOfFunc + 'Completed: ');
+        return "Completed";
+      }
+      if (this.caseProcessed == true) {
+        if (num == 0) {
           if (this.consoleLogFlag)
-            console.log(nameOfFunc + 'CASE TIMEOUT: ');
-          return this.doCaseRecursive( num, true, delayCount);
+            console.log(nameOfFunc + 'Completed: ');
+          return "Completed2";
         }
-        return this.doCaseRecursive( num, false, delayCount); 
+        return this.doCaseRecursive(num - 1, true, delayCount);
+      }
+      delayCount = delayCount + 1;
+      if (delayCount > 20) {
+        if (this.consoleLogFlag)
+          console.log(nameOfFunc + 'CASE TIMEOUT: ');
+        return this.doCaseRecursive(num, true, delayCount);
+      }
+      return this.doCaseRecursive(num, false, delayCount);
     };
 
     return this.createCaseDelay(num, delayCount).then(decide);
-}
+  }
 
-  private createCaseDelay = ( asyncParam, delayCount): Promise<any> => { // example operation
-    const promiseDelay = (data,msec) => new Promise(res => setTimeout(res,msec,data));
+  private createCaseDelay = (asyncParam, delayCount): Promise<any> => { // example operation
+    const promiseDelay = (data, msec) => new Promise(res => setTimeout(res, msec, data));
     if (this.consoleLogFlag)
       console.log('CreateCaseDelay: ', asyncParam, delayCount);
-    return promiseDelay( asyncParam, 3000); //resolve with argument in 3 second.
+    return promiseDelay(asyncParam, 3000); //resolve with argument in 3 second.
   }
-  
+
   private setFolderPermissions = (): void => {
-    
-      this.totalCases=0;
-      this.totalCasesProcessed=0;
 
-      this.setState({ SetFolderPermissionsPressed:true });
+    this.totalCases = 0;
+    this.totalCasesProcessed = 0;
 
-      this.totalCases = this.state.Cases.length;
+    this.setState({ SetFolderPermissionsPressed: true });
+
+    this.totalCases = this.state.Cases.length;
+    if (this.consoleLogFlag)
+      console.log('total cased:', this.totalCases);
+
+    let promisesReload = [];
+    promisesReload.push(this.loadUsers());
+    promisesReload.push(this.loadAllCLSuperUsersAndViewers());
+
+    Promise.all(promisesReload).then(() => {
       if (this.consoleLogFlag)
-        console.log('total cased:', this.totalCases);
-
-      let promisesReload = [];
-      promisesReload.push(this.loadUsers());
-      promisesReload.push(this.loadAllCLSuperUsersAndViewers());
-
-      Promise.all(promisesReload).then(() => {
-        if (this.consoleLogFlag)
-          console.log('setFolderPermissions: User Details Loaded');
-        this.doFolderCreateRecursive(this.totalCases-1, true)
-        .then( (result) => 
-        {
-          this.doCaseRecursive(this.totalCases-1, true,0 )
-          .then( (result2) => {console.log("setFolderPermissions: All Cases Completed, result = " + result2); })
-          .catch( (err) => {console.log("setFolderPermissions: error trying to set folder permissions:" + err);});
+        console.log('setFolderPermissions: User Details Loaded');
+      this.doFolderCreateRecursive(this.totalCases - 1, true)
+        .then((result) => {
+          this.doCaseRecursive(this.totalCases - 1, true, 0)
+            .then((result2) => { console.log("setFolderPermissions: All Cases Completed, result = " + result2); })
+            .catch((err) => { console.log("setFolderPermissions: error trying to set folder permissions:" + err); });
         });
 
-      });
+    });
 
-      /*
-      const interval = setInterval(()=> {
-        // method to be executed;
-        console.log('set interval called');
-        if(this.totalCases <= this.totalCasesProcessed){
-          clearInterval(interval);
-          console.log('all folders processed');
-          this.setState({ SetFolderPermissionsCompleted:true });
-        }
-      }, 2000); 
-      */
-    
+    /*
+    const interval = setInterval(()=> {
+      // method to be executed;
+      console.log('set interval called');
+      if(this.totalCases <= this.totalCasesProcessed){
+        clearInterval(interval);
+        console.log('all folders processed');
+        this.setState({ SetFolderPermissionsCompleted:true });
+      }
+    }, 2000); 
+    */
+
   }
 
   private makeCLFolderNewUsersArr = (caseData: ICLCase): string[] => {
@@ -521,186 +519,176 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
     return users;
   }
 
-  private folderPermissionRemove = (userRef:number, folderItem: SharePointQueryableSecurable): void =>{
+  private folderPermissionRemove = (userRef: number, folderItem: SharePointQueryableSecurable): void => {
 
-    const principalId =this.RoleAssignmentsToRemove[userRef];
-    if (this.consoleLogFlag)
-    {
+    const principalId = this.RoleAssignmentsToRemove[userRef];
+    if (this.consoleLogFlag) {
       console.log('folderPermissionRemove - folder permission remove: ', userRef);
       console.log('principalId', principalId);
     }
 
-    if (principalId !== undefined)
-    {
-      if(principalId !== this.state.CurrentUserPrincipalId)
+    if (principalId !== undefined) {
+      if (principalId !== this.state.CurrentUserPrincipalId)
         folderItem.roleAssignments.remove(principalId, this.state.FullControlFolderRoleId).then(roleAddedValue => {
           if (this.consoleLogFlag)
             console.log(`folderPermissionRemove - role removed for user ${principalId}`);
           this.roleAssignmentRemoved = true;
-        }).catch(err =>{        
+        }).catch(err => {
           console.log(`>> folderPermissionRemove: - failed ${err}`);
           this.roleAssignmentRemoved = true;
         });
-      else
-      {
+      else {
         if (this.consoleLogFlag)
           console.log('>> folderPermissionRemove: not adding current user in folder permission remove list');
         this.roleAssignmentRemoved = true;
       }
     }
-    else
-    {
+    else {
       if (this.consoleLogFlag)
         console.log('>> folderPermissionRemove: principleid is undefined');
-      this.roleAssignmentRemoved = true;      
-    }  
+      this.roleAssignmentRemoved = true;
+    }
   }
 
-  private doPermissionRemoveRecursive =( num, nextRole:boolean, folderItem: SharePointQueryableSecurable, delayCount): Promise<any> => { 
+  private doPermissionRemoveRecursive = (num, nextRole: boolean, folderItem: SharePointQueryableSecurable, delayCount): Promise<any> => {
 
     if (this.consoleLogFlag)
       console.log(">> doPermissionRemoveRecursive: " + num);
 
-    if(nextRole == true){
+    if (nextRole == true) {
       this.roleAssignmentRemoved = false;
       this.folderPermissionRemove(num, folderItem);
       delayCount = 0;
     }
 
-    const decide = ( asyncResult) => {
+    const decide = (asyncResult) => {
 
+      if (this.consoleLogFlag)
+        console.log('>> doPermissionRemoveRecursive decide: ', asyncResult, delayCount);
+
+      if (asyncResult < 0) {
         if (this.consoleLogFlag)
-          console.log('>> doPermissionRemoveRecursive decide: ', asyncResult, delayCount);
-
-        if( asyncResult < 0)
-        {
+          console.log('>> doPermissionRemoveRecursive Completed: ', asyncResult, delayCount);
+        return "lift off"; // no, all done, return a non-promise result
+      }
+      if (this.roleAssignmentRemoved == true) {
+        if (num = 0) {
           if (this.consoleLogFlag)
-            console.log('>> doPermissionRemoveRecursive Completed: ', asyncResult, delayCount);
-          return "lift off"; // no, all done, return a non-promise result
-        }
-        if(this.roleAssignmentRemoved == true){
-          if (num = 0)
-          {
-            if (this.consoleLogFlag)
             console.log('>> doPermissionRemoveRecursive Completed2: ', asyncResult, delayCount);
-            return "Completed"; // no, all done, return a non-promise result
-          }
-          return this.doPermissionRemoveRecursive( num-1, true, folderItem, delayCount); 
+          return "Completed"; // no, all done, return a non-promise result
         }
-        delayCount = delayCount + 1;
-        if (delayCount > 20)
-        {
-          return this.doPermissionRemoveRecursive( num, true, folderItem, delayCount);   
-        }
-        return this.doPermissionRemoveRecursive( num, false, folderItem, delayCount); 
+        return this.doPermissionRemoveRecursive(num - 1, true, folderItem, delayCount);
+      }
+      delayCount = delayCount + 1;
+      if (delayCount > 20) {
+        return this.doPermissionRemoveRecursive(num, true, folderItem, delayCount);
+      }
+      return this.doPermissionRemoveRecursive(num, false, folderItem, delayCount);
     };
 
-    return this.createPermissionRemoveDelay(num, delayCount ).then(decide);
-}
-
-  private createPermissionRemoveDelay = ( asyncParam, delayCount): Promise<any> => { // example operation
-    const promiseDelay = (data,msec) => new Promise(res => setTimeout(res,msec,data));
-    if (this.consoleLogFlag)
-      console.log('>> createPermissionRemoveDelay: ', asyncParam, delayCount);
-    return promiseDelay( asyncParam, 100); 
+    return this.createPermissionRemoveDelay(num, delayCount).then(decide);
   }
 
-  private folderPermissionAdd = (userRef:number, folderItem: SharePointQueryableSecurable): void =>{
+  private createPermissionRemoveDelay = (asyncParam, delayCount): Promise<any> => { // example operation
+    const promiseDelay = (data, msec) => new Promise(res => setTimeout(res, msec, data));
+    if (this.consoleLogFlag)
+      console.log('>> createPermissionRemoveDelay: ', asyncParam, delayCount);
+    return promiseDelay(asyncParam, 100);
+  }
 
-    const userEmail =this.RoleAssignmentsToAdd[userRef];
+  private folderPermissionAdd = (userRef: number, folderItem: SharePointQueryableSecurable): void => {
+
+    const userEmail = this.RoleAssignmentsToAdd[userRef];
     if (this.consoleLogFlag)
       console.log('>> folderPermissionAdd: ', userRef, userEmail);
-   
-    sp.web.ensureUser(userEmail).then(user => {      
+
+    sp.web.ensureUser(userEmail).then(user => {
 
       //const userId: number = Number(user['Id']);
-      const userId: number = user.data.Id;    
+      const userId: number = user.data.Id;
       folderItem.roleAssignments.add(userId, this.state.FullControlFolderRoleId).then(roleAddedValue => {
         if (this.consoleLogFlag)
           console.log(`>> folderPermissionAdd: role added for user ${userEmail}`);
         this.roleAssignmentAdded = true;
       });
 
-    }).catch(e => {      
+    }).catch(e => {
       if (this.consoleLogFlag)
         console.log(`>> folderPermissionAdd: user doesnt exist ${userEmail}`);
-      this.roleAssignmentAdded = true;      
+      this.roleAssignmentAdded = true;
     });
   }
 
-  private doPermissionAddRecursive =( num, nextRole:boolean, folderItem: SharePointQueryableSecurable, delayCount ): Promise<any> => { 
+  private doPermissionAddRecursive = (num, nextRole: boolean, folderItem: SharePointQueryableSecurable, delayCount): Promise<any> => {
 
     if (this.consoleLogFlag)
-      console.log('>> doPermissionAddRecursive: ', num );
+      console.log('>> doPermissionAddRecursive: ', num);
 
-    if(nextRole == true){
+    if (nextRole == true) {
       this.roleAssignmentAdded = false;
       this.folderPermissionAdd(num, folderItem);
       delayCount = 0;
     }
 
-    const decide = ( asyncResult) => {
+    const decide = (asyncResult) => {
 
+      if (this.consoleLogFlag)
+        console.log('>> doPermissionAddRecursive Decide: ', asyncResult, delayCount);
+
+      if (asyncResult < 0) {
         if (this.consoleLogFlag)
-          console.log('>> doPermissionAddRecursive Decide: ', asyncResult, delayCount);
+          console.log('>> doPermissionAddRecursive Completed: ', asyncResult, delayCount);
 
-        if( asyncResult < 0)
-        {
+        return "Completed"; // no, all done, return a non-promise result
+      }
+      if (this.roleAssignmentAdded == true) {
+        if (num == 0) {
           if (this.consoleLogFlag)
-            console.log('>> doPermissionAddRecursive Completed: ', asyncResult, delayCount);
-
+            console.log('>> doPermissionAddRecursive Completed2: ', asyncResult, delayCount);
           return "Completed"; // no, all done, return a non-promise result
         }
-        if(this.roleAssignmentAdded == true){
-          if (num ==0)
-          {
-            if (this.consoleLogFlag)
-            console.log('>> doPermissionAddRecursive Completed2: ', asyncResult, delayCount);
-            return "Completed"; // no, all done, return a non-promise result
-          }
-          return this.doPermissionAddRecursive( num-1, true, folderItem, delayCount); // yes, call recFun again which returns a promise
-        }
-        delayCount = delayCount +1;
-        if (delayCount > 20 )
-        {
-          // if we had to delay 20 times then something has gone wrong. we should try
-          return this.doPermissionAddRecursive( num, true, folderItem, delayCount);  
-        }
-        return this.doPermissionAddRecursive( num, false, folderItem, delayCount); // yes, call recFun again which returns a promise
+        return this.doPermissionAddRecursive(num - 1, true, folderItem, delayCount); // yes, call recFun again which returns a promise
+      }
+      delayCount = delayCount + 1;
+      if (delayCount > 20) {
+        // if we had to delay 20 times then something has gone wrong. we should try
+        return this.doPermissionAddRecursive(num, true, folderItem, delayCount);
+      }
+      return this.doPermissionAddRecursive(num, false, folderItem, delayCount); // yes, call recFun again which returns a promise
     };
 
-    return this.createPermissionAddDelay(num, delayCount ).then(decide);
-}
+    return this.createPermissionAddDelay(num, delayCount).then(decide);
+  }
 
-  private createPermissionAddDelay = ( asyncParam, delayCount): Promise<any> => { // example operation
-    const promiseDelay = (data,msec) => new Promise(res => setTimeout(res,msec,data));
+  private createPermissionAddDelay = (asyncParam, delayCount): Promise<any> => { // example operation
+    const promiseDelay = (data, msec) => new Promise(res => setTimeout(res, msec, data));
     if (this.consoleLogFlag)
       console.log('>> CreatePermissionAddDelay: ', asyncParam, delayCount);
 
-    return promiseDelay( asyncParam, 100); //resolve with argument in 100 millisecond.
+    return promiseDelay(asyncParam, 100); //resolve with argument in 100 millisecond.
   }
-  
+
   private resetFolderPermissionsAfterEditCase = (casefolderName: string, folderNewUsers: string[]) => {
 
     sp.web.getFolderByServerRelativeUrl(this.UploadFolder_CLRoot).folders.getByName(casefolderName).getItem().then((folderItem: SharePointQueryableSecurable) => {
 
- 
+
       this.RoleAssignmentsToRemove = [];
       folderItem.roleAssignments.get().then(rass => {
         rass.forEach(ra => {
           this.RoleAssignmentsToRemove.push(Number(ra['PrincipalId']));
         });
-        
+
       }).then(() => {
 
-        this.doPermissionRemoveRecursive(this.RoleAssignmentsToRemove.length-1, true, folderItem,0 ).then(() => {
+        this.doPermissionRemoveRecursive(this.RoleAssignmentsToRemove.length - 1, true, folderItem, 0).then(() => {
 
           this.RoleAssignmentsToAdd = [];
           folderNewUsers.forEach(userEmail => {
             this.RoleAssignmentsToAdd.push(userEmail);
           });
 
-          this.doPermissionAddRecursive(this.RoleAssignmentsToAdd.length-1, true, folderItem,0).then(() => {
+          this.doPermissionAddRecursive(this.RoleAssignmentsToAdd.length - 1, true, folderItem, 0).then(() => {
             if (this.consoleLogFlag)
               console.log('resetFolderPermissionsAfterEditCase - Permissions Sorted: ', casefolderName);
 
@@ -752,7 +740,7 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
           console.log(`addFolderRole: role added for ensured user ${userEmail}`);
         });
       });
-      
+
     });
 
   }
@@ -840,15 +828,15 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
       this.setState({ FullControlFolderRoleId: roleId });
     });
 
-        //get current user sharepoint id (PrincipalId) and set in state
-        sp.web.currentUser.get().then(u => {
-          if (this.consoleLogFlag)
-            console.log('loadSPFoldersCoreStuff: currentSiteUser', u);
-          const currentUserPrincipalId: number = Number(u['Id']);
-          if (this.consoleLogFlag)
-            console.log('loadSPFoldersCoreStuff: currentUserPrincipalId', currentUserPrincipalId);
-          this.setState({ CurrentUserPrincipalId: currentUserPrincipalId });
-        });
+    //get current user sharepoint id (PrincipalId) and set in state
+    sp.web.currentUser.get().then(u => {
+      if (this.consoleLogFlag)
+        console.log('loadSPFoldersCoreStuff: currentSiteUser', u);
+      const currentUserPrincipalId: number = Number(u['Id']);
+      if (this.consoleLogFlag)
+        console.log('loadSPFoldersCoreStuff: currentUserPrincipalId', currentUserPrincipalId);
+      this.setState({ CurrentUserPrincipalId: currentUserPrincipalId });
+    });
 
   }
 
@@ -1085,7 +1073,7 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
         console.log('xx', xx);
         console.log('UserId', xx.data.Id);
       });
-      
+
     });
 
   }
@@ -1156,14 +1144,14 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
 
     sp.web.getFolderByServerRelativeUrl(srcFolder).files.getByName(this.state.SearchUser).copyTo(destFolder).then(() => {
       console.log('file copied');
-      
+
     }).catch(err => {
       console.log('error', err);
     });
 
   }
 
-  
+
 
   public createNewCaseUploadFolder = (casefolderName: string, fullControlFolderRoleId: number) => {
     sp.web.getFolderByServerRelativeUrl(this.UploadFolder_CLRoot).folders.add(casefolderName).then(folderAddRes => {
@@ -1184,66 +1172,65 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
     });
   }
 
-  private createAFolder = (num): void =>{
+  private createAFolder = (num): void => {
 
-      const clCase = this.state.Cases[num];
-      const spService = new services.SPService(this.props.spfxContext);
-      //this.state.Cases.forEach(clCase => {
-        if (this.consoleLogFlag)
-          console.log('createAFolder - going to create folder for case ', clCase.ID);
-      //const folderNewUsers: string[] = this.makeCLFolderNewUsersArr(clCase);
-      this.createNewCaseUploadFolder(String(clCase.ID), this.state.FullControlFolderRoleId);
+    const clCase = this.state.Cases[num];
+    const spService = new services.SPService(this.props.spfxContext);
+    //this.state.Cases.forEach(clCase => {
+    if (this.consoleLogFlag)
+      console.log('createAFolder - going to create folder for case ', clCase.ID);
+    //const folderNewUsers: string[] = this.makeCLFolderNewUsersArr(clCase);
+    this.createNewCaseUploadFolder(String(clCase.ID), this.state.FullControlFolderRoleId);
     //});
 
   }
 
-  private doFolderCreateRecursive =( num, nextCase:boolean): Promise<any> => { 
-    const nameOfFunc:string = "doFolderCreateRecursive - ";
+  private doFolderCreateRecursive = (num, nextCase: boolean): Promise<any> => {
+    const nameOfFunc: string = "doFolderCreateRecursive - ";
     if (this.consoleLogFlag)
       console.log(nameOfFunc + "start: " + num);
-    if(nextCase == true){
+    if (nextCase == true) {
       this.caseFolderCreated = false;
       this.createAFolder(num);
     }
 
-    const decide = ( asyncResult) => {
+    const decide = (asyncResult) => {
 
-      if (this.consoleLogFlag)
-      {
+      if (this.consoleLogFlag) {
         console.log(nameOfFunc + 'decide called: ', asyncResult);
         console.log(nameOfFunc + 'this.caseProcessed:', this.caseProcessed);
       }
-        if( asyncResult < 0){
+      if (asyncResult < 0) {
+        if (this.consoleLogFlag)
+          console.log(nameOfFunc + "end");
+        return "lift off"; // no, all done, return a non-promise result
+      }
+      if (this.caseFolderCreated == true) {
+        if (asyncResult == 0) {
           if (this.consoleLogFlag)
             console.log(nameOfFunc + "end");
-            return "lift off"; // no, all done, return a non-promise result
+          return "lift off"; // no, all done, return a non-promise result
         }
-        if(this.caseFolderCreated == true){
-          if( asyncResult == 0){
-            if (this.consoleLogFlag)
-              console.log(nameOfFunc + "end");
-            return "lift off"; // no, all done, return a non-promise result
-          }
-          return this.doFolderCreateRecursive( num-1, true); // yes, call recFun again which returns a promise
-        }
-        return this.doFolderCreateRecursive( num, false); // yes, call recFun again which returns a promise
+        return this.doFolderCreateRecursive(num - 1, true); // yes, call recFun again which returns a promise
+      }
+      return this.doFolderCreateRecursive(num, false); // yes, call recFun again which returns a promise
     };
 
     return this.createCaseFolderDelay(num).then(decide);
-}
+  }
 
-  private createCaseFolderDelay = ( asyncParam): Promise<any> => { // example operation
-    const promiseDelay = (data,msec) => new Promise(res => setTimeout(res,msec,data));
+  private createCaseFolderDelay = (asyncParam): Promise<any> => { // example operation
+    const promiseDelay = (data, msec) => new Promise(res => setTimeout(res, msec, data));
     if (this.consoleLogFlag)
       console.log('createCaseFolderDelay called: ', asyncParam);
-    return promiseDelay( asyncParam, 100); //resolve with argument in 1 second.
+    return promiseDelay(asyncParam, 100); //resolve with argument in 1 second.
   }
 
   private createExistingCLCasesFolders = (): void => {
     this.totalCases = this.state.Cases.length;
-    this.doFolderCreateRecursive(this.totalCases-1, true)
-    .then( (result) => { if (this.consoleLogFlag) console.log("createExistingCLCasesFolders: done, result = " + result); })
-    .catch( (err) => {console.log("createExistingCLCasesFolders: oops:" + err);});
+    this.doFolderCreateRecursive(this.totalCases - 1, true)
+      .then((result) => { if (this.consoleLogFlag) console.log("createExistingCLCasesFolders: done, result = " + result); })
+      .catch((err) => { console.log("createExistingCLCasesFolders: oops:" + err); });
 
     // const spService = new services.SPService(this.props.spfxContext);
     // this.state.Cases.forEach(clCase => {
@@ -1254,108 +1241,105 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
   }
 
 
-// copy files one at a time.
+  // copy files one at a time.
 
-private copySharePointFile = (fileRef:number , srcFolder: string, clRootFolder:string ): void =>{
+  private copySharePointFile = (fileRef: number, srcFolder: string, clRootFolder: string): void => {
 
-  //console.log(`copyAllCasesEvDocs: going to copy ev with ID: ${ev.ID} and filename: ${ev.Title}`);
+    //console.log(`copyAllCasesEvDocs: going to copy ev with ID: ${ev.ID} and filename: ${ev.Title}`);
 
-  const evFile = this.EvidenceFilesToCopy[fileRef];
+    const evFile = this.EvidenceFilesToCopy[fileRef];
 
-  if(evFile.EvidenceType === 'ContractorSecurityCheck'){
-    //parentID is worker id, get case id for that worker
-    this.clWorkerService.readAll(`?$filter=ID eq ${evFile.ParentId}&$select=CLCaseId`).then(ws => {
-      if(ws.length > 0){
-        const caseId:number = ws[0].CLCaseId;
-        this.copyEvidenceFile(caseId, srcFolder, clRootFolder, evFile.Title);
-      }
-    });
-  }
-  else{
-    //parent id is case id
-    this.copyEvidenceFile(evFile.ParentId, srcFolder, clRootFolder, evFile.Title);
-  }
-}
-
-private copyEvidenceFile = (caseId: number, srcFolder: string, clRootFolder:string, fileName: string): void => {
-  const destFile = `${clRootFolder}/${caseId}/${fileName}`;
-
-  sp.web.getFolderByServerRelativeUrl(srcFolder).files.getByName(fileName).copyTo(destFile).then(() => {
-    console.log(`copyEvidenceFile Successful: ${destFile}`);
-    this.copyFileProcessed = true;
-    
-  }).catch(err => {
-    console.log(`copyEvidenceFile ERROR COULD NOT COPY: ${destFile}`);
-    console.log('copyEvidenceFile Error Was:', err);
-    this.copyFileProcessed = true;
-  });
-
-}
-
-private doCopyFileRecursive =( num, nextCase:boolean, delayCount:number, srcFolder: string, clRootFolder:string ): Promise<any> => { 
-  const nameOfFunc:string = "doCopyFileRecursive - ";
-
-  if(nextCase == true){
-    this.copyFileProcessed = false;
-    this.copySharePointFile(num , srcFolder, clRootFolder);
-    delayCount = 0;
-  }
-
-  const decide = ( asyncResult) => {
-      console.log(nameOfFunc + 'Decide: ', asyncResult, delayCount);
-      
-      if( asyncResult < 0)
-      {
-        console.log(nameOfFunc + 'Completed: ');
-        return "Completed"; 
-      }
-      if(this.copyFileProcessed == true){
-        if (num == 0)
-        {          
-          console.log(nameOfFunc + 'Completed: ');
-          return "Completed2";          
+    if (evFile.EvidenceType === 'ContractorSecurityCheck') {
+      //parentID is worker id, get case id for that worker
+      this.clWorkerService.readAll(`?$filter=ID eq ${evFile.ParentId}&$select=CLCaseId`).then(ws => {
+        if (ws.length > 0) {
+          const caseId: number = ws[0].CLCaseId;
+          this.copyEvidenceFile(caseId, srcFolder, clRootFolder, evFile.Title);
         }
-        return this.doCopyFileRecursive( num-1, true, delayCount, srcFolder, clRootFolder); 
+      });
+    }
+    else {
+      //parent id is case id
+      this.copyEvidenceFile(evFile.ParentId, srcFolder, clRootFolder, evFile.Title);
+    }
+  }
+
+  private copyEvidenceFile = (caseId: number, srcFolder: string, clRootFolder: string, fileName: string): void => {
+    const destFile = `${clRootFolder}/${caseId}/${fileName}`;
+
+    sp.web.getFolderByServerRelativeUrl(srcFolder).files.getByName(fileName).copyTo(destFile).then(() => {
+      console.log(`copyEvidenceFile Successful: ${destFile}`);
+      this.copyFileProcessed = true;
+
+    }).catch(err => {
+      console.log(`copyEvidenceFile ERROR COULD NOT COPY: ${destFile}`);
+      console.log('copyEvidenceFile Error Was:', err);
+      this.copyFileProcessed = true;
+    });
+
+  }
+
+  private doCopyFileRecursive = (num, nextCase: boolean, delayCount: number, srcFolder: string, clRootFolder: string): Promise<any> => {
+    const nameOfFunc: string = "doCopyFileRecursive - ";
+
+    if (nextCase == true) {
+      this.copyFileProcessed = false;
+      this.copySharePointFile(num, srcFolder, clRootFolder);
+      delayCount = 0;
+    }
+
+    const decide = (asyncResult) => {
+      console.log(nameOfFunc + 'Decide: ', asyncResult, delayCount);
+
+      if (asyncResult < 0) {
+        console.log(nameOfFunc + 'Completed: ');
+        return "Completed";
+      }
+      if (this.copyFileProcessed == true) {
+        if (num == 0) {
+          console.log(nameOfFunc + 'Completed: ');
+          return "Completed2";
+        }
+        return this.doCopyFileRecursive(num - 1, true, delayCount, srcFolder, clRootFolder);
       }
       delayCount = delayCount + 1;
-      if (delayCount > 50 )
-      { 
-        const evFile = this.EvidenceFilesToCopy[num];       
-        console.log(nameOfFunc + '>>> COPY FILE TIMEOUT: ', evFile.Title );
-        return this.doCopyFileRecursive( num-1, true, delayCount, srcFolder, clRootFolder);
+      if (delayCount > 50) {
+        const evFile = this.EvidenceFilesToCopy[num];
+        console.log(nameOfFunc + '>>> COPY FILE TIMEOUT: ', evFile.Title);
+        return this.doCopyFileRecursive(num - 1, true, delayCount, srcFolder, clRootFolder);
       }
-      return this.doCopyFileRecursive( num, false, delayCount, srcFolder, clRootFolder); 
-  };
+      return this.doCopyFileRecursive(num, false, delayCount, srcFolder, clRootFolder);
+    };
 
-  return this.createCopyFileDelay(num, delayCount).then(decide);
-}
+    return this.createCopyFileDelay(num, delayCount).then(decide);
+  }
 
-private createCopyFileDelay = ( asyncParam, delayCount): Promise<any> => { // example operation
-  const promiseDelay = (data,msec) => new Promise(res => setTimeout(res,msec,data));
-  return promiseDelay( asyncParam, 1000); //resolve with argument in 3 second.
-}
-
-
+  private createCopyFileDelay = (asyncParam, delayCount): Promise<any> => { // example operation
+    const promiseDelay = (data, msec) => new Promise(res => setTimeout(res, msec, data));
+    return promiseDelay(asyncParam, 1000); //resolve with argument in 3 second.
+  }
 
 
-// end copy files one at a time.
 
 
-private copyAllCasesEvDocs = (): void => {
-  const srcFolder = getUploadFolder_CLEvidence(this.props.spfxContext);
-  const clRootFolder = getUploadFolder_CLRoot(this.props.spfxContext);
-  const caseEvService = new services.CLCaseEvidenceService(this.props.spfxContext, this.props.api);
+  // end copy files one at a time.
 
-  this.EvidenceFilesToCopy = [];
 
-  caseEvService.readAll(`?$filter=AttachmentType eq 'PDF' and RecordCreated eq true`).then(evs => {
-    evs.forEach(ev => {
-      this.EvidenceFilesToCopy.push(ev);
+  private copyAllCasesEvDocs = (): void => {
+    const srcFolder = getUploadFolder_CLEvidence(this.props.spfxContext);
+    const clRootFolder = getUploadFolder_CLRoot(this.props.spfxContext);
+    const caseEvService = new services.CLCaseEvidenceService(this.props.spfxContext, this.props.api);
+
+    this.EvidenceFilesToCopy = [];
+
+    caseEvService.readAll(`?$filter=AttachmentType eq 'PDF' and RecordCreated eq true`).then(evs => {
+      evs.forEach(ev => {
+        this.EvidenceFilesToCopy.push(ev);
+      });
+      this.doCopyFileRecursive(this.EvidenceFilesToCopy.length - 1, true, 0, srcFolder, clRootFolder);
     });
-    this.doCopyFileRecursive(this.EvidenceFilesToCopy.length-1, true, 0, srcFolder , clRootFolder);
-  });
-  
-}
+
+  }
 
   private copyAllCasesEvDocs_save = (): void => {
     const srcFolder = getUploadFolder_CLEvidence(this.props.spfxContext);
@@ -1367,16 +1351,16 @@ private copyAllCasesEvDocs = (): void => {
     caseEvService.readAll(`?$filter=AttachmentType eq 'PDF' and RecordCreated eq true`).then(evs => {
       evs.forEach(ev => {
         console.log(`copyAllCasesEvDocs: going to copy ev with ID: ${ev.ID} and filename: ${ev.Title}`);
-        if(ev.EvidenceType === 'ContractorSecurityCheck'){
+        if (ev.EvidenceType === 'ContractorSecurityCheck') {
           //parentID is worker id, get case id for that worker
           this.clWorkerService.readAll(`?$filter=ID eq ${ev.ParentId}&$select=CLCaseId`).then(ws => {
-            if(ws.length > 0){
-              const caseId:number = ws[0].CLCaseId;
+            if (ws.length > 0) {
+              const caseId: number = ws[0].CLCaseId;
               this.copyCaseFile(caseId, srcFolder, clRootFolder, ev.Title);
             }
           });
         }
-        else{
+        else {
           //parent id is case id
           this.copyCaseFile(ev.ParentId, srcFolder, clRootFolder, ev.Title);
         }
@@ -1388,42 +1372,42 @@ private copyAllCasesEvDocs = (): void => {
     var count = 0;
     var curDate = startDate;
     while (curDate <= endDate) {
-        var dayOfWeek = curDate.getDay();
-        if (!((dayOfWeek == 6) || (dayOfWeek == 0)))
-            count++;
-        curDate.setDate(curDate.getDate() + 1);
+      var dayOfWeek = curDate.getDay();
+      if (!((dayOfWeek == 6) || (dayOfWeek == 0)))
+        count++;
+      curDate.setDate(curDate.getDate() + 1);
     }
     //alert(count)
     return count;
-}
+  }
 
-  private calcHistoricCLCasesMissingFields = () =>{
+  private calcHistoricCLCasesMissingFields = () => {
     this.state.Cases.forEach(clCase => {
-      const caseUpdated:ICLCase = {...clCase};
+      const caseUpdated: ICLCase = { ...clCase };
 
-      let updateRequired:boolean = false;
+      let updateRequired: boolean = false;
 
       //FinBillableRate
-      if(clCase.FinBillableRate === null && clCase.FinMaxRate !== null) {
+      if (clCase.FinBillableRate === null && clCase.FinMaxRate !== null) {
         //console.log('case billable reate is null', clCase);
-        const billAbleRate:number = Number((clCase.FinMaxRate * 100/120).toFixed(2));
+        const billAbleRate: number = Number((clCase.FinMaxRate * 100 / 120).toFixed(2));
         console.log('maxRate', clCase.FinMaxRate);
-        console.log('billable', billAbleRate);        
+        console.log('billable', billAbleRate);
         caseUpdated.FinBillableRate = billAbleRate;
         updateRequired = true;
       }
 
       //FinCostPerWorker
-      if(clCase.FinCostPerWorker === null && clCase.FinEstCost !== null && clCase.ReqNumPositions !== null){
-        const costPerWorker:number = Number((clCase.FinEstCost / clCase.ReqNumPositions).toFixed(2));
+      if (clCase.FinCostPerWorker === null && clCase.FinEstCost !== null && clCase.ReqNumPositions !== null) {
+        const costPerWorker: number = Number((clCase.FinEstCost / clCase.ReqNumPositions).toFixed(2));
         caseUpdated.FinCostPerWorker = costPerWorker;
         console.log('costPerWorker', costPerWorker);
         updateRequired = true;
       }
 
       //FinTotalDays
-      if(clCase.FinTotalDays === null || clCase.FinTotalDays == 0){
-       
+      if (clCase.FinTotalDays === null || clCase.FinTotalDays == 0) {
+
         if (clCase.ReqEstStartDate != null && clCase.ReqEstEndDate != null) {
           const startDate: Date = new Date(clCase.ReqEstStartDate.getTime());
           const endDate: Date = new Date(clCase.ReqEstEndDate.getTime());
@@ -1432,50 +1416,50 @@ private copyAllCasesEvDocs = (): void => {
           caseUpdated.FinTotalDays = days;
           updateRequired = true;
         }
-        
+
       }
 
-      if(updateRequired === true){
-        this.clCaseService.updatePut(caseUpdated.ID, caseUpdated).then(():void =>{
+      if (updateRequired === true) {
+        this.clCaseService.updatePut(caseUpdated.ID, caseUpdated).then((): void => {
           console.log('case updated with ID', caseUpdated.ID);
-  
+
         });
       }
-      else{
+      else {
         console.log('update is not required for case with ID', clCase.ID);
       }
 
 
-      
+
     });
   }
   private copyAllCasesPDFs = (): void => {
     const srcFolder = getUploadFolder_Report(this.props.spfxContext);
     const clRootFolder = getUploadFolder_CLRoot(this.props.spfxContext);
     const workerService = new services.CLWorkerService(this.props.spfxContext, this.props.api);
-    
+
     //case pdf
     workerService.readAll(`?$filter=CasePdfStatus eq 'Cr'&$select=ID,ClCaseId,CasePdfName`).then(workers => {
-      workers.forEach(worker =>{
+      workers.forEach(worker => {
         this.copyCaseFile(worker.CLCaseId, srcFolder, clRootFolder, worker.CasePdfName);
       });
     });
 
     //SDS pdf
     workerService.readAll(`?$filter=SDSPdfStatus eq 'Cr'&$select=ID,ClCaseId,SDSPdfName`).then(workers => {
-      workers.forEach(worker =>{
+      workers.forEach(worker => {
         this.copyCaseFile(worker.CLCaseId, srcFolder, clRootFolder, worker.SDSPdfName);
       });
     });
 
   }
 
-  private copyCaseFile = (caseId: number, srcFolder: string, clRootFolder:string, fileName: string): void => {
+  private copyCaseFile = (caseId: number, srcFolder: string, clRootFolder: string, fileName: string): void => {
     const destFile = `${clRootFolder}/${caseId}/${fileName}`;
 
     sp.web.getFolderByServerRelativeUrl(srcFolder).files.getByName(fileName).copyTo(destFile).then(() => {
       console.log(`file copied ${destFile}`,);
-      
+
     }).catch(err => {
       console.log('error on copy', err);
     });
