@@ -13,7 +13,7 @@ import { Promise } from 'es6-promise';
 import { CrTextField } from '../../../components/cr/CrTextField';
 import { getUploadFolder_CLEvidence, getUploadFolder_CLRoot, getUploadFolder_Report } from '../../../types/AppGlobals';
 import { PrimaryButton } from 'office-ui-fabric-react/lib/Button';
-import PlateformLinks from '../../../components/PlateformLinks';
+import PlatformLinks from '../../../components/PlatformLinks';
 //import { Promise } from 'es6-promise';
 
 //#region types defination
@@ -93,7 +93,7 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
     return (
 
       <React.Fragment>
-        <PlateformLinks module='Users' visible={this.allowAdd_Users()} {...this.props} />
+        <PlatformLinks module='Users' visible={this.allowAdd_Users()} {...this.props} />
         <div style={{ paddingTop: '10px' }}>
           <strong>Important Note: </strong> If you change any user permissions, please go into Set Folder Permissions and follow the instructions to ensure Sharepoint level Folder permissions are adjusted.
           <br />

@@ -105,7 +105,7 @@ namespace ControlAssuranceAPI.Models
 
         private ExportDefinationRepository exportDefinationRepository;
         private AvailableExportRepository availableExportRepository;
-        private PlateformRepository plateformRepository;
+        private PlatformRepository plateformRepository;
 
         private SPDGAreaStatRepository spDGAreaStatRepository;
         private SPDirectorateStatRepository spDirectorateStatRepository;
@@ -897,11 +897,11 @@ namespace ControlAssuranceAPI.Models
             }
         }
 
-        public PlateformRepository PlateformRepository
+        public PlatformRepository PlateformRepository
         {
             get
             {
-                return plateformRepository = plateformRepository ?? new PlateformRepository(user, context);
+                return plateformRepository = plateformRepository ?? new PlatformRepository(user, context);
             }
         }
 

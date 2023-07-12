@@ -4,7 +4,7 @@ import { CrDropdown, IDropdownOption } from '../../../components/cr/CrDropdown';
 import Section from '../../../components/CL/Section';
 
 import NewCaseTab from '../../../components/CL/NewCaseTab';
-import PlateformLinks from '../../../components/PlateformLinks';
+import PlatformLinks from '../../../components/PlatformLinks';
 import { MessageDialog } from '../../../components/cr/MessageDialog';
 
 import * as types from '../../../types';
@@ -12,7 +12,7 @@ import BaseUserContextWebPartComponent from '../../../components/BaseUserContext
 import * as services from '../../../services';
 import EntityList from '../../../components/entity/EntityList';
 import { IGenColumn, ColumnType, ColumnDisplayType } from '../../../types/GenColumn';
-import { IUserPermission, IDefForm, IGIAAPeriod, IEntity, IDirectorateGroup, IGoDefForm, GoForm, IGoForm, CLCase, ICLCase, IClCaseCounts, ICLDefForm, ICLWorker, IUser, ICLHiringMember, IPlateform } from '../../../types';
+import { IUserPermission, IDefForm, IGIAAPeriod, IEntity, IDirectorateGroup, IGoDefForm, GoForm, IGoForm, CLCase, ICLCase, IClCaseCounts, ICLDefForm, ICLWorker, IUser, ICLHiringMember, IPlatform } from '../../../types';
 import { CrLoadingOverlayWelcome } from '../../../components/cr/CrLoadingOverlayWelcome';
 import styles from '../../../styles/cr.module.scss';
 import { PrimaryButton } from 'office-ui-fabric-react/lib/Button';
@@ -139,7 +139,7 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
     return (
 
       <React.Fragment>
-        <PlateformLinks module='ContingentLabour-ManageCases' visible={this.isSuperUser()} {...this.props} />
+        <PlatformLinks module='ContingentLabour-ManageCases' visible={this.isSuperUser()} {...this.props} />
         <Pivot onLinkClick={this.handlePivotClick} selectedKey={`${this.state.SelectedPivotKey}`}>
           <PivotItem headerText={this.headerTxt_MainTab} itemKey={this.headerTxt_MainTab}>
             {this.renderMainTab()}

@@ -109,7 +109,7 @@ namespace ControlAssuranceAPI.Models
         DbSet<ExportDefination> ExportDefinations { get; set; }
         DbSet<AvailableExport> AvailableExports { get; set; }
 
-        DbSet<Plateform> Plateforms { get; set; }
+        DbSet<Platform> Platforms { get; set; }
 
         ObjectResult<SPDGAreaStat_Result> SPDGAreaStat(Nullable<int> periodId);
         ObjectResult<SPDGAreaStat2_Result> SPDGAreaStat2(Nullable<int> periodId);

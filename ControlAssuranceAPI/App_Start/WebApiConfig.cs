@@ -138,7 +138,7 @@ namespace ControlAssuranceAPI
 
             builder.EntitySet<ExportDefination>("ExportDefinations");
             builder.EntitySet<AvailableExport>("AvailableExports");
-            builder.EntitySet<Plateform>("Plateforms");
+            builder.EntitySet<Platform>("Platforms");
 
 
             builder.EntitySet<Models.SPDGAreaStat_Result>("DGAreaStats");
