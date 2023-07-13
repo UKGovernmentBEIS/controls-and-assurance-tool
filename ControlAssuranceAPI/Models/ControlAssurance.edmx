@@ -1215,7 +1215,6 @@
           </Key>
           <Property Name="ID" Type="int" Nullable="false" />
           <Property Name="Title" Type="nvarchar" MaxLength="50" />
-          <Property Name="Description" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="PersonTitle">
           <Key>
@@ -4420,7 +4419,6 @@
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" />
           <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="UserPermissions" Relationship="Self.FK_UserPermission_PermissionType" FromRole="PermissionType" ToRole="UserPermission" />
         </EntityType>
         <EntityType Name="PersonTitle">
@@ -7761,7 +7759,6 @@
               <MappingFragment StoreEntitySet="PermissionType">
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Title" ColumnName="Title" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
