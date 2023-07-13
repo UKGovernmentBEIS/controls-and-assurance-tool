@@ -93,7 +93,7 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
     return (
 
       <React.Fragment>
-        <PlatformLinks module='Users' visible={this.allowAdd_Users()} {...this.props} />
+        {this.state.UserPermissions.length > 0 && <PlatformLinks module='Users' visible={this.allowAdd_Users()} {...this.props} />}
         <div style={{ paddingTop: '10px' }}>
           <strong>Important Note: </strong> If you change any user permissions, please go into Set Folder Permissions and follow the instructions to ensure Sharepoint level Folder permissions are adjusted.
           <br />

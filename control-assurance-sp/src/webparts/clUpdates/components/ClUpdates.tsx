@@ -139,7 +139,7 @@ export default class ClUpdates extends BaseUserContextWebPartComponent<types.IWe
     return (
 
       <React.Fragment>
-        <PlatformLinks module='ContingentLabour-ManageCases' visible={this.isSuperUser()} {...this.props} />
+        {this.state.UserPermissions.length > 0 && <PlatformLinks module='ContingentLabour-ManageCases' visible={this.isSuperUser()} {...this.props} />}
         <Pivot onLinkClick={this.handlePivotClick} selectedKey={`${this.state.SelectedPivotKey}`}>
           <PivotItem headerText={this.headerTxt_MainTab} itemKey={this.headerTxt_MainTab}>
             {this.renderMainTab()}

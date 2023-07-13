@@ -57,7 +57,7 @@ export default class AppHome extends BaseUserContextWebPartComponent<types.IWebP
     return (
 
       <div style={{ paddingLeft: '0px', paddingTop: '0px' }}>
-        <PlatformLinks module='Home' visible={this.isSuperUser()} {...this.props} />
+        {this.state.UserPermissions.length > 0 && <PlatformLinks module='Home' visible={this.isSuperUser()} {...this.props} />}
         <div style={{ display: 'flex', flexWrap: 'wrap' }}>
 
           {/* giaa individual actions */}

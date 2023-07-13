@@ -132,7 +132,7 @@ export default class GiaaUpdates extends BaseUserContextWebPartComponent<types.I
 
     return (
       <React.Fragment>
-        <PlatformLinks module='GIaaActions-Updates' visible={this.isSuperUser()} {...this.props} />
+        {this.state.UserPermissions.length > 0 && <PlatformLinks module='GIaaActions-Updates' visible={this.isSuperUser()} {...this.props} />}
         <Pivot onLinkClick={this.handlePivotClick} selectedKey={`${this.state.SelectedPivotKey}`}>
           <PivotItem headerText={this.headerTxt_MainTab} itemKey={this.headerTxt_MainTab}>
             {this.renderMainTab()}

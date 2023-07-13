@@ -59,7 +59,7 @@ export default class AppSettings extends BaseUserContextWebPartComponent<types.I
 
     return (
       <React.Fragment>
-        <PlatformLinks module='Settings' visible={this.isSuperUser()} {...this.props} />
+        {this.state.UserPermissions.length > 0 && <PlatformLinks module='Settings' visible={this.isSuperUser()} {...this.props} />}
         <Pivot onLinkClick={this.clearErrors}>
           <PivotItem headerText="Process Emails">
             {this.renderAutomationOptions()}
