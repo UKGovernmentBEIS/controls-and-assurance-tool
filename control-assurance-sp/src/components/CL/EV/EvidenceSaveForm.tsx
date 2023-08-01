@@ -21,7 +21,7 @@ export interface IEvidenceSaveFormProps extends types.IBaseComponentProps {
     workerId?: number;
     evidenceId: number;
     showForm: boolean;
-    evidenceType?:string;
+    evidenceType?: string;
     onSaved?: () => void;
     onCancelled?: () => void;
 }
@@ -67,9 +67,9 @@ export class EvidenceSaveFormState implements IEvidenceSaveFormState {
     public EditRequest = false;
     public ErrMessages = new ErrorMessage();
 
-    constructor(parentId: number, workerId:number, evidenceType:string) {
-        let defaultAttachmentType:string = "None";
-        if(evidenceType === "IR35" || evidenceType === "ContractorSecurityCheck"){
+    constructor(parentId: number, workerId: number, evidenceType: string) {
+        let defaultAttachmentType: string = "None";
+        if (evidenceType === "IR35" || evidenceType === "ContractorSecurityCheck") {
             defaultAttachmentType = "PDF";
         }
         this.FormData = new CLCaseEvidence(parentId, evidenceType, defaultAttachmentType, workerId);
@@ -97,10 +97,10 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
 
 
     public render(): React.ReactElement<IEvidenceSaveFormProps> {
-        console.log('in render - evidenceType',this.props.evidenceType);
+        console.log('in render - evidenceType', this.props.evidenceType);
         //const errors = this.state.ValidationErrors;
         const headerText: string = (this.props.evidenceType === "IR35" || this.props.evidenceType === "ContractorSecurityCheck") ? "Evidence" : "Case Discussion, General Comments and Attachments";
-        
+
         return (
             <Panel isOpen={this.props.showForm} headerText={headerText} type={PanelType.medium} onRenderNavigation={() => <FormCommandBar onSave={this.saveEvidence} onCancel={this.props.onCancelled} saveDisabled={this.state.ShowUploadProgress} />}>
                 <div className={styles.cr}>
@@ -117,13 +117,13 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
         );
     }
 
-    public renderInfoText(){
-        if(this.state.FormData.ID > 0 && this.state.EditRequest === true && this.state.FormData.AttachmentType === "PDF" ){
+    public renderInfoText() {
+        if (this.state.FormData.ID > 0 && this.state.EditRequest === true && this.state.FormData.AttachmentType === "PDF") {
             const fileName = this.state.FormData.Title;
-            return(
-                <div style={{marginTop: '20px'}}>
-                    This evidence is linked to file "{fileName}". <br/>
-                    To change the file, please delete this evidence record and add again. 
+            return (
+                <div style={{ marginTop: '20px' }}>
+                    This evidence is linked to file &quot;{fileName}&quot;. <br />
+                    To change the file, please delete this evidence record and add again.
                 </div>
             );
         }
@@ -149,7 +149,7 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
                 required={true}
                 className={styles.formField}
                 value={this.state.FormData.Details}
-                onChanged={(v) => this.changeTextField(v, "Details")}
+                onChanged={(ev, newValue) => this.changeTextField(newValue, "Details")}
                 multiline={true}
                 rows={3}
                 errorMessage={this.state.ErrMessages.Details}
@@ -161,13 +161,13 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
     private renderAttachmentTypeChoiceOptions() {
 
 
-        let options:IChoiceGroupOption[] = [
+        let options: IChoiceGroupOption[] = [
             { key: 'None', text: 'None' },
             { key: 'PDF', text: 'PDF File' },
             { key: 'Link', text: 'Link' },
         ];
 
-        if(this.props.evidenceType === "IR35" || this.props.evidenceType === "ContractorSecurityCheck"){
+        if (this.props.evidenceType === "IR35" || this.props.evidenceType === "ContractorSecurityCheck") {
             options = options.filter(x => x.key === 'PDF');
         }
 
@@ -184,7 +184,7 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
                     disabled={this.state.EditRequest}
                     selectedKey={fd.AttachmentType}
                     onChange={(ev, option) => this.changeChoiceGroup(ev, option, "AttachmentType")}
-                                />
+                />
 
 
 
@@ -223,7 +223,7 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
                     required={true}
                     className={styles.formField}
                     value={this.state.FormData.Title}
-                    onChanged={(v) => this.changeTextField(v, "Title")}
+                    onChanged={(ev, newValue) => this.changeTextField(newValue, "Title")}
                     errorMessage={this.state.ErrMessages.Title}
                 />
             );
@@ -238,18 +238,18 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
         // if (this.state.ShowFileUpload == false)
         //     return null;
 
-        if(this.state.EditRequest === true) return null;
+        if (this.state.EditRequest === true) return null;
         if (this.state.FormData.AttachmentType !== "PDF")
-        return null;
+            return null;
 
         return (
             <div style={{ marginTop: '20px', marginBottom: '20px' }}>
                 <div>
                     <input type="file" name="fileUpload" id="fileUpload" accept="application/pdf"></input>
                     {this.state.ErrMessages.FileUpload && <FieldErrorMessage value={this.state.ErrMessages.FileUpload} />}
-                    <div style={{paddingTop:'10px'}}>
+                    <div style={{ paddingTop: '10px' }}>
                         {/* Please upload all evidence files as PDFs. For guidance on savings documents as PDFs, please click <span onClick={this.viewHelpPDF} style={{textDecoration:'underline', cursor:'pointer'}}>here</span>. */}
-                        Please upload all evidence as PDFs. For guidance on saving documents and emails please click <span onClick={this.viewHelpPDF} style={{textDecoration:'underline', cursor:'pointer'}}>here</span>.
+                        Please upload all evidence as PDFs. For guidance on saving documents and emails please click <span onClick={this.viewHelpPDF} style={{ textDecoration: 'underline', cursor: 'pointer' }}>here</span>.
 
                     </div>
                 </div>
@@ -273,35 +273,35 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
 
     private viewHelpPDF = () => {
         console.log('help pdf');
-        const fileName:string = "HowToConvertDocumentsToPDF.pdf";
+        const fileName: string = "HowToConvertDocumentsToPDF.pdf";
 
         const f = sp.web.getFolderByServerRelativeUrl(this.Folder_Help).files.getByName(fileName);
-    
+
         f.get().then(t => {
             console.log(t);
             const serverRelativeUrl = t["ServerRelativeUrl"];
             console.log(serverRelativeUrl);
-      
+
             const a = document.createElement('a');
             //document.body.appendChild(a);
             a.href = serverRelativeUrl;
             a.target = "_blank";
             a.download = fileName;
-            
+
             document.body.appendChild(a);
             console.log(a);
             //a.click();
             //document.body.removeChild(a);
-            
-            
+
+
             setTimeout(() => {
-              window.URL.revokeObjectURL(serverRelativeUrl);
-              window.open(serverRelativeUrl, '_blank');
-              document.body.removeChild(a);
+                window.URL.revokeObjectURL(serverRelativeUrl);
+                window.open(serverRelativeUrl, '_blank');
+                document.body.removeChild(a);
             }, 1);
-            
-      
-          });
+
+
+        });
 
     }
 
@@ -444,32 +444,32 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
             //((document.querySelector("#fileUpload") as HTMLInputElement).files[0]) == null
             const file = (document.querySelector("#fileUpload") as HTMLInputElement).files[0];
 
-            if(file == null){
+            if (file == null) {
                 errMsg.FileUpload = "PDF file required";
-                returnVal = false;                    
+                returnVal = false;
             }
-            else{
+            else {
                 const fileName = file.name;
                 console.log("fileName", fileName);
                 const ext = fileName.substr(fileName.lastIndexOf('.') + 1).toLowerCase();
                 console.log("File Ext", ext);
 
-                if(ext === "pdf"){
+                if (ext === "pdf") {
                     errMsg.FileUpload = null;
                 }
-                else{
+                else {
                     errMsg.FileUpload = "PDF file required";
-                    returnVal = false;                    
+                    returnVal = false;
                 }
 
-                    
+
             }
 
         }
         else {
             errMsg.FileUpload = null;
         }
-        
+
         if (this.state.FormData.AttachmentType === "Link") {
             if (this.state.FormData.Title === null || this.state.FormData.Title === '') {
 
@@ -482,7 +482,7 @@ export default class EvidenceSaveForm extends React.Component<IEvidenceSaveFormP
                 if (x.search("http") === 0) {
                     //ok
                 }
-                else{
+                else {
                     errMsg.Title = "Link should start with http:// or https://";
                     returnVal = false;
                     console.log('Link should start with http:// or https://');

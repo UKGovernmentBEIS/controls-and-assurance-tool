@@ -1,6 +1,5 @@
 import * as React from 'react';
 import * as types from '../types';
-import { IPeriod, IEntity } from '../types';
 import * as services from '../services';
 import styles from '../styles/cr.module.scss';
 import { IDropdownOption } from 'office-ui-fabric-react/lib/Dropdown';
@@ -13,20 +12,16 @@ import { FormCommandBar } from './cr/FormCommandBar';
 import { Panel, PanelType } from 'office-ui-fabric-react/lib/Panel';
 import { IChoiceGroupOption } from 'office-ui-fabric-react/lib/ChoiceGroup';
 
-export interface IEntityFormState extends types.ICrFormState<types.IEntity, types.ICrFormValidations> { }
-
-export abstract class BaseForm<P extends types.IEntityFormProps, S extends IEntityFormState, E extends types.IEntity> extends React.Component<P, S> {
+//export interface IEntityFormState extends types.ICrFormState<types.IEntity, types.ICrFormValidations> { }
+//export abstract class BaseForm<P extends types.IEntityFormProps, S extends IEntityFormState, E extends types.IEntity> extends React.Component<P, S> {
+export abstract class BaseForm<P extends types.IEntityFormProps, S extends types.ICrFormState<types.IEntity, types.ICrFormValidations>, E extends types.IEntity> extends React.Component<P, S> {
     protected abstract entityService: services.EntityService<E>;
     protected periodService: services.PeriodService = new services.PeriodService(this.props.spfxContext, this.props.api);
-
-
     protected abstract EntityName: string;
     protected childEntities: types.IFormDataChildEntities[];
-
     constructor(props: P) {
         super(props);
     }
-
     public render(): React.ReactElement<P> {
         const errors = this.state.ValidationErrors;
         return (
@@ -48,45 +43,33 @@ export abstract class BaseForm<P extends types.IEntityFormProps, S extends IEnti
 
     public componentDidMount(): void {
         this.setState({ Loading: true });
-        let loadingPromises = [this.loadLookups()];
+        const loadingPromises = [this.loadLookups()];
         if (this.props.entityId) {
             loadingPromises.push(this.loadEntity(this.props.entityId));
         }
-        Promise.all(loadingPromises).then(p => this.onAfterLoad(p[1])).then(p => this.setState({ Loading: false })).catch(err => this.setState({ Loading: false }));
+        Promise.all(loadingPromises)
+            .then(p => this.onAfterLoad(p[1]))
+            .then(() => this.setState({ Loading: false }))
+            .catch(() => this.setState({ Loading: false }));
     }
 
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     protected loadLookups(): Promise<any> { return Promise.resolve(); }
 
     protected loadEntity = (id: number): Promise<void | E> => {
-        let x = this.entityService.read(id, true, true).then((entity: E): E => {
+        const x = this.entityService.read(id, true, true).then((entity: E): E => {
             this.setState({ FormIsDirty: false, FormData: this.cloneObject(entity), FormDataBeforeChanges: this.cloneObject(entity) });
-            //console.log(entity);
             return entity;
         }, (err) => { if (this.props.onError) this.props.onError(`Error loading form data`, err.message); });
 
         return x;
     }
 
-    protected onAfterLoad = (entity: E): void => { };
-
-
-
-    // protected loadPeriods = (): Promise<void |IPeriod[]> => {
-    //     return this.periodService.readAll().then((at: IPeriod[]): IPeriod[] => {
-    //         this.setState({ LookupData: this.cloneObject(this.state.LookupData, 'Periods', at) });
-    //         return at;
-    //     }, (err) => { if (this.props.onError) this.props.onError(`Error loading attribute types lookup data`, err.message); });
-    // }
-
-
-
-
-
-
-
-
-
-
+    protected onAfterLoad(_: E): void {
+        // Optional: Add any necessary code or leave it empty
+        console.log('test')
+    }
 
 
 
@@ -102,15 +85,11 @@ export abstract class BaseForm<P extends types.IEntityFormProps, S extends IEnti
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, value), FormIsDirty: true });
     }
 
-    // protected changeDatePicker = (date: Date, f: string): void => {
-    //     this.setState({ FormData: this.cloneObject(this.state.FormData, f, date), FormIsDirty: true });
-    // }
-
-    protected changeDropdown = (option: IDropdownOption, f: string, index?: number): void => {
+    protected changeDropdown = (option: IDropdownOption, f: string): void => {
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, option.key), FormIsDirty: true });
     }
 
-    protected changeComboBox = (option: IComboBoxOption, f: string, index?: number): void => {
+    protected changeComboBox = (option: IComboBoxOption, f: string): void => {
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, option.key), FormIsDirty: true });
     }
 
@@ -126,15 +105,15 @@ export abstract class BaseForm<P extends types.IEntityFormProps, S extends IEnti
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, value.length === 1 ? value[0] : null), FormIsDirty: true });
     }
 
-    protected changeMultiUserPicker = (value: number[], f: string, newEntity: object, userIdProperty: string): void => {
+    protected changeMultiUserPicker = (value: number[], f: string, newEntity: Record<string, unknown>, userIdProperty: string): void => {
         const loadedUsers = this.cloneObject(this.state.FormDataBeforeChanges);
-        let newUsers = [];
+        const newUsers = [];
         value.forEach((userId) => {
-            let existingUser = loadedUsers[f] ? loadedUsers[f].map(user => user[userIdProperty]).indexOf(userId) : -1;
+            const existingUser = loadedUsers[f] ? loadedUsers[f].map(user => user[userIdProperty]).indexOf(userId) : -1;
             if (existingUser !== -1)
                 newUsers.push(loadedUsers[f][existingUser]);
             else {
-                let newUser = { ...newEntity };
+                const newUser = { ...newEntity };
                 newUser[userIdProperty] = userId;
                 newUsers.push(newUser);
             }
@@ -142,37 +121,37 @@ export abstract class BaseForm<P extends types.IEntityFormProps, S extends IEnti
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, newUsers), FormIsDirty: true });
     }
 
-    protected changeMultiDropdown = (item: IDropdownOption, f: string, newEntity: object, optionIdProperty: string): void => {
+    protected changeMultiDropdown = (item: IDropdownOption, f: string, newEntity: Record<string, unknown>, optionIdProperty: string): void => {
         const loadedChoices = this.cloneArray(this.state.FormDataBeforeChanges[f]);
         const editedChoices = this.cloneArray(this.state.FormData[f]);
         if (item.selected) {
-            let indexOfExisting = loadedChoices.map(choice => choice[optionIdProperty]).indexOf(item.key);
+            const indexOfExisting = loadedChoices.map(choice => choice[optionIdProperty]).indexOf(item.key);
             if (indexOfExisting !== -1) {
                 editedChoices.push(this.cloneObject(loadedChoices[indexOfExisting]));
             } else {
-                let newChoice = { ...newEntity };
+                const newChoice = { ...newEntity };
                 newChoice[optionIdProperty] = item.key;
                 editedChoices.push(newChoice);
             }
         } else {
-            let indexToRemove = editedChoices.map(choice => choice[optionIdProperty]).indexOf(item.key);
+            const indexToRemove = editedChoices.map(choice => choice[optionIdProperty]).indexOf(item.key);
             editedChoices.splice(indexToRemove, 1);
         }
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, editedChoices), FormIsDirty: true });
     }
 
-    protected changeMultiDropdownWithText = (value: ICrMultiDropdownWithTextValue[], f: string, newEntity: object, optionIdProperty: string, textValueProperty: string): void => {
+    protected changeMultiDropdownWithText = (value: ICrMultiDropdownWithTextValue[], f: string, newEntity: Record<string, unknown>, optionIdProperty: string, textValueProperty: string): void => {
         const formValues = this.cloneObject(this.state.FormData);
-        let newChoices = [];
+        const newChoices = [];
         value.forEach((val) => {
-            let existingValue = formValues[f] ? formValues[f].map(v => v[optionIdProperty]).indexOf(val.Key) : -1;
+            const existingValue = formValues[f] ? formValues[f].map(v => v[optionIdProperty]).indexOf(val.Key) : -1;
             if (existingValue !== -1) {
-                let editChoice = this.cloneObject(formValues[f][existingValue]);
+                const editChoice = this.cloneObject(formValues[f][existingValue]);
                 editChoice[textValueProperty] = val.Text;
                 newChoices.push(editChoice);
             }
             else {
-                let newChoice = { ...newEntity };
+                const newChoice = { ...newEntity };
                 newChoice[optionIdProperty] = val.Key;
                 newChoice[textValueProperty] = val.Text;
                 newChoices.push(newChoice);
@@ -187,8 +166,8 @@ export abstract class BaseForm<P extends types.IEntityFormProps, S extends IEnti
 
     protected validSqlDecimal(num: number, decimalPrecision?: number, decimalScale?: number): boolean {
         if (num.toString().indexOf('.') !== -1) {
-            let p = num.toString().split('.')[0];
-            let s = num.toString().split('.')[1];
+            const p = num.toString().split('.')[0];
+            const s = num.toString().split('.')[1];
             if (p.length <= ((decimalPrecision || 18) - (decimalScale || 4)) && s.length <= (decimalScale || 4))
                 return true;
             return false;
@@ -213,7 +192,7 @@ export abstract class BaseForm<P extends types.IEntityFormProps, S extends IEnti
         return { ...obj };
     }
     protected cloneArray(array): any[] { return [...array]; }
-    protected onBeforeSave(entity: E): void { }
+    protected onBeforeSave(entity: E): void { console.log('onBeforeSave');}
     protected onAfterCreate(entity: E): Promise<any> { return Promise.resolve(); }
     protected onAfterUpdate(): Promise<any> { return Promise.resolve(); }
 
@@ -241,7 +220,7 @@ export abstract class BaseForm<P extends types.IEntityFormProps, S extends IEnti
     }
 
     protected saveChildEntitiesAfterCreate = (parentEntity: E): Promise<any> => {
-        let promises = [];
+        const promises = [];
         if (this.childEntities) {
             this.childEntities.forEach((ce) => {
                 this.state.FormData[ce.ObjectParentProperty].forEach((c) => {
@@ -255,7 +234,7 @@ export abstract class BaseForm<P extends types.IEntityFormProps, S extends IEnti
     }
 
     protected saveChildEntitiesAfterUpdate = (): Promise<any> => {
-        let promises = [];
+        const promises = [];
         if (this.childEntities) {
             this.childEntities.forEach((ce) => {
                 this.state.FormData[ce.ObjectParentProperty].forEach((c) => {

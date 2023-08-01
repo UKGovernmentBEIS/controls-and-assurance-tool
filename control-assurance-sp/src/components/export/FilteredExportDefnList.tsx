@@ -5,59 +5,20 @@ import { IEntity } from '../../types';
 export { IObjectWithKey, IColumn } from 'office-ui-fabric-react/lib/DetailsList';
 import { CommandBarButton } from 'office-ui-fabric-react/lib/Button';
 import { Fabric } from 'office-ui-fabric-react/lib/Fabric';
-import { mergeStyleSets } from 'office-ui-fabric-react/lib/Styling';
-import { Toggle } from 'office-ui-fabric-react/lib/Toggle';
 import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox';
+import { toolbarStyle, searchBoxStyle } from '../../types/AppGlobals';
 import '../../styles/CustomFabric2.scss';
 
-
-
-const classNames = mergeStyleSets({
-    controlWrapper: {
-        display: 'flex',
-        flexWrap: 'wrap',
-        backgroundColor: "rgb(244,244,244)",
-        padding: "5px 0px 5px 10px",
-        marginBottom: "5px"
-    },
-    cmdBtn: {
-        border: 'none'
-    }
-});
-const controlStyles = {
-    root: {
-        margin: '5px 10px 0 0', //top, right, bottom, left
-        maxWidth: '301px',
-    }
-};
-
-const controlStylesB = {
-    marginLeft: "auto",
-    //display: "inline-block",
-};
-
-const controlStyles2 = {
-    //root: {
-    marginLeft: "auto",
-    display: "inline-block",
-    backgroundColor: "white"
-
-    //}
-};
 
 export interface IFilteredExportDefnListProps {
     className?: string;
     columns: IColumn[];
     items: any[];
     filterText?: string;
-    onFilterChange: (value: string) => void;
-    //onItemTitleClick: (ID: number, goElementId: number, title: string, filteredItems: any[]) => void;
-
+    onFilterChange: (event?: React.ChangeEvent<HTMLInputElement>, newValue?: string) => void;
     selection?: ISelection;
-
     onCreate: () => void;
     createDisabled: boolean;
-
 }
 
 export interface IFilteredExportDefnListState {
@@ -67,61 +28,44 @@ export interface IFilteredExportDefnListState {
 
 export class FilteredExportDefnList extends React.Component<IFilteredExportDefnListProps, IFilteredExportDefnListState> {
 
-
-
     constructor(props: IFilteredExportDefnListProps) {
         super(props);
-
         props.columns.forEach((c) => { c.onColumnClick = this._onColumnClick; });
         this.state = {
             Columns: props.columns,
             FilteredItems: props.items,
         };
-
-
     }
 
     public render(): JSX.Element {
         const { props, state } = this;
         return (
             <Fabric>
-
-                <div className={classNames.controlWrapper}>
-
+                <div className={toolbarStyle.controlWrapper}>
                     {(props.createDisabled === false) &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Edit' }}
-                            className={classNames.cmdBtn}
+                            className={toolbarStyle.cmdBtn}
                             text="Create"
                             onClick={props.onCreate}
                         />}
 
-
-                    <span style={controlStyles2}>
-
-
-
+                    <span style={searchBoxStyle}>
                         <SearchBox
                             placeholder="Filter items"
                             value={props.filterText ? props.filterText : ''}
                             onChange={props.onFilterChange}
-                        //className={styles.listFilterBox}
-                        //style={controlStyles2}
                         />
                     </span>
-
                 </div>
 
-
                 <DetailsList
-                    //className="noHScroll"
                     setKey={"state.FilteredItems"}
                     selectionMode={SelectionMode.single}
                     selection={props.selection}
                     columns={state.Columns}
                     items={state.FilteredItems}
                     onRenderItemColumn={this.renderItemColumn}
-
                 />
             </Fabric>
         );
@@ -131,12 +75,9 @@ export class FilteredExportDefnList extends React.Component<IFilteredExportDefnL
 
     public componentDidMount(): void {
         this.setState({ FilteredItems: SearchObjectService.filterEntities(this.props.items, this.props.filterText) });
-
-
     }
 
     public componentDidUpdate(prevProps: IFilteredExportDefnListProps): void {
-
         if (prevProps.columns !== this.props.columns) {
             this.props.columns.forEach((c) => { c.onColumnClick = this._onColumnClick; });
             this.setState({ Columns: this.props.columns, FilteredItems: SearchObjectService.filterEntities(this.props.items, this.props.filterText) });
@@ -145,7 +86,6 @@ export class FilteredExportDefnList extends React.Component<IFilteredExportDefnL
 
             this.setState({ FilteredItems: SearchObjectService.filterEntities(this.props.items, this.props.filterText) });
         }
-
     }
 
     //#endregion
@@ -153,12 +93,8 @@ export class FilteredExportDefnList extends React.Component<IFilteredExportDefnL
     //#region Form infrastructure
 
     private renderItemColumn = (item: IEntity, index: number, column: IColumn) => {
-
         let fieldContent = item[column.fieldName as keyof IEntity] as string;
-
         return <span>{fieldContent}</span>;
-
-
     }
 
     private _onColumnClick = (ev: React.MouseEvent<HTMLElement>, column: IColumn): void => {
@@ -203,7 +139,6 @@ export class FilteredExportDefnList extends React.Component<IFilteredExportDefnL
             return ((descending) ? (comparison * -1) : comparison);
         });
     }
-
 
     //#endregion
 }

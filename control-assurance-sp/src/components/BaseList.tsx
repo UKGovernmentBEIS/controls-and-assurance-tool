@@ -7,16 +7,14 @@ import { ConfirmDialog } from './cr/ConfirmDialog';
 import { ListCommandBar } from './cr/ListCommandBar';
 import { MessageDialog } from './cr/MessageDialog';
 import { CrLoadingOverlay } from './cr/CrLoadingOverlay';
-import { ActionButton, IButtonProps } from 'office-ui-fabric-react/lib/Button';
+import { ActionButton } from 'office-ui-fabric-react/lib/Button';
 
 export interface IBaseListProps extends types.IBaseComponentProps {
     allowAdd?: boolean;
     onRowSelectionCheckEditDel?: (key: number) => Promise<boolean>;
-
-    //new props for paging
     pageSize?: number;
-    zeroMarginTop?:boolean;
-    hideTitleBelowCommandBar?:boolean;
+    zeroMarginTop?: boolean;
+    hideTitleBelowCommandBar?: boolean;
 }
 
 export default abstract class BaseList<P extends IBaseListProps, S extends types.ICrListState<types.IEntity>> extends React.Component<P, S> {
@@ -34,23 +32,20 @@ export default abstract class BaseList<P extends IBaseListProps, S extends types
         this._selection = new Selection({
             onSelectionChanged: () => {
                 if (this._selection.getSelectedCount() === 1) {
-
-                    let key = Number(this._selection.getSelection()[0].key);
-
-
-                    if(this.props.allowAdd === true){
-                        if(this.props.onRowSelectionCheckEditDel){
+                    const key = Number(this._selection.getSelection()[0].key);
+                    if (this.props.allowAdd === true) {
+                        if (this.props.onRowSelectionCheckEditDel) {
                             this.props.onRowSelectionCheckEditDel(key).then((result: boolean) => {
 
-                                if(result=== true){
-                                    this.setState({ SelectedEntity: key, EnableEdit: true, EnableDelete: true });        
+                                if (result === true) {
+                                    this.setState({ SelectedEntity: key, EnableEdit: true, EnableDelete: true });
                                 }
-                                else{
-                                    this.setState({ SelectedEntity: null, EnableEdit: false, EnableDelete: false });            
+                                else {
+                                    this.setState({ SelectedEntity: null, EnableEdit: false, EnableDelete: false });
                                 }
                             });
                         }
-                        else{
+                        else {
                             //write permission is allowed but allowEditDel function is not provided
                             //in this case also allow edit/del
                             this.setState({ SelectedEntity: key, EnableEdit: true, EnableDelete: true });
@@ -65,8 +60,8 @@ export default abstract class BaseList<P extends IBaseListProps, S extends types
     }
 
     public render(): React.ReactElement<P> {
-        const mainDivCss= this.props.zeroMarginTop ? `` : `${styles.cr} ${styles.crList}`;
-        const entityNameH2 = this.props.hideTitleBelowCommandBar ? <div style={{marginBottom:'5px'}} /> : <h2 className={styles.listTitle}>{this.EntityName.Plural}</h2>;
+        const mainDivCss = this.props.zeroMarginTop ? `` : `${styles.cr} ${styles.crList}`;
+        const entityNameH2 = this.props.hideTitleBelowCommandBar ? <div style={{ marginBottom: '5px' }} /> : <h2 className={styles.listTitle}>{this.EntityName.Plural}</h2>;
         return (
             <div className={mainDivCss}>
                 <ListCommandBar
@@ -83,9 +78,8 @@ export default abstract class BaseList<P extends IBaseListProps, S extends types
                     {entityNameH2}
                     <CrLoadingOverlay isLoading={this.state.Loading} />
                     {this.renderList()}
-                    { this.props.pageSize && this.state.NextPageAvailable === true &&
-                        //  <a style={{float:"right", marginTop: "10px", cursor:"pointer"}} onClick={ ()=> { this.loadEntities(); } }>Load More</a> 
-                        <ActionButton style={{float:"right", marginTop: "10px"}} onClick={ ()=> {this.loadEntities(); } }>Show More &darr;</ActionButton>     
+                    {this.props.pageSize && this.state.NextPageAvailable === true &&
+                        <ActionButton style={{ float: "right", marginTop: "10px" }} onClick={() => { this.loadEntities(); }}>Show More &darr;</ActionButton>
                     }
                 </div>
                 {this.state.ShowForm && this.renderForm()}
@@ -108,7 +102,6 @@ export default abstract class BaseList<P extends IBaseListProps, S extends types
         this.loadEntities();
     }
 
-
     protected loadEntities = (): void => {
         this.setState({ Loading: true });
         this.entityService.readAll().then((entities: any): void => {
@@ -126,17 +119,15 @@ export default abstract class BaseList<P extends IBaseListProps, S extends types
     //#region Form infrastructure
 
     protected getSelectedEntityName = (): string => {
-        let entity = this.state.Entities.filter((e) => { return e.ID === this.state.SelectedEntity; });
-        let entityName:string = null;
-        if(entity[0]){
-            if(entity[0].Title !== null)
+        const entity = this.state.Entities.filter((e) => { return e.ID === this.state.SelectedEntity; });
+        let entityName: string = null;
+        if (entity[0]) {
+            if (entity[0].Title !== null)
                 entityName = entity[0].Title;
             else
-                entityName = this.EntityName.Singular.toLowerCase();                            
+                entityName = this.EntityName.Singular.toLowerCase();
         }
-
         return entityName;
-        //return entity[0] ? entity[0].Title : null;
     }
 
     protected addEntity = (): void => {
@@ -191,8 +182,7 @@ export default abstract class BaseList<P extends IBaseListProps, S extends types
     }
 
     protected checkDelete = (): void => {
-        if(this.ChildEntityName.Api)
-        {
+        if (this.ChildEntityName.Api) {
             this.entityService.numberOfChildren(this.state.SelectedEntity, this.ChildEntityName.Api).then((numberOfChildren: number) => {
                 if (numberOfChildren > 0)
                     this.setState({ SelectedEntityChildren: numberOfChildren }, this.toggleDeleteDisallowed);
@@ -200,14 +190,13 @@ export default abstract class BaseList<P extends IBaseListProps, S extends types
                     this.toggleDeleteConfirm();
             });
         }
-        else{
+        else {
             this.toggleDeleteConfirm();
         }
-
     }
 
-    protected onFilterChange = (value: string): void => {
-        this.setState({ ListFilterText: value });
+    protected onFilterChange = (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string): void => {
+        this.setState({ ListFilterText: newValue });
     }
 
     //#endregion

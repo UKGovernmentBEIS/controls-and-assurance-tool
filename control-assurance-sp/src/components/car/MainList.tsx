@@ -1,35 +1,25 @@
 import * as React from 'react';
 import * as types from '../../types';
 import * as services from '../../services';
-import { sp } from '@pnp/sp';
 import { FilteredMainList, IObjectWithKey } from './FilteredMainList';
 import { IEntity } from '../../types';
 import { IUpdatesListColumn, ColumnDisplayTypes } from '../../types/UpdatesListColumn';
 import { CrLoadingOverlay } from '../cr/CrLoadingOverlay';
 import { Selection } from '../cr/FilteredList';
-import { ConfirmDialog } from '../cr/ConfirmDialog';
-import { MessageDialog } from '../cr/MessageDialog';
 import styles from '../../styles/cr.module.scss';
-
 
 export interface IMainListProps extends types.IBaseComponentProps {
 
     periodId: number | string;
     formId: number;
-
-
     filterText?: string;
-    onChangeFilterText: (value: string) => void;
-
+    onChangeFilterText: (event?: React.ChangeEvent<HTMLInputElement>, newValue?: string) => void;
     onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
-
 }
 
 export interface IMainListState<T> {
     SelectedEntity: number;
     SelectedEntityTitle: string;
-    //SelectedGoElementId:number;
-
     SelectedEntityChildren: number;
     ShowForm: boolean;
     ShowImportForm: boolean;
@@ -48,8 +38,6 @@ export interface IMainListState<T> {
 export class MainListState<T> implements IMainListState<T>{
     public SelectedEntity = null;
     public SelectedEntityTitle: string = null;
-    //public SelectedGoElementId = null;
-
     public SelectedEntityChildren = null;
     public ShowForm = false;
     public ShowImportForm = false;
@@ -70,11 +58,8 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
     private _selection: Selection;
     private mainService: services.DefElementService = new services.DefElementService(this.props.spfxContext, this.props.api);
 
-    private ChildEntityName: { Plural: string, Singular: string } = { Plural: 'Recommendations', Singular: 'Recommendation' };
-
     private listColumns: IUpdatesListColumn[] = [
         //use fieldName as key
-
         {
             key: 'ID',
             name: 'ID',
@@ -113,10 +98,6 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
             isMultiline: true,
             headerClassName: styles.bold,
         },
-
-
-
-
     ];
 
 
@@ -127,14 +108,10 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
         this._selection = new Selection({
             onSelectionChanged: () => {
                 if (this._selection.getSelectedCount() === 1) {
-
                     const sel = this._selection.getSelection()[0];
                     console.log(sel);
                     const key = Number(sel.key);
                     const title: string = sel["Title"];
-                    //const goElementId = Number(sel["GoElementId"]);
-
-
                     this.setState({ SelectedEntity: key, SelectedEntityTitle: title, EnableEdit: true, EnableDelete: true });
                 }
                 else {
@@ -153,8 +130,6 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
                 <div style={{ position: 'relative' }}>
                     <CrLoadingOverlay isLoading={this.state.Loading} />
                     {this.renderList()}
-
-
                 </div>
             </div>
         );
@@ -164,10 +139,7 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
 
         const listColumns = this.getColumns();
         const listColumnsForData = this.getColumnsForData();
-
         let items: IObjectWithKey[] = this.state.Entities.map((e) => { return this.makeItem(e, listColumnsForData); });
-
-
 
         return (
             <FilteredMainList
@@ -177,13 +149,9 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
                 filterText={this.props.filterText}
                 onFilterChange={this.props.onChangeFilterText}
                 selection={this._selection}
-
             />
         );
     }
-
-
-
 
 
     //#endregion Render
@@ -193,7 +161,6 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
     private makeItem = (e: IEntity, listColumns: IUpdatesListColumn[]): any => {
 
         let item: any = { key: e["ID"] };
-
         listColumns.map((c) => {
             let fieldContent: string = String(e[c.fieldName]);
             item = {
@@ -218,24 +185,6 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
     }
 
 
-
-    // private handleAssign = (): void => {
-    //     this.setState({ ShowForm: true });
-    // }
-
-
-
-
-
-    private getSelectedEntityName = (): string => {
-        let entity = this.state.Entities.filter((e) => { return e.ID === this.state.SelectedEntity; });
-        return entity[0] ? entity[0].Title : null;
-    }
-
-
-
-
-
     //#endregion Class Methods
 
     //#region Data Load
@@ -243,8 +192,6 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
 
     private loadData = (): void => {
         this.setState({ Loading: true });
-
-
         const read: Promise<IEntity[]> = this.mainService.readAllForList(this.props.periodId, this.props.formId);
         read.then((entities: any): void => {
             this.setState({
@@ -259,25 +206,14 @@ export default class MainList extends React.Component<IMainListProps, IMainListS
     }
     public componentDidMount(): void {
         this.loadData();
-        //console.log('web title: ', this.props.spfxContext.pageContext.web.title);
-
     }
     public componentDidUpdate(prevProps: IMainListProps): void {
         if (prevProps.periodId !== this.props.periodId || prevProps.formId !== this.props.formId) {
-            //console.log('props changed, load data again');
             this._selection.setAllSelected(false);
             this.loadData();
         }
     }
 
-
-
     //#endregion Data Load
-
-    //#region Events Handlers
-
-
-
-    //#endregion Events Handlers
 
 }

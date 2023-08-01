@@ -3,21 +3,17 @@ import { Pivot, PivotItem } from 'office-ui-fabric-react/lib/Pivot';
 import * as types from '../../../types';
 import BaseUserContextWebPartComponent from '../../../components/BaseUserContextWebPartComponent';
 import * as services from '../../../services';
-
 import EntityList from '../../../components/entity/EntityList';
 import { IGenColumn, ColumnType } from '../../../types/GenColumn';
 import { IUserPermission } from '../../../types/UserPermissions';
-import { ICLCase, ICLCaseEvidence, ICLHiringMember, IUser } from '../../../types';
-import { sp, ChunkedFileUploadProgressData, Folder, SharePointQueryableSecurable } from '@pnp/sp';
-import { Promise } from 'es6-promise';
+import { ICLCase, ICLHiringMember, IUser } from '../../../types';
+import { sp, SharePointQueryableSecurable } from '@pnp/sp';
 import { CrTextField } from '../../../components/cr/CrTextField';
 import { getUploadFolder_CLEvidence, getUploadFolder_CLRoot, getUploadFolder_Report } from '../../../types/AppGlobals';
 import { PrimaryButton } from 'office-ui-fabric-react/lib/Button';
 import PlatformLinks from '../../../components/PlatformLinks';
-//import { Promise } from 'es6-promise';
 
 //#region types defination
-
 
 export interface IUserManagementState extends types.IUserContextWebPartState {
   Cases: ICLCase[];
@@ -31,7 +27,6 @@ export interface IUserManagementState extends types.IUserContextWebPartState {
   TotalCasesProcessed: number;
   TotalFoldersCreated: number;
   ConsoleLogFlag: boolean;
-
 }
 export class UserManagementState extends types.UserContextWebPartState {
 
@@ -47,7 +42,6 @@ export class UserManagementState extends types.UserContextWebPartState {
   public TotalFoldersCreated: number = 0;
   public ConsoleLogFlag: boolean = false;
 
-
   constructor() {
     super();
   }
@@ -59,7 +53,6 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
 
   private clCaseService: services.CLCaseService = new services.CLCaseService(this.props.spfxContext, this.props.api);
   private clWorkerService: services.CLWorkerService = new services.CLWorkerService(this.props.spfxContext, this.props.api);
-
   private userFoundByEmail: number = 0;
   private userFoundByUserPrincipalName: number = 0;
   private usersToTryByUserPrincipalName: string[] = [];
@@ -68,17 +61,14 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
   private totalCasesProcessed: number = 0;
   private totalFoldersCreated: number = 0;
   private caseProcessed: boolean = false;
-  private shortDelayCounter = 1;
   private RoleAssignmentsToRemove: number[] = [];
   private roleAssignmentRemoved: boolean = false;
   private roleAssignmentAdded: boolean = false;
   private RoleAssignmentsToAdd: string[] = [];
   private caseFolderCreated: boolean = false;
   private consoleLogFlag: boolean = false;
-
   private EvidenceFilesToCopy: types.ICLCaseEvidence[] = [];
   private copyFileProcessed: boolean = false;
-
 
   constructor(props: types.IWebPartComponentProps) {
     super(props);
@@ -110,22 +100,13 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
           <PivotItem headerText="Set Folder Permissions">
             {this.renderSetFolderPermissions()}
           </PivotItem>
-
           <PivotItem headerText="Debug Info">
             {this.renderDebugInfo()}
           </PivotItem>
-
-          {/* <PivotItem headerText="Permission Types">
-              {this.renderPermissionTypes()}
-            </PivotItem>  */}
-
-
         </Pivot>
       </React.Fragment>
     );
   }
-
-
 
   private renderUsers(): React.ReactElement<types.IWebPartComponentProps> {
 
@@ -234,38 +215,6 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
     );
   }
 
-  private renderPermissionTypes(): React.ReactElement<types.IWebPartComponentProps> {
-
-    const listColumns: IGenColumn[] = [
-      {
-        key: '1',
-        columnType: ColumnType.TextBox,
-        name: 'Permission Type',
-        fieldName: 'Title',
-        minWidth: 300,
-        isResizable: true,
-        isRequired: true,
-        fieldMaxLength: 50
-      }
-    ];
-
-
-    return (
-      <EntityList
-        allowAdd={true}
-        columns={listColumns}
-        {...this.props}
-        onError={this.onError}
-        entityService={new services.PermissionTypeService(this.props.spfxContext, this.props.api)}
-        entityNamePlural="Permission Types"
-        entityNameSingular="Permission Type"
-        childEntityNameApi="UserPermissions"
-        childEntityNamePlural="User Permissions"
-        childEntityNameSingular="User Permission"
-      />
-    );
-  }
-
   private renderDebugInfo(): React.ReactElement<types.IWebPartComponentProps> {
 
     if (this.state.UserPermissions === null) return null;
@@ -297,8 +246,7 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
 
           <br /><br /><br />
           <CrTextField
-            //className={styles.formField}
-            onChanged={(v) => this.changeSearchUserTextField(v)}
+            onChanged={(ev, newValue) => this.changeSearchUserTextField(newValue)}
             value={this.state.SearchUser}
 
           />
@@ -333,10 +281,9 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
     return (
       <React.Fragment>
         <div style={{ paddingTop: '15px' }}>
-          Click the 'Set Folder Permissions' button below to reset all Sharepoint folder level permissions for record level folder.
+          Click the &apos;Set Folder Permissions&apos; button below to reset all SharePoint folder level permissions for record level folder.
           <br />
           Note this is necessary whenever you change User Permissions.
-
           <br />
           <br />
           <PrimaryButton
@@ -344,8 +291,6 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
             onClick={this.setFolderPermissions}
             disabled={this.state.SetFolderPermissionsPressed}
           />
-
-
 
           {this.state.SetFolderPermissionsPressed === true && this.state.SetFolderPermissionsCompleted === false && <div style={{ paddingTop: '15px' }}>
             <strong>Please do not close this browser or click to another module from menu or press refresh, until this message changes. </strong>
@@ -364,17 +309,10 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
           {this.state.SetFolderPermissionsCompleted && <div style={{ paddingTop: '15px' }}>
             <strong>Progress: Folder permissions have being updated. You may close this browser now.</strong>
           </div>}
-
-
         </div>
-
-
       </React.Fragment>
     );
   }
-
-
-
 
   private setAFolderPermission = (caseRef: number): void => {
     const clCase = this.state.Cases[caseRef];
@@ -459,18 +397,6 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
 
     });
 
-    /*
-    const interval = setInterval(()=> {
-      // method to be executed;
-      console.log('set interval called');
-      if(this.totalCases <= this.totalCasesProcessed){
-        clearInterval(interval);
-        console.log('all folders processed');
-        this.setState({ SetFolderPermissionsCompleted:true });
-      }
-    }, 2000); 
-    */
-
   }
 
   private makeCLFolderNewUsersArr = (caseData: ICLCase): string[] => {
@@ -511,10 +437,6 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
     this.state.CLSuperUsersAndViewers.forEach(su => {
       users.push(su.Username);
     });
-
-
-
-
 
     return users;
   }
@@ -572,7 +494,7 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
         return "lift off"; // no, all done, return a non-promise result
       }
       if (this.roleAssignmentRemoved == true) {
-        if (num = 0) {
+        if (num == 0) {
           if (this.consoleLogFlag)
             console.log('>> doPermissionRemoveRecursive Completed2: ', asyncResult, delayCount);
           return "Completed"; // no, all done, return a non-promise result
@@ -704,60 +626,12 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
     });
   }
 
-
-
-  private removeFolderRoleBySiteUserId = (siteUserId: number, folderItem: SharePointQueryableSecurable): Promise<any> => {
-
-    return folderItem.roleAssignments.remove(siteUserId, this.state.FullControlFolderRoleId).then(roleAddedValue => {
-      if (this.consoleLogFlag)
-        console.log(`>> removeFolderRoleBySiteUserId: role removed for user ${siteUserId}`);
-    });
-  }
-
-  private addFolderRole = (userEmail: string, folderItem: SharePointQueryableSecurable): Promise<any> => {
-
-    //let promises = [];
-
-    return sp.web.siteUsers.getByEmail(userEmail).get().then(user => {
-
-      const userId: number = Number(user['Id']);
-
-      if (this.consoleLogFlag)
-        console.log('addFolderRole: userId', userId);
-
-
-      folderItem.roleAssignments.add(userId, this.state.FullControlFolderRoleId).then(roleAddedValue => {
-        if (this.consoleLogFlag)
-          console.log(`addFolderRole: role added for user ${userEmail}`);
-      });
-
-    }).catch(e => {
-      console.log('addFolderRole: error', e);
-      sp.web.ensureUser(userEmail).then(userEnsured => {
-        const userId: number = userEnsured.data.Id;
-        console.log('addFolderRole: UserIdEnured', userId);
-        folderItem.roleAssignments.add(userId, this.state.FullControlFolderRoleId).then(roleAddedValue => {
-          console.log(`addFolderRole: role added for ensured user ${userEmail}`);
-        });
-      });
-
-    });
-
-  }
-
-
-
-
-
   //#endregion Render
-
-
 
   //#region Permissions
 
 
   private allowAdd_Users(): boolean {
-
     //super user/SysManager check
     let ups = this.state.UserPermissions;
     for (let i = 0; i < ups.length; i++) {
@@ -767,7 +641,6 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
         return true;
       }
     }
-
     return false;
   }
 
@@ -781,43 +654,62 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
         return true;
       }
     }
-
     return false;
   }
 
-  private checkEditDel_UserPermissions = (key: number): Promise<boolean> => {
+  private checkEditDel_UserPermissions = async (key: number): Promise<boolean> => {
     const upService = new services.UserPermissionService(this.props.spfxContext, this.props.api);
-    const resultPromise = upService.checkEditDelPermission(key);
-    return resultPromise;
-
+    try {
+      const result = await upService.checkEditDelPermission(key);
+      return result;
+    } catch (error) {
+      if (this.onError) this.onError(`Error checking user permissions`, error.message);
+      return false; // Return false directly
+    }
   }
 
   //#endregion Permissions
 
   private loadCases = (): Promise<void> => {
     const qryStr: string = "?$filter=CaseCreated eq true&$expand=CLHiringMembers($expand=User($select=Username,ID))";
-    let x = this.clCaseService.readAll(qryStr).then((data: ICLCase[]): void => {
-      if (this.consoleLogFlag)
-        console.log('cases', data);
-      this.setState({ Cases: data });
-    }, (err) => { if (this.onError) this.onError(`Error loading data`, err.message); });
-    return x;
+    return this.clCaseService.readAll(qryStr)
+      .then((data: ICLCase[]): void => {
+        if (this.consoleLogFlag)
+          console.log('cases', data);
+        this.setState({ Cases: data });
+      })
+      .catch((err) => {
+        if (this.onError) this.onError(`Error loading data`, err.message);
+        return null; // Return null to handle the error gracefully
+      }) as Promise<void>;
   }
+
   private loadUsers = (): Promise<void> => {
-    let x = this.userService.readAll().then((data: IUser[]): void => {
-      this.setState({ Users: data });
-    }, (err) => { if (this.onError) this.onError(`Error loading Users`, err.message); });
-    return x;
+    try {
+      return this.userService.readAll().then((data: IUser[]): void => {
+        this.setState({ Users: data });
+      }).catch((err) => {
+        if (this.onError) this.onError(`Error loading Users`, err.message);
+      }) as Promise<void>;
+    } catch (error) {
+      if (this.onError) this.onError(`Error loading Users`, error.message);
+      return Promise.resolve(); // Return a resolved promise with void value
+    }
   }
 
   private loadAllCLSuperUsersAndViewers = (): Promise<void> => {
-    let x = this.userService.readAll_CL_SuperUsers_Viewers().then((data: IUser[]): void => {
-      this.setState({ CLSuperUsersAndViewers: data });
-      if (this.consoleLogFlag)
-        console.log('loadAllCLSuperUsersAndViewers loaded');
-      //console.log('SuperUsersAndViewers', data);
-    }, (err) => { if (this.onError) this.onError(`Error loading super users`, err.message); });
-    return x;
+    try {
+      return this.userService.readAll_CL_SuperUsers_Viewers().then((data: IUser[]): void => {
+        this.setState({ CLSuperUsersAndViewers: data });
+        if (this.consoleLogFlag)
+          console.log('loadAllCLSuperUsersAndViewers loaded');
+      }).catch((err) => {
+        if (this.onError) this.onError(`Error loading super users`, err.message);
+      }) as Promise<void>;
+    } catch (error) {
+      if (this.onError) this.onError(`Error loading super users`, error.message);
+      return Promise.resolve(); // Return a resolved promise with void value
+    }
   }
 
   private loadSPFoldersCoreStuff = (): void => {
@@ -837,11 +729,9 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
         console.log('loadSPFoldersCoreStuff: currentUserPrincipalId', currentUserPrincipalId);
       this.setState({ CurrentUserPrincipalId: currentUserPrincipalId });
     });
-
   }
 
   protected loadLookups(): Promise<any> {
-
     return Promise.all([
       this.loadSPFoldersCoreStuff(),
       this.loadCases(),
@@ -850,63 +740,19 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
     ]);
   }
 
-
-
-
   private testCasesPermissions = (): void => {
 
     //set stat vars to 0;
     this.userFoundByEmail = 0;
     this.userFoundByUserPrincipalName = 0;
     this.usersToTryByUserPrincipalName = [];
-
     console.log('in testCasesPermissions');
-
     let users: string[] = [];
-
     console.log('building unique users');
-
     //Superusers/viewers
     this.state.Users.forEach(su => {
       users.push(su.Username);
     });
-
-
-    // this.state.Cases.forEach(caseData => {
-    //   console.log('caseId', caseData.ID);
-    //   //hiring manager
-    //   if (caseData.ApplHMUserId > 0) {
-    //     const u1 = this.state.Users.filter(x => x.ID === caseData.ApplHMUserId)[0].Username;
-    //     if (users.indexOf(u1) === -1) users.push(u1);
-    //   }
-
-    //   //hiring members
-    //   const hiringMembers: ICLHiringMember[] = caseData['CLHiringMembers'];
-    //   hiringMembers.forEach(m => {
-    //     const u1 = this.state.Users.filter(x => x.ID === m.UserId)[0].Username;
-    //     if (users.indexOf(u1) === -1) users.push(u1);
-    //   });
-
-    //   //BH
-    //   if (caseData.BHUserId > 0) {
-    //     const u1 = this.state.Users.filter(x => x.ID === caseData.BHUserId)[0].Username;
-    //     if (users.indexOf(u1) === -1) users.push(u1);
-    //   }
-
-    //   //FBP
-    //   if (caseData.FBPUserId > 0) {
-    //     const u1 = this.state.Users.filter(x => x.ID === caseData.FBPUserId)[0].Username;
-    //     if (users.indexOf(u1) === -1) users.push(u1);
-    //   }
-
-    //   //HRBP
-    //   if (caseData.HRBPUserId > 0) {
-    //     const u1 = this.state.Users.filter(x => x.ID === caseData.HRBPUserId)[0].Username;
-    //     if (users.indexOf(u1) === -1) users.push(u1);
-    //   }
-
-
-    // });
 
     console.log('after building unique users', users);
 
@@ -915,15 +761,11 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
     let promisesUsersByUserPrincipalName = [];
 
     users.forEach(userEmail => {
-
       console.log(`trying to find sp user by email: ${userEmail}`);
       promisesUsersByEmail.push(this.findSPUserByEmail(userEmail));
-
-
     });
 
     Promise.all(promisesUsersByEmail).then(() => {
-
       if (this.userFoundByEmail < users.length) {
         //try to find remaining users by UserPrincipalName
         console.log('could not find all sp users by email, so trying to find rest by UserPrincipalName');
@@ -943,8 +785,6 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
           console.log('\n\n');
 
         });
-
-
       }
       else {
         //found all users by email
@@ -955,115 +795,73 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
         console.log("User Found By Email: ", this.userFoundByEmail);
         console.log('=============================');
         console.log('\n\n');
-
       }
-
-
-
     });
-
-
   }
 
-
-  private findSPUserByEmail = (userEmail: string): Promise<any> => {
-
-
-    return sp.web.siteUsers.getByEmail(userEmail).get().then(user => {
-
-      if (user) {
-
-        this.userFoundByEmail++;
-        const currentUserPrincipalId: number = user['Id'];
-        console.log(`SP user found by email: ${userEmail}, SP User Id: ${currentUserPrincipalId}`);
-      }
-      else {
-        console.log(`SP user not found by email: ${userEmail}`);
+  private findSPUserByEmail = (userEmail: string): Promise<void | undefined> => {
+    return new Promise<void | undefined>((resolve, reject) => {
+      sp.web.siteUsers.getByEmail(userEmail).get().then(user => {
+        if (user) {
+          this.userFoundByEmail++;
+          const currentUserPrincipalId: number = user['Id'];
+          console.log(`SP user found by email: ${userEmail}, SP User Id: ${currentUserPrincipalId}`);
+        } else {
+          console.log(`SP user not found by email: ${userEmail}`);
+          this.usersToTryByUserPrincipalName.push(userEmail);
+        }
+        resolve();
+      }).catch(err => {
+        console.log(err, `Exception, SP user not found by email: ${userEmail}`);
         this.usersToTryByUserPrincipalName.push(userEmail);
-      }
-
-    }).catch(err => {
-      console.log(err, `Exception, SP user not found by email: ${userEmail}`);
-      this.usersToTryByUserPrincipalName.push(userEmail);
-
+        resolve(undefined);
+      });
     });
-
-    // return sp.web.siteUsers.filter(`Email eq '${userEmail}'`).get().then(users => {
-
-    //   if (users.length > 0) {
-
-    //     this.userFoundByEmail++;
-    //     const currentUserPrincipalId: number = users[0]['Id'];
-    //     console.log(`SP user found by email: ${userEmail}, SP User Id: ${currentUserPrincipalId}`);
-    //   }
-    //   else {
-    //     console.log(`SP user not found by email: ${userEmail}`);
-    //     this.usersToTryByUserPrincipalName.push(userEmail);
-    //   }
-
-
-
-    // });
-
   }
 
-  private findSPUserByUserPrincipalName = (userEmail: string): Promise<any> => {
-
-    return sp.web.siteUsers.filter(`UserPrincipalName eq '${userEmail}'`).get().then(users => {
-
-      if (users.length > 0) {
-
-        this.userFoundByUserPrincipalName++;
-        const currentUserPrincipalId: number = users[0]['Id'];
-        console.log(`SP user found by UserPrincipalName: ${userEmail}, SP User Id: ${currentUserPrincipalId}`);
-      }
-      else {
-        console.log(`SP user not found by UserPrincipalName: ${userEmail}`);
-      }
-
-
-
+  private findSPUserByUserPrincipalName = (userEmail: string): Promise<void | undefined> => {
+    return new Promise<void | undefined>((resolve, reject) => {
+      sp.web.siteUsers.filter(`UserPrincipalName eq '${userEmail}'`).get().then(users => {
+        if (users.length > 0) {
+          this.userFoundByUserPrincipalName++;
+          const currentUserPrincipalId: number = users[0]['Id'];
+          console.log(`SP user found by UserPrincipalName: ${userEmail}, SP User Id: ${currentUserPrincipalId}`);
+        } else {
+          console.log(`SP user not found by UserPrincipalName: ${userEmail}`);
+        }
+        resolve();
+      }).catch(err => {
+        console.log(err, `Exception, SP user not found by UserPrincipalName: ${userEmail}`);
+        resolve(undefined);
+      });
     });
-
   }
 
   private allSiteUsersLog = (): void => {
-
     sp.web.siteUsers.get().then(users => {
       console.log('siteUsers', users);
     });
-
   }
 
-
   private allSiteUsersInfoListLog = (): void => {
-
     sp.web.siteUserInfoList.items.get().then(users => {
       console.log('siteUserInfoList', users);
     });
-
   }
 
   private allSiteUsersInfoList2Log = (): void => {
-
     sp.web.siteUserInfoList.items.getAll().then(users => {
       console.log('siteUserInfoList2', users);
     });
-
   }
 
   private currentSiteUsersLog = (): void => {
-
     sp.web.currentUser.get().then(user => {
       console.log('currentSiteUser', user);
     });
-
   }
 
   private siteUserByEmailLog = (): void => {
-
-
-
     sp.web.siteUsers.getByEmail(this.state.SearchUser).get().then(user => {
       console.log('getByEmail', user);
       console.log('UserId', user['Id']);
@@ -1073,21 +871,16 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
         console.log('xx', xx);
         console.log('UserId', xx.data.Id);
       });
-
     });
-
   }
 
   private siteUserByLoginLog = (): void => {
-
     sp.web.siteUsers.getByLoginName('tas.tasniem@beisdigitalsvc.onmicrosoft.com').get().then(user => {
       console.log('currentSiteUser', user);
     });
-
   }
 
   private siteUserByEmail2Log = (): void => {
-
     sp.web.siteUsers.filter("Email eq 'tas.tasniem@beisdigitalsvc.onmicrosoft.com'").get().then(user => {
       if (user.length > 0) {
         console.log('user found', user[0]);
@@ -1095,13 +888,10 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
       else {
         console.log('user not found');
       }
-
     });
-
   }
 
   private siteUserByUserPrincipalNameLog = (): void => {
-
     sp.web.siteUsers.filter("UserPrincipalName eq 'tas.tasniem@beisdigitalsvc.onmicrosoft.com'").get().then(user => {
       if (user.length > 0) {
         console.log('user found', user[0]);
@@ -1109,22 +899,10 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
       else {
         console.log('user not found');
       }
-
     });
-
   }
 
   private siteUserBySearchLog = (): void => {
-
-    //https://www.odata.org/documentation/odata-version-2-0/uri-conventions/
-    //many ways to search
-    //UserPrincipalName eq 'tas.tasniem@beisdigitalsvc.onmicrosoft.com'
-    //Id eq 12
-    //startswith(Email, 'adnan')
-    //substringof('tas_', LoginName) eq true - working for search in the middle on text example "i:0#.f|membership|tas_swiftpro.com#ext#@beisdigitalsvc.onmicrosoft.com"
-    //endswith(Email, 'com') eq true - not worked
-
-
     sp.web.siteUsers.filter(this.state.SearchUser).get().then(user => {
       if (user.length > 0) {
         console.log(`${user.length} user found`, user);
@@ -1132,26 +910,20 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
       else {
         console.log('user not found');
       }
-
     });
-
   }
 
   private copyFile = (): void => {
 
     const srcFolder = getUploadFolder_CLEvidence(this.props.spfxContext);
     const destFolder = getUploadFolder_CLRoot(this.props.spfxContext) + "/Test1/" + this.state.SearchUser;
-
     sp.web.getFolderByServerRelativeUrl(srcFolder).files.getByName(this.state.SearchUser).copyTo(destFolder).then(() => {
       console.log('file copied');
 
     }).catch(err => {
       console.log('error', err);
     });
-
   }
-
-
 
   public createNewCaseUploadFolder = (casefolderName: string, fullControlFolderRoleId: number) => {
     sp.web.getFolderByServerRelativeUrl(this.UploadFolder_CLRoot).folders.add(casefolderName).then(folderAddRes => {
@@ -1173,16 +945,10 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
   }
 
   private createAFolder = (num): void => {
-
     const clCase = this.state.Cases[num];
-    const spService = new services.SPService(this.props.spfxContext);
-    //this.state.Cases.forEach(clCase => {
     if (this.consoleLogFlag)
       console.log('createAFolder - going to create folder for case ', clCase.ID);
-    //const folderNewUsers: string[] = this.makeCLFolderNewUsersArr(clCase);
     this.createNewCaseUploadFolder(String(clCase.ID), this.state.FullControlFolderRoleId);
-    //});
-
   }
 
   private doFolderCreateRecursive = (num, nextCase: boolean): Promise<any> => {
@@ -1195,7 +961,6 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
     }
 
     const decide = (asyncResult) => {
-
       if (this.consoleLogFlag) {
         console.log(nameOfFunc + 'decide called: ', asyncResult);
         console.log(nameOfFunc + 'this.caseProcessed:', this.caseProcessed);
@@ -1231,13 +996,6 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
     this.doFolderCreateRecursive(this.totalCases - 1, true)
       .then((result) => { if (this.consoleLogFlag) console.log("createExistingCLCasesFolders: done, result = " + result); })
       .catch((err) => { console.log("createExistingCLCasesFolders: oops:" + err); });
-
-    // const spService = new services.SPService(this.props.spfxContext);
-    // this.state.Cases.forEach(clCase => {
-    //   console.log('going to create folder for case ', clCase.ID);
-    //   const folderNewUsers: string[] = spService.makeCLFolderNewUsersArr(clCase, this.state.Users, this.state.CLSuperUsersAndViewers);
-    //   spService.createNewCaseUploadFolder(String(clCase.ID), folderNewUsers, this.state.FullControlFolderRoleId);
-    // });
   }
 
 
@@ -1245,10 +1003,7 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
 
   private copySharePointFile = (fileRef: number, srcFolder: string, clRootFolder: string): void => {
 
-    //console.log(`copyAllCasesEvDocs: going to copy ev with ID: ${ev.ID} and filename: ${ev.Title}`);
-
     const evFile = this.EvidenceFilesToCopy[fileRef];
-
     if (evFile.EvidenceType === 'ContractorSecurityCheck') {
       //parentID is worker id, get case id for that worker
       this.clWorkerService.readAll(`?$filter=ID eq ${evFile.ParentId}&$select=CLCaseId`).then(ws => {
@@ -1276,18 +1031,15 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
       console.log('copyEvidenceFile Error Was:', err);
       this.copyFileProcessed = true;
     });
-
   }
 
   private doCopyFileRecursive = (num, nextCase: boolean, delayCount: number, srcFolder: string, clRootFolder: string): Promise<any> => {
     const nameOfFunc: string = "doCopyFileRecursive - ";
-
     if (nextCase == true) {
       this.copyFileProcessed = false;
       this.copySharePointFile(num, srcFolder, clRootFolder);
       delayCount = 0;
     }
-
     const decide = (asyncResult) => {
       console.log(nameOfFunc + 'Decide: ', asyncResult, delayCount);
 
@@ -1319,11 +1071,7 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
     return promiseDelay(asyncParam, 1000); //resolve with argument in 3 second.
   }
 
-
-
-
   // end copy files one at a time.
-
 
   private copyAllCasesEvDocs = (): void => {
     const srcFolder = getUploadFolder_CLEvidence(this.props.spfxContext);
@@ -1331,53 +1079,23 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
     const caseEvService = new services.CLCaseEvidenceService(this.props.spfxContext, this.props.api);
 
     this.EvidenceFilesToCopy = [];
-
     caseEvService.readAll(`?$filter=AttachmentType eq 'PDF' and RecordCreated eq true`).then(evs => {
       evs.forEach(ev => {
         this.EvidenceFilesToCopy.push(ev);
       });
       this.doCopyFileRecursive(this.EvidenceFilesToCopy.length - 1, true, 0, srcFolder, clRootFolder);
     });
-
-  }
-
-  private copyAllCasesEvDocs_save = (): void => {
-    const srcFolder = getUploadFolder_CLEvidence(this.props.spfxContext);
-    const clRootFolder = getUploadFolder_CLRoot(this.props.spfxContext);
-    const caseEvService = new services.CLCaseEvidenceService(this.props.spfxContext, this.props.api);
-
-    // doCopyFileRecursive =( num, nextCase:boolean, delayCount:number, srcFolder: string, clRootFolder:string )
-
-    caseEvService.readAll(`?$filter=AttachmentType eq 'PDF' and RecordCreated eq true`).then(evs => {
-      evs.forEach(ev => {
-        console.log(`copyAllCasesEvDocs: going to copy ev with ID: ${ev.ID} and filename: ${ev.Title}`);
-        if (ev.EvidenceType === 'ContractorSecurityCheck') {
-          //parentID is worker id, get case id for that worker
-          this.clWorkerService.readAll(`?$filter=ID eq ${ev.ParentId}&$select=CLCaseId`).then(ws => {
-            if (ws.length > 0) {
-              const caseId: number = ws[0].CLCaseId;
-              this.copyCaseFile(caseId, srcFolder, clRootFolder, ev.Title);
-            }
-          });
-        }
-        else {
-          //parent id is case id
-          this.copyCaseFile(ev.ParentId, srcFolder, clRootFolder, ev.Title);
-        }
-      });
-    });
   }
 
   private getBusinessDatesCount = (startDate: Date, endDate: Date): number => {
-    var count = 0;
-    var curDate = startDate;
+    let count = 0;
+    const curDate = startDate;
     while (curDate <= endDate) {
-      var dayOfWeek = curDate.getDay();
+      const dayOfWeek = curDate.getDay();
       if (!((dayOfWeek == 6) || (dayOfWeek == 0)))
         count++;
       curDate.setDate(curDate.getDate() + 1);
     }
-    //alert(count)
     return count;
   }
 
@@ -1389,7 +1107,6 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
 
       //FinBillableRate
       if (clCase.FinBillableRate === null && clCase.FinMaxRate !== null) {
-        //console.log('case billable reate is null', clCase);
         const billAbleRate: number = Number((clCase.FinMaxRate * 100 / 120).toFixed(2));
         console.log('maxRate', clCase.FinMaxRate);
         console.log('billable', billAbleRate);
@@ -1416,7 +1133,6 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
           caseUpdated.FinTotalDays = days;
           updateRequired = true;
         }
-
       }
 
       if (updateRequired === true) {
@@ -1428,11 +1144,9 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
       else {
         console.log('update is not required for case with ID', clCase.ID);
       }
-
-
-
     });
   }
+
   private copyAllCasesPDFs = (): void => {
     const srcFolder = getUploadFolder_Report(this.props.spfxContext);
     const clRootFolder = getUploadFolder_CLRoot(this.props.spfxContext);
@@ -1451,26 +1165,18 @@ export default class UserManagement extends BaseUserContextWebPartComponent<type
         this.copyCaseFile(worker.CLCaseId, srcFolder, clRootFolder, worker.SDSPdfName);
       });
     });
-
   }
 
   private copyCaseFile = (caseId: number, srcFolder: string, clRootFolder: string, fileName: string): void => {
     const destFile = `${clRootFolder}/${caseId}/${fileName}`;
-
     sp.web.getFolderByServerRelativeUrl(srcFolder).files.getByName(fileName).copyTo(destFile).then(() => {
       console.log(`file copied ${destFile}`,);
-
     }).catch(err => {
       console.log('error on copy', err);
     });
-
   }
-
-
 
   private changeSearchUserTextField = (value: string): void => {
     this.setState({ SearchUser: value });
   }
-
-
 }

@@ -1,8 +1,6 @@
 import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { EntityService } from './EntityService';
-import { IDataAPI, IEntity, ICLWorker } from '../types';
-
-
+import { IDataAPI, ICLWorker } from '../types';
 
 export class CLWorkerService extends EntityService<ICLWorker> {
     public readonly parentEntities = [];
@@ -13,27 +11,24 @@ export class CLWorkerService extends EntityService<ICLWorker> {
     }
 
     public createSDSPDF(clWorkerId: number, spSiteUrl): Promise<string> {
-        
-        return super.readString(`?clWorkerId=${clWorkerId}&createPdf=SDSPdf&spSiteUrl=${spSiteUrl}`).then((result:string): string => {
+
+        return super.readString(`?clWorkerId=${clWorkerId}&createPdf=SDSPdf&spSiteUrl=${spSiteUrl}`).then((result: string): string => {
             return result;
         });
     }
 
     public createCasePDF(clWorkerId: number, spSiteUrl): Promise<string> {
-        
-        return super.readString(`?clWorkerId=${clWorkerId}&createPdf=CasePdf&spSiteUrl=${spSiteUrl}`).then((result:string): string => {
+
+        return super.readString(`?clWorkerId=${clWorkerId}&createPdf=CasePdf&spSiteUrl=${spSiteUrl}`).then((result: string): string => {
             return result;
         });
     }
 
     public archive(clWorkerId: number): Promise<string> {
-        
-        return super.readString(`?clWorkerId=${clWorkerId}&archive=true`).then((result:string): string => {
+
+        return super.readString(`?clWorkerId=${clWorkerId}&archive=true`).then((result: string): string => {
             return result;
         });
     }
-
-
-
 
 }

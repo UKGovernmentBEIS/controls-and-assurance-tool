@@ -1,32 +1,23 @@
 import * as React from 'react';
 import * as types from '../../types';
 import * as services from '../../services';
-import { sp } from '@pnp/sp';
-
 import { FilteredGroupsList, IObjectWithKey } from './FilteredGroupsList';
 import { IEntity } from '../../types';
 import { IUpdatesListColumn, ColumnDisplayTypes } from '../../types/UpdatesListColumn';
 import { CrLoadingOverlay } from '../cr/CrLoadingOverlay';
 import { Selection } from '../cr/FilteredList';
-import { ConfirmDialog } from '../cr/ConfirmDialog';
-import { MessageDialog } from '../cr/MessageDialog';
 import styles from '../../styles/cr.module.scss';
 
-
 export interface IGroupsListProps extends types.IBaseComponentProps {
-
-    parentActionId:number;
+    parentActionId: number;
     onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
-
     filterText?: string;
-    onChangeFilterText: (value: string) => void;
-
+    onChangeFilterText: (event?: React.ChangeEvent<HTMLInputElement>, newValue?: string) => void;
 }
 
 export interface IGroupsListState<T> {
     SelectedEntity: number;
     SelectedEntityTitle: string;
-
     SelectedEntityChildren: number;
     ShowForm: boolean;
     ShowFormGroupActions: boolean;
@@ -41,14 +32,10 @@ export interface IGroupsListState<T> {
     Loading: boolean;
     ListFilterText?: string;
     InitDataLoaded: boolean;
-
-    
-    
 }
 export class GroupsListState<T> implements IGroupsListState<T>{
     public SelectedEntity = null;
     public SelectedEntityTitle: string = null;
-
     public SelectedEntityChildren = null;
     public ShowForm = false;
     public ShowFormGroupActions = false;
@@ -63,17 +50,12 @@ export class GroupsListState<T> implements IGroupsListState<T>{
     public Loading = false;
     public ListFilterText = null;
     public InitDataLoaded = false;
-
-    
-    
 }
 
 export default class GroupsList extends React.Component<IGroupsListProps, IGroupsListState<IEntity>> {
     private _selection: Selection;
     private mainService: services.IAPActionService = new services.IAPActionService(this.props.spfxContext, this.props.api);
-
     private ChildEntityName: { Plural: string, Singular: string } = { Plural: 'Updates', Singular: 'Update' };
-
     private listColumns: IUpdatesListColumn[] = [
         //use fieldName as key
 
@@ -84,7 +66,6 @@ export default class GroupsList extends React.Component<IGroupsListProps, IGroup
             minWidth: 1,
             columnDisplayType: ColumnDisplayTypes.Hidden,
         },
-
         {
             key: 'OwnerIds',
             name: 'OwnerIds',
@@ -99,7 +80,7 @@ export default class GroupsList extends React.Component<IGroupsListProps, IGroup
             minWidth: 100,
             maxWidth: 100,
             isResizable: true,
-            isMultiline:true,
+            isMultiline: true,
             headerClassName: styles.bold,
         },
 
@@ -133,18 +114,14 @@ export default class GroupsList extends React.Component<IGroupsListProps, IGroup
             isResizable: true,
             headerClassName: styles.bold,
         },
-
-
     ];
 
 
     constructor(props: IGroupsListProps, state: IGroupsListState<IEntity>) {
         super(props);
         this.state = new GroupsListState<IEntity>();
-        
         this._selection = new Selection({
             onSelectionChanged: () => {
-
             }
         });
     }
@@ -152,7 +129,6 @@ export default class GroupsList extends React.Component<IGroupsListProps, IGroup
     //#region Render
 
     public render(): React.ReactElement<IGroupsListProps> {
-
         return (
             <div className={`${styles.cr}`}>
                 <div style={{ position: 'relative' }}>
@@ -164,24 +140,17 @@ export default class GroupsList extends React.Component<IGroupsListProps, IGroup
     }
 
     private renderList() {
-
         const listColumns = this.getColumns();
         const listColumnsForData = this.getColumnsForData();
-
         let items: IObjectWithKey[] = this.state.Entities.map((e) => { return this.makeItem(e, listColumnsForData); });
-
-
-
         return (
             <FilteredGroupsList
                 onItemTitleClick={this.props.onItemTitleClick}
                 columns={listColumns}
                 items={items}
-
                 filterText={this.props.filterText}
                 onFilterChange={this.props.onChangeFilterText}
                 selection={this._selection}
-                
             />
         );
     }
@@ -241,20 +210,8 @@ export default class GroupsList extends React.Component<IGroupsListProps, IGroup
     }
     public componentDidMount(): void {
         this.loadData();
-        //console.log('web title: ', this.props.spfxContext.pageContext.web.title);
-
     }
 
-
-
-
     //#endregion Data Load
-
-    //#region Events Handlers
-
-
-
-
-    //#endregion Events Handlers
 
 }

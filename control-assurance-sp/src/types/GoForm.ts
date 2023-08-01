@@ -12,7 +12,6 @@ export interface IGoForm  extends IEntity {
     DGSignOffStatus?: string;
     DGSignOffUserId?: number;
     DGSignOffDate?: Date;
-
 }
 
 export class GoForm implements IGoForm{ 

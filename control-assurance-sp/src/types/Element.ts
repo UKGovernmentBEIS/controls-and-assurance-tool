@@ -21,24 +21,19 @@ export interface IElement extends IEntity {
     ResponseAOtherText?: string;
     ResponseAEffect?: string;
     ResponseAEffectText?: string;
-    
     ResponseB1?: string;
     ResponseB1Text?: string;
     ResponseB1Effect?: string;
-
     ResponseB2?: string;
     ResponseB2Text?: string;
     ResponseB2Effect?: string;
-
     ResponseB3?: string;
     ResponseB3Text?: string;
     ResponseB3Effect?: string;
-
     ResponseB4?: string;
     ResponseB4Text?: string;
     ResponseB4Effect?: string;
     NotApplicable?: boolean;
-
 
 }
 
@@ -59,45 +54,36 @@ export class Element implements IElement {
     public ResponseA8?: string = null;
     public ResponseA9?: string = null;
     public ResponseA10?: string = null;
-    
     public ResponseAOther?: string = 'No'; //default value
     public ResponseAOtherText?: string = null;
     public ResponseAEffect?: string = null;
     public ResponseAEffectText?: string = null;
-
     public ResponseB1?: string = null;
     public ResponseB1Text?: string = null;
     public ResponseB1Effect?: string = null;
-
     public ResponseB2?: string = null;
     public ResponseB2Text?: string = null;
     public ResponseB2Effect?: string = null;
-
     public ResponseB3?: string = null;
     public ResponseB3Text?: string = null;
     public ResponseB3Effect?: string = null;
-
     public ResponseB4?: string = null;
     public ResponseB4Text?: string = null;
     public ResponseB4Effect?: string = null;
-
     public ID: number = null;
     public Title: string = null;
-
 
     constructor(formId: number, defElementId: number) {
         this.FormId = formId;
         this.DefElementId = defElementId;
     }
-
-
 }
 
 export enum ElementStatus {
     InProgress = "InProgress",
     Completed = "Completed",
     NotApplicable = "NotApplicable",
-    
+
 }
 
 export enum ResponsesA {
@@ -106,5 +92,4 @@ export enum ResponsesA {
     Moderate = "Moderate",
     Limited = "Limited",
     NA = "NA"
-    
 }

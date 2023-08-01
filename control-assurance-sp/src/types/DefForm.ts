@@ -8,5 +8,4 @@ export interface IDefForm {
     DDSignOffText?: string;
     DirSignOffTitle?: string;
     DirSignOffText?: string;
-
 }

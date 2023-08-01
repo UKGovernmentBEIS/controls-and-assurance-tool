@@ -1,7 +1,6 @@
 import { IEntity } from "./Entity";
 
-
-export interface ICLWorker  extends IEntity {
+export interface ICLWorker extends IEntity {
 
     CLCaseId?: number;
     Stage?: string;
@@ -17,7 +16,6 @@ export interface ICLWorker  extends IEntity {
     OnbContractorPhone?: string;
     PurchaseOrderNum?: string;
     OnbSecurityClearanceId?: number;
-
     OnbContractorTitleId?: number;
     OnbContractorGenderId?: number;
     OnbContractorDob?: Date;
@@ -37,8 +35,6 @@ export interface ICLWorker  extends IEntity {
     OnbLineManagerPhone?: string;
     OnbWorkOrderNumber?: string;
     OnbRecruitersEmail?: string;
-
-
     BPSSCheckedById?: number;
     BPSSCheckedOn?: Date;
     POCheckedById?: number;
@@ -51,21 +47,16 @@ export interface ICLWorker  extends IEntity {
     PassCheckedOn?: Date;
     ContractCheckedById?: number;
     ContractCheckedOn?: Date;
-
     SDSCheckedById?: number;
     SDSCheckedOn?: Date;
-    SDSNotes?:string;
-
+    SDSNotes?: string;
     EngagedChecksDone: boolean;
-
-    ITSystemRef?:string;
-    ITSystemNotes?:string;
-    UKSBSRef?:string;
-    UKSBSNotes?:string;
-
-    EngPONumber?:string;
-    EngPONote?:string;
-
+    ITSystemRef?: string;
+    ITSystemNotes?: string;
+    UKSBSRef?: string;
+    UKSBSNotes?: string;
+    EngPONumber?: string;
+    EngPONote?: string;
     LeEndDate?: Date;
     LeContractorPhone?: string;
     LeContractorEmail?: string;
@@ -79,22 +70,18 @@ export interface ICLWorker  extends IEntity {
     LeUKSBSCheckedOn?: Date;
     LePassCheckedById?: number;
     LePassCheckedOn?: Date;
-
     SDSPdfStatus?: string;
     SDSPdfDate?: Date;
     SDSPdfName?: string;
     SDSPdfLastActionUser?: string;
-
     CasePdfStatus?: string;
     CasePdfDate?: Date;
     CasePdfName?: string;
     CasePdfLastActionUser?: string;
     Archived?: boolean;
-
-
 }
 
-export class CLWorker implements ICLWorker{ 
+export class CLWorker implements ICLWorker {
     public ID: number = 0;
     public Title: string = null;
     public CLCaseId?: number = null;
@@ -111,7 +98,6 @@ export class CLWorker implements ICLWorker{
     public OnbContractorPhone?: string = null;
     public PurchaseOrderNum?: string = null;
     public OnbSecurityClearanceId?: number = null;
-
     public OnbContractorTitleId?: number = null;
     public OnbContractorGenderId?: number = null;
     public OnbContractorDob?: Date = null;
@@ -129,10 +115,8 @@ export class CLWorker implements ICLWorker{
     public OnbLineManagerGradeId?: number = null;
     public OnbLineManagerEmployeeNum?: string = null;
     public OnbLineManagerPhone?: string = null;
-
     public OnbWorkOrderNumber?: string = null;
     public OnbRecruitersEmail?: string = null;
-
     public BPSSCheckedById?: number = null;
     public BPSSCheckedOn?: Date = null;
     public POCheckedById?: number = null;
@@ -145,18 +129,14 @@ export class CLWorker implements ICLWorker{
     public PassCheckedOn?: Date = null;
     public ContractCheckedById?: number = null;
     public ContractCheckedOn?: Date = null;
-
     public SDSCheckedById?: number = null;
     public SDSCheckedOn?: Date = null;
-    public SDSNotes?:string = null;
-
+    public SDSNotes?: string = null;
     public EngagedChecksDone: boolean = null;
-
-    public ITSystemRef?:string = "";
-    public ITSystemNotes?:string = "";
-    public UKSBSRef?:string = "";
-    public UKSBSNotes?:string = "";
-
+    public ITSystemRef?: string = "";
+    public ITSystemNotes?: string = "";
+    public UKSBSRef?: string = "";
+    public UKSBSNotes?: string = "";
     public LeEndDate?: Date = null;
     public LeContractorPhone?: string = null;
     public LeContractorEmail?: string = null;
@@ -170,24 +150,18 @@ export class CLWorker implements ICLWorker{
     public LeUKSBSCheckedOn?: Date = null;
     public LePassCheckedById?: number = null;
     public LePassCheckedOn?: Date = null;
-
     public SDSPdfStatus?: string = null;
     public SDSPdfDate?: Date = null;
     public SDSPdfName?: string = null;
     public SDSPdfLastActionUser?: string = null;
-
     public CasePdfStatus?: string = null;
     public CasePdfDate?: Date = null;
     public CasePdfName?: string = null;
     public CasePdfLastActionUser?: string = null;
     public Archived?: boolean = false;
 
-
     constructor() {
-        
     }
-
-
 }
 
 

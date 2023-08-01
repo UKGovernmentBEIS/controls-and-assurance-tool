@@ -5,7 +5,7 @@ import { ITeam } from "./Team";
 export interface IOrgRepListState<T> {
     SelectedEntity: number;
     SelectedEntityChildren: number;
-    ShowForm: boolean;    
+    ShowForm: boolean;
     HideDeleteDialog: boolean;
     HideDeleteDisallowed: boolean;
     EnableEdit?: boolean;
@@ -13,21 +13,16 @@ export interface IOrgRepListState<T> {
     ShowChildForm: boolean;
     CurrentPage?: number;
     NextPageAvailable?: boolean;
-
     Entities: T[];
     Loading: boolean;
     ListFilterText?: string;
-
     DGAreas: IDirectorateGroup[];
-    SelectedDGArea:number;
-
+    SelectedDGArea: number;
     Directorates: IDirectorate[];
-    SelectedDirectorate:number;
-
+    SelectedDirectorate: number;
     Teams: ITeam[];
-    SelectedTeam:number;
-
-    InitDataLoaded:boolean;
+    SelectedTeam: number;
+    InitDataLoaded: boolean;
 }
 
 export class OrgRepListState<T> implements IOrgRepListState<T>{
@@ -38,24 +33,17 @@ export class OrgRepListState<T> implements IOrgRepListState<T>{
     public HideDeleteDisallowed = true;
     public EnableEdit = false;
     public EnableDelete = false;
-
     public ShowChildForm = false;
     public CurrentPage = 1;
     public NextPageAvailable = false;
-
     public Entities: T[] = [];
     public Loading = false;
-    
     public ListFilterText = null;
-
     public DGAreas: IDirectorateGroup[] = [];
     public SelectedDGArea = 0;
-
     public Directorates = [];
     public SelectedDirectorate = 0;
-
     public Teams = [];
     public SelectedTeam = 0;
-
     public InitDataLoaded = false;
 }

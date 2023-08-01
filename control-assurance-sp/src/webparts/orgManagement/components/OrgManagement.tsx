@@ -7,31 +7,21 @@ import EntityList from '../../../components/entity/EntityList';
 import { IGenColumn, ColumnType, ColumnDisplayType } from '../../../types/GenColumn';
 import { IUserPermission } from '../../../types/UserPermissions';
 
-import { DetailsListCustomColumnsExample } from '../../../components/DetailsListCustomColumnsExample';
-import { ColumnDisplayTypes } from '../../../types/UpdatesListColumn';
-
-
 //#region types defination
 
-
 export interface IOrgManagementState extends types.IUserContextWebPartState {
-
 }
 export class OrgManagementState extends types.UserContextWebPartState {
-
-	constructor() {
+  constructor() {
     super();
-
-
-	}
+  }
 }
 
 //#endregion types defination
 
 export default class OrgManagement extends BaseUserContextWebPartComponent<types.IWebPartComponentProps, OrgManagementState> {
-  
   constructor(props: types.IWebPartComponentProps) {
-		super(props);
+    super(props);
     this.state = new OrgManagementState();
   }
 
@@ -39,47 +29,33 @@ export default class OrgManagement extends BaseUserContextWebPartComponent<types
 
   public renderWebPart(): React.ReactElement<types.IWebPartComponentProps> {
 
-    return(
-
+    return (
       <Pivot onLinkClick={this.clearErrors}>
         <PivotItem headerText="DG Areas">
           {this.renderDirectorateGroups()}
-        </PivotItem> 
+        </PivotItem>
         <PivotItem headerText="Directorates">
           {this.renderDirectorates()}
-        </PivotItem> 
+        </PivotItem>
         <PivotItem headerText="Divisions">
           {this.renderTeams()}
-        </PivotItem> 
+        </PivotItem>
         <PivotItem headerText="DG Area Delegates">
           {this.renderDirectorateGroupMembers()}
-        </PivotItem> 
+        </PivotItem>
         <PivotItem headerText="Directorate Delegates">
           {this.renderDirectorateMembers()}
-        </PivotItem> 
+        </PivotItem>
         <PivotItem headerText="Division Delegates">
           {this.renderTeamMembers()}
-        </PivotItem> 
-        {/* <PivotItem headerText="Test List">
-          {this.renderTestList()}
-        </PivotItem>  */}
-
-
+        </PivotItem>
       </Pivot>
-    );
-  }
-
-
-  private renderTestList(): React.ReactElement<types.IWebPartComponentProps> {
-    return(
-      <DetailsListCustomColumnsExample {...this.props}></DetailsListCustomColumnsExample>
     );
   }
 
   private renderDirectorateGroups(): React.ReactElement<types.IWebPartComponentProps> {
 
     let allowAdd: boolean = this.allowAdd_DirectorateGroups();
-    
     const listColumns: IGenColumn[] = [
       {
         key: '1',
@@ -123,8 +99,6 @@ export default class OrgManagement extends BaseUserContextWebPartComponent<types
         isRequired: true
       },
     ];
-
-
     return (
       <EntityList
         allowAdd={allowAdd}
@@ -143,7 +117,7 @@ export default class OrgManagement extends BaseUserContextWebPartComponent<types
   }
 
   private renderDirectorates(): React.ReactElement<types.IWebPartComponentProps> {
-    
+
     let allowAdd: boolean = this.allowAdd_Directorates();
 
     const listColumns: IGenColumn[] = [
@@ -224,7 +198,7 @@ export default class OrgManagement extends BaseUserContextWebPartComponent<types
   }
 
   private renderTeams(): React.ReactElement<types.IWebPartComponentProps> {
-    
+
     let allowAdd: boolean = this.allowAdd_Teams();
     const listColumns: IGenColumn[] = [
       {
@@ -287,7 +261,7 @@ export default class OrgManagement extends BaseUserContextWebPartComponent<types
 
 
     return (
-      <EntityList 
+      <EntityList
         allowAdd={allowAdd}
         onRowSelectionCheckEditDel={this.checkEditDel_Teams}
         columns={listColumns}
@@ -304,9 +278,8 @@ export default class OrgManagement extends BaseUserContextWebPartComponent<types
     );
   }
 
-
   private renderDirectorateGroupMembers(): React.ReactElement<types.IWebPartComponentProps> {
-    
+
     let allowAdd: boolean = this.allowAdd_DirectorateGroupMembers();
     const listColumns: IGenColumn[] = [
 
@@ -348,7 +321,6 @@ export default class OrgManagement extends BaseUserContextWebPartComponent<types
         minWidth: 100,
         maxWidth: 150,
         isResizable: true,
-        //isRequired: true
       },
       {
         key: 'ViewOnly',
@@ -362,7 +334,6 @@ export default class OrgManagement extends BaseUserContextWebPartComponent<types
       },
 
     ];
-
 
     return (
       <EntityList
@@ -434,9 +405,7 @@ export default class OrgManagement extends BaseUserContextWebPartComponent<types
         maxWidth: 150,
         isResizable: true,
       },
-
     ];
-
 
     return (
       <EntityList
@@ -511,7 +480,6 @@ export default class OrgManagement extends BaseUserContextWebPartComponent<types
 
     ];
 
-
     return (
       <EntityList
         allowAdd={allowAdd}
@@ -530,230 +498,211 @@ export default class OrgManagement extends BaseUserContextWebPartComponent<types
     );
   }
 
-
-
-
   //#endregion Render
-
-
 
   //#region Add/Edit/Del Checks
 
-  private allowAdd_DirectorateGroups(): boolean{
-
+  private allowAdd_DirectorateGroups(): boolean {
     let ups = this.state.UserPermissions;
-
-    for(let i=0; i<ups.length; i++){
+    for (let i = 0; i < ups.length; i++) {
       let up: IUserPermission = ups[i];
-       if(up.PermissionTypeId == 1 || up.PermissionTypeId == 2){
-         //super user or sys manager
-         return true;
-       }
-
+      if (up.PermissionTypeId == 1 || up.PermissionTypeId == 2) {
+        //super user or sys manager
+        return true;
+      }
     }
-
     return false;
   }
 
-
-  private allowAdd_Directorates(): boolean{
+  private allowAdd_Directorates(): boolean {
 
     let ups = this.state.UserPermissions;
-
-    for(let i=0; i<ups.length; i++){
+    for (let i = 0; i < ups.length; i++) {
       let up: IUserPermission = ups[i];
-       if(up.PermissionTypeId == 1 || up.PermissionTypeId == 2){
-         //super user or sys manager
-         return true;
-       }
-
+      if (up.PermissionTypeId == 1 || up.PermissionTypeId == 2) {
+        //super user or sys manager
+        return true;
+      }
     }
-
     return false;
   }
 
-  private allowAdd_Teams(): boolean{
+  private allowAdd_Teams(): boolean {
 
     //super user/SysManager check
     let ups = this.state.UserPermissions;
-    for(let i=0; i<ups.length; i++){
+    for (let i = 0; i < ups.length; i++) {
       let up: IUserPermission = ups[i];
-       if(up.PermissionTypeId == 1 || up.PermissionTypeId == 2){
-         //super user or sys manager
-         return true;
-       }
+      if (up.PermissionTypeId == 1 || up.PermissionTypeId == 2) {
+        //super user or sys manager
+        return true;
+      }
     }
 
     //Directorate check
-    if(this.state.Directorates.length > 0){
+    if (this.state.Directorates.length > 0) {
       return true;
     }
- 
+
     //Directorate member check
     let dms = this.state.DirectorateMembers;
-    for(let i=0; i<dms.length; i++){
+    for (let i = 0; i < dms.length; i++) {
       let dm: types.IDirectorateMember = dms[i];
-       if(dm.IsAdmin === true){
-         return true;
-       }
+      if (dm.IsAdmin === true) {
+        return true;
+      }
     }
-
-
     return false;
   }
 
-  private checkEditDel_Teams = (key: number) : Promise<boolean> => {
+  private checkEditDel_Teams = (key: number): Promise<boolean> => {
     const teamService = new services.TeamService(this.props.spfxContext, this.props.api);
     const resultPromise = teamService.checkEditDelPermission(key);
     return resultPromise;
-    
+
   }
 
-  private allowAdd_DirectorateGroupMembers(): boolean{
+  private allowAdd_DirectorateGroupMembers(): boolean {
     //super user/SysManager check
     let ups = this.state.UserPermissions;
 
-    for(let i=0; i<ups.length; i++){
+    for (let i = 0; i < ups.length; i++) {
       let up: IUserPermission = ups[i];
-       if(up.PermissionTypeId == 1 || up.PermissionTypeId == 2){
-         //super user or sys manager
-         return true;
-       }
+      if (up.PermissionTypeId == 1 || up.PermissionTypeId == 2) {
+        //super user or sys manager
+        return true;
+      }
     }
     //DirectorateGroup check
-    if(this.state.DirectorateGroups.length > 0){
+    if (this.state.DirectorateGroups.length > 0) {
       return true;
     }
 
     //DirectorateGroupMembers check
     let dgms = this.state.DirectorateGroupMembers;
-      for(let i=0; i<dgms.length; i++){
-        let dgm: types.IDirectorateGroupMember = dgms[i];
-        if(dgm.IsAdmin === true){
-          return true;
-        }
+    for (let i = 0; i < dgms.length; i++) {
+      let dgm: types.IDirectorateGroupMember = dgms[i];
+      if (dgm.IsAdmin === true) {
+        return true;
       }
+    }
 
     return false;
   }
 
-  private checkEditDel_DirectorateGroupMembers = (key: number) : Promise<boolean> => {
+  private checkEditDel_DirectorateGroupMembers = (key: number): Promise<boolean> => {
     const dgmService = new services.DirectorateGroupMemberService(this.props.spfxContext, this.props.api);
     const resultPromise = dgmService.checkEditDelPermission(key);
-    return resultPromise; 
+    return resultPromise;
   }
 
-  private allowAdd_DirectorateMembers(): boolean{
+  private allowAdd_DirectorateMembers(): boolean {
     //super user/SysManager check
     let ups = this.state.UserPermissions;
 
-    for(let i=0; i<ups.length; i++){
+    for (let i = 0; i < ups.length; i++) {
       let up: IUserPermission = ups[i];
-       if(up.PermissionTypeId == 1 || up.PermissionTypeId == 2){
-         //super user or sys manager
-         return true;
-       }
+      if (up.PermissionTypeId == 1 || up.PermissionTypeId == 2) {
+        //super user or sys manager
+        return true;
+      }
     }
     //DirectorateGroup check
-    if(this.state.DirectorateGroups.length > 0){
+    if (this.state.DirectorateGroups.length > 0) {
       return true;
     }
 
     //DirectorateGroupMembers check
     let dgms = this.state.DirectorateGroupMembers;
-      for(let i=0; i<dgms.length; i++){
-        let dgm: types.IDirectorateGroupMember = dgms[i];
-        if(dgm.IsAdmin === true){
-          return true;
-        }
-    }
-
-    //Directorate check
-    if(this.state.Directorates.length > 0){
-      return true;
-    }
-     
-    //Directorate member check
-    let dms = this.state.DirectorateMembers;
-    for(let i=0; i<dms.length; i++){
-      let dm: types.IDirectorateMember = dms[i];
-      if(dm.IsAdmin === true){
+    for (let i = 0; i < dgms.length; i++) {
+      let dgm: types.IDirectorateGroupMember = dgms[i];
+      if (dgm.IsAdmin === true) {
         return true;
       }
     }
 
+    //Directorate check
+    if (this.state.Directorates.length > 0) {
+      return true;
+    }
+
+    //Directorate member check
+    let dms = this.state.DirectorateMembers;
+    for (let i = 0; i < dms.length; i++) {
+      let dm: types.IDirectorateMember = dms[i];
+      if (dm.IsAdmin === true) {
+        return true;
+      }
+    }
     return false;
   }
 
-  private checkEditDel_DirectorateMembers = (key: number) : Promise<boolean> => {
+  private checkEditDel_DirectorateMembers = (key: number): Promise<boolean> => {
     const dmService = new services.DirectorateMemberService(this.props.spfxContext, this.props.api);
     const resultPromise = dmService.checkEditDelPermission(key);
-    return resultPromise; 
+    return resultPromise;
   }
 
-  private allowAdd_TeamMembers(): boolean{
+  private allowAdd_TeamMembers(): boolean {
     //super user/SysManager check
     let ups = this.state.UserPermissions;
 
-    for(let i=0; i<ups.length; i++){
+    for (let i = 0; i < ups.length; i++) {
       let up: IUserPermission = ups[i];
-       if(up.PermissionTypeId == 1 || up.PermissionTypeId == 2){
-         //super user or sys manager
-         return true;
-       }
+      if (up.PermissionTypeId == 1 || up.PermissionTypeId == 2) {
+        //super user or sys manager
+        return true;
+      }
     }
     //DirectorateGroup check
-    if(this.state.DirectorateGroups.length > 0){
+    if (this.state.DirectorateGroups.length > 0) {
       return true;
     }
 
     //DirectorateGroupMembers check
     let dgms = this.state.DirectorateGroupMembers;
-      for(let i=0; i<dgms.length; i++){
-        let dgm: types.IDirectorateGroupMember = dgms[i];
-        if(dgm.IsAdmin === true){
-          return true;
-        }
+    for (let i = 0; i < dgms.length; i++) {
+      let dgm: types.IDirectorateGroupMember = dgms[i];
+      if (dgm.IsAdmin === true) {
+        return true;
+      }
     }
 
     //Directorate check
-    if(this.state.Directorates.length > 0){
+    if (this.state.Directorates.length > 0) {
       return true;
     }
-     
+
     //Directorate member check
     let dms = this.state.DirectorateMembers;
-    for(let i=0; i<dms.length; i++){
+    for (let i = 0; i < dms.length; i++) {
       let dm: types.IDirectorateMember = dms[i];
-      if(dm.IsAdmin === true){
+      if (dm.IsAdmin === true) {
         return true;
       }
     }
-
     //Teams check
-    if(this.state.Teams.length > 0){
+    if (this.state.Teams.length > 0) {
       return true;
     }
-         
+
     //Team members check
     let tms = this.state.TeamMembers;
-    for(let i=0; i<tms.length; i++){
+    for (let i = 0; i < tms.length; i++) {
       let tm: types.ITeamMember = tms[i];
-      if(tm.IsAdmin === true){
+      if (tm.IsAdmin === true) {
         return true;
       }
     }
-
     return false;
   }
 
-  private checkEditDel_TeamMembers = (key: number) : Promise<boolean> => {
+  private checkEditDel_TeamMembers = (key: number): Promise<boolean> => {
     const tmService = new services.TeamMemberService(this.props.spfxContext, this.props.api);
     const resultPromise = tmService.checkEditDelPermission(key);
-    return resultPromise; 
+    return resultPromise;
   }
-  
+
   //#endregion Add/Edit/Del Checks
-  
 
 }

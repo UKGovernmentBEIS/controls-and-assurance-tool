@@ -2,8 +2,6 @@ import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { EntityService } from './EntityService';
 import { IDataAPI, IEntity } from '../types';
 
-
-
 export class NAOOutput2Service extends EntityService<IEntity> {
     public readonly parentEntities = [];
     protected childrenEntities = [];
@@ -11,7 +9,6 @@ export class NAOOutput2Service extends EntityService<IEntity> {
     constructor(spfxContext: WebPartContext, api: IDataAPI) {
         super(spfxContext, api, `/NAOOutput2`);
     }
-
 
     public createPDF(publicationIds: string, spSiteUrl): Promise<string> {
         
@@ -33,6 +30,4 @@ export class NAOOutput2Service extends EntityService<IEntity> {
             return result;
         });
     }
-
-
 }

@@ -7,19 +7,15 @@ import EntityList from '../../../components/entity/EntityList';
 import AutomationOptionsList from '../../../components/automationOptions/AutomationOptionsList';
 import OutboxList from '../../../components/automationOptions/OutboxList';
 import { PrimaryButton } from 'office-ui-fabric-react/lib/Button';
-import PeriodList from '../../../components/period/PeriodList';
-import { IGenColumn, ColumnType, ColumnDisplayType } from '../../../types/GenColumn';
-import { IUserPermission, IPeriod, IEntity } from '../../../types';
-import { CrDropdown, IDropdownOption } from '../../../components/cr/CrDropdown';
+import { IGenColumn, ColumnType } from '../../../types/GenColumn';
+import { IUserPermission } from '../../../types';
 import PlatformLinks from '../../../components/PlatformLinks';
 
 //#region types defination
 
 export interface ILookupData {
-  //Periods: IPeriod[];
 }
 export class LookupData implements ILookupData {
-  //public Periods: IPeriod[] = [];
 }
 
 export interface IAppSettingsState extends types.IUserContextWebPartState {
@@ -47,7 +43,6 @@ export default class AppSettings extends BaseUserContextWebPartComponent<types.I
 
   private automationOptionService: services.AutomationOptionService = new services.AutomationOptionService(this.props.spfxContext, this.props.api);
   private autoFunctionLastRunService: services.AutoFunctionLastRunService = new services.AutoFunctionLastRunService(this.props.spfxContext, this.props.api);
-
   constructor(props: types.IWebPartComponentProps) {
     super(props);
     this.state = new AppSettingsState();
@@ -56,7 +51,6 @@ export default class AppSettings extends BaseUserContextWebPartComponent<types.I
   //#region Render
 
   public renderWebPart(): React.ReactElement<types.IWebPartComponentProps> {
-
     return (
       <React.Fragment>
         {this.state.UserPermissions.length > 0 && <PlatformLinks module='Settings' visible={this.isSuperUser()} {...this.props} />}
@@ -75,19 +69,14 @@ export default class AppSettings extends BaseUserContextWebPartComponent<types.I
     );
   }
 
-
-
   private renderAutomationOptions() {
-
     const sendEmailsPermission = this.sendEmailsPermission();
     return (
       <div>
         <AutomationOptionsList
           disabled={!sendEmailsPermission}
           {...this.props}
-
         />
-
         {
           (sendEmailsPermission === true) &&
 
@@ -103,7 +92,6 @@ export default class AppSettings extends BaseUserContextWebPartComponent<types.I
                   <span style={{ textDecoration: 'underline', color: 'blue', cursor: 'pointer' }} onClick={this.loadAutoFunctionLastRun_Stage1} >Click to Refresh Status</span>
                 </div>
               }
-
             </div>
             <PrimaryButton
               text="Send Emails to Outbox"
@@ -115,33 +103,23 @@ export default class AppSettings extends BaseUserContextWebPartComponent<types.I
         }
 
       </div>
-
-
     );
   }
 
-
   private renderOutboxList(): React.ReactElement<types.IWebPartComponentProps> {
-
     const sendEmailsPermission = this.sendEmailsPermission();
-
     return (
       <div>
-        {/* <CrLoadingOverlayWelcome isLoading={this.state.Loading} /> */}
         <div style={{ paddingTop: "10px" }}>
-
           <OutboxList
             {...this.props}
             onError={this.onError}
             filterText={this.state.Outbox_ListFilterText}
             onChangeFilterText={this.handleOutboxList_ChangeFilterText}
             outboxListRefreshCounter={this.state.OutboxListRefreshCounter}
-
           />
-
           {
             (sendEmailsPermission === true) &&
-
             <div style={{ paddingTop: '30px' }}>
               <div style={{ paddingBottom: '10px' }}>
                 {
@@ -161,16 +139,11 @@ export default class AppSettings extends BaseUserContextWebPartComponent<types.I
                 onClick={this.handleProcessLnk_Step2}
                 disabled={this.state.LastRunMsg_Stage2 === "Working" ? true : false}
               />
-
             </div>
           }
-
-
         </div>
       </div>
     );
-
-
   }
 
   private renderLogsList() {
@@ -264,7 +237,6 @@ export default class AppSettings extends BaseUserContextWebPartComponent<types.I
       {
         key: '3',
         columnType: ColumnType.TextBox,
-        //columnDisplayType: ColumnDisplayType.FormOnly,
         name: 'Details',
         fieldName: 'Details',
         minWidth: 160,
@@ -293,7 +265,6 @@ export default class AppSettings extends BaseUserContextWebPartComponent<types.I
           childEntityNamePlural=""
           childEntityNameSingular=""
         />
-
       </React.Fragment>
     );
   }
@@ -301,38 +272,25 @@ export default class AppSettings extends BaseUserContextWebPartComponent<types.I
 
   private handleProcessLnk_Step1 = (): void => {
     console.log('In Process');
-
     this.automationOptionService.processAsAutoFunction().then((res: string): void => {
-
       console.log('Result', res);
-      //this.loadAutoFunctionLastRun();
       this.setState({
         LastRunMsg_Stage1: res, //res = "Working" at this stage
       });
 
     }, (err) => {
-
     });
-
-
   }
 
   private handleProcessLnk_Step2 = (): void => {
     console.log('In Process step2');
-
     this.automationOptionService.processAsAutoFunctionFromOutbox().then((res: string): void => {
-
       console.log('Result', res);
-      //this.loadAutoFunctionLastRun();
       this.setState({
         LastRunMsg_Stage2: res, //res = "Working" at this stage
       });
-
     }, (err) => {
-
     });
-
-
   }
 
   //#endregion Render
@@ -342,10 +300,8 @@ export default class AppSettings extends BaseUserContextWebPartComponent<types.I
 
 
   private sendEmailsPermission(): boolean {
-
     //super user/SysManager check
     let ups: IUserPermission[] = this.state.UserPermissions;
-
     for (let i = 0; i < ups.length; i++) {
       let up: IUserPermission = ups[i];
       if (up.PermissionTypeId == 1 || up.PermissionTypeId == 15) {
@@ -357,10 +313,8 @@ export default class AppSettings extends BaseUserContextWebPartComponent<types.I
   }
 
   private isSuperUser(): boolean {
-
     //super user/SysManager check
     let ups: IUserPermission[] = this.state.UserPermissions;
-
     for (let i = 0; i < ups.length; i++) {
       let up: IUserPermission = ups[i];
       if (up.PermissionTypeId == 1) {
@@ -378,7 +332,6 @@ export default class AppSettings extends BaseUserContextWebPartComponent<types.I
 
   private loadAutoFunctionLastRun_Stage1 = (): void => {
     this.autoFunctionLastRunService.getLastRunMsg("Stage1").then((res: string): void => {
-
       console.log('Last Run Msg', res);
       this.setState({
         LastRunMsg_Stage1: res,
@@ -387,12 +340,10 @@ export default class AppSettings extends BaseUserContextWebPartComponent<types.I
     }, (err) => {
 
     });
-
   }
 
   private loadAutoFunctionLastRun_Stage2 = (): void => {
     this.autoFunctionLastRunService.getLastRunMsg("Stage2").then((res: string): void => {
-
       console.log('Last Run Msg', res);
       this.setState({
         LastRunMsg_Stage2: res,
@@ -402,12 +353,9 @@ export default class AppSettings extends BaseUserContextWebPartComponent<types.I
     }, (err) => {
 
     });
-
   }
 
-
   protected loadLookups(): Promise<any> {
-
     return Promise.all([
       this.loadAutoFunctionLastRun_Stage1(),
       this.loadAutoFunctionLastRun_Stage2(),
@@ -418,10 +366,9 @@ export default class AppSettings extends BaseUserContextWebPartComponent<types.I
 
   //#region Event Handlers
 
-  private handleOutboxList_ChangeFilterText = (value: string): void => {
+  private handleOutboxList_ChangeFilterText = (event?: React.ChangeEvent<HTMLInputElement>, value?: string): void => {
     this.setState({ Outbox_ListFilterText: value });
   }
-
 
   //#endregion Event Handlers
 

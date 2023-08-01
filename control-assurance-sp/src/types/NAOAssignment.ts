@@ -1,11 +1,8 @@
 import { IEntity } from "./Entity";
-import { IIAPAction } from "./IAPAction";
-import { IUser } from "./User";
 
 export interface INAOAssignment extends IEntity {
     NAORecommendationId?: number;
     UserId?: number;
-
 }
 
 export class NAOAssignment implements INAOAssignment {

@@ -1,20 +1,11 @@
 import * as React from 'react';
-import { Pivot, PivotItem } from 'office-ui-fabric-react/lib/Pivot';
 import * as types from '../../../types';
 import BaseUserContextWebPartComponent from '../../../components/BaseUserContextWebPartComponent';
 import * as services from '../../../services';
-import EntityList from '../../../components/entity/EntityList';
-import { IGenColumn, ColumnType, ColumnDisplayType } from '../../../types/GenColumn';
-import { IUserPermission, IDefForm, IPeriod, IEntity } from '../../../types';
-import { CrLoadingOverlayWelcome } from '../../../components/cr/CrLoadingOverlayWelcome';
-import styles from '../../../styles/cr.module.scss';
-import { PrimaryButton } from 'office-ui-fabric-react/lib/Button';
+import { IUserPermission, IEntity } from '../../../types';
 import PlatformLinks from '../../../components/PlatformLinks';
 
-
-
 export interface IAppHomeState extends types.IUserContextWebPartState {
-
 }
 export class AppHomeState extends types.UserContextWebPartState {
 
@@ -24,19 +15,14 @@ export class AppHomeState extends types.UserContextWebPartState {
 }
 
 export default class AppHome extends BaseUserContextWebPartComponent<types.IWebPartComponentProps, AppHomeState> {
-
   private controlsAssuranceApphomeImg: string = ""; // require('../../../images/controls-assurance-apphome.png');
-  private governanceApphomeImg: string = ""; // require('../../../images/governance-apphome.png');
+  private governanceApphomeImg: string = "";
   private naoApphomeImg: string = "";
   private giaaApphomeImg: string = "";
   private individualActionAppHomeImg: string = "";
   private contingentLabourAppHomeImg: string = "";
-
   private spSiteUrl: string = this.props.spfxContext.pageContext.web.absoluteUrl;
-
   private giaaDefFormService: services.GIAADefFormService = new services.GIAADefFormService(this.props.spfxContext, this.props.api);
-
-
 
   constructor(props: types.IWebPartComponentProps) {
     super(props);
@@ -55,7 +41,6 @@ export default class AppHome extends BaseUserContextWebPartComponent<types.IWebP
   public renderWebPart(): React.ReactElement<types.IWebPartComponentProps> {
 
     return (
-
       <div style={{ paddingLeft: '0px', paddingTop: '0px' }}>
         {this.state.UserPermissions.length > 0 && <PlatformLinks module='Home' visible={this.isSuperUser()} {...this.props} />}
         <div style={{ display: 'flex', flexWrap: 'wrap' }}>
@@ -70,7 +55,6 @@ export default class AppHome extends BaseUserContextWebPartComponent<types.IWebP
               <a style={{ color: 'white', fontSize: '25px', textDecoration: 'none' }} >Start</a>
             </div>
           </div>
-
 
           {/* giaa actions */}
           <div style={{ marginTop: '20px', marginRight: '20px', width: '250px' }}>
@@ -95,7 +79,6 @@ export default class AppHome extends BaseUserContextWebPartComponent<types.IWebP
               <a style={{ color: 'white', fontSize: '25px', textDecoration: 'none' }} >Start</a>
             </div>
           </div>
-
 
           {/* Controls Assurance */}
           <div style={{ marginTop: '20px', marginRight: '20px', width: '250px' }}>
@@ -131,25 +114,12 @@ export default class AppHome extends BaseUserContextWebPartComponent<types.IWebP
               <a style={{ color: 'white', fontSize: '25px', textDecoration: 'none' }} >Start</a>
             </div>
           </div>
-
-
-
-
-
-
-
         </div>
       </div>
     );
   }
 
-
-
-
   //#endregion Render
-
-
-
 
 
   //#region event handlers
@@ -184,10 +154,7 @@ export default class AppHome extends BaseUserContextWebPartComponent<types.IWebP
     window.location.href = pageUrl;
   }
 
-
-
   //#endregion event handlers
-
 
 
   //#region Data Load
@@ -197,11 +164,7 @@ export default class AppHome extends BaseUserContextWebPartComponent<types.IWebP
     this.giaaDefFormService.getTestDateTime().then((x: IEntity) => {
       console.log('DateTime Info', x);
 
-
-    }, (err) => {
-
-    });
-
+    }, (err) => { });
 
   }
 
@@ -209,24 +172,20 @@ export default class AppHome extends BaseUserContextWebPartComponent<types.IWebP
 
     //super user/SysManager check
     let ups: IUserPermission[] = this.state.UserPermissions;
-
     for (let i = 0; i < ups.length; i++) {
       let up: IUserPermission = ups[i];
       if (up.PermissionTypeId == 1) {
         return true;
       }
     }
-
     return false;
   }
 
   protected loadLookups(): Promise<any> {
-
     return Promise.all([
       this.getTestDateTime(),
     ]);
   }
 
   //#endregion Data Load
-
 }

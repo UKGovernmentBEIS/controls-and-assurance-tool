@@ -2,8 +2,6 @@ import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { EntityService } from './EntityService';
 import { IDataAPI, IDefElement, IEntity } from '../types';
 
-
-
 export class DefElementService extends EntityService<IDefElement> {
     public readonly parentEntities = [];
     protected childrenEntities = [];
@@ -23,7 +21,5 @@ export class DefElementService extends EntityService<IDefElement> {
     public readAllForList(periodId: number | string, formId: number): Promise<IEntity[]> {
         return this.readAll(`?periodId=${periodId}&formId=${formId}`);
     }
-
-
 
 }

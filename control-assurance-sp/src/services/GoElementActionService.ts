@@ -2,8 +2,6 @@ import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { EntityService } from './EntityService';
 import { IDataAPI, IEntity } from '../types';
 
-
-
 export class GoElementActionService extends EntityService<IEntity> {
     public readonly parentEntities = [];
     protected childrenEntities = [];
@@ -13,9 +11,6 @@ export class GoElementActionService extends EntityService<IEntity> {
     }
 
     public readAllWithArgs(goElementId: number): Promise<IEntity[]> {
-        //return this.readAll(`?$filter=GoElementId eq ${goElementId}`);
         return this.readAll(`?$orderby=EntityPriorityId&$expand=EntityPriority&$filter=GoElementId eq ${goElementId}`);
     }
-
-
 }

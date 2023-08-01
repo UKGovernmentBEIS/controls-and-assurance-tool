@@ -1,9 +1,6 @@
 import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { EntityService } from './EntityService';
-import { IDataAPI, IEntity, NAOAssignment } from '../types';
-import { baseElementEvents } from 'office-ui-fabric-react/lib/Utilities';
-
-
+import { IDataAPI, NAOAssignment } from '../types';
 
 export class NAOAssignmentService extends EntityService<NAOAssignment> {
     public readonly parentEntities = [];
@@ -12,10 +9,4 @@ export class NAOAssignmentService extends EntityService<NAOAssignment> {
     constructor(spfxContext: WebPartContext, api: IDataAPI) {
         super(spfxContext, api, `/NAOAssignments`);
     }
-
-    // public create(entity: IAPAssignment): Promise<IAPAssignment> {
-    //     console.log('IAPAssignmentService.create', entity);
-    //     return super.create(entity);
-    // }
-
 }

@@ -7,7 +7,6 @@ export interface IGoAssignment extends IEntity {
     UserId?: number;
     GoElement?: IGoElement;
     User?: IUser;
-
 }
 
 export class GoAssignment implements IGoAssignment {

@@ -1,6 +1,5 @@
 import { IEntity } from "./Entity";
 
-
 export interface INAOPublicationInfo  extends IEntity {
 
     NAOType?: string;
@@ -11,5 +10,4 @@ export interface INAOPublicationInfo  extends IEntity {
     ContactDetails?: string;
     Links?: string;
     PublicationSummary?: string;
-    
 }

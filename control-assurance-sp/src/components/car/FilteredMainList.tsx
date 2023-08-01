@@ -55,7 +55,7 @@ export interface IFilteredMainListProps {
     filterText?: string;
 
 
-    onFilterChange: (value: string) => void;
+    onFilterChange: (event?: React.ChangeEvent<HTMLInputElement>, newValue?: string) => void;
     onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
 
     selection?: ISelection;

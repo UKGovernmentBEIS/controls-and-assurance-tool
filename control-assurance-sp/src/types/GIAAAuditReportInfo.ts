@@ -12,5 +12,4 @@ export interface IGIAAAuditReportInfo  extends IEntity {
     Stats?: string;
     Assurance?: string;
     Link?: string;
-    
 }

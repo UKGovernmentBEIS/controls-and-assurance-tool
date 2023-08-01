@@ -1,60 +1,58 @@
 import * as React from 'react';
-import { CommandBar } from 'office-ui-fabric-react/lib/CommandBar';
-import { IContextualMenuItem } from 'office-ui-fabric-react/lib/ContextualMenu';
 import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox';
-import { Toggle } from 'office-ui-fabric-react/lib/Toggle';
-import styles from '../../styles/cr.module.scss';
+import { searchBoxStyle, toolbarStyle } from '../../types/AppGlobals';
+import { CommandBarButton, Fabric } from 'office-ui-fabric-react';
 
 export interface IListCommandBarProps {
     onAdd: () => void;
     onEdit: () => void;
     onDelete: () => void;
-    onFilterChange: (filterText: string) => void;
+    onFilterChange: (event?: React.ChangeEvent<HTMLInputElement>, newValue?: string) => void;
     editDisabled?: boolean;
     deleteDisabled?: boolean;
     onAddChild?: () => void;
     addChildName?: string;
     allowAdd?: boolean;
-
 }
 
 export class ListCommandBar extends React.Component<IListCommandBarProps, any> {
     public render(): JSX.Element {
-        let commandBarItems: IContextualMenuItem[];
-
-        if(this.props.allowAdd === true){
-
-            if (this.props.editDisabled && this.props.deleteDisabled){
-
-                commandBarItems = [
-                    { key: '1', name: 'New', icon: 'Add', onClick: this.props.onAdd }
-                ];
-            }
-            
-        // else if (this.props.onAddChild && this.props.addChildName)
-        //     commandBarItems = [
-        //         { key: '1', name: 'Edit', icon: 'Edit', onClick: this.props.onEdit, disabled: this.props.editDisabled },
-        //         { key: '2', name: 'Delete', icon: 'Delete', onClick: this.props.onDelete, disabled: this.props.deleteDisabled },
-        //         { key: '3', name: `Add ${this.props.addChildName}`, icon: 'Add', onClick: this.props.onAddChild }
-        //     ];
-        else
-            commandBarItems = [
-                { key: '1', name: 'Edit', icon: 'Edit', onClick: this.props.onEdit, disabled: this.props.editDisabled },
-                { key: '2', name: 'Delete', icon: 'Delete', onClick: this.props.onDelete, disabled: this.props.deleteDisabled }
-            ];
-
-        }
-
-
-        const farCommandBarItems = [{
-            key: '1', name: 'List filter', inActive: true, onRender: () => { return (<SearchBox placeholder="Filter items" onChange={this.props.onFilterChange} className={styles.listFilterBox} />); }
-        }];
-
+        const { props } = this;
         return (
-            <CommandBar
-                items={commandBarItems}
-                farItems={farCommandBarItems}
-            />
+            <Fabric>
+                <div className={toolbarStyle.controlWrapper}>
+
+                    {props.allowAdd == true && props.editDisabled && props.deleteDisabled &&
+                        <CommandBarButton
+                            iconProps={{ iconName: 'Add' }}
+                            className={toolbarStyle.cmdBtn}
+                            text="New"
+                            onClick={props.onAdd}
+                        />}
+
+                    {(props.editDisabled === false) &&
+                        <CommandBarButton
+                            iconProps={{ iconName: 'Edit' }}
+                            className={toolbarStyle.cmdBtn}
+                            text="Edit"
+                            onClick={props.onEdit}
+                        />}
+
+                    {(props.deleteDisabled === false) &&
+                        <CommandBarButton
+                            iconProps={{ iconName: 'Delete' }}
+                            className={toolbarStyle.cmdBtn}
+                            text="Delete"
+                            onClick={this.props.onDelete}
+                        />}
+                    <span style={searchBoxStyle}>
+                        <SearchBox
+                            placeholder="Filter items"
+                            onChange={props.onFilterChange}
+                        />
+                    </span>
+                </div>
+            </Fabric>
         );
     }
 }

@@ -6,16 +6,11 @@ import Section2Update from '../../../components/govUpdates/Section2Update';
 import Section3Update from '../../../components/govUpdates/Section3Update';
 import Section4Update from '../../../components/govUpdates/Section4Update';
 import UpdateForm from '../../../components/govUpdates/UpdateForm';
-
 import * as types from '../../../types';
 import BaseUserContextWebPartComponent from '../../../components/BaseUserContextWebPartComponent';
 import * as services from '../../../services';
-import EntityList from '../../../components/entity/EntityList';
-import { IGenColumn, ColumnType, ColumnDisplayType } from '../../../types/GenColumn';
-import { IUserPermission, IDefForm, IPeriod, IEntity, IDirectorateGroup, IGoDefForm, GoForm, IGoForm } from '../../../types';
+import { IUserPermission, IPeriod, IEntity, IDirectorateGroup, IGoDefForm, GoForm, IGoForm } from '../../../types';
 import { CrLoadingOverlayWelcome } from '../../../components/cr/CrLoadingOverlayWelcome';
-import styles from '../../../styles/cr.module.scss';
-import { PrimaryButton } from 'office-ui-fabric-react/lib/Button';
 
 //#region types defination
 
@@ -37,10 +32,8 @@ export interface IGoUpdatesState extends types.IUserContextWebPartState {
   PeriodId: string | number;
   DirectorateGroupId: string | number;
   IsArchivedPeriod: boolean;
-  //GoFormId: number;
   GoForm: IGoForm;
   SelectedPivotKey: string;
-
   Section2_IsOpen: boolean;
   Section2_IncompleteOnly: boolean;
   Section2_JustMine: boolean;
@@ -48,7 +41,6 @@ export interface IGoUpdatesState extends types.IUserContextWebPartState {
   Section2_SelectedDefElementId: number;
   Section2_SelectedElementId: number;
   Section2_SelectedDefElementTitle: string;
-
   FilteredItems: any[];
 }
 export class GoUpdatesState extends types.UserContextWebPartState implements IGoUpdatesState {
@@ -56,10 +48,8 @@ export class GoUpdatesState extends types.UserContextWebPartState implements IGo
   public PeriodId: string | number = 0;
   public IsArchivedPeriod = false;
   public DirectorateGroupId: string | number = 0;
-  //public GoFormId: number = 0;
   public GoForm: IGoForm = null;
   public SelectedPivotKey = "Governance-Updates"; //default, 1st tab selected
-
   public Section2_IsOpen: boolean = false;
   public Section2_IncompleteOnly = false;
   public Section2_JustMine = false;
@@ -67,7 +57,6 @@ export class GoUpdatesState extends types.UserContextWebPartState implements IGo
   public Section2_SelectedDefElementId: number = 0;
   public Section2_SelectedElementId: number = 0;
   public Section2_SelectedDefElementTitle: string = null;
-
   public FilteredItems = [];
 
   constructor() {
@@ -83,7 +72,6 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
   private goFormService: services.GoFormService = new services.GoFormService(this.props.spfxContext, this.props.api);
   protected periodService: services.GoPeriodService = new services.GoPeriodService(this.props.spfxContext, this.props.api);
   protected deirectorateGroupService: services.DirectorateGroupService = new services.DirectorateGroupService(this.props.spfxContext, this.props.api);
-
   private readonly headerTxt_Updates: string = "Governance-Updates";
   private readonly headerTxt_UpdateForm: string = "Details";
 
@@ -97,22 +85,17 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
   public renderWebPart(): React.ReactElement<types.IWebPartComponentProps> {
 
     return (
-
       <Pivot onLinkClick={this.handlePivotClick} selectedKey={`${this.state.SelectedPivotKey}`}>
         <PivotItem headerText={this.headerTxt_Updates} itemKey={this.headerTxt_Updates}>
           {this.renderMyUpdates()}
         </PivotItem>
         {this.renderUpdateFormTab()}
-
       </Pivot>
     );
   }
 
   private renderMyUpdates(): React.ReactElement<types.IWebPartComponentProps> {
     const { LookupData: lookups } = this.state;
-    const periodId = Number(this.state.PeriodId);
-    const directorateGroupId = Number(this.state.DirectorateGroupId);
-
 
     return (
       <div>
@@ -132,17 +115,14 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
             onChanged={(v) => this.changeDropdown(v, 'DirectorateGroupId')}
             selectedKey={this.state.DirectorateGroupId}
           />
-
           <br />
 
-          {this.state.PeriodId > 0 && this.state.DirectorateGroupId > 0 && this.state.GoForm &&
+          {Number(this.state.PeriodId) > 0 && Number(this.state.DirectorateGroupId) > 0 && this.state.GoForm &&
             <div>
               <Section1Update
                 goDefForm={this.state.LookupData.GoDefForm}
                 goForm={this.state.GoForm}
                 isViewOnly={this.isViewOnlyGoForm()}
-                //periodId={periodId}
-                //directorateGroupId={directorateGroupId}
                 onSaved={this.readOrCreateGoFormInDb} //to refresh goForm in state
                 {...this.props}
               />
@@ -159,7 +139,6 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
                 onChangeFilterText={this.handleSection2_ChangeFilterText}
                 onChangeIncompleteOnly={this.handleSection2_ChangeIncompleteOnly}
                 onChangeJustMine={this.handleSection2_ChangeJustMine}
-
                 {...this.props}
               />
               <Section3Update
@@ -172,9 +151,6 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
               <Section4Update {...this.props} />
             </div>
           }
-
-
-
         </div>
       </div>
     );
@@ -183,11 +159,9 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
   private renderUpdateFormTab() {
     if (this.state.SelectedPivotKey === this.headerTxt_UpdateForm) {
       return (
-
         <PivotItem headerText={this.headerTxt_UpdateForm} itemKey={this.headerTxt_UpdateForm}>
           {this.renderUpdateForm()}
         </PivotItem>
-
       );
     }
     else
@@ -196,7 +170,6 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
   private renderUpdateForm(): React.ReactElement<types.IWebPartComponentProps> {
 
     return (
-
       <UpdateForm
         filteredItems={this.state.FilteredItems}
         goElementId={this.state.Section2_SelectedElementId}
@@ -204,13 +177,8 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
         onShowList={this.handleShowListSection2}
         {...this.props}
       />
-
     );
-
   }
-
-
-
 
   //#endregion Render
 
@@ -218,60 +186,70 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
   //#region Data Load
 
   protected loadDefForm = (): Promise<IGoDefForm> => {
-    return this.goDefFormService.read(1).then((df: IGoDefForm): IGoDefForm => {
-      this.setState({ LookupData: this.cloneObject(this.state.LookupData, 'GoDefForm', df) });
-      return df;
-    }, (err) => { if (this.onError) this.onError(`Error loading DefForm lookup data`, err.message); });
+    return this.goDefFormService.read(1)
+      .then((df: IGoDefForm): IGoDefForm => {
+        this.setState({ LookupData: this.cloneObject(this.state.LookupData, 'GoDefForm', df) });
+        return df;
+      })
+      .catch((err) => {
+        if (this.onError) this.onError(`Error loading DefForm lookup data`, err.message);
+        return null;
+      });
   }
 
   protected loadPeriods = (): Promise<IPeriod[]> => {
-    return this.periodService.readAll().then((pArr: IPeriod[]): IPeriod[] => {
-      //get the current period
-      let currentPeriodId: number = 0;
-      const currentPeriod = pArr.filter(p => p.PeriodStatus === "Current Period");
-      if (currentPeriod && currentPeriod.length > 0) {
-        currentPeriodId = currentPeriod[0].ID;
-      }
+    return this.periodService.readAll()
+      .then((pArr: IPeriod[]): IPeriod[] => {
+        //get the current period
+        let currentPeriodId: number = 0;
+        const currentPeriod = pArr.filter(p => p.PeriodStatus === "Current Period");
+        if (currentPeriod && currentPeriod.length > 0) {
+          currentPeriodId = currentPeriod[0].ID;
+        }
 
-      //show status like Qtr 2 2019 ( Current Period ) in Title
-      for (let i = 0; i < pArr.length; i++) {
-        let p: IPeriod = pArr[i];
-        pArr[i].Title = `${p.Title} ( ${p.PeriodStatus} )`;
-      }
+        //show status like Qtr 2 2019 ( Current Period ) in Title
+        for (let i = 0; i < pArr.length; i++) {
+          let p: IPeriod = pArr[i];
+          pArr[i].Title = `${p.Title} ( ${p.PeriodStatus} )`;
+        }
 
+        //check user permissions
+        if (this.isSuperUser() === true) {
+        } else {
+          //dont show design periods
+          pArr = pArr.filter(p => p.PeriodStatus !== "Design Period");
+        }
 
-      //check user permissions
-      if (this.isSuperUser() === true) {
-      }
-      else {
-        //dont show design periods
-        pArr = pArr.filter(p => p.PeriodStatus !== "Design Period");
-      }
+        this.setState({
+          LookupData: this.cloneObject(this.state.LookupData, 'Periods', pArr),
+          PeriodId: currentPeriodId
+        });
 
-
-      this.setState({
-        LookupData: this.cloneObject(this.state.LookupData, 'Periods', pArr),
-        PeriodId: currentPeriodId
+        return pArr;
+      })
+      .catch((err) => {
+        if (this.onError) this.onError(`Error loading Periods lookup data`, err.message);
+        return null;
       });
-      return pArr;
-    }, (err) => { if (this.onError) this.onError(`Error loading Periods lookup data`, err.message); });
   }
 
   protected loadDGAreas = (): Promise<IEntity[]> => {
-    return this.deirectorateGroupService.readAllForGoList().then((data: IEntity[]): IEntity[] => {
-      this.setState({ LookupData: this.cloneObject(this.state.LookupData, 'DGAreas', data) });
-      return data;
-    }, (err) => { if (this.onError) this.onError(`Error loading Teams lookup data`, err.message); });
+    return this.deirectorateGroupService.readAllForGoList()
+      .then((data: IEntity[]): IEntity[] => {
+        this.setState({ LookupData: this.cloneObject(this.state.LookupData, 'DGAreas', data) });
+        return data;
+      })
+      .catch((err) => {
+        if (this.onError) this.onError(`Error loading Teams lookup data`, err.message);
+        return null; // Return null to handle the error gracefully
+      });
   }
 
-
   protected loadLookups(): Promise<any> {
-
     return Promise.all([
       this.loadPeriods(),
       this.loadDGAreas(),
       this.loadDefForm(),
-
     ]);
   }
 
@@ -289,7 +267,6 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
         return true;
       }
     }
-
     return false;
   }
 
@@ -307,13 +284,9 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
         if (this.state.DirectorateGroupId === dgm.DirectorateGroupID) {
           return true;
         }
-
       }
-
     }
-
     return false;
-
   }
 
   private canSignOff(): boolean {
@@ -326,7 +299,6 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
     if (this.state.DirectorateGroups.length > 0) {
       return true;
     }
-
 
     //DirectorateGroup member check
     let dgms = this.state.DirectorateGroupMembers;
@@ -341,12 +313,9 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
           if (dgm.IsAdmin === true) {
             return true;
           }
-
         }
       }
-
     }
-
     return false;
   }
 
@@ -379,10 +348,7 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
           }
         }
       }
-
     }
-
-
 
     return false;
   }
@@ -401,7 +367,6 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
             isArchivedPeriod = true;
           }
         }
-
         this.setState({ PeriodId: option.key, IsArchivedPeriod: isArchivedPeriod },
           this.readOrCreateGoFormInDb
         );
@@ -413,17 +378,13 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
         this.readOrCreateGoFormInDb
       );
     }
-
   }
 
   private readOrCreateGoFormInDb = (): void => {
 
-    if (this.state.PeriodId > 0 && this.state.DirectorateGroupId > 0) {
-
+    if (Number(this.state.PeriodId) > 0 && Number(this.state.DirectorateGroupId) > 0) {
       const goForm = new GoForm(Number(this.state.PeriodId), Number(this.state.DirectorateGroupId));
-
       goForm.Title = "_ADD_ONLY_IF_DOESNT_EXIST_"; //send this msg to api, so it doesnt do any change if goForm already exist in the db
-
       delete goForm.ID;
       //delete goForm.Title;
       delete goForm.SummaryRagRating;
@@ -435,19 +396,14 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
       delete goForm.DGSignOffUserId;
       delete goForm.DGSignOffDate;
 
-
-
       //following service only adds form in db if its needed
       this.goFormService.create(goForm).then((newForm: IGoForm): void => {
         //this.setState({ GoFormId: newForm.ID });
         this.setState({ GoForm: newForm });
         //console.log('goForm created ', newForm);
       }, (err) => { });
-
     }
-
   }
-
 
   private handlePivotClick = (item: PivotItem): void => {
     this.clearErrors();
@@ -470,8 +426,8 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
     this.setState({ Section2_IsOpen: !this.state.Section2_IsOpen });
   }
 
-  private handleSection2_ChangeFilterText = (value: string): void => {
-    this.setState({ Section2_ListFilterText: value });
+  private handleSection2_ChangeFilterText = (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string): void => {
+    this.setState({ Section2_ListFilterText: newValue });
   }
 
   private handleSection2_ChangeIncompleteOnly = (value: boolean): void => {
@@ -487,9 +443,7 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
     this.clearErrors();
     this.setState({ SelectedPivotKey: this.headerTxt_Updates }, this.readOrCreateGoFormInDb);
   }
-
   //#endregion event handlers
-
 }
 
 

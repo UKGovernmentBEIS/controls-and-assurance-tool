@@ -3,43 +3,37 @@ import { Pivot, PivotItem } from 'office-ui-fabric-react/lib/Pivot';
 import * as types from '../../../types';
 import BaseUserContextWebPartComponent from '../../../components/BaseUserContextWebPartComponent';
 import * as services from '../../../services';
-import EntityList from '../../../components/entity/EntityList';
-import { IGenColumn, ColumnType, ColumnDisplayType } from '../../../types/GenColumn';
-import { IUserPermission, INAODefForm,  } from '../../../types';
+import { INAODefForm, } from '../../../types';
 import { CrLoadingOverlayWelcome } from '../../../components/cr/CrLoadingOverlayWelcome';
-import styles from '../../../styles/cr.module.scss';
 import { PrimaryButton } from 'office-ui-fabric-react/lib/Button';
 
 //#region types defination
 
-export interface ILookupData{
+export interface ILookupData {
   NAODefForm: INAODefForm;
 }
 
-export class LookupData implements ILookupData{
+export class LookupData implements ILookupData {
   public NAODefForm: INAODefForm;
-
 }
 
 export interface INAOWelcomeState extends types.IUserContextWebPartState {
-  LookupData : ILookupData;
+  LookupData: ILookupData;
 }
 export class NAOWelcomeState extends types.UserContextWebPartState {
   public LookupData = new LookupData();
-	constructor() {
+  constructor() {
     super();
-	}
+  }
 }
 
 //#endregion types defination
 
 export default class NAOWelcome extends BaseUserContextWebPartComponent<types.IWebPartComponentProps, NAOWelcomeState> {
-
   protected naoDefFormService: services.NAODefFormService = new services.NAODefFormService(this.props.spfxContext, this.props.api);
   protected periodService: services.NAOPeriodService = new services.NAOPeriodService(this.props.spfxContext, this.props.api);
-
   constructor(props: types.IWebPartComponentProps) {
-		super(props);
+    super(props);
     this.state = new NAOWelcomeState();
   }
 
@@ -47,28 +41,21 @@ export default class NAOWelcome extends BaseUserContextWebPartComponent<types.IW
 
   public renderWebPart(): React.ReactElement<types.IWebPartComponentProps> {
 
-    return(
-  
+    return (
       <Pivot onLinkClick={this.clearErrors}>
         <PivotItem headerText="NAO/PAC Tracker - Welcome">
           {this.renderWelcome()}
-        </PivotItem> 
-
+        </PivotItem>
       </Pivot>
     );
   }
 
   private renderWelcome(): React.ReactElement<types.IWebPartComponentProps> {
-    const { LookupData:lookups } = this.state;
-
-
-    //const pageUrl = this.props.spfxContext.pageContext.web.absoluteUrl;
-    //console.log("page absoluteUrl url", pageUrl);
-
+    const { LookupData: lookups } = this.state;
     return (
       <div>
         <CrLoadingOverlayWelcome isLoading={this.state.Loading} />
-        <h1 className='ms-font-xl'>{lookups.NAODefForm && lookups.NAODefForm.Title}</h1>        
+        <h1 className='ms-font-xl'>{lookups.NAODefForm && lookups.NAODefForm.Title}</h1>
         <div dangerouslySetInnerHTML={{ __html: lookups.NAODefForm && lookups.NAODefForm.Details }}></div>
         <br />
         <PrimaryButton
@@ -76,44 +63,38 @@ export default class NAOWelcome extends BaseUserContextWebPartComponent<types.IW
           onClick={this.handleUpdatesClick}
         />
         <br /><br />
-
-          
-
-        
       </div>
     );
   }
 
-
   //#endregion Render
 
-  
+
   //#region Data Load
 
-  private welcomeAccess = () : void => {
+  private welcomeAccess = (): void => {
     this.naoDefFormService.welcomeAccess().then((res: string): void => {
-    
       console.log('welcome accessed');
-
-  }, (err) => {
-
-  });
-
+    }, (err) => {
+    });
   }
+
   protected loadDefForm = (): Promise<INAODefForm> => {
-    return this.naoDefFormService.read(1).then((df: INAODefForm): INAODefForm => {
+    return this.naoDefFormService.read(1)
+      .then((df: INAODefForm): INAODefForm => {
         this.setState({ LookupData: this.cloneObject(this.state.LookupData, 'NAODefForm', df) });
         return df;
-    }, (err) => { if (this.onError) this.onError(`Error loading DefForm lookup data`, err.message); });
+      })
+      .catch((err) => {
+        if (this.onError) this.onError(`Error loading DefForm lookup data`, err.message);
+        return null;
+      });
   }
 
-
-
   protected loadLookups(): Promise<any> {
-    
     return Promise.all([
-        this.welcomeAccess(),
-        this.loadDefForm(),
+      this.welcomeAccess(),
+      this.loadDefForm(),
     ]);
   }
 
@@ -125,11 +106,9 @@ export default class NAOWelcome extends BaseUserContextWebPartComponent<types.IW
   private handleUpdatesClick = (): void => {
     const pageUrl = this.props.spfxContext.pageContext.web.absoluteUrl + "/SitePages/NAOTrackerUpdates.aspx";
     window.location.href = pageUrl;
-    
   }
 
   //#endregion event handlers
-
 }
 
 

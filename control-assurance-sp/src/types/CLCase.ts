@@ -1,7 +1,6 @@
 import { IEntity } from "./Entity";
 
-
-export interface ICLCase  extends IEntity {
+export interface ICLCase extends IEntity {
 
     CaseType?: string;
     CreatedById?: number;
@@ -29,7 +28,7 @@ export interface ICLCase  extends IEntity {
     FinCalcType?: string;
     FinCostPerWorker?: number;
     FinIR35ScopeId?: number;
-    FinIR35AssessmentId?: number;    
+    FinIR35AssessmentId?: number;
     FinApproachAgreeingRate?: string;
     FinSummaryIR35Just?: string;
     OtherComments?: string;
@@ -47,11 +46,9 @@ export interface ICLCase  extends IEntity {
     CBPApprovalDecision?: string;
     CaseChangeLog?: string;
     DeptTransferringTo?: string;
-
-
 }
 
-export class CLCase implements ICLCase{ 
+export class CLCase implements ICLCase {
     public ID: number = 0;
     public Title: string = null;
     public CaseType?: string = null;
@@ -102,18 +99,14 @@ export class CLCase implements ICLCase{
     constructor(caseType: string) {
         this.CaseType = caseType;
         this.DeptTransferringTo = 'Unknown';
-
     }
-
-
 }
 
-export interface IClCaseInfo  extends IEntity {
+export interface IClCaseInfo extends IEntity {
     Stage?: string;
     CreatedBy?: string;
     CreatedOn?: string;
     CaseRef?: string;
-
     ApplHMUser?: string;
     ApplHMembers?: string;
     ReqGrade?: string;
@@ -134,7 +127,6 @@ export interface IClCaseInfo  extends IEntity {
     HRBPDecisionByAndDate?: string;
     CBPDecisionByAndDate?: string;
     CLDecisionByAndDate?: string;
-
     OnbContractorGender?: string;
     OnbContractorTitle?: string;
     OnbContractorDobStr?: string;
@@ -147,7 +139,6 @@ export interface IClCaseInfo  extends IEntity {
     OnbLineManagerGrade?: string;
     OnbWorkOrderNumber?: string;
     OnbRecruitersEmail?: string;
-
     BPSSCheckedBy?: string;
     BPSSCheckedOn?: string;
     POCheckedBy?: string;
@@ -160,13 +151,11 @@ export interface IClCaseInfo  extends IEntity {
     PassCheckedOn?: string;
     ContractCheckedBy?: string;
     ContractCheckedOn?: string;
-    EngPONumber?:string;
-    EngPONote?:string;
-    SDSCheckedBy?:string;
-    SDSCheckedOn?:string;
-    SDSNotes?:string;
-
-
+    EngPONumber?: string;
+    EngPONote?: string;
+    SDSCheckedBy?: string;
+    SDSCheckedOn?: string;
+    SDSNotes?: string;
     LeEndDateStr?: string;
     LeContractorDetailsCheckedBy?: string;
     LeContractorDetailsCheckedOn?: string;
@@ -176,11 +165,9 @@ export interface IClCaseInfo  extends IEntity {
     LeUKSBSCheckedOn?: string;
     LePassCheckedBy?: string;
     LePassCheckedOn?: string;
-
     ExtensionHistory?: string;
-
 }
-export class ClCaseInfo  implements IClCaseInfo {
+export class ClCaseInfo implements IClCaseInfo {
 
     public ID: number = 0;
     public Title: string = "";
@@ -188,7 +175,6 @@ export class ClCaseInfo  implements IClCaseInfo {
     public CreatedBy?: string = "";
     public CreatedOn?: string = "";
     public CaseRef?: string = "";
-
     public ApplHMUser?: string = "";
     public ReqGrade?: string = "";
     public Directorate?: string = "";
@@ -203,11 +189,9 @@ export class ClCaseInfo  implements IClCaseInfo {
     public FBPUser?: string = "";
     public HRBPUser?: string = "";
     public CBPUser?: string = "";
-
     public BHDecisionByAndDate?: string = "";
     public FBPDecisionByAndDate?: string = "";
     public HRBPDecisionByAndDate?: string = "";
-
     public OnbContractorTitle?: string = "";
     public OnbContractorGender?: string = "";
     public OnbContractorDobStr?: string = "";
@@ -218,7 +202,6 @@ export class ClCaseInfo  implements IClCaseInfo {
     public OnbDecConflict?: string = "";
     public OnbLineManagerUser?: string = "";
     public OnbLineManagerGrade?: string = "";
-
     public BPSSCheckedBy?: string = "";
     public BPSSCheckedOn?: string = "";
     public POCheckedBy?: string = "";
@@ -231,10 +214,9 @@ export class ClCaseInfo  implements IClCaseInfo {
     public PassCheckedOn?: string = "";
     public ContractCheckedBy?: string = "";
     public ContractCheckedOn?: string = "";
-    public SDSCheckedBy?:string = "";
-    public SDSCheckedOn?:string = "";
-    public SDSNotes?:string = "";
-
+    public SDSCheckedBy?: string = "";
+    public SDSCheckedOn?: string = "";
+    public SDSNotes?: string = "";
     public LeStartDateStr?: string = "";
     public LeContractorDetailsCheckedBy?: string = "";
     public LeContractorDetailsCheckedOn?: string = "";
@@ -244,12 +226,10 @@ export class ClCaseInfo  implements IClCaseInfo {
     public LeUKSBSCheckedOn?: string = "";
     public LePassCheckedBy?: string = "";
     public LePassCheckedOn?: string = "";
-
     public ExtensionHistory = "";
-
 }
 
-export interface IClCaseCounts extends IEntity{
+export interface IClCaseCounts extends IEntity {
     TotalBusinessCases?: number;
     TotalEngagedCases?: number;
     TotalArchivedCases?: number;

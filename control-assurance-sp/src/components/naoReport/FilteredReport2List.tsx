@@ -2,77 +2,26 @@ import * as React from 'react';
 import { DetailsList, SelectionMode, IColumn, ISelection } from 'office-ui-fabric-react/lib/DetailsList';
 import { SearchObjectService } from '../../services';
 import { IEntity } from '../../types';
-import { ElementStatuses, RAGRatings } from '../../types/AppGlobals';
 export { IObjectWithKey, IColumn } from 'office-ui-fabric-react/lib/DetailsList';
 import { CommandBarButton } from 'office-ui-fabric-react/lib/Button';
 import { Fabric } from 'office-ui-fabric-react/lib/Fabric';
-import { mergeStyleSets } from 'office-ui-fabric-react/lib/Styling';
-import { Toggle } from 'office-ui-fabric-react/lib/Toggle';
 import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox';
 import '../../styles/CustomFabric2.scss';
-
-
-
-const classNames = mergeStyleSets({
-    controlWrapper: {
-        display: 'flex',
-        flexWrap: 'wrap',
-        backgroundColor: "rgb(244,244,244)",
-        padding: "5px 0px 5px 10px",
-        marginBottom: "5px"
-    },
-    cmdBtn: {
-        border: 'none'
-    }
-});
-const controlStyles = {
-    root: {
-        margin: '5px 10px 0 0', //top, right, bottom, left
-        maxWidth: '301px',
-    }
-};
-
-const controlStylesB = {
-    marginLeft: "auto",
-    //display: "inline-block",
-};
-
-const controlStyles2 = {
-    //root: {
-    marginLeft: "auto",
-    display: "inline-block",
-    backgroundColor: "white"
-
-    //}
-};
+import { searchBoxStyle, toolbarStyle } from '../../types/AppGlobals';
 
 export interface IFilteredReport2ListProps {
     className?: string;
     columns: IColumn[];
     items: any[];
     filterText?: string;
-
-    //onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
     onCreatePdf: (filteredItems: any[]) => void;
     createPdfDisabled: boolean;
-
     onDeletePdf: () => void;
     deletePdfDisabled: boolean;
-
     onDownloadPdf: () => void;
     downloadPdfDisabled: boolean;
-
-
-    onFilterChange: (value: string) => void;
-
-
+    onFilterChange: (event?: React.ChangeEvent<HTMLInputElement>, newValue?: string) => void;
     selection?: ISelection;
-
-
-
-
-
-
 }
 
 export interface IFilteredReport2ListState {
@@ -82,36 +31,24 @@ export interface IFilteredReport2ListState {
 
 export class FilteredReport2List extends React.Component<IFilteredReport2ListProps, IFilteredReport2ListState> {
 
-
-    private statusImgNotStarted: string = require('../../images/goelement/list/status/notstarted.png');
-    private statusImgInProgress: string = require('../../images/goelement/list/status/inprogress.png');
-    private statusImgCompleted: string = require('../../images/goelement/list/status/completed.png');
-
-
     constructor(props: IFilteredReport2ListProps) {
         super(props);
-
         props.columns.forEach((c) => { c.onColumnClick = this._onColumnClick; });
         this.state = {
             Columns: props.columns,
             FilteredItems: props.items,
         };
-
-
     }
 
     public render(): JSX.Element {
         const { props, state } = this;
         return (
             <Fabric>
-
-                <div className={classNames.controlWrapper}>
-
-
+                <div className={toolbarStyle.controlWrapper}>
                     {(props.createPdfDisabled === false) &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Edit' }}
-                            className={classNames.cmdBtn}
+                            className={toolbarStyle.cmdBtn}
                             text="Create PDF"
                             onClick={(ev) => props.onCreatePdf(this.state.FilteredItems)}
                         />}
@@ -119,7 +56,7 @@ export class FilteredReport2List extends React.Component<IFilteredReport2ListPro
                     {(props.deletePdfDisabled === false) &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Delete' }}
-                            className={classNames.cmdBtn}
+                            className={toolbarStyle.cmdBtn}
                             text="Delete PDF"
                             onClick={props.onDeletePdf}
                         />}
@@ -127,33 +64,20 @@ export class FilteredReport2List extends React.Component<IFilteredReport2ListPro
                     {(props.downloadPdfDisabled === false) &&
                         <CommandBarButton
                             iconProps={{ iconName: 'View' }}
-                            className={classNames.cmdBtn}
+                            className={toolbarStyle.cmdBtn}
                             text="Download PDF"
                             onClick={props.onDownloadPdf}
                         />}
-
-
-
-
-
-                    <span style={controlStyles2}>
-
-
-
+                    <span style={searchBoxStyle}>
                         <SearchBox
                             placeholder="Filter items"
                             value={props.filterText ? props.filterText : ''}
                             onChange={props.onFilterChange}
-                        //className={styles.listFilterBox}
-                        //style={controlStyles2}
                         />
                     </span>
-
                 </div>
 
-
                 <DetailsList
-                    //className="noHScroll"
                     setKey={"state.FilteredItems"}
                     selectionMode={SelectionMode.multiple}
                     selection={props.selection}
@@ -161,7 +85,6 @@ export class FilteredReport2List extends React.Component<IFilteredReport2ListPro
                     items={state.FilteredItems}
                     onRenderItemColumn={this.renderItemColumn}
                     selectionPreservedOnEmptyClick={true}
-
                 />
             </Fabric>
         );
@@ -171,10 +94,7 @@ export class FilteredReport2List extends React.Component<IFilteredReport2ListPro
 
     public componentDidMount(): void {
         this.setState({ FilteredItems: SearchObjectService.filterEntities(this.props.items, this.props.filterText) });
-
-
     }
-
     public componentDidUpdate(prevProps: IFilteredReport2ListProps): void {
 
         if (prevProps.columns !== this.props.columns) {
@@ -185,7 +105,6 @@ export class FilteredReport2List extends React.Component<IFilteredReport2ListPro
 
             this.setState({ FilteredItems: SearchObjectService.filterEntities(this.props.items, this.props.filterText) });
         }
-
     }
 
     //#endregion
@@ -193,11 +112,8 @@ export class FilteredReport2List extends React.Component<IFilteredReport2ListPro
     //#region Form infrastructure
 
     private renderItemColumn = (item: IEntity, index: number, column: IColumn) => {
-
         let fieldContent = item[column.fieldName as keyof IEntity] as string;
-
         return <span>{fieldContent}</span>;
-
     }
 
     private _onColumnClick = (ev: React.MouseEvent<HTMLElement>, column: IColumn): void => {

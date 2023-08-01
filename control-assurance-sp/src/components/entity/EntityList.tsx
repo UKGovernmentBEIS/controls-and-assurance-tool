@@ -14,15 +14,12 @@ export interface IEntityListProps extends IBaseListProps {
     childEntityNameApi: string;
     childEntityNamePlural: string;
     childEntityNameSingular: string;
-
     entityReadAllExpandAll?: boolean;
     entityReadAllWithArg1?: any;
     entityReadAllWithArg2?: any;
     columns: IGenColumn[];
     displayIDColumn?: boolean;
     idColumnWidth?: number;
-
-
 }
 
 export interface IEntityListState extends types.ICrListState<types.IEntity> { }
@@ -40,19 +37,9 @@ export default class EntityList extends BaseList<IEntityListProps, IEntityListSt
     }
 
     public makeItem = (e: IEntity): any => {
-
-        //let item = { key: e["ID"], Name: e["Title"] };
-        //let item = { key: e["ID"], ...e };
         let item = { key: e["ID"] };
-        //Group: ud.Group && ud.Group.Title
-
-        //console.log(e);
-        //console.log(e["DefForm"]["Title"]);
-
         let listColumns = this.props.columns.filter(c => c.columnDisplayType != ColumnDisplayType.FormOnly);
         listColumns.map((c) => {
-            //this.props.columns.map((c) => {
-
             if (c.isParent === true) {
 
                 if (c.columnType === ColumnType.DatePicker) {
@@ -71,22 +58,13 @@ export default class EntityList extends BaseList<IEntityListProps, IEntityListSt
                     }
 
                 }
-                else{
+                else {
 
                     item = {
-                        //key: e["ID"],
-                        //[c.fieldName]: e[c.fieldName],
-                        //[c.fieldName]: e["DefForm"]["Title"],
-                        //[c.fieldName]: e[c.parentEntityName][c.parentColumnName],
                         [c.fieldName]: (e[c.parentEntityName]) ? e[c.parentEntityName][c.parentColumnName] : null,
                         ...item
-                        //...e
                     };
-    
-                    //console.log(item);
                 }
-
-
             }
             else {
                 if (c.columnType === ColumnType.Checkbox) {
@@ -113,32 +91,19 @@ export default class EntityList extends BaseList<IEntityListProps, IEntityListSt
                 }
                 else {
                     item = {
-                        //key: e["ID"],
                         [c.fieldName]: String(e[c.fieldName]),
                         ...item
-                        //[c.fieldName]: e["DefForm"]["Title"],
-                        //[c.fieldName]: e[c.parentEntityName][c.parentColumnName],
-                        //...e
                     };
                 }
-
             }
-
-
-
         });
-        //console.log(item);
 
         return item;
     }
     public renderList() {
 
         const items: IObjectWithKey[] = this.state.Entities.map((e) => { return this.makeItem(e); });
-        //let listColumns = this.props.columns
-        /* TasMay19 Remove columns that we do not need to show */
         let listColumns = this.props.columns.filter(c => c.columnDisplayType != ColumnDisplayType.FormOnly);
-
-
         if (this.props.displayIDColumn === true)
             listColumns = [{ key: '-1', columnType: ColumnType.TextBox, name: 'ID', fieldName: 'key', minWidth: this.props.idColumnWidth ? this.props.idColumnWidth : 30, maxWidth: this.props.idColumnWidth ? this.props.idColumnWidth : 30, isResizable: true }, ...this.props.columns];
 
@@ -148,24 +113,23 @@ export default class EntityList extends BaseList<IEntityListProps, IEntityListSt
     public renderForm() {
 
         return (<EntityForm {...this.props} showForm={this.state.ShowForm} entityName={this.EntityName.Singular} entityId={this.state.SelectedEntity} onSaved={this.entitySaved} onCancelled={this.closePanel} />);
-        //return (null);
     }
 
     protected loadEntities_all = (): void => {
         this.setState({ Loading: true });
         let read: any;
 
-        if (this.props.entityReadAllWithArg1){
-            if(this.props.entityReadAllWithArg2){
+        if (this.props.entityReadAllWithArg1) {
+            if (this.props.entityReadAllWithArg2) {
                 //2 arguments present, so pass 2
                 read = this.entityService.readAllWithArgs(this.props.entityReadAllWithArg1, this.props.entityReadAllWithArg2);
-            }                
-            else{
+            }
+            else {
                 //only pass aug1
                 read = this.entityService.readAllWithArgs(this.props.entityReadAllWithArg1);
-            }                
+            }
         }
-            
+
         else if (this.props.entityReadAllExpandAll === true)
             read = this.entityService.readAllExpandAll();
         else
@@ -185,8 +149,6 @@ export default class EntityList extends BaseList<IEntityListProps, IEntityListSt
         let qryString: string;
 
         const skip: number = this.props.pageSize * (this.state.CurrentPage - 1); //default CurrentPage value is 1, so if page size 10, then 10 * (1-1) = 0
-
-        //qryString = `?$orderby=ID&$top=${this.props.pageSize}&$skip=${skip}`;
         qryString = `?$top=${this.props.pageSize}&$skip=${skip}`;
 
         if (this.props.entityReadAllExpandAll === true)
@@ -218,14 +180,12 @@ export default class EntityList extends BaseList<IEntityListProps, IEntityListSt
     }
 
     public componentDidUpdate(prevProps: IEntityListProps): void {
-        //console.log("in component DidUpdate GEN", this.props.entityReadAllWithArg1);
         if (prevProps.entityReadAllWithArg1 !== this.props.entityReadAllWithArg1 || prevProps.entityReadAllWithArg2 !== this.props.entityReadAllWithArg2) {
             this.loadEntities();
         }
 
-        if(prevProps.entityService !== this.props.entityService){
+        if (prevProps.entityService !== this.props.entityService) {
             this.entityService = this.props.entityService;
-            //console.log('componentDidUpdate', this.props.entityService);
             this.EntityName = { Plural: this.props.entityNamePlural, Singular: this.props.entityNameSingular };
             this.ChildEntityName = { Api: this.props.childEntityNameApi, Plural: this.props.childEntityNamePlural, Singular: this.props.childEntityNameSingular };
             this.loadEntities();

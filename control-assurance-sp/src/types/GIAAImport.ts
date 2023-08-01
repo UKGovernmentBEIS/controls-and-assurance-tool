@@ -1,6 +1,5 @@
 import { IEntity } from "./Entity";
 
-
 export interface IGIAAImport  extends IEntity {
 
     XMLContents?: string;
@@ -9,17 +8,14 @@ export interface IGIAAImport  extends IEntity {
     LastImportStatus?: string;
     LastImportDate?: Date;
     LastImportById?: number;
-    
 }
 
 export interface IGIAAImportInfo extends IEntity {
-
     Status?: string;
     LogDetails?: string;
     LastImportStatus?: string;
     LastImportDate?: string;
     LastImportBy?: string;
-    
 }
 
 export class GIAAImport implements IGIAAImport{ 
@@ -31,5 +27,4 @@ export class GIAAImport implements IGIAAImport{
     public LastImportStatus?: string = null;
     public LastImportDate?: Date = null;
     public LastImportById?: number = null;
-
 }

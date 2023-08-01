@@ -2,8 +2,6 @@ import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { EntityService } from './EntityService';
 import { IDataAPI, IEntity, INAOPublication, INAOPublicationInfo } from '../types';
 
-
-
 export class NAOPublicationService extends EntityService<IEntity> {
     public readonly parentEntities = [];
     protected childrenEntities = [];
@@ -13,7 +11,6 @@ export class NAOPublicationService extends EntityService<IEntity> {
     }
 
     public readWithExpandDirectorates(ID: number): Promise<INAOPublication> {
-        //const qry:string = `?$expand=GIAAActionOwners($expand=User)`;
 
         let entitiesToExpand: string[] = [];
         entitiesToExpand.push("NAOPublicationDirectorates($expand=Directorate)");
@@ -36,9 +33,4 @@ export class NAOPublicationService extends EntityService<IEntity> {
             return result;
         });
     }
-
-
-
-
-
 }

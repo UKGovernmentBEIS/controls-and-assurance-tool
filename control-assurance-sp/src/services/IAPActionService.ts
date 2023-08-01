@@ -2,8 +2,6 @@ import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { EntityService } from './EntityService';
 import { IDataAPI, IEntity, IIAPAction } from '../types';
 
-
-
 export class IAPActionService extends EntityService<IEntity> {
     public readonly parentEntities = [];
     protected childrenEntities = [];
@@ -21,15 +19,10 @@ export class IAPActionService extends EntityService<IEntity> {
     }
 
     public readWithExpandAssignments(ID: number): Promise<IIAPAction> {
-        //const qry:string = `?$expand=IAPAssignments($expand=User)`;
 
         let entitiesToExpand: string[] = [];
         entitiesToExpand.push("IAPAssignments");
         entitiesToExpand.push("IAPActionDirectorates");
-
-        //no need to expand further
-        //entitiesToExpand.push("IAPAssignments($expand=User)");
-        //entitiesToExpand.push("IAPActionDirectorates($expand=Directorate)");
 
         return this.read(ID, false, false, entitiesToExpand).then((e: IIAPAction): IIAPAction => {
             return e;
@@ -41,11 +34,4 @@ export class IAPActionService extends EntityService<IEntity> {
             return result;
         });
     }
-
-
-
-
-
-
-
 }

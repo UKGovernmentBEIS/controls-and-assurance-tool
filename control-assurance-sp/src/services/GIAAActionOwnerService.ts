@@ -1,9 +1,6 @@
 import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { EntityService } from './EntityService';
-import { IDataAPI, IEntity, GIAAActionOwner } from '../types';
-import { baseElementEvents } from 'office-ui-fabric-react/lib/Utilities';
-
-
+import { IDataAPI, GIAAActionOwner } from '../types';
 
 export class GIAAActionOwnerService extends EntityService<GIAAActionOwner> {
     public readonly parentEntities = [];
@@ -12,10 +9,4 @@ export class GIAAActionOwnerService extends EntityService<GIAAActionOwner> {
     constructor(spfxContext: WebPartContext, api: IDataAPI) {
         super(spfxContext, api, `/GIAAActionOwners`);
     }
-
-    // public create(entity: IAPAssignment): Promise<IAPAssignment> {
-    //     console.log('IAPAssignmentService.create', entity);
-    //     return super.create(entity);
-    // }
-
 }

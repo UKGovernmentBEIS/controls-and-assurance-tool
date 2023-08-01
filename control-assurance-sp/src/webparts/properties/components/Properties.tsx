@@ -55,7 +55,6 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
   public renderWebPart(): React.ReactElement<types.IWebPartComponentProps> {
 
     return (
-
       <Pivot onLinkClick={this.clearErrors}>
         <PivotItem headerText="Periods">
           {this.renderCustomPeriodsList()}
@@ -72,13 +71,9 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         <PivotItem headerText="Define Help">
           {this.renderDefineHelp()}
         </PivotItem>
-        {/* <PivotItem headerText="Logs">
-          {this.renderLogsList()}
-        </PivotItem> */}
       </Pivot>
     );
   }
-
 
   private renderCustomPeriodsList() {
 
@@ -92,7 +87,6 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isResizable: true,
         isRequired: true,
         fieldMaxLength: 50,
-
       },
       {
         key: '2',
@@ -141,7 +135,6 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
           childEntityNamePlural=""
           childEntityNameSingular=""
         />
-
       </React.Fragment>
     );
   }
@@ -186,7 +179,6 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
           childEntityNamePlural=""
           childEntityNameSingular=""
         />
-
       </React.Fragment>
     );
   }
@@ -280,8 +272,6 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         fieldMaxLength: 1000,
         numRows: 4
       }
-
-
     ];
 
     const { LookupData: lookups } = this.state;
@@ -296,7 +286,6 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
           onChanged={(v) => this.changePeriodsDropdown_DefForms(v)}
           selectedKey={this.state.SelectedPeriodDefForms}
         />
-
         <EntityList
           entityReadAllWithArg1={this.state.SelectedPeriodDefForms}
           allowAdd={this.allowAdd_DefForms()}
@@ -311,18 +300,10 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
           childEntityNameSingular="Define Element Group"
         />
       </React.Fragment>
-
-
-
-
-
     );
   }
 
-  /* Tas15May Let user define the element section headings and questions */
   private renderDefElementGroups() {
-
-
     const listColumns: IGenColumn[] = [
       {
         key: 'DefElementGroupPeriod',
@@ -377,11 +358,7 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isResizable: true,
         isRequired: false,
         fieldMaxLength: 10
-
       }
-
-
-
     ];
 
     const { LookupData: lookups } = this.state;
@@ -411,15 +388,10 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
           childEntityNameSingular="Define Element"
         />
       </React.Fragment>
-
-
     );
   }
 
-  /* Tas15May Let user define the element section headings and questions */
   private renderDefElements() {
-
-
     const listColumns: IGenColumn[] = [
       {
         key: 'DefElementPeriod',
@@ -475,9 +447,7 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isResizable: true,
         isRequired: false,
         fieldMaxLength: 10
-
       },
-
       {
         key: '3',
         columnType: ColumnType.TextBox,
@@ -488,9 +458,7 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isResizable: true,
         isRequired: false,
         fieldMaxLength: 1000
-
       },
-
       {
         key: '4',
         columnType: ColumnType.TagPicker,
@@ -506,10 +474,7 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isResizable: true,
         isRequired: false,
         fieldMaxLength: 10
-
       },
-
-
       {
         key: '5',
         columnType: ColumnType.TextBox,
@@ -521,7 +486,6 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isRequired: false,
         fieldMaxLength: 1000,
         numRows: 2
-
       },
       {
         key: 'SectionAQ1ResponseDetails',
@@ -534,7 +498,6 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isRequired: false,
         fieldMaxLength: 1000,
         numRows: 2
-
       },
       {
         key: '6',
@@ -551,27 +514,7 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isResizable: true,
         isRequired: false,
         fieldMaxLength: 1000
-
       },
-
-      /*
-           {
-             key: '4',
-             columnType: ColumnType.TagPickerForUser,
-             name: 'Director',
-             fieldName: 'UserTitle',
-             idFieldName: 'DirectorUserID',
-             isParent: true,
-             parentEntityName: 'User',
-             parentColumnName: 'Username',
-             parentService: new services.UserService(this.props.spfxContext, this.props.api),
-             minWidth: 100,
-             maxWidth: 300,
-             isResizable: true,
-             isRequired: true
-           },
-           */
-
       {
         key: '7',
         columnType: ColumnType.TextBox,
@@ -583,9 +526,7 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isRequired: false,
         fieldMaxLength: 1000,
         numRows: 2
-
       },
-
       {
         key: 'SectionAQ2ResponseDetails',
         columnType: ColumnType.TextBox,
@@ -597,9 +538,7 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isRequired: false,
         fieldMaxLength: 1000,
         numRows: 2
-
       },
-
       {
         key: '8',
         columnType: ColumnType.TagPicker,
@@ -615,10 +554,7 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isResizable: true,
         isRequired: false,
         fieldMaxLength: 1000
-
       },
-
-
       {
         key: '9',
         columnType: ColumnType.TextBox,
@@ -630,9 +566,7 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isRequired: false,
         fieldMaxLength: 1000,
         numRows: 2
-
       },
-
       {
         key: 'SectionAQ3ResponseDetails',
         columnType: ColumnType.TextBox,
@@ -644,9 +578,7 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isRequired: false,
         fieldMaxLength: 1000,
         numRows: 2
-
       },
-
       {
         key: '10',
         columnType: ColumnType.TagPicker,
@@ -662,9 +594,7 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isResizable: true,
         isRequired: false,
         fieldMaxLength: 1000
-
       },
-
       {
         key: '11',
         columnType: ColumnType.TextBox,
@@ -676,9 +606,7 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isRequired: false,
         fieldMaxLength: 1000,
         numRows: 2
-
       },
-
       {
         key: 'SectionAQ4ResponseDetails',
         columnType: ColumnType.TextBox,
@@ -690,7 +618,6 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isRequired: false,
         fieldMaxLength: 1000,
         numRows: 2
-
       },
       {
         key: '12',
@@ -707,10 +634,7 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isResizable: true,
         isRequired: false,
         fieldMaxLength: 1000
-
       },
-
-
       {
         key: '13',
         columnType: ColumnType.TextBox,
@@ -722,7 +646,6 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isRequired: false,
         fieldMaxLength: 1000,
         numRows: 2
-
       },
       {
         key: 'SectionAQ5ResponseDetails',
@@ -735,7 +658,6 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isRequired: false,
         fieldMaxLength: 1000,
         numRows: 2
-
       },
       {
         key: '14',
@@ -752,10 +674,7 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isResizable: true,
         isRequired: false,
         fieldMaxLength: 1000
-
       },
-
-
       {
         key: '15',
         columnType: ColumnType.TextBox,
@@ -767,7 +686,6 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isRequired: false,
         fieldMaxLength: 1000,
         numRows: 2
-
       },
       {
         key: 'SectionAQ6ResponseDetails',
@@ -780,7 +698,6 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isRequired: false,
         fieldMaxLength: 1000,
         numRows: 2
-
       },
       {
         key: '16',
@@ -793,15 +710,11 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         parentEntityName: 'UserHelp',
         parentColumnName: 'Title',
         parentService: new services.UserHelpService(this.props.spfxContext, this.props.api),
-
         minWidth: 300,
         isResizable: true,
         isRequired: false,
         fieldMaxLength: 1000
-
       },
-
-
       {
         key: '17',
         columnType: ColumnType.TextBox,
@@ -813,7 +726,6 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isRequired: false,
         fieldMaxLength: 1000,
         numRows: 2
-
       },
       {
         key: 'SectionAQ7ResponseDetails',
@@ -826,7 +738,6 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isRequired: false,
         fieldMaxLength: 1000,
         numRows: 2
-
       },
       {
         key: '18',
@@ -843,10 +754,7 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isResizable: true,
         isRequired: false,
         fieldMaxLength: 1000
-
       },
-
-
       {
         key: '19',
         columnType: ColumnType.TextBox,
@@ -858,7 +766,6 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isRequired: false,
         fieldMaxLength: 1000,
         numRows: 2
-
       },
       {
         key: 'SectionAQ8ResponseDetails',
@@ -871,7 +778,6 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isRequired: false,
         fieldMaxLength: 1000,
         numRows: 2
-
       },
       {
         key: '20',
@@ -888,10 +794,7 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isResizable: true,
         isRequired: false,
         fieldMaxLength: 1000
-
       },
-
-
       {
         key: '21',
         columnType: ColumnType.TextBox,
@@ -903,7 +806,6 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isRequired: false,
         fieldMaxLength: 1000,
         numRows: 2
-
       },
       {
         key: 'SectionAQ9ResponseDetails',
@@ -916,7 +818,6 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isRequired: false,
         fieldMaxLength: 1000,
         numRows: 2
-
       },
       {
         key: '22',
@@ -933,10 +834,7 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isResizable: true,
         isRequired: false,
         fieldMaxLength: 1000
-
       },
-
-
       {
         key: '23',
         columnType: ColumnType.TextBox,
@@ -948,7 +846,6 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isRequired: false,
         fieldMaxLength: 1000,
         numRows: 2
-
       },
       {
         key: 'SectionAQ10ResponseDetails',
@@ -961,7 +858,6 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isRequired: false,
         fieldMaxLength: 1000,
         numRows: 2
-
       },
       {
         key: '24',
@@ -978,10 +874,7 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isResizable: true,
         isRequired: false,
         fieldMaxLength: 1000
-
       },
-
-
       {
         key: '25',
         columnType: ColumnType.TextBox,
@@ -993,7 +886,6 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isRequired: false,
         fieldMaxLength: 1000,
         numRows: 2
-
       },
       {
         key: '26',
@@ -1011,7 +903,6 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isRequired: false,
         fieldMaxLength: 1000
       },
-
       {
         key: '27',
         columnType: ColumnType.TextBox,
@@ -1023,9 +914,7 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isRequired: false,
         fieldMaxLength: 1000,
         numRows: 2
-
       },
-
       {
         key: '28',
         columnType: ColumnType.TextBox,
@@ -1037,7 +926,6 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isRequired: false,
         fieldMaxLength: 1000,
         numRows: 2
-
       },
       {
         key: '29',
@@ -1066,7 +954,6 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isRequired: false,
         fieldMaxLength: 1000,
         numRows: 2
-
       },
 
       {
@@ -1079,9 +966,7 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isResizable: true,
         isRequired: false,
         fieldMaxLength: 1000
-
       },
-
       {
         key: '32',
         columnType: ColumnType.TagPicker,
@@ -1097,9 +982,7 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isResizable: true,
         isRequired: false,
         fieldMaxLength: 10
-
       },
-
       {
         key: '33',
         columnType: ColumnType.TextBox,
@@ -1110,9 +993,7 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isResizable: true,
         isRequired: false,
         fieldMaxLength: 1000
-
       },
-
       {
         key: '34',
         columnType: ColumnType.TagPicker,
@@ -1128,9 +1009,7 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isResizable: true,
         isRequired: false,
         fieldMaxLength: 10
-
       },
-
       {
         key: '35',
         columnType: ColumnType.TextBox,
@@ -1141,9 +1020,7 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isResizable: true,
         isRequired: false,
         fieldMaxLength: 1000
-
       },
-
       {
         key: '36',
         columnType: ColumnType.TextBox,
@@ -1154,10 +1031,7 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isResizable: true,
         isRequired: false,
         fieldMaxLength: 1000
-
       },
-
-
       {
         key: '37',
         columnType: ColumnType.TextBox,
@@ -1168,9 +1042,7 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isResizable: true,
         isRequired: false,
         fieldMaxLength: 1000
-
       },
-
       {
         key: '38',
         columnType: ColumnType.TagPicker,
@@ -1186,9 +1058,7 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isResizable: true,
         isRequired: false,
         fieldMaxLength: 10
-
       },
-
       {
         key: '39',
         columnType: ColumnType.TextBox,
@@ -1199,9 +1069,7 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isResizable: true,
         isRequired: false,
         fieldMaxLength: 1000
-
       },
-
       {
         key: '40',
         columnType: ColumnType.TextBox,
@@ -1212,9 +1080,7 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isResizable: true,
         isRequired: false,
         fieldMaxLength: 1000
-
       },
-
       {
         key: '41',
         columnType: ColumnType.TextBox,
@@ -1225,9 +1091,7 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isResizable: true,
         isRequired: false,
         fieldMaxLength: 1000
-
       },
-
       {
         key: '42',
         columnType: ColumnType.TagPicker,
@@ -1243,9 +1107,7 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isResizable: true,
         isRequired: false,
         fieldMaxLength: 10
-
       },
-
       {
         key: '43',
         columnType: ColumnType.TextBox,
@@ -1256,9 +1118,7 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isResizable: true,
         isRequired: false,
         fieldMaxLength: 1000
-
       },
-
       {
         key: '44',
         columnType: ColumnType.TextBox,
@@ -1269,31 +1129,10 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isResizable: true,
         isRequired: false,
         fieldMaxLength: 1000
-
       }
-
-      /*
-      {
-        key: '4',
-        columnType: ColumnType.TagPickerForUser,
-        name: 'Director',
-        fieldName: 'UserTitle',
-        idFieldName: 'DirectorUserID',
-        isParent: true,
-        parentEntityName: 'User',
-        parentColumnName: 'Username',
-        parentService: new services.UserService(this.props.spfxContext, this.props.api),
-        minWidth: 100,
-        maxWidth: 300,
-        isResizable: true,
-        isRequired: true
-      },
-      */
-
     ];
 
     const { LookupData: lookups } = this.state;
-
     return (
       <React.Fragment>
         <CrDropdown
@@ -1316,143 +1155,9 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
           childEntityNamePlural="Elements"
           childEntityNameSingular="Element"
         />
-
-      </React.Fragment>
-
-
-    );
-  }
-
-
-
-
-
-  private renderLogsList() {
-
-    const listColumns: IGenColumn[] = [
-      {
-        key: '1',
-        columnType: ColumnType.TextBox,
-        name: 'Category',
-        fieldName: 'Module',
-        minWidth: 80,
-        maxWidth: 80,
-        isMultiline: true,
-        isResizable: true,
-        isRequired: true,
-        fieldMaxLength: 50
-      },
-      {
-        key: '2',
-        columnType: ColumnType.TextBox,
-        name: 'Title',
-        fieldName: 'Title',
-        minWidth: 120,
-        maxWidth: 120,
-        isMultiline: true,
-        isResizable: true,
-        isRequired: true,
-        fieldMaxLength: 50
-      },
-
-      {
-        key: '4',
-        columnType: ColumnType.TagPickerForUser,
-        name: 'Display Name',
-        fieldName: 'UserTitle',
-        idFieldName: 'UserId',
-        isParent: true,
-        parentEntityName: 'User',
-        parentColumnName: 'Title',
-        parentService: new services.UserService(this.props.spfxContext, this.props.api),
-        minWidth: 100,
-        maxWidth: 100,
-        isMultiline: true,
-        isResizable: true,
-        isRequired: true
-      },
-      {
-        key: '5',
-        columnType: ColumnType.DropDown,
-        name: 'Period',
-        fieldName: 'PeriodTitle',
-        idFieldName: 'PeriodId',
-        isParent: true,
-        parentEntityName: 'Period',
-        parentColumnName: 'Title',
-        parentService: new services.PeriodService(this.props.spfxContext, this.props.api),
-        minWidth: 120,
-        maxWidth: 120,
-        isMultiline: true,
-        isResizable: true,
-        isRequired: true
-      },
-      {
-        key: '6',
-        columnType: ColumnType.DropDown,
-        name: 'Division',
-        fieldName: 'TeamTitle',
-        idFieldName: 'TeamId',
-        isParent: true,
-        parentEntityName: 'Team',
-        parentColumnName: 'Title',
-        parentService: new services.TeamService(this.props.spfxContext, this.props.api),
-        minWidth: 120,
-        maxWidth: 160,
-        isMultiline: true,
-        isResizable: true,
-        isRequired: true
-      },
-      {
-        key: '7',
-        columnType: ColumnType.TextBox,
-        name: 'Date',
-        fieldName: 'LogDate',
-        minWidth: 140,
-        maxWidth: 140,
-        isMultiline: true,
-        isResizable: true,
-        isRequired: true,
-        fieldMaxLength: 50
-      },
-      {
-        key: '3',
-        columnType: ColumnType.TextBox,
-        //columnDisplayType: ColumnDisplayType.FormOnly,
-        name: 'Details',
-        fieldName: 'Details',
-        minWidth: 160,
-        maxWidth: 460,
-        isResizable: true,
-        isMultiline: true,
-        isRequired: true,
-        fieldMaxLength: 5000,
-        numRows: 5
-      }
-    ];
-
-    return (
-      <React.Fragment>
-        <EntityList
-          pageSize={100}
-          allowAdd={false}
-          columns={listColumns}
-          entityReadAllExpandAll={true}
-          {...this.props}
-          onError={this.onError}
-          entityService={new services.LogService(this.props.spfxContext, this.props.api)}
-          entityNamePlural="Logs"
-          entityNameSingular="Log"
-          childEntityNameApi=""
-          childEntityNamePlural=""
-          childEntityNameSingular=""
-        />
-
       </React.Fragment>
     );
   }
-
-
 
   //#endregion Render
 
@@ -1461,10 +1166,9 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
 
 
   private superUserPermission(): boolean {
-
     //super user/SysManager check
     let ups: IUserPermission[] = this.state.UserPermissions;
-    
+
     for (let i = 0; i < ups.length; i++) {
       let up: IUserPermission = ups[i];
       if (up.PermissionTypeId == 1 || up.PermissionTypeId == 5) {
@@ -1472,7 +1176,6 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         return true;
       }
     }
-
     return false;
   }
 
@@ -1509,33 +1212,38 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
   //#region Load Data
 
   private loadPeriods = (): Promise<IPeriod[]> => {
-    return this.periodService.readAll().then((pArr: IPeriod[]): IPeriod[] => {
-      //get the current period
-      let currentPeriodId: number = 0;
-      const currentPeriod = pArr.filter(p => p.PeriodStatus === "Current Period");
-      if (currentPeriod && currentPeriod.length > 0) {
-        currentPeriodId = currentPeriod[0].ID;
-      }
+    return this.periodService.readAll()
+      .then((pArr: IPeriod[]): IPeriod[] => {
+        //get the current period
+        let currentPeriodId: number = 0;
+        const currentPeriod = pArr.filter(p => p.PeriodStatus === "Current Period");
+        if (currentPeriod && currentPeriod.length > 0) {
+          currentPeriodId = currentPeriod[0].ID;
+        }
 
-      //show status like Qtr 2 2019 ( Current Period ) in Title
-      for (let i = 0; i < pArr.length; i++) {
-        let p: IPeriod = pArr[i];
-        pArr[i].Title = `${p.Title} ( ${p.PeriodStatus} )`;
-      }
+        //show status like Qtr 2 2019 ( Current Period ) in Title
+        for (let i = 0; i < pArr.length; i++) {
+          let p: IPeriod = pArr[i];
+          pArr[i].Title = `${p.Title} ( ${p.PeriodStatus} )`;
+        }
 
+        this.setState({
+          LookupData: this.cloneObject(this.state.LookupData, 'Periods', pArr),
+          SelectedPeriodDefForms: currentPeriodId,
+          SelectedPeriodDefElementGroups: currentPeriodId,
+          SelectedPeriodDefElements: currentPeriodId
+        });
 
-      this.setState({
-        LookupData: this.cloneObject(this.state.LookupData, 'Periods', pArr),
-        SelectedPeriodDefForms: currentPeriodId,
-        SelectedPeriodDefElementGroups: currentPeriodId,
-        SelectedPeriodDefElements: currentPeriodId
+        return pArr;
+      })
+      .catch((err) => {
+        if (this.onError) this.onError(`Error loading Periods lookup data`, err.message);
+        return null;
       });
-      return pArr;
-    }, (err) => { if (this.onError) this.onError(`Error loading Periods lookup data`, err.message); });
   }
 
-  protected loadLookups(): Promise<any> {
 
+  protected loadLookups(): Promise<any> {
     return Promise.all([
       this.loadPeriods(),
     ]);
@@ -1554,16 +1262,13 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isArchivedPeriod = true;
       }
     }
-
     this.setState({
       SelectedPeriodDefForms: option.key,
       IsArchivedPeriodDefForms: isArchivedPeriod
     });
-
   }
 
   protected changePeriodsDropdown_DefElementGroups = (option: IDropdownOption): void => {
-
     const pArrTemp: IPeriod[] = this.state.LookupData.Periods.filter(p => p.ID === option.key);
     let isArchivedPeriod: boolean = false;
     if (pArrTemp.length > 0) {
@@ -1571,7 +1276,6 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isArchivedPeriod = true;
       }
     }
-
     this.setState({
       SelectedPeriodDefElementGroups: option.key,
       IsArchivedPeriodDefElementGroups: isArchivedPeriod
@@ -1580,7 +1284,6 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
   }
 
   protected changePeriodsDropdown_DefElements = (option: IDropdownOption): void => {
-
     const pArrTemp: IPeriod[] = this.state.LookupData.Periods.filter(p => p.ID === option.key);
     let isArchivedPeriod: boolean = false;
     if (pArrTemp.length > 0) {
@@ -1588,12 +1291,10 @@ export default class Properties extends BaseUserContextWebPartComponent<types.IW
         isArchivedPeriod = true;
       }
     }
-
     this.setState({
       SelectedPeriodDefElements: option.key,
       IsArchivedPeriodDefElements: isArchivedPeriod
     });
-
   }
 
   //#endregion Event Handlers

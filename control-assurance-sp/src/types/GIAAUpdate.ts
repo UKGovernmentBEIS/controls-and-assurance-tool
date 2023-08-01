@@ -1,9 +1,7 @@
 import { GIAAUpdateTypes } from "./AppGlobals";
 import { IEntity } from "./Entity";
 
-
 export interface IGIAAUpdate  extends IEntity {
-
     UpdateType?: string;
     UpdateDetails?: string;
     RevisedDate?: Date;
@@ -20,14 +18,11 @@ export interface IGIAAUpdate  extends IEntity {
     RequestDateChange?:boolean;
     RequestDateChangeTo?: Date;
     MarkAllReqClosed?:boolean;
-    
-
 }
 
 export class GIAAUpdate implements IGIAAUpdate{ 
     public ID: number = 0;
     public Title: string = null;    
-
     public UpdateType?: string = null;
     public UpdateDetails?: string = null;
     public RevisedDate?: Date = null;
@@ -53,6 +48,4 @@ export class GIAAUpdate implements IGIAAUpdate{
             this.MarkAllReqClosed = true; //default checked
         }
     }
-
-
 }

@@ -1,44 +1,23 @@
 import * as React from 'react';
 import { IEntityFormProps, IAutomationOption } from '../../types';
-import * as services from '../../services';
 import styles from '../../styles/cr.module.scss';
-import { FormButtons } from '../cr/FormButtons';
 import { UpdateHeader2 } from '../cr/UpdateHeader2';
 import AutoOption from './AutoOption';
 
-import { CrTextField } from '../cr/CrTextField';
-import { CrChoiceGroup, IChoiceGroupOption } from '../cr/CrChoiceGroup';
-import { CrCheckbox } from '../cr/CrCheckbox';
-
-
-import { Panel, PanelType } from 'office-ui-fabric-react/lib/Panel';
-import { ConfirmDialog } from '../cr/ConfirmDialog';
-import { MessageDialog } from '../cr/MessageDialog';
-
-
 export interface ISectionProps extends IEntityFormProps {
-
     moduleName: string;
     automaticOptions: IAutomationOption[];
-    disabled:boolean;
+    disabled: boolean;
 }
 
 export class SectionState {
-
     public Loading: boolean = false;
     public Section_IsOpen: boolean = false;
-
-
     constructor() {
-
     }
-
-
 }
 
 export default class Section extends React.Component<ISectionProps, SectionState> {
-
-
 
     constructor(props: ISectionProps, state: SectionState) {
         super(props);
@@ -48,7 +27,6 @@ export default class Section extends React.Component<ISectionProps, SectionState
     public render(): React.ReactElement<ISectionProps> {
 
         const ShowForm = this.state.Section_IsOpen;
-
         return (
             <div className={styles.cr}>
                 <UpdateHeader2 title={this.props.moduleName} isOpen={ShowForm}
@@ -62,18 +40,13 @@ export default class Section extends React.Component<ISectionProps, SectionState
 
                     {this.renderOptions()}
                     <br /><br />
-
                 </div>}
-
-
-
             </div>
         );
     }
     private renderOptions() {
 
         const options = this.props.automaticOptions.filter(x => x.Module === this.props.moduleName);
-
         return (
             <div>
                 {options.map((opt, i) =>
@@ -91,39 +64,11 @@ export default class Section extends React.Component<ISectionProps, SectionState
                 {...this.props}
             />
         );
-
     }
-
-
-    //#region Form initialisation
-
-    public componentDidMount(): void {
-
-    }
-
-    public componentDidUpdate(prevProps: ISectionProps): void {
-
-    }
-
-
-
-
-    //#endregion
-
-
-
-    //#region Validations
 
     protected validateEntityUpdate = (): boolean => {
         return true;
     }
-
-
-
-    //#endregion
-
-    //#region Form infrastructure
-
 
     private handleSection_toggleOpen = (): void => {
         this.setState({ Section_IsOpen: !this.state.Section_IsOpen });
@@ -134,15 +79,4 @@ export default class Section extends React.Component<ISectionProps, SectionState
             return { ...obj, [changeProp]: changeValue };
         return { ...obj };
     }
-
-    // protected toggleProgressUpdateForm = (): void => {
-    //     this.setState({ ShowForm: !this.state.ShowForm });
-    // }
-
-
-
-    //#endregion
-
-
-
 }

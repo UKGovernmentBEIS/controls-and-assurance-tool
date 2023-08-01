@@ -1,8 +1,6 @@
 import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { EntityService } from './EntityService';
-import { IDataAPI, IDefForm, IDirectorateGroup } from '../types';
-
-
+import { IDataAPI, IDirectorateGroup } from '../types';
 
 export class DirectorateGroupService extends EntityService<IDirectorateGroup> {
     public readonly parentEntities = [];

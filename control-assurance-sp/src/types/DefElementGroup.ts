@@ -1,6 +1,5 @@
 import { IDefForm } from "./DefForm";
 
-
 export interface IDefElementGroup {
     ID: number;
     Title: string;

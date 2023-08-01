@@ -1,9 +1,7 @@
 import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { EntityService } from './EntityService';
-import { IDataAPI, IDefForm } from '../types';
+import { IDataAPI } from '../types';
 import { IUser } from '../types/User';
-
-
 
 export class UserService extends EntityService<IUser> {
     public readonly parentEntities = [];
@@ -20,13 +18,11 @@ export class UserService extends EntityService<IUser> {
         });
     }
 
-    //6Nov19 Start - Add
     public firstRequestToAPI(): Promise<string> {
-        return super.readString(`?firstRequest=&checkDb=&checkCurrentUser`).then((result:string): string => {
+        return super.readString(`?firstRequest=&checkDb=&checkCurrentUser`).then((result: string): string => {
             return result;
         });
     }
-    //6Nov19 End
 
     public readAll_CL_SuperUsers_Viewers(): Promise<IUser[]> {
         return this.readAll(`?$filter=UserPermissions/any(userPermission: userPermission/PermissionTypeId in(1,13,14))&$select=ID,Username`);

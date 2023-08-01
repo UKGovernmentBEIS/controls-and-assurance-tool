@@ -36,6 +36,13 @@ export class CrMultiDropdownWithText extends React.Component<ICrMultiDropdownWit
         };
     }
 
+    // public static getDerivedStateFromProps(nextProps, prevState) {
+    //     if (nextProps.selectedItems !== prevState.SelectedItems) {
+    //       return { SelectedItems: nextProps.selectedItems };
+    //     }
+    //     return null;
+    //   }
+
     public componentWillReceiveProps(nextProps) {
         if (nextProps.selectedItems)
             this.setState({ SelectedItems: nextProps.selectedItems });
@@ -47,9 +54,9 @@ export class CrMultiDropdownWithText extends React.Component<ICrMultiDropdownWit
                 <Dropdown label={this.props.label} multiSelect options={this.props.options}
                     selectedKeys={this.state.SelectedItems.map((i) => { return i.Key; })}
                     onChanged={this._onDropdownChange} />
-                {this.state.SelectedItems.map((d) => {
+                {this.state.SelectedItems.map((d, index) => {
                     const option = this.props.options.filter((o) => { return o.key === d.Key; })[0];
-                    return <CrTextField label={option && option.text} maxLength={this.props.textMaxLength} value={d && d.Text} onChanged={(v) => this._onTextFieldChanged(v, d.Key)} />;
+                    return <CrTextField key={`multitxt_txt_${index}`} label={option && option.text} maxLength={this.props.textMaxLength} value={d && d.Text} onChanged={(ev, newValue) => this._onTextFieldChanged(newValue, d.Key)} />;
                 })}
             </div>
         );

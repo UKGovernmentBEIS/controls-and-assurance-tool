@@ -1,15 +1,11 @@
 import * as React from 'react';
 import * as types from '../../types';
 import * as services from '../../services';
-import RecommendationsList from './RecommendationsList';
 import { CrTextField } from '../cr/CrTextField';
 import { CrChoiceGroup, IChoiceGroupOption } from '../cr/CrChoiceGroup';
 import { CrDropdown, IDropdownOption } from '../cr/CrDropdown';
-import { CrCheckbox } from '../cr/CrCheckbox';
-import { FormButtons } from '../cr/FormButtons';
 import { MessageDialog } from '../cr/MessageDialog';
 import { DefaultButton, PrimaryButton } from 'office-ui-fabric-react/lib/Button';
-import { Panel, PanelType } from 'office-ui-fabric-react/lib/Panel';
 import styles from '../../styles/cr.module.scss';
 import { IEntity, ILinkLocalType, INAOUpdate, IUser, NAOUpdate } from '../../types';
 import { IGenColumn, ColumnType, ColumnDisplayType } from '../../types/GenColumn';
@@ -18,22 +14,12 @@ import { CrEntityPicker } from '../cr/CrEntityPicker';
 import EvidenceList from './EV/EvidenceList';
 import '../../styles/CustomFabric.scss';
 
-
-
 export interface IPeriodUpdateTabProps extends types.IBaseComponentProps {
-
     filteredItems: any[];
     naoRecommendationId: any;
     naoPeriodId: any;
-    //onSavedAndClose?: () => void;
-    //parentTitle: string;
     onShowList: () => void;
     isViewOnly: boolean;
-
-    //onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
-
-    //superUserPermission:boolean;
-    //assigneePermission:boolean;
 }
 
 export interface ILookupData {
@@ -43,14 +29,10 @@ export interface ILookupData {
 }
 
 export class LookupData implements ILookupData {
-
     public NAOUpdateStatusTypes: IEntity[] = [];
     public NAORecStatusTypes: IEntity[] = [];
     public Users = null;
-
 }
-
-
 
 export interface IPeriodUpdateTabState {
     Loading: boolean;
@@ -63,15 +45,6 @@ export interface IPeriodUpdateTabState {
     HideNextButton: boolean;
     ArrLinks: ILinkLocalType[];
     LastPeriodActions: string;
-    //FormData: IGoElement;
-
-    //IncompleteOnly: boolean;
-    //JustMine: boolean;
-    //ListFilterText: string;
-
-    // SelectedId: number;
-    // SelectedTitle: string;
-    // FilteredItems: any[];
 }
 
 export class PeriodUpdateTabState implements IPeriodUpdateTabState {
@@ -85,21 +58,9 @@ export class PeriodUpdateTabState implements IPeriodUpdateTabState {
     public HideNextButton: boolean = false;
     public ArrLinks: ILinkLocalType[] = [];
     public LastPeriodActions: string = "";
-
     constructor(naoPeriodId: number, naoRecommendationId: number) {
         this.FormData = new NAOUpdate(naoPeriodId, naoRecommendationId);
-
     }
-
-    //public FormData: IGoElement;
-
-    //public IncompleteOnly = false;
-    //public JustMine = false;
-    //public ListFilterText: string = null;
-
-    // public SelectedId: number = 0;
-    // public SelectedTitle: string = null;
-    // public FilteredItems = [];
 }
 
 export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabProps, IPeriodUpdateTabState> {
@@ -113,12 +74,9 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
         super(props);
         console.log("Rec Id", props.naoRecommendationId, "PeriodId", props.naoPeriodId);
         this.state = new PeriodUpdateTabState(props.naoPeriodId, props.naoRecommendationId);
-
     }
 
     public render(): React.ReactElement<IPeriodUpdateTabProps> {
-
-
 
         return (
             <React.Fragment>
@@ -131,9 +89,7 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
                 {this.renderFeedbacksList()}
                 {this.renderHistoricUpdatesList()}
                 {this.renderChangeLogs()}
-
                 <MessageDialog hidden={this.state.HideNoNextMessage} title="Information" content="This is the last record in your list." handleOk={() => { this.setState({ HideNoNextMessage: true }); }} />
-
             </React.Fragment>
         );
     }
@@ -142,7 +98,6 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
         return (
             <React.Fragment>
                 <h1 style={{ fontFamily: 'Calibri', fontSize: '36px' }}>Period Update</h1>
-
             </React.Fragment>
         );
     }
@@ -154,10 +109,8 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
         const periodStartDate = new Date(String(recInfo["NAOPeriod"]["PeriodStartDate"]));
         const periodEndDate = new Date(String(recInfo["NAOPeriod"]["PeriodEndDate"]));
         const periodTitle: string = recInfo["NAOPeriod"]["Title"];
-
         const periodStartDateStr: string = services.DateService.dateToUkDate(periodStartDate);
         const periodEndDateStr: string = services.DateService.dateToUkDate(periodEndDate);
-
         let recDetails: string = recInfo["NAORecommendation"]["RecommendationDetails"];
         if (recDetails !== null)
             recDetails = recDetails.split('\n').join('<br/>');
@@ -169,34 +122,27 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
             conclusion = conclusion.split('\n').join('<br/>');
         else
             conclusion = "";
-
         return (
 
             <React.Fragment>
-
                 <div style={{ marginBottom: '20px', marginTop: '50px' }} className={styles.sectionATitle}>Recommendation Details</div>
-
                 <div style={{ width: '98%', marginTop: '10px', marginLeft: 'auto', marginRight: 'auto', paddingRight: '5px', overflowX: 'hidden' }}>
-
                     <table cellSpacing="0" cellPadding="10" style={{ width: '100%' }}>
-
                         <tbody>
                             <tr>
                                 <td style={{ width: '150px', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
                                     Update Period
-                            </td>
+                                </td>
                                 <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)' }}>
                                     {`${periodTitle} ( ${periodStartDateStr} to ${periodEndDateStr} )`}
                                 </td>
                                 <td style={{ width: '150px', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
                                     Rec Ref
-                            </td>
+                                </td>
                                 <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
                                     {recInfo["NAORecommendation"]["Title"]}
                                 </td>
-
                             </tr>
-
                             <tr>
                                 <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
                                     Report Conclusion
@@ -204,23 +150,16 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
                                 <td colSpan={3} style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
                                     <div dangerouslySetInnerHTML={{ __html: conclusion }} ></div>
                                 </td>
-
                             </tr>
-
                             <tr>
                                 <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
                                     Recommendation
-                            </td>
+                                </td>
                                 <td colSpan={3} style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
                                     <div dangerouslySetInnerHTML={{ __html: recDetails }} ></div>
                                 </td>
-
                             </tr>
-
-
                         </tbody>
-
-
                     </table>
                 </div>
 
@@ -230,14 +169,10 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
 
     private renderPeriodUpdateDetails() {
         const fd = this.state.FormData;
-
-
         return (
             <div>
                 <div style={{ marginBottom: '20px', marginTop: '50px' }} className={styles.sectionATitle}>Period Update Details</div>
-
                 <div style={{ width: '98%', marginTop: '10px', marginLeft: 'auto', marginRight: 'auto', paddingRight: '5px' }}>
-
                     <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>
                         We wish to provide an update for this period
                     </div>
@@ -262,7 +197,7 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
 
                             <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>
                                 Proposed Recommendation Status
-                    </div>
+                            </div>
                             <CrDropdown
                                 style={{ width: '350px' }}
                                 placeholder="Select an Option"
@@ -270,23 +205,18 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
                                 options={this.state.LookupData.NAORecStatusTypes.map((p) => { return { key: p.ID, text: p.Title }; })}
                                 selectedKey={fd.NAORecStatusTypeId}
                                 onChanged={(v) => this.changeDropdown(v, "NAORecStatusTypeId")}
-
                             />
 
                             <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>
                                 Target Date
-                    </div>
+                            </div>
                             <div style={{ width: '350px' }}>
-
                                 <CrTextField
                                     className={styles.formField}
-                                    onChanged={(v) => this.changeTextField(v, "TargetDate")}
+                                    onChanged={(ev, newValue) => this.changeTextField(newValue, "TargetDate")}
                                     value={fd.TargetDate}
-
                                 />
                             </div>
-
-
 
                             <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>
                                 Actions Taken (Please mention by whom if not BEIS)
@@ -298,7 +228,7 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
                                 rows={6}
                                 maxLength={6000}
                                 charCounter={true}
-                                onChanged={(v) => this.changeTextField(v, "ActionsTaken")}
+                                onChanged={(ev, newValue) => this.changeTextField(newValue, "ActionsTaken")}
                                 value={fd.ActionsTaken}
 
                             />
@@ -309,52 +239,26 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
                                 {this.state.LastPeriodActions}
                             </div>
 
-
-
-
-                            {/* <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>
-                                Further links in format label: link ( eg: Treasury Minuites: http://bit.ly/23jgds )
-                            </div>
-
-                            <CrTextField
-                                className={styles.formField}
-                                onChanged={(v) => this.changeTextField(v, "FurtherLinks")}
-                                value={fd.FurtherLinks}
-
-                            /> */}
-
                             {this.renderLinks()}
                             {this.renderApprovalSection()}
 
                             <div style={{ marginBottom: '5px' }}>
                                 <span style={{ fontWeight: 'bold' }}>Update Status:&nbsp;</span><span>{fd.LastSavedInfo}</span>
                             </div>
-
                         </div>
                     }
 
-
-
                 </div>
-
-
-
-
-
             </div>
         );
     }
 
     public renderLinks() {
-
-
         return (
             <div>
-
                 <div style={{ display: 'flex' }}>
                     <div style={{ width: '40%', paddingRight: '5px', fontWeight: 'bold' }}>
                         <span>Link Text (ie. Treasury Minutes)</span>
-
                     </div>
                     <div style={{ width: '40%', paddingRight: '5px', fontWeight: 'bold' }}>
                         <span>Link URL (ie. http://bit.ly/hdydg)</span>
@@ -362,11 +266,8 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
                     </div>
                     <div style={{ width: '20%', paddingLeft: '2px', fontWeight: 'bold' }}>
                         <span>Add to Publication</span>
-
                     </div>
-
                 </div>
-
 
                 {this.state.ArrLinks.map((c, i) =>
                     this.renderLink(c, i)
@@ -383,21 +284,18 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
     private renderLink(item: ILinkLocalType, index: number) {
 
         return (
-
             <div key={`div_renderLink_${index}`} style={{ display: 'flex', marginTop: '5px' }}>
                 <div key={`divCol1_renderLink_${index}`} style={{ width: '40%', paddingRight: '5px' }}>
                     <CrTextField key={`div_TextField1_${index}`} value={item.Description}
-                        onChanged={(v) => this.changeTextField_Link(v, index, "Description")}
+                        onChanged={(ev, newValue) => this.changeTextField_Link(newValue, index, "Description")}
                     />
-
                 </div>
 
                 <div key={`divCol2_renderLink_${index}`} style={{ width: '40%', paddingRight: '5px' }}>
 
                     <CrTextField key={`div_TextField2_${index}`} value={item.URL}
-                        onChanged={(v) => this.changeTextField_Link(v, index, "URL")}
+                        onChanged={(ev, newValue) => this.changeTextField_Link(newValue, index, "URL")}
                     />
-
                 </div>
 
                 <div key={`divCol3_renderLink_${index}`} style={{ width: '20%', paddingLeft: '2px' }}>
@@ -419,9 +317,7 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
                     />
 
                 </div>
-
             </div>
-
         );
     }
 
@@ -445,33 +341,22 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
                 <div style={{ display: 'flex' }}>
                     <div style={{ width: '50%', paddingRight: '5px', fontWeight: 'bold' }}>
                         <span>Approved By</span>
-
                     </div>
                     <div style={{ width: '50%', fontWeight: 'bold' }}>
                         <span>Position</span>
 
                     </div>
-
-
                 </div>
                 <div style={{ display: 'flex', marginTop: '5px' }}>
                     <div style={{ width: '50%', paddingRight: '5px' }}>
                         <CrEntityPicker
-                            //label="Assigned To"
-                            //className={styles.formField}
                             displayForUser={true}
                             entities={this.state.LookupData.Users}
                             itemLimit={1}
-                            //selectedEntities={users.map((u) => { return u..UserId; })}
                             selectedEntities={this.state.FormData.ApprovedById && [this.state.FormData.ApprovedById]}
                             onChange={(v) => this.changeUserPicker(v, 'ApprovedById')}
-                        //onChange={(v) => this.changeMultiUserPicker(v, 'NAOAssignments', new NAOAssignment(), 'UserId')}
                         />
-
-
-
                     </div>
-
                     <div style={{ width: '50%', }}>
                         <CrDropdown
                             placeholder="Select an Option"
@@ -479,22 +364,15 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
                             selectedKey={this.state.FormData.ApprovedByPosition}
                             onChanged={(v) => this.changeDropdown(v, "ApprovedByPosition")}
                         />
-
                     </div>
-
-
-
-
                 </div>
             </div>
         );
     }
 
     private renderFormButtons() {
-
         return (
             <div>
-
                 {
                     (this.props.isViewOnly === false) &&
                     <React.Fragment>
@@ -510,26 +388,20 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
                             onClick={this.props.onShowList}
                         />
 
-
                     </React.Fragment>
                 }
-
                 {(this.props.isViewOnly === true) &&
                     <div style={{ marginTop: '20px' }}>
                         {(this.state.HideNextButton === false) && <PrimaryButton text="Next" className={styles.formButton} style={{ marginRight: '5px' }}
                             onClick={() => this.showNext()}
                         />}
-
                         <DefaultButton text="Close" className={styles.formButton} style={{ marginRight: '5px' }}
                             onClick={this.props.onShowList}
                         />
                     </div>
                 }
-
             </div>
         );
-
-
     }
 
     private renderListsMainTitle() {
@@ -549,19 +421,14 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
                     <EvidenceList
                         entityReadAllWithArg1={this.state.FormData.ID}
                         isViewOnly={false}
-                        //goElementId={this.state.FormData.ID}
-                        //goElementId={this.state.GoElementId}
                         filterText={this.state.Evidence_ListFilterText}
                         onChangeFilterText={this.handleEvidence_ChangeFilterText}
                         {...this.props}
                         onError={this.props.onError}
-
                     />
                 </div>
-
             </React.Fragment>
         );
-
     }
 
     private renderFeedbacksList() {
@@ -636,9 +503,6 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
                 numRows: 5,
                 headerClassName: styles.bold,
             },
-
-
-
         ];
 
         return (
@@ -664,10 +528,8 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
                 <div style={{ paddingTop: "10px", fontStyle: "italic" }}>
                     This area can be used to leave comments for other users.
                 </div>
-
             </React.Fragment>
         );
-
     }
 
     private renderHistoricUpdatesList() {
@@ -743,20 +605,6 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
                 headerClassName: styles.bold,
             },
 
-            // {
-            //     key: 'NAOComments',
-            //     columnType: ColumnType.TextBox,
-            //     name: 'NAO Comments',
-            //     fieldName: 'NAOComments',
-            //     minWidth: 250,
-            //     isResizable: true,
-            //     isRequired: true,
-            //     fieldMaxLength: 10000,
-            //     isMultiline: true,
-            //     numRows: 5,
-            //     headerClassName: styles.bold,
-            // },
-
             {
                 key: 'TargetDate',
                 columnType: ColumnType.TextBox,
@@ -767,9 +615,6 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
                 isRequired: true,
                 headerClassName: styles.bold,
             },
-
-
-
         ];
 
         return (
@@ -793,11 +638,8 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
                         hideTitleBelowCommandBar={true}
                     />
                 </div>
-
-
             </React.Fragment>
         );
-
     }
 
     private renderChangeLogs() {
@@ -852,7 +694,6 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
         //set single value in state
         const fd = { ...this.state.FormData };
         fd.FurtherLinks = singleStr;
-
         this.setState({ FormData: fd }, () => this.saveDataFinal(showNext));
 
     }
@@ -861,15 +702,7 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
             console.log('in save data');
             if (this.props.onError) this.props.onError(null);
             let f: INAOUpdate = { ...this.state.FormData };
-            //remove all the child and parent entities before sending post/patch
-            //delete f.User; //parent entity
-
-            // this.naoUpdateService.create(f).then(this.props.onSavedAndClose, (err) => {
-            //     if (this.props.onError) this.props.onError(`Error updating item`, err.message);
-            // });
-
             this.naoUpdateService.create(f).then((): void => {
-                //console.log('saved..');
 
                 if (this.props.onError)
                     this.props.onError(null);
@@ -878,31 +711,20 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
                     this.showNext();
                 }
                 else {
-                    //console.log('calling on show list ..');
                     this.props.onShowList();
                 }
-
 
             }, (err) => {
                 if (this.props.onError)
                     this.props.onError(`Error saving update`, err.message);
             });
-
-
         }
     }
 
     private showNext = (): void => {
-
-
         const currentNAORecId: number = Number(this.state.NAORecommendationId);
-        //console.log("filtered items", this.props.filteredItems);
-        //console.log("current GoElementId", currentGoElementID);
         let currentIDFound: boolean = false;
         let nextNAORecID: number = 0;
-
-
-
 
         for (let i = 0; i < this.props.filteredItems.length; i++) {
             let e: any = this.props.filteredItems[i];
@@ -910,7 +732,6 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
 
             if (id === currentNAORecId) {
                 currentIDFound = true;
-                //console.log("if condition", id, currentGoElementID);
                 continue;
 
             }
@@ -934,31 +755,40 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
                 HideNoNextMessage: false,
             });
         }
-
-
     }
 
     private loadNAORecStatusTypes = (): Promise<IEntity[]> => {
-        return this.naoRecStatusTypeService.readAll(`?$orderby=ID`).then((data: IEntity[]): IEntity[] => {
-            this.setState({ LookupData: this.cloneObject(this.state.LookupData, 'NAORecStatusTypes', data) });
-            return data;
-        }, (err) => { if (this.props.onError) this.props.onError(`Error loading NAORecStatusTypes lookup data`, err.message); });
+        return this.naoRecStatusTypeService.readAll(`?$orderby=ID`)
+            .then((data: IEntity[]): IEntity[] => {
+                this.setState({ LookupData: this.cloneObject(this.state.LookupData, 'NAORecStatusTypes', data) });
+                return data;
+            })
+            .catch((err) => {
+                if (this.props.onError) {
+                    this.props.onError(`Error loading NAORecStatusTypes lookup data`, err.message);
+                }
+                return [];
+            });
     }
 
     private loadNAOUpdateStatusTypes = (): Promise<IEntity[]> => {
-        return this.naoUpdateStatusTypeService.readAll(`?$orderby=ID`).then((data: IEntity[]): IEntity[] => {
-            this.setState({ LookupData: this.cloneObject(this.state.LookupData, 'NAOUpdateStatusTypes', data) });
-            return data;
-        }, (err) => { if (this.props.onError) this.props.onError(`Error loading NAOUpdateStatusTypes lookup data`, err.message); });
+        return this.naoUpdateStatusTypeService.readAll(`?$orderby=ID`)
+            .then((data: IEntity[]): IEntity[] => {
+                this.setState({ LookupData: this.cloneObject(this.state.LookupData, 'NAOUpdateStatusTypes', data) });
+                return data;
+            })
+            .catch((err) => {
+                if (this.props.onError) {
+                    this.props.onError(`Error loading NAOUpdateStatusTypes lookup data`, err.message);
+                }
+                return [];
+            });
     }
 
     private loadUpdate = (firstLoad: boolean): void => {
 
         this.naoUpdateService.readByPeriodAndRec(this.state.NAORecommendationId, this.props.naoPeriodId).then((u: INAOUpdate) => {
             console.log('NAOUpdate', u);
-            // if (firstLoad === false) {
-            //     //if we need to send info to parent component after loading next goElement- do it here
-            // }
 
             //check if this is the last record or not in the props.filteredItems
             const lastRecId_FilteredItems: number = Number(this.props.filteredItems[this.props.filteredItems.length - 1]["ID"]);
@@ -967,9 +797,7 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
             if (recId_Current === lastRecId_FilteredItems) {
                 //console.log("This is the last one...");
                 hideNextButton = true;
-
             }
-
 
             /**************************************links************************************************************** */
 
@@ -979,32 +807,20 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
             if (u.FurtherLinks !== null && u.FurtherLinks !== '') {
                 let arr1 = u.FurtherLinks.split('>');
 
-                //console.log('arr1', arr1);
-
                 for (let i = 0; i < arr1.length; i++) {
 
                     let itemStr: string = arr1[i];
-                    //console.log('arr1 Loop itemStr', itemStr);
                     if (itemStr.trim() === '') {
                         continue;
                     }
-                    //console.log('after continue');
                     let arr2 = itemStr.split('<');
-                    //console.log('after arr2 Split', arr2);
                     let item: ILinkLocalType = { Description: '', URL: '' };
                     item.Description = arr2[0];
                     item.URL = arr2[1];
                     item.AddToPublication = 'False'; //always False on data load
-
-                    //console.log('item filled with data', item);
-
                     arrLinks.push(item);
-
-                    //console.log('item pushed to arrLinks', arrLinks);
-
                 }
             }
-
 
             /************************************links end***************************************************************** */
 
@@ -1029,8 +845,6 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
         }, (err) => {
 
         });
-
-
     }
     private loadRecInfo = (): void => {
         if (this.state.FormData.ID > 0) {
@@ -1038,11 +852,9 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
             this.addBlankLinkItem();
             this.naoUpdateService.getRecInfo(this.state.FormData.ID).then((u: INAOUpdate) => {
                 console.log('Rec Info', u);
-
                 this.setState({
                     RecInfo: u
                 });
-
 
             }, (err) => {
                 if (this.props.onError) this.props.onError(`Error loading rec info`, err.message);
@@ -1055,8 +867,6 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
         console.log('in addBlankLinkItem');
         const arrCopy = [...this.state.ArrLinks, { Description: '', URL: '', AddToPublication: 'False' }];
         this.setState({ ArrLinks: arrCopy });
-        //const item: ILinkLocalType = { Description: 'des', URL: 'url' };
-        //arrCopy.push()
     }
 
     private loadUsers = (): void => {
@@ -1073,37 +883,26 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
             this.loadNAOUpdateStatusTypes(),
             this.loadUsers(),
             this.loadUpdate(true),
-
         ]);
     }
 
 
     public componentDidMount(): void {
-        //this.loadUpdates();
         this.setState({ Loading: true, NAORecommendationId: Number(this.props.naoRecommendationId) }, this.callBackFirstLoad
-
         );
     }
     private callBackFirstLoad = (): void => {
         let loadingPromises = [this.loadLookups()];
-
-        // if (this.state.GoElementId > 0) {
-        //     loadingPromises.push(this.loadGoElement(true));
-        // }
         Promise.all(loadingPromises).then(p => this.setState({ Loading: false })).catch(err => this.setState({ Loading: false }));
-
     }
-
 
     //#endregion Data Load/Save
 
 
     //#region Event Handlers
 
-
-
-    private handleEvidence_ChangeFilterText = (value: string): void => {
-        this.setState({ Evidence_ListFilterText: value });
+    private handleEvidence_ChangeFilterText = (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string): void => {
+        this.setState({ Evidence_ListFilterText: newValue });
     }
 
     protected cloneObject(obj, changeProp?, changeValue?) {
@@ -1134,7 +933,6 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
         item.AddToPublication = selectedKey;
 
         this.setState({ ArrLinks: arrCopy });
-
     }
 
     protected changeCheckbox = (value: boolean, f: string): void => {

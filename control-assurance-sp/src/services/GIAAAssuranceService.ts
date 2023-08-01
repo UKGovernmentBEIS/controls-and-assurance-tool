@@ -1,8 +1,6 @@
 import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { EntityService } from './EntityService';
-import { IDataAPI, IEntity, INAOPublicationInfo } from '../types';
-
-
+import { IDataAPI, IEntity } from '../types';
 
 export class GIAAAssuranceService extends EntityService<IEntity> {
     public readonly parentEntities = [];
@@ -11,11 +9,4 @@ export class GIAAAssuranceService extends EntityService<IEntity> {
     constructor(spfxContext: WebPartContext, api: IDataAPI) {
         super(spfxContext, api, `/GIAAAssurances`);
     }
-
-
-
-
-
-
-
 }

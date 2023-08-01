@@ -1,7 +1,6 @@
 import { IIAPActionDirectorate } from ".";
 import { IEntity } from "./Entity";
 
-
 export interface IIAPAction  extends IEntity {
 
     Details?: string;
@@ -40,11 +39,9 @@ export class IAPAction implements IIAPAction{
     public IsArchive?:boolean = false;
     public IAPActionDirectorates = [];
 
-
     constructor(IAPPriorityId: number, IAPStatusTypeId:number, IAPTypeId: number) {
         this.IAPPriorityId = IAPPriorityId;
         this.IAPStatusTypeId = IAPStatusTypeId;
         this.IAPTypeId = IAPTypeId;
     }
-
 }

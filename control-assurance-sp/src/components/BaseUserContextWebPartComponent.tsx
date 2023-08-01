@@ -6,27 +6,16 @@ export default abstract class BaseUserContextWebPartComponent<P extends types.IW
     protected userService: services.UserService = new services.UserService(this.props.spfxContext, this.props.api);
     private giaaDefFormService_bucontext: services.GIAADefFormService = new services.GIAADefFormService(this.props.spfxContext, this.props.api);
 
-
-
-    //6Nov19 Start - Edit componentDidMount
     public componentDidMount(): void {
         this.setState({ Loading: true });
         this.firstRequestToAPI();
-        //let loadingPromises = [this.loadUserPermissions(), this.loadLookups()];
-        //Promise.all(loadingPromises).then(p => this.onAfterLoad()).then(p => this.setState({ Loading: false })).catch(err => this.setState({ Loading: false }));
-
     }
-    //6Nov19 End
-
 
     protected loadLookups(): Promise<any> { return Promise.resolve(); }
-
     protected onAfterLoad = (): void => { };
-
     protected loadUserPermissions = (): Promise<any> => {
-
         return this.userService.readMyPermissions().then((user: types.IUser): void => {
-            console.log('build - 29Jul22 - CL docs phase 1 test');
+            console.log('build - 25Jul2023 - node 12');
             console.log("User Permissions", user);
             this.setState({
                 User: user,
@@ -43,11 +32,8 @@ export default abstract class BaseUserContextWebPartComponent<P extends types.IW
         });
     }
 
-    //6Nov19 Start - Add
     private firstRequestToAPI = (): Promise<any> => {
-
         return this.userService.firstRequestToAPI().then((res: string): void => {
-
             if (res === "ok") {
                 let loadingPromises = [this.loadUserPermissions(), this.loadLookups()];
                 Promise.all(loadingPromises).then(p => this.onAfterLoad()).then(p => this.setState({ Loading: false })).catch(err => this.setState({ Loading: false }));
@@ -55,17 +41,11 @@ export default abstract class BaseUserContextWebPartComponent<P extends types.IW
                 setInterval(() => {
                     //to keep api alive
                     this.giaaDefFormService_bucontext.getTestDateTime().then((x: any) => {
-                        //console.log('after every 5 minutes DateTime Info', x);
-
 
                     }, (err) => {
-
                     });
 
-
-                }, 5*60*1000); //5 minutes
-                
-
+                }, 5 * 60 * 1000); //5 minutes
             }
             else {
                 // error res can be a) user_not_found b) db_connect_error
@@ -76,17 +56,11 @@ export default abstract class BaseUserContextWebPartComponent<P extends types.IW
             console.log('api_connect_error', err);
             this.onFirstAPIRequestError("api_connect_error");
         });
-
-
     }
-    //6Nov19 End
-
 
     protected cloneObject(obj, changeProp?, changeValue?) {
         if (changeProp)
             return { ...obj, [changeProp]: changeValue };
         return { ...obj };
     }
-
-
 }

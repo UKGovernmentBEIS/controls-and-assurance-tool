@@ -2,29 +2,14 @@ import * as React from 'react';
 import { DetailsList, SelectionMode, IColumn, ISelection } from 'office-ui-fabric-react/lib/DetailsList';
 import { SearchObjectService } from '../../../services';
 import { IEntity } from '../../../types';
-import { ElementStatuses, RAGRatings } from '../../../types/AppGlobals';
+import { ElementStatuses, RAGRatings, searchBoxStyle, toolbarStyle } from '../../../types/AppGlobals';
 export { IObjectWithKey, IColumn } from 'office-ui-fabric-react/lib/DetailsList';
 import { CommandBarButton } from 'office-ui-fabric-react/lib/Button';
 import { Fabric } from 'office-ui-fabric-react/lib/Fabric';
-import { mergeStyleSets } from 'office-ui-fabric-react/lib/Styling';
 import { Toggle } from 'office-ui-fabric-react/lib/Toggle';
 import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox';
 import '../../../styles/CustomFabric2.scss';
 
-
-
-const classNames = mergeStyleSets({
-    controlWrapper: {
-        display: 'flex',
-        flexWrap: 'wrap',
-        backgroundColor: "rgb(244,244,244)",
-        padding: "5px 0px 5px 10px",
-        marginBottom: "5px"
-    },
-    cmdBtn: {
-        border: 'none'
-    }
-});
 const controlStyles = {
     root: {
         margin: '5px 10px 0 0', //top, right, bottom, left
@@ -32,41 +17,20 @@ const controlStyles = {
     }
 };
 
-const controlStylesB = {
-    marginLeft: "auto",
-    //display: "inline-block",
-};
-
-const controlStyles2 = {
-    //root: {
-    marginLeft: "auto",
-    display: "inline-block",
-    backgroundColor: "white"
-
-    //}
-};
-
 export interface IFilteredSpecificAreasListProps {
     className?: string;
     columns: IColumn[];
     items: any[];
     filterText?: string;
-
     incompleteOnly: boolean;
     onChangeIncompleteOnly: (value: boolean) => void;
     justMine: boolean;
     onChangeJustMine: (value: boolean) => void;
-    onFilterChange: (value: string) => void;
+    onFilterChange: (event?: React.ChangeEvent<HTMLInputElement>, newValue?: string) => void;
     onItemTitleClick: (ID: number, goElementId: number, title: string, filteredItems: any[]) => void;
-
     selection?: ISelection;
-    //onAdd: () => void;
     onAssign: () => void;
-    //onDelete: () => void;
-
-
     assignDisabled: boolean;
-    //deleteDisabled: boolean;
 }
 
 export interface IFilteredSpecificAreasListState {
@@ -86,12 +50,9 @@ export class FilteredSpecificAreasList extends React.Component<IFilteredSpecific
     private ratingImg8: string = require('../../../images/goelement/list/rating/8.png');
     private ratingImg9: string = require('../../../images/goelement/list/rating/9.png');
     private ratingImg0: string = require('../../../images/goelement/list/rating/0.png');
-
     private statusImgNotStarted: string = require('../../../images/goelement/list/status/notstarted.png');
     private statusImgInProgress: string = require('../../../images/goelement/list/status/inprogress.png');
     private statusImgCompleted: string = require('../../../images/goelement/list/status/completed.png');
-    
-
     constructor(props: IFilteredSpecificAreasListProps) {
         super(props);
 
@@ -100,17 +61,13 @@ export class FilteredSpecificAreasList extends React.Component<IFilteredSpecific
             Columns: props.columns,
             FilteredItems: props.items,
         };
-
-
     }
 
     public render(): JSX.Element {
         const { props, state } = this;
         return (
             <Fabric>
-
-                <div className={classNames.controlWrapper}>
-
+                <div className={toolbarStyle.controlWrapper}>
                     <Toggle
                         onText="Incomplete Only"
                         offText="Incomplete Only"
@@ -130,36 +87,27 @@ export class FilteredSpecificAreasList extends React.Component<IFilteredSpecific
                     {(props.assignDisabled === false) &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Assign' }}
-                            className={classNames.cmdBtn}
+                            className={toolbarStyle.cmdBtn}
                             text="Assign"
                             onClick={props.onAssign}
                         />}
 
-                    <span style={controlStyles2}>
-
-
-
+                    <span style={searchBoxStyle}>
                         <SearchBox
                             placeholder="Filter items"
                             value={props.filterText ? props.filterText : ''}
                             onChange={props.onFilterChange}
-                        //className={styles.listFilterBox}
-                        //style={controlStyles2}
                         />
                     </span>
-
                 </div>
 
-
                 <DetailsList
-                    //className="noHScroll"
                     setKey={"state.FilteredItems"}
                     selectionMode={SelectionMode.single}
                     selection={props.selection}
                     columns={state.Columns}
                     items={state.FilteredItems}
                     onRenderItemColumn={this.renderItemColumn}
-
                 />
             </Fabric>
         );
@@ -169,8 +117,6 @@ export class FilteredSpecificAreasList extends React.Component<IFilteredSpecific
 
     public componentDidMount(): void {
         this.setState({ FilteredItems: SearchObjectService.filterEntities(this.props.items, this.props.filterText) });
-
-
     }
 
     public componentDidUpdate(prevProps: IFilteredSpecificAreasListProps): void {
@@ -195,107 +141,59 @@ export class FilteredSpecificAreasList extends React.Component<IFilteredSpecific
         let fieldContent = item[column.fieldName as keyof IEntity] as string;
 
         if (column.key === "CompletionStatus") {
-
-            //let txtColor: string = "white";
-            //let bgColor: string = "";
-            let statusImg:string = "";
+            let statusImg: string = "";
 
             if (fieldContent === ElementStatuses.ToBeCompleted) {
-                //bgColor = "rgb(230,230,230)";
-                //txtColor = "black";
                 statusImg = this.statusImgNotStarted;
             }
             else if (fieldContent === ElementStatuses.InProgress) {
-                //bgColor = "rgb(255,191,0)";
-                //txtColor = "white";
                 statusImg = this.statusImgInProgress;
             }
-            // else if (fieldContent === ElementStatuses.ReqSignOff) {
-            //     bgColor = "rgb(185,0,185)";
-            //     txtColor = "white";
-            // }
             else if (fieldContent === ElementStatuses.Completed) {
-                //bgColor = "rgb(0,127,0)";
-                //txtColor = "white";
                 statusImg = this.statusImgCompleted;
             }
 
             return (
-                // <span style={{ backgroundColor: bgColor, color: txtColor, width: "140px", display: "block", paddingLeft: "10px", paddingTop: "5px", paddingBottom: "5px" }}>
-                //     {fieldContent}
-                // </span>
                 <img src={statusImg} />
-
             );
         }
 
         else if (column.key === "Rating") {
-            //let txtColor: string = "white";
-            //let bgColor: string = "";
-            //const ragLabel = fieldContent;
-            let ratingImg:string = "";
+            let ratingImg: string = "";
 
             if (fieldContent === RAGRatings.Unsatisfactory) {
-                //bgColor = "rgb(237,31,39)";
-                //txtColor = "white";
                 ratingImg = this.ratingImg1;
             }
             else if (fieldContent === RAGRatings.Limited) {
-                //bgColor = "rgb(255,127,40)";
-                //txtColor = "white";
                 ratingImg = this.ratingImg2;
             }
             else if (fieldContent === RAGRatings.Moderate) {
-                //bgColor = "rgb(242,231,1)";
-                //txtColor = "black";
                 ratingImg = this.ratingImg3;
             }
             else if (fieldContent === RAGRatings.Substantial) {
-                //bgColor = "rgb(30,148,66)";
-                //txtColor = "white";
                 ratingImg = this.ratingImg4;
             }
             else if (fieldContent === RAGRatings.Red) {
-                //bgColor = "rgb(237,31,39)";
-                //txtColor = "white";
                 ratingImg = this.ratingImg5;
             }
             else if (fieldContent === RAGRatings.RedAmber) {
-                //bgColor = "rgb(255,127,40)";
-                //txtColor = "white";
                 ratingImg = this.ratingImg6;
             }
             else if (fieldContent === RAGRatings.Amber) {
-                //bgColor = "rgb(242,231,1)";
-                //txtColor = "black";
                 ratingImg = this.ratingImg7;
             }
             else if (fieldContent === RAGRatings.AmberGreen) {
-                //bgColor = "rgb(30,148,66)";
-                //txtColor = "white";
                 ratingImg = this.ratingImg8;
             }
             else if (fieldContent === RAGRatings.Green) {
-                //bgColor = "rgb(30,148,66)";
-                //txtColor = "white";
                 ratingImg = this.ratingImg9;
             }
             else {
                 //no data
-                //bgColor = "rgb(230,230,230)";
-                //txtColor = "black";
                 ratingImg = this.ratingImg0;
             }
             return (
-                // <span style={{ backgroundColor: bgColor, color: txtColor, width: "140px", display: "block", paddingLeft: "10px", paddingTop: "5px", paddingBottom: "5px" }}>
-                //     {ragLabel}
-                // </span>
-
-                // <span style={{ backgroundImage: `url('${this.redIcon}')`, backgroundRepeat:'no-repeat', color: txtColor, width: "140px", display: "block", paddingLeft: "10px", paddingTop: "5px", paddingBottom: "5px" }}>
-                //     {ragLabel}
-                // </span>
                 <img src={ratingImg} />
-
             );
         }
         else if (column.key === "Title") {
@@ -304,15 +202,11 @@ export class FilteredSpecificAreasList extends React.Component<IFilteredSpecific
             const goElementId: number = item["GoElementId"];
             return (
                 <span><a className="titleLnk" onClick={(ev) => this.props.onItemTitleClick(id, goElementId, fieldContent, this.state.FilteredItems)} > {fieldContent}</a> </span>
-                // <span>{fieldContent}</span>
             );
-
         }
         else {
             return <span>{fieldContent}</span>;
         }
-
-
     }
 
     private _onColumnClick = (ev: React.MouseEvent<HTMLElement>, column: IColumn): void => {
@@ -357,7 +251,6 @@ export class FilteredSpecificAreasList extends React.Component<IFilteredSpecific
             return ((descending) ? (comparison * -1) : comparison);
         });
     }
-
 
     //#endregion
 }

@@ -32,7 +32,6 @@ export class GoElement implements IGoElement{
     public GoDefElement?: IGoDefElement = null;
 
     public GoAssignments = [];
-
     constructor(goFormId: number, goDefElementId: number) {
         this.GoFormId = goFormId;
         this.GoDefElementId = goDefElementId;

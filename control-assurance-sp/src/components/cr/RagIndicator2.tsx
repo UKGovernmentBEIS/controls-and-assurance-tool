@@ -38,7 +38,7 @@ export class RagIndicator2 extends React.Component<IRagIndicator2Props, {}> {
                         <TooltipHost content={this.props.label || 'Blue'} overflowMode={TooltipOverflowMode.Parent}>{this.props.label || 'Blue'}</TooltipHost>
                     </div>}
                 {this.props.rag === -2 &&
-                    <div style={{width:'60px'}} className={`ms-font-m ${styles.indicator} ${styles.gray2}`}>
+                    <div style={{ width: '60px' }} className={`ms-font-m ${styles.indicator} ${styles.gray2}`}>
                         <TooltipHost content={this.props.label} overflowMode={TooltipOverflowMode.Parent}>{this.props.label || 'Blue'}</TooltipHost>
                     </div>}
                 {this.props.rag === null &&

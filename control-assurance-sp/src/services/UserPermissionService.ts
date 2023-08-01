@@ -2,9 +2,6 @@ import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { EntityService } from './EntityService';
 import { IUserPermission, IDataAPI } from '../types';
 
-
-
-
 export class UserPermissionService extends EntityService<IUserPermission> {
     public readonly parentEntities = [];
     protected childrenEntities = [];

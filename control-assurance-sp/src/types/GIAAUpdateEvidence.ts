@@ -1,5 +1,4 @@
 import { IEntity } from "./Entity";
-import { User } from "./User";
 
 export interface IGIAAUpdateEvidence  extends IEntity {
     IsLink?:boolean;
@@ -8,8 +7,6 @@ export interface IGIAAUpdateEvidence  extends IEntity {
     GIAAUpdateId?: number; 
     DateUploaded?: Date;
     UploadedByUserId?: number;
-    //User?: User;
-
 }
 
 export class GIAAUpdateEvidence implements IGIAAUpdateEvidence{ 
@@ -23,7 +20,5 @@ export class GIAAUpdateEvidence implements IGIAAUpdateEvidence{
 
     constructor(giaaUpdateId: number) {
         this.GIAAUpdateId = giaaUpdateId;
-    }
-
-    //public User?: User = null; 
+    } 
 }

@@ -14,7 +14,7 @@ export interface ICrTextFieldProps {
     multiline?: boolean;
     rows?: number;
     maxLength?: number;
-    onChanged?: (value: string) => void;
+    onChanged?: (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => void;
     onBlur?: (ev:any) => void;
     history?: string;
     charCounter?: boolean;
@@ -84,7 +84,7 @@ export class CrTextField extends React.Component<ICrTextFieldProps, {}> {
             rows={this.props.rows}
             maxLength={this.props.maxLength}
             value={val}
-            onChanged={this.props.onChanged}
+            onChange={this.props.onChanged}
             onBlur={this.props.onBlur}
             suffix={this.props.suffix}
             readOnly={this.props.readOnly}
@@ -126,7 +126,7 @@ export class CrTextField extends React.Component<ICrTextFieldProps, {}> {
             maxLength={this.props.maxLength}
             value={vv}
             onBlur={this.props.onBlur}
-            onChanged={this.props.onChanged}
+            onChange={this.props.onChanged}
             suffix={this.props.suffix}
             maskChar=""
             mask={maskVal}
@@ -171,7 +171,7 @@ export class CrTextField extends React.Component<ICrTextFieldProps, {}> {
                     maxLength={this.props.maxLength}
                     value={vv}
                 
-                    onChanged={this.props.onChanged}
+                    onChange={this.props.onChanged}
                     suffix={this.props.suffix}
                     maskChar=""
                     mask={maskVal}
@@ -193,7 +193,7 @@ export class CrTextField extends React.Component<ICrTextFieldProps, {}> {
                 maxLength={this.props.maxLength}
                 value=""
             
-                onChanged={this.props.onChanged}
+                onChange={this.props.onChanged}
                 suffix={this.props.suffix}
                 maskChar=""
                 mask={maskVal}

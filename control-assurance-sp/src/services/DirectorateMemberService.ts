@@ -2,8 +2,6 @@ import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { EntityService } from './EntityService';
 import { IDataAPI, IDirectorateMember } from '../types';
 
-
-
 export class DirectorateMemberService extends EntityService<IDirectorateMember> {
     public readonly parentEntities = [];
     protected childrenEntities = [];

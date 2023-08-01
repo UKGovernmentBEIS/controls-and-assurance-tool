@@ -2,81 +2,34 @@ import * as React from 'react';
 import { DetailsList, SelectionMode, IColumn, ISelection } from 'office-ui-fabric-react/lib/DetailsList';
 import { SearchObjectService } from '../../services';
 import { IEntity } from '../../types';
-import { ElementStatuses, RAGRatings } from '../../types/AppGlobals';
+import { toolbarStyle, searchBoxStyle } from '../../types/AppGlobals';
 export { IObjectWithKey, IColumn } from 'office-ui-fabric-react/lib/DetailsList';
 import { CommandBarButton } from 'office-ui-fabric-react/lib/Button';
 import { Fabric } from 'office-ui-fabric-react/lib/Fabric';
-import { mergeStyleSets } from 'office-ui-fabric-react/lib/Styling';
-import { Toggle } from 'office-ui-fabric-react/lib/Toggle';
 import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox';
 import '../../styles/CustomFabric2.scss';
-
-
-
-const classNames = mergeStyleSets({
-    controlWrapper: {
-        display: 'flex',
-        flexWrap: 'wrap',
-        backgroundColor: "rgb(244,244,244)",
-        padding: "5px 0px 5px 10px",
-        marginBottom: "5px"
-    },
-    cmdBtn: {
-        border: 'none'
-    }
-});
-const controlStyles = {
-    root: {
-        margin: '5px 10px 0 0', //top, right, bottom, left
-        maxWidth: '301px',
-    }
-};
-
-const controlStylesB = {
-    marginLeft: "auto",
-    //display: "inline-block",
-};
-
-const controlStyles2 = {
-    //root: {
-    marginLeft: "auto",
-    display: "inline-block",
-    backgroundColor: "white"
-
-    //}
-};
-
-
 
 export interface IFilteredMainListProps {
     className?: string;
     columns: IColumn[];
     items: any[];
     filterText?: string;
-    onFilterChange: (value: string) => void;
-
+    onFilterChange: (event?: React.ChangeEvent<HTMLInputElement>, newValue?: string) => void;
     onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
-
     selection?: ISelection;
-
     onAdd: () => void;
     onDelete: () => void;
     onArchive: () => void;
-
     editDisabled: boolean;
     deleteDisabled: boolean;
-
     createPermission: boolean;
     deletePermission: boolean;
     archivedPermission: boolean;
-
     caseType: string;
     moveToLeavingPermission?: boolean;
     createExtensionPermission?: boolean;
     onMoveToLeaving: () => void;
     onCreateExtension: () => void;
-
-
 }
 
 export interface IFilteredMainListState {
@@ -85,32 +38,24 @@ export interface IFilteredMainListState {
 }
 
 export class FilteredMainList extends React.Component<IFilteredMainListProps, IFilteredMainListState> {
-
-
     constructor(props: IFilteredMainListProps) {
         super(props);
-
         props.columns.forEach((c) => { c.onColumnClick = this._onColumnClick; });
         this.state = {
             Columns: props.columns,
             FilteredItems: props.items,
         };
-
-
     }
 
     public render(): JSX.Element {
         const { props, state } = this;
         return (
             <Fabric>
-
-                <div className={classNames.controlWrapper}>
-
-
+                <div className={toolbarStyle.controlWrapper}>
                     {props.caseType === "BusinessCases" && props.createPermission && props.editDisabled && props.deleteDisabled &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Add' }}
-                            className={classNames.cmdBtn}
+                            className={toolbarStyle.cmdBtn}
                             text="New Case"
                             onClick={props.onAdd}
                         />}
@@ -118,18 +63,15 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
                     {props.caseType === "BusinessCases" && props.deletePermission && (props.editDisabled === false) &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Delete' }}
-                            className={classNames.cmdBtn}
+                            className={toolbarStyle.cmdBtn}
                             text="Delete"
                             onClick={props.onDelete}
                         />}
 
-
-
-
                     {props.caseType === "Engaged" && props.moveToLeavingPermission && (props.editDisabled === false) &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Leave' }}
-                            className={classNames.cmdBtn}
+                            className={toolbarStyle.cmdBtn}
                             text="Move to Leaving"
                             onClick={props.onMoveToLeaving}
                         />}
@@ -137,7 +79,7 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
                     {props.caseType === "Engaged" && props.createExtensionPermission && (props.editDisabled === false) &&
                         <CommandBarButton
                             iconProps={{ iconName: 'AddTo' }}
-                            className={classNames.cmdBtn}
+                            className={toolbarStyle.cmdBtn}
                             text="Create Extension"
                             onClick={props.onCreateExtension}
                         />}
@@ -145,36 +87,27 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
                     {(props.caseType === "BusinessCases" || props.caseType === "Engaged") && props.archivedPermission && (props.editDisabled === false) &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Archive' }}
-                            className={classNames.cmdBtn}
+                            className={toolbarStyle.cmdBtn}
                             text="Archive"
                             onClick={props.onArchive}
                         />}
 
-                    <span style={controlStyles2}>
-
-
-
+                    <span style={searchBoxStyle}>
                         <SearchBox
                             placeholder="Filter items"
                             value={props.filterText ? props.filterText : ''}
                             onChange={props.onFilterChange}
-                        //className={styles.listFilterBox}
-                        //style={controlStyles2}
                         />
                     </span>
-
                 </div>
 
-
                 <DetailsList
-                    //className="noHScroll"
                     setKey={"state.FilteredItems"}
                     selectionMode={SelectionMode.single}
                     selection={props.selection}
                     columns={state.Columns}
                     items={state.FilteredItems}
                     onRenderItemColumn={this.renderItemColumn}
-
                 />
             </Fabric>
         );
@@ -184,8 +117,6 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
 
     public componentDidMount(): void {
         this.setState({ FilteredItems: SearchObjectService.filterEntities(this.props.items, this.props.filterText) });
-
-
     }
 
     public componentDidUpdate(prevProps: IFilteredMainListProps): void {
@@ -198,7 +129,6 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
 
             this.setState({ FilteredItems: SearchObjectService.filterEntities(this.props.items, this.props.filterText) });
         }
-
     }
 
     //#endregion
@@ -208,33 +138,23 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
     private renderItemColumn = (item: IEntity, index: number, column: IColumn) => {
 
         let fieldContent = item[column.fieldName as keyof IEntity] as string;
-
-
         if (column.key === "CaseRef") {
-
             const id: number = item["ID"];
-
             return (
                 <span><a className="titleLnk" onClick={(ev) => this.props.onItemTitleClick(id, fieldContent, this.state.FilteredItems)} > {fieldContent}</a> </span>
-                // <span>{fieldContent}</span>
             );
-
         }
         else if (column.key === "Title1") {
 
             const title2: string = item["Title2"];
 
             return (
-
                 <span>{fieldContent}<br />{title2}</span>
             );
         }
         else if (column.key === "StageActions1") {
-
             const stageActions2: string = item["StageActions2"];
-
             return (
-
                 <span>{fieldContent}
                     {stageActions2.length > 0 &&
                         <React.Fragment>
@@ -248,8 +168,6 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
         else {
             return <span>{fieldContent}</span>;
         }
-
-
     }
 
     private _onColumnClick = (ev: React.MouseEvent<HTMLElement>, column: IColumn): void => {
@@ -282,9 +200,8 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
                 return 0;
             }
 
-            const varA = (typeof a[sortBy] === 'string') ? a[sortBy].toLowerCase() : a[sortBy];
-            const varB = (typeof b[sortBy] === 'string') ? b[sortBy].toLowerCase() : b[sortBy];
-
+            let varA = (typeof a[sortBy] === 'string') ? a[sortBy].toLowerCase() : a[sortBy];
+            let varB = (typeof b[sortBy] === 'string') ? b[sortBy].toLowerCase() : b[sortBy];
             let comparison = 0;
             if (varA > varB) {
                 comparison = 1;
@@ -295,6 +212,7 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
         });
     }
 
-
     //#endregion
 }
+
+

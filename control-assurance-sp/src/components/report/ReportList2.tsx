@@ -2,17 +2,13 @@ import * as React from 'react';
 import { DetailsList, SelectionMode, IColumn, ISelection, IDetailsHeaderProps } from 'office-ui-fabric-react/lib/DetailsList';
 import { SearchObjectService } from '../../services';
 import { IEntity } from '../../types';
-import { DetailsHeader } from 'office-ui-fabric-react/lib/components/DetailsList/DetailsHeader';
-import { ITooltipHostProps, TooltipHost } from "office-ui-fabric-react/lib/Tooltip";
 export { Selection, IObjectWithKey, IColumn } from 'office-ui-fabric-react/lib/DetailsList';
 import { Fabric } from 'office-ui-fabric-react/lib/Fabric';
 import { mergeStyleSets } from 'office-ui-fabric-react/lib/Styling';
 import { Toggle } from 'office-ui-fabric-react/lib/Toggle';
 import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox';
 import { RagRatingBar } from '../cr/RagRatingBar';
-import { Checkbox } from 'office-ui-fabric-react/lib/Checkbox';
 import '../../styles/CustomFabric2.scss';
-
 
 const classNames = mergeStyleSets({
     controlWrapper: {
@@ -31,12 +27,9 @@ const controlStyles = {
 };
 
 const controlStyles2 = {
-    //root: {
     marginLeft: "auto",
     display: "inline-block",
     backgroundColor: "white"
-
-    //}
 };
 
 export interface IReportListProps {
@@ -44,14 +37,9 @@ export interface IReportListProps {
     columns: IColumn[];
     items: any[];
     filterText?: string;
-
-
     stackedBar: boolean;
     onChangeStackedBar: (value: boolean) => void;
-
-
-    onFilterChange: (value: string) => void;
-
+    onFilterChange: (event?: React.ChangeEvent<HTMLInputElement>, newValue?: string) => void;
     onItemTitleClick: (value: string, entityNamePlural: string) => void;
     entityNamePlural: string;
 }
@@ -63,24 +51,17 @@ export interface IReportListState {
 
 export class ReportList2 extends React.Component<IReportListProps, IReportListState> {
 
-    private color1:string = "rgb(34,177,76)";
-    private color1Label:string = "Substantial";
-
-    private color2:string = "rgb(255,201,14)";
-    private color2Label:string = "Moderate";
-
-    private color3:string = "rgb(255,127,39)";
-    private color3Label:string = "Limited";
-
-    private color4:string = "rgb(237,28,36)";
-    private color4Label:string = "Unsatisfactory";
-
-    private color5:string = "rgb(0,162,232)";
-    private color5Label:string = "Not Applicable";
-
-    private barDefaultBackgroundColor:string = "rgb(200,200,200)";
-
-
+    private color1: string = "rgb(34,177,76)";
+    private color1Label: string = "Substantial";
+    private color2: string = "rgb(255,201,14)";
+    private color2Label: string = "Moderate";
+    private color3: string = "rgb(255,127,39)";
+    private color3Label: string = "Limited";
+    private color4: string = "rgb(237,28,36)";
+    private color4Label: string = "Unsatisfactory";
+    private color5: string = "rgb(0,162,232)";
+    private color5Label: string = "Not Applicable";
+    private barDefaultBackgroundColor: string = "rgb(200,200,200)";
     constructor(props: IReportListProps) {
         super(props);
         props.columns.forEach((c) => { c.onColumnClick = this._onColumnClick; });
@@ -91,8 +72,6 @@ export class ReportList2 extends React.Component<IReportListProps, IReportListSt
     }
 
     public render(): JSX.Element {
-
-
         const { props, state } = this;
 
         return (
@@ -107,44 +86,36 @@ export class ReportList2 extends React.Component<IReportListProps, IReportListSt
                         offText="Stacked Bar View"
                         styles={controlStyles}
                     />
-
-
                     <span style={controlStyles2}>
                         <SearchBox
                             placeholder="Filter items"
                             value={this.props.filterText ? this.props.filterText : ''}
                             onChange={this.props.onFilterChange}
-                        //className={styles.listFilterBox}
-                        //style={controlStyles2}
                         />
                     </span>
-
                 </div>
-
 
                 <DetailsList className={props.className} selectionMode={SelectionMode.none} setKey={"state.FilteredItems"}
                     columns={state.Columns}
-
                     items={state.FilteredItems}
                     onRenderItemColumn={this.renderItemColumn}
-                //onRenderDetailsHeader={this.renderDetailsHeader}
                 />
 
                 <div>
-                    <div style={{ paddingTop:'40px', paddingBottom:'10px', fontWeight:'bold' }}>
+                    <div style={{ paddingTop: '40px', paddingBottom: '10px', fontWeight: 'bold' }}>
                         Legend
                     </div>
                     {/* row1 */}
                     <div style={{ display: 'flex', width: '500px', marginTop: '10px' }}>
                         <div style={{ minWidth: '150px' }}>
                             <div style={{ display: 'flex' }}>
-                                <div style={{ width: '13px', height: '13px', marginTop:'3px', backgroundColor: this.color1 }}></div>
+                                <div style={{ width: '13px', height: '13px', marginTop: '3px', backgroundColor: this.color1 }}></div>
                                 <div style={{ paddingLeft: '10px' }}>{`${this.color1Label}`}</div>
                             </div>
                         </div>
                         <div style={{ paddingLeft: '10%' }}>
                             <div style={{ display: 'flex' }}>
-                                <div style={{ width: '13px', height: '13px', marginTop:'3px', backgroundColor: this.color2 }}></div>
+                                <div style={{ width: '13px', height: '13px', marginTop: '3px', backgroundColor: this.color2 }}></div>
                                 <div style={{ paddingLeft: '10px' }}>{`${this.color2Label}`}</div>
                             </div>
                         </div>
@@ -154,13 +125,13 @@ export class ReportList2 extends React.Component<IReportListProps, IReportListSt
                     <div style={{ display: 'flex', width: '500px', marginTop: '10px' }}>
                         <div style={{ minWidth: '150px' }}>
                             <div style={{ display: 'flex' }}>
-                                <div style={{ width: '13px', height: '13px', marginTop:'3px', backgroundColor: this.color3 }}></div>
+                                <div style={{ width: '13px', height: '13px', marginTop: '3px', backgroundColor: this.color3 }}></div>
                                 <div style={{ paddingLeft: '10px' }}>{`${this.color3Label}`}</div>
                             </div>
                         </div>
                         <div style={{ paddingLeft: '10%' }}>
                             <div style={{ display: 'flex' }}>
-                                <div style={{ width: '13px', height: '13px', marginTop:'3px', backgroundColor: this.color4 }}></div>
+                                <div style={{ width: '13px', height: '13px', marginTop: '3px', backgroundColor: this.color4 }}></div>
                                 <div style={{ paddingLeft: '10px' }}>{`${this.color4Label}`}</div>
                             </div>
                         </div>
@@ -170,21 +141,18 @@ export class ReportList2 extends React.Component<IReportListProps, IReportListSt
                     <div style={{ display: 'flex', width: '500px', marginTop: '10px' }}>
                         <div style={{ minWidth: '150px' }}>
                             <div style={{ display: 'flex' }}>
-                                <div style={{ width: '13px', height: '13px', marginTop:'3px', backgroundColor: this.color5 }}></div>
+                                <div style={{ width: '13px', height: '13px', marginTop: '3px', backgroundColor: this.color5 }}></div>
                                 <div style={{ paddingLeft: '10px' }}>{`${this.color5Label}`}</div>
                             </div>
                         </div>
                         <div style={{ paddingLeft: '10%' }}>
                             <div style={{ display: 'flex' }}>
-                                <div style={{ width: '13px', height: '13px', marginTop:'3px', backgroundColor: this.barDefaultBackgroundColor }}></div>
+                                <div style={{ width: '13px', height: '13px', marginTop: '3px', backgroundColor: this.barDefaultBackgroundColor }}></div>
                                 <div style={{ paddingLeft: '10px' }}>{`Not Completed`}</div>
                             </div>
                         </div>
                     </div>
-
-
                 </div>
-
             </Fabric>
         );
     }
@@ -193,7 +161,6 @@ export class ReportList2 extends React.Component<IReportListProps, IReportListSt
 
     public componentDidMount(): void {
         this.setState({ FilteredItems: SearchObjectService.filterEntities(this.props.items, this.props.filterText) }, this._onLoadTrySort);
-
     }
 
     public componentDidUpdate(prevProps: IReportListProps): void {
@@ -212,42 +179,8 @@ export class ReportList2 extends React.Component<IReportListProps, IReportListSt
 
     //#region Form infrastructure
 
-    private renderDetailsHeader(detailsHeaderProps: IDetailsHeaderProps) {
-
-        return (
-            <DetailsHeader
-                //onRenderColumnHeaderTooltip={this.renderHeaderTooltip}
-                //onRenderColumnHeaderTooltip={(tooltipHostProps: ITooltipHostProps) => <TooltipHost {...tooltipHostProps} />}
-                onRenderColumnHeaderTooltip={(tooltipHostProps: ITooltipHostProps) => this.renderHeaderTooltip(tooltipHostProps)}
-                {...detailsHeaderProps}
-
-
-            />
-        );
-    }
-
-    private renderHeaderTooltip(tooltipHostProps: ITooltipHostProps) {
-        //console.log("helloooooooo", tooltipHostProps.children);
-        return (
-            <span
-                style={{
-                    display: "flex",
-                    fontFamily: "Tahoma",
-                    fontSize: "40px",
-                    color: 'red',
-                    justifyContent: "center",
-                }}
-            >
-                {tooltipHostProps.children}
-            </span>
-        );
-    }
-
     private renderItemColumn = (item: IEntity, index: number, column: IColumn) => {
-
-        //console.log("in renderItemColumn: ", column.key, item);      
         let fieldContent = item[column.fieldName as keyof IEntity] as string;
-
 
         if (column.key === "ControlsBar") {
 
@@ -256,8 +189,6 @@ export class ReportList2 extends React.Component<IReportListProps, IReportListSt
             const totalAModerate: number = Number(item["TotalAModerate"]);
             const totalASubstantial: number = Number(item["TotalASubstantial"]);
             const totalANotApplicable: number = Number(item["TotalANotApplicable"]);
-
-
             return (
                 <RagRatingBar
                     barWidth='208px'
@@ -267,30 +198,21 @@ export class ReportList2 extends React.Component<IReportListProps, IReportListSt
                     color1={this.color1}
                     color1Percentage={totalASubstantial}
                     color1Label='Substantial'
-
                     color2={this.color2}
                     color2Percentage={totalAModerate}
                     color2Label='Moderate'
-
                     color3={this.color3}
                     color3Percentage={totalALimited}
                     color3Label='Limited'
-
                     color4={this.color4}
                     color4Percentage={totalAUnsatisfactory}
                     color4Label='Unsatisfactory'
-
                     color5={this.color5}
                     color5Percentage={totalANotApplicable}
                     color5Label='Not Applicable'
-
                     showInfoSection={false}
                     displayPercentageBarView={!this.props.stackedBar}
                 />
-                // <span style={{backgroundColor: bgColor, color: txtColor, width: "140px", display: "block", paddingLeft: "10px", paddingTop: "5px", paddingBottom: "5px"}}>
-                //     {fieldContent}
-                // </span>
-
             );
         }
         else if (column.key === "AssuranceBar") {
@@ -301,7 +223,6 @@ export class ReportList2 extends React.Component<IReportListProps, IReportListSt
             const totalB1Substantial: number = Number(item["TotalB1Substantial"]);
             const totalB1NotApplicable: number = Number(item["TotalB1NotApplicable"]);
 
-
             return (
                 <RagRatingBar
                     barWidth='208px'
@@ -311,30 +232,21 @@ export class ReportList2 extends React.Component<IReportListProps, IReportListSt
                     color1={this.color1}
                     color1Percentage={totalB1Substantial}
                     color1Label='Substantial'
-
                     color2={this.color2}
                     color2Percentage={totalB1Moderate}
                     color2Label='Moderate'
-
                     color3={this.color3}
                     color3Percentage={totalB1Limited}
                     color3Label='Limited'
-
                     color4={this.color4}
                     color4Percentage={totalB1Unsatisfactory}
                     color4Label='Unsatisfactory'
-
                     color5={this.color5}
                     color5Percentage={totalB1NotApplicable}
                     color5Label='Not Applicable'
-
                     showInfoSection={false}
                     displayPercentageBarView={!this.props.stackedBar}
                 />
-                // <span style={{backgroundColor: bgColor, color: txtColor, width: "140px", display: "block", paddingLeft: "10px", paddingTop: "5px", paddingBottom: "5px"}}>
-                //     {fieldContent}
-                // </span>
-
             );
         }
         else if (column.key === "Title") {
@@ -354,19 +266,16 @@ export class ReportList2 extends React.Component<IReportListProps, IReportListSt
 
     }
 
-    //29Oct2019 - Start - Add
     private _onLoadTrySort = (): void => {
         const { Columns, FilteredItems } = this.state;
         let newItems: any[] = FilteredItems.slice();
         const newColumns: IColumn[] = Columns.slice();
         const currColumn: IColumn = newColumns.filter((currCol: IColumn, idx: number) => {
-            //return Columns[0].key === currCol.key;
             return 'Title';
         })[0];
 
         newColumns.forEach((newCol: IColumn) => {
             if (newCol === currColumn) {
-                //currColumn.isSortedDescending = !currColumn.isSortedDescending;
                 currColumn.isSortedDescending = false;
                 currColumn.isSorted = true;
             } else {
@@ -381,7 +290,6 @@ export class ReportList2 extends React.Component<IReportListProps, IReportListSt
             FilteredItems: newItems
         });
     }
-    //29Oct2019 - End - Add
 
     private _onColumnClick = (ev: React.MouseEvent<HTMLElement>, column: IColumn): void => {
         const { Columns, FilteredItems } = this.state;
@@ -412,10 +320,8 @@ export class ReportList2 extends React.Component<IReportListProps, IReportListSt
                 // property doesn't exist on either object
                 return 0;
             }
-
             const varA = (typeof a[sortBy] === 'string') ? a[sortBy].toLowerCase() : a[sortBy];
             const varB = (typeof b[sortBy] === 'string') ? b[sortBy].toLowerCase() : b[sortBy];
-
             let comparison = 0;
             if (varA > varB) {
                 comparison = 1;
@@ -425,7 +331,5 @@ export class ReportList2 extends React.Component<IReportListProps, IReportListSt
             return ((descending) ? (comparison * -1) : comparison);
         });
     }
-
-
     //#endregion
 }

@@ -15,7 +15,6 @@ export class ElementUpdateFormState extends CrUpdateFormState<IElement> {
 }
 
 export interface IElementUpdateFormProps extends IBaseProgressUpdateFormProps {
-
 }
 
 export class ElementUpdateForm extends BaseProgressUpdateForm<IElementUpdateFormProps, ElementUpdateFormState> {
@@ -27,14 +26,11 @@ export class ElementUpdateForm extends BaseProgressUpdateForm<IElementUpdateForm
     private amberIcon: string = require('../../images/Amber4340.png');
     private yellowIcon: string = require('../../images/Yellow4340.png');
     private greenIcon: string = require('../../images/Green4340.png');
-
-
     protected entityUpdateService: services.ElementService = new services.ElementService(this.props.spfxContext, this.props.api);
 
     constructor(props: IElementUpdateFormProps, state: ElementUpdateFormState) {
         super(props, state);
         this.state = new ElementUpdateFormState(this.props.formId, this.props.DefElement.ID);
-        //console.log("in constructor", this.props.formId, this.props.DefElement.ID);
     }
 
 
@@ -54,9 +50,7 @@ export class ElementUpdateForm extends BaseProgressUpdateForm<IElementUpdateForm
     }
 
     private renderElementObjective(elementObjective: string, userHelpId?: number) {
-
         const makeDisabled: boolean = (this.props.form.LastSignOffFor === "Dir" && this.props.form.DirSignOffStatus === true) ? true : (this.props.externalUserLoggedIn === true) ? true : (this.props.isArchivedPeriod === true) ? true : false;
-
         return (
             <React.Fragment>
                 <div className={styles.flexContainerSectionQuestion}>
@@ -65,12 +59,10 @@ export class ElementUpdateForm extends BaseProgressUpdateForm<IElementUpdateForm
                         {(userHelpId && userHelpId > 0) && <a style={{ cursor: "pointer" }} onClick={() => this.showHelpPanel(userHelpId)}><img src={this.helpIcon} /></a>}
                     </div>
                 </div>
-
                 {!makeDisabled &&
                     <div>
                         <span onClick={this.toggleCopyDataFromLastPeriodConfirm} style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }}>Copy from Last Period</span>
                     </div>
-
                 }
 
                 <CrCheckbox
@@ -78,12 +70,8 @@ export class ElementUpdateForm extends BaseProgressUpdateForm<IElementUpdateForm
                     label="Not Applicable"
                     checked={this.state.FormData.NotApplicable}
                     onChange={(ev, isChecked) => this.changeCheckbox(isChecked, "NotApplicable")}
-                    //disabled= {(this.props.form.LastSignOffFor === "Dir" && this.props.form.DirSignOffStatus === true) ? true: (this.props.externalUserLoggedIn === true) ? true : (this.props.isArchivedPeriod === true) ? true : false}
                     disabled={makeDisabled}
                 />
-
-
-
 
             </React.Fragment>
         );
@@ -163,7 +151,7 @@ export class ElementUpdateForm extends BaseProgressUpdateForm<IElementUpdateForm
                             rows={3}
                             maxLength={500}
                             charCounter={true}
-                            onChanged={(v) => this.changeTextField(v, textBoxFormDataProperty)}
+                            onChanged={(ev, newVal) => this.changeTextField(newVal, textBoxFormDataProperty)}
                             value={textBoxVal}
                         />
                     }
@@ -196,7 +184,6 @@ export class ElementUpdateForm extends BaseProgressUpdateForm<IElementUpdateForm
                         onChange={(ev, option) => this.changeChoiceGroup(ev, option, choiceFormDataProperty)}
 
                     />
-                    {/* <div className={styles.italicNote}>{note}</div> */}
 
                     <div style={{ marginTop: 10 }} className={styles.flexContainerSectionQuestion}>
                         <div style={{ paddingBottom: 10 }} className={styles.sectionQuestionCol1}>{textBoxPlaceHolder}</div>
@@ -213,7 +200,7 @@ export class ElementUpdateForm extends BaseProgressUpdateForm<IElementUpdateForm
                         rows={3}
                         maxLength={500}
                         charCounter={true}
-                        onChanged={(v) => this.changeTextField(v, textBoxFormDataProperty)}
+                        onChanged={(ev, newVal) => this.changeTextField(newVal, textBoxFormDataProperty)}
                         value={textBoxVal}
                     />
 
@@ -254,15 +241,10 @@ export class ElementUpdateForm extends BaseProgressUpdateForm<IElementUpdateForm
                     {this.state.FormData[responseBformDataProperty] === "Yes" ? this.renderSectionBQuestion_Details(textBoxPlaceHolder, effectQuestion, note, responseBTextVal, responseBTextformDataProperty, responseBEffectVal, responseBEffectformDataProperty) : ""}
 
                 </React.Fragment>
-
             );
         }
 
     }
-
-
-
-
 
     private renderSectionBQuestion_Details(textBoxPlaceHolder: string, effectQuestion: string, note: string, responseB1TextVal: string, responseB1TextformDataProperty: string, responseB1EffectVal: string, responseB1EffectformDataProperty: string) {
         return (
@@ -283,7 +265,7 @@ export class ElementUpdateForm extends BaseProgressUpdateForm<IElementUpdateForm
                             rows={3}
                             maxLength={500}
                             charCounter={true}
-                            onChanged={(v) => this.changeTextField(v, responseB1TextformDataProperty)}
+                            onChanged={(ev, newVal) => this.changeTextField(newVal, responseB1TextformDataProperty)}
                             value={responseB1TextVal}
                         />
 
@@ -304,7 +286,6 @@ export class ElementUpdateForm extends BaseProgressUpdateForm<IElementUpdateForm
                             selectedKey={responseB1EffectVal && responseB1EffectVal}
                             onChange={(ev, option) => this.changeChoiceGroup(ev, option, responseB1EffectformDataProperty)}
                         />
-                        {/* <div className={styles.italicNote}>{note}</div>   */}
                     </div>
                 </div>
                 <div>
@@ -350,9 +331,7 @@ export class ElementUpdateForm extends BaseProgressUpdateForm<IElementUpdateForm
 
                     {this.renderSectionTitle("Overview")}
                     {this.renderElementObjective(ElementObjective)}
-
                     {this.renderSectionTitle(SectionATitle, SectionATitleHelpId)}
-
                     {this.renderSectionAQuestion(SectionAQuestion1, fd.ResponseA1, "ResponseA1", SectionAQuestion1HelpId)}
                     {this.renderSectionAQuestion(SectionAQuestion2, fd.ResponseA2, "ResponseA2", SectionAQuestion2HelpId)}
                     {this.renderSectionAQuestion(SectionAQuestion3, fd.ResponseA3, "ResponseA3", SectionAQuestion3HelpId)}
@@ -363,73 +342,55 @@ export class ElementUpdateForm extends BaseProgressUpdateForm<IElementUpdateForm
                     {this.renderSectionAQuestion(SectionAQuestion8, fd.ResponseA8, "ResponseA8", SectionAQuestion8HelpId)}
                     {this.renderSectionAQuestion(SectionAQuestion9, fd.ResponseA9, "ResponseA9", SectionAQuestion9HelpId)}
                     {this.renderSectionAQuestion(SectionAQuestion10, fd.ResponseA10, "ResponseA10", SectionAQuestion10HelpId)}
-
                     {this.renderSectionAOtherQuestion(SectionAOtherQuestion, fd.ResponseAOther, "ResponseAOther", SectionAOtherBoxText, fd.ResponseAOtherText, "ResponseAOtherText", SectionAOtherQuestionHelpId)}
-
                     {this.renderSectionAEffectQuestion(SectionAEffectQuestion, fd.ResponseAEffect, "ResponseAEffect", SectionAEffectNote, SectionAEffectBoxText, fd.ResponseAEffectText, "ResponseAEffectText", SectionAEffectQuestionHelpId)}
-
                     {this.renderSectionTitle(SectionBTitle, SectionBTitleHelpId)}
                     {this.renderSectionBQuestion(SectionBQuestion1, SectionBBoxText1, SectionBEffect1, SectionBNote1, fd.ResponseB1, "ResponseB1", fd.ResponseB1Text, "ResponseB1Text", fd.ResponseB1Effect, "ResponseB1Effect", SectionBQuestion1HelpId)}
                     {this.renderSectionBQuestion(SectionBQuestion2, SectionBBoxText2, SectionBEffect2, SectionBNote2, fd.ResponseB2, "ResponseB2", fd.ResponseB2Text, "ResponseB2Text", fd.ResponseB2Effect, "ResponseB2Effect", SectionBQuestion2HelpId)}
                     {this.renderSectionBQuestion(SectionBQuestion3, SectionBBoxText3, SectionBEffect3, SectionBNote3, fd.ResponseB3, "ResponseB3", fd.ResponseB3Text, "ResponseB3Text", fd.ResponseB3Effect, "ResponseB3Effect", SectionBQuestion3HelpId)}
                     {this.renderSectionBQuestion(SectionBQuestion4, SectionBBoxText4, SectionBEffect4, SectionBNote4, fd.ResponseB4, "ResponseB4", fd.ResponseB4Text, "ResponseB4Text", fd.ResponseB4Effect, "ResponseB4Effect", SectionBQuestion4HelpId)}
-
-
-
-
-
                 </React.Fragment>
             );
         }
-
-
     }
 
     protected loadEntityUpdate = (formId: number, defElementId: number): Promise<IElement> => {
-        return this.entityUpdateService.readElement(formId, defElementId).then((eu: IElement[]) => {
+        return this.entityUpdateService.readElement(formId, defElementId).then((eu: IElement[]): IElement => {
             if (eu.length > 0) {
                 const formData = eu[0];
                 this.setState({ FormData: formData });
                 return formData;
-            }
-            else {
-                //Element doesn't exist in db, reset FormData, so all the fields are empty, request may come from componentDidUpdate
+            } else {
+                // Element doesn't exist in the database, reset FormData to null
                 const fd = new Element(formId, defElementId);
                 this.setState({ FormData: fd });
-                return null;
+                return null as unknown as IElement; // Return null explicitly as IElement
             }
-
-        }, (err) => {
+        }).catch((err) => {
             if (this.props.onError) this.props.onError(`Error loading progress update`, err.message);
+            return null as unknown as IElement; // Return null explicitly as IElement in case of error
         });
     }
 
     protected copyFromLastPeriod = () => {
-
         this.toggleCopyDataFromLastPeriodConfirm();
-
         console.log('copy from last period');
         console.log('PeriodId', this.props.form.PeriodId);
         console.log('TeamId', this.props.form.TeamId);
         console.log('FormId', this.props.formId);
         console.log('DefElementId', this.props.DefElement.ID);
         console.log('DefElementTitle', this.props.DefElement.Title);
-
         let defElementTitle = this.props.DefElement.Title.replace('&', '%26');
         console.log('DefElementTitle_Send', defElementTitle);
-        
 
         this.entityUpdateService.readLastPeriodElement(this.props.form.PeriodId, this.props.form.TeamId, this.props.formId, this.props.DefElement.ID, defElementTitle).then((e: IElement) => {
             console.log('element', e);
-            if(e.ID > 0){
+            if (e.ID > 0) {
                 this.setState({ FormData: e });
             }
-            
 
         }, (err) => {
             if (this.props.onError) this.props.onError(`Error in loading data`, err.message);
         });
     }
-
-
 }

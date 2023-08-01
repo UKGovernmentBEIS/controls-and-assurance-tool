@@ -80,7 +80,7 @@ export interface IReportListThemeStatProps {
     breakdowns: boolean;
     onChangeBreakdowns: (value: boolean)=> void;
 
-    onFilterChange: (value: string)=> void;
+    onFilterChange: (event?: React.ChangeEvent<HTMLInputElement>, newValue?: string)=> void;
 
     onItemTitleClick: (value: string, entityNamePlural:string)=> void;
     entityNamePlural: string;

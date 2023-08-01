@@ -10,7 +10,6 @@ export interface IBaseProgressUpdateFormProps extends IEntityFormProps {
     entityName?: string;
     signOffPeriod: Date;
     defaultShowForm?: boolean;
-
     DefElement?: IDefElement;
     formId: number;
     form: IFForm;

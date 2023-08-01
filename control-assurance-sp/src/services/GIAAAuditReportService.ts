@@ -2,8 +2,6 @@ import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { EntityService } from './EntityService';
 import { IDataAPI, IEntity, IGIAAAuditReport, IGIAAAuditReportInfo } from '../types';
 
-
-
 export class GIAAAuditReportService extends EntityService<IEntity> {
     public readonly parentEntities = [];
     protected childrenEntities = [];
@@ -12,16 +10,15 @@ export class GIAAAuditReportService extends EntityService<IEntity> {
         super(spfxContext, api, `/GIAAAuditReports`);
     }
 
-    public readAllWithFilters(dgAreaId: number | string, incompleteOnly: boolean, justMine: boolean, isArchive:boolean): Promise<IEntity[]> {
+    public readAllWithFilters(dgAreaId: number | string, incompleteOnly: boolean, justMine: boolean, isArchive: boolean): Promise<IEntity[]> {
         return this.readAll(`?dgAreaId=${dgAreaId}&incompleteOnly=${incompleteOnly}&justMine=${justMine}&isArchive=${isArchive}`);
     }
 
-    public getAuditReportInfo(giaaAuditReportId:number): Promise<IGIAAAuditReportInfo> {
+    public getAuditReportInfo(giaaAuditReportId: number): Promise<IGIAAAuditReportInfo> {
         return this.readEntity(`?giaaAuditReportId=${giaaAuditReportId}&getInfo=true`);
     }
 
     public readWithExpandDirectorates(ID: number): Promise<IGIAAAuditReport> {
-        //const qry:string = `?$expand=GIAAActionOwners($expand=User)`;
 
         let entitiesToExpand: string[] = [];
         entitiesToExpand.push("GIAAAuditReportDirectorates($expand=Directorate)");

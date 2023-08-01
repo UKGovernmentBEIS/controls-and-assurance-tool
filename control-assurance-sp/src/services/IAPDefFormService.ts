@@ -2,8 +2,6 @@ import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { EntityService } from './EntityService';
 import { IDataAPI, IIAPDefForm } from '../types';
 
-
-
 export class IAPDefFormService extends EntityService<IIAPDefForm> {
     public readonly parentEntities = [];
     protected childrenEntities = [];
@@ -17,5 +15,4 @@ export class IAPDefFormService extends EntityService<IIAPDefForm> {
             return result;
         });
     }
-
 }

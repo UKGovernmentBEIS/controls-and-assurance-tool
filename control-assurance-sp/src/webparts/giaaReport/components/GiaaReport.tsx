@@ -1,27 +1,14 @@
 import * as React from 'react';
 import { Pivot, PivotItem } from 'office-ui-fabric-react/lib/Pivot';
-import { CrDropdown, IDropdownOption } from '../../../components/cr/CrDropdown';
 import * as types from '../../../types';
 import BaseUserContextWebPartComponent from '../../../components/BaseUserContextWebPartComponent';
-import Report1List from '../../../components/naoReport/Report1List';
 import GenExport from '../../../components/export/GenExport';
-import * as services from '../../../services';
-
-import { IGenColumn, ColumnType, ColumnDisplayType } from '../../../types/GenColumn';
-import { IUserPermission, IDefForm, IPeriod, IEntity, IDirectorateGroup, IGoDefForm, GoForm, IGoForm } from '../../../types';
-import { CrLoadingOverlayWelcome } from '../../../components/cr/CrLoadingOverlayWelcome';
-import styles from '../../../styles/cr.module.scss';
-import { PrimaryButton } from 'office-ui-fabric-react/lib/Button';
-
-
-//#region types defination
+import { IUserPermission } from '../../../types';
 
 export interface ILookupData {
-
 }
 
 export class LookupData implements ILookupData {
-
 }
 
 export interface IGiaaReportState extends types.IUserContextWebPartState {
@@ -29,9 +16,6 @@ export interface IGiaaReportState extends types.IUserContextWebPartState {
 }
 export class GiaaReportState extends types.UserContextWebPartState implements IGiaaReportState {
   public LookupData = new LookupData();
-
-
-
   public FilteredItems = [];
 
   constructor() {
@@ -39,100 +23,53 @@ export class GiaaReportState extends types.UserContextWebPartState implements IG
   }
 }
 
-//#endregion types defination
-
 export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWebPartComponentProps, GiaaReportState> {
-
-
 
   constructor(props: types.IWebPartComponentProps) {
     super(props);
     this.state = new GiaaReportState();
   }
 
-  //#region Render
-
   public renderWebPart(): React.ReactElement<types.IWebPartComponentProps> {
 
     return (
-
       <React.Fragment>
-
-
         <Pivot onLinkClick={this.clearErrors}>
-
-
           <PivotItem headerText="Export to Excel" itemKey="Export to Excel">
             {this.renderGenExport()}
           </PivotItem>
-
-
-
         </Pivot>
-
-
       </React.Fragment>
-
-
     );
   }
 
-
   private renderGenExport(): React.ReactElement<types.IWebPartComponentProps> {
-
-    if(this.state.User){
+    if (this.state.User) {
       const isSuperUserPermission = this.isSuperUser();
       console.log('isSuperUserPermission', isSuperUserPermission);
-
       return (
         <div>
-
           <div style={{ paddingTop: "10px" }}>
-  
-          {(isSuperUserPermission === true) &&
+            {(isSuperUserPermission === true) &&
               <GenExport
                 {...this.props}
                 onError={this.onError}
                 moduleName="GIAA"
-
               />
             }
-
             {
               (isSuperUserPermission === false) &&
-              <div style={{ fontSize: '14px', color: 'navy', fontStyle: 'italic', paddingTop: '8px', paddingLeft:'5px' }}>
+              <div style={{ fontSize: '14px', color: 'navy', fontStyle: 'italic', paddingTop: '8px', paddingLeft: '5px' }}>
                 Export to Excel function is only available to the Super User.
               </div>
             }
-  
-  
           </div>
         </div>
       );
     }
-
     else
       return null;
-
-
   }
-
-
-
-
-
-
-  //#endregion Render
-
-
-  //#region Data Load
-
-
-
-
-  //#endregion Data Load
-
-  //#region Permissions
 
   private isSuperUser(): boolean {
     //super user/SysManager check
@@ -143,22 +80,8 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
         return true;
       }
     }
-
     return false;
   }
-
-
-
-
-
-  //#endregion Permissions
-
-  //#region event handlers
-
-
-
-  //#endregion event handlers
-
 }
 
 

@@ -1,9 +1,6 @@
 import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { EntityService } from './EntityService';
-import { IDataAPI, IEntity, IAPAssignment } from '../types';
-import { baseElementEvents } from 'office-ui-fabric-react/lib/Utilities';
-
-
+import { IDataAPI, IAPAssignment } from '../types';
 
 export class IAPAssignmentService extends EntityService<IAPAssignment> {
     public readonly parentEntities = [];
@@ -21,5 +18,4 @@ export class IAPAssignmentService extends EntityService<IAPAssignment> {
     public readAllAssignmentsForParentAction(parentIAPActionId: number): Promise<IAPAssignment[]> {
         return this.readAll(`?parentIAPActionId=${parentIAPActionId}&getAllAssignmentsForParentAction=`);
     }
-
 }

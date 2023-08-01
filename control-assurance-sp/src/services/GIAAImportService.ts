@@ -1,8 +1,6 @@
 import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { EntityService } from './EntityService';
-import { IDataAPI, GIAAImport, IGIAAImportInfo, IEntity } from '../types';
-
-
+import { IDataAPI, IGIAAImportInfo, IEntity } from '../types';
 
 export class GIAAImportService extends EntityService<IEntity> {
     public readonly parentEntities = [];
@@ -15,8 +13,5 @@ export class GIAAImportService extends EntityService<IEntity> {
     public getImportInfo(): Promise<IGIAAImportInfo> {
         return this.readEntity(`?getInfo=true`);
     }
-
-
-
 
 }

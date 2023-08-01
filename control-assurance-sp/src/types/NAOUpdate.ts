@@ -1,7 +1,6 @@
 import { IEntity } from "./Entity";
 
-
-export interface INAOUpdate  extends IEntity {
+export interface INAOUpdate extends IEntity {
 
     ProvideUpdate?: string;
     TargetDate?: string;
@@ -16,13 +15,11 @@ export interface INAOUpdate  extends IEntity {
     LastSavedInfo?: string;
     ApprovedById?: number;
     ApprovedByPosition?: string;
-
-
 }
 
-export class NAOUpdate implements INAOUpdate{ 
+export class NAOUpdate implements INAOUpdate {
     public ID: number = 0;
-    public Title: string = null;    
+    public Title: string = null;
     public ProvideUpdate = null;
     public TargetDate = null;
     public ActionsTaken = null;
@@ -41,6 +38,4 @@ export class NAOUpdate implements INAOUpdate{
         this.NAOPeriodId = naoPeriodId;
         this.NAORecommendationId = naoRecommendationId;
     }
-
-
 }

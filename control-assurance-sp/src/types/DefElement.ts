@@ -58,7 +58,6 @@ export interface IDefElement extends IEntity {
     SectionBQuestion2HelpId?: number;
     SectionBQuestion3HelpId?: number;
     SectionBQuestion4HelpId?: number;
-
     SectionAQ1ResponseDetails?: string;
     SectionAQ2ResponseDetails?: string;
     SectionAQ3ResponseDetails?: string;
@@ -69,5 +68,4 @@ export interface IDefElement extends IEntity {
     SectionAQ8ResponseDetails?: string;
     SectionAQ9ResponseDetails?: string;
     SectionAQ10ResponseDetails?: string;
- 
 }

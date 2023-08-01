@@ -2,8 +2,6 @@ import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { EntityService } from './EntityService';
 import { IDataAPI, INAODefForm } from '../types';
 
-
-
 export class NAODefFormService extends EntityService<INAODefForm> {
     public readonly parentEntities = [];
     protected childrenEntities = [];
@@ -17,5 +15,4 @@ export class NAODefFormService extends EntityService<INAODefForm> {
             return result;
         });
     }
-
 }
