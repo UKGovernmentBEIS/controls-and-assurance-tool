@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as types from '../../types';
 import * as services from '../../services';
-import { IGIAAUpdate, GIAAUpdate, IEntity, Entity } from '../../types';
+import { IGIAAUpdate, GIAAUpdate, IEntity } from '../../types';
 import { CrTextField } from '../cr/CrTextField';
 import { CrDropdown, IDropdownOption } from '../cr/CrDropdown';
 import { CrCheckbox } from '../cr/CrCheckbox';
@@ -9,26 +9,22 @@ import { FormButtons } from '../cr/FormButtons';
 import { Panel, PanelType } from 'office-ui-fabric-react/lib/Panel';
 import { FormCommandBar } from '../cr/FormCommandBar';
 import { CrDatePicker } from '../cr/CrDatePicker';
-import { CrEntityPicker } from '../cr/CrEntityPicker';
 import { FieldErrorMessage } from '../cr/FieldDecorators';
 import { GIAAUpdateTypes } from '../../types/AppGlobals';
 import styles from '../../styles/cr.module.scss';
-import GiaaUpdates from '../../webparts/giaaUpdates/components/GiaaUpdates';
 import { sp, ChunkedFileUploadProgressData } from '@pnp/sp';
 import { getUploadFolder_GIAAUpdateEvidence, getFolder_Help } from '../../types/AppGlobals';
 import { changeDatePicker } from '../../types/AppGlobals';
 
-
 export interface IUpdatesSaveFormProps extends types.IBaseComponentProps {
-
     giaaRecommendationId: number | string;
     updateType: string;
     defaultActionStatusTypeId: number;
-    defaultRevDate:Date;
-    targetDate:Date;
+    defaultRevDate: Date;
+    targetDate: Date;
     entityId: number;
     showForm: boolean;
-    onSaved?: (defaultGIAAActionStatusTypeId:number, defaultRevisedDate:Date) => void;
+    onSaved?: (defaultGIAAActionStatusTypeId: number, defaultRevisedDate: Date) => void;
     onCancelled?: () => void;
 }
 
@@ -44,9 +40,7 @@ export interface IErrorMessage {
     RevisedDate: string;
     ActionStatus: string;
     FileUpload: string;
-    RequestDateChangeTo:string;
-
-
+    RequestDateChangeTo: string;
 }
 export class ErrorMessage implements IErrorMessage {
 
@@ -63,11 +57,9 @@ export interface IUpdatesSaveFormState {
     FormDataBeforeChanges: IGIAAUpdate;
     FormIsDirty: boolean;
     ErrMessages: IErrorMessage;
-
     UploadStatus: string;
     UploadProgress: number;
     ShowUploadProgress: boolean;
-    //ShowFileUpload: boolean;
 }
 export class UpdatesSaveFormState implements IUpdatesSaveFormState {
     public Loading = false;
@@ -76,16 +68,13 @@ export class UpdatesSaveFormState implements IUpdatesSaveFormState {
     public FormDataBeforeChanges;
     public FormIsDirty = false;
     public ErrMessages = new ErrorMessage();
-
     public UploadStatus = "";
     public UploadProgress: number = 0;
     public ShowUploadProgress = false;
-    //public ShowFileUpload = false;
 
     constructor(giaaRecommendationId: number, updateType: string) {
         this.FormData = new GIAAUpdate(giaaRecommendationId, updateType);
         this.FormDataBeforeChanges = new GIAAUpdate(giaaRecommendationId, updateType);
-
     }
 }
 
@@ -93,22 +82,17 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
 
     private giaaActionStatusTypeService: services.GIAAActionStatusTypeService = new services.GIAAActionStatusTypeService(this.props.spfxContext, this.props.api);
     private giaaUpdateService: services.GIAAUpdateService = new services.GIAAUpdateService(this.props.spfxContext, this.props.api);
-    
-
     private Folder_Help: string = "";
     private UploadFolder_Evidence: string = "";
 
     constructor(props: IUpdatesSaveFormProps, state: IUpdatesSaveFormState) {
         super(props);
-
         this.UploadFolder_Evidence = getUploadFolder_GIAAUpdateEvidence(props.spfxContext);
         this.Folder_Help = getFolder_Help(props.spfxContext);
-
         this.state = new UpdatesSaveFormState(Number(props.giaaRecommendationId), props.updateType);
     }
 
     public render(): React.ReactElement<IUpdatesSaveFormProps> {
-        //const errors = this.state.ValidationErrors;
         return (
             <Panel isOpen={this.props.showForm} headerText={this.getHeaderText()} type={PanelType.medium} onRenderNavigation={() => <FormCommandBar onSave={this.saveData} onCancel={this.props.onCancelled} saveDisabled={this.state.ShowUploadProgress} />}>
                 <div className={styles.cr}>
@@ -134,12 +118,10 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
                 {this.renderGIAAActionStatusTypes()}
                 {this.renderRevisedDate()}
                 {this.renderUpdateDetails()}
-                {/* {this.renderLinkRiskManagement()} */}
                 {this.renderEvLabel()}
                 {this.renderEvCheckBox()}
                 {this.renderEvLinkBox()}
                 {this.renderFileUpload()}
-
             </React.Fragment>
         );
     }
@@ -147,8 +129,7 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
     private renderReqCloseCheckBox() {
         if (this.props.updateType !== GIAAUpdateTypes.ActionUpdate) return null;
 
-        if(this.state.FormData.RequestDateChange === true) return null;
-
+        if (this.state.FormData.RequestDateChange === true) return null;
         return (
             <React.Fragment>
 
@@ -157,55 +138,41 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
                     label="Please check this box to request actions to be closed, provide details in the box provided and upload any supporting evidence."
                     checked={this.state.FormData.RequestClose}
                     onChange={(ev, isChecked) => this.changeCheckbox_Req(isChecked, "RequestClose")}
-
-
                 />
-
-
-
             </React.Fragment>
         );
-
     }
 
     private renderReqDateChangeCheckBox() {
         if (this.props.updateType !== GIAAUpdateTypes.ActionUpdate) return null;
 
-        if(this.state.FormData.RequestClose === true) return null;
+        if (this.state.FormData.RequestClose === true) return null;
 
         return (
             <React.Fragment>
-
                 <CrCheckbox
                     className={`${styles.formField} ${styles.checkbox}`}
                     label="Please check this box if you wish to revise the implementation date. By doing so you confirm there is a valid reason for changing the date, which has been approved by the responsible director."
                     checked={this.state.FormData.RequestDateChange}
                     onChange={(ev, isChecked) => this.changeCheckbox_Req(isChecked, "RequestDateChange")}
-
-
                 />
-
-
-
             </React.Fragment>
         );
-
     }
 
     private renderReqDateChangeTo() {
         if (this.props.updateType !== GIAAUpdateTypes.ActionUpdate) return null;
 
-        if(this.state.FormData.RequestClose === true) return null;
+        if (this.state.FormData.RequestClose === true) return null;
 
-        let required:boolean = false;
-        if(this.state.FormData.RequestDateChange === true){
+        let required: boolean = false;
+        if (this.state.FormData.RequestDateChange === true) {
             required = true;
             console.log('RequestDateChangeTo set to required');
         }
 
         return (
             <CrDatePicker
-                //label="Revised Date"
                 className={styles.formField}
                 required={required}
                 value={this.state.FormData.RequestDateChangeTo}
@@ -215,7 +182,6 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
         );
     }
 
-    
     private renderMarkAllReqCloseCheckBox() {
         if (this.props.updateType !== GIAAUpdateTypes.Status_DateUpdate) return null;
 
@@ -227,15 +193,9 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
                     label="Mark any outstanding status close or revise implementation date requests from action owners"
                     checked={this.state.FormData.MarkAllReqClosed}
                     onChange={(ev, isChecked) => this.changeCheckbox(isChecked, "MarkAllReqClosed")}
-
-
                 />
-
-
-
             </React.Fragment>
         );
-
     }
     private renderGIAAActionStatusTypes() {
         if (this.props.updateType !== GIAAUpdateTypes.Status_DateUpdate) return null;
@@ -266,7 +226,6 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
             <CrDatePicker
                 label="Revised Implementation Date"
                 className={styles.formField}
-                //required={true}
                 value={this.state.FormData.RevisedDate}
                 onSelectDate={(v) => changeDatePicker(this, v, "RevisedDate")}
                 errorMessage={this.state.ErrMessages.RevisedDate}
@@ -291,7 +250,7 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
                 label={lbl}
                 className={styles.formField}
                 value={this.state.FormData.UpdateDetails}
-                onChanged={(v) => this.changeTextField(v, "UpdateDetails")}
+                onChanged={(ev, newValue) => this.changeTextField(newValue, "UpdateDetails")}
                 multiline={true}
                 required={true}
                 errorMessage={this.state.ErrMessages.Details}
@@ -300,32 +259,17 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
         );
     }
 
-
-    private renderLinkRiskManagement() {
-
-        if (this.props.updateType !== GIAAUpdateTypes.ActionUpdate) return null;
-        return (
-            <CrTextField
-                label="Link to Risk Management"
-                className={styles.formField}
-                value={this.state.FormData.Link}
-                onChanged={(v) => this.changeTextField(v, "Link")}
-            />
-        );
-    }
-
     private renderEvLabel() {
         let lbl: string = "";
-        if (this.props.updateType === GIAAUpdateTypes.ActionUpdate){
-            if(this.state.FormData.RequestClose === true){
+        if (this.props.updateType === GIAAUpdateTypes.ActionUpdate) {
+            if (this.state.FormData.RequestClose === true) {
                 lbl = "Upload Evidence";
             }
-            else{
+            else {
                 lbl = "Optional link or evidence upload";
             }
-            
         }
-            
+
         else if (this.props.updateType === GIAAUpdateTypes.Status_DateUpdate)
             lbl = "Provide supporting evidence if necessary";
         else if (this.props.updateType === GIAAUpdateTypes.GIAAComment)
@@ -340,7 +284,7 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
     private renderEvCheckBox() {
         if (this.props.updateType === GIAAUpdateTypes.Status_DateUpdate) return null;
 
-        if(this.state.FormData.RequestClose === true) return null;
+        if (this.state.FormData.RequestClose === true) return null;
 
         return (
             <React.Fragment>
@@ -350,43 +294,28 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
                     label="Provide a link instead of uploading a file"
                     checked={this.state.FormData.EvIsLink}
                     onChange={(ev, isChecked) => this.changeCheckbox(isChecked, "EvIsLink")}
-
-
                 />
-
-
-
             </React.Fragment>
         );
-
     }
 
     private renderEvLinkBox() {
-        // if (this.state.ShowFileUpload == true)
-        //     return null;
 
         if (this.state.FormData.EvIsLink === true) {
-
             return (
                 <CrTextField
                     label="Link"
-                    //required={true}
                     className={styles.formField}
                     value={this.state.FormData.EvFileName}
-                    onChanged={(v) => this.changeTextField(v, "EvFileName")}
-                //errorMessage={this.state.ErrMessages.Title}
+                    onChanged={(ev, newValue) => this.changeTextField(newValue, "EvFileName")}
                 />
             );
         }
         else
             return false;
-
-
     }
 
     private renderFileUpload() {
-        // if (this.state.ShowFileUpload == false)
-        //     return null;
 
         if (this.state.FormData.EvIsLink === true)
             return null;
@@ -396,7 +325,7 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
                 <div>
                     <input type="file" name="fileUpload" id="fileUpload" accept=".pdf,.xlsx,.xls"></input>
                     {this.state.ErrMessages.FileUpload && <FieldErrorMessage value={this.state.ErrMessages.FileUpload} />}
-                    <div style={{ paddingTop: '10px' }}>                        
+                    <div style={{ paddingTop: '10px' }}>
                         Upload evidence files as Excel XLSX files or as PDFs. For guidance on savings documents as PDFs, please click <span onClick={this.viewHelpPDF} style={{ textDecoration: 'underline', cursor: 'pointer' }}>here</span>.
                     </div>
                 </div>
@@ -408,49 +337,32 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
                         {this.state.UploadProgress} %
                     </div>
                 </div>}
-
             </div>
         );
     }
-
-
-
-
 
     //#region Class Methods
 
     private viewHelpPDF = () => {
         console.log('help pdf');
         const fileName: string = "HowToConvertDocumentsToPDF.pdf";
-
         const f = sp.web.getFolderByServerRelativeUrl(this.Folder_Help).files.getByName(fileName);
-
         f.get().then(t => {
             console.log(t);
             const serverRelativeUrl = t["ServerRelativeUrl"];
             console.log(serverRelativeUrl);
-
             const a = document.createElement('a');
-            //document.body.appendChild(a);
             a.href = serverRelativeUrl;
             a.target = "_blank";
             a.download = fileName;
-
             document.body.appendChild(a);
             console.log(a);
-            //a.click();
-            //document.body.removeChild(a);
-
-
             setTimeout(() => {
                 window.URL.revokeObjectURL(serverRelativeUrl);
                 window.open(serverRelativeUrl, '_blank');
                 document.body.removeChild(a);
             }, 1);
-
-
         });
-
     }
 
     //#endregion Class Methods
@@ -467,22 +379,14 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
 
     }
 
-
-
-
-
-
     //#region Data Save
 
 
     private saveData = (): void => {
 
-
         if (this.validateEntity()) {
             if (this.props.onError) this.props.onError(null);
-
             let f: IGIAAUpdate = { ...this.state.FormData };
-
             //remove all the child and parent entities before sending post/patch
             //delete f.User; //parent entity
 
@@ -490,7 +394,6 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
                 let myfile = (document.querySelector("#fileUpload") as HTMLInputElement);
                 //firts create record in the db, so we can get the ID, then use the ID to append in the file name to make file name unique
                 this.giaaUpdateService.create(f).then(x => {
-                    //console.log(x);
                     if ((f.EvIsLink === false) && myfile.files[0]) {
                         this.uploadFile(x.ID, x.UpdatedById);
                     }
@@ -499,15 +402,10 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
                         console.log('evidence saved as link');
                         this.props.onSaved(f.GIAAActionStatusTypeId, f.RevisedDate);
                     }
-
                 });
-
             }
             else {
-
-                //console.log('in update');
-
-                this.giaaUpdateService.updatePut(f.ID, f).then(() =>this.props.onSaved(f.GIAAActionStatusTypeId, f.RevisedDate), (err) => {
+                this.giaaUpdateService.updatePut(f.ID, f).then(() => this.props.onSaved(f.GIAAActionStatusTypeId, f.RevisedDate), (err) => {
                     if (this.props.onError) this.props.onError(`Error updating item`, err.message);
                 });
             }
@@ -522,8 +420,6 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
 
         let myfile = (document.querySelector("#fileUpload") as HTMLInputElement).files[0];
         let fileName: string = `${updateId}_${myfile.name}`;
-        //console.log(fileName);
-        //const chunkSize:number = 10485760; //10mb
         const chunkSize: number = 1048576; //1mb
         if (myfile.size <= chunkSize) {
             sp.web.getFolderByServerRelativeUrl(this.UploadFolder_Evidence).files.add(fileName, myfile, true).then(f => {
@@ -541,7 +437,6 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
                             UploadStatus: "File Uploaded.",
                             UploadProgress: 100
                         });
-                        //console.log("Metadata Updated");
                         this.afterFileUpload(updateId, fileName, uploadedByUserId);
                     });
                 });
@@ -560,7 +455,6 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
                             UploadStatus: "File Uploaded.",
                             UploadProgress: 100
                         });
-                        //console.log("Metadata Updated");
                         this.afterFileUpload(updateId, fileName, uploadedByUserId);
                     });
                 }).catch(console.log);
@@ -584,12 +478,8 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
             });
         }
 
-
-
     }
     private afterFileUpload = (updateId: number, fileName: string, uploadedByUserId: number): void => {
-        //console.log('after uploading file ', fileName, miscFileID);
-
         const fdata = { ...this.state.FormData, "EvFileName": fileName, "ID": updateId, "UpdatedById": uploadedByUserId };
         this.setState({
             FormData: fdata
@@ -604,15 +494,10 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
     public componentDidMount(): void {
         this.setState({ Loading: true });
         let loadingPromises = [this.loadLookups()];
-        // if (this.props.entityId) {
-        //     loadingPromises.push(this.loadData());
-        // }
         Promise.all(loadingPromises).then(p => this.onAfterLoad(p[1])).then(p => this.setState({ Loading: false })).catch(err => this.setState({ Loading: false }));
-
     }
 
     private loadLookups(): Promise<any> {
-
         let proms: any[] = [];
         proms.push(this.loadGIAAActionStatusTypes());
         return Promise.all(proms);
@@ -627,15 +512,9 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
 
     private onAfterLoad = (entity: types.IEntity): void => {
 
-        //console.log('after load', this.state.LookupData.Users);
-        if(this.props.updateType === GIAAUpdateTypes.ActionUpdate){
-            //console.log('onAfterLoad', this.props.defaultActionStatusTypeId);
-            //this.setState({ FormData: this.cloneObject(this.state.FormData, "GIAAActionStatusTypeId", this.props.defaultActionStatusTypeId), FormIsDirty: true });
-
-            //console.log('onAfterLoad - defaultRevDate', this.props.defaultRevDate);
-            //this.setState({ FormData: this.cloneObject(this.state.FormData, "RequestDateChangeTo", this.props.defaultRevDate), FormIsDirty: true });
+        if (this.props.updateType === GIAAUpdateTypes.ActionUpdate) {
         }
-        else if(this.props.updateType === GIAAUpdateTypes.Status_DateUpdate){
+        else if (this.props.updateType === GIAAUpdateTypes.Status_DateUpdate) {
             console.log('onAfterLoad - defaultActionStatusTypeId', this.props.defaultActionStatusTypeId);
             console.log('onAfterLoad - defaultRevDate', this.props.defaultRevDate);
 
@@ -643,17 +522,11 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
             fd = this.cloneObject(fd, "GIAAActionStatusTypeId", this.props.defaultActionStatusTypeId);
 
             //check if targetDate is greaterthan today date and status is open then set status to overdue
-            //console.log('props.targetDate', this.props.targetDate);
-            //console.log('new Date', new Date());
-            if(this.props.targetDate < new Date() && fd.GIAAActionStatusTypeId === 1){
+            if (this.props.targetDate < new Date() && fd.GIAAActionStatusTypeId === 1) {
                 console.log('target date is greater than todays date and status is open, so set status to overdue');
                 fd = this.cloneObject(fd, "GIAAActionStatusTypeId", 3); //3 is overdue
             }
-            
-
             this.setState({ FormData: fd, FormIsDirty: true });
-
-            
         }
 
     }
@@ -663,7 +536,7 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
     //#region Form Operations
 
 
-    private clearValidations =(): void => {
+    private clearValidations = (): void => {
         let errMsg: IErrorMessage = { ...this.state.ErrMessages };
         errMsg.ActionStatus = null;
         errMsg.Details = null;
@@ -685,67 +558,49 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
             errMsg.Details = null;
         }
 
-        if(this.props.updateType === GIAAUpdateTypes.Status_DateUpdate && this.state.FormData.GIAAActionStatusTypeId === null){
+        if (this.props.updateType === GIAAUpdateTypes.Status_DateUpdate && this.state.FormData.GIAAActionStatusTypeId === null) {
             errMsg.ActionStatus = "Revised Recommendation Status required";
             returnVal = false;
         }
-        else{
+        else {
             errMsg.ActionStatus = null;
         }
 
-        if(this.state.FormData.RequestDateChange === true && this.state.FormData.RequestDateChangeTo === null){
+        if (this.state.FormData.RequestDateChange === true && this.state.FormData.RequestDateChangeTo === null) {
             errMsg.RequestDateChangeTo = "Date required";
             returnVal = false;
         }
-        else{
+        else {
             errMsg.RequestDateChangeTo = null;
         }
 
-
-        // if(this.props.updateType === GIAAUpdateTypes.RevisedDate && this.state.FormData.RevisedDate === null){
-        //     errMsg.RevisedDate = "Revised Date required";
-        //     returnVal = false;
-        // }
-        // else{
-        //     errMsg.RevisedDate = null;
-        // }
-
-
-
-        if(this.props.updateType === GIAAUpdateTypes.ActionUpdate && this.state.FormData.RequestClose === true){
-
+        if (this.props.updateType === GIAAUpdateTypes.ActionUpdate && this.state.FormData.RequestClose === true) {
             const file = (document.querySelector("#fileUpload") as HTMLInputElement).files[0];
-
-            if(file == null){
+            if (file == null) {
                 errMsg.FileUpload = "PDF file required";
-                returnVal = false;                    
+                returnVal = false;
             }
-            else{
+            else {
                 const fileName = file.name;
                 console.log("fileName", fileName);
                 const ext = fileName.substr(fileName.lastIndexOf('.') + 1).toLowerCase();
                 console.log("File Ext", ext);
 
-                if(ext === "pdf"){
+                if (ext === "pdf") {
                     errMsg.FileUpload = null;
                 }
-                else{
+                else {
                     errMsg.FileUpload = "PDF file required";
-                    returnVal = false;                    
+                    returnVal = false;
                 }
-
-                    
             }
-
         }
         else {
             errMsg.FileUpload = null;
         }
 
-
         //at the end set state
         this.setState({ ErrMessages: errMsg });
-
         return returnVal;
     }
     private cloneObject(obj, changeProp?, changeValue?) {
@@ -761,9 +616,7 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
     private changeDropdown = (option: IDropdownOption, f: string, index?: number): void => {
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, option.key), FormIsDirty: true });
     }
-    // protected changeDatePicker = (date: Date, f: string): void => {
-    //     this.setState({ FormData: this.cloneObject(this.state.FormData, f, date), FormIsDirty: true });
-    // }
+
     protected changeCheckbox = (value: boolean, f: string): void => {
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, value), /*ShowFileUpload: !value , FormIsDirty: true*/ });
     }
@@ -771,7 +624,5 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, value), FormIsDirty: true }, this.clearValidations);
     }
 
-
     //#endregion Form Operations
-
 }

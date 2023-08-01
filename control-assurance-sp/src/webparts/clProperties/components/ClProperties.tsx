@@ -4,33 +4,25 @@ import * as types from '../../../types';
 import BaseUserContextWebPartComponent from '../../../components/BaseUserContextWebPartComponent';
 import * as services from '../../../services';
 import EntityList from '../../../components/entity/EntityList';
-import PeriodList from '../../../components/period/PeriodList';
 import { IGenColumn, ColumnType, ColumnDisplayType } from '../../../types/GenColumn';
-import { IUserPermission, IPeriod, IEntity } from '../../../types';
+import { IUserPermission, IEntity } from '../../../types';
 import { CrDropdown, IDropdownOption } from '../../../components/cr/CrDropdown';
 import { EntityService } from '../../../services';
 
 //#region types defination
 
 export interface ILookupData {
-  //Periods: IPeriod[];
 }
 export class LookupData implements ILookupData {
-  //public Periods: IPeriod[] = [];
 }
 
 export interface IClPropertiesState extends types.IUserContextWebPartState {
   LookupData: ILookupData;
   SelectedDropList: string;
-  //CLStaffGrades: IEntity[];
-  //CLProfessionalCats: IEntity[];
-
 }
 export class ClPropertiesState extends types.UserContextWebPartState implements IClPropertiesState {
   public LookupData = new LookupData();
   public SelectedDropList = "Gender";
-  //public CLStaffGrades: IEntity[] = [];
-  //public CLProfessionalCats: IEntity[] = [];
   constructor() {
     super();
   }
@@ -40,7 +32,6 @@ export class ClPropertiesState extends types.UserContextWebPartState implements 
 
 export default class ClProperties extends BaseUserContextWebPartComponent<types.IWebPartComponentProps, ClPropertiesState> {
 
-  private periodService: services.PeriodService = new services.PeriodService(this.props.spfxContext, this.props.api);
   private clGenderService: services.CLGenderService = new services.CLGenderService(this.props.spfxContext, this.props.api);
   private clStaffGradeService: services.CLStaffGradeService = new services.CLStaffGradeService(this.props.spfxContext, this.props.api);
   private clProfessionalCatService: services.CLProfessionalCatService = new services.CLProfessionalCatService(this.props.spfxContext, this.props.api);
@@ -50,7 +41,6 @@ export default class ClProperties extends BaseUserContextWebPartComponent<types.
   private clDeclarationConflictService: services.CLDeclarationConflictService = new services.CLDeclarationConflictService(this.props.spfxContext, this.props.api);
   private personTitleService: services.PersonTitleService = new services.PersonTitleService(this.props.spfxContext, this.props.api);
   private clIR35ScopeService: services.CLIR35ScopeService = new services.CLIR35ScopeService(this.props.spfxContext, this.props.api);
-
 
   constructor(props: types.IWebPartComponentProps) {
     super(props);
@@ -62,28 +52,20 @@ export default class ClProperties extends BaseUserContextWebPartComponent<types.
   public renderWebPart(): React.ReactElement<types.IWebPartComponentProps> {
 
     return (
-
       <Pivot onLinkClick={this.clearErrors}>
-
         <PivotItem headerText="Define Form">
           {this.renderDefForms()}
         </PivotItem>
-
         <PivotItem headerText="Droplists">
           {this.renderDefLists()}
         </PivotItem>
-
       </Pivot>
     );
   }
 
-
-
-
   private renderDefForms() {
 
     const listColumns: IGenColumn[] = [
-
       {
         key: 'Title',
         columnType: ColumnType.TextBox,
@@ -132,13 +114,6 @@ export default class ClProperties extends BaseUserContextWebPartComponent<types.
         fieldMaxLength: 5000,
         numRows: 10
       },
-
-
-
-
-      // help texts for "i" icons
-
-
       {
         key: 'CaseDetailsHelpText',
         columnType: ColumnType.TextBox,
@@ -175,7 +150,6 @@ export default class ClProperties extends BaseUserContextWebPartComponent<types.
         fieldMaxLength: 5000,
         numRows: 10
       },
-      
       {
         key: 'RequirementEditHelpText',
         columnType: ColumnType.TextBox,
@@ -200,7 +174,6 @@ export default class ClProperties extends BaseUserContextWebPartComponent<types.
         fieldMaxLength: 5000,
         numRows: 10
       },
-
       {
         key: 'CommercialEditHelpText',
         columnType: ColumnType.TextBox,
@@ -325,7 +298,6 @@ export default class ClProperties extends BaseUserContextWebPartComponent<types.
         fieldMaxLength: 5000,
         numRows: 10
       },
-
       {
         key: 'BHApprovalDecisionEditHelpText',
         columnType: ColumnType.TextBox,
@@ -375,7 +347,6 @@ export default class ClProperties extends BaseUserContextWebPartComponent<types.
         fieldMaxLength: 5000,
         numRows: 10
       },
-
       {
         key: 'HRBPApprovalDecisionEditHelpText',
         columnType: ColumnType.TextBox,
@@ -400,7 +371,6 @@ export default class ClProperties extends BaseUserContextWebPartComponent<types.
         fieldMaxLength: 5000,
         numRows: 10
       },
-
       {
         key: 'CBPApprovalDecisionEditHelpText',
         columnType: ColumnType.TextBox,
@@ -425,7 +395,6 @@ export default class ClProperties extends BaseUserContextWebPartComponent<types.
         fieldMaxLength: 5000,
         numRows: 10
       },
-
       {
         key: 'ICApprovalDecisionEditHelpText',
         columnType: ColumnType.TextBox,
@@ -450,7 +419,6 @@ export default class ClProperties extends BaseUserContextWebPartComponent<types.
         fieldMaxLength: 5000,
         numRows: 10
       },
-
       {
         key: 'OnboardingEditHelpText',
         columnType: ColumnType.TextBox,
@@ -475,7 +443,6 @@ export default class ClProperties extends BaseUserContextWebPartComponent<types.
         fieldMaxLength: 5000,
         numRows: 10
       },
-
       {
         key: 'EngagedEditHelpText',
         columnType: ColumnType.TextBox,
@@ -500,7 +467,6 @@ export default class ClProperties extends BaseUserContextWebPartComponent<types.
         fieldMaxLength: 5000,
         numRows: 10
       },
-
       {
         key: 'LeavingEditHelpText',
         columnType: ColumnType.TextBox,
@@ -525,7 +491,6 @@ export default class ClProperties extends BaseUserContextWebPartComponent<types.
         fieldMaxLength: 5000,
         numRows: 10
       },
-
       {
         key: 'CaseDiscussionHelpText',
         columnType: ColumnType.TextBox,
@@ -538,21 +503,13 @@ export default class ClProperties extends BaseUserContextWebPartComponent<types.
         fieldMaxLength: 5000,
         numRows: 10
       },
-
-
     ];
 
 
     return (
-
-
       <React.Fragment>
-
-
         <EntityList
           allowAdd={this.superUserPermission()}
-          //allowAdd={true}
-          //onRowSelectionCheckEditDel={this.editPermission}
           columns={listColumns}
           {...this.props}
           onError={this.onError}
@@ -564,21 +521,10 @@ export default class ClProperties extends BaseUserContextWebPartComponent<types.
           childEntityNameSingular=""
         />
       </React.Fragment>
-
-
-
-
-
     );
   }
 
-  private editPermission = (key: number) : Promise<boolean> => {
-    const su:boolean = this.superUserPermission();
-    return Promise.resolve(su);
-  }
-
   private renderDefLists() {
-
 
     const listColumns: IGenColumn[] = [
       {
@@ -591,11 +537,6 @@ export default class ClProperties extends BaseUserContextWebPartComponent<types.
         isRequired: true,
         fieldMaxLength: 100
       },
-
-
-
-
-
     ];
 
     const drpOptions: IDropdownOption[] = [
@@ -610,7 +551,6 @@ export default class ClProperties extends BaseUserContextWebPartComponent<types.
       { key: 'Declaration Conflict', text: 'Declaration Conflict' },
     ];
 
-
     return (
 
       <React.Fragment>
@@ -620,7 +560,6 @@ export default class ClProperties extends BaseUserContextWebPartComponent<types.
           onChanged={(v) => this.changeDropdown_DropList(v)}
           selectedKey={this.state.SelectedDropList}
         />
-
         <EntityList
           allowAdd={this.superUserPermission()}
           columns={listColumns}
@@ -634,11 +573,8 @@ export default class ClProperties extends BaseUserContextWebPartComponent<types.
           childEntityNameSingular="record"
         />
       </React.Fragment>
-
-
     );
   }
-
 
   //#endregion Render
 
@@ -658,10 +594,8 @@ export default class ClProperties extends BaseUserContextWebPartComponent<types.
         return true;
       }
     }
-
     return false;
   }
-
 
   //#endregion Permissions
 
@@ -688,14 +622,12 @@ export default class ClProperties extends BaseUserContextWebPartComponent<types.
   private getEntityServiceDropList = (): EntityService<IEntity> => {
     let service: EntityService<IEntity>;
     if (this.state.SelectedDropList === "Grades") {
-      //console.log('getEntityServiceDropList - Grades');
       return this.clStaffGradeService;
     }
     else if (this.state.SelectedDropList === "Gender") {
       return this.clGenderService;
     }
     else if (this.state.SelectedDropList === "Professional Categories") {
-      //console.log('getEntityServiceDropList - Professional Categories');
       return this.clProfessionalCatService;
     }
     else if (this.state.SelectedDropList === "Locations") {
@@ -716,8 +648,6 @@ export default class ClProperties extends BaseUserContextWebPartComponent<types.
     else if (this.state.SelectedDropList === "Declaration Conflict") {
       return this.clDeclarationConflictService;
     }
-
-
     return service;
   }
 
@@ -781,17 +711,13 @@ export default class ClProperties extends BaseUserContextWebPartComponent<types.
     else if (this.state.SelectedDropList === "Declaration Conflict") {
       return "Declaration Conflict";
     }
-
     return "";
   }
 
   protected loadLookups(): Promise<any> {
-
     return Promise.all([
-
     ]);
   }
-
 
   //#endregion Load Data
 
@@ -801,12 +727,7 @@ export default class ClProperties extends BaseUserContextWebPartComponent<types.
     this.setState({
       SelectedDropList: String(option.key),
     });
-
   }
 
-
-
-
   //#endregion Event Handlers
-
 }

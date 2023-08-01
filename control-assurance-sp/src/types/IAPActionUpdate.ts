@@ -1,8 +1,6 @@
 import { IEntity } from "./Entity";
 
-
 export interface IIAPActionUpdate  extends IEntity {
-
     UpdateType?: string;
     UpdateDetails?: string;
     RevisedDate?: Date;
@@ -12,14 +10,11 @@ export interface IIAPActionUpdate  extends IEntity {
     IAPStatusTypeId?: number;
     UpdatedById?: number;
     UpdateDate?: Date;
-    
-
 }
 
 export class IAPActionUpdate implements IIAPActionUpdate{ 
     public ID: number = 0;
     public Title: string = null;    
-
     public UpdateType?: string = null;
     public UpdateDetails?: string = null;
     public RevisedDate?: Date = null;
@@ -34,6 +29,4 @@ export class IAPActionUpdate implements IIAPActionUpdate{
         this.IAPActionId = iapActionId;
         this.UpdateType = updateType;
     }
-
-
 }

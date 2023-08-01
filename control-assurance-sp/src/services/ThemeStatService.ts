@@ -1,7 +1,6 @@
 import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { EntityService } from './EntityService';
-import { IDataAPI, IEntity, IDirectorateGroupMember } from '../types';
-
+import { IDataAPI, IEntity } from '../types';
 
 export class ThemeStatService extends EntityService<IEntity> {
     public readonly parentEntities = [];
@@ -18,6 +17,4 @@ export class ThemeStatService extends EntityService<IEntity> {
     public readAllWithOrgFilters2(teamId:number, directorateId:number, directorateGroupId:number, periodId:number): Promise<IEntity[]> {
         return this.readAll(`?teamId=${teamId}&directorateId=${directorateId}&directorateGroupId=${directorateGroupId}&periodId=${periodId}&ThemeStat2=`);
     }
-
-
 }

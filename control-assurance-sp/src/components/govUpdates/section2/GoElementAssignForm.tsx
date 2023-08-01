@@ -10,7 +10,6 @@ import { CrEntityPicker } from '../../cr/CrEntityPicker';
 import styles from '../../../styles/cr.module.scss';
 
 export interface IGoElementAssignFormProps extends types.IBaseComponentProps {
-    //periodID: number | string;
     goElementId: number;
     showForm: boolean;
     onSaved?: () => void;
@@ -27,7 +26,6 @@ export interface IGoElementAssignFormState {
     Loading: boolean;
     LookupData: ILookupData;
     FormData: IGoElement;
-    //ClearSuggestedStatus:boolean;
     FormDataBeforeChanges: IGoElement;
     FormIsDirty: boolean;
 }
@@ -37,14 +35,12 @@ export class GoElementAssignFormState implements IGoElementAssignFormState {
     public FormData = new GoElement(0,0);
     public FormDataBeforeChanges = new GoElement(0,0);
     public FormIsDirty = false;
-    //public ClearSuggestedStatus = false;
 }
 
 export default class GoElementAssignForm extends React.Component<IGoElementAssignFormProps, IGoElementAssignFormState> {
     private userService: services.UserService = new services.UserService(this.props.spfxContext, this.props.api);
     private goElementService: services.GoElementService = new services.GoElementService(this.props.spfxContext, this.props.api);
     private goAssignmentService: services.GoAssignmentService = new services.GoAssignmentService(this.props.spfxContext, this.props.api);
-
     private childEntities: types.IFormDataChildEntities[] = [
         { ObjectParentProperty: 'GoAssignments', ParentIdProperty: 'GoElementId', ChildIdProperty: 'UserId', ChildService: this.goAssignmentService },
     ];
@@ -57,7 +53,6 @@ export default class GoElementAssignForm extends React.Component<IGoElementAssig
     //#region Render
 
     public render(): React.ReactElement<IGoElementAssignFormProps> {
-        //const errors = this.state.ValidationErrors;
         return (
             <Panel isOpen={this.props.showForm} headerText={"Assign Users"} type={PanelType.medium} onRenderNavigation={() => <FormCommandBar onSave={this.saveData} onCancel={this.props.onCancelled} />}>
                 <div className={styles.cr}>
@@ -85,12 +80,9 @@ export default class GoElementAssignForm extends React.Component<IGoElementAssig
         return (
             <CrTextField
                 label="Specific Evidence Area"
-                //required={true}
                 className={styles.formField}
                 value={this.state.FormData.GoDefElement.Title}
                 disabled={true}
-                //onChanged={(v) => this.changeTextField(v, "Title")}
-            //errorMessage={this.state.ValidationErrors[c.fieldName]} 
             />
         );
     }
@@ -98,7 +90,6 @@ export default class GoElementAssignForm extends React.Component<IGoElementAssig
     private renderUsers() {
         const users = this.state.LookupData.Users;
         const fd_users: types.IGoAssignment[] = this.state.FormData.GoAssignments;
-        //console.log('fd_users', fd_users);
         if (users) {
             return (
                 <CrEntityPicker
@@ -156,12 +147,13 @@ export default class GoElementAssignForm extends React.Component<IGoElementAssig
         return this.userService.readAll().then((data: IUser[]): IUser[] => {
             this.setState({ LookupData: this.cloneObject(this.state.LookupData, "Users", data) });
             return data;
-        }, (err) => { if (this.props.onError) this.props.onError(`Error loading Users lookup data`, err.message); });
+        }).catch((err) => {
+            if (this.props.onError) this.props.onError(`Error loading Users lookup data`, err.message);
+            return Promise.reject(err);
+        });
     }
+    
     private onAfterLoad = (entity: types.IEntity): void => {
-
-        //console.log('after load', this.state.LookupData.Users);
-
     }
 
     private saveData = (): void => {
@@ -194,9 +186,6 @@ export default class GoElementAssignForm extends React.Component<IGoElementAssig
             });
             return Promise.all(promises).then(() => this.state.FormData);
         }
-
-
-        //return Promise.resolve();
     }
 
     private onAfterUpdate(): Promise<any> { return Promise.resolve(); }
@@ -238,5 +227,4 @@ export default class GoElementAssignForm extends React.Component<IGoElementAssig
     }
 
     //#endregion Form Operations
-    
 }

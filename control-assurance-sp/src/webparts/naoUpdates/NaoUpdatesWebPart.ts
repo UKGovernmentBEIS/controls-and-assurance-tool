@@ -10,17 +10,12 @@ export default class NaoUpdatesWebPart extends DataAPIWebPart {
 	protected WebPartDescription = 'Web part for NaoUpdates';
 
 	public onInit(): Promise<void> {
-
 		return super.onInit().then(_ => {
-	  
-		  // other init code may be present
-		  console.log('on init');
-	  
-		  sp.setup({
-			spfxContext: this.context
-		  });
+			sp.setup({
+				spfxContext: this.context
+			});
 		});
-	  }
+	}
 
 	protected renderWebPart(): React.ReactElement<IWebPartComponentProps> {
 		return React.createElement(

@@ -9,16 +9,11 @@ import { FormButtons } from '../cr/FormButtons';
 import { Panel, PanelType } from 'office-ui-fabric-react/lib/Panel';
 import { FormCommandBar } from '../cr/FormCommandBar';
 import { CrDatePicker } from '../cr/CrDatePicker';
-
-import { CrEntityPicker } from '../cr/CrEntityPicker';
 import { FieldErrorMessage } from '../cr/FieldDecorators';
 import { IAPActionUpdateTypes } from '../../types/AppGlobals';
 import styles from '../../styles/cr.module.scss';
-import GiaaUpdates from '../../webparts/giaaUpdates/components/GiaaUpdates';
 import { sp, ChunkedFileUploadProgressData } from '@pnp/sp';
 import { getUploadFolder_IAPFiles, getFolder_Help, changeDatePicker } from '../../types/AppGlobals';
-
-
 
 export interface IUpdatesSaveFormProps extends types.IBaseComponentProps {
 
@@ -26,10 +21,10 @@ export interface IUpdatesSaveFormProps extends types.IBaseComponentProps {
     iapTypeId: number;
     updateType: string;
     defaultActionStatusTypeId: number;
-    defaultRevDate:Date;
+    defaultRevDate: Date;
     entityId: number;
     showForm: boolean;
-    onSaved?: (defaultIAPStatusTypeId:number, defaultRevisedDate:Date) => void;
+    onSaved?: (defaultIAPStatusTypeId: number, defaultRevisedDate: Date) => void;
     onCancelled?: () => void;
 }
 
@@ -45,8 +40,6 @@ export interface IErrorMessage {
     RevisedDate: string;
     ActionStatus: string;
     FileUpload: string;
-
-
 }
 export class ErrorMessage implements IErrorMessage {
 
@@ -62,11 +55,10 @@ export interface IUpdatesSaveFormState {
     FormDataBeforeChanges: IIAPActionUpdate;
     FormIsDirty: boolean;
     ErrMessages: IErrorMessage;
-
     UploadStatus: string;
     UploadProgress: number;
     ShowUploadProgress: boolean;
-    //ShowFileUpload: boolean;
+
 }
 export class UpdatesSaveFormState implements IUpdatesSaveFormState {
     public Loading = false;
@@ -75,39 +67,29 @@ export class UpdatesSaveFormState implements IUpdatesSaveFormState {
     public FormDataBeforeChanges;
     public FormIsDirty = false;
     public ErrMessages = new ErrorMessage();
-
     public UploadStatus = "";
     public UploadProgress: number = 0;
     public ShowUploadProgress = false;
-    //public ShowFileUpload = false;
 
     constructor(iapUpdateId: number, updateType: string) {
         this.FormData = new IAPActionUpdate(iapUpdateId, updateType);
         this.FormDataBeforeChanges = new IAPActionUpdate(iapUpdateId, updateType);
-
     }
 }
-
 export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormProps, IUpdatesSaveFormState> {
 
     private iapStatusTypeService: services.IAPStatusTypeService = new services.IAPStatusTypeService(this.props.spfxContext, this.props.api);
     private iapActionUpdateService: services.IAPActionUpdateService = new services.IAPActionUpdateService(this.props.spfxContext, this.props.api);
-    
-
     private Folder_Help: string = "";
     private UploadFolder_Evidence: string = "";
-
     constructor(props: IUpdatesSaveFormProps, state: IUpdatesSaveFormState) {
         super(props);
-
         this.UploadFolder_Evidence = getUploadFolder_IAPFiles(props.spfxContext);
         this.Folder_Help = getFolder_Help(props.spfxContext);
-
         this.state = new UpdatesSaveFormState(Number(props.iapUpdateId), props.updateType);
     }
 
     public render(): React.ReactElement<IUpdatesSaveFormProps> {
-        //const errors = this.state.ValidationErrors;
         return (
             <Panel isOpen={this.props.showForm} headerText={this.getHeaderText()} type={PanelType.medium} onRenderNavigation={() => <FormCommandBar onSave={this.saveData} onCancel={this.props.onCancelled} saveDisabled={this.state.ShowUploadProgress} />}>
                 <div className={styles.cr}>
@@ -191,7 +173,7 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
                 label={lbl}
                 className={styles.formField}
                 value={this.state.FormData.UpdateDetails}
-                onChanged={(v) => this.changeTextField(v, "UpdateDetails")}
+                onChanged={(ev, newValue) => this.changeTextField(newValue, "UpdateDetails")}
                 multiline={true}
                 required={true}
                 errorMessage={this.state.ErrMessages.Details}
@@ -199,8 +181,6 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
             />
         );
     }
-
-
 
     private renderEvLabel() {
         let lbl: string = "";
@@ -222,49 +202,33 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
 
         return (
             <React.Fragment>
-
                 <CrCheckbox
                     className={`${styles.formField} ${styles.checkbox}`}
                     label="Provide a link instead of uploading a file"
                     checked={this.state.FormData.EvIsLink}
                     onChange={(ev, isChecked) => this.changeCheckboxIsLink(isChecked, "EvIsLink")}
-
-
                 />
-
-
-
             </React.Fragment>
         );
-
     }
 
     private renderEvLinkBox() {
-        // if (this.state.ShowFileUpload == true)
-        //     return null;
-
         if (this.state.FormData.EvIsLink === true) {
 
             return (
                 <CrTextField
                     label="Link"
-                    //required={true}
                     className={styles.formField}
                     value={this.state.FormData.EvFileName}
-                    onChanged={(v) => this.changeTextField(v, "EvFileName")}
-                //errorMessage={this.state.ErrMessages.Title}
+                    onChanged={(ev, newValue) => this.changeTextField(newValue, "EvFileName")}
                 />
             );
         }
         else
             return false;
-
-
     }
 
     private renderFileUpload() {
-        // if (this.state.ShowFileUpload == false)
-        //     return null;
 
         if (this.state.FormData.EvIsLink === true)
             return null;
@@ -275,7 +239,7 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
                     <input type="file" name="fileUpload" id="fileUpload" accept=".pdf,.msg"></input>
                     {this.state.ErrMessages.FileUpload && <FieldErrorMessage value={this.state.ErrMessages.FileUpload} />}
                     <div style={{ paddingTop: '10px' }}>
-                    Please upload documents as Outlook mail .msg or .pdf. For guidelines on saving documents as .msg or .pdf, please click <span onClick={this.viewHelpPDF} style={{ textDecoration: 'underline', cursor: 'pointer' }}>here</span>.
+                        Please upload documents as Outlook mail .msg or .pdf. For guidelines on saving documents as .msg or .pdf, please click <span onClick={this.viewHelpPDF} style={{ textDecoration: 'underline', cursor: 'pointer' }}>here</span>.
                     </div>
                 </div>
                 {this.state.ShowUploadProgress && <div style={{ minHeight: '80px', marginTop: '15px' }}>
@@ -291,10 +255,6 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
         );
     }
 
-
-
-
-
     //#region Class Methods
 
     private viewHelpPDF = () => {
@@ -307,28 +267,19 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
             console.log(t);
             const serverRelativeUrl = t["ServerRelativeUrl"];
             console.log(serverRelativeUrl);
-
             const a = document.createElement('a');
-            //document.body.appendChild(a);
             a.href = serverRelativeUrl;
             a.target = "_blank";
             a.download = fileName;
-
             document.body.appendChild(a);
             console.log(a);
-            //a.click();
-            //document.body.removeChild(a);
-
 
             setTimeout(() => {
                 window.URL.revokeObjectURL(serverRelativeUrl);
                 window.open(serverRelativeUrl, '_blank');
                 document.body.removeChild(a);
             }, 1);
-
-
         });
-
     }
 
     //#endregion Class Methods
@@ -342,25 +293,13 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
             return "Add GIAA Comments";
         else
             return "Add Comment or Feedback";
-
     }
 
-
-
-
-
-
     //#region Data Save
-
-
     private saveData = (): void => {
-
-
         if (this.validateEntity()) {
             if (this.props.onError) this.props.onError(null);
-
             let f: IIAPActionUpdate = { ...this.state.FormData };
-
             //remove all the child and parent entities before sending post/patch
             //delete f.User; //parent entity
 
@@ -368,7 +307,6 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
                 let myfile = (document.querySelector("#fileUpload") as HTMLInputElement);
                 //firts create record in the db, so we can get the ID, then use the ID to append in the file name to make file name unique
                 this.iapActionUpdateService.create(f).then(x => {
-                    //console.log(x);
                     if ((f.EvIsLink === false) && myfile.files[0]) {
                         this.uploadFile(x.ID, x.UpdatedById);
                     }
@@ -377,15 +315,10 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
                         console.log('evidence saved as link');
                         this.props.onSaved(f.IAPStatusTypeId, f.RevisedDate);
                     }
-
                 });
-
             }
             else {
-
-                //console.log('in update');
-
-                this.iapActionUpdateService.update(f.ID, f).then(() =>this.props.onSaved(f.IAPStatusTypeId, f.RevisedDate), (err) => {
+                this.iapActionUpdateService.update(f.ID, f).then(() => this.props.onSaved(f.IAPStatusTypeId, f.RevisedDate), (err) => {
                     if (this.props.onError) this.props.onError(`Error updating item`, err.message);
                 });
             }
@@ -400,8 +333,6 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
 
         let myfile = (document.querySelector("#fileUpload") as HTMLInputElement).files[0];
         let fileName: string = `${updateId}_${myfile.name}`;
-        //console.log(fileName);
-        //const chunkSize:number = 10485760; //10mb
         const chunkSize: number = 1048576; //1mb
         if (myfile.size <= chunkSize) {
             sp.web.getFolderByServerRelativeUrl(this.UploadFolder_Evidence).files.add(fileName, myfile, true).then(f => {
@@ -419,7 +350,6 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
                             UploadStatus: "File Uploaded.",
                             UploadProgress: 100
                         });
-                        //console.log("Metadata Updated");
                         this.afterFileUpload(updateId, fileName, uploadedByUserId);
                     });
                 });
@@ -438,7 +368,6 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
                             UploadStatus: "File Uploaded.",
                             UploadProgress: 100
                         });
-                        //console.log("Metadata Updated");
                         this.afterFileUpload(updateId, fileName, uploadedByUserId);
                     });
                 }).catch(console.log);
@@ -461,18 +390,12 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
                 UploadProgress: progress
             });
         }
-
-
-
     }
     private afterFileUpload = (updateId: number, fileName: string, uploadedByUserId: number): void => {
-        //console.log('after uploading file ', fileName, miscFileID);
-
         const fdata = { ...this.state.FormData, "EvFileName": fileName, "ID": updateId, "UpdatedById": uploadedByUserId };
         this.setState({
             FormData: fdata
         }, this.saveData);
-
     }
 
     //#endregion Data Save
@@ -482,15 +405,10 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
     public componentDidMount(): void {
         this.setState({ Loading: true });
         let loadingPromises = [this.loadLookups()];
-        // if (this.props.entityId) {
-        //     loadingPromises.push(this.loadData());
-        // }
         Promise.all(loadingPromises).then(p => this.onAfterLoad(p[1])).then(p => this.setState({ Loading: false })).catch(err => this.setState({ Loading: false }));
-
     }
 
     private loadLookups(): Promise<any> {
-
         let proms: any[] = [];
         proms.push(this.loadIAPStatusTypes());
         return Promise.all(proms);
@@ -499,7 +417,7 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
     private loadIAPStatusTypes = (): void => {
         this.iapStatusTypeService.readAll().then((data: IEntity[]): IEntity[] => {
             let iapStatusTypes = data;
-            if(this.props.iapTypeId === 6){
+            if (this.props.iapTypeId === 6) {
                 iapStatusTypes = data.filter(x => x.ID > 1);
                 iapStatusTypes.forEach(x => {
                     x.Title = x['Title2'];
@@ -513,23 +431,19 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
 
     private onAfterLoad = (entity: types.IEntity): void => {
 
-        //console.log('after load', this.state.LookupData.Users);
-        if(this.props.updateType === IAPActionUpdateTypes.ActionUpdate){
+        if (this.props.updateType === IAPActionUpdateTypes.ActionUpdate) {
             console.log('onAfterLoad', this.props.defaultActionStatusTypeId);
             this.setState({ FormData: this.cloneObject(this.state.FormData, "IAPStatusTypeId", this.props.defaultActionStatusTypeId), FormIsDirty: true });
         }
-        else if(this.props.updateType === IAPActionUpdateTypes.RevisedDate){
+        else if (this.props.updateType === IAPActionUpdateTypes.RevisedDate) {
             console.log('onAfterLoad', this.props.defaultRevDate);
             this.setState({ FormData: this.cloneObject(this.state.FormData, "RevisedDate", this.props.defaultRevDate), FormIsDirty: true });
         }
-
     }
 
     //#endregion Data Load
 
     //#region Form Operations
-
-
 
     private validateEntity = (): boolean => {
         let returnVal: boolean = true;
@@ -543,85 +457,46 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
             errMsg.Details = null;
         }
 
-        if(this.props.updateType === IAPActionUpdateTypes.ActionUpdate && this.state.FormData.IAPStatusTypeId === null){
+        if (this.props.updateType === IAPActionUpdateTypes.ActionUpdate && this.state.FormData.IAPStatusTypeId === null) {
             errMsg.ActionStatus = "Proposed Recommendation Status required";
             returnVal = false;
         }
-        else{
+        else {
             errMsg.ActionStatus = null;
         }
 
-        if(this.props.updateType === IAPActionUpdateTypes.RevisedDate && this.state.FormData.RevisedDate === null){
+        if (this.props.updateType === IAPActionUpdateTypes.RevisedDate && this.state.FormData.RevisedDate === null) {
             errMsg.RevisedDate = "Revised Date required";
             returnVal = false;
         }
-        else{
+        else {
             errMsg.RevisedDate = null;
         }
 
-
-
-        if(this.props.updateType === IAPActionUpdateTypes.RevisedDate){
-
-            //((document.querySelector("#fileUpload") as HTMLInputElement).files[0]) == null
+        if (this.props.updateType === IAPActionUpdateTypes.RevisedDate) {
             const file = (document.querySelector("#fileUpload") as HTMLInputElement).files[0];
-            
-
-            // const reader = new FileReader();
-            // // reader.addEventListener('load', (event) => {
-            // //   //img.src = event.target.result;
-            // //   //const r = event.target.res
-            // //   //console.log('r', r);
-            // // });
-
-            // reader.onload = (e) => {
-            //     // e.target.result should contain the text
-            //     const xx = e.target['result'];
-            //     const ee = new Entity();
-            //     ee.Title = xx;
-
-            //     this.xmlStringManagerService.create(ee).then(x => {
-            //         //console.log(x);
-
-
-            //     });
-
-            //     console.log('xx', xx);
-                
-            // };
-
-            // reader.readAsText(file);
-
-
-            //console.log('x1', x1);
-
-            if(file == null){
+            if (file == null) {
                 errMsg.FileUpload = "PDF file required";
-                returnVal = false;                    
+                returnVal = false;
             }
-            else{
+            else {
                 const fileName = file.name;
                 console.log("fileName", fileName);
                 const ext = fileName.substr(fileName.lastIndexOf('.') + 1).toLowerCase();
                 console.log("File Ext", ext);
 
-                if(ext === "pdf"){
+                if (ext === "pdf") {
                     errMsg.FileUpload = null;
                 }
-                else{
+                else {
                     errMsg.FileUpload = "PDF file required";
-                    returnVal = false;                    
+                    returnVal = false;
                 }
-
-                    
             }
-
         }
         else {
             errMsg.FileUpload = null;
         }
-
-
         //at the end set state
         this.setState({ ErrMessages: errMsg });
 
@@ -640,13 +515,9 @@ export default class UpdatesSaveForm extends React.Component<IUpdatesSaveFormPro
     private changeDropdown = (option: IDropdownOption, f: string, index?: number): void => {
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, option.key), FormIsDirty: true });
     }
-    // protected changeDatePicker = (date: Date, f: string): void => {
-    //     this.setState({ FormData: this.cloneObject(this.state.FormData, f, date), FormIsDirty: true });
-    // }
     protected changeCheckboxIsLink = (value: boolean, f: string): void => {
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, value), /*ShowFileUpload: !value , FormIsDirty: true*/ });
     }
-
 
     //#endregion Form Operations
 

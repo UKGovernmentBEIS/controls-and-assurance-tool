@@ -1,7 +1,4 @@
 import { IColumn } from 'office-ui-fabric-react/lib/DetailsList';
-import { EntityService } from '../services/EntityService';
-import { IEntity } from './Entity';
-
 
 export interface IOrgRepColumn extends IColumn{
     columnDisplayType: ColumnDisplayTypes;

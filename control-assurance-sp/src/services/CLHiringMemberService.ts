@@ -1,9 +1,6 @@
 import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { EntityService } from './EntityService';
-import { IDataAPI, IEntity, ICLHiringMember } from '../types';
-import { baseElementEvents } from 'office-ui-fabric-react/lib/Utilities';
-
-
+import { IDataAPI, ICLHiringMember } from '../types';
 
 export class CLHiringMemberService extends EntityService<ICLHiringMember> {
     public readonly parentEntities = [];
@@ -12,7 +9,4 @@ export class CLHiringMemberService extends EntityService<ICLHiringMember> {
     constructor(spfxContext: WebPartContext, api: IDataAPI) {
         super(spfxContext, api, `/CLHiringMembers`);
     }
-
-
-
 }

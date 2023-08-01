@@ -13,8 +13,6 @@ export class EntityService<T> extends DataService<T> {
         this.entityUrl = `${api.URL}${entityUrl}`;
     }
 
-
-
     public read(id: number, includeParents?: boolean, includeChildren?: boolean, customExpandEntities?: string[]): Promise<T> {
         let entitiesToExpand: string[] = [];
         if (includeParents)
@@ -47,13 +45,11 @@ export class EntityService<T> extends DataService<T> {
         });
     }
 
-    //6Nov19 Start - Add
     public readString(querystring?: string): Promise<string> {
-        return this.getEntities(this.entityUrl + querystring).then((data: any): string => 
-            {return data.value;
+        return this.getEntities(this.entityUrl + querystring).then((data: any): string => {
+            return data.value;
         });
     }
-    //6Nov19 End
 
     public readEntity(querystring?: string): Promise<T> {
         return this.getEntity(this.entityUrl + querystring).then((data: any): T => {
@@ -68,7 +64,7 @@ export class EntityService<T> extends DataService<T> {
     public readAllExpandAll(querystring?: string): Promise<T[]> {
         return this.readAll(querystring);
     }
-    public readAllWithArgs(arg1?:any, arg2?:any, arg3?:any): Promise<T[]> {
+    public readAllWithArgs(arg1?: any, arg2?: any, arg3?: any): Promise<T[]> {
         return this.readAll();
     }
 
@@ -97,9 +93,9 @@ export class EntityService<T> extends DataService<T> {
     }
 
     //checks edit delete permission for the current user
-    public checkEditDelPermission(key: number) : Promise<boolean>{
+    public checkEditDelPermission(key: number): Promise<boolean> {
         return this.getEntity(`${this.entityUrl}?key=${key}&currentUser=&checkEditDelPermission=true`).then((data: any): boolean => {
-            const result : boolean = data.value;
+            const result: boolean = data.value;
             return result;
         });
     }

@@ -10,7 +10,7 @@ export interface ICrNumberTextFieldProps {
     disabled?: boolean;
     required?: boolean;
     maxLength?: number;
-    onChanged?: (value: string) => void;
+    onChanged?: (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => void;
     history?: string;
     errorMessage?: string;
     suffix?: string;

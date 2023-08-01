@@ -1,8 +1,6 @@
 import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { EntityService } from './EntityService';
-import { IDataAPI, IDefForm, IPermissionType } from '../types';
-
-
+import { IDataAPI, IPermissionType } from '../types';
 
 export class PermissionTypeService extends EntityService<IPermissionType> {
     public readonly parentEntities = [];

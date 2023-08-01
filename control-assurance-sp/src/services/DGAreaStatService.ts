@@ -2,8 +2,6 @@ import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { EntityService } from './EntityService';
 import { IDataAPI, IDGAreaStat } from '../types';
 
-
-
 export class DGAreaStatService extends EntityService<IDGAreaStat> {
     public readonly parentEntities = [];
     protected childrenEntities = [];
@@ -19,7 +17,4 @@ export class DGAreaStatService extends EntityService<IDGAreaStat> {
             return this.readAll(`?periodId=${periodId}`);
     }
 
-    // public readAllWithArgs(periodId: number, ss:string): Promise<IDGAreaStat[]> {
-    //     return this.readAll(`?periodId=${periodId}&SPDGAreaStat2=`);
-    // }
 }

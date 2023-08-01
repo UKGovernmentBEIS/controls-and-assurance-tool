@@ -7,17 +7,12 @@ import { CrDropdown, IDropdownOption } from '../cr/CrDropdown';
 import { FormButtons } from '../cr/FormButtons';
 import { Panel, PanelType } from 'office-ui-fabric-react/lib/Panel';
 import { FormCommandBar } from '../cr/FormCommandBar';
-import { CrEntityPicker } from '../cr/CrEntityPicker';
 import { CrCheckbox } from '../cr/CrCheckbox';
 import { CrDatePicker } from '../cr/CrDatePicker';
 import { changeDatePicker } from '../../types/AppGlobals';
-//import { Stack, IStackProps, IStackStyles } from 'office-ui-fabric-react/lib/Stack';
 import styles from '../../styles/cr.module.scss';
-import { ThemeSettingName } from 'office-ui-fabric-react/lib/Styling';
-//import { ILink } from 'office-ui-fabric-react/lib/Link';
 
 export interface IMainSaveFormProps extends types.IBaseComponentProps {
-    //periodID: number | string;
     entityId: number;
     showForm: boolean;
     onSaved?: () => void;
@@ -40,7 +35,6 @@ export interface IErrorMessage {
     CurrentPeriodTitle: string;
     CurrentPeriodStartDate: string;
     CurrentPeriodEndDate: string;
-    //Link: string;
 }
 export class ErrorMessage implements IErrorMessage {
     public Title = null;
@@ -56,7 +50,6 @@ export interface IMainSaveFormState {
     Loading: boolean;
     LookupData: ILookupData;
     FormData: INAOPublication;
-    //ClearSuggestedStatus:boolean;
     FormDataBeforeChanges: INAOPublication;
     FormIsDirty: boolean;
     ArrLinks: ILinkLocalType[];
@@ -69,7 +62,6 @@ export class MainSaveFormState implements IMainSaveFormState {
     public FormDataBeforeChanges = new NAOPublication();
     public FormIsDirty = false;
     public ArrLinks: ILinkLocalType[] = [];
-    //public ClearSuggestedStatus = false;
     public ErrMessages = new ErrorMessage();
 }
 
@@ -78,20 +70,10 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
     private naoTypeService: services.NAOTypeService = new services.NAOTypeService(this.props.spfxContext, this.props.api);
     private naoPublicationService: services.NAOPublicationService = new services.NAOPublicationService(this.props.spfxContext, this.props.api);
     private naoPublicationDirectorateService: services.NAOPublicationDirectorateService = new services.NAOPublicationDirectorateService(this.props.spfxContext, this.props.api);
-
-    private saveInProgress:boolean = false;
-
+    private saveInProgress: boolean = false;
     private childEntities: types.IFormDataChildEntities[] = [
         { ObjectParentProperty: 'NAOPublicationDirectorates', ParentIdProperty: 'NAOPublicationId', ChildIdProperty: 'DirectorateId', ChildService: this.naoPublicationDirectorateService },
     ];
-
-    // private stackTokens = { childrenGap: 10 };
-    // private stackStyles: Partial<IStackStyles> = { root: { width: '100%' } };
-    // private columnProps: Partial<IStackProps> = {
-    //     tokens: { childrenGap: 15 },
-    //     styles: { root: { width: 300 } },
-    // };
-
 
     constructor(props: IMainSaveFormProps, state: IMainSaveFormState) {
         super(props);
@@ -101,7 +83,6 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
     //#region Render
 
     public render(): React.ReactElement<IMainSaveFormProps> {
-        //const errors = this.state.ValidationErrors;
         return (
             <Panel isOpen={this.props.showForm} headerText={"NAO/PAC Publication"} type={PanelType.medium} onRenderNavigation={() => <FormCommandBar onSave={this.saveData} onCancel={this.props.onCancelled} />}>
                 <div className={styles.cr}>
@@ -124,9 +105,7 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
                 {this.renderDirectorates()}
                 {this.renderNAOTypes()}
                 {this.renderYear()}
-
                 {this.renderLinks()}
-
                 {this.renderPeriodTitle()}
                 {this.renderCurrentPeriodDates()}
                 {this.renderContactDetails()}
@@ -144,7 +123,7 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
                 required={true}
                 className={styles.formField}
                 value={this.state.FormData.Title}
-                onChanged={(v) => this.changeTextField(v, "Title")}
+                onChanged={(ev, newValue) => this.changeTextField(newValue, "Title")}
                 errorMessage={this.state.ErrMessages.Title}
             />
         );
@@ -155,13 +134,11 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
         return (
             <CrTextField
                 label="Publication Summary"
-                //required={true}
                 className={styles.formField}
                 value={this.state.FormData.PublicationSummary}
-                onChanged={(v) => this.changeTextField(v, "PublicationSummary")}
+                onChanged={(ev, newValue) => this.changeTextField(newValue, "PublicationSummary")}
                 multiline={true}
                 rows={5}
-            //errorMessage={this.state.ErrMessages.Title}
             />
         );
     }
@@ -178,15 +155,8 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
                     multiSelect
                     className={styles.formField}
                     options={services.LookupService.entitiesToSelectableOptions(directorates)}
-
-
                     selectedKeys={fd_dirs && fd_dirs.map((x) => { return x.DirectorateId; })}
                     onChanged={(v) => this.changeMultiDropdown(v, 'NAOPublicationDirectorates', new NAOPublicationDirectorate(), 'DirectorateId')}
-
-
-                    //selectedKey={this.state.FormData.DirectorateId}
-                    //onChanged={(v) => this.changeDropdown(v, "DirectorateId")}
-
                     required={true}
                     errorMessage={this.state.ErrMessages.Directorate}
                 />
@@ -224,33 +194,24 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
                 required={true}
                 className={styles.formField}
                 value={this.state.FormData.Year}
-                onChanged={(v) => this.changeTextField(v, "Year")}
+                onChanged={(ev, newValue) => this.changeTextField(newValue, "Year")}
                 errorMessage={this.state.ErrMessages.Year}
             />
         );
     }
 
 
-
-
     public renderLinks() {
-
-
         return (
             <div>
-
                 <div style={{ display: 'flex' }}>
                     <div style={{ width: '50%', paddingRight: '5px' }}>
                         <span>Publication Link Text</span>
-
                     </div>
                     <div style={{ width: '50%', paddingLeft: '5px' }}>
                         <span>Actual URL</span>
-
                     </div>
-
                 </div>
-
 
                 {this.state.ArrLinks.map((c, i) =>
                     this.renderLink(c, i)
@@ -259,41 +220,32 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
                 {<div className={styles.formField}>
                     <span style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }} onClick={this.addBlankLinkItem} >Add fields For another link</span>
                 </div>}
-
             </div>
         );
     }
     private renderLink(item: ILinkLocalType, index: number) {
-
         return (
-
             <div key={`div_renderLink_${index}`} style={{ display: 'flex', marginTop: '5px' }}>
                 <div key={`divCol1_renderLink_${index}`} style={{ width: '50%', paddingRight: '5px' }}>
                     <CrTextField key={`div_TextField1_${index}`} value={item.Description}
-                        onChanged={(v) => this.changeTextField_Link(v, index, "Description")} />
-
+                        onChanged={(ev, newValue) => this.changeTextField_Link(newValue, index, "Description")} />
                 </div>
                 <div key={`divCol2_renderLink_${index}`} style={{ width: '50%', paddingLeft: '5px' }}>
-
                     <CrTextField key={`div_TextField2_${index}`} value={item.URL}
-                        onChanged={(v) => this.changeTextField_Link(v, index, "URL")} />
-
+                        onChanged={(ev, newValue) => this.changeTextField_Link(newValue, index, "URL")} />
                 </div>
-
             </div>
-
         );
     }
 
     private renderPeriodTitle() {
-
         return (
             <CrTextField
                 label="Period Title"
                 required={true}
                 className={styles.formField}
                 value={this.state.FormData.CurrentPeriodTitle}
-                onChanged={(v) => this.changeTextField(v, "CurrentPeriodTitle")}
+                onChanged={(ev, newValue) => this.changeTextField(newValue, "CurrentPeriodTitle")}
                 errorMessage={this.state.ErrMessages.CurrentPeriodTitle}
             />
         );
@@ -302,7 +254,6 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
     private renderCurrentPeriodDates() {
 
         return (
-
             <div style={{ display: 'flex', marginTop: '5px' }}>
                 <div style={{ width: '50%', paddingRight: '5px' }}>
                     <CrDatePicker
@@ -316,7 +267,6 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
 
                 </div>
                 <div style={{ width: '50%', paddingLeft: '5px' }}>
-
                     <CrDatePicker
                         label="Period End Date"
                         className={styles.formField}
@@ -325,69 +275,24 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
                         required={true}
                         errorMessage={this.state.ErrMessages.CurrentPeriodEndDate}
                     />
-
                 </div>
-
             </div>
-
         );
     }
-
-
 
     private addBlankLinkItem = () => {
         console.log('in addBlankLinkItem');
         const arrCopy = [...this.state.ArrLinks, { Description: '', URL: '' }];
         this.setState({ ArrLinks: arrCopy });
-        //const item: ILinkLocalType = { Description: 'des', URL: 'url' };
-        //arrCopy.push()
     }
 
-
-    // private renderLink(item: ILinkLocalType, index: number) {
-
-    //     return (
-    //         <div key={`div_renderLink_${index}`}>
-    //             <Stack key={`stack_renderLink_${index}`} horizontal tokens={this.stackTokens} styles={this.stackStyles}>
-    //                 <Stack.Item key={`stackItem_renderLink_${index}`} grow={1}>
-    //                     <CrTextField key={`div_TextField1_${index}`} label="Publication Link Text" value={item.Description}
-    //                         onChanged={(v) => this.changeTextField_Link(v, index, "Description")} />
-    //                 </Stack.Item>
-    //                 <Stack.Item grow={1}>
-    //                     <CrTextField key={`div_TextField2_${index}`} label="Actual URL" value={item.URL}
-    //                          onChanged={(v) => this.changeTextField_Link(v, index, "URL")} />
-    //                 </Stack.Item>
-
-    //             </Stack>
-    //         </div>
-    //     );
-    // }
-    // private renderLink(){
-    //     return(
-    //         <Stack horizontal tokens={this.stackTokens} styles={this.stackStyles}>
-    //         <Stack {...this.columnProps}>
-    //           <CrTextField label="Standard" value="" />
-    //           <CrTextField label="Standard" value="" />
-    //           <CrTextField label="Standard" value="" />
-    //         </Stack>
-    //         <Stack {...this.columnProps}>
-    //         <CrTextField label="Standard" value="" />
-    //         <CrTextField label="Standard" value="" />
-    //         <CrTextField label="Standard" value="" />
-
-    //         </Stack>
-    //       </Stack>
-    //     );
-    // }
-
     private renderContactDetails() {
-
         return (
             <CrTextField
                 label="Contact Details"
                 className={styles.formField}
                 value={this.state.FormData.ContactDetails}
-                onChanged={(v) => this.changeTextField(v, "ContactDetails")}
+                onChanged={(ev, newValue) => this.changeTextField(newValue, "ContactDetails")}
                 multiline={true}
                 rows={3}
             />
@@ -395,22 +300,16 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
     }
 
     private renderIsArchiveCheckbox() {
-
         return (
             <div>
-
                 <CrCheckbox
                     className={`${styles.formField} ${styles.checkbox}`}
                     label="Archive"
                     checked={this.state.FormData.IsArchive}
                     onChange={(ev, isChecked) => this.changeCheckbox(isChecked, "IsArchive")}
-
-
                 />
-
             </div>
         );
-
     }
 
 
@@ -422,42 +321,23 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
     private loadData = (): Promise<void> => {
         console.log('loadData - Id: ', this.props.entityId);
         let x = this.naoPublicationService.readWithExpandDirectorates(this.props.entityId).then((e: INAOPublication): void => {
-
             console.log('publication ', e);
-
             let arrLinks: ILinkLocalType[] = [];
-
             //unpack publication links from single value
             if (e.PublicationLink !== null && e.PublicationLink !== '') {
                 let arr1 = e.PublicationLink.split('>');
-
-                //console.log('arr1', arr1);
-
                 for (let i = 0; i < arr1.length; i++) {
-
                     let itemStr: string = arr1[i];
-                    //console.log('arr1 Loop itemStr', itemStr);
                     if (itemStr.trim() === '') {
                         continue;
                     }
-                    //console.log('after continue');
                     let arr2 = itemStr.split('<');
-                    //console.log('after arr2 Split', arr2);
                     let item: ILinkLocalType = { Description: '', URL: '' };
                     item.Description = arr2[0];
                     item.URL = arr2[1];
-
-                    //console.log('item filled with data', item);
-
                     arrLinks.push(item);
-
-                    //console.log('item pushed to arrLinks', arrLinks);
-
                 }
             }
-
-
-
             this.setState({
                 FormData: e,
                 FormDataBeforeChanges: e,
@@ -486,13 +366,6 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
         return Promise.all(proms);
     }
 
-    // private loadIDirectorates = (): Promise<IDirectorate[]> => {
-    //     return this.directorateService.readAll().then((data: IDirectorate[]): IDirectorate[] => {
-    //         this.setState({ LookupData: this.cloneObject(this.state.LookupData, "IDirectorates", data) });
-    //         return data;
-    //     }, (err) => { if (this.props.onError) this.props.onError(`Error loading Users lookup data`, err.message); });
-    // }
-
     private loadDirectorates = (): void => {
         this.directorateService.readAll().then((data: IDirectorate[]): IDirectorate[] => {
             this.setState({ LookupData: this.cloneObject(this.state.LookupData, "Directorates", data) });
@@ -509,23 +382,14 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
 
 
     private onAfterLoad = (entity: types.IEntity): void => {
-
-        //console.log('after load', this.state.LookupData.Users);
-        //const arrCopy = [...this.state.ArrLinks];
         this.addBlankLinkItem();
-
     }
 
-
     private saveData = (): void => {
-        if(this.saveInProgress === false){
+        if (this.saveInProgress === false) {
             this.saveInProgress = true;
-            this.savePublicationLinksToSingleValue();    
+            this.savePublicationLinksToSingleValue();
         }
-
-        
-        //console.log('after savePublicationLinksToSingleValue');
-        
     }
 
     private savePublicationLinksToSingleValue = (): void => {
@@ -550,38 +414,28 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
         //set single value in state
         const fd = { ...this.state.FormData };
         fd.PublicationLink = singleStr;
-
         this.setState({ FormData: fd }, this.saveDataFinal);
-
     }
 
     private saveDataFinal = (): void => {
-
         if (this.validateEntity()) {
             if (this.props.onError) this.props.onError(null);
-
             let f: INAOPublication = { ...this.state.FormData };
-
             //remove all the child and parent entities before sending post/patch
             delete f.NAOPublicationDirectorates;
             delete f.NAOPeriods;
 
             if (f.ID === 0) {
-
-
                 this.naoPublicationService.create(f).then(this.saveChildEntitiesAfterCreate).then(this.onAfterCreate).then(this.props.onSaved, (err) => {
-                    if (this.props.onError){
+                    if (this.props.onError) {
                         this.saveInProgress = false;
                         this.props.onError(`Error creating item`, err.message);
-                    } 
+                    }
                 });
-
             }
             else {
-
-
                 this.naoPublicationService.updatePut(f.ID, f).then(this.saveChildEntitiesAfterUpdate).then(this.onAfterUpdate).then(this.props.onSaved, (err) => {
-                    if (this.props.onError){
+                    if (this.props.onError) {
                         this.saveInProgress = false;
                         this.props.onError(`Error updating item`, err.message);
                     }
@@ -589,16 +443,12 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
 
             }
         }
-
     }
 
     private saveChildEntitiesAfterCreate = (parentEntity: INAOPublication): Promise<any> => {
         let promises = [];
-
         if (this.childEntities) {
             this.childEntities.forEach((ce) => {
-
-
                 const assignments = this.state.FormData[ce.ObjectParentProperty];
 
                 if (assignments) {
@@ -607,18 +457,11 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
                         c[ce.ParentIdProperty] = parentEntity.ID;
                         if (c.ID === 0) {
                             promises.push(ce.ChildService.create(c));
-
                         }
-
                     });
                 }
-
-
             });
-
             return Promise.all(promises).then(() => parentEntity);
-
-
         }
     }
 
@@ -636,12 +479,10 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
                         //no need to update
                     }
                 });
-
                 this.state.FormDataBeforeChanges[ce.ObjectParentProperty].forEach((c) => {
                     if (this.state.FormData[ce.ObjectParentProperty].map(i => i[ce.ChildIdProperty]).indexOf(c[ce.ChildIdProperty]) === -1) {
                         promises.push(ce.ChildService.delete(c.ID));
                     }
-
                 });
             });
             return Promise.all(promises).then(() => this.state.FormData);
@@ -649,15 +490,10 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
     }
 
     private onAfterUpdate(): Promise<any> { return Promise.resolve(); }
-
     private onAfterCreate(): Promise<any> {
         console.log('onAfterCreate');
         return Promise.resolve();
     }
-
-
-
-
 
     //#endregion Data Load/Save
 
@@ -668,7 +504,6 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
 
         let returnVal: boolean = true;
         let errMsg: IErrorMessage = { ...this.state.ErrMessages };
-
         if ((this.state.FormData.Title === null) || (this.state.FormData.Title === '')) {
             errMsg.Title = "Title required";
             returnVal = false;
@@ -726,18 +561,14 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
             errMsg.CurrentPeriodEndDate = null;
         }
 
-
-
         //at the end set state
         this.setState({ ErrMessages: errMsg });
 
-        if(returnVal === false){
+        if (returnVal === false) {
             this.saveInProgress = false;
         }
 
         return returnVal;
-
-
     }
 
     private cloneObject(obj, changeProp?, changeValue?) {
@@ -755,7 +586,6 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
         else {
             item.URL = value;
         }
-
         this.setState({ ArrLinks: arrCopy });
     }
 
@@ -770,8 +600,6 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
     private changeMultiDropdown = (item: IDropdownOption, f: string, newEntity: object, optionIdProperty: string): void => {
         const loadedChoices = this.cloneArray(this.state.FormDataBeforeChanges[f]);
         const editedChoices = this.cloneArray(this.state.FormData[f]);
-
-
         if (item.selected) {
             let indexOfExisting = loadedChoices.map(choice => choice[optionIdProperty]).indexOf(item.key);
             if (indexOfExisting !== -1) {
@@ -795,9 +623,6 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, value), FormIsDirty: true });
     }
 
-    // private changeDatePicker = (date: Date, f: string): void => {
-    //     this.setState({ FormData: this.cloneObject(this.state.FormData, f, date), FormIsDirty: true });
-    // }
     //#endregion Form Operations
 
 }

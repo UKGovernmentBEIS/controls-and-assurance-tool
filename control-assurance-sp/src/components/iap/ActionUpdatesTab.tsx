@@ -2,50 +2,27 @@ import * as React from 'react';
 import * as types from '../../types';
 import * as services from '../../services';
 import UpdatesList from './UpdatesList';
-import { CrTextField } from '../cr/CrTextField';
-import { CrChoiceGroup, IChoiceGroupOption } from '../cr/CrChoiceGroup';
-import { CrDropdown, IDropdownOption } from '../cr/CrDropdown';
-import { CrCheckbox } from '../cr/CrCheckbox';
-import { FormButtons } from '../cr/FormButtons';
-import { MessageDialog } from '../cr/MessageDialog';
 import { DefaultButton, PrimaryButton } from 'office-ui-fabric-react/lib/Button';
-import { Panel, PanelType } from 'office-ui-fabric-react/lib/Panel';
 import styles from '../../styles/cr.module.scss';
-import { IEntity, IIAPAction, ILinkLocalType } from '../../types';
-import { IGenColumn, ColumnType, ColumnDisplayType } from '../../types/GenColumn';
-import EntityList from '../entity/EntityList';
-//import EvidenceList from './EV/EvidenceList';
-
-
+import { IIAPAction, ILinkLocalType } from '../../types';
 
 
 export interface IActionUpdatesTabProps extends types.IBaseComponentProps {
 
     filteredItemsMainList: any[];
     iapActionId: any;
-
     onShowList: () => void;
-    //isViewOnly: boolean;
-
     superUserPermission: boolean;
     actionOwnerPermission: boolean;
     currentUserId: number;
-
     showingGroupUpdates: boolean;
-
 }
 
 export interface ILookupData {
-
 }
 
 export class LookupData implements ILookupData {
-
-
-
 }
-
-
 
 export interface IActionUpdatesTabState {
     Loading: boolean;
@@ -54,12 +31,9 @@ export interface IActionUpdatesTabState {
     IAPActionId: number;
     ActionOwnerPermission: boolean;
     FilteredItemsMainList: any[];
-
     HideNextButton: boolean;
     ListFilterText: string;
-
     GroupTitle: string;
-
 }
 
 export class ActionUpdatesTabState implements IActionUpdatesTabState {
@@ -70,11 +44,8 @@ export class ActionUpdatesTabState implements IActionUpdatesTabState {
     public ActionOwnerPermission = false;
     public FilteredItemsMainList: any[] = null;
     public HideNextButton: boolean = false;
-
     public ListFilterText: string = null;
     public GroupTitle: string = "";
-
-
 }
 
 export default class ActionUpdatesTab extends React.Component<IActionUpdatesTabProps, IActionUpdatesTabState> {
@@ -83,30 +54,16 @@ export default class ActionUpdatesTab extends React.Component<IActionUpdatesTabP
 
     constructor(props: IActionUpdatesTabProps, state: IActionUpdatesTabState) {
         super(props);
-        // console.log("Rec Id", props.giaaRecommendationId);
-        // console.log("filteredItemsRecList", props.filteredItemsRecList);
-        // console.log("filteredItemsMainList", props.filteredItemsMainList);
-
-        // console.log("recListIncompleteOnly", props.recListIncompleteOnly);
-        // console.log("recListJustMine", props.recListJustMine);
-        // console.log("recListActionStatusTypeId", props.recListActionStatusTypeId);
-
         this.state = new ActionUpdatesTabState();
-
     }
 
     public render(): React.ReactElement<IActionUpdatesTabProps> {
-
-
-
         return (
             <React.Fragment>
                 {this.renderSectionTitle()}
                 {this.renderInfoTable()}
                 {this.renderFormButtons()}
                 {this.renderUpdatesList()}
-
-
             </React.Fragment>
         );
     }
@@ -115,7 +72,6 @@ export default class ActionUpdatesTab extends React.Component<IActionUpdatesTabP
         return (
             <React.Fragment>
                 <h1 style={{ fontFamily: 'Calibri', fontSize: '36px' }}>Action Updates</h1>
-
             </React.Fragment>
         );
     }
@@ -126,7 +82,6 @@ export default class ActionUpdatesTab extends React.Component<IActionUpdatesTabP
         const iapTitle: string = iapInfo.Title;
         let iapDetails: string = iapInfo.Details;
 
-
         //replace all
         iapDetails = iapDetails.split('\n').join('<br/>');
 
@@ -135,41 +90,24 @@ export default class ActionUpdatesTab extends React.Component<IActionUpdatesTabP
         if (iapInfo.ActionLinks !== null && iapInfo.ActionLinks !== '') {
             let arr1 = iapInfo.ActionLinks.split('>');
 
-            //console.log('arr1', arr1);
-
             for (let i = 0; i < arr1.length; i++) {
-
                 let itemStr: string = arr1[i];
-                //console.log('arr1 Loop itemStr', itemStr);
                 if (itemStr.trim() === '') {
                     continue;
                 }
-                //console.log('after continue');
                 let arr2 = itemStr.split('<');
-                //console.log('after arr2 Split', arr2);
                 let item: ILinkLocalType = { Description: '', URL: '' };
                 item.Description = arr2[0];
                 item.URL = arr2[1];
-
-                //console.log('item filled with data', item);
-
                 arrLinks.push(item);
-
-                //console.log('item pushed to arrLinks', arrLinks);
-
             }
         }
 
         return (
-
             <React.Fragment>
-
                 <div style={{ marginBottom: '20px', marginTop: '50px' }} className={styles.sectionATitle}>Details</div>
-
                 <div style={{ width: '98%', marginTop: '10px', marginLeft: 'auto', marginRight: 'auto', paddingRight: '5px', overflowX: 'hidden' }}>
-
                     <table cellSpacing="0" cellPadding="10" style={{ width: '100%' }}>
-
                         <tbody>
                             <tr>
                                 <td style={{ width: '150px', borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
@@ -178,11 +116,7 @@ export default class ActionUpdatesTab extends React.Component<IActionUpdatesTabP
                                 <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
                                     {iapTitle}{this.state.GroupTitle}
                                 </td>
-
-
                             </tr>
-
-
                             <tr>
                                 <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
                                     Action
@@ -190,9 +124,7 @@ export default class ActionUpdatesTab extends React.Component<IActionUpdatesTabP
                                 <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
                                     <div dangerouslySetInnerHTML={{ __html: iapDetails }} ></div>
                                 </td>
-
                             </tr>
-
                             <tr>
                                 <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', backgroundColor: 'rgb(229,229,229)' }}>
                                     Links
@@ -200,19 +132,14 @@ export default class ActionUpdatesTab extends React.Component<IActionUpdatesTabP
                                 <td style={{ borderTop: '1px solid rgb(166,166,166)', borderLeft: '1px solid rgb(166,166,166)', borderBottom: '1px solid rgb(166,166,166)', borderRight: '1px solid rgb(166,166,166)' }}>
 
                                     {arrLinks.map((c, i) =>
-                                        <span key={`span_ActionLink_${i}`}><a key={`span_Lnk_ActionLink_${i}`} target="_blank" href={c.URL}>{c.Description}</a>&nbsp;&nbsp;</span>
+                                        <span key={`span_ActionLink_${i}`}><a key={`span_Lnk_ActionLink_${i}`} target="_blank" rel="noreferrer" href={c.URL}>{c.Description}</a>&nbsp;&nbsp;</span>
                                     )}
-
                                 </td>
-
                             </tr>
-
                         </tbody>
-
 
                     </table>
                 </div>
-
             </React.Fragment>
         );
     }
@@ -225,12 +152,9 @@ export default class ActionUpdatesTab extends React.Component<IActionUpdatesTabP
         const iAPStatusTypeId = iapInfo.IAPStatusTypeId;
         console.log('CompletionDate', completionDate, 'IAPStatusTypeId', iAPStatusTypeId);
 
-
         return (
             <React.Fragment>
                 <div style={{ marginBottom: '20px', marginTop: '20px' }} className={styles.sectionATitle}>Updates, Feedback, Evidence</div>
-
-
                 {<div style={{ overflowX: 'hidden' }}
                 >
                     <div style={{ width: '98%', minHeight: '120px', border: '1px solid rgb(166,166,166)', marginTop: '10px', marginLeft: 'auto', marginRight: 'auto', paddingRight: '5px', overflowX: 'hidden' }}>
@@ -248,12 +172,8 @@ export default class ActionUpdatesTab extends React.Component<IActionUpdatesTabP
 
                         />
                     </div>
-
                     <br /><br />
-
                 </div>}
-
-
             </React.Fragment>
         );
     }
@@ -261,38 +181,26 @@ export default class ActionUpdatesTab extends React.Component<IActionUpdatesTabP
     private renderFormButtons() {
         const iapInfo = this.state.IAPInfo;
         if (iapInfo === null) return;
-
         return (
             <div style={{ marginTop: '30px' }}>
-
                 {
                     <React.Fragment>
                         {(this.state.HideNextButton === false) &&
                             <PrimaryButton text="Next" className={styles.formButton} style={{ marginRight: '5px' }}
                                 onClick={() => this.showNext()}
                             />}
-
                         <DefaultButton text="Close" className={styles.formButton} style={{ marginRight: '5px' }}
                             onClick={this.props.onShowList}
                         />
-
-
                     </React.Fragment>
                 }
 
             </div>
         );
-
-
     }
 
-
-
-
     private showNext = (): void => {
-
         console.log('in showNext');
-
         const currentIAPActionId: number = Number(this.state.IAPActionId);
         let currentIDFound: boolean = false;
         let nextIAPActionID: number = 0;
@@ -310,8 +218,6 @@ export default class ActionUpdatesTab extends React.Component<IActionUpdatesTabP
             if (currentIDFound === true) {
                 nextIAPActionID = id;
                 const ownerIdsStr: string = e["OwnerIds"];
-                //console.log('ownerIdsStr', ownerIdsStr);
-
                 const ownerIdsArr: string[] = ownerIdsStr.split(',');
 
                 for (let j = 0; j < ownerIdsArr.length; j++) {
@@ -322,14 +228,8 @@ export default class ActionUpdatesTab extends React.Component<IActionUpdatesTabP
                         break;
                     }
                 }
-
-
-
-
-                //console.log("nextRecID", nextRecID);
                 break;
             }
-
         }
 
         if (nextIAPActionID > 0) {
@@ -338,42 +238,29 @@ export default class ActionUpdatesTab extends React.Component<IActionUpdatesTabP
                 ActionOwnerPermission: actionOwnerPermission,
             }, () => this.loadIAPInfo());
         }
-
     }
 
     private loadIAPInfo = (): void => {
 
         console.log('in loadIAPInfo');
-
         this.iapUpdateService.read(this.state.IAPActionId).then((u: IIAPAction) => {
             console.log('Action Info', u);
-
             //check if this is the last record or not in the props.filteredItems
             const lastMainId_FilteredItems: number = Number(this.state.FilteredItemsMainList[this.state.FilteredItemsMainList.length - 1]["ID"]);
             const mainId_Current: number = Number(this.state.IAPActionId);
-
-
             let hideNextButton: boolean = false;
             if (mainId_Current === lastMainId_FilteredItems) {
-                //console.log("This is the last one...");
                 hideNextButton = true;
-
             }
-
 
             let groupTitle: string = "";
             if (this.props.showingGroupUpdates === true) {
 
-                //console.log('FilteredItemsMainList', this.state.FilteredItemsMainList);
-                var currentItemInFiltered = this.state.FilteredItemsMainList.filter(x => Number(x.ID) === Number(this.state.IAPActionId));
-                //console.log('currentItemInFiltered-1', currentItemInFiltered);
+                const currentItemInFiltered = this.state.FilteredItemsMainList.filter(x => Number(x.ID) === Number(this.state.IAPActionId));
                 if (currentItemInFiltered.length > 0) {
-                    //console.log('currentItemInFiltered-2', currentItemInFiltered);
                     groupTitle = ` (${currentItemInFiltered[0]["Title"]})`;
                 }
-
             }
-
 
             this.setState({
                 IAPInfo: u,
@@ -381,22 +268,17 @@ export default class ActionUpdatesTab extends React.Component<IActionUpdatesTabP
                 HideNextButton: hideNextButton
             });
 
-
         }, (err) => {
             if (this.props.onError) this.props.onError(`Error loading rec info`, err.message);
         });
-
     }
 
     protected loadLookups(): Promise<any> {
 
         return Promise.all([
-
             this.loadIAPInfo()
-
         ]);
     }
-
 
     public componentDidMount(): void {
 
@@ -406,35 +288,25 @@ export default class ActionUpdatesTab extends React.Component<IActionUpdatesTabP
             ActionOwnerPermission: this.props.actionOwnerPermission,
             FilteredItemsMainList: this.props.filteredItemsMainList
         }, this.callBackFirstLoad
-
         );
     }
     private callBackFirstLoad = (): void => {
         let loadingPromises = [this.loadLookups()];
 
         Promise.all(loadingPromises).then(p => this.setState({ Loading: false })).catch(err => this.setState({ Loading: false }));
-
     }
-
 
     //#endregion Data Load/Save
 
-
     //#region Event Handlers
-
-
 
     protected cloneObject(obj, changeProp?, changeValue?) {
         if (changeProp)
             return { ...obj, [changeProp]: changeValue };
         return { ...obj };
     }
-
-    private handle_ChangeFilterText = (value: string): void => {
-        this.setState({ ListFilterText: value });
+    private handle_ChangeFilterText = (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string): void => {
+        this.setState({ ListFilterText: newValue });
     }
-
-
     //#endregion Event Handlers
-
 }

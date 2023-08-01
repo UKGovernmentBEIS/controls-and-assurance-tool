@@ -1,8 +1,6 @@
 import { IEntity } from "./Entity";
 
-
-export interface IGIAARecommendation  extends IEntity {
-
+export interface IGIAARecommendation extends IEntity {
     RecommendationDetails?: string;
     TargetDate?: Date;
     RevisedDate?: Date;
@@ -13,7 +11,7 @@ export interface IGIAARecommendation  extends IEntity {
     UpdateStatus?: string;
 }
 
-export class GIAARecommendation implements IGIAARecommendation{ 
+export class GIAARecommendation implements IGIAARecommendation {
     public ID: number = 0;
     public Title: string = null;
     public RecommendationDetails?: string = null;
@@ -24,13 +22,5 @@ export class GIAARecommendation implements IGIAARecommendation{
     public GIAAAuditReportId = null;
     public DisplayedImportedActionOwners = null;
     public UpdateStatus?: string = 'Blank';
-
-
-
-
-    // constructor(goElementId: number) {
-    //     this.GoElementId = goElementId;
-    // }
-
 
 }

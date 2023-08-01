@@ -2,29 +2,14 @@ import * as React from 'react';
 import { DetailsList, SelectionMode, IColumn, ISelection } from 'office-ui-fabric-react/lib/DetailsList';
 import { SearchObjectService } from '../../services';
 import { IEntity } from '../../types';
-import { ElementStatuses, RAGRatings } from '../../types/AppGlobals';
 export { IObjectWithKey, IColumn } from 'office-ui-fabric-react/lib/DetailsList';
 import { CommandBarButton } from 'office-ui-fabric-react/lib/Button';
 import { Fabric } from 'office-ui-fabric-react/lib/Fabric';
-import { mergeStyleSets } from 'office-ui-fabric-react/lib/Styling';
 import { Toggle } from 'office-ui-fabric-react/lib/Toggle';
 import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox';
 import '../../styles/CustomFabric2.scss';
+import { searchBoxStyle, toolbarStyle } from '../../types/AppGlobals';
 
-
-
-const classNames = mergeStyleSets({
-    controlWrapper: {
-        display: 'flex',
-        flexWrap: 'wrap',
-        backgroundColor: "rgb(244,244,244)",
-        padding: "5px 0px 5px 10px",
-        marginBottom: "5px"
-    },
-    cmdBtn: {
-        border: 'none'
-    }
-});
 const controlStyles = {
     root: {
         margin: '5px 10px 0 0', //top, right, bottom, left
@@ -32,56 +17,27 @@ const controlStyles = {
     }
 };
 
-const controlStylesB = {
-    marginLeft: "auto",
-    //display: "inline-block",
-};
-
-const controlStyles2 = {
-    //root: {
-    marginLeft: "auto",
-    display: "inline-block",
-    backgroundColor: "white"
-
-    //}
-};
-
-
-
 export interface IFilteredMainListProps {
     className?: string;
     columns: IColumn[];
     items: any[];
     filterText?: string;
-
     incompleteOnly: boolean;
     onChangeIncompleteOnly: (value: boolean) => void;
     justMine: boolean;
     onChangeJustMine: (value: boolean) => void;
-    onFilterChange: (value: string) => void;
+    onFilterChange: (event?: React.ChangeEvent<HTMLInputElement>, newValue?: string) => void;
     onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
-
     selection?: ISelection;
-
     onAdd: () => void;
     onImport: () => void;
     onCheckUpdatesReq: () => void;
     onEdit: () => void;
     onDelete: () => void;
-
     editDisabled: boolean;
     deleteDisabled: boolean;
-
     superUserPermission: boolean;
-    updatesReqInProgress:boolean;
-
-    //onAdd: () => void;
-    //onAssign: () => void;
-    //onDelete: () => void;
-
-
-    //assignDisabled: boolean;
-    //deleteDisabled: boolean;
+    updatesReqInProgress: boolean;
 }
 
 export interface IFilteredMainListState {
@@ -91,31 +47,20 @@ export interface IFilteredMainListState {
 
 export class FilteredMainList extends React.Component<IFilteredMainListProps, IFilteredMainListState> {
 
-
-    private statusImgNotStarted: string = require('../../images/goelement/list/status/notstarted.png');
-    private statusImgInProgress: string = require('../../images/goelement/list/status/inprogress.png');
-    private statusImgCompleted: string = require('../../images/goelement/list/status/completed.png');
-
-
     constructor(props: IFilteredMainListProps) {
         super(props);
-
         props.columns.forEach((c) => { c.onColumnClick = this._onColumnClick; });
         this.state = {
             Columns: props.columns,
             FilteredItems: props.items,
         };
-
-
     }
 
     public render(): JSX.Element {
         const { props, state } = this;
         return (
             <Fabric>
-
-                <div className={classNames.controlWrapper}>
-
+                <div className={toolbarStyle.controlWrapper}>
                     <Toggle
                         onText="Incomplete Only"
                         offText="Incomplete Only"
@@ -135,7 +80,7 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
                     {props.superUserPermission && props.editDisabled && props.deleteDisabled &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Add' }}
-                            className={classNames.cmdBtn}
+                            className={toolbarStyle.cmdBtn}
                             text="New"
                             onClick={props.onAdd}
                         />}
@@ -143,7 +88,7 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
                     {props.superUserPermission && props.editDisabled && props.deleteDisabled &&
                         <CommandBarButton
                             iconProps={{ iconName: 'BuildQueueNew' }}
-                            className={classNames.cmdBtn}
+                            className={toolbarStyle.cmdBtn}
                             text="Import"
                             onClick={props.onImport}
                         />}
@@ -151,7 +96,7 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
                     {props.superUserPermission && props.editDisabled && props.deleteDisabled &&
                         <CommandBarButton
                             iconProps={{ iconName: 'WorkFlow' }}
-                            className={classNames.cmdBtn}
+                            className={toolbarStyle.cmdBtn}
                             text="Check if req upd"
                             onClick={props.onCheckUpdatesReq}
                             disabled={props.updatesReqInProgress}
@@ -160,39 +105,30 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
                     {props.superUserPermission && (props.editDisabled === false) &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Edit' }}
-                            className={classNames.cmdBtn}
+                            className={toolbarStyle.cmdBtn}
                             text="Edit"
                             onClick={props.onEdit}
                         />}
 
-
-
                     {props.superUserPermission && (props.deleteDisabled === false) &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Delete' }}
-                            className={classNames.cmdBtn}
+                            className={toolbarStyle.cmdBtn}
                             text="Delete"
                             onClick={props.onDelete}
                         />}
 
-                    <span style={controlStyles2}>
-
-
-
+                    <span style={searchBoxStyle}>
                         <SearchBox
                             placeholder="Filter items"
                             value={props.filterText ? props.filterText : ''}
                             onChange={props.onFilterChange}
-                        //className={styles.listFilterBox}
-                        //style={controlStyles2}
                         />
                     </span>
 
                 </div>
 
-
                 <DetailsList
-                    //className="noHScroll"
                     setKey={"state.FilteredItems"}
                     selectionMode={SelectionMode.single}
                     selection={props.selection}
@@ -209,8 +145,6 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
 
     public componentDidMount(): void {
         this.setState({ FilteredItems: SearchObjectService.filterEntities(this.props.items, this.props.filterText) });
-
-
     }
 
     public componentDidUpdate(prevProps: IFilteredMainListProps): void {
@@ -238,7 +172,7 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
             let txtColor: string = "white";
             let bgColor: string = "";
             let txt: string = "";
-            //const giaaAssuranceId: number = Number(fieldContent);
+
             if (fieldContent === 'Advisory') {
                 bgColor = "rgb(128,0,128)";
                 txtColor = "white";
@@ -277,61 +211,18 @@ export class FilteredMainList extends React.Component<IFilteredMainListProps, IF
             );
         }
 
-        // else if (column.key === "UpdateStatus") {
-
-        //     //let txtColor: string = "white";
-        //     //let bgColor: string = "";
-        //     let statusImg: string = "";
-
-        //     if (fieldContent === ElementStatuses.ToBeCompleted) {
-        //         //bgColor = "rgb(230,230,230)";
-        //         //txtColor = "black";
-        //         statusImg = this.statusImgNotStarted;
-        //     }
-        //     else if (fieldContent === ElementStatuses.InProgress) {
-        //         //bgColor = "rgb(255,191,0)";
-        //         //txtColor = "white";
-        //         statusImg = this.statusImgInProgress;
-        //     }
-        //     // else if (fieldContent === ElementStatuses.ReqSignOff) {
-        //     //     bgColor = "rgb(185,0,185)";
-        //     //     txtColor = "white";
-        //     // }
-        //     else if (fieldContent === ElementStatuses.Completed) {
-        //         //bgColor = "rgb(0,127,0)";
-        //         //txtColor = "white";
-        //         statusImg = this.statusImgCompleted;
-        //     }
-
-        //     return (
-        //         // <span style={{ backgroundColor: bgColor, color: txtColor, width: "140px", display: "block", paddingLeft: "10px", paddingTop: "5px", paddingBottom: "5px" }}>
-        //         //     {fieldContent}
-        //         // </span>
-        //         <img src={statusImg} />
-
-        //     );
-        // }
-        // else if (column.key === "DGArea") {
-        //     const directorate = item["Directorate"];
-        //     return <span>{fieldContent} - {directorate}</span>;
-        // }
-
-
         else if (column.key === "Title") {
 
             const id: number = item["ID"];
 
             return (
                 <span><a className="titleLnk" onClick={(ev) => this.props.onItemTitleClick(id, fieldContent, this.state.FilteredItems)} > {fieldContent}</a> </span>
-                // <span>{fieldContent}</span>
             );
 
         }
         else {
             return <span>{fieldContent}</span>;
         }
-
-
     }
 
     private _onColumnClick = (ev: React.MouseEvent<HTMLElement>, column: IColumn): void => {

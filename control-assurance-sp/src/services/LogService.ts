@@ -2,8 +2,6 @@ import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { EntityService } from './EntityService';
 import { IDataAPI, IEntity, ILog } from '../types';
 
-
-
 export class LogService extends EntityService<IEntity> {
     public readonly parentEntities = [];
     protected childrenEntities = [];
@@ -20,9 +18,4 @@ export class LogService extends EntityService<IEntity> {
             fullQryString = `?$orderby=ID desc&$expand=User,Team,Period`;
         return this.readAll(fullQryString);
     }
-
-
-
-
-
 }

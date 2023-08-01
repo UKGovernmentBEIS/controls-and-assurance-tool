@@ -11,27 +11,18 @@ import { ConfirmDialog } from '../cr/ConfirmDialog';
 import { getUploadFolder_Report } from '../../types/AppGlobals';
 import styles from '../../styles/cr.module.scss';
 
-
 export interface IReport2ListProps extends types.IBaseComponentProps {
-
-
     filterText?: string;
-    onChangeFilterText: (value: string) => void;
-
-
-    //superUserPermission:boolean;
-
+    onChangeFilterText: (event?: React.ChangeEvent<HTMLInputElement>, newValue?: string) => void;
 }
 
 export interface IReport2ListState<T> {
     SelectedEntity: number;
     SelectedEntityTitle: string;
-    //SelectedGoElementId:number;
     EnableCreatePdf?: boolean;
     EnableDeletePdf?: boolean;
     EnableDownloadPdf?: boolean;
     PDFStatus?: string;
-
     SelectedEntityChildren: number;
     ShowForm: boolean;
     ShowManagePeriodForm: boolean;
@@ -49,12 +40,10 @@ export interface IReport2ListState<T> {
 export class Report2ListState<T> implements IReport2ListState<T>{
     public SelectedEntity = null;
     public SelectedEntityTitle: string = null;
-    //public SelectedGoElementId = null;
     public EnableCreatePdf = false;
     public EnableDeletePdf = false;
     public EnableDownloadPdf = false;
     public PDFStatus = "";
-
     public SelectedEntityChildren = null;
     public ShowForm = false;
     public ShowManagePeriodForm = false;
@@ -78,7 +67,6 @@ export default class Report2List extends React.Component<IReport2ListProps, IRep
 
     private listColumns: IUpdatesListColumn[] = [
         //use fieldName as key
-
         {
             key: 'ID',
             name: 'ID',
@@ -157,8 +145,6 @@ export default class Report2List extends React.Component<IReport2ListProps, IRep
             isResizable: true,
             headerClassName: styles.bold,
         },
-
-
         {
             key: 'CurrentPeriodId',
             name: 'CurrentPeriodId',
@@ -169,14 +155,12 @@ export default class Report2List extends React.Component<IReport2ListProps, IRep
         },
     ];
 
-
     constructor(props: IReport2ListProps, state: IReport2ListState<IEntity>) {
         super(props);
         this.state = new Report2ListState<IEntity>();
         this.UploadFolder_Report = getUploadFolder_Report(props.spfxContext);
         this._selection = new Selection({
             onSelectionChanged: () => {
-
                 this.manageEnableDisableCreatePDF();
             }
         });
@@ -202,11 +186,7 @@ export default class Report2List extends React.Component<IReport2ListProps, IRep
 
         const listColumns = this.getColumns();
         const listColumnsForData = this.getColumnsForData();
-
         let items: IObjectWithKey[] = this.state.Entities.map((e) => { return this.makeItem(e, listColumnsForData); });
-
-
-
         return (
             <FilteredReport2List
                 columns={listColumns}
@@ -214,16 +194,12 @@ export default class Report2List extends React.Component<IReport2ListProps, IRep
                 filterText={this.props.filterText}
                 onFilterChange={this.props.onChangeFilterText}
                 selection={this._selection}
-
                 onCreatePdf={this.handleCreatePdf}
                 onDeletePdf={this.handleDeletePdf}
                 onDownloadPdf={this.handleDownloadPdf}
-
                 createPdfDisabled={!this.state.EnableCreatePdf}
                 deletePdfDisabled={!this.state.EnableDeletePdf}
                 downloadPdfDisabled={!this.state.EnableDownloadPdf}
-
-
             />
         );
     }
@@ -233,17 +209,14 @@ export default class Report2List extends React.Component<IReport2ListProps, IRep
         return (
             <div style={{ paddingTop: '25px' }}>
                 <div>{statusMsg}</div>
-                { statusMsg === "Working... Please Wait" &&
+                {statusMsg === "Working... Please Wait" &&
                     <div>
                         <span style={{ textDecoration: 'underline', color: 'blue', cursor: 'pointer' }} onClick={this.loadPDFStatus} >Click to Refresh Status</span>
                     </div>
                 }
-
             </div>
         );
     }
-
-
 
     //#endregion Render
 
@@ -276,42 +249,24 @@ export default class Report2List extends React.Component<IReport2ListProps, IRep
         return listColumns;
     }
 
-
-
-
-
-
-
-
-
-
     private getSelectedEntityName = (): string => {
         let entity = this.state.Entities.filter((e) => { return e.ID === this.state.SelectedEntity; });
         return entity[0] ? entity[0].Title : null;
     }
-
     private toggleDeleteConfirm = (): void => {
         this.setState({ HideDeleteDialog: !this.state.HideDeleteDialog });
     }
-
     private deleteRecord = (): void => {
 
     }
-
     private manageEnableDisableCreatePDF = (): void => {
         if (this._selection.getSelectedCount() > 0) {
-
-            //const sel = this._selection.getSelection();
-            //console.log(sel);
-
             if (this.state.PDFStatus.search("Working... Please Wait") === 0) {
                 this.setState({ EnableCreatePdf: false });
             }
             else {
                 this.setState({ EnableCreatePdf: true });
             }
-
-
         }
         else {
             this.setState({ EnableCreatePdf: false });
@@ -325,8 +280,6 @@ export default class Report2List extends React.Component<IReport2ListProps, IRep
 
     private loadData = (): void => {
         this.setState({ Loading: true });
-
-
         const read: Promise<IEntity[]> = this.naoPublicationService.readAllWithFilters(0, false, false, false);
         read.then((entities: any): void => {
             this.setState({
@@ -344,7 +297,6 @@ export default class Report2List extends React.Component<IReport2ListProps, IRep
             if (res.search("Last PDF generated by") === 0) {
                 //pdf generated, allow user to download+delete
                 pdfAvailable = true;
-
             }
 
             console.log('Pdf status', res);
@@ -358,7 +310,6 @@ export default class Report2List extends React.Component<IReport2ListProps, IRep
         }, (err) => {
             if (this.props.onError)
                 this.props.onError(`Error creating PDF`, err.message);
-
         });
     }
 
@@ -369,66 +320,26 @@ export default class Report2List extends React.Component<IReport2ListProps, IRep
     public componentDidMount(): void {
         this.loadData();
         this.loadPDFStatus();
-        //console.log('web title: ', this.props.spfxContext.pageContext.web.title);
-
     }
-    // public componentDidUpdate(prevProps: IReport2ListProps): void {
-    //     if (prevProps.dgAreaId !== this.props.dgAreaId || prevProps.justMine !== this.props.justMine || prevProps.incompleteOnly !== this.props.incompleteOnly || prevProps.Report2ListsSaveCounter !== this.props.Report2ListsSaveCounter) {
-    //         //console.log('props changed, load data again');
-    //         this._selection.setAllSelected(false);
-    //         this.loadData();
-    //     }
-    // }
-
-
 
     //#endregion Data Load
 
     //#region Events Handlers
 
-
-
-    private addItem = (): void => {
-        if (this.state.SelectedEntity)
-            this._selection.setKeySelected(this.state.SelectedEntity.toString(), false, false);
-        this.setState({ SelectedEntity: null, ShowForm: true });
-    }
-
-    private editItem = (): void => {
-        //this.setState({ ShowForm: true });
-        this._selection.setAllSelected(true);
-    }
-    private managePeriod = (): void => {
-        this.setState({ ShowManagePeriodForm: true });
-    }
-
     private handleCreatePdf = (filteredItems: any[]): void => {
         if (this.props.onError) this.props.onError(null);
-
-        // const xx = filteredItems.filter(x => x["ID"] == 555);
-        // console.log(xx);
-
-        //console.log('on create pdf', filteredItems);
         const selection = this._selection.getSelection();
-        //console.log('selection', selection);
         let selectedIds: number[] = [];
 
         for (let sel of selection) {
-            //console.log('sel', sel);
             const sel_id: number = Number(sel["ID"]);
             selectedIds.push(sel_id);
-
-            //const index = filteredItems.indexOf(sel);
-            //console.log('index', index);
-
-
         }
 
         const publicationIds: string = selectedIds.join(',');
         console.log('publicationIds', publicationIds);
 
         const spSiteUrl: string = this.props.spfxContext.pageContext.web.absoluteUrl;
-        //console.log('spSiteUrl', spSiteUrl);
         this.naoOutput2Service.createPDF(publicationIds, spSiteUrl).then((res: string): void => {
 
             console.log('Pdf creation initialized', res);
@@ -438,16 +349,11 @@ export default class Report2List extends React.Component<IReport2ListProps, IRep
                 EnableDeletePdf: false,
                 EnableCreatePdf: false,
             });
-            //this.loadData(); //no need
-
 
         }, (err) => {
             if (this.props.onError)
                 this.props.onError(`Error creating PDF`, err.message);
-
         });
-
-
     }
     private handleDeletePdf = (): void => {
         console.log('in del pdf');
@@ -455,60 +361,36 @@ export default class Report2List extends React.Component<IReport2ListProps, IRep
         if (this.props.onError) this.props.onError(null);
 
         this.naoOutput2Service.deletePDFInfo().then((res: string): void => {
-
             this.loadPDFStatus();
-            //this.props.onSignOff();
 
         }, (err) => {
             if (this.props.onError)
                 this.props.onError(`Error deleting PDF`, err.message);
-
         });
-
-
     }
     private handleDownloadPdf = (): void => {
         console.log('in download pdf');
 
         const pdfName: string = "NAO_Output_By_Publication.pdf";
         //download pdf
-
         const f = sp.web.getFolderByServerRelativeUrl(this.UploadFolder_Report).files.getByName(pdfName);
 
         f.get().then(t => {
-            //console.log(t);
             const serverRelativeUrl = t["ServerRelativeUrl"];
-            //console.log(serverRelativeUrl);
-
             const a = document.createElement('a');
-            //document.body.appendChild(a);
             a.href = serverRelativeUrl;
             a.target = "_blank";
             a.download = pdfName;
 
             document.body.appendChild(a);
-            //console.log(a);
-            //a.click();
-            //document.body.removeChild(a);
-
-
             setTimeout(() => {
                 window.URL.revokeObjectURL(serverRelativeUrl);
                 window.open(serverRelativeUrl, '_blank');
                 document.body.removeChild(a);
             }, 1);
-
-
         });
-
-
-
     }
 
     //#endregion Events Handlers
 }
-
-
-    
-
 

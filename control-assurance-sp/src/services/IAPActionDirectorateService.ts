@@ -1,9 +1,6 @@
 import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { EntityService } from './EntityService';
-import { IDataAPI, IEntity, INAOPublicationDirectorate } from '../types';
-import { baseElementEvents } from 'office-ui-fabric-react/lib/Utilities';
-
-
+import { IDataAPI, INAOPublicationDirectorate } from '../types';
 
 export class IAPActionDirectorateService extends EntityService<INAOPublicationDirectorate> {
     public readonly parentEntities = [];
@@ -12,7 +9,4 @@ export class IAPActionDirectorateService extends EntityService<INAOPublicationDi
     constructor(spfxContext: WebPartContext, api: IDataAPI) {
         super(spfxContext, api, `/IAPActionDirectorates`);
     }
-
-
-
 }

@@ -36,13 +36,9 @@ export class MessageDialogCreateSPFolderWait extends React.Component<IMessageDia
     public render(): JSX.Element {
         return (
             <Dialog hidden={this.props.hidden} onDismiss={this.props.handleOk} dialogContentProps={{ type: DialogType.normal, title: this.props.title }}>
-
-
                 {this.props.content}
                 <br/><br/>
-
                 <DialogFooter>
-                    
                 </DialogFooter>
             </Dialog>
         );

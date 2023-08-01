@@ -10,20 +10,13 @@ import { CrLoadingOverlay } from '../../cr/CrLoadingOverlay';
 import { Selection } from '../../cr/FilteredList';
 import { ConfirmDialog } from '../../cr/ConfirmDialog';
 import styles from '../../../styles/cr.module.scss';
-import { DateService } from '../../../services';
 import { getUploadFolder_GIAAUpdateEvidence } from '../../../types/AppGlobals';
 
-
 export interface IEvidenceListProps extends types.IBaseComponentProps {
-
-    //onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
-    //goElementId: any;
     entityReadAllWithArg1: any;
     filterText?: string;
-    onChangeFilterText: (value: string) => void;
-
-    isViewOnly:boolean;
-
+    onChangeFilterText: (event?: React.ChangeEvent<HTMLInputElement>, newValue?: string) => void;
+    isViewOnly: boolean;
 }
 
 export interface IEvidenceListState<T> {
@@ -60,7 +53,7 @@ export class EvidenceListState<T> implements IEvidenceListState<T>{
 }
 
 export default class EvidenceList extends React.Component<IEvidenceListProps, IEvidenceListState<IEntity>> {
-    private UploadFolder_Evidence:string = "";
+    private UploadFolder_Evidence: string = "";
     private _selection: Selection;
     private giaaUpdateEvidenceService: services.GIAAUpdateEvidenceService = new services.GIAAUpdateEvidenceService(this.props.spfxContext, this.props.api);
 
@@ -93,37 +86,6 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
             headerClassName: styles.bold,
 
         },
-        // {
-        //     key: 'Controls',
-        //     name: 'Controls',
-        //     fieldName: 'Controls',
-        //     minWidth: 200,
-        //     maxWidth: 300,
-        //     isResizable: true,
-        //     isMultiline: true,
-        //     headerClassName: styles.bold,
-
-        // },
-        // {
-        //     key: 'Team',
-        //     name: 'Team/Info Holder',
-        //     fieldName: 'Team',
-        //     minWidth: 200,
-        //     maxWidth: 300,
-        //     isResizable: true,
-        //     isMultiline: true,
-        //     headerClassName: styles.bold,
-
-        // },
-        // {
-        //     key: 'InfoHolder',
-        //     name: 'InfoHolder',
-        //     fieldName: 'InfoHolder',
-        //     minWidth: 1,
-        //     isResizable: true,
-        //     columnDisplayType: ColumnDisplayTypes.Hidden,
-
-        // },
         {
             key: 'AdditionalNotes',
             name: 'Additional Notes',
@@ -144,30 +106,16 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
             isResizable: true,
             headerClassName: styles.bold,
         },
-        // {
-        //     key: 'DateUploaded',
-        //     name: 'Upload Date',
-        //     fieldName: 'DateUploaded',
-        //     minWidth: 100,
-        //     maxWidth: 150,
-        //     isResizable: true,
-        //     headerClassName: styles.bold,
-
-        // },
-
 
     ];
 
     constructor(props: IEvidenceListProps, state: IEvidenceListState<IEntity>) {
         super(props);
         this.state = new EvidenceListState<IEntity>();
-
         this.UploadFolder_Evidence = getUploadFolder_GIAAUpdateEvidence(props.spfxContext);
-
         this._selection = new Selection({
             onSelectionChanged: () => {
                 if (this._selection.getSelectedCount() === 1) {
-
                     const sel = this._selection.getSelection()[0];
                     const key = Number(sel.key);
                     const title: string = sel["Title"];
@@ -202,14 +150,9 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
 
         const listColumns = this.getColumns();
         const listColumnsForData = this.getColumnsForData();
-
         let items: IObjectWithKey[] = this.state.Entities.map((e) => { return this.makeItem(e, listColumnsForData); });
-
-
-
         return (
             <FilteredEvidenceList
-                //onItemTitleClick={this.props.onItemTitleClick}
                 isViewOnly={this.props.isViewOnly}
                 columns={listColumns}
                 items={items}
@@ -222,7 +165,6 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
                 onView={this.viewFile}
                 editDisabled={!this.state.EnableEdit}
                 deleteDisabled={!this.state.EnableDelete}
-                
             />
         );
     }
@@ -233,16 +175,13 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
 
             <EvidenceSaveForm
                 showForm={this.state.ShowForm}
-                //goElementId={this.props.goElementId}
                 updateId={this.props.entityReadAllWithArg1}
-                
                 evidenceId={this.state.SelectedEntity}
                 onSaved={this.fileSaved}
                 onCancelled={this.closePanel}
                 {...this.props}
             />
         );
-
     }
 
     //#endregion Render
@@ -252,25 +191,20 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
     private makeItem = (e: IEntity, listColumns: IUpdatesListColumn[]): any => {
 
         let item: any = { key: e["ID"] };
-
         listColumns.map((c) => {
             let fieldContent: string = String(e[c.fieldName]);
-
             if (c.fieldName === "UploadedByUser") {
                 item = {
                     [c.fieldName]: e["User"]["Title"],
                     ...item
                 };
             }
-            else{
+            else {
                 item = {
                     [c.fieldName]: fieldContent,
                     ...item
                 };
             }
-
-
-
         });
         return item;
     }
@@ -300,65 +234,40 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
 
     private viewFile = (): void => {
         console.log('in view.');
-        const fileName:string = this.state.SelectedEntityTitle;
-        if(this.isSelectedEntityALink() === true){
+        const fileName: string = this.state.SelectedEntityTitle;
+        if (this.isSelectedEntityALink() === true) {
             console.log('selected evidence is a link');
-
             const a = document.createElement('a');
-            //document.body.appendChild(a);
             a.href = fileName;
             a.target = "_blank";
-            //a.download = fileName;
-            
             document.body.appendChild(a);
             console.log(a);
-            //a.click();
-            //document.body.removeChild(a);
-            
-            
             setTimeout(() => {
-              window.URL.revokeObjectURL(fileName);
-              window.open(fileName, '_blank');
-              document.body.removeChild(a);
+                window.URL.revokeObjectURL(fileName);
+                window.open(fileName, '_blank');
+                document.body.removeChild(a);
             }, 1);
-
-
-
-
         }
-        else{
+        else {
             const f = sp.web.getFolderByServerRelativeUrl(this.UploadFolder_Evidence).files.getByName(fileName);
-    
+
             f.get().then(t => {
                 console.log(t);
                 const serverRelativeUrl = t["ServerRelativeUrl"];
                 console.log(serverRelativeUrl);
-          
                 const a = document.createElement('a');
-                //document.body.appendChild(a);
                 a.href = serverRelativeUrl;
                 a.target = "_blank";
                 a.download = fileName;
-                
                 document.body.appendChild(a);
                 console.log(a);
-                //a.click();
-                //document.body.removeChild(a);
-                
-                
                 setTimeout(() => {
-                  window.URL.revokeObjectURL(serverRelativeUrl);
-                  window.open(serverRelativeUrl, '_blank');
-                  document.body.removeChild(a);
+                    window.URL.revokeObjectURL(serverRelativeUrl);
+                    window.open(serverRelativeUrl, '_blank');
+                    document.body.removeChild(a);
                 }, 1);
-                
-          
-              });
+            });
         }
-
-
-  
-
     }
 
     private closePanel = (): void => {
@@ -370,10 +279,6 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
         this.closePanel();
     }
 
-    private getSelectedEntityName = (): string => {
-        let entity = this.state.Entities.filter((e) => { return e.ID === this.state.SelectedEntity; });
-        return entity[0] ? entity[0].Title : null;
-    }
     private isSelectedEntityALink = (): boolean => {
         let entity = this.state.Entities.filter((e) => { return e.ID === this.state.SelectedEntity; });
         return entity[0] ? entity[0]["IsLink"] : null;
@@ -387,37 +292,30 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
         if (this.props.onError) this.props.onError(null);
         this.setState({ HideDeleteDialog: true });
         if (this.state.SelectedEntity) {
-
             const fileName: string = this.state.SelectedEntityTitle;
-            //console.log(fileName);
-
-            if(this.isSelectedEntityALink() === true){
+            if (this.isSelectedEntityALink() === true) {
 
                 console.log('deleting eveidence (link)');
                 this.giaaUpdateEvidenceService.delete(this.state.SelectedEntity).then(this.loadEvidences, (err) => {
                     if (this.props.onError) this.props.onError(`Cannot delete this evidence. `, err.message);
                 });
             }
-            else{
+            else {
 
                 sp.web.getFolderByServerRelativeUrl(this.UploadFolder_Evidence).files.getByName(fileName).delete().then(df => {
                     //console.log('file deleted', df);
-    
+
                     this.giaaUpdateEvidenceService.delete(this.state.SelectedEntity).then(this.loadEvidences, (err) => {
                         if (this.props.onError) this.props.onError(`Cannot delete this evidence. `, err.message);
                     });
                 });
             }
-
-
-
         }
     }
 
     //#endregion Class Methods
 
     //#region Data Load
-
 
     private loadEvidences = (): void => {
         this.setState({ Loading: true });
@@ -426,7 +324,6 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
             console.log(entities);
             this.setState({
                 Loading: false, Entities: entities,
-                //ListFilterText: this.props.filterText
             });
 
         }, (err) => this.errorLoadingEvidences(err));
@@ -437,29 +334,16 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
     }
     public componentDidMount(): void {
         this.loadEvidences();
-        //console.log('web title: ', this.props.spfxContext.pageContext.web.title);
-
     }
     public componentDidUpdate(prevProps: IEvidenceListProps): void {
         console.log("in component DidUpdate", this.props.entityReadAllWithArg1);
-        if(prevProps.entityReadAllWithArg1 !== this.props.entityReadAllWithArg1){
+        if (prevProps.entityReadAllWithArg1 !== this.props.entityReadAllWithArg1) {
             console.log("in component DidUpdate load");
             this.loadEvidences();
         }
     }
 
 
-
     //#endregion Data Load
-
-    //#region Events Handlers
-
-    // private handleFilterChange = (value: string): void => {
-    //     this.setState({ ListFilterText: value });
-    // }
-
-
-
-    //#endregion Events Handlers
 
 }

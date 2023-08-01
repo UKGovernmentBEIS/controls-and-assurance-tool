@@ -37,5 +37,3 @@ export interface IDGAreaStat extends IEntity {
     AggregateAssurance2: string;
     AggregateAssurance3: string;
 }
-
-

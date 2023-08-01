@@ -1,4 +1,10 @@
-@import '~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss';
+// @import '~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss';
+@import "~office-ui-fabric-react/dist/sass/_References.scss";
+@import "./cr-animations.module.scss";
+@import "./cr-badge.module.scss";
+@import "./cr-fonts.module.scss";
+@import "./cr-grid.module.scss";
+@import "./cr-colors.module.scss";
 
 @mixin cr-border-invalid {
   border: 1px solid #a80000;
@@ -9,12 +15,12 @@
 //  }
 .cr {
   .crList {
-    margin-top:9px;
+    margin-top: 9px;
   }
 
   .listTitle {
     @include ms-font-xxl;
-    
+
     margin: 6px 10px;
   }
 
@@ -33,7 +39,7 @@
   }
 
   .checkbox {
-      margin-top: 10px;
+    margin-top: 10px;
   }
 
   .formText {
@@ -43,36 +49,55 @@
     margin: 0em;
   }
 
-  .formField { margin-bottom: 20px; }
+  .formField {
+    margin-bottom: 20px;
+  }
 
-//   .ms-ChoiceField {
-//     flex: 1;
-// }
+  //   .ms-ChoiceField {
+  //     flex: 1;
+  // }
 
-// .ms-ChoiceFieldGroup-flexContainer {
-//     display: flex;
-//     flex-wrap: wrap;
-//     flex-direction: row;
-// }
-// .ms-ChoiceField-wrapper {
-//     min-width: 20em;
-// }
+  // .ms-ChoiceFieldGroup-flexContainer {
+  //     display: flex;
+  //     flex-wrap: wrap;
+  //     flex-direction: row;
+  // }
+  // .ms-ChoiceField-wrapper {
+  //     min-width: 20em;
+  // }
 
-//   .choiceField_63b7bc59{
-//     display: inline-block !important;
-//     margin-bottom: 100px;
-//  }
+  //   .choiceField_63b7bc59{
+  //     display: inline-block !important;
+  //     margin-bottom: 100px;
+  //  }
 
-  .formButton { margin: 0.67em 0.67em 0.67em 0em; }
+  .formButton {
+    margin: 0.67em 0.67em 0.67em 0em;
+  }
 
-  .textRight { text-align: right; }
+  .textRight {
+    text-align: right;
+  }
 
-  .lastMonth { opacity: 0.7;  }
+  .lastMonth {
+    opacity: 0.7;
+  }
 
-  .textFieldInvalid :global .ms-TextField-fieldGroup { @include cr-border-invalid; }
-  .datePickerInvalid :global .ms-TextField-fieldGroup { @include cr-border-invalid; }
-  .dropdownInvalid :global .ms-Dropdown-title { @include cr-border-invalid; }
-  .userPickerInvalid :global .ms-BasePicker-text { @include cr-border-invalid; }
+  .textFieldInvalid :global .ms-TextField-fieldGroup {
+    @include cr-border-invalid;
+  }
+
+  .datePickerInvalid :global .ms-TextField-fieldGroup {
+    @include cr-border-invalid;
+  }
+
+  .dropdownInvalid :global .ms-Dropdown-title {
+    @include cr-border-invalid;
+  }
+
+  .userPickerInvalid :global .ms-BasePicker-text {
+    @include cr-border-invalid;
+  }
 
   .msIcon {
     font-size: 20px;
@@ -102,6 +127,13 @@
   .updateHeader {
     margin: 0px 0px 1px 0px;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    @include bgColorThemeLight;
+
+    .updateHeaderContent {
+      width: calc(100% - 50px);
+    }
 
     .rowColumns {
       display: flex;
@@ -109,25 +141,36 @@
       .column {
         display: flex;
         align-items: center;
+
         .flexWidthFix {
           min-width: 0;
         }
+
         .subTitle {
-          font-size: $ms-font-size-m;
-          white-space: nowrap;
+          @include fontSize14;
           overflow: hidden;
           text-overflow: ellipsis;
         }
       }
+
+      .columnRightAlign {
+        justify-content: flex-end;
+
+        .updateHeaderMetadata {
+          margin-left: 16px;
+        }
+      }
     }
+
     .updateHeaderTitle {
-      font-size: $ms-font-size-l;
+      @include fontSize18;
       display: inline-block;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
       max-width: 100%;
     }
+
     .rag {
       width: 100%;
       padding: 10px 0px;
@@ -136,17 +179,18 @@
 
   .signOffGridRow {
     margin-bottom: 16px;
+
     .content {
       background-color: $ms-color-themeLight;
-      border:1px solid lightgray;
+      border: 1px solid lightgray;
       padding: 0px 5px;
     }
   }
-  
+
   @media screen and (max-width: 640px) {
     .signOffGridRow {
-      .content{
-        margin-bottom:3px;
+      .content {
+        margin-bottom: 3px;
       }
     }
   }
@@ -154,6 +198,7 @@
   @media screen and (min-width: 640px) {
     .signOffGridRow {
       display: flex;
+
       .content {
         min-height: 150px;
         height: 100%;
@@ -162,34 +207,48 @@
   }
 
   :global {
-    .ms-Label { font-size: $ms-font-size-m; font-weight: $ms-font-weight-semibold; }
-    .ms-font-xl { font-weight: 400; }
-    .ms-ChoiceField { .ms-Label { font-weight:$ms-font-weight-regular; } }
+    .ms-Label {
+      font-size: $ms-font-size-m;
+      font-weight: $ms-font-weight-semibold;
+    }
+
+    .ms-font-xl {
+      font-weight: 400;
+    }
+
+    .ms-ChoiceField {
+      .ms-Label {
+        font-weight: $ms-font-weight-regular;
+      }
+    }
   }
 }
 
-.sectionATitle{
+.sectionATitle {
   font-size: 26px;
   //margin-top: 30px;
   //margin-bottom: 30px;
 }
 
-.italicNote{
+.italicNote {
   font-style: italic;
   font-size: 12px;
   padding-bottom: 20px;
   padding-left: 5px;
 }
+
 .flexContainerSectionBQuestionDetail {
   display: flex;
   //padding-bottom: 0.5rem;
   //padding-top: 0.5rem;
 }
+
 .sectionBQuestionDetailCol1 {
   flex: 0 0 8px;
-  background-color: rgb(18,119,211);
+  background-color: rgb(18, 119, 211);
   //padding-left: 0.5rem;
 }
+
 .sectionBQuestionDetailCol2 {
   padding-left: 15px;
   padding-right: 15px;
@@ -202,25 +261,41 @@
   display: flex;
   //flex-wrap: wrap;
 }
+
 .sectionQuestionCol1 {
   //flex: 0 0 auto;
-  
+
   font-weight: 600;
 }
+
 .sectionQuestionCol2 {
   flex: 0 0 55px;
   padding-left: 5px;
   //vertical-align: baseline !important;
 }
-.bold{
+
+.bold {
   font-weight: bold;
 }
 
-.width100percent{
+.width100percent {
   width: 100%;
 }
 
+.crCommandBar {
+  min-height: 40px;
+  border-bottom: 1px solid #eaeaea;
+  margin-bottom: 20px;
+
+  .crCommandBarContainer {
+    display: flex;
+    align-items: center;
+  }
+
+  .crCommandBarPrimaryButton {
+    margin: 0px 8px;
+  }
+}
 
 
 // .inlineflex { :global .ms-ChoiceField { display: inline-block; } }
-

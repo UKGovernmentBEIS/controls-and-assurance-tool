@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as moment from 'moment';
+import moment from 'moment';
 import * as services from '../../services';
 import styles from '../../styles/cr.module.scss';
 import { Label } from 'office-ui-fabric-react/lib/Label';

@@ -6,19 +6,18 @@ import { FormButtons } from '.././cr/FormButtons';
 import { UpdateHeader } from '.././cr/UpdateHeader';
 import { ConfirmDialog } from '.././cr/ConfirmDialog';
 
-
 export interface ISignOffFormProps extends IEntityFormProps {
     signoffFor: string;
     formId: number;
     form: IFForm;
     title?: string;
     signoffText?: string;
-    onSignOff: ()=> void;
+    onSignOff: () => void;
     canSignOffDDSection: boolean;
     canSignOffDirSection: boolean;
 }
 
-export class SignOffFormState{
+export class SignOffFormState {
     public ShowForm = false;
     public ShowConfirmDialog = false;
     public DDSignOffName: string = null;
@@ -32,19 +31,15 @@ export default class SignOffForm extends React.Component<ISignOffFormProps, Sign
     constructor(props: ISignOffFormProps, state: SignOffFormState) {
         super(props);
         this.state = new SignOffFormState();
-        //console.log("in constructor", this.props.formId);
     }
 
     public render(): React.ReactElement<ISignOffFormProps> {
-
-        const {title, signoffText} = this.props;
-               
-        const {ShowForm} = this.state;
-        
+        const { title, signoffText } = this.props;
+        const { ShowForm } = this.state;
         return (
             <div className={styles.cr}>
                 <UpdateHeader title={title} isOpen={ShowForm}
-                    leadUser=""                    
+                    leadUser=""
                     rag={this.getRag()}
                     ragLabel={this.getRagLabel()}
                     onClick={this.toggleProgressUpdateForm} />
@@ -58,53 +53,52 @@ export default class SignOffForm extends React.Component<ISignOffFormProps, Sign
                         primaryDisabled={!this.enableSignOff()}
                     />
                 </div>}
-                                    
             </div>
         );
     }
 
-    private renderFormFields(signoffText?: string){
-        return(
+    private renderFormFields(signoffText?: string) {
+        return (
             <React.Fragment>
                 {this.renderSignOffText(signoffText)}
             </React.Fragment>
         );
     }
-    private renderSignOffText(signoffText:string){
-        let signedOffBy="";
-        if(this.props.signoffFor === "DD"){
+    private renderSignOffText(signoffText: string) {
+        let signedOffBy = "";
+        if (this.props.signoffFor === "DD") {
             //Signed off by Joe Smith on 12/04/2019 at 13:45
-            if(this.state.DDSignOffName != null){
+            if (this.state.DDSignOffName != null) {
                 signedOffBy = `<br/><br/>Signed off by ${this.state.DDSignOffName} on ${services.DateService.dateToUkDate(this.props.form.DDSignOffDate)} at ${services.DateService.dateToUkTime(this.props.form.DDSignOffDate)}`;
             }
         }
-        else{
-            if(this.state.DirSignOffName != null){
+        else {
+            if (this.state.DirSignOffName != null) {
                 signedOffBy = `<br/><br/>Signed off by ${this.state.DirSignOffName} on ${services.DateService.dateToUkDate(this.props.form.DirSignOffDate)} at ${services.DateService.dateToUkTime(this.props.form.DirSignOffDate)}`;
             }
         }
-        if(signoffText != null && signoffText != "" )
+        if (signoffText != null && signoffText != "")
             return (
-                    <div style={{ marginTop: 10, marginBottom:20 }} dangerouslySetInnerHTML={{ __html: signoffText+signedOffBy }}></div>
+                <div style={{ marginTop: 10, marginBottom: 20 }} dangerouslySetInnerHTML={{ __html: signoffText + signedOffBy }}></div>
             );
     }
-    
-    private enableSignOff() : boolean{
-        
-        if(this.props.signoffFor === "DD"){
-            if(this.props.form.LastSignOffFor === "WaitingSignOff"){
+
+    private enableSignOff(): boolean {
+
+        if (this.props.signoffFor === "DD") {
+            if (this.props.form.LastSignOffFor === "WaitingSignOff") {
 
                 //check if the user is logged in as DD
-                if(this.props.canSignOffDDSection === true)
+                if (this.props.canSignOffDDSection === true)
                     return true;
             }
         }
-        else{
+        else {
             //this.props.signoffFor === Dir
-            if(this.props.form.LastSignOffFor === "DD"){
+            if (this.props.form.LastSignOffFor === "DD") {
 
                 //check if the user is logged in as D
-                if(this.props.canSignOffDirSection === true)
+                if (this.props.canSignOffDirSection === true)
                     return true;
             }
         }
@@ -112,62 +106,57 @@ export default class SignOffForm extends React.Component<ISignOffFormProps, Sign
         return false;
     }
 
-    private getRagLabel() : string{
-        
-        if(this.props.signoffFor === "DD"){
-            if(this.props.form.LastSignOffFor === "WaitingSignOff"){
-                return "Require SignOff";
-            }
-            else if(this.props.form.DDSignOffStatus === true){
-                return "Signed Off";
-            }
-            else{
-                return "N/A";
-            }
-        }
-        else{
-            //this.props.signoffFor === Dir
-            if(this.props.form.LastSignOffFor === "DD"){
-                return "Require SignOff";
-            }
-            else if(this.props.form.DirSignOffStatus === true){
-                return "Signed Off";
-            }
-            else{
-                return "N/A";
-            }
-        }
+    private getRagLabel(): string {
 
-        
+        if (this.props.signoffFor === "DD") {
+            if (this.props.form.LastSignOffFor === "WaitingSignOff") {
+                return "Require SignOff";
+            }
+            else if (this.props.form.DDSignOffStatus === true) {
+                return "Signed Off";
+            }
+            else {
+                return "N/A";
+            }
+        }
+        else {
+            //this.props.signoffFor === Dir
+            if (this.props.form.LastSignOffFor === "DD") {
+                return "Require SignOff";
+            }
+            else if (this.props.form.DirSignOffStatus === true) {
+                return "Signed Off";
+            }
+            else {
+                return "N/A";
+            }
+        }
     }
 
-    private getRag() : number{
-        
-        if(this.props.signoffFor === "DD"){
-            if(this.props.form.LastSignOffFor === "WaitingSignOff"){
-                return 3;
-            }
-            else if(this.props.form.DDSignOffStatus === true){
-                return 5;
-            }
-            else{
-                return null;
-            }
-        }
-        else{
-            //this.props.signoffFor === Dir
-            if(this.props.form.LastSignOffFor === "DD"){
-                return 3;
-            }
-            else if(this.props.form.DirSignOffStatus === true){
-                return 5;
-            }
-            else{
-                return null;
-            }
-        }
+    private getRag(): number {
 
-        
+        if (this.props.signoffFor === "DD") {
+            if (this.props.form.LastSignOffFor === "WaitingSignOff") {
+                return 3;
+            }
+            else if (this.props.form.DDSignOffStatus === true) {
+                return 5;
+            }
+            else {
+                return null;
+            }
+        }
+        else {
+            if (this.props.form.LastSignOffFor === "DD") {
+                return 3;
+            }
+            else if (this.props.form.DirSignOffStatus === true) {
+                return 5;
+            }
+            else {
+                return null;
+            }
+        }
     }
 
     //#region Form initialisation
@@ -177,36 +166,34 @@ export default class SignOffForm extends React.Component<ISignOffFormProps, Sign
     }
 
     public componentDidUpdate(prevProps: ISignOffFormProps): void {
-        if (prevProps.formId !== this.props.formId){
+        if (prevProps.formId !== this.props.formId) {
             this.loadUserInfo();
         }
     }
 
     protected loadUserInfo = (): void => {
-        
-        if(this.props.signoffFor === "DD"){
-            if(this.props.form.DDSignOffStatus === true){
-                this.userService.read(this.props.form.DDSignOffUserId).then((u: IUser): void => {                    
+
+        if (this.props.signoffFor === "DD") {
+            if (this.props.form.DDSignOffStatus === true) {
+                this.userService.read(this.props.form.DDSignOffUserId).then((u: IUser): void => {
                     this.setState({ DDSignOffName: u.Title });
-                }, (err) => {  });
+                }, (err) => { });
             }
-            else{
+            else {
                 this.setState({ DDSignOffName: null });
             }
-                
+
         }
-        else if(this.props.signoffFor === "Dir"){
-            if(this.props.form.DirSignOffStatus === true){
-                this.userService.read(this.props.form.DirSignOffUserId).then((u: IUser): void => {                    
+        else if (this.props.signoffFor === "Dir") {
+            if (this.props.form.DirSignOffStatus === true) {
+                this.userService.read(this.props.form.DirSignOffUserId).then((u: IUser): void => {
                     this.setState({ DirSignOffName: u.Title });
-                }, (err) => {  });
+                }, (err) => { });
             }
             else
                 this.setState({ DirSignOffName: null });
         }
-
-
-      }
+    }
 
 
     //#endregion
@@ -230,24 +217,23 @@ export default class SignOffForm extends React.Component<ISignOffFormProps, Sign
             return { ...obj, [changeProp]: changeValue };
         return { ...obj };
     }
-    
+
     protected displayConfirm = (): void => {
         this.setState({ ShowConfirmDialog: true });
     }
 
     protected onAfterSave(): void {
         this.props.onSignOff();
-     }
-     
+    }
+
     protected saveUpdate = (): void => {
 
         this.setState({ ShowConfirmDialog: false });
         if (this.validateEntityUpdate()) {
-            
+
             let formUpdate = new FForm();
             formUpdate.ID = this.props.form.ID;
             formUpdate.LastSignOffFor = this.props.signoffFor;
-
             delete formUpdate.PeriodId;
             delete formUpdate.TeamId;
             delete formUpdate.DefFormId;
@@ -259,9 +245,6 @@ export default class SignOffForm extends React.Component<ISignOffFormProps, Sign
             delete formUpdate.DirSignOffUserId;
             delete formUpdate.DirSignOffDate;
             delete formUpdate.FirstSignedOff;
-
-        
-
             this.formService.update(formUpdate.ID, formUpdate).then((): void => {
                 this.onAfterSave();
                 if (this.props.onError)
@@ -274,7 +257,6 @@ export default class SignOffForm extends React.Component<ISignOffFormProps, Sign
             });
         }
     }
-
 
     protected toggleProgressUpdateForm = (): void => {
         this.setState({ ShowForm: !this.state.ShowForm });

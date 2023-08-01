@@ -1,10 +1,8 @@
 import { IEntity } from "./Entity";
-import { IUser } from "./User";
 
 export interface IGIAAActionOwner extends IEntity {
     GIAARecommendationId?: number;
     UserId?: number;
-
 }
 
 export class GIAAActionOwner implements IGIAAActionOwner {

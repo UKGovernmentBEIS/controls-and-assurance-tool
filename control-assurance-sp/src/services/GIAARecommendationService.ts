@@ -2,8 +2,6 @@ import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { EntityService } from './EntityService';
 import { IDataAPI, IEntity, IGIAARecommendation } from '../types';
 
-
-
 export class GIAARecommendationService extends EntityService<IEntity> {
     public readonly parentEntities = [];
     protected childrenEntities = [];
@@ -17,7 +15,6 @@ export class GIAARecommendationService extends EntityService<IEntity> {
     }
 
     public readWithExpandActionOwners(ID: number): Promise<IGIAARecommendation> {
-        //const qry:string = `?$expand=GIAAActionOwners($expand=User)`;
 
         let entitiesToExpand: string[] = [];
         entitiesToExpand.push("GIAAActionOwners($expand=User)");
@@ -28,11 +25,9 @@ export class GIAARecommendationService extends EntityService<IEntity> {
     }
 
     public getRecInfo(giaaRecommendationId: number): Promise<IGIAARecommendation> {
-        //const qry:string = `?$expand=GIAAAuditReport`;
 
         let entitiesToExpand: string[] = [];
         entitiesToExpand.push("GIAAAuditReport");
-
 
         return this.read(giaaRecommendationId, false, false, entitiesToExpand).then((e: IGIAARecommendation): IGIAARecommendation => {
             return e;
@@ -40,14 +35,8 @@ export class GIAARecommendationService extends EntityService<IEntity> {
     }
 
     public updateGiaaUpdateAfterEditRec(giaaRecommendationId:number, giaaPeriodId:number): Promise<string> {
-        //?giaaRecommendationId=1&giaaPeriodId=1&updateGiaaUpdateOnEditRec=
         return super.readString(`?giaaRecommendationId=${giaaRecommendationId}&giaaPeriodId=${giaaPeriodId}&updateGiaaUpdateOnEditRec=`).then((result:string): string => {
             return result;
         });
     }
-
-
-
-
-
 }

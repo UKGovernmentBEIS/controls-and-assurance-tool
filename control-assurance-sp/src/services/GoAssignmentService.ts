@@ -2,8 +2,6 @@ import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { EntityService } from './EntityService';
 import { IDataAPI, IEntity } from '../types';
 
-
-
 export class GoAssignmentService extends EntityService<IEntity> {
     public readonly parentEntities = [];
     protected childrenEntities = [];
@@ -11,8 +9,4 @@ export class GoAssignmentService extends EntityService<IEntity> {
     constructor(spfxContext: WebPartContext, api: IDataAPI) {
         super(spfxContext, api, `/GoAssignments`);
     }
-
-
-
-
 }

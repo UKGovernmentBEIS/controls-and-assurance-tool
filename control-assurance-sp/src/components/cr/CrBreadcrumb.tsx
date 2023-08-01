@@ -14,7 +14,7 @@ export class CrBreadcrumb extends React.Component<ICrBreadcrumbProps, {}> {
             <ol className={styles.crBreadcrumb}>
                 {this.props.items && this.props.items.map((value, index) => {
                     return (
-                        <li className={styles.crumb}>
+                        <li key={`brcrmb_${index}`} className={styles.crumb}>
                             <span className={styles.crumbTitle}>
                                 <TooltipHost overflowMode={TooltipOverflowMode.Parent} content={value}>{value}</TooltipHost>
                             </span>

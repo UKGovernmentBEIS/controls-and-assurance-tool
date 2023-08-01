@@ -19,7 +19,7 @@ export interface IEvidenceListProps extends types.IBaseComponentProps {
     parentId: any;
     workerId?: number;
     filterText?: string;
-    onChangeFilterText: (value: string) => void;
+    onChangeFilterText: (event?: React.ChangeEvent<HTMLInputElement>, newValue?: string) => void;
     currentUserId: number;
     superUserPermission: boolean;
 
@@ -473,8 +473,8 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
 
     //#region Events Handlers
 
-    // private handleFilterChange = (value: string): void => {
-    //     this.setState({ ListFilterText: value });
+    // private handleFilterChange = (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string): void => {
+    //     this.setState({ ListFilterText: newValue });
     // }
 
 

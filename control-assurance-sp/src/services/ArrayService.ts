@@ -9,7 +9,6 @@ export class ArrayService {
             const varA = (typeof a[sortBy] === 'string') ? a[sortBy].toLowerCase() : a[sortBy];
             const varB = (typeof b[sortBy] === 'string') ? b[sortBy].toLowerCase() : b[sortBy];
 
-            //let xx = a[sortBy];
             console.log('varA', varA);
             console.log('varB', varB);
             console.log('sortBy',sortBy);

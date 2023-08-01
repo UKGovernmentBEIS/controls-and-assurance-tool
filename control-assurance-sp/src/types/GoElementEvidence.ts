@@ -11,8 +11,6 @@ export interface IGoElementEvidence  extends IEntity {
     GoElementId?: number; 
     DateUploaded?: Date;
     UploadedByUserId?: number;
-    //User?: User;
-
 }
 
 export class GoElementEvidence implements IGoElementEvidence{ 
@@ -30,6 +28,4 @@ export class GoElementEvidence implements IGoElementEvidence{
     constructor(goElementId: number) {
         this.GoElementId = goElementId;
     }
-
-    //public User?: User = null; 
 }

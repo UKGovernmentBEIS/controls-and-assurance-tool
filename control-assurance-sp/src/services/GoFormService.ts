@@ -2,8 +2,6 @@ import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { EntityService } from './EntityService';
 import { IDataAPI, IGoForm, IEntity } from '../types';
 
-
-
 export class GoFormService extends EntityService<IGoForm> {
     public readonly parentEntities = [];
     protected childrenEntities = [];
@@ -37,6 +35,4 @@ export class GoFormService extends EntityService<IGoForm> {
             return result;
         });
     }
-
-
 }

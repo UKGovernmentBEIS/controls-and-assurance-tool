@@ -2,8 +2,6 @@ import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { EntityService } from './EntityService';
 import { IDataAPI, IEntity, IGIAADefForm } from '../types';
 
-
-
 export class GIAADefFormService extends EntityService<IGIAADefForm> {
     public readonly parentEntities = [];
     protected childrenEntities = [];
@@ -13,7 +11,7 @@ export class GIAADefFormService extends EntityService<IGIAADefForm> {
     }
 
     public welcomeAccess(): Promise<string> {
-        return super.readString(`?welcomeAccess=`).then((result:string): string => {
+        return super.readString(`?welcomeAccess=`).then((result: string): string => {
             return result;
         });
     }
@@ -21,5 +19,4 @@ export class GIAADefFormService extends EntityService<IGIAADefForm> {
     public getTestDateTime(): Promise<IEntity> {
         return this.readEntity(`?getTestDateTime=&p2=`);
     }
-
 }

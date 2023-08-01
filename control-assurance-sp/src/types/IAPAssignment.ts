@@ -1,14 +1,9 @@
 import { IEntity } from "./Entity";
-import { IIAPAction } from "./IAPAction";
-import { IUser } from "./User";
 
 export interface IIAPAssignment extends IEntity {
     IAPActionId?: number;
     UserId?: number;
     GroupNum?: number;
-    //IAPAction?: IGoElement;
-    //User?: IUser;
-
 }
 
 export class IAPAssignment implements IIAPAssignment {

@@ -24,11 +24,9 @@ export default abstract class DataAPIWebPart extends BaseClientSideWebPart<IData
         } else {
 
             this.api.URL = this.properties.apiUrl;
-
-             this.api.createClient(this.context, this.properties.appIdUri).then(() => {
-                 ReactDom.render(this.renderWebPart(), this.domElement);
-             });
-
+            this.api.createClient(this.context, this.properties.appIdUri).then(() => {
+                ReactDom.render(this.renderWebPart(), this.domElement);
+            });
         }
     }
 

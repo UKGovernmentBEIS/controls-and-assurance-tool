@@ -82,7 +82,7 @@ export class EntityForm extends BaseForm<types.IEntityFormProps, types.ICrFormSt
                     //numbersOnly={c.numbersOnly}
                     maxLength={c.fieldMaxLength}
                     value={this.state.FormData[c.fieldName]}
-                    onChanged={(v) => this.changeTextField(v, c.fieldName)}
+                    onChanged={(ev, newVal) => this.changeTextField(newVal, c.fieldName)}
                     errorMessage={this.state.ValidationErrors[c.fieldName]} />
                 <br key={`div_TextField_${c.fieldName}_br`}
                 />
@@ -243,10 +243,14 @@ export class EntityForm extends BaseForm<types.IEntityFormProps, types.ICrFormSt
     }
     protected loadParentData = (entityService: EntityService<IEntity>, entityName: string): Promise<IEntity[]> => {
         return entityService.readAllForUser().then((data: IEntity[]): IEntity[] => {
-            this.setState({ LookupData: this.cloneObject(this.state.LookupData, entityName, data) });
-            return data;
-        }, (err) => { if (this.props.onError) this.props.onError(`Error loading ${entityName} lookup data`, err.message); });
-    }
+          this.setState({ LookupData: this.cloneObject(this.state.LookupData, entityName, data) });
+          return data;
+        }, (err) => {
+          if (this.props.onError) this.props.onError(`Error loading ${entityName} lookup data`, err.message);
+          return [] as IEntity[]; // Return an empty array explicitly as IEntity[]
+        });
+      }
+      
 
     protected onAfterLoad = (entity: types.IEntity): void => {
         const columns: IGenColumn[] = this.props["columns"];

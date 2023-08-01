@@ -2,29 +2,14 @@ import * as React from 'react';
 import { DetailsList, SelectionMode, IColumn, ISelection } from 'office-ui-fabric-react/lib/DetailsList';
 import { SearchObjectService } from '../../services';
 import { IEntity } from '../../types';
-import { ElementStatuses, RAGRatings } from '../../types/AppGlobals';
 export { IObjectWithKey, IColumn } from 'office-ui-fabric-react/lib/DetailsList';
 import { CommandBarButton } from 'office-ui-fabric-react/lib/Button';
 import { Fabric } from 'office-ui-fabric-react/lib/Fabric';
-import { mergeStyleSets } from 'office-ui-fabric-react/lib/Styling';
 import { Toggle } from 'office-ui-fabric-react/lib/Toggle';
 import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox';
 import '../../styles/CustomFabric2.scss';
+import { searchBoxStyle, toolbarStyle } from '../../types/AppGlobals';
 
-
-
-const classNames = mergeStyleSets({
-    controlWrapper: {
-        display: 'flex',
-        flexWrap: 'wrap',
-        backgroundColor: "rgb(244,244,244)",
-        padding: "5px 0px 5px 10px",
-        marginBottom: "5px"
-    },
-    cmdBtn: {
-        border: 'none'
-    }
-});
 const controlStyles = {
     root: {
         margin: '5px 10px 0 0', //top, right, bottom, left
@@ -32,52 +17,25 @@ const controlStyles = {
     }
 };
 
-const controlStylesB = {
-    marginLeft: "auto",
-    //display: "inline-block",
-};
-
-const controlStyles2 = {
-    //root: {
-    marginLeft: "auto",
-    display: "inline-block",
-    backgroundColor: "white"
-
-    //}
-};
-
 export interface IFilteredRecListProps {
     className?: string;
     columns: IColumn[];
     items: any[];
     filterText?: string;
-
     incompleteOnly: boolean;
     onChangeIncompleteOnly: (value: boolean) => void;
     justMine: boolean;
     onChangeJustMine: (value: boolean) => void;
-    onFilterChange: (value: string) => void;
+    onFilterChange: (event?: React.ChangeEvent<HTMLInputElement>, newValue?: string) => void;
     onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
-
     selection?: ISelection;
-
     onAdd: () => void;
     onEdit: () => void;
     onAssign: () => void;
-    //onDelete: () => void;
-
     editDisabled: boolean;
     deleteDisabled: boolean;
-
-    
-    //onDelete: () => void;
-
-
-    //assignDisabled: boolean;
-    //deleteDisabled: boolean;
-
-    superUserPermission:boolean;
-    dgOrDGMemberPermission:boolean;
+    superUserPermission: boolean;
+    dgOrDGMemberPermission: boolean;
 }
 
 export interface IFilteredRecListState {
@@ -87,31 +45,20 @@ export interface IFilteredRecListState {
 
 export class FilteredRecList extends React.Component<IFilteredRecListProps, IFilteredRecListState> {
 
-
-    private statusImgNotStarted: string = require('../../images/goelement/list/status/notstarted.png');
-    private statusImgInProgress: string = require('../../images/goelement/list/status/inprogress.png');
-    private statusImgCompleted: string = require('../../images/goelement/list/status/completed.png');
-
-
     constructor(props: IFilteredRecListProps) {
         super(props);
-
         props.columns.forEach((c) => { c.onColumnClick = this._onColumnClick; });
         this.state = {
             Columns: props.columns,
             FilteredItems: props.items,
         };
-
-
     }
 
     public render(): JSX.Element {
         const { props, state } = this;
         return (
             <Fabric>
-
-                <div className={classNames.controlWrapper}>
-
+                <div className={toolbarStyle.controlWrapper}>
                     <Toggle
                         onText="Incomplete Only"
                         offText="Incomplete Only"
@@ -119,7 +66,6 @@ export class FilteredRecList extends React.Component<IFilteredRecListProps, IFil
                         checked={props.incompleteOnly}
                         onChanged={(isChecked) => props.onChangeIncompleteOnly(isChecked)}
                     />
-
                     <Toggle
                         onText="Just Mine"
                         offText="Just Mine"
@@ -131,7 +77,7 @@ export class FilteredRecList extends React.Component<IFilteredRecListProps, IFil
                     {props.superUserPermission && props.editDisabled && props.deleteDisabled &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Add' }}
-                            className={classNames.cmdBtn}
+                            className={toolbarStyle.cmdBtn}
                             text="New"
                             onClick={props.onAdd}
                         />}
@@ -139,46 +85,35 @@ export class FilteredRecList extends React.Component<IFilteredRecListProps, IFil
                     {props.superUserPermission && (props.editDisabled === false) &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Edit' }}
-                            className={classNames.cmdBtn}
+                            className={toolbarStyle.cmdBtn}
                             text="Edit"
                             onClick={props.onEdit}
                         />}
 
-
-                    
                     {(props.superUserPermission === true || props.dgOrDGMemberPermission === true) && (props.editDisabled === false) &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Assign' }}
-                            className={classNames.cmdBtn}
+                            className={toolbarStyle.cmdBtn}
                             text="Assign"
                             onClick={props.onAssign}
                         />}
 
-                    <span style={controlStyles2}>
-
-
-
+                    <span style={searchBoxStyle}>
                         <SearchBox
                             placeholder="Filter items"
                             value={props.filterText ? props.filterText : ''}
                             onChange={props.onFilterChange}
-                        //className={styles.listFilterBox}
-                        //style={controlStyles2}
                         />
                     </span>
-
                 </div>
 
-
                 <DetailsList
-                    //className="noHScroll"
                     setKey={"state.FilteredItems"}
                     selectionMode={SelectionMode.single}
                     selection={props.selection}
                     columns={state.Columns}
                     items={state.FilteredItems}
                     onRenderItemColumn={this.renderItemColumn}
-
                 />
             </Fabric>
         );
@@ -188,8 +123,6 @@ export class FilteredRecList extends React.Component<IFilteredRecListProps, IFil
 
     public componentDidMount(): void {
         this.setState({ FilteredItems: SearchObjectService.filterEntities(this.props.items, this.props.filterText) });
-
-
     }
 
     public componentDidUpdate(prevProps: IFilteredRecListProps): void {
@@ -199,10 +132,8 @@ export class FilteredRecList extends React.Component<IFilteredRecListProps, IFil
             this.setState({ Columns: this.props.columns, FilteredItems: SearchObjectService.filterEntities(this.props.items, this.props.filterText) });
         }
         else if (prevProps.items !== this.props.items || prevProps.filterText !== this.props.filterText) {
-
             this.setState({ FilteredItems: SearchObjectService.filterEntities(this.props.items, this.props.filterText) });
         }
-
     }
 
     //#endregion
@@ -217,49 +148,31 @@ export class FilteredRecList extends React.Component<IFilteredRecListProps, IFil
 
             let txtColor: string = "white";
             let bgColor: string = "";
-            //let statusImg: string = "";
 
             if (fieldContent === "Not Updated") {
                 bgColor = "rgb(166,166,166)";
-                //txtColor = "black";
-                //statusImg = this.statusImgNotStarted;
             }
             else if (fieldContent === "Updated") {
                 bgColor = "rgb(0,127,0)";
-                //txtColor = "white";
-                //statusImg = this.statusImgInProgress;
             }
-            // else if (fieldContent === ElementStatuses.ReqSignOff) {
-            //     bgColor = "rgb(185,0,185)";
-            //     txtColor = "white";
-            // }
-
 
             return (
                 <span style={{ backgroundColor: bgColor, color: txtColor, width: "140px", display: "block", paddingLeft: "10px", paddingTop: "5px", paddingBottom: "5px" }}>
                     {fieldContent}
                 </span>
-                // <img src={statusImg} />
-
             );
         }
-
-
         else if (column.key === "Title") {
 
             const id: number = item["ID"];
 
             return (
                 <span><a className="titleLnk" onClick={(ev) => this.props.onItemTitleClick(id, fieldContent, this.state.FilteredItems)} > {fieldContent}</a> </span>
-                // <span>{fieldContent}</span>
             );
-
         }
         else {
             return <span>{fieldContent}</span>;
         }
-
-
     }
 
     private _onColumnClick = (ev: React.MouseEvent<HTMLElement>, column: IColumn): void => {

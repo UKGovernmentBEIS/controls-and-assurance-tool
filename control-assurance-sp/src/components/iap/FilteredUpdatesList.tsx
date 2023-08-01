@@ -2,87 +2,27 @@ import * as React from 'react';
 import { DetailsList, SelectionMode, IColumn, ISelection } from 'office-ui-fabric-react/lib/DetailsList';
 import { SearchObjectService } from '../../services';
 import { IEntity } from '../../types';
-import { ElementStatuses, RAGRatings } from '../../types/AppGlobals';
 export { IObjectWithKey, IColumn } from 'office-ui-fabric-react/lib/DetailsList';
 import { CommandBarButton } from 'office-ui-fabric-react/lib/Button';
 import { Fabric } from 'office-ui-fabric-react/lib/Fabric';
-import { mergeStyleSets } from 'office-ui-fabric-react/lib/Styling';
-import { Toggle } from 'office-ui-fabric-react/lib/Toggle';
 import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox';
-import { CrDropdown, IDropdownOption } from '../cr/CrDropdown';
 import '../../styles/CustomFabric2.scss';
-
-
-
-const classNames = mergeStyleSets({
-    controlWrapper: {
-        display: 'flex',
-        flexWrap: 'wrap',
-        backgroundColor: "rgb(244,244,244)",
-        padding: "5px 0px 5px 10px",
-        marginBottom: "5px"
-    },
-    cmdBtn: {
-        border: 'none'
-    }
-});
-const controlStyles = {
-    root: {
-        margin: '5px 10px 0 0', //top, right, bottom, left
-        maxWidth: '301px',
-    }
-};
-
-const controlStylesB = {
-    marginLeft: "auto",
-    //display: "inline-block",
-};
-
-const controlStyles2 = {
-    //root: {
-    marginLeft: "auto",
-    display: "inline-block",
-    backgroundColor: "white"
-
-    //}
-};
-
-const filterDrpsStyle = {
-
-    width: "120px",
-    //marginRight: "10px",
-    //marginBottom: "10px"
-
-
-
-};
+import { searchBoxStyle, toolbarStyle } from '../../types/AppGlobals';
 
 export interface IFilteredUpdatesListProps {
     className?: string;
     columns: IColumn[];
     items: any[];
     filterText?: string;
-
-    onFilterChange: (value: string) => void;
-
-
+    onFilterChange: (event?: React.ChangeEvent<HTMLInputElement>, newValue?: string) => void;
     selection?: ISelection;
-
     onAddActionUpdate: () => void;
     onAddRevisedDate: () => void;
     onAddMiscComments: () => void;
-
-
-
-    //editDisabled: boolean;
     onDelete: () => void;
     deleteDisabled: boolean;
-
     viewDisabled: boolean;
     onView: () => void;
-
-    //isViewOnly:boolean;
-
 }
 
 export interface IFilteredUpdatesListState {
@@ -92,55 +32,40 @@ export interface IFilteredUpdatesListState {
 
 export class FilteredUpdatesList extends React.Component<IFilteredUpdatesListProps, IFilteredUpdatesListState> {
 
-
-    // private statusImgNotStarted: string = require('../../images/goelement/list/status/notstarted.png');
-    // private statusImgInProgress: string = require('../../images/goelement/list/status/inprogress.png');
-    // private statusImgCompleted: string = require('../../images/goelement/list/status/completed.png');
-
-
     constructor(props: IFilteredUpdatesListProps) {
         super(props);
-
         props.columns.forEach((c) => { c.onColumnClick = this._onColumnClick; });
         this.state = {
             Columns: props.columns,
             FilteredItems: props.items,
         };
-
-
     }
 
     public render(): JSX.Element {
         const { props, state } = this;
         const selCount: number = props.selection.getSelectedCount();
-
         return (
             <Fabric>
-
-                <div className={classNames.controlWrapper}>
-
-
+                <div className={toolbarStyle.controlWrapper}>
                     {selCount === 0 &&
                         <CommandBarButton
                             iconProps={{ iconName: 'AddNotes' }}
-                            className={classNames.cmdBtn}
+                            className={toolbarStyle.cmdBtn}
                             text="Action Update"
                             onClick={props.onAddActionUpdate}
                         />}
-
                     {selCount === 0 &&
                         <CommandBarButton
                             iconProps={{ iconName: 'AddEvent' }}
-                            className={classNames.cmdBtn}
+                            className={toolbarStyle.cmdBtn}
                             text="Revise Implementation Date"
                             onClick={props.onAddRevisedDate}
                         />}
 
-
                     {selCount === 0 &&
                         <CommandBarButton
                             iconProps={{ iconName: 'CommentAdd' }}
-                            className={classNames.cmdBtn}
+                            className={toolbarStyle.cmdBtn}
                             text="Misc Comments"
                             onClick={props.onAddMiscComments}
                         />}
@@ -148,7 +73,7 @@ export class FilteredUpdatesList extends React.Component<IFilteredUpdatesListPro
                     {selCount === 1 && props.deleteDisabled === false &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Delete' }}
-                            className={classNames.cmdBtn}
+                            className={toolbarStyle.cmdBtn}
                             text="Delete"
                             onClick={this.props.onDelete}
                         />}
@@ -156,43 +81,21 @@ export class FilteredUpdatesList extends React.Component<IFilteredUpdatesListPro
                     {selCount === 1 && props.viewDisabled === false &&
                         <CommandBarButton
                             iconProps={{ iconName: 'View' }}
-                            className={classNames.cmdBtn}
+                            className={toolbarStyle.cmdBtn}
                             text="View Evidence"
                             onClick={this.props.onView}
                         />}
 
-
-                    {/* {(props.editDisabled === false) &&
-                        <CommandBarButton
-                            iconProps={{ iconName: 'Edit' }}
-                            className={classNames.cmdBtn}
-                            text="Edit"
-                            onClick={props.onEdit}
-                        />} */}
-
-
-
-
-
-
-                    <span style={controlStyles2}>
-
-
-
+                    <span style={searchBoxStyle}>
                         <SearchBox
                             placeholder="Filter items"
                             value={props.filterText ? props.filterText : ''}
                             onChange={props.onFilterChange}
-                        //className={styles.listFilterBox}
-                        //style={controlStyles2}
                         />
                     </span>
-
                 </div>
 
-
                 <DetailsList
-                    //className="noHScroll"
                     setKey={"state.FilteredItems"}
                     selectionMode={SelectionMode.single}
                     selection={props.selection}
@@ -209,8 +112,6 @@ export class FilteredUpdatesList extends React.Component<IFilteredUpdatesListPro
 
     public componentDidMount(): void {
         this.setState({ FilteredItems: SearchObjectService.filterEntities(this.props.items, this.props.filterText) });
-
-
     }
 
     public componentDidUpdate(prevProps: IFilteredUpdatesListProps): void {
@@ -233,10 +134,7 @@ export class FilteredUpdatesList extends React.Component<IFilteredUpdatesListPro
     private renderItemColumn = (item: IEntity, index: number, column: IColumn) => {
 
         let fieldContent = item[column.fieldName as keyof IEntity] as string;
-
         return <span>{fieldContent}</span>;
-
-
 
     }
 

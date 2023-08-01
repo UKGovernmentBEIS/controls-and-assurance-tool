@@ -32,7 +32,7 @@ export class RagIndicator extends React.Component<IRagIndicatorProps, {}> {
                     <div className={`ms-font-m ${styles.indicator} ${styles.green}`}>
                         <TooltipHost content={this.props.label || 'Green'} overflowMode={TooltipOverflowMode.Parent}>{this.props.label || 'Green'}</TooltipHost>
                     </div>}
-                
+
                 {this.props.rag === -1 &&
                     <div className={`ms-font-m ${styles.indicator} ${styles.blue}`}>
                         <TooltipHost content={this.props.label || 'Blue'} overflowMode={TooltipOverflowMode.Parent}>{this.props.label || 'Blue'}</TooltipHost>

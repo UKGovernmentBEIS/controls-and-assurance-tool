@@ -1,8 +1,6 @@
 import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { EntityService } from './EntityService';
-import { IDataAPI, IEntity, IGoElement } from '../types';
-
-
+import { IDataAPI, IGoElement } from '../types';
 
 export class GoElementService extends EntityService<IGoElement> {
     public readonly parentEntities = [];
@@ -13,7 +11,6 @@ export class GoElementService extends EntityService<IGoElement> {
     }
 
     public readWithExpandDefElement(ID: number): Promise<IGoElement> {
-        //const qry:string = `?$expand=GoDefElement`;
 
         let entitiesToExpand: string[] = [];
         entitiesToExpand.push("GoDefElement");
@@ -24,7 +21,6 @@ export class GoElementService extends EntityService<IGoElement> {
     }
 
     public readWithExpandDefElementAndAssignments(ID: number): Promise<IGoElement> {
-        //const qry:string = `?$expand=GoDefElement,GoAssignments($expand=User)`;
 
         let entitiesToExpand: string[] = [];
         entitiesToExpand.push("GoDefElement");
@@ -34,7 +30,5 @@ export class GoElementService extends EntityService<IGoElement> {
             return e;
         });
     }
-
-
 
 }

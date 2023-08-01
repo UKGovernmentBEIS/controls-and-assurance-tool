@@ -5,61 +5,21 @@ import { IEntity } from '../../../types';
 export { IObjectWithKey, IColumn } from 'office-ui-fabric-react/lib/DetailsList';
 import { CommandBarButton } from 'office-ui-fabric-react/lib/Button';
 import { Fabric } from 'office-ui-fabric-react/lib/Fabric';
-import { mergeStyleSets } from 'office-ui-fabric-react/lib/Styling';
-import { Toggle } from 'office-ui-fabric-react/lib/Toggle';
 import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox';
 import '../../../styles/CustomFabric2.scss';
-
-
-const classNames = mergeStyleSets({
-    controlWrapper: {
-        display: 'flex',
-        flexWrap: 'wrap',
-        backgroundColor: "rgb(244,244,244)",
-        padding: "5px 0px 5px 10px",
-        marginBottom: "5px"
-    },
-    cmdBtn: {
-        border: 'none'
-    }
-});
-const controlStyles = {
-    root: {
-        margin: '5px 10px 0 0', //top, right, bottom, left
-        maxWidth: '301px',
-    }
-};
-
-const controlStylesB = {
-    marginLeft: "auto",
-    //display: "inline-block",
-};
-
-const controlStyles2 = {
-    //root: {
-    marginLeft: "auto",
-    display: "inline-block",
-    backgroundColor: "white"
-
-    //}
-};
+import { searchBoxStyle, toolbarStyle } from '../../../types/AppGlobals';
 
 export interface IFilteredMiscFilesListProps {
     className?: string;
     columns: IColumn[];
     items: any[];
     filterText?: string;
-
-    onFilterChange: (value: string) => void;
-    //onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
-
+    onFilterChange: (event?: React.ChangeEvent<HTMLInputElement>, newValue?: string) => void;
     selection?: ISelection;
     onAdd: () => void;
     onEdit: () => void;
     onDelete: () => void;
     onView: () => void;
-    //onView2: () => void;
-
     editDisabled: boolean;
     deleteDisabled: boolean;
 }
@@ -71,31 +31,25 @@ export interface IFilteredMiscFilesListState {
 
 export class FilteredMiscFilesList extends React.Component<IFilteredMiscFilesListProps, IFilteredMiscFilesListState> {
 
-
-
     constructor(props: IFilteredMiscFilesListProps) {
         super(props);
-
         props.columns.forEach((c) => { c.onColumnClick = this._onColumnClick; });
         this.state = {
             Columns: props.columns,
             FilteredItems: props.items,
         };
-
-
     }
 
     public render(): JSX.Element {
         const { props, state } = this;
         return (
             <Fabric>
-
-                <div className={classNames.controlWrapper}>
+                <div className={toolbarStyle.controlWrapper}>
 
                     {props.editDisabled && props.deleteDisabled &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Add' }}
-                            className={classNames.cmdBtn}
+                            className={toolbarStyle.cmdBtn}
                             text="New"
                             onClick={props.onAdd}
                         />}
@@ -103,7 +57,7 @@ export class FilteredMiscFilesList extends React.Component<IFilteredMiscFilesLis
                     {(props.editDisabled === false) &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Edit' }}
-                            className={classNames.cmdBtn}
+                            className={toolbarStyle.cmdBtn}
                             text="Edit"
                             onClick={props.onEdit}
                         />}
@@ -111,7 +65,7 @@ export class FilteredMiscFilesList extends React.Component<IFilteredMiscFilesLis
                     {(props.deleteDisabled === false) &&
                         <CommandBarButton
                             iconProps={{ iconName: 'Delete' }}
-                            className={classNames.cmdBtn}
+                            className={toolbarStyle.cmdBtn}
                             text="Delete"
                             onClick={this.props.onDelete}
                         />}
@@ -119,34 +73,20 @@ export class FilteredMiscFilesList extends React.Component<IFilteredMiscFilesLis
                     {(props.editDisabled === false) &&
                         <CommandBarButton
                             iconProps={{ iconName: 'View' }}
-                            className={classNames.cmdBtn}
+                            className={toolbarStyle.cmdBtn}
                             text="View"
                             onClick={this.props.onView}
                         />}
 
-                    {/* {(props.editDisabled === false) &&
-                        <CommandBarButton
-                            iconProps={{ iconName: 'View' }}
-                            className={classNames.cmdBtn}
-                            text="View2"
-                            onClick={this.props.onView2}
-                        />} */}
-
-                    <span style={controlStyles2}>
-
-
-
+                    <span style={searchBoxStyle}>
                         <SearchBox
                             placeholder="Filter items"
                             value={props.filterText ? props.filterText : ''}
                             onChange={props.onFilterChange}
-                        //className={styles.listFilterBox}
-                        //style={controlStyles2}
                         />
                     </span>
 
                 </div>
-
 
                 <DetailsList
                     className="noHScroll"
@@ -166,12 +106,9 @@ export class FilteredMiscFilesList extends React.Component<IFilteredMiscFilesLis
 
     public componentDidMount(): void {
         this.setState({ FilteredItems: SearchObjectService.filterEntities(this.props.items, this.props.filterText) });
-
-
     }
 
     public componentDidUpdate(prevProps: IFilteredMiscFilesListProps): void {
-
         if (prevProps.columns !== this.props.columns) {
             this.props.columns.forEach((c) => { c.onColumnClick = this._onColumnClick; });
             this.setState({ Columns: this.props.columns, FilteredItems: SearchObjectService.filterEntities(this.props.items, this.props.filterText) });
@@ -180,7 +117,6 @@ export class FilteredMiscFilesList extends React.Component<IFilteredMiscFilesLis
 
             this.setState({ FilteredItems: SearchObjectService.filterEntities(this.props.items, this.props.filterText) });
         }
-
     }
 
     //#endregion
@@ -188,11 +124,8 @@ export class FilteredMiscFilesList extends React.Component<IFilteredMiscFilesLis
     //#region Form infrastructure
 
     private renderItemColumn = (item: IEntity, index: number, column: IColumn) => {
-
         let fieldContent = item[column.fieldName as keyof IEntity] as string;
-
         return <span>{fieldContent}</span>;
-
     }
 
     private _onColumnClick = (ev: React.MouseEvent<HTMLElement>, column: IColumn): void => {
@@ -237,7 +170,6 @@ export class FilteredMiscFilesList extends React.Component<IFilteredMiscFilesLis
             return ((descending) ? (comparison * -1) : comparison);
         });
     }
-
 
     //#endregion
 }

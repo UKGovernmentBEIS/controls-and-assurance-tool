@@ -18,7 +18,7 @@ export const renderDate = (date: Date | string, noDateText?: string): JSX.Elemen
 export interface IMainListProps extends types.IBaseComponentProps {
 
     filterText?: string;
-    onChangeFilterText: (value: string) => void;
+    onChangeFilterText: (event?: React.ChangeEvent<HTMLInputElement>, newValue?: string) => void;
 
     onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
     onMoveToLeaving?: (ID: number, caseId: number) => void;

@@ -1,7 +1,5 @@
 import { SaveStatus } from "./SaveStatus";
-import { IEntity, /*IGroup, IDirectorate, IProject, IKeyWorkArea, IWorkStream, IUser, IUserDirectorate, IUserProject */} from ".";
 import { IPeriod } from "./Period";
-//import { IUserGroup } from "./UserGroup";
 
 export interface ILookupData {
     Periods: IPeriod[];

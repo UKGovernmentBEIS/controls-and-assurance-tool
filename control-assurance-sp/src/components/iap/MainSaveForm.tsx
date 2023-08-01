@@ -12,11 +12,9 @@ import { CrCheckbox } from '../cr/CrCheckbox';
 import { CrDatePicker } from '../cr/CrDatePicker';
 import { getUploadFolder_IAPFiles, getFolder_Help } from '../../types/AppGlobals';
 import { changeDatePicker } from '../../types/AppGlobals';
-import { sp, ChunkedFileUploadProgressData } from '@pnp/sp';
 import styles from '../../styles/cr.module.scss';
 
 export interface IMainSaveFormProps extends types.IBaseComponentProps {
-    //periodID: number | string;
     entityId: number;
     showForm: boolean;
     formIAPTypeId: number;
@@ -52,18 +50,14 @@ export interface IMainSaveFormState {
     Loading: boolean;
     LookupData: ILookupData;
     FormData: IIAPAction;
-    //ClearSuggestedStatus:boolean;
     FormDataBeforeChanges: IIAPAction;
     FormIsDirty: boolean;
-
     ArrLinks: ILinkLocalType[];
-
     UploadStatus: string;
     UploadProgress: number;
     ShowUploadProgress: boolean;
     ShowFileUpload: boolean;
     EditRequest: boolean;
-
     ErrMessages: IErrorMessage;
 
 }
@@ -73,23 +67,17 @@ export class MainSaveFormState implements IMainSaveFormState {
     public FormData;
     public FormDataBeforeChanges;
     public FormIsDirty = false;
-    //public ClearSuggestedStatus = false;
     public ArrLinks: ILinkLocalType[] = [];
-
     public UploadStatus = "";
     public UploadProgress: number = 0;
     public ShowUploadProgress = false;
     public ShowFileUpload = false;
     public EditRequest = false;
-
-
     public ErrMessages = new ErrorMessage();
-
-    constructor(iapStatusTypeId:number, iapTypeId: number) {
+    constructor(iapStatusTypeId: number, iapTypeId: number) {
         this.FormData = new IAPAction(1, iapStatusTypeId, iapTypeId);
         this.FormDataBeforeChanges = new IAPAction(1, iapStatusTypeId, iapTypeId);
     }
-
 }
 
 export default class MainSaveForm extends React.Component<IMainSaveFormProps, IMainSaveFormState> {
@@ -100,9 +88,6 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
     private aipAssignmentService: services.IAPAssignmentService = new services.IAPAssignmentService(this.props.spfxContext, this.props.api);
     private iapActionDirectorateService: services.IAPActionDirectorateService = new services.IAPActionDirectorateService(this.props.spfxContext, this.props.api);
 
-    private UploadFolder_Files: string = "";
-    private Folder_Help: string = "";
-
 
     private childEntities: types.IFormDataChildEntities[] = [
         { ObjectParentProperty: 'IAPAssignments', ParentIdProperty: 'IAPActionId', ChildIdProperty: 'UserId', ChildService: this.aipAssignmentService },
@@ -111,26 +96,22 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
 
     constructor(props: IMainSaveFormProps, state: IMainSaveFormState) {
         super(props);
-        this.UploadFolder_Files = getUploadFolder_IAPFiles(props.spfxContext);
-        this.Folder_Help = getFolder_Help(props.spfxContext);
-
-        if(props.formIAPTypeId === 6){
+        if (props.formIAPTypeId === 6) {
             //default status is 2 (Non-Compliant)
-            this.state = new MainSaveFormState(2 , props.formIAPTypeId);
+            this.state = new MainSaveFormState(2, props.formIAPTypeId);
         }
-        else{
+        else {
             this.state = new MainSaveFormState(1, 1);
         }
-        
+
         console.log('props.formIAPTypeId', props.formIAPTypeId);
     }
 
     //#region Render
 
     public render(): React.ReactElement<IMainSaveFormProps> {
-        //const errors = this.state.ValidationErrors;
-        let headerTxt:string = "Action";
-        if(this.props.formIAPTypeId === 6)
+        let headerTxt: string = "Action";
+        if (this.props.formIAPTypeId === 6)
             headerTxt = "Compliance Action";
 
         return (
@@ -150,7 +131,6 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
     public renderFormFields() {
         return (
             <React.Fragment>
-
                 {this.renderTitle()}
                 {this.renderDetails()}
                 {this.renderLinks()}
@@ -162,33 +142,24 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
                 {this.renderUsers()}
                 {this.renderDirectorates()}
                 {this.renderIsArchiveCheckbox()}
-                {/* {this.renderIsLinkCheckbox()}
-                {this.renderLinkBox()}
-                {this.renderFileUpload()} */}
-
-
-
             </React.Fragment>
         );
     }
 
-
     private renderTitle() {
-        //console.log('in renderTitle');
         return (
             <CrTextField
                 label="Title"
                 required={true}
                 className={styles.formField}
                 value={this.state.FormData.Title}
-                onChanged={(v) => this.changeTextField(v, "Title")}
+                onChanged={(ev, newValue) => this.changeTextField(newValue, "Title")}
                 errorMessage={this.state.ErrMessages.Title}
             />
         );
     }
 
     private renderDetails() {
-        //console.log('in renderTitle');
         return (
             <CrTextField
                 label="Details"
@@ -197,30 +168,23 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
                 value={this.state.FormData.Details}
                 multiline={true}
                 rows={4}
-                onChanged={(v) => this.changeTextField(v, "Details")}
+                onChanged={(ev, newValue) => this.changeTextField(newValue, "Details")}
                 errorMessage={this.state.ErrMessages.Details}
             />
         );
     }
 
     public renderLinks() {
-
-
         return (
             <div>
-
                 <div style={{ display: 'flex' }}>
                     <div style={{ width: '50%', paddingRight: '5px' }}>
                         <span>Link Text</span>
-
                     </div>
                     <div style={{ width: '50%', paddingLeft: '5px' }}>
                         <span>Actual URL</span>
-
                     </div>
-
                 </div>
-
 
                 {this.state.ArrLinks.map((c, i) =>
                     this.renderLink(c, i)
@@ -229,7 +193,6 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
                 {<div className={styles.formField}>
                     <span style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }} onClick={this.addBlankLinkItem} >Add fields For another link</span>
                 </div>}
-
             </div>
         );
     }
@@ -237,18 +200,15 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
     private renderLink(item: ILinkLocalType, index: number) {
 
         return (
-
             <div key={`div_renderLink_${index}`} style={{ display: 'flex', marginTop: '5px' }}>
                 <div key={`divCol1_renderLink_${index}`} style={{ width: '50%', paddingRight: '5px' }}>
                     <CrTextField key={`div_TextField1_${index}`} value={item.Description}
-                        onChanged={(v) => this.changeTextField_Link(v, index, "Description")} />
-
+                        onChanged={(ev, newValue) => this.changeTextField_Link(newValue, index, "Description")} />
                 </div>
                 <div key={`divCol2_renderLink_${index}`} style={{ width: '50%', paddingLeft: '5px' }}>
 
                     <CrTextField key={`div_TextField2_${index}`} value={item.URL}
-                        onChanged={(v) => this.changeTextField_Link(v, index, "URL")} />
-
+                        onChanged={(ev, newValue) => this.changeTextField_Link(newValue, index, "URL")} />
                 </div>
 
             </div>
@@ -257,7 +217,6 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
     }
 
     private renderCompletionDate() {
-
         return (
             <CrDatePicker
                 label="To Be Completed By"
@@ -273,7 +232,6 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
     private renderOriginalCompletionDate() {
 
         if (this.state.EditRequest === false) return null;
-
         return (
             <CrDatePicker
                 label="Original Completion Date"
@@ -281,7 +239,6 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
                 value={this.state.FormData.OriginalCompletionDate}
                 onSelectDate={(v) => changeDatePicker(this, v, "OriginalCompletionDate")}
                 disabled={true}
-            //errorMessage={this.state.ErrMessages.TargetDate}
             />
         );
     }
@@ -309,7 +266,6 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
     private renderDirectorates() {
         const directorates = this.state.LookupData.Directorates;
         const fd_dirs: IIAPActionDirectorate[] = this.state.FormData.IAPActionDirectorates;
-
         if (directorates) {
             return (
                 <CrDropdown
@@ -318,13 +274,8 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
                     multiSelect
                     className={styles.formField}
                     options={services.LookupService.entitiesToSelectableOptions(directorates)}
-
-
                     selectedKeys={fd_dirs && fd_dirs.map((x) => { return x.DirectorateId; })}
                     onChanged={(v) => this.changeMultiDropdown(v, 'IAPActionDirectorates', new IAPActionDirectorate(), 'DirectorateId')}
-
-                //required={true}
-                //errorMessage={this.state.ErrMessages.Directorate}
                 />
             );
         }
@@ -335,7 +286,6 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
     private renderUsers() {
         const users = this.state.LookupData.Users;
         const fd_users: IIAPAssignment[] = this.state.FormData['IAPAssignments'];
-        //console.log('fd_users', fd_users);
         if (users) {
             return (
                 <CrEntityPicker
@@ -353,31 +303,22 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
             return null;
     }
 
-
     private renderMonthlyUpdateRequiredCheckbox() {
-
         return (
             <div>
-
                 <CrCheckbox
                     className={`${styles.formField} ${styles.checkbox}`}
                     label="Monthly Updates Required"
                     checked={this.state.FormData.MonthlyUpdateRequired}
                     onChange={(ev, isChecked) => this.changeCheckbox_monthly(isChecked, "MonthlyUpdateRequired")}
-
-
                 />
-
             </div>
         );
-
     }
 
     private renderMonthlyUpdateRequiredIfNotCompletedCheckbox() {
-
         return (
             <div>
-
                 <CrCheckbox
                     className={`${styles.formField} ${styles.checkbox}`}
                     label="Monthly Updates Required if not completed by completion date"
@@ -386,100 +327,21 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
 
 
                 />
-
             </div>
         );
-
     }
-
     private renderIsArchiveCheckbox() {
-
         return (
             <div>
-
                 <CrCheckbox
                     className={`${styles.formField} ${styles.checkbox}`}
                     label="Archive"
                     checked={this.state.FormData.IsArchive}
                     onChange={(ev, isChecked) => this.changeCheckbox(isChecked, "IsArchive")}
-
-
                 />
-
-            </div>
-        );
-
-    }
-
-    private renderIsLinkCheckbox() {
-
-        if (this.state.EditRequest === true) return null;
-        return (
-            <div>
-
-                <CrCheckbox
-                    className={`${styles.formField} ${styles.checkbox}`}
-                    label="Provide a link instead of uploading a file"
-                    checked={this.state.FormData.IsLink}
-                    onChange={(ev, isChecked) => this.changeCheckboxIsLink(isChecked, "IsLink")}
-
-
-                />
-
             </div>
         );
     }
-
-    private renderLinkBox() {
-        if (this.state.ShowFileUpload == true)
-            return null;
-
-        if (this.state.FormData.IsLink === true) {
-
-            return (
-                <CrTextField
-                    label="Link"
-                    required={true}
-                    className={styles.formField}
-                    value={this.state.FormData.Attachment}
-                    onChanged={(v) => this.changeTextField(v, "Attachment")}
-                //errorMessage={this.state.ErrMessages.Attachment}
-                />
-            );
-        }
-        else
-            return false;
-
-
-    }
-
-    private renderFileUpload() {
-        if (this.state.ShowFileUpload == false)
-            return null;
-
-        return (
-            <div style={{ marginTop: '20px', marginBottom: '20px' }}>
-                <div>
-                    <input type="file" name="fileUpload" id="fileUpload" accept="application/pdf"></input>
-                    {/* {this.state.ErrMessages.FileUpload && <FieldErrorMessage value={this.state.ErrMessages.FileUpload} />} */}
-                    <div style={{ paddingTop: '10px' }}>
-                        Please upload all evidence files as PDFs. For guidance on savings documents as PDFs, please click <span onClick={this.viewHelpPDF} style={{ textDecoration: 'underline', cursor: 'pointer' }}>here</span>.
-                    </div>
-                </div>
-                {this.state.ShowUploadProgress && <div style={{ minHeight: '80px', marginTop: '15px' }}>
-                    <div>
-                        {this.state.UploadStatus}
-                    </div>
-                    <div>
-                        {this.state.UploadProgress} %
-                    </div>
-                </div>}
-
-            </div>
-        );
-    }
-
-
 
     //#endregion Render
 
@@ -489,42 +351,6 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
         console.log('in addBlankLinkItem');
         const arrCopy = [...this.state.ArrLinks, { Description: '', URL: '' }];
         this.setState({ ArrLinks: arrCopy });
-        //const item: ILinkLocalType = { Description: 'des', URL: 'url' };
-        //arrCopy.push()
-    }
-
-    private viewHelpPDF = () => {
-        console.log('help pdf');
-        const fileName: string = "HowToConvertDocumentsToPDF.pdf";
-
-        const f = sp.web.getFolderByServerRelativeUrl(this.Folder_Help).files.getByName(fileName);
-
-        f.get().then(t => {
-            console.log(t);
-            const serverRelativeUrl = t["ServerRelativeUrl"];
-            console.log(serverRelativeUrl);
-
-            const a = document.createElement('a');
-            //document.body.appendChild(a);
-            a.href = serverRelativeUrl;
-            a.target = "_blank";
-            a.download = fileName;
-
-            document.body.appendChild(a);
-            console.log(a);
-            //a.click();
-            //document.body.removeChild(a);
-
-
-            setTimeout(() => {
-                window.URL.revokeObjectURL(serverRelativeUrl);
-                window.open(serverRelativeUrl, '_blank');
-                document.body.removeChild(a);
-            }, 1);
-
-
-        });
-
     }
 
     //#endregion Class Methods
@@ -534,40 +360,24 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
     private loadData = (): Promise<void> => {
         console.log('loadData - Id: ', this.props.entityId);
         let x = this.iapUpdateService.readWithExpandAssignments(this.props.entityId).then((e: IIAPAction): void => {
-
             console.log('data ', e);
-
             let arrLinks: ILinkLocalType[] = [];
 
             //unpack links from single value
             if (e.ActionLinks !== null && e.ActionLinks !== '') {
                 let arr1 = e.ActionLinks.split('>');
-
-                //console.log('arr1', arr1);
-
                 for (let i = 0; i < arr1.length; i++) {
-
                     let itemStr: string = arr1[i];
-                    //console.log('arr1 Loop itemStr', itemStr);
                     if (itemStr.trim() === '') {
                         continue;
                     }
-                    //console.log('after continue');
                     let arr2 = itemStr.split('<');
-                    //console.log('after arr2 Split', arr2);
                     let item: ILinkLocalType = { Description: '', URL: '' };
                     item.Description = arr2[0];
                     item.URL = arr2[1];
-
-                    //console.log('item filled with data', item);
-
                     arrLinks.push(item);
-
-                    //console.log('item pushed to arrLinks', arrLinks);
-
                 }
             }
-
 
             this.setState({
                 FormData: e,
@@ -590,11 +400,9 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
             this.setState({ ShowFileUpload: true });
         }
         Promise.all(loadingPromises).then(p => this.onAfterLoad(p[1])).then(p => this.setState({ Loading: false })).catch(err => this.setState({ Loading: false }));
-
     }
 
     private loadLookups(): Promise<any> {
-
         let proms: any[] = [];
         proms.push(this.loadIAPStatusTypes());
         proms.push(this.loadDirectorates());
@@ -613,7 +421,7 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
         this.iapStatusTypeService.readAll().then((data: IEntity[]): IEntity[] => {
             console.log('iapStatusTypes data', data);
             let iapStatusTypes = data;
-            if(this.props.formIAPTypeId === 6){
+            if (this.props.formIAPTypeId === 6) {
                 iapStatusTypes = data.filter(x => x.ID > 1);
                 iapStatusTypes.forEach(x => {
                     x.Title = x['Title2'];
@@ -631,61 +439,40 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
         }, (err) => { if (this.props.onError) this.props.onError(`Error loading Users lookup data`, err.message); });
     }
 
-
-
-
     private onAfterLoad = (entity: types.IEntity): void => {
-
-        //console.log('after load', this.state.LookupData.Users);
         this.addBlankLinkItem();
-
     }
 
-
-
     private saveDataFinal = (): void => {
-
         if (this.validateEntity()) {
             if (this.props.onError) this.props.onError(null);
-
             let f: IIAPAction = { ...this.state.FormData };
-
             //remove all the child and parent entities before sending post/patch
             delete f['IAPAssignments']; //chile entity
             delete f.IAPActionDirectorates;
 
             if (f.ID === 0) {
-
-
                 this.iapUpdateService.create(f).then(this.saveChildEntitiesAfterCreate).then(this.props.onSaved, (err) => {
                     if (this.props.onError) this.props.onError(`Error creating item`, err.message);
                 });
-
             }
             else {
-
-                //console.log('in update');
 
                 this.iapUpdateService.update(f.ID, f).then(this.saveChildEntitiesAfterUpdate).then(this.onAfterUpdate).then(this.props.onSaved, (err) => {
                     if (this.props.onError) this.props.onError(`Error updating item`, err.message);
                 });
             }
         }
-
     }
 
     private saveData = (): void => {
-
-
         this.saveActionLinksToSingleValue();
-
     }
 
     private saveActionLinksToSingleValue = (): void => {
 
         let singleStr: string = "";
         const arrLinks = this.state.ArrLinks;
-
         for (let i = 0; i < arrLinks.length; i++) {
             let item: ILinkLocalType = arrLinks[i];
             if (item.Description.trim() === '' && item.URL.trim() === '') {
@@ -703,7 +490,6 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
         //set single value in state
         const fd = { ...this.state.FormData };
         fd.ActionLinks = singleStr;
-
         this.setState({ FormData: fd }, this.saveDataFinal);
 
     }
@@ -714,7 +500,7 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
             this.childEntities.forEach((ce) => {
                 console.log('ce', ce);
                 console.log('this.state.FormData[ce.ObjectParentProperty]', this.state.FormData[ce.ObjectParentProperty]);
-                if(this.state.FormData[ce.ObjectParentProperty]){
+                if (this.state.FormData[ce.ObjectParentProperty]) {
                     this.state.FormData[ce.ObjectParentProperty].forEach((c) => {
                         console.log('c', c);
                         c[ce.ParentIdProperty] = parentEntity.ID;
@@ -722,7 +508,6 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
                             promises.push(ce.ChildService.create(c));
                     });
                 }
-
             });
             return Promise.all(promises).then(() => parentEntity);
         }
@@ -746,14 +531,11 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
                     if (this.state.FormData[ce.ObjectParentProperty].map(i => i[ce.ChildIdProperty]).indexOf(c[ce.ChildIdProperty]) === -1) {
                         promises.push(ce.ChildService.delete(c.ID));
                     }
-
                 });
             });
             return Promise.all(promises).then(() => this.state.FormData);
         }
     }
-
-
 
     private onAfterUpdate(): Promise<any> { return Promise.resolve(); }
 
@@ -763,10 +545,8 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
     //#region Form Operations
 
     private validateEntity = (): boolean => {
-
         let returnVal: boolean = true;
         let errMsg: IErrorMessage = { ...this.state.ErrMessages };
-
 
         if ((this.state.FormData.Title === null) || (this.state.FormData.Title === '')) {
             errMsg.Title = "Title required";
@@ -800,19 +580,10 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
             errMsg.Status = null;
         }
 
-
-
-
-
         //at the end set state
         this.setState({ ErrMessages: errMsg });
-
         return returnVal;
-
-
     }
-
-
 
     private cloneObject(obj, changeProp?, changeValue?) {
         if (changeProp)
@@ -836,10 +607,6 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
         this.setState({ ArrLinks: arrCopy });
     }
 
-    // protected changeDatePicker = (date: Date, f: string): void => {
-    //     this.setState({ FormData: this.cloneObject(this.state.FormData, f, date), FormIsDirty: true });
-    // }
-
     private changeDropdown = (option: IDropdownOption, f: string, index?: number): void => {
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, option.key), FormIsDirty: true });
     }
@@ -860,7 +627,6 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
             }
         }
         else {
-            //f="MonthlyUpdateRequiredIfNotCompleted"
 
             if (value === true) {
                 let xx = { ...this.state.FormData };
@@ -882,8 +648,6 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
     private changeMultiDropdown = (item: IDropdownOption, f: string, newEntity: object, optionIdProperty: string): void => {
         const loadedChoices = this.cloneArray(this.state.FormDataBeforeChanges[f]);
         const editedChoices = this.cloneArray(this.state.FormData[f]);
-
-
         if (item.selected) {
             let indexOfExisting = loadedChoices.map(choice => choice[optionIdProperty]).indexOf(item.key);
             if (indexOfExisting !== -1) {
@@ -913,22 +677,16 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
         });
         console.log('valuesUnique', valuesUnique);
         value = valuesUnique;
-
-
-
         const loadedUsers = this.cloneObject(this.state.FormDataBeforeChanges);
         let newUsers = [];
         value.forEach((userId) => {
 
             console.log('test1', loadedUsers['IAPAssignments']);
-            //console.log('test2', loadedUsers['IAPAssignments'].map(ass => ass['UserId']) );
-            //console.log('test3', loadedUsers['IAPAssignments'].map(ass => ass['UserId']).indexOf(userId) );
-
             let existingUser = loadedUsers[f] ? loadedUsers[f].map(user => user[userIdProperty]).indexOf(userId) : -1;
             console.log('existingUser', existingUser);
             if (existingUser !== -1) {
                 //existing user which is saved in db
-                console.log('test4', loadedUsers['IAPAssignments'][existingUser]  );
+                console.log('test4', loadedUsers['IAPAssignments'][existingUser]);
                 newUsers.push(loadedUsers[f][existingUser]);
             }
             else {
@@ -943,5 +701,4 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
     }
 
     //#endregion Form Operations
-
 }

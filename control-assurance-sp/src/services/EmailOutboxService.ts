@@ -2,8 +2,6 @@ import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { EntityService } from './EntityService';
 import { IDataAPI, IEntity, INAOPublication, INAOPublicationInfo } from '../types';
 
-
-
 export class EmailOutboxService extends EntityService<IEntity> {
     public readonly parentEntities = [];
     protected childrenEntities = [];
@@ -13,11 +11,9 @@ export class EmailOutboxService extends EntityService<IEntity> {
     }
 
     public deleteItems(itemIds: string): Promise<string> {
-        
-        return super.readString(`?itemIds=${itemIds}`).then((result:string): string => {
+
+        return super.readString(`?itemIds=${itemIds}`).then((result: string): string => {
             return result;
         });
     }
-
-
 }

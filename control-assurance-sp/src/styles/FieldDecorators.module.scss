@@ -1,4 +1,5 @@
-@import '~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss';
+// @import '~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss';
+@import "~office-ui-fabric-react/dist/sass/_References.scss";
 @import '../styles/cr.module';
 
 .fieldDecorators {
@@ -6,6 +7,7 @@
         font-size: 12px;
         font-weight: 400;
         color: #a80000;
+
         p {
             margin: 0;
             padding-top: 5px;

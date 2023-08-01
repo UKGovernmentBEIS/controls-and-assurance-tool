@@ -13,13 +13,9 @@ import styles from '../../../styles/cr.module.scss';
 import { DateService } from '../../../services';
 import { getUploadFolder_MiscFiles } from '../../../types/AppGlobals';
 
-
 export interface IMiscFilesListProps extends types.IBaseComponentProps {
-
-    //onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
     filterText?: string;
-    onChangeFilterText: (value: string) => void;
-
+    onChangeFilterText: (event?: React.ChangeEvent<HTMLInputElement>, newValue?: string) => void;
 }
 
 export interface IMiscFilesListState<T> {
@@ -109,21 +105,15 @@ export default class MiscFilesList extends React.Component<IMiscFilesListProps, 
             headerClassName: styles.bold,
 
         },
-
-
     ];
 
     constructor(props: IMiscFilesListProps, state: IMiscFilesListState<IEntity>) {
         super(props);
         this.state = new MiscFilesListState<IEntity>();
-
         this.UploadFolder_MiscFiles = getUploadFolder_MiscFiles(props.spfxContext);
-        //console.log("this.UploadFolder_MiscFiles", this.UploadFolder_MiscFiles);
-        
         this._selection = new Selection({
             onSelectionChanged: () => {
                 if (this._selection.getSelectedCount() === 1) {
-
                     const sel = this._selection.getSelection()[0];
                     const key = Number(sel.key);
                     const title: string = sel["Title"];
@@ -135,12 +125,6 @@ export default class MiscFilesList extends React.Component<IMiscFilesListProps, 
                 }
             }
         });
-
-
-        
-        //const webTitle = getUploadFolder_MiscFiles(props.spfxContext);
-        //console.log("webTitle", `'${webTitle}'`);
-        //console.log("props.spfxContext.pageContext.web.title ", `'${props.spfxContext.pageContext.web.title}'`);
     }
 
     //#region Render
@@ -153,7 +137,6 @@ export default class MiscFilesList extends React.Component<IMiscFilesListProps, 
                     <CrLoadingOverlay isLoading={this.state.Loading} />
                     {this.renderList()}
                     {this.state.ShowForm && this.renderForm()}
-
                     <ConfirmDialog hidden={this.state.HideDeleteDialog} title={`Are you sure you want to delete ${this.getSelectedEntityName()}?`} content={`A deleted file cannot be un-deleted.`} confirmButtonText="Delete" handleConfirm={this.deleteFile} handleCancel={this.toggleDeleteConfirm} />
                 </div>
             </div>
@@ -164,14 +147,10 @@ export default class MiscFilesList extends React.Component<IMiscFilesListProps, 
 
         const listColumns = this.getColumns();
         const listColumnsForData = this.getColumnsForData();
-
         let items: IObjectWithKey[] = this.state.Entities.map((e) => { return this.makeItem(e, listColumnsForData); });
-
-
 
         return (
             <FilteredMiscFilesList
-                //onItemTitleClick={this.props.onItemTitleClick}
                 columns={listColumns}
                 items={items}
                 filterText={this.props.filterText}
@@ -181,10 +160,8 @@ export default class MiscFilesList extends React.Component<IMiscFilesListProps, 
                 onEdit={this.editFile}
                 onDelete={this.toggleDeleteConfirm}
                 onView={this.viewFile}
-                //onView2={this.viewFile2}
                 editDisabled={!this.state.EnableEdit}
                 deleteDisabled={!this.state.EnableDelete}
-                
             />
         );
     }
@@ -192,7 +169,6 @@ export default class MiscFilesList extends React.Component<IMiscFilesListProps, 
     private renderForm() {
 
         return (
-
             <MiscFileSaveForm
                 showForm={this.state.ShowForm}
                 miscFileID={this.state.SelectedEntity}
@@ -201,7 +177,6 @@ export default class MiscFilesList extends React.Component<IMiscFilesListProps, 
                 {...this.props}
             />
         );
-
     }
 
     //#endregion Render
@@ -262,49 +237,24 @@ export default class MiscFilesList extends React.Component<IMiscFilesListProps, 
 
     private viewFile = (): void => {
         console.log('in view.');
-        const fileName:string = this.state.SelectedEntityTitle;
-
+        const fileName: string = this.state.SelectedEntityTitle;
         const f = sp.web.getFolderByServerRelativeUrl(this.UploadFolder_MiscFiles).files.getByName(fileName);
-    
         f.get().then(t => {
             console.log(t);
             const serverRelativeUrl = t["ServerRelativeUrl"];
             console.log(serverRelativeUrl);
-      
             const a = document.createElement('a');
-            //document.body.appendChild(a);
             a.href = serverRelativeUrl;
             a.target = "_blank";
             a.download = fileName;
-            
+
             document.body.appendChild(a);
             console.log(a);
-            //a.click();
-            //document.body.removeChild(a);
-            
-            
             setTimeout(() => {
-              window.URL.revokeObjectURL(serverRelativeUrl);
-              window.open(serverRelativeUrl, '_blank');
-              document.body.removeChild(a);
+                window.URL.revokeObjectURL(serverRelativeUrl);
+                window.open(serverRelativeUrl, '_blank');
+                document.body.removeChild(a);
             }, 1);
-            
-      
-          });
-  
-
-    }
-
-    private viewFile2 = (): void => {
-
-        const fileName:string = this.state.SelectedEntityTitle;
-        const x = `${this.props.spfxContext.pageContext.web.absoluteUrl}/Shared%20Documents/MiscFiles/${fileName}`;
-        console.log('file url', x);
-
-        this.goMiscFileService.readString(`?spFileUrl=${x}&fileName=${fileName}`).then((result:string) => {
-
-            console.log("result", result);
-            
         });
 
 
@@ -332,24 +282,16 @@ export default class MiscFilesList extends React.Component<IMiscFilesListProps, 
         if (this.props.onError) this.props.onError(null);
         this.setState({ HideDeleteDialog: true });
         if (this.state.SelectedEntity) {
-
             const fileName: string = this.state.SelectedEntityTitle;
-            //console.log(fileName);
-
-
             this.goMiscFileService.delete(this.state.SelectedEntity).then(() => {
                 this.loadMiscFiles();
 
                 sp.web.getFolderByServerRelativeUrl(this.UploadFolder_MiscFiles).files.getByName(fileName).delete().then(df => {
-                    //console.log('file deleted', df);
                 });
-
 
             }, (err) => {
                 if (this.props.onError) this.props.onError(`Cannot delete this file. `, err.message);
             });
-
-
         }
     }
 
@@ -365,7 +307,6 @@ export default class MiscFilesList extends React.Component<IMiscFilesListProps, 
             console.log(entities);
             this.setState({
                 Loading: false, Entities: entities,
-                //ListFilterText: this.props.filterText
             });
 
         }, (err) => this.errorLoadingMiscFiles(err));
@@ -376,26 +317,11 @@ export default class MiscFilesList extends React.Component<IMiscFilesListProps, 
     }
     public componentDidMount(): void {
         this.loadMiscFiles();
-        //console.log('web title: ', this.props.spfxContext.pageContext.web.title);
-
     }
     public componentDidUpdate(prevProps: IMiscFilesListProps): void {
-
     }
-
-
 
     //#endregion Data Load
 
-    //#region Events Handlers
-
-    //7Oct19 - no need for this method
-    // private handleFilterChange = (value: string): void => {
-    //     this.setState({ ListFilterText: value });
-    // }
-
-
-
-    //#endregion Events Handlers
 
 }

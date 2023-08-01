@@ -6,16 +6,11 @@ import * as services from '../../../services';
 import EntityList from '../../../components/entity/EntityList';
 import PeriodList from '../../../components/period/PeriodList';
 import { IGenColumn, ColumnType, ColumnDisplayType } from '../../../types/GenColumn';
-import { IUserPermission, IPeriod } from '../../../types';
-import { CrDropdown, IDropdownOption } from '../../../components/cr/CrDropdown';
-
+import { IUserPermission } from '../../../types';
 
 //#region types defination
 
-
-
 export interface IGoPropertiesState extends types.IUserContextWebPartState {
-
 }
 export class GoPropertiesState extends types.UserContextWebPartState implements IGoPropertiesState {
 
@@ -95,7 +90,6 @@ export default class GoProperties extends BaseUserContextWebPartComponent<types.
         isRequired: true,
         fieldMaxLength: 50,
       },
-
     ];
 
     return (
@@ -117,11 +111,9 @@ export default class GoProperties extends BaseUserContextWebPartComponent<types.
     );
   }
 
-
   private renderGoDefForms() {
 
     const listColumns: IGenColumn[] = [
-
       {
         key: 'Title',
         columnType: ColumnType.TextBox,
@@ -225,16 +217,11 @@ export default class GoProperties extends BaseUserContextWebPartComponent<types.
         fieldMaxLength: 2000,
         numRows: 3
       },
-
     ];
-
 
     return (
 
-
       <React.Fragment>
-
-
         <EntityList
           allowAdd={this.superUserPermission()}
           columns={listColumns}
@@ -248,10 +235,6 @@ export default class GoProperties extends BaseUserContextWebPartComponent<types.
           childEntityNameSingular=""
         />
       </React.Fragment>
-
-
-
-
 
     );
   }
@@ -305,20 +288,12 @@ export default class GoProperties extends BaseUserContextWebPartComponent<types.
         isResizable: true,
         isRequired: true,
         fieldMaxLength: 1,
-
-
       },
-
-
     ];
-
 
     return (
 
-
       <React.Fragment>
-
-
         <EntityList
           allowAdd={this.superUserPermission()}
           columns={listColumns}
@@ -332,11 +307,6 @@ export default class GoProperties extends BaseUserContextWebPartComponent<types.
           childEntityNameSingular=""
         />
       </React.Fragment>
-
-
-
-
-
     );
   }
 
@@ -364,8 +334,5 @@ export default class GoProperties extends BaseUserContextWebPartComponent<types.
   }
 
   //#endregion Permissions
-
-
-
 
 }

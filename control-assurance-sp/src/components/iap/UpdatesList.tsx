@@ -10,39 +10,26 @@ import { CrLoadingOverlay } from '../cr/CrLoadingOverlay';
 import { Selection } from '../cr/FilteredList';
 import { ConfirmDialog } from '../cr/ConfirmDialog';
 import { MessageDialog } from '../cr/MessageDialog';
-import { CrDropdown, IDropdownOption } from '../cr/CrDropdown';
 import { IAPActionUpdateTypes } from '../../types/AppGlobals';
 import { getUploadFolder_IAPFiles } from '../../types/AppGlobals';
 import styles from '../../styles/cr.module.scss';
-import { ThemeSettingName } from 'office-ui-fabric-react/lib/Styling';
-
 
 export interface IUpdatesListProps extends types.IBaseComponentProps {
-
-
-    //onItemTitleClick: (ID: number, title: string, filteredItems: any[]) => void;
     iapUpdateId: number | string;
     iapTypeId: number;
     defaultIAPStatusTypeId: number;
     defaultCompletionDate: Date;
-
     filterText?: string;
-    onChangeFilterText: (value: string) => void;
-
+    onChangeFilterText: (event?: React.ChangeEvent<HTMLInputElement>, newValue?: string) => void;
     superUserPermission: boolean;
     actionOwnerPermission: boolean;
-
-
 }
 
 export interface IUpdatesListState<T> {
     DefaultIAPStatusTypeId: number;
     DefaultCompletionDate: Date;
-
     SelectedEntity: number;
     SelectedEntityTitle: string;
-    //SelectedGoElementId:number;
-
     SelectedEntityChildren: number;
     ShowForm: boolean;
     FormType: string;
@@ -56,7 +43,6 @@ export interface IUpdatesListState<T> {
     Loading: boolean;
     ListFilterText?: string;
     InitDataLoaded: boolean;
-
     HideActionUpdatePermissionDialog: boolean;
     HideReviseImplementationDatePermissionDialogue: boolean;
     HideGiaaCommentsPermissionDialogue: boolean;
@@ -64,11 +50,8 @@ export interface IUpdatesListState<T> {
 export class UpdatesListState<T> implements IUpdatesListState<T>{
     public DefaultIAPStatusTypeId: number = null;
     public DefaultCompletionDate: Date = null;
-
     public SelectedEntity = null;
     public SelectedEntityTitle: string = null;
-    //public SelectedGoElementId = null;
-
     public SelectedEntityChildren = null;
     public FormType = '';
     public ShowForm = false;
@@ -95,7 +78,6 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
 
     private listColumns: IUpdatesListColumn[] = [
         //use fieldName as key
-
         {
             key: 'ID',
             name: 'ID',
@@ -177,8 +159,6 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
             isResizable: true,
             headerClassName: styles.bold,
         },
-
-
     ];
 
 
@@ -195,10 +175,7 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
                     console.log(sel);
                     const key = Number(sel.key);
                     const title: string = sel["UpdateType"];
-
-                    //const evIsLink:boolean = sel["EvIsLink"];
                     const evidence: string = sel["Evidence"];
-
                     let enableView: boolean = false;
                     if (evidence != "") {
                         enableView = true;
@@ -240,40 +217,26 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
 
         let items: IObjectWithKey[] = this.state.Entities.map((e) => { return this.makeItem(e, listColumnsForData); });
 
-
-
         return (
             <FilteredUpdatesList
 
                 columns={listColumns}
                 items={items}
-
-
                 filterText={this.props.filterText}
                 onFilterChange={this.props.onChangeFilterText}
                 selection={this._selection}
-
                 onAddActionUpdate={this.handleAddActionUpdate}
                 onAddRevisedDate={this.handleAddRevisedDate}
                 onAddMiscComments={this.handleAddMiscComments}
-
                 onView={this.handleView}
                 viewDisabled={!this.state.EnableView}
                 deleteDisabled={!this.state.EnableDelete}
                 onDelete={this.toggleDeleteConfirm}
-
-            //editDisabled={!this.state.EnableEdit}
-
-
-
-
-
             />
         );
     }
 
     private renderForm() {
-
         const d1 = this.state.DefaultIAPStatusTypeId;
         const d2 = this.state.DefaultCompletionDate;
         console.log('in render form d1, d2', d1, d2);
@@ -291,9 +254,7 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
                 onCancelled={this.closePanel}
                 {...this.props}
             />
-
         );
-
     }
 
     //#endregion Render
@@ -327,14 +288,6 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
         return listColumns;
     }
 
-
-
-    // private handleAssign = (): void => {
-    //     this.setState({ ShowForm: true });
-    // }
-
-
-
     private closePanel = (): void => {
         this.setState({ ShowForm: false });
     }
@@ -354,11 +307,6 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
         this.closePanel();
     }
 
-    private getSelectedEntityName = (): string => {
-        let entity = this.state.Entities.filter((e) => { return e.ID === this.state.SelectedEntity; });
-        return entity[0] ? entity[0].Title : null;
-    }
-
     private toggleDeleteConfirm = (): void => {
         this.setState({ HideDeleteDialog: !this.state.HideDeleteDialog });
     }
@@ -372,8 +320,6 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
         return entity[0]["Evidence"];
     }
 
-
-
     //#endregion Class Methods
 
     //#region Data Load
@@ -381,7 +327,6 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
 
     private loadData = (): void => {
         this.setState({ Loading: true });
-
 
         const read: Promise<IEntity[]> = this.updateService.readAllForList(Number(this.props.iapUpdateId));
         read.then((entities: any): void => {
@@ -398,7 +343,6 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
     public componentDidMount(): void {
         this.setState({ DefaultIAPStatusTypeId: this.props.defaultIAPStatusTypeId, DefaultCompletionDate: this.props.defaultCompletionDate });
         this.loadData();
-        //console.log('web title: ', this.props.spfxContext.pageContext.web.title);
 
     }
     public componentDidUpdate(prevProps: IUpdatesListProps): void {
@@ -409,17 +353,11 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
         }
     }
 
-
-
     //#endregion Data Load
 
     //#region Events Handlers
 
-
-
     private handleAddActionUpdate = (): void => {
-
-
         if (this.props.superUserPermission === true || this.props.actionOwnerPermission === true) {
 
             if (this.state.SelectedEntity)
@@ -433,12 +371,10 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
             console.log('Only the Super User or Action Owners can provide updates');
         }
 
-
     }
     private handleAddRevisedDate = (): void => {
 
         if (this.props.superUserPermission === true || this.props.actionOwnerPermission === true) {
-
             if (this.state.SelectedEntity)
                 this._selection.setKeySelected(this.state.SelectedEntity.toString(), false, false);
             const formType: string = IAPActionUpdateTypes.RevisedDate;
@@ -449,8 +385,6 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
             this.toggle_HideReviseImplementationDatePermissionDialogue();
             console.log('Only the Super User or Action Owners can revise the Completion Date.');
         }
-
-
     }
 
     private handleAddMiscComments = (): void => {
@@ -466,48 +400,29 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
         const fileName: string = this.getSelectedEntityEv();
         if (this.isSelectedEntityALink() === true) {
             console.log('selected evidence is a link');
-
             const a = document.createElement('a');
-            //document.body.appendChild(a);
             a.href = fileName;
             a.target = "_blank";
-            //a.download = fileName;
-
             document.body.appendChild(a);
             console.log(a);
-            //a.click();
-            //document.body.removeChild(a);
-
-
             setTimeout(() => {
                 window.URL.revokeObjectURL(fileName);
                 window.open(fileName, '_blank');
                 document.body.removeChild(a);
             }, 1);
-
-
-
-
         }
         else {
             const f = sp.web.getFolderByServerRelativeUrl(this.UploadFolder_Evidence).files.getByName(fileName);
-
             f.get().then(t => {
                 console.log(t);
                 const serverRelativeUrl = t["ServerRelativeUrl"];
                 console.log(serverRelativeUrl);
-
                 const a = document.createElement('a');
-                //document.body.appendChild(a);
                 a.href = serverRelativeUrl;
                 a.target = "_blank";
                 a.download = fileName;
-
                 document.body.appendChild(a);
                 console.log(a);
-                //a.click();
-                //document.body.removeChild(a);
-
 
                 setTimeout(() => {
                     window.URL.revokeObjectURL(serverRelativeUrl);
@@ -515,19 +430,15 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
                     document.body.removeChild(a);
                 }, 1);
 
-
             });
         }
-
     }
-
 
 
     private handleDelete = (): void => {
         if (this.props.onError) this.props.onError(null);
         this.setState({ HideDeleteDialog: true });
         if (this.state.SelectedEntity) {
-
             let entity = this.state.Entities.filter((e) => { return e.ID === this.state.SelectedEntity; })[0];
             const fileName: string = entity["Evidence"];
             console.log("FileName", fileName);
@@ -543,12 +454,9 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
 
                     this.updateService.delete(this.state.SelectedEntity).then(() => {
                         this.loadData();
-    
                         sp.web.getFolderByServerRelativeUrl(this.UploadFolder_Evidence).files.getByName(fileName).delete().then(df => {
-                            //console.log('file deleted', df);
                         });
-    
-    
+
                     }, (err) => {
                         if (this.props.onError) this.props.onError(`Cannot delete record. `, err.message);
                     });
@@ -556,14 +464,13 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
                 }
 
             }
-            else{
+            else {
 
                 console.log("selected file has not attachment");
                 this.updateService.delete(this.state.SelectedEntity).then(this.loadData, (err) => {
                     if (this.props.onError) this.props.onError(`Cannot delete record. `, err.message);
                 });
             }
-
         }
     }
 
@@ -574,13 +481,6 @@ export default class UpdatesList extends React.Component<IUpdatesListProps, IUpd
     private toggle_HideReviseImplementationDatePermissionDialogue = (): void => {
         this.setState({ HideReviseImplementationDatePermissionDialogue: !this.state.HideReviseImplementationDatePermissionDialogue });
     }
-
-    private toggle_HideGiaaCommentsPermissionDialogue = (): void => {
-        this.setState({ HideGiaaCommentsPermissionDialogue: !this.state.HideGiaaCommentsPermissionDialogue });
-    }
-
-
-
 
     //#endregion Events Handlers
 

@@ -2,8 +2,6 @@ import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { EntityService } from './EntityService';
 import { IDataAPI, IDefElementGroup } from '../types';
 
-
-
 export class DefElementGroupService extends EntityService<IDefElementGroup> {
     public readonly parentEntities = [];
     protected childrenEntities = [];
@@ -22,7 +20,4 @@ export class DefElementGroupService extends EntityService<IDefElementGroup> {
     public readAllWithArgs(periodId: number): Promise<IDefElementGroup[]> {
         return this.readAll(`?$filter=PeriodId eq ${periodId}`);
     }
-
-
-
 }

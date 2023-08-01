@@ -2,8 +2,6 @@ import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { EntityService } from './EntityService';
 import { IDataAPI, IEntity } from '../types';
 
-
-
 export class GIAAUpdateFeedbackService extends EntityService<IEntity> {
     public readonly parentEntities = [];
     protected childrenEntities = [];
@@ -15,11 +13,5 @@ export class GIAAUpdateFeedbackService extends EntityService<IEntity> {
     public readAllWithArgs(giaaUpdateId: number): Promise<IEntity[]> {
         return this.readAll(`?$filter=GIAAUpdateId eq ${giaaUpdateId}&$expand=User`);
     }
-
-
-
-
-
-
 
 }

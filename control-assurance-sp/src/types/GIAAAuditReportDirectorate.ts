@@ -4,7 +4,6 @@ import { IUser } from "./User";
 export interface IGIAAAuditReportDirectorate extends IEntity {
     GIAAAuditReportId?: number;
     DirectorateId?: number;
-
 }
 
 export class GIAAAuditReportDirectorate implements IGIAAAuditReportDirectorate {

@@ -4,7 +4,6 @@ import { IDefElement, IBaseComponentProps, IEntity, IFForm } from '../types';
 import styles from '../styles/cr.module.scss';
 import { CrLoadingOverlay } from './cr/CrLoadingOverlay';
 
-
 export interface IBaseProgressUpdateListProps extends IBaseComponentProps {
     externalUserLoggedIn?: boolean;
     isArchivedPeriod: boolean;
@@ -33,7 +32,6 @@ export class BaseProgressUpdateListState implements IBaseProgressUpdateListState
 export abstract class BaseProgressUpdateList<P extends IBaseProgressUpdateListProps, S extends IBaseProgressUpdateListState> extends React.Component<P, S> {
     protected abstract entityService: services.EntityService<IEntity>;
     protected abstract updateListTitle: string;
-
     constructor(props: P) {
         super(props);
     }
@@ -48,7 +46,6 @@ export abstract class BaseProgressUpdateList<P extends IBaseProgressUpdateListPr
                         {this.updateListTitle && <h1 className='ms-font-xl'>{this.updateListTitle}</h1>}
                         <CrLoadingOverlay isLoading={this.state.Loading} />
                         {this.state.DefElements.map((m, i) => {
-                            //console.log(m);
                             return this.renderElementForm(m.ID, m.Title, m, false);
                         })}
                     </div>
@@ -68,7 +65,7 @@ export abstract class BaseProgressUpdateList<P extends IBaseProgressUpdateListPr
     public componentDidUpdate(prevProps: P): void {
     }
 
-    protected abstract loadDefElements = (parentId: number): void => { };
+    protected abstract loadDefElements(parentId: number): void;
 
     protected errorLoadingEntities = (err: any, entityName?: string): void => {
         this.setState({ Loading: false });

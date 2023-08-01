@@ -12,15 +12,15 @@ export default class GiaaUpdatesWebPart extends DataAPIWebPart {
 	public onInit(): Promise<void> {
 
 		return super.onInit().then(_ => {
-	  
-		  // other init code may be present
-		  console.log('on init');
-	  
-		  sp.setup({
-			spfxContext: this.context
-		  });
+
+			// other init code may be present
+			console.log('on init');
+
+			sp.setup({
+				spfxContext: this.context
+			});
 		});
-	  }
+	}
 
 	protected renderWebPart(): React.ReactElement<IWebPartComponentProps> {
 		return React.createElement(

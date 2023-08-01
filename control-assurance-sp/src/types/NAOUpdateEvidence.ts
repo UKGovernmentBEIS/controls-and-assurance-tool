@@ -1,5 +1,4 @@
 import { IEntity } from "./Entity";
-import { User } from "./User";
 
 export interface INAOUpdateEvidence  extends IEntity {
     IsLink?:boolean;
@@ -8,8 +7,6 @@ export interface INAOUpdateEvidence  extends IEntity {
     NAOUpdateId?: number; 
     DateUploaded?: Date;
     UploadedByUserId?: number;
-    //User?: User;
-
 }
 
 export class NAOUpdateEvidence implements INAOUpdateEvidence{ 
@@ -24,6 +21,4 @@ export class NAOUpdateEvidence implements INAOUpdateEvidence{
     constructor(naoUpdateId: number) {
         this.NAOUpdateId = naoUpdateId;
     }
-
-    //public User?: User = null; 
 }

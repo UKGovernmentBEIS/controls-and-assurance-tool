@@ -6,7 +6,6 @@ export interface IGoMiscFile  extends IEntity {
     DateUploaded?: Date;
     UploadedByUserId?: number;
     User?: User;
-
 }
 
 export class GoMiscFile implements IGoMiscFile{ 
