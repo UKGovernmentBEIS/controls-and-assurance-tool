@@ -45,12 +45,11 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
 
   private renderGenExport(): React.ReactElement<types.IWebPartComponentProps> {
     if (this.state.User) {
-      const isSuperUserPermission = this.isSuperUser();
-      console.log('isSuperUserPermission', isSuperUserPermission);
+      const accessOutputsPermission = this.isSuperUserOrGiaaStaff();
       return (
         <div>
           <div style={{ paddingTop: "10px" }}>
-            {(isSuperUserPermission === true) &&
+            {(accessOutputsPermission === true) &&
               <GenExport
                 {...this.props}
                 onError={this.onError}
@@ -58,9 +57,9 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
               />
             }
             {
-              (isSuperUserPermission === false) &&
+              (accessOutputsPermission === false) &&
               <div style={{ fontSize: '14px', color: 'navy', fontStyle: 'italic', paddingTop: '8px', paddingLeft: '5px' }}>
-                Export to Excel function is only available to the Super User.
+                Export to Excel function is only available to the Super User/GIAA Staf.
               </div>
             }
           </div>
@@ -71,12 +70,12 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
       return null;
   }
 
-  private isSuperUser(): boolean {
-    //super user/SysManager check
+  private isSuperUserOrGiaaStaff(): boolean {
+    //super user/giaa staff check
     let ups = this.state.UserPermissions;
     for (let i = 0; i < ups.length; i++) {
       let up: IUserPermission = ups[i];
-      if (up.PermissionTypeId == 1 || up.PermissionTypeId == 7) {
+      if (up.PermissionTypeId == 1 || up.PermissionTypeId == 7 || up.PermissionTypeId == 4) {
         return true;
       }
     }
