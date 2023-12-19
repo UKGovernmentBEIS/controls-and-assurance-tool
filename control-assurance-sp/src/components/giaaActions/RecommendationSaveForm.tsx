@@ -37,7 +37,7 @@ export interface IErrorMessage {
     TargetDate: string;
     ActionStatus: string;
     UpdateStatus: string;
-
+    Dept: string;
 }
 export class ErrorMessage implements IErrorMessage {
     public Title = null;
@@ -46,6 +46,7 @@ export class ErrorMessage implements IErrorMessage {
     public TargetDate = null;
     public ActionStatus = null;
     public UpdateStatus = null;
+    public Dept = null;
 }
 export interface IRecommendationSaveFormState {
     Loading: boolean;
@@ -100,6 +101,7 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
     public renderFormFields() {
         return (
             <React.Fragment>
+                {this.renderDept()}
                 {this.renderTitle()}
                 {this.renderRecommendationDetails()}
                 {this.renderGIAAActionPriorities()}
@@ -110,6 +112,39 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
                 {this.renderActionOwners()}
                 {this.renderDisplayOwners()}
             </React.Fragment>
+        );
+    }
+
+    private renderDept() {
+
+        return (
+            <CrDropdown
+                label="Dept"
+                placeholder="Select an Option"
+                required={true}
+                className={styles.formField}
+                options={[
+                    {
+                        key: 'NotSet',
+                        text: 'NotSet',
+                    },
+                    {
+                        key: 'DSIT',
+                        text: 'DSIT',
+                    },
+                    {
+                        key: 'DESNZ',
+                        text: 'DESNZ',
+                    },
+                    {
+                        key: 'ICS',
+                        text: 'ICS',
+                    }
+                ]}
+                selectedKey={this.state.FormData.Dept}
+                onChanged={(v) => this.changeDropdown(v, "Dept")}
+                errorMessage={this.state.ErrMessages.Dept}
+            />
         );
     }
 
@@ -423,6 +458,14 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
 
         let returnVal: boolean = true;
         let errMsg: IErrorMessage = { ...this.state.ErrMessages };
+
+        if ((this.state.FormData.Dept === null)) {
+            errMsg.Dept = "Dept required";
+            returnVal = false;
+        }
+        else {
+            errMsg.Dept = null;
+        }
 
         if ((this.state.FormData.Title === null) || (this.state.FormData.Title === '')) {
             errMsg.Title = "Ref required";

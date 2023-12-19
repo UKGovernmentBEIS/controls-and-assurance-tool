@@ -9,6 +9,7 @@ export interface IGIAARecommendation extends IEntity {
     GIAAAuditReportId?: number;
     DisplayedImportedActionOwners?: string;
     UpdateStatus?: string;
+    Dept?: string;
 }
 
 export class GIAARecommendation implements IGIAARecommendation {
@@ -22,5 +23,6 @@ export class GIAARecommendation implements IGIAARecommendation {
     public GIAAAuditReportId = null;
     public DisplayedImportedActionOwners = null;
     public UpdateStatus?: string = 'Blank';
+    public Dept?: string = null;
 
 }
