@@ -13,8 +13,6 @@ import { changeDatePicker } from '../../types/AppGlobals';
 import styles from '../../styles/cr.module.scss';
 
 export interface IRecommendationSaveFormProps extends types.IBaseComponentProps {
-    //periodID: number | string;
-    //giaaPeriodId:number | string;
     giaaAuditReportId: number | string;
     entityId: number;
     showForm: boolean;
@@ -39,7 +37,7 @@ export interface IErrorMessage {
     TargetDate: string;
     ActionStatus: string;
     UpdateStatus: string;
-
+    Dept: string;
 }
 export class ErrorMessage implements IErrorMessage {
     public Title = null;
@@ -48,12 +46,12 @@ export class ErrorMessage implements IErrorMessage {
     public TargetDate = null;
     public ActionStatus = null;
     public UpdateStatus = null;
+    public Dept = null;
 }
 export interface IRecommendationSaveFormState {
     Loading: boolean;
     LookupData: ILookupData;
     FormData: IGIAARecommendation;
-    //ClearSuggestedStatus:boolean;
     FormDataBeforeChanges: IGIAARecommendation;
     FormIsDirty: boolean;
     ErrMessages: IErrorMessage;
@@ -64,7 +62,6 @@ export class RecommendationSaveFormState implements IRecommendationSaveFormState
     public FormData = new GIAARecommendation();
     public FormDataBeforeChanges = new GIAARecommendation();
     public FormIsDirty = false;
-    //public ClearSuggestedStatus = false;
     public ErrMessages = new ErrorMessage();
 }
 
@@ -74,8 +71,6 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
     private giaaActionStatusTypeService: services.GIAAActionStatusTypeService = new services.GIAAActionStatusTypeService(this.props.spfxContext, this.props.api);
     private giaaRecommendationService: services.GIAARecommendationService = new services.GIAARecommendationService(this.props.spfxContext, this.props.api);
     private giaaActionOwnerService: services.GIAAActionOwnerService = new services.GIAAActionOwnerService(this.props.spfxContext, this.props.api);
-
-
 
     private childEntities: types.IFormDataChildEntities[] = [
         { ObjectParentProperty: 'GIAAActionOwners', ParentIdProperty: 'GIAARecommendationId', ChildIdProperty: 'UserId', ChildService: this.giaaActionOwnerService },
@@ -89,7 +84,6 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
     //#region Render
 
     public render(): React.ReactElement<IRecommendationSaveFormProps> {
-        //const errors = this.state.ValidationErrors;
         return (
             <Panel isOpen={this.props.showForm} headerText={"Recommendation"} type={PanelType.medium} onRenderNavigation={() => <FormCommandBar onSave={this.saveData} onCancel={this.props.onCancelled} />}>
                 <div className={styles.cr}>
@@ -107,6 +101,7 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
     public renderFormFields() {
         return (
             <React.Fragment>
+                {this.renderDept()}
                 {this.renderTitle()}
                 {this.renderRecommendationDetails()}
                 {this.renderGIAAActionPriorities()}
@@ -116,8 +111,40 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
                 {this.renderUpdateStatuses()}
                 {this.renderActionOwners()}
                 {this.renderDisplayOwners()}
-
             </React.Fragment>
+        );
+    }
+
+    private renderDept() {
+
+        return (
+            <CrDropdown
+                label="Dept"
+                placeholder="Select an Option"
+                required={true}
+                className={styles.formField}
+                options={[
+                    {
+                        key: 'NotSet',
+                        text: 'NotSet',
+                    },
+                    {
+                        key: 'DSIT',
+                        text: 'DSIT',
+                    },
+                    {
+                        key: 'DESNZ',
+                        text: 'DESNZ',
+                    },
+                    {
+                        key: 'ICS',
+                        text: 'ICS',
+                    }
+                ]}
+                selectedKey={this.state.FormData.Dept}
+                onChanged={(v) => this.changeDropdown(v, "Dept")}
+                errorMessage={this.state.ErrMessages.Dept}
+            />
         );
     }
 
@@ -129,7 +156,7 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
                 required={true}
                 className={styles.formField}
                 value={this.state.FormData.Title}
-                onChanged={(v) => this.changeTextField(v, "Title")}
+                onChanged={(ev, newValue) => this.changeTextField(newValue, "Title")}
                 errorMessage={this.state.ErrMessages.Title}
             />
         );
@@ -142,7 +169,7 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
                 label="Recommendations/Actions"
                 className={styles.formField}
                 value={this.state.FormData.RecommendationDetails}
-                onChanged={(v) => this.changeTextField(v, "RecommendationDetails")}
+                onChanged={(ev, newValue) => this.changeTextField(newValue, "RecommendationDetails")}
                 multiline={true}
                 required={true}
                 errorMessage={this.state.ErrMessages.RecDetails}
@@ -173,13 +200,6 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
 
     private renderTargetDate() {
 
-        // if(this.state.FormData.TargetDate !== null){
-        //     let x = this.state.FormData.TargetDate;
-        //     x.setTime( x.getTime() + x.getTimezoneOffset() * 60 * 1000 );
-        //     console.log('x date', x);
-        // }
-
-
         return (
             <CrDatePicker
                 label="Original Implementation Date"
@@ -193,7 +213,7 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
     }
 
     private renderRevisedDate() {
-        if(this.props.entityId) return null;
+        if (this.props.entityId) return null;
 
         return (
             <CrDatePicker
@@ -206,8 +226,8 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
     }
 
     private renderGIAAActionStatusTypes() {
-        if(this.props.entityId) return null;
-        
+        if (this.props.entityId) return null;
+
         const giaaActionStatusTypes = this.state.LookupData.GIAAActionStatusTypes;
         if (giaaActionStatusTypes) {
             return (
@@ -233,8 +253,6 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
             { key: 'ReqUpdate', text: 'ReqUpdate' },
         ];
 
-
-
         return (
             <CrDropdown
                 label="Update Status"
@@ -253,7 +271,6 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
     private renderActionOwners() {
         const users = this.state.LookupData.Users;
         const fd_users: IGIAAActionOwner[] = this.state.FormData['GIAAActionOwners'];
-        //console.log('fd_users', fd_users);
         if (users) {
             return (
                 <CrEntityPicker
@@ -271,8 +288,6 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
             return null;
     }
 
-
-
     private renderDisplayOwners() {
 
         if (this.props.entityId && this.state.FormData.DisplayedImportedActionOwners && this.state.FormData.DisplayedImportedActionOwners.length > 0) {
@@ -281,9 +296,8 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
                 <div>
                     <CrTextField
                         label="Imported Action Owners"
-                        //className={styles.formField}
                         value={this.state.FormData.DisplayedImportedActionOwners}
-                        onChanged={(v) => this.changeTextField(v, "DisplayedImportedActionOwners")}
+                        onChanged={(ev, newValue) => this.changeTextField(newValue, "DisplayedImportedActionOwners")}
                         multiline={true}
                         rows={2}
                     />
@@ -292,17 +306,13 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
                     </div>
 
                 </div>
-
             );
-
         }
 
         else
             return null;
 
     }
-
-
 
 
     //#endregion Render
@@ -313,7 +323,6 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
     private loadData = (): Promise<void> => {
         console.log('loadData - Id: ', this.props.entityId);
         let x = this.giaaRecommendationService.readWithExpandActionOwners(this.props.entityId).then((e: IGIAARecommendation): void => {
-
             console.log('rec ', e);
             this.setState({
                 FormData: e,
@@ -331,11 +340,9 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
             loadingPromises.push(this.loadData());
         }
         Promise.all(loadingPromises).then(p => this.onAfterLoad(p[1])).then(p => this.setState({ Loading: false })).catch(err => this.setState({ Loading: false }));
-
     }
 
     private loadLookups(): Promise<any> {
-
         let proms: any[] = [];
         proms.push(this.loadGIAAActionPriorities());
         proms.push(this.loadGIAAActionStatusTypes());
@@ -364,13 +371,7 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
         }, (err) => { if (this.props.onError) this.props.onError(`Error loading GIAAActionStatusTypes lookup data`, err.message); });
     }
 
-
-
-
     private onAfterLoad = (entity: types.IEntity): void => {
-
-        //console.log('after load', this.state.LookupData.Users);
-
     }
 
 
@@ -380,38 +381,22 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
             if (this.props.onError) this.props.onError(null);
 
             let f: IGIAARecommendation = { ...this.state.FormData };
-
-
             //remove all the child and parent entities before sending post/patch
             delete f['GIAAActionOwners']; //chile entity
 
             if (f.ID === 0) {
-
                 f.GIAAAuditReportId = Number(this.props.giaaAuditReportId);
 
                 this.giaaRecommendationService.create(f).then(this.saveChildEntitiesAfterCreate).then(this.onAfterCreate).then(this.props.onSaved, (err) => {
                     if (this.props.onError) this.props.onError(`Error creating item`, err.message);
                 });
-
             }
             else {
-
-                //console.log('in update');
-
                 this.giaaRecommendationService.update(f.ID, f).then(this.saveChildEntitiesAfterUpdate).then(this.onAfterUpdate).then(this.props.onSaved, (err) => {
                     if (this.props.onError) this.props.onError(`Error updating item`, err.message);
                 });
-
-                // this.giaaRecommendationService.updateGiaaUpdateAfterEditRec(f.ID, Number(this.props.giaaPeriodId)).then((res: string): void => {
-
-                //     console.log('welcome accessed');
-
-                // }, (err) => {
-
-                // });
             }
         }
-
     }
 
     private saveChildEntitiesAfterCreate = (parentEntity: IGIAARecommendation): Promise<any> => {
@@ -419,28 +404,17 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
 
         if (this.childEntities) {
             this.childEntities.forEach((ce) => {
-
-
                 const owners = this.state.FormData[ce.ObjectParentProperty];
-
                 if (owners) {
-
                     this.state.FormData[ce.ObjectParentProperty].forEach((c) => {
                         c[ce.ParentIdProperty] = parentEntity.ID;
                         if (c.ID === 0) {
                             promises.push(ce.ChildService.create(c));
-
                         }
-
                     });
                 }
-
-
             });
-
             return Promise.all(promises).then(() => parentEntity);
-
-
         }
     }
     private saveChildEntitiesAfterUpdate = (): Promise<any> => {
@@ -462,14 +436,11 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
                     if (this.state.FormData[ce.ObjectParentProperty].map(i => i[ce.ChildIdProperty]).indexOf(c[ce.ChildIdProperty]) === -1) {
                         promises.push(ce.ChildService.delete(c.ID));
                     }
-
                 });
             });
             return Promise.all(promises).then(() => this.state.FormData);
         }
     }
-
-
 
     private onAfterUpdate(): Promise<any> { return Promise.resolve(); }
 
@@ -487,6 +458,14 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
 
         let returnVal: boolean = true;
         let errMsg: IErrorMessage = { ...this.state.ErrMessages };
+
+        if ((this.state.FormData.Dept === null)) {
+            errMsg.Dept = "Dept required";
+            returnVal = false;
+        }
+        else {
+            errMsg.Dept = null;
+        }
 
         if ((this.state.FormData.Title === null) || (this.state.FormData.Title === '')) {
             errMsg.Title = "Ref required";
@@ -536,15 +515,10 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
             errMsg.UpdateStatus = null;
         }
 
-
-
-
         //at the end set state
         this.setState({ ErrMessages: errMsg });
 
         return returnVal;
-
-
     }
 
     private cloneObject(obj, changeProp?, changeValue?) {
@@ -560,28 +534,6 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
     private changeDropdown = (option: IDropdownOption, f: string, index?: number): void => {
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, option.key), FormIsDirty: true });
     }
-    // protected changeDatePicker = (date: Date, f: string): void => {
-    //     console.log('original date', date);
-    //     if(date != null){
-    //         const is_dst = this.isDST(date);
-    //         console.log('is_dst', is_dst);
-    //         if(is_dst === true){
-    //             console.log('date offset', date.getTimezoneOffset());
-    //             //let date2 = new Date(date.getTime()); //copy value of date
-    //             date.setTime( date.getTime() - date.getTimezoneOffset() * 60 * 1000 );
-    //             console.log('date minus offset', date);
-    //         }
-
-    //     }
-
-    //     this.setState({ FormData: this.cloneObject(this.state.FormData, f, date), FormIsDirty: true });
-    // }
-    
-    // private isDST = (d: Date) : boolean => {
-    //     let jan = new Date(d.getFullYear(), 0, 1).getTimezoneOffset();
-    //     let jul = new Date(d.getFullYear(), 6, 1).getTimezoneOffset();
-    //     return Math.max(jan, jul) != d.getTimezoneOffset(); 
-    // }
 
     private changeMultiUserPicker = (value: number[], f: string, newEntity: object, userIdProperty: string): void => {
 
@@ -608,7 +560,5 @@ export default class RecommendationSaveForm extends React.Component<IRecommendat
         });
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, newUsers), FormIsDirty: true });
     }
-
     //#endregion Form Operations
-
 }

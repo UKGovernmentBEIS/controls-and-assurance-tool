@@ -32,6 +32,7 @@ namespace ControlAssuranceAPI.Models
         public string OriginalImportedActionOwners { get; set; }
         public string DisplayedImportedActionOwners { get; set; }
         public string UpdateStatus { get; set; }
+        public string Dept { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<GIAAActionOwner> GIAAActionOwners { get; set; }
