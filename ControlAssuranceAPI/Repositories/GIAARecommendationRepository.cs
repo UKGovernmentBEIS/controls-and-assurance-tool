@@ -48,6 +48,7 @@ namespace ControlAssuranceAPI.Repositories
                       {
                           r.ID,
                           r.Title,
+                          r.Dept,
                           r.RecommendationDetails,
                           r.TargetDate,
                           r.RevisedDate,
@@ -125,6 +126,7 @@ namespace ControlAssuranceAPI.Repositories
 
                     ID = ite.ID,
                     Title = ite.Title,
+                    Dept = ite.Dept ?? "",
                     RecommendationDetails = ite.RecommendationDetails,
                     TargetDate = ite.TargetDate != null ? ite.TargetDate.Value.ToString("dd/MM/yyyy") : "",
                     RevisedDate = ite.RevisedDate != null ? ite.RevisedDate.Value.ToString("dd/MM/yyyy") : "",

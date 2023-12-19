@@ -87,9 +87,11 @@ export default class ActionUpdatesTab extends React.Component<IActionUpdatesTabP
         const auditReportTitle: string = recInfo['GIAAAuditReport']['Title'];
         const recRef: string = recInfo.Title;
         let recDetails: string = recInfo.RecommendationDetails;
+        let dept: string = recInfo.Dept ?? "";
 
         //replace all
         recDetails = recDetails.split('\n').join('<br/>');
+        recDetails = recDetails + "<br/>" + "Dept: " + dept;
 
         return (
 

@@ -1,0 +1,7 @@
+Alter table [dbo].[GIAARecommendation]
+  ADD Dept nvarchar(50)
+  GO
+
+--to update existing data
+update [dbo].[GIAARecommendation] set Dept = 'NotSet'
+GO

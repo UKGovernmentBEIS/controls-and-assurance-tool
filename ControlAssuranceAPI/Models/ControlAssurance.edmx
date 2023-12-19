@@ -773,6 +773,7 @@
           <Property Name="OriginalImportedActionOwners" Type="nvarchar" MaxLength="2000" />
           <Property Name="DisplayedImportedActionOwners" Type="nvarchar" MaxLength="2000" />
           <Property Name="UpdateStatus" Type="nvarchar" MaxLength="50" />
+          <Property Name="Dept" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="GIAAUpdate">
           <Key>
@@ -3889,6 +3890,7 @@
           <Property Name="OriginalImportedActionOwners" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
           <Property Name="DisplayedImportedActionOwners" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
           <Property Name="UpdateStatus" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Dept" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="GIAAActionOwners" Relationship="Self.FK_GIAAActionOwner_GIAARecommendation" FromRole="GIAARecommendation" ToRole="GIAAActionOwner" />
           <NavigationProperty Name="GIAAActionPriority" Relationship="Self.FK_GIAARecommendation_GIAAActionPriority" FromRole="GIAARecommendation" ToRole="GIAAActionPriority" />
           <NavigationProperty Name="GIAAActionStatusType" Relationship="Self.FK_GIAARecommendation_GIAAActionStatusType" FromRole="GIAARecommendation" ToRole="GIAAActionStatusType" />
@@ -7280,6 +7282,7 @@
                 <ScalarProperty Name="OriginalImportedActionOwners" ColumnName="OriginalImportedActionOwners" />
                 <ScalarProperty Name="DisplayedImportedActionOwners" ColumnName="DisplayedImportedActionOwners" />
                 <ScalarProperty Name="UpdateStatus" ColumnName="UpdateStatus" />
+                <ScalarProperty Name="Dept" ColumnName="Dept" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
