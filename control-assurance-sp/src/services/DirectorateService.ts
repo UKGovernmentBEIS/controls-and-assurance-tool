@@ -13,6 +13,10 @@ export class DirectorateService extends EntityService<IDirectorate> {
     public readAll(): Promise<IDirectorate[]> {
         return super.readAll(`?$orderby=Title`);
     }
+    public readAllOpenDirectorates(): Promise<IDirectorate[]> {
+        return super.readAll(`?$filter=EntityStatusID eq 1&$orderby=Title`);
+    }
+
     public readAllExpandAll(querystring?: string): Promise<IDirectorate[]> {
         let fullQryString: string;
         if (querystring)
