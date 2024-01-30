@@ -6258,7 +6258,7 @@ export default class NewCaseTab extends React.Component<INewCaseTabProps, INewCa
         }, (err) => { if (this.props.onError) this.props.onError(`Error loading CLStaffGrades lookup data`, err.message); });
     }
     private loadDirectorates = (): void => {
-        this.directorateService.readAll().then((data: IEntity[]): IEntity[] => {
+        this.directorateService.readAllOpenDirectorates().then((data: IEntity[]): IEntity[] => {
             this.setState({ LookupData: this.cloneObject(this.state.LookupData, "Directorates", data) });
             return data;
         }, (err) => { if (this.props.onError) this.props.onError(`Error loading Directorates lookup data`, err.message); });

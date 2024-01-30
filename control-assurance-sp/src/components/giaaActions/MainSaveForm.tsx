@@ -270,7 +270,7 @@ export default class MainSaveForm extends React.Component<IMainSaveFormProps, IM
     }
 
     private loadDirectorates = (): void => {
-        this.directorateService.readAll().then((data: IDirectorate[]): IDirectorate[] => {
+        this.directorateService.readAllOpenDirectorates().then((data: IDirectorate[]): IDirectorate[] => {
             this.setState({ LookupData: this.cloneObject(this.state.LookupData, "Directorates", data) });
             return data;
         }, (err) => { if (this.props.onError) this.props.onError(`Error loading Directorates lookup data`, err.message); });
