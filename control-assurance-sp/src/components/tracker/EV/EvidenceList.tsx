@@ -16,7 +16,7 @@ export interface IEvidenceListProps extends types.IBaseComponentProps {
     entityReadAllWithArg1: any;
     filterText?: string;
     onChangeFilterText: (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => void;
-    isViewOnly: boolean;
+    viewOnly: boolean;
 }
 
 export interface IEvidenceListState<T> {
@@ -151,7 +151,7 @@ export default class EvidenceList extends React.Component<IEvidenceListProps, IE
 
         return (
             <FilteredEvidenceList
-                isViewOnly={this.props.isViewOnly}
+                isViewOnly={this.props.viewOnly}
                 columns={listColumns}
                 items={items}
                 filterText={this.props.filterText}

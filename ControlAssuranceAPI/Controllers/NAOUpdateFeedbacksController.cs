@@ -63,6 +63,25 @@ namespace ControlAssuranceAPI.Controllers
                 return NotFound();
             }
 
+            int updateId = naoUpdateFeedback.NAOUpdateId ?? 0;
+            if (updateId > 0)
+            {
+                var update = db.NAOUpdateRepository.Find(updateId);
+                if (update != null)
+                {
+                    if (update.NAOPeriod.PeriodStatus == "Archived Period")
+                    {
+                        object comment = "";
+                        patch.TryGetPropertyValue("Comment", out comment);
+                        if(comment.ToString().Contains("(Comment made after period was closed)") ==  false)
+                        {
+                            comment += " (Comment made after period was closed)";
+                            patch.TrySetPropertyValue("Comment", comment);
+                        }                        
+                    }
+                }
+            }
+
             patch.Patch(naoUpdateFeedback);
 
             try

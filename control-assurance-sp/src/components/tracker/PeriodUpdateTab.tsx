@@ -18,6 +18,7 @@ export interface IPeriodUpdateTabProps extends types.IBaseComponentProps {
     filteredItems: any[];
     naoRecommendationId: any;
     naoPeriodId: any;
+    lastPeriodId?: number;
     onShowList: () => void;
     isViewOnly: boolean;
 }
@@ -45,6 +46,7 @@ export interface IPeriodUpdateTabState {
     HideNextButton: boolean;
     ArrLinks: ILinkLocalType[];
     LastPeriodActions: string;
+    ShowCurrentPeriod: string;
 }
 
 export class PeriodUpdateTabState implements IPeriodUpdateTabState {
@@ -58,6 +60,7 @@ export class PeriodUpdateTabState implements IPeriodUpdateTabState {
     public HideNextButton: boolean = false;
     public ArrLinks: ILinkLocalType[] = [];
     public LastPeriodActions: string = "";
+    public ShowCurrentPeriod: string = "1";
     constructor(naoPeriodId: number, naoRecommendationId: number) {
         this.FormData = new NAOUpdate(naoPeriodId, naoRecommendationId);
     }
@@ -68,11 +71,13 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
     private naoRecStatusTypeService: services.NAORecStatusTypeService = new services.NAORecStatusTypeService(this.props.spfxContext, this.props.api);
     private naoUpdateStatusTypeService: services.NAOUpdateStatusTypeService = new services.NAOUpdateStatusTypeService(this.props.spfxContext, this.props.api);
     private naoUpdateService: services.NAOUpdateService = new services.NAOUpdateService(this.props.spfxContext, this.props.api);
+    private naoUpdateFeedbackTypeService: services.NAOUpdateFeedbackService = new services.NAOUpdateFeedbackService(this.props.spfxContext, this.props.api);
     private userService: services.UserService = new services.UserService(this.props.spfxContext, this.props.api);
 
     constructor(props: IPeriodUpdateTabProps, state: IPeriodUpdateTabState) {
         super(props);
         console.log("Rec Id", props.naoRecommendationId, "PeriodId", props.naoPeriodId);
+        console.log("LastPeriodID", props.lastPeriodId);
         this.state = new PeriodUpdateTabState(props.naoPeriodId, props.naoRecommendationId);
     }
 
@@ -173,24 +178,49 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
             <div>
                 <div style={{ marginBottom: '20px', marginTop: '50px' }} className={styles.sectionATitle}>Period Update Details</div>
                 <div style={{ width: '98%', marginTop: '10px', marginLeft: 'auto', marginRight: 'auto', paddingRight: '5px' }}>
-                    <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>
-                        We wish to provide an update for this period
+                    <div>
+                        <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>
+                            Show
+                        </div>
+                        <CrChoiceGroup
+                            className="inlineflex"
+                            disabled={!(this.props.lastPeriodId > 0)}
+                            options={[
+                                {
+                                    key: '1',
+                                    text: 'Current Period',
+                                },
+                                {
+                                    key: '0',
+                                    text: 'Previous closed period'
+                                },
+                            ]}
+                            selectedKey={this.state.ShowCurrentPeriod}
+                            onChange={(ev, option) => this.changeChoiceGroupShowPeriod(option)}
+                        />
                     </div>
-                    <CrChoiceGroup
-                        className="inlineflex"
-                        options={[
-                            {
-                                key: '1',
-                                text: 'Yes',
-                            },
-                            {
-                                key: '0',
-                                text: 'No'
-                            },
-                        ]}
-                        selectedKey={fd.ProvideUpdate}
-                        onChange={(ev, option) => this.changeChoiceGroup(ev, option, "ProvideUpdate")}
-                    />
+                    <div>
+                        <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>
+                            We wish to provide an update for this period
+                        </div>
+                        <CrChoiceGroup
+                            className="inlineflex"
+                            disabled={this.disableOnShowLastPeriod()}
+                            options={[
+                                {
+                                    key: '1',
+                                    text: 'Yes',
+                                },
+                                {
+                                    key: '0',
+                                    text: 'No'
+                                },
+                            ]}
+                            selectedKey={fd.ProvideUpdate}
+                            onChange={(ev, option) => this.changeChoiceGroup(ev, option, "ProvideUpdate")}
+                        />
+                    </div>
+
 
                     {fd.ProvideUpdate === '1' &&
                         <div>
@@ -201,6 +231,7 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
                             <CrDropdown
                                 style={{ width: '350px' }}
                                 placeholder="Select an Option"
+                                disabled={this.disableOnShowLastPeriod()}
                                 className={styles.formField}
                                 options={this.state.LookupData.NAORecStatusTypes.map((p) => { return { key: p.ID, text: p.Title }; })}
                                 selectedKey={fd.NAORecStatusTypeId}
@@ -213,6 +244,7 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
                             <div style={{ width: '350px' }}>
                                 <CrTextField
                                     className={styles.formField}
+                                    disabled={this.disableOnShowLastPeriod()}
                                     onChanged={(ev, newValue) => this.changeTextField(newValue, "TargetDate")}
                                     value={fd.TargetDate}
                                 />
@@ -228,6 +260,7 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
                                 rows={6}
                                 maxLength={6000}
                                 charCounter={true}
+                                disabled={this.disableOnShowLastPeriod()}
                                 onChanged={(ev, newValue) => this.changeTextField(newValue, "ActionsTaken")}
                                 value={fd.ActionsTaken}
 
@@ -273,7 +306,7 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
                     this.renderLink(c, i)
                 )}
 
-                {<div className={styles.formField}>
+                {(this.disableOnShowLastPeriod() === false) && <div className={styles.formField}>
                     <span style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }} onClick={this.addBlankLinkItem} >Add fields For another link</span>
                 </div>}
 
@@ -286,14 +319,14 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
         return (
             <div key={`div_renderLink_${index}`} style={{ display: 'flex', marginTop: '5px' }}>
                 <div key={`divCol1_renderLink_${index}`} style={{ width: '40%', paddingRight: '5px' }}>
-                    <CrTextField key={`div_TextField1_${index}`} value={item.Description}
+                    <CrTextField disabled={this.disableOnShowLastPeriod()} key={`div_TextField1_${index}`} value={item.Description}
                         onChanged={(ev, newValue) => this.changeTextField_Link(newValue, index, "Description")}
                     />
                 </div>
 
                 <div key={`divCol2_renderLink_${index}`} style={{ width: '40%', paddingRight: '5px' }}>
 
-                    <CrTextField key={`div_TextField2_${index}`} value={item.URL}
+                    <CrTextField disabled={this.disableOnShowLastPeriod()} key={`div_TextField2_${index}`} value={item.URL}
                         onChanged={(ev, newValue) => this.changeTextField_Link(newValue, index, "URL")}
                     />
                 </div>
@@ -302,6 +335,7 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
 
                     <CrChoiceGroup
                         className="inlineflex"
+                        disabled={this.disableOnShowLastPeriod()}
                         options={[
                             {
                                 key: 'False',
@@ -351,6 +385,7 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
                     <div style={{ width: '50%', paddingRight: '5px' }}>
                         <CrEntityPicker
                             displayForUser={true}
+                            disabled={this.disableOnShowLastPeriod()}
                             entities={this.state.LookupData.Users}
                             itemLimit={1}
                             selectedEntities={this.state.FormData.ApprovedById && [this.state.FormData.ApprovedById]}
@@ -360,6 +395,7 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
                     <div style={{ width: '50%', }}>
                         <CrDropdown
                             placeholder="Select an Option"
+                            disabled={this.disableOnShowLastPeriod()}
                             options={drpOptions}
                             selectedKey={this.state.FormData.ApprovedByPosition}
                             onChanged={(v) => this.changeDropdown(v, "ApprovedByPosition")}
@@ -374,7 +410,7 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
         return (
             <div>
                 {
-                    (this.props.isViewOnly === false) &&
+                    (this.props.isViewOnly === false && (this.disableOnShowLastPeriod() === false)) &&
                     <React.Fragment>
                         {(this.state.HideNextButton === false) && <PrimaryButton text="Save &amp; Next" className={styles.formButton} style={{ marginRight: '5px' }}
                             onClick={() => this.saveData(true)}
@@ -390,7 +426,7 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
 
                     </React.Fragment>
                 }
-                {(this.props.isViewOnly === true) &&
+                {(this.props.isViewOnly === true || (this.disableOnShowLastPeriod() === true)) &&
                     <div style={{ marginTop: '20px' }}>
                         {(this.state.HideNextButton === false) && <PrimaryButton text="Next" className={styles.formButton} style={{ marginRight: '5px' }}
                             onClick={() => this.showNext()}
@@ -420,7 +456,7 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
                 <div style={{ minHeight: '120px', border: '1px solid rgb(166,166,166)' }}>
                     <EvidenceList
                         entityReadAllWithArg1={this.state.FormData.ID}
-                        isViewOnly={false}
+                        viewOnly={this.disableOnShowLastPeriod()}
                         filterText={this.state.Evidence_ListFilterText}
                         onChangeFilterText={this.handleEvidence_ChangeFilterText}
                         {...this.props}
@@ -430,6 +466,27 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
             </React.Fragment>
         );
     }
+
+    private checkEnableEditDelForFeedback = async (key: number): Promise<boolean> => {
+        if (this.disableOnShowLastPeriod() === true) {
+            return this.naoUpdateFeedbackTypeService.read(key).then(feedback => {
+                const comment: string = feedback['Comment'];
+                // Check if comment contains string "comment made after period was closed" 
+                if (comment.indexOf("(Comment made after period was closed)") !== -1) {
+                    return true; // Enable edit/delete
+                }
+                return false; // Otherwise, disable edit/delete
+            }).catch(error => {
+                console.error("Error reading feedback:", error);
+                return false; // Return false if an error occurs
+            });
+        }
+        else
+            return true;
+    };
+
+
+
 
     private renderFeedbacksList() {
         const listColumns: IGenColumn[] = [
@@ -512,6 +569,7 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
                     <EntityList
                         entityReadAllWithArg1={this.state.FormData.ID}
                         allowAdd={true}
+                        onRowSelectionCheckEditDel={this.checkEnableEditDelForFeedback}
                         columns={listColumns}
                         {...this.props}
                         onError={this.props.onError}
@@ -623,7 +681,7 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
                 <div style={{ minHeight: '120px', border: '1px solid rgb(166,166,166)' }}>
                     <EntityList
                         entityReadAllWithArg1={this.state.NAORecommendationId}
-                        entityReadAllWithArg2={this.props.naoPeriodId}
+                        entityReadAllWithArg2={this.getCurrentOrLastPeriodId()}
                         allowAdd={false}
                         columns={listColumns}
                         {...this.props}
@@ -785,10 +843,25 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
             });
     }
 
-    private loadUpdate = (firstLoad: boolean): void => {
+    private getCurrentOrLastPeriodId = (): number => {
+        if (this.state.ShowCurrentPeriod === "1")
+            return this.props.naoPeriodId;
+        else
+            return this.props.lastPeriodId;
+    }
 
-        this.naoUpdateService.readByPeriodAndRec(this.state.NAORecommendationId, this.props.naoPeriodId).then((u: INAOUpdate) => {
-            console.log('NAOUpdate', u);
+    private disableOnShowLastPeriod = (): boolean => {
+        if (this.state.ShowCurrentPeriod === "0")
+            return true;
+
+        return false;
+    }
+
+    private loadUpdate = (firstLoad: boolean): void => {
+        console.log('loadUpdate started');
+
+        this.naoUpdateService.readByPeriodAndRec(this.state.NAORecommendationId, this.getCurrentOrLastPeriodId()).then((u: INAOUpdate) => {
+            console.log('NAOUpdate loaded', u);
 
             //check if this is the last record or not in the props.filteredItems
             const lastRecId_FilteredItems: number = Number(this.props.filteredItems[this.props.filteredItems.length - 1]["ID"]);
@@ -835,7 +908,7 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
             if (this.props.onError) this.props.onError(`Error loading update`, err.message);
         });
 
-        this.naoUpdateService.getLastPeriodActionsTaken(this.state.NAORecommendationId, this.props.naoPeriodId).then((res: string): void => {
+        this.naoUpdateService.getLastPeriodActionsTaken(this.state.NAORecommendationId, this.getCurrentOrLastPeriodId()).then((res: string): void => {
 
             console.log('last Period Actions', res);
             this.setState({
@@ -944,6 +1017,14 @@ export default class PeriodUpdateTab extends React.Component<IPeriodUpdateTabPro
     protected changeChoiceGroup = (ev, option: IChoiceGroupOption, f: string): void => {
         const selectedKey = option.key;
         this.setState({ FormData: this.cloneObject(this.state.FormData, f, selectedKey)/*, FormIsDirty: true*/ });
+
+    }
+    protected changeChoiceGroupShowPeriod = (option: IChoiceGroupOption): void => {
+        const selectedKey = option.key;
+        this.setState({ ShowCurrentPeriod: selectedKey }, () => {
+            //callback
+            this.loadUpdate(false);
+        });
 
     }
     private changeUserPicker = (value: number[], f: string): void => {

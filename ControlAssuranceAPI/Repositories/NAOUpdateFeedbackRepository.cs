@@ -33,6 +33,20 @@ namespace ControlAssuranceAPI.Repositories
         {
             naoUpdateFeedback.CommentDate = DateTime.Now;
             naoUpdateFeedback.CommentById = ApiUser.ID;
+            int updateId = naoUpdateFeedback.NAOUpdateId ?? 0;
+            if (updateId > 0)
+            {
+                var update = db.NAOUpdates.FirstOrDefault(u => u.ID == updateId);
+                if(update != null)
+                {
+                    if(update.NAOPeriod.PeriodStatus == "Archived Period")
+                    {
+                        naoUpdateFeedback.Comment += " (Comment made after period was closed)";
+                    }
+                }
+            }
+
+
             return db.NAOUpdateFeedbacks.Add(naoUpdateFeedback);
         }
 
