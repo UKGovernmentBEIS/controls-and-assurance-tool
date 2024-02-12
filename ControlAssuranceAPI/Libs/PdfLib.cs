@@ -1470,7 +1470,7 @@ namespace ControlAssuranceAPI.Libs
 
         #region CL
 
-        public void CreateCLSDSPdf(Models.CLWorker cLWorker, UserRepository userRepository, string tempLocation, string outputPdfName, string spSiteUrl, string spAccessDetails)
+        public void CreateCLSDSPdf(string dept, Models.CLWorker cLWorker, UserRepository userRepository, string tempLocation, string outputPdfName, string spSiteUrl, string spAccessDetails)
         {
             SharepointLib sharepointLib = new SharepointLib(spSiteUrl, spAccessDetails);
 
@@ -1553,10 +1553,23 @@ namespace ControlAssuranceAPI.Libs
                 NumberPosition = 1,
                 
             };
-            
+
 
             #endregion styles
 
+            string deptLine1 = "Business, Energy";
+            string deptLine2 = "& Industrial Strategy";
+
+            if(dept == "DSIT")
+            {
+                deptLine1 = "Science, Innovation";
+                deptLine2 = "& Technology";
+            }
+            else if (dept == "DESNZ")
+            {
+                deptLine1 = "Energy Security ";
+                deptLine2 = "& Net Zero";
+            }
 
             paragraph = section.AddParagraph();
 
@@ -1564,9 +1577,9 @@ namespace ControlAssuranceAPI.Libs
 
             paragraph.AddFormattedText("Department for", "rightTextStyle1");
             paragraph.AddLineBreak();
-            paragraph.AddFormattedText("Business, Energy", "rightTextStyle1");
+            paragraph.AddFormattedText(deptLine1, "rightTextStyle1");
             paragraph.AddLineBreak();
-            paragraph.AddFormattedText("& Industrial Strategy", "rightTextStyle1");
+            paragraph.AddFormattedText(deptLine2, "rightTextStyle1");
             paragraph.AddLineBreak();
             paragraph.AddLineBreak();
 
@@ -1628,7 +1641,7 @@ namespace ControlAssuranceAPI.Libs
             paragraph.AddFormattedText($"If you wish to dispute the result of this determination, please contact:", "normalTxt");
             paragraph.AddLineBreak(); paragraph.AddLineBreak();
 
-            paragraph.AddFormattedText($"contingentlabour@beis.gov.uk", "boldItalic1");
+            paragraph.AddFormattedText($"ics-contingentlabour@ics.gov.uk", "boldItalic1");
             paragraph.AddLineBreak(); paragraph.AddLineBreak();
 
             paragraph.AddFormattedText($"Please note, you may only raise a dispute if you deliver your services through a limited company. Umbrella companies and PAYE workers have no right to open dispute.", "bold1");

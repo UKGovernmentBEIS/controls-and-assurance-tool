@@ -219,6 +219,7 @@ namespace ControlAssuranceAPI.Repositories
 
                     
                     var worker = cLWorkerRepository.Find(clWorkerId);
+                    var dept = worker.CLCase.DeptTransferringTo;
 
                     UserRepository userRepository = new UserRepository(base.user);
 
@@ -229,7 +230,7 @@ namespace ControlAssuranceAPI.Repositories
 
 
                     Libs.PdfLib pdfLib = new Libs.PdfLib();
-                    pdfLib.CreateCLSDSPdf(worker, userRepository, tempLocation, outputPdfName, spSiteUrl, spAccessDetails);
+                    pdfLib.CreateCLSDSPdf(dept, worker, userRepository, tempLocation, outputPdfName, spSiteUrl, spAccessDetails);
 
                     Thread.Sleep(500);
                     //delete temp folder which we created earlier

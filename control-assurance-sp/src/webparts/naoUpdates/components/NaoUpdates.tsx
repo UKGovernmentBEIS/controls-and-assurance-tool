@@ -23,6 +23,7 @@ export class LookupData implements ILookupData {
 export interface INaoUpdatesState extends types.IUserContextWebPartState {
   LookupData: ILookupData;
   PeriodId: string | number;
+  LastPeriodId?: number;
   DirectorateGroupId: string | number;
   IsArchivedPeriod: boolean;
   SelectedPivotKey: string;
@@ -48,6 +49,7 @@ export interface INaoUpdatesState extends types.IUserContextWebPartState {
 export class NaoUpdatesState extends types.UserContextWebPartState implements INaoUpdatesState {
   public LookupData = new LookupData();
   public PeriodId: string | number = 0;
+  public LastPeriodId = null;
   public IsArchivedPeriod = false;
   public DirectorateGroupId: string | number = 0;
   public SelectedPivotKey = "NAO/PAC Updates-Main"; //default, 1st tab selected
@@ -80,6 +82,7 @@ export class NaoUpdatesState extends types.UserContextWebPartState implements IN
 export default class NaoUpdates extends BaseUserContextWebPartComponent<types.IWebPartComponentProps, NaoUpdatesState> {
   protected deirectorateGroupService: services.DirectorateGroupService = new services.DirectorateGroupService(this.props.spfxContext, this.props.api);
   protected naoPublicationService: services.NAOPublicationService = new services.NAOPublicationService(this.props.spfxContext, this.props.api);
+  protected naoPeriodService: services.NAOPeriodService = new services.NAOPeriodService(this.props.spfxContext, this.props.api);
   private readonly headerTxt_MainTab: string = "NAO/PAC Updates-Main";
   private readonly headerTxt_RecommendationsTab: string = "Recommendations";
   private readonly headerTxt_PeriodUpdateTab: string = "Period Update";
@@ -211,6 +214,7 @@ export default class NaoUpdates extends BaseUserContextWebPartComponent<types.IW
       <PeriodUpdateTab
         naoRecommendationId={this.state.Section1_RecList_SelectedId}
         naoPeriodId={this.state.PeriodId}
+        lastPeriodId={this.state.LastPeriodId}
         filteredItems={this.state.Section1_RecList_FilteredItems}
         onShowList={this.handleShowSection1RecList}
         isViewOnly={this.state.RecList_SelectedItem_ViewOnly}
@@ -309,14 +313,20 @@ export default class NaoUpdates extends BaseUserContextWebPartComponent<types.IW
 
     console.log('on main list item title click ', ID, title, filteredItems);
     const currentPublication = filteredItems.filter(x => x['ID'] === ID);
-    const currentPeriodId: number = Number(currentPublication[0]["CurrentPeriodId"]);
+    const currentPeriodId: number = Number(currentPublication[0]["CurrentPeriodId"]); 
     console.log('currentPeriodId', currentPeriodId);
-    this.setState({
-      SelectedPivotKey: this.headerTxt_RecommendationsTab,
-      Section_MainList_SelectedId: ID,
-      Section_MainList_SelectedTitle: title,
-      Section_MainList_FilteredItems: filteredItems,
-      PeriodId: currentPeriodId,
+
+    this.naoPeriodService.read(currentPeriodId).then(periodData =>{
+      const lastPeriodId: number = periodData["LastPeriodId"];
+
+      this.setState({
+        SelectedPivotKey: this.headerTxt_RecommendationsTab,
+        Section_MainList_SelectedId: ID,
+        Section_MainList_SelectedTitle: title,
+        Section_MainList_FilteredItems: filteredItems,
+        PeriodId: currentPeriodId,
+        LastPeriodId: lastPeriodId,
+      });
     });
   }
 
