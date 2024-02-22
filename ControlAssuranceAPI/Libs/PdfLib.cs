@@ -1559,16 +1559,27 @@ namespace ControlAssuranceAPI.Libs
 
             string deptLine1 = "Business, Energy";
             string deptLine2 = "& Industrial Strategy";
+            string addressLine1 = "1 Victoria St";
+            string addressLine2 = "London";
+            string addressLine3 = "SW1H 0ET";
 
-            if(dept == "DSIT")
+            if (dept == "DSIT")
             {
                 deptLine1 = "Science, Innovation";
                 deptLine2 = "& Technology";
+
+                addressLine1 = "22-26 Whitehall";
+                addressLine2 = "London";
+                addressLine3 = "SW1A 2EG";
             }
             else if (dept == "DESNZ")
             {
                 deptLine1 = "Energy Security ";
                 deptLine2 = "& Net Zero";
+
+                addressLine1 = "3-8 Whitehall Place";
+                addressLine2 = "London";
+                addressLine3 = "SW1A 2EG";
             }
 
             paragraph = section.AddParagraph();
@@ -1583,13 +1594,11 @@ namespace ControlAssuranceAPI.Libs
             paragraph.AddLineBreak();
             paragraph.AddLineBreak();
 
-            paragraph.AddFormattedText("1 Victoria St", "normalTxt");
+            paragraph.AddFormattedText(addressLine1, "normalTxt");
             paragraph.AddLineBreak();
-            paragraph.AddFormattedText("Westminster", "normalTxt");
+            paragraph.AddFormattedText(addressLine2, "normalTxt");
             paragraph.AddLineBreak();
-            paragraph.AddFormattedText("London ", "normalTxt");
-            paragraph.AddLineBreak();
-            paragraph.AddFormattedText("SW1H 0ET ", "normalTxt");
+            paragraph.AddFormattedText(addressLine3, "normalTxt");
             paragraph.AddLineBreak();
             paragraph.AddLineBreak();
 
