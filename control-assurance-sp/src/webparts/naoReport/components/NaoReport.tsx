@@ -66,38 +66,68 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
   }
 
   private renderReport1(): React.ReactElement<types.IWebPartComponentProps> {
+    if (this.state.User) {
+      const canAccessNAOReports = this.canAccessNAOReports();
+      console.log('canAccessNAOReports', canAccessNAOReports);
 
-    return (
-      <div>
-        <CrLoadingOverlayWelcome isLoading={this.state.Loading} />
-        <div style={{ paddingTop: "10px" }}>
-          <Report1List
-            {...this.props}
-            onError={this.onError}
-            filterText={this.state.Report1_ListFilterText}
-            onChangeFilterText={this.handleReport1_ChangeFilterText}
-          />
+      return (
+        <div>
+          <CrLoadingOverlayWelcome isLoading={this.state.Loading} />
+          <div style={{ paddingTop: "10px" }}>
+            {(canAccessNAOReports === true) &&
+              <Report1List
+                {...this.props}
+                onError={this.onError}
+                filterText={this.state.Report1_ListFilterText}
+                onChangeFilterText={this.handleReport1_ChangeFilterText}
+              />
+            }
+            {
+              (canAccessNAOReports === false) &&
+              <div style={{ fontSize: '14px', color: 'navy', fontStyle: 'italic', paddingTop: '8px', paddingLeft: '5px' }}>
+                You do not have permission to access this function.
+              </div>
+            }
+          </div>
         </div>
-      </div>
-    );
+      );
+    }
+    else
+      return null;
 
   }
 
   private renderReport2(): React.ReactElement<types.IWebPartComponentProps> {
+    if (this.state.User) {
+      const canAccessNAOReports = this.canAccessNAOReports();
+      console.log('canAccessNAOReports', canAccessNAOReports);
 
-    return (
-      <div>
-        <CrLoadingOverlayWelcome isLoading={this.state.Loading} />
-        <div style={{ paddingTop: "10px" }}>
-          <Report2List
-            {...this.props}
-            onError={this.onError}
-            filterText={this.state.Report2_ListFilterText}
-            onChangeFilterText={this.handleReport2_ChangeFilterText}
-          />
+      return (
+        <div>
+          <CrLoadingOverlayWelcome isLoading={this.state.Loading} />
+          <div style={{ paddingTop: "10px" }}>
+
+            {(canAccessNAOReports === true) &&
+              <Report2List
+                {...this.props}
+                onError={this.onError}
+                filterText={this.state.Report2_ListFilterText}
+                onChangeFilterText={this.handleReport2_ChangeFilterText}
+              />
+            }
+            {
+              (canAccessNAOReports === false) &&
+              <div style={{ fontSize: '14px', color: 'navy', fontStyle: 'italic', paddingTop: '8px', paddingLeft: '5px' }}>
+                You do not have permission to access this function.
+              </div>
+            }
+          </div>
         </div>
-      </div>
-    );
+      );
+    }
+    else
+      return null;
+
   }
 
   private renderGenExport(): React.ReactElement<types.IWebPartComponentProps> {
@@ -152,6 +182,20 @@ export default class GoUpdates extends BaseUserContextWebPartComponent<types.IWe
       let up: IUserPermission = ups[i];
       if (up.PermissionTypeId == 1 || up.PermissionTypeId == 8) {
         //super user or sys manager
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  private canAccessNAOReports(): boolean {
+    //super user/SysManager check
+    let ups = this.state.UserPermissions;
+    for (let i = 0; i < ups.length; i++) {
+      let up: IUserPermission = ups[i];
+      if (up.PermissionTypeId == 1 || up.PermissionTypeId == 8 || up.PermissionTypeId == 9 || up.PermissionTypeId == 10) {
+        //super user/nao staff/pac staff
         return true;
       }
     }

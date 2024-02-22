@@ -15,7 +15,7 @@ export default abstract class BaseUserContextWebPartComponent<P extends types.IW
     protected onAfterLoad = (): void => { };
     protected loadUserPermissions = (): Promise<any> => {
         return this.userService.readMyPermissions().then((user: types.IUser): void => {
-            console.log('build - 25Jul2023 - node 12');
+            console.log('build - 22Feb2024 - Nao output permissions');
             console.log("User Permissions", user);
             this.setState({
                 User: user,
