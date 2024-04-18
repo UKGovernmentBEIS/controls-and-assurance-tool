@@ -1,138 +1,103 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using ControlAssuranceAPI.Models;
+﻿using CAT.Models;
+using CAT.Repo.Interface;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNet.OData;
+using Microsoft.AspNet.OData.Routing;
 
-namespace ControlAssuranceAPI.Controllers
+namespace CAT.Controllers;
+[Authorize]
+[Route("api/[controller]")]
+[ApiController]
+public class GIAAAuditReportsController : ControllerBase
 {
-    public class GIAAAuditReportsController : BaseController
+    private readonly IGIAAAuditReportRepository _gIAAAuditReportRepository;
+    public GIAAAuditReportsController(IGIAAAuditReportRepository gIAAAuditReportRepository)
     {
-        public GIAAAuditReportsController() : base() { }
-
-        public GIAAAuditReportsController(IControlAssuranceContext context) : base(context) { }
-
-        [EnableQuery]
-        public IQueryable<GIAAAuditReport> Get()
-        {
-
-            return db.GIAAAuditReportRepository.GIAAAuditReports;
-        }
-
-        // GET: odata/GIAAAuditReports(1)
-        [EnableQuery]
-        public SingleResult<GIAAAuditReport> Get([FromODataUri] int key)
-        {
-            return SingleResult.Create(db.GIAAAuditReportRepository.GIAAAuditReports.Where(x => x.ID == key));
-        }
-
-        // GET: odata/GIAAAuditReports(1)/GIAARecommendations
-        [EnableQuery]
-        public IQueryable<GIAARecommendation> GetGIAARecommendations([FromODataUri] int key)
-        {
-            return db.GIAAAuditReportRepository.GIAAAuditReports.Where(x => x.ID == key).SelectMany(x => x.GIAARecommendations);
-        }
-
-        // GET: /odata/GIAAAuditReports?dgAreaId=1&incompleteOnly=true&justMine=false
-        public List<GIAAAuditReportView_Result> Get(int dgAreaId, bool incompleteOnly, bool justMine, bool isArchive)
-        {
-            var res = db.GIAAAuditReportRepository.GetAuditReports(dgAreaId, incompleteOnly, justMine, isArchive);
-            return res;
-        }
-
-        // GET: /odata/GIAAAuditReports?giaaAuditReportId=1&getInfo=true
-        public GIAAAuditReportInfoView_Result Get(int giaaAuditReportId, bool getInfo)
-        {
-            var rInfo = db.GIAAAuditReportRepository.GetAuditReportInfo(giaaAuditReportId);
-            return rInfo;
-        }
-
-        // POST: odata/GIAAAuditReports
-        public IHttpActionResult Post(GIAAAuditReport giaaAuditReport)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var x = db.GIAAAuditReportRepository.Add(giaaAuditReport);
-            if (x == null) return Unauthorized();
-
-            db.SaveChanges();
-
-            return Created(x);
-        }
-
-        // PATCH: odata/GIAAAuditReports(1)
-        [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] int key, Delta<GIAAAuditReport> patch)
-        {
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            GIAAAuditReport giaaAuditReport = db.GIAAAuditReportRepository.Find(key);
-            if (giaaAuditReport == null)
-            {
-                return NotFound();
-            }
-
-            patch.Patch(giaaAuditReport);
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!GIAAAuditReportExists(key))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return Updated(giaaAuditReport);
-        }
-
-        // DELETE: odata/GIAAAuditReports(1)
-        public IHttpActionResult Delete([FromODataUri] int key)
-        {
-            GIAAAuditReport giaaAuditReport = db.GIAAAuditReportRepository.Find(key);
-            if (giaaAuditReport == null)
-            {
-                return NotFound();
-            }
-
-            var x = db.GIAAAuditReportRepository.Remove(giaaAuditReport);
-            if (x == null) return Unauthorized();
-
-            db.SaveChanges();
-
-            return StatusCode(HttpStatusCode.NoContent);
-        }
-
-        private bool GIAAAuditReportExists(int key)
-        {
-            return db.GIAAAuditReportRepository.GIAAAuditReports.Count(e => e.ID == key) > 0;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+        _gIAAAuditReportRepository = gIAAAuditReportRepository;
     }
+
+    // GET: /odata/GIAAAuditReports?dgAreaId=1&incompleteOnly=true&justMine=false
+    [ODataRoute("GIAAAuditReports?dgAreaId={dgAreaId}&incompleteOnly={incompleteOnly}&justMine={justMine}")]
+    public List<GIAAAuditReportView_Result> Get(int dgAreaId, bool incompleteOnly, bool justMine, bool isArchive)
+    {
+        var res = _gIAAAuditReportRepository.GetAuditReports(dgAreaId, incompleteOnly, justMine, isArchive);
+        return res;
+    }
+
+    // GET: /odata/GIAAAuditReports?giaaAuditReportId=1&getInfo=true
+    [ODataRoute("GIAAAuditReports?giaaAuditReportId={giaaAuditReportId}&getInfo={getInfo}")]
+    public GIAAAuditReportInfoView_Result Get(int giaaAuditReportId, bool getInfo)
+    {
+        var rInfo = _gIAAAuditReportRepository.GetAuditReportInfo(giaaAuditReportId);
+        return rInfo;
+    }
+
+    [EnableQuery]
+    [HttpGet("{id}")] 
+    public SingleResult<GIAAAuditReport> Get([FromODataUri] int key)
+    {
+        return SingleResult.Create(_gIAAAuditReportRepository.GetById(key));
+    }
+
+    [EnableQuery]
+    public IQueryable<GIAAAuditReport> Get()
+    {
+        return _gIAAAuditReportRepository.GetAll();
+    }
+
+    // GET: odata/GIAAAuditReports(1)/GIAARecommendations
+    [EnableQuery]
+    public IQueryable<GIAARecommendation> GetGIAARecommendations([FromODataUri] int key)
+    {
+        return _gIAAAuditReportRepository.GetGIAARecommendations(key);
+    }
+
+
+    [HttpPost]
+    public IActionResult Post([FromBody] GIAAAuditReport user)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        _gIAAAuditReportRepository.Create(user);
+
+        return Created("GIAAAuditReports", user);
+    }
+
+    [HttpPut]
+    public IActionResult Put([FromODataUri] int key, [FromBody] GIAAAuditReport user)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        if (key != user.ID)
+        {
+            return BadRequest();
+        }
+
+        _gIAAAuditReportRepository.Update(user);
+
+        return NoContent();
+    }
+
+    [HttpDelete]
+    public IActionResult Delete([FromODataUri] int key)
+    {
+        var report = _gIAAAuditReportRepository.GetById(key);
+        if (report is null)
+        {
+            return BadRequest();
+        }
+
+        _gIAAAuditReportRepository.Delete(report.First());
+
+        return NoContent();
+    }
+
+
 }
+

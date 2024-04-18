@@ -1,158 +1,116 @@
-﻿using ControlAssuranceAPI.Libs;
-using ControlAssuranceAPI.Models;
+﻿using CAT.Models;
+using CAT.Repo.Interface;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNet.OData;
-using System;
-using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
+using Microsoft.AspNet.OData.Routing;
 using System.Net;
-using System.Net.Http;
-using System.Web;
-using System.Web.Http;
 
-
-namespace ControlAssuranceAPI.Controllers
+namespace CAT.Controllers;
+[Authorize]
+[Route("api/[controller]")]
+[ApiController]
+public class GoMiscFilesController : ControllerBase
 {
-    public class GoMiscFilesController : BaseController
+    private readonly IGoMiscFileRepository _goMiscFileRepository;
+    public GoMiscFilesController(IGoMiscFileRepository goMiscFileRepository)
     {
-        public GoMiscFilesController() : base() { }
+        _goMiscFileRepository = goMiscFileRepository;
+    }
 
-        public GoMiscFilesController(IControlAssuranceContext context) : base(context) { }
 
-        [EnableQuery]
-        public IQueryable<GoMiscFile> Get()
+    [EnableQuery]
+    [HttpGet("{id}")] 
+    public SingleResult<GoMiscFile> Get([FromODataUri] int key)
+    {
+        return SingleResult.Create(_goMiscFileRepository.GetById(key));
+    }
+
+
+    [EnableQuery]
+    public IQueryable<GoMiscFile> Get()
+    {
+        return _goMiscFileRepository.GetAll();
+    }
+
+    //GET: odata/GoMiscFiles?spFileUrl=[url]&fileName=[fileName]
+    [ODataRoute("GoMiscFiles?spFileUrl={spFileUrl}&fileName={fileName}")]
+    [EnableQuery]
+    public string DownloadFile(string spFileUrl, string fileName)
+    {
+        try
         {
-            return db.GoMiscFilesRepository.GoMiscFiles;
-        }
+            string downloadFolder = "d:\\local\\temp";
+            string saveFilePath = Path.Combine(downloadFolder, fileName);
 
-        // GET: odata/GoMiscFiles(1)
-        [EnableQuery]
-        public SingleResult<GoMiscFile> Get([FromODataUri] int key)
-        {
-            return SingleResult.Create(db.GoMiscFilesRepository.GoMiscFiles.Where(x => x.ID == key));
-        }
-
-        //GET: odata/GoMiscFiles?spFileUrl=[url]&fileName=[fileName]
-        [EnableQuery]
-        public string Get(string spFileUrl, string fileName)
-        {
-            try
+            using (var httpClient = new HttpClient())
             {
-                //HttpContext.Current.Server.MapPath("~")
+                var responseTask = httpClient.GetAsync(spFileUrl);
+                responseTask.Wait();
 
-                //string appDomainAppPath = HttpRuntime.AppDomainAppPath;
-                //string downloadFolder = System.IO.Path.Combine(appDomainAppPath, "downloads");
-                //string logFilePath = System.IO.Path.Combine(downloadFolder, "log1.txt");
+                var response = responseTask.Result;
+                response.EnsureSuccessStatusCode();
 
-                //Utils.WriteToFile(DateTime.Now.ToString() + " download folder : " + downloadFolder, logFilePath);
-
-
-                //string downloadFolder = System.Configuration.ConfigurationManager.AppSettings["DownloadFolder"];
-                string downloadFolder = "d:\\local\\temp";
-                string saveFilePath = System.IO.Path.Combine(downloadFolder, fileName);
-                using (var client = new WebClient())
+                using (var fileStream = new FileStream(saveFilePath, FileMode.Create))
                 {
-                    //client.UseDefaultCredentials = true;
-                    client.DownloadFile(spFileUrl, saveFilePath);
-                }
-
-                return "File downloaded " + fileName;
-            }
-            catch(Exception ex)
-            {
-                return "Error: " + ex.Message;
-            }
-
-
-            
-        }
-
-        // POST: odata/GoMiscFiles
-        public IHttpActionResult Post(GoMiscFile goMiscFile)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var x = db.GoMiscFilesRepository.Add(goMiscFile);
-            if (x == null) return Unauthorized();
-
-            db.SaveChanges();
-
-            return Created(x);
-        }
-
-        // PATCH: odata/GoMiscFiles(1)
-        [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] int key, Delta<GoMiscFile> patch)
-        {
-            //Validate(patch.GetEntity());
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            GoMiscFile goMiscFile = db.GoMiscFilesRepository.Find(key);
-            if (goMiscFile == null)
-            {
-                return NotFound();
-            }
-
-            patch.TrySetPropertyValue("DateUploaded", DateTime.Now);
-
-            patch.Patch(goMiscFile);
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!GoMiscFileExists(key))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
+                    var copyTask = response.Content.CopyToAsync(fileStream);
+                    copyTask.Wait();
                 }
             }
 
-            return Updated(goMiscFile);
+            return "File downloaded: " + fileName;
         }
-
-        // DELETE: odata/GoMiscFiles(1)
-        public IHttpActionResult Delete([FromODataUri] int key)
+        catch (Exception ex)
         {
-            GoMiscFile goMiscFile = db.GoMiscFilesRepository.Find(key);
-            if (goMiscFile == null)
-            {
-                return NotFound();
-            }
-
-            var x = db.GoMiscFilesRepository.Remove(goMiscFile);
-            if (x == null) return Unauthorized();
-
-            db.SaveChanges();
-
-            return StatusCode(HttpStatusCode.NoContent);
-        }
-
-
-        private bool GoMiscFileExists(int key)
-        {
-            return db.GoMiscFilesRepository.GoMiscFiles.Count(e => e.ID == key) > 0;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
+            return "Error: " + ex.Message;
         }
     }
+
+
+    [HttpPost]
+    public IActionResult Post([FromBody] GoMiscFile goMiscFile)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        _goMiscFileRepository.Create(goMiscFile);
+
+        return Created("GoMiscFiles", goMiscFile);
+    }
+
+    [HttpPut]
+    public IActionResult Put([FromODataUri] int key, [FromBody] GoMiscFile goMiscFile)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        if (key != goMiscFile.ID)
+        {
+            return BadRequest();
+        }
+
+        _goMiscFileRepository.Update(goMiscFile);
+
+        return NoContent();
+    }
+
+    [HttpDelete]
+    public IActionResult Delete([FromODataUri] int key)
+    {
+        var goMiscFile = _goMiscFileRepository.GetById(key);
+        if (goMiscFile is null)
+        {
+            return BadRequest();
+        }
+
+        _goMiscFileRepository.Delete(goMiscFile.First());
+
+        return NoContent();
+    }
+
+
 }
+

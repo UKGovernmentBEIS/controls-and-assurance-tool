@@ -1,34 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Web;
+﻿using CAT.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace ControlAssuranceAPI.Libs
+namespace CAT.Libs;
+
+public interface IUtils
 {
-    public class Utils
+    public ControlAssuranceContext GetNewDbContext();
+}
+public class Utils : IUtils
+{
+    private readonly IConfiguration _configuration;
+
+    public Utils(IConfiguration config)
     {
-        public static void WriteToFile(string contents, string filePath)
-        {
-
-            //set up a filestream
-            FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.Write);
-
-            //set up a streamwriter for adding text
-
-            StreamWriter sw = new StreamWriter(fs);
-
-            //find the end of the underlying filestream
-
-            sw.BaseStream.Seek(0, SeekOrigin.End);
-
-            //add the text 
-            sw.WriteLine(contents);
-            //add the text to the underlying filestream
-
-            sw.Flush();
-            //close the writer
-            sw.Close();
-        }
+        _configuration = config;
     }
+
+    public ControlAssuranceContext GetNewDbContext()
+    {
+        var connectionstring = _configuration.GetConnectionString("ControlAssurance");
+        var optionsBuilder = new DbContextOptionsBuilder<ControlAssuranceContext>();
+        optionsBuilder.UseLazyLoadingProxies().UseSqlServer(connectionstring);
+        ControlAssuranceContext context = new ControlAssuranceContext(optionsBuilder.Options);
+
+        return context;
+    }
+
 }

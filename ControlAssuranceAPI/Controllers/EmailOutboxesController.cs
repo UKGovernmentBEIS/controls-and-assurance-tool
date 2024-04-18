@@ -1,40 +1,46 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using ControlAssuranceAPI.Models;
+﻿using CAT.Models;
+using CAT.Repo.Interface;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNet.OData;
+using Microsoft.AspNet.OData.Routing;
 
-namespace ControlAssuranceAPI.Controllers
+namespace CAT.Controllers;
+[Authorize]
+[Route("api/[controller]")]
+[ApiController]
+public class EmailOutboxesController : ControllerBase
 {
-    public class EmailOutboxesController : BaseController
+    private readonly IEmailOutboxRepository _emailOutboxRepository;
+    public EmailOutboxesController(IEmailOutboxRepository emailOutboxRepository)
     {
-        public EmailOutboxesController() : base() { }
-
-        public EmailOutboxesController(IControlAssuranceContext context) : base(context) { }
-
-        // GET: odata/EmailOutboxes
-        [EnableQuery]
-        public IQueryable<EmailOutbox> Get()
-        {
-            return db.EmailOutboxRepository.EmailOutboxes;
-        }
-
-        // GET: odata/EmailOutboxes(1)
-        [EnableQuery]
-        public SingleResult<EmailOutbox> Get([FromODataUri] int key)
-        {
-            return SingleResult.Create(db.EmailOutboxRepository.EmailOutboxes.Where(x => x.ID == key));
-        }
-
-        //GET: odata/EmailOutboxes?itemIds=1,2
-        public string Get(string itemIds)
-        {
-            db.EmailOutboxRepository.DeleteItems(itemIds);
-            return "deleted";
-        }
+        _emailOutboxRepository = emailOutboxRepository;
     }
+
+
+    [EnableQuery]
+    [HttpGet("{id}")] 
+    public SingleResult<EmailOutbox> Get([FromODataUri] int key)
+    {
+        return SingleResult.Create(_emailOutboxRepository.GetById(key));
+    }
+
+
+    [EnableQuery]
+    public IQueryable<EmailOutbox> Get()
+    {
+        return _emailOutboxRepository.GetAll();
+    }
+
+    //GET: odata/EmailOutboxes?itemIds=1,2
+    [ODataRoute("EmailOutboxes?itemIds={itemIds}")]
+    public string Get(string itemIds)
+    {
+        _emailOutboxRepository.DeleteItems(itemIds);
+        return "deleted";
+    }
+
+
+
 }
+

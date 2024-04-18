@@ -1,100 +1,80 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using ControlAssuranceAPI.Models;
+﻿using CAT.Models;
+using CAT.Repo.Interface;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNet.OData;
+using Microsoft.AspNet.OData.Routing;
 
-namespace ControlAssuranceAPI.Controllers
+namespace CAT.Controllers;
+[Authorize]
+[Route("api/[controller]")]
+[ApiController]
+public class AutoFunctionLastRunsController : ControllerBase
 {
-    public class AutoFunctionLastRunsController : BaseController
+    private readonly IAutoFunctionLastRunRepository _autoFunctionLastRunRepository;
+    public AutoFunctionLastRunsController(IAutoFunctionLastRunRepository autoFunctionLastRunRepository)
     {
-        public AutoFunctionLastRunsController() : base() { }
-
-        public AutoFunctionLastRunsController(IControlAssuranceContext context) : base(context) { }
-
-        // GET: odata/AutoFunctionLastRuns
-        [EnableQuery]
-        public IQueryable<AutoFunctionLastRun> Get()
-        {
-            return db.AutoFunctionLastRunRepository.AutoFunctionLastRuns;
-        }
-
-        // GET: odata/AutoFunctionLastRuns(1)
-        [EnableQuery]
-        public SingleResult<AutoFunctionLastRun> Get([FromODataUri] int key)
-        {
-            var xx = db.AutoFunctionLastRunRepository.AutoFunctionLastRuns.Where(x => x.ID == key);
-
-            return SingleResult.Create(xx);
-        }
-
-        //GET: odata/AutoFunctionLastRuns?getLastRunMsg=
-        [EnableQuery]
-        public string Get(string getLastRunMsg)
-        {
-            if (getLastRunMsg == "Stage1")
-            {
-                var lastRun = db.AutoFunctionLastRunRepository.Find(1);
-                DateTime yesterdaysDate = DateTime.Today.Subtract(new TimeSpan(1, 0, 0, 0));
-                string yesterdaysDateStr = yesterdaysDate.ToString("dd/MM/yyyy");
-                string msg = "";
-                if (lastRun != null)
-                {
-                    if (lastRun.Title == "Working")
-                    {
-                        return "Working"; //immediate return if working
-                    }
-                    if (lastRun.LastRunDate == yesterdaysDate)
-                    {
-                        msg = "Necessary email already sent to outbox. Please try again tomorrow";
-                    }
-                    else
-                    {
-                        string lastRunDateStr = lastRun.LastRunDate.ToString("dd/MM/yyyy");
-                        msg = $"The system will process emails to be sent per day from {lastRunDateStr} up to {yesterdaysDateStr}. It will remove duplicates within this date range.";
-                    }
-
-                }
-                else
-                {
-                    msg = $"The system will process emails up to be sent each day up to {yesterdaysDateStr}. It will remove duplicates within this date range.";
-                }
-
-                return msg;
-            }
-            else if (getLastRunMsg == "Stage2")
-            {
-                var lastRun = db.AutoFunctionLastRunRepository.Find(2);
-                //DateTime yesterdaysDate = DateTime.Today.Subtract(new TimeSpan(1, 0, 0, 0));
-                //string yesterdaysDateStr = yesterdaysDate.ToString("dd/MM/yyyy");
-                string msg = "";
-                if (lastRun != null)
-                {
-                    if (lastRun.Title == "Working")
-                    {
-                        return "Working"; //immediate return if working
-                    }
-                    else
-                    {
-                        //string lastRunDateStr = lastRun.LastRunDate.ToString("dd/MM/yyyy");
-                        //msg = $"Last run date: {lastRunDateStr}";
-                    }
-
-                }
-                else
-                {
-                    //msg = $"Ready to Process";
-                }
-
-                return msg;
-            }
-
-
-            return "";
-        }
+        _autoFunctionLastRunRepository = autoFunctionLastRunRepository;
     }
+
+
+    [EnableQuery]
+    [HttpGet("{id}")] 
+    public SingleResult<AutoFunctionLastRun> Get([FromODataUri] int key)
+    {
+        return SingleResult.Create(_autoFunctionLastRunRepository.GetById(key));
+    }
+
+    [EnableQuery]
+    public IQueryable<AutoFunctionLastRun> Get()
+    {
+        return _autoFunctionLastRunRepository.GetAll();
+    }
+
+    //GET: odata/AutoFunctionLastRuns?getLastRunMsg=
+    [ODataRoute("AutoFunctionLastRuns?getLastRunMsg={getLastRunMsg}")]
+    [EnableQuery]
+    public string Get(string getLastRunMsg)
+    {
+        if (getLastRunMsg == "Stage1")
+        {
+            var lastRun = _autoFunctionLastRunRepository.Find(1);
+            DateTime yesterdaysDate = DateTime.Today.Subtract(new TimeSpan(1, 0, 0, 0));
+            string yesterdaysDateStr = yesterdaysDate.ToString("dd/MM/yyyy");
+
+            if (lastRun != null)
+            {
+                if (lastRun.Title == "Working")
+                {
+                    return "Working";
+                }
+
+                string lastRunDateStr = lastRun.LastRunDate.ToString("dd/MM/yyyy");
+                string msg = (lastRun.LastRunDate == yesterdaysDate) ?
+                    "Necessary email already sent to outbox. Please try again tomorrow" :
+                    $"The system will process emails to be sent per day from {lastRunDateStr} up to {yesterdaysDateStr}. It will remove duplicates within this date range.";
+
+                return msg;
+            }
+            else
+            {
+                string msg = $"The system will process emails up to be sent each day up to {yesterdaysDateStr}. It will remove duplicates within this date range.";
+                return msg;
+            }
+        }
+        else if (getLastRunMsg == "Stage2")
+        {
+            var lastRun = _autoFunctionLastRunRepository.Find(2);
+
+            if (lastRun != null && lastRun.Title == "Working")
+            {
+                return "Working";
+            }
+        }
+
+        return "";
+    }
+
+
 }
+

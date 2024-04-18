@@ -1,59 +1,58 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using ControlAssuranceAPI.Models;
+﻿using CAT.Models;
+using CAT.Repo.Interface;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNet.OData;
+using Microsoft.AspNet.OData.Routing;
 
-namespace ControlAssuranceAPI.Controllers
+namespace CAT.Controllers;
+[Authorize]
+[Route("api/[controller]")]
+[ApiController]
+public class GIAAImportsController : ControllerBase
 {
-    public class GIAAImportsController : BaseController
+    private readonly IGIAAImportRepository _gIAAImportRepository;
+    public GIAAImportsController(IGIAAImportRepository gIAAImportRepository)
     {
-        public GIAAImportsController() : base() { }
-
-        public GIAAImportsController(IControlAssuranceContext context) : base(context) { }
-
-        [EnableQuery]
-        public IQueryable<GIAAImport> Get()
-        {
-
-            return db.GIAAImportRepository.GIAAImports;
-        }
-
-        // GET: odata/GIAAImports(1)
-        [EnableQuery]
-        public SingleResult<GIAAImport> Get([FromODataUri] int key)
-        {
-            return SingleResult.Create(db.GIAAImportRepository.GIAAImports.Where(x => x.ID == key));
-        }
-
-        // GET: /odata/GIAAImports?getInfo=true
-        public GIAAImportInfoView_Result Get(bool getInfo)
-        {
-            var rInfo = db.GIAAImportRepository.GetImportInfo();
-            return rInfo;
-        }
-
-
-        // POST: odata/GIAAImports
-        public IHttpActionResult Post(GIAAImport gIAAImport)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            //var x = db.GIAAAuditReportRepository.Add(giaaAuditReport);
-            //if (x == null) return Unauthorized();
-
-            //db.SaveChanges();
-            db.GIAAImportRepository.ProcessImportXML(gIAAImport);
-            //gIAAImport.XMLContents = "";
-
-            return Created(gIAAImport);
-        }
+        _gIAAImportRepository = gIAAImportRepository;
     }
+
+
+    [EnableQuery]
+    [HttpGet("{id}")] 
+    public SingleResult<GIAAImport> Get([FromODataUri] int key)
+    {
+        return SingleResult.Create(_gIAAImportRepository.GetById(key));
+    }
+
+    [EnableQuery]
+    public IQueryable<GIAAImport> Get()
+    {
+        return _gIAAImportRepository.GetAll();
+    }
+
+    // GET: /odata/GIAAImports?getInfo=true
+    [ODataRoute("GIAAImports?getInfo={getInfo}")]
+    public GIAAImportInfoView_Result Get(bool getInfo)
+    {
+        var rInfo = _gIAAImportRepository.GetImportInfo();
+        return rInfo;
+    }
+
+    [HttpPost]
+    public IActionResult Post([FromBody] GIAAImport gIAAImport)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        _gIAAImportRepository.ProcessImportXML(gIAAImport);
+
+        return Created("GIAAImports", gIAAImport);
+    }
+
+   
+
+
 }
+

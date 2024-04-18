@@ -1,119 +1,79 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using ControlAssuranceAPI.Models;
+﻿using CAT.Models;
+using CAT.Repo.Interface;
 using Microsoft.AspNet.OData;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
-namespace ControlAssuranceAPI.Controllers
+
+namespace CAT.Controllers;
+[Route("api/[controller]")]
+[ApiController]
+public class AuditFeedbacksController : ControllerBase
 {
-    public class AuditFeedbacksController : BaseController
+    private readonly IAuditFeedbackRepository _auditFeedbackRepository;
+    public AuditFeedbacksController(IAuditFeedbackRepository auditFeedbackRepository)
     {
-        public AuditFeedbacksController() : base() { }
+        _auditFeedbackRepository = auditFeedbackRepository;
+    }
 
-        public AuditFeedbacksController(IControlAssuranceContext context) : base(context) { }
+    [EnableQuery]
+    [HttpGet]
+    public IQueryable<AuditFeedback> Get()
+    {
+        return _auditFeedbackRepository.GetAll();
+    }
 
-        [EnableQuery]
-        public IQueryable<AuditFeedback> Get()
+    [EnableQuery]
+    [HttpGet("{id}")]
+    public SingleResult<AuditFeedback> Get([FromODataUri] int key)
+    {
+        return SingleResult.Create(_auditFeedbackRepository.GetById(key));
+    }
+
+    [HttpPost]
+    public IActionResult Post([FromBody] AuditFeedback auditFeedback)
+    {
+        if (!ModelState.IsValid)
         {
-            return db.AuditFeedbackRepository.AuditFeedbacks;
+            return BadRequest(ModelState);
+        }
+        _auditFeedbackRepository.Create(auditFeedback);
+
+        return Created("AuditFeedbacks", auditFeedback);
+    }
+
+    
+
+    [HttpPut]
+    public IActionResult Put([FromODataUri] int key, [FromBody] AuditFeedback auditFeedback)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
         }
 
-        // GET: odata/AuditFeedbacks(1)
-        [EnableQuery]
-        public SingleResult<AuditFeedback> Get([FromODataUri] int key)
+        if (key != auditFeedback.ID)
         {
-            return SingleResult.Create(db.AuditFeedbackRepository.AuditFeedbacks.Where(a => a.ID == key));
+            return BadRequest();
         }
 
-        // POST: odata/AuditFeedbacks
-        public IHttpActionResult Post(AuditFeedback auditFeedback)
+        _auditFeedbackRepository.Update(auditFeedback);
+
+        return NoContent();
+    }
+
+    [HttpDelete]
+    public IActionResult Delete([FromODataUri] int key)
+    {
+        var auditFeedback = _auditFeedbackRepository.GetById(key);
+        if (auditFeedback is null)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var x = db.AuditFeedbackRepository.Add(auditFeedback);
-            if (x == null) return Unauthorized();
-
-            db.SaveChanges();
-
-            return Created(auditFeedback);
+            return BadRequest();
         }
 
-        // PATCH: odata/AuditFeedbacks(1)
-        [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] int key, Delta<AuditFeedback> patch)
-        {
-            //Validate(patch.GetEntity());
+        _auditFeedbackRepository.Delete(auditFeedback.First());
 
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            AuditFeedback auditFeedback = db.AuditFeedbackRepository.Find(key);
-            if (auditFeedback == null)
-            {
-                return NotFound();
-            }
-
-            patch.Patch(auditFeedback);
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!AuditFeedbackExists(key))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return Updated(auditFeedback);
-        }
-
-        // DELETE: odata/AuditFeedbacks(1)
-        public IHttpActionResult Delete([FromODataUri] int key)
-        {
-            AuditFeedback auditFeedback = db.AuditFeedbackRepository.Find(key);
-            if (auditFeedback == null)
-            {
-                return NotFound();
-            }
-
-            var x = db.AuditFeedbackRepository.Remove(auditFeedback);
-            if (x == null) return Unauthorized();
-
-            db.SaveChanges();
-
-            return StatusCode(HttpStatusCode.NoContent);
-        }
-
-
-
-        private bool AuditFeedbackExists(int key)
-        {
-            return db.AuditFeedbackRepository.AuditFeedbacks.Count(e => e.ID == key) > 0;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+        return NoContent();
     }
 }
+

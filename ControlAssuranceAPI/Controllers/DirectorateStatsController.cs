@@ -1,31 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using ControlAssuranceAPI.Models;
-using Microsoft.AspNet.OData;
+﻿using CAT.Models;
+using CAT.Repo.Interface;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNet.OData.Routing;
 
-namespace ControlAssuranceAPI.Controllers
+
+namespace CAT.Controllers;
+[Authorize]
+[Route("api/[controller]")]
+[ApiController]
+public class DirectorateStatsController : ControllerBase
 {
-    public class DirectorateStatsController : BaseController
+    private readonly ISPDirectorateStatRepository _sPDirectorateStatRepository;
+    public DirectorateStatsController(ISPDirectorateStatRepository sPDirectorateStatRepository)
     {
-        public DirectorateStatsController() : base() { }
-
-        public DirectorateStatsController(IControlAssuranceContext context) : base(context) { }
-
-        // GET: /odata/DirectorateStats?periodId=1
-        public List<Models.SPDirectorateStat_Result> Get(int periodId)
-        {
-            return db.SPDirectorateStatRepository.GetDirectorateStats(periodId);
-        }
-
-        // GET: /odata/DirectorateStats?periodId=20&SPDirectorateStat2=
-        public List<Models.SPDirectorateStat2_Result> Get(int periodId, string SPDirectorateStat2)
-        {
-            return db.SPDirectorateStatRepository.GetDirectorateStats2(periodId);
-        }
+        _sPDirectorateStatRepository = sPDirectorateStatRepository;
     }
+
+    // GET: /odata/DirectorateStats?periodId=1
+    [ODataRoute("DirectorateStats?periodId={periodId}")]
+    public List<SPDirectorateStat_Result> Get(int periodId)
+    {
+        return _sPDirectorateStatRepository.GetDirectorateStats(periodId);
+    }
+
+    // GET: /odata/DirectorateStats?periodId=20&SPDirectorateStat2=
+    [ODataRoute("DirectorateStats?periodId={periodId}&SPDirectorateStat2={SPDirectorateStat2}")]
+    public List<Models.SPDirectorateStat2_Result> Get(int periodId, string SPDirectorateStat2)
+    {
+        return _sPDirectorateStatRepository.GetDirectorateStats2(periodId);
+    }
+
+
 }
+

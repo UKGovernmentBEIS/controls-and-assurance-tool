@@ -1,33 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using ControlAssuranceAPI.Models;
+﻿using CAT.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNet.OData;
+using Microsoft.AspNet.OData.Routing;
+using CAT.Repo.Interface;
 
-namespace ControlAssuranceAPI.Controllers
+namespace CAT.Controllers;
+[Authorize]
+[Route("api/[controller]")]
+[ApiController]
+public class IAPPrioritiesController : ControllerBase
 {
-    public class IAPPrioritiesController : BaseController
+    private readonly IIAPPriorityRepository _iAPPriorityRepository;
+    public IAPPrioritiesController(IIAPPriorityRepository iAPPriorityRepository)
     {
-        public IAPPrioritiesController() : base() { }
-
-        public IAPPrioritiesController(IControlAssuranceContext context) : base(context) { }
-
-        // GET: odata/IAPPriorities
-        [EnableQuery]
-        public IQueryable<IAPPriority> Get()
-        {
-            return db.IAPPriorityRepository.IAPPriorities;
-        }
-
-        // GET: odata/IAPPriorities(1)
-        [EnableQuery]
-        public SingleResult<IAPPriority> Get([FromODataUri] int key)
-        {
-            return SingleResult.Create(db.IAPPriorityRepository.IAPPriorities.Where(x => x.ID == key));
-        }
+        _iAPPriorityRepository = iAPPriorityRepository;
     }
+
+
+    [EnableQuery]
+    [HttpGet("{id}")] 
+    public SingleResult<IAPPriority> Get([FromODataUri] int key)
+    {
+        return SingleResult.Create(_iAPPriorityRepository.GetById(key));
+    }
+
+    [EnableQuery]
+    public IQueryable<IAPPriority> Get()
+    {
+        return _iAPPriorityRepository.GetAll();
+    }
+
+
+
 }
+

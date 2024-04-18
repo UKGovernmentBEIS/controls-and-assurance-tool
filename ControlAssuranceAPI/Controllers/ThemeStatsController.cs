@@ -1,32 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using ControlAssuranceAPI.Models;
-using Microsoft.AspNet.OData;
+﻿using CAT.Models;
+using CAT.Repo.Interface;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNet.OData.Routing;
 
 
-namespace ControlAssuranceAPI.Controllers
+namespace CAT.Controllers;
+[Authorize]
+[Route("api/[controller]")]
+[ApiController]
+public class ThemeStatsController : ControllerBase
 {
-    public class ThemeStatsController : BaseController
+    private readonly IThemeStatRepository _themeStatRepository;
+    public ThemeStatsController(IThemeStatRepository themeStatRepository)
     {
-        public ThemeStatsController() : base() { }
-
-        public ThemeStatsController(IControlAssuranceContext context) : base(context) { }
-
-        // GET: /odata/ViewThemeStats?teamId=0&directorateId=0&directorateGroupId=0&periodId=1
-        public List<Models.ThemeStat_Result> Get(int teamId, int directorateId, int directorateGroupId, int periodId)
-        {
-            return db.ViewThemeStatRepository.GetThemeStatsWithOrgFilters(teamId, directorateId, directorateGroupId, periodId);
-        }
-
-        // GET: /odata/ThemeStats?teamId=0&directorateId=0&directorateGroupId=0&periodId=20&ThemeStat2=
-        public List<Models.ThemeStat2_Result> Get(int teamId, int directorateId, int directorateGroupId, int periodId, string ThemeStat2)
-        {
-            return db.ViewThemeStatRepository.GetThemeStats2_WithOrgFilters(teamId, directorateId, directorateGroupId, periodId);
-        }
+        _themeStatRepository = themeStatRepository;
     }
+
+    // GET: /odata/ViewThemeStats?teamId=0&directorateId=0&directorateGroupId=0&periodId=1
+    [ODataRoute("ViewThemeStats?teamId={teamId}&directorateId={directorateId}&directorateGroupId={directorateGroupId}&periodId={periodId}")]
+    public List<ThemeStat_Result> Get(int teamId, int directorateId, int directorateGroupId, int periodId)
+    {
+        return _themeStatRepository.GetThemeStatsWithOrgFilters(teamId, directorateId, directorateGroupId, periodId);
+    }
+
+    // GET: /odata/ThemeStats?teamId=0&directorateId=0&directorateGroupId=0&periodId=20&ThemeStat2=
+    [ODataRoute("ViewThemeStats?teamId={teamId}&directorateId={directorateId}&directorateGroupId={directorateGroupId}&periodId={periodId}&ThemeStat2={ThemeStat2}")]
+    public List<ThemeStat2_Result> Get(int teamId, int directorateId, int directorateGroupId, int periodId, string ThemeStat2)
+    {
+        return _themeStatRepository.GetThemeStats2_WithOrgFilters(teamId, directorateId, directorateGroupId, periodId);
+    }
+
+
+
+
+
 }
+

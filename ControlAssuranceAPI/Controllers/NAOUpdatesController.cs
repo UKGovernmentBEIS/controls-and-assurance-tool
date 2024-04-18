@@ -1,71 +1,66 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using ControlAssuranceAPI.Models;
+﻿using CAT.Models;
+using CAT.Repo.Interface;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNet.OData;
+using Microsoft.AspNet.OData.Routing;
 
-namespace ControlAssuranceAPI.Controllers
+namespace CAT.Controllers;
+[Authorize]
+[Route("api/[controller]")]
+[ApiController]
+public class NAOUpdatesController : ControllerBase
 {
-    public class NAOUpdatesController : BaseController
+    private readonly INAOUpdateRepository _nAOUpdateRepository;
+    public NAOUpdatesController(INAOUpdateRepository nAOUpdateRepository)
     {
-        public NAOUpdatesController() : base() { }
-
-        public NAOUpdatesController(IControlAssuranceContext context) : base(context) { }
-
-
-        [EnableQuery]
-        public IQueryable<NAOUpdate> Get()
-        {
-            return db.NAOUpdateRepository.NAOUpdates;
-        }
-
-        // GET: odata/NAOUpdates(1)
-        [EnableQuery]
-        public SingleResult<NAOUpdate> Get([FromODataUri] int key)
-        {
-            return SingleResult.Create(db.NAOUpdateRepository.NAOUpdates.Where(x => x.ID == key));
-        }
-
-        public NAOUpdate Get(int naoRecommendationId, int naoPeriodId, bool findCreate)
-        {
-            var r = db.NAOUpdateRepository.FindCreate(naoRecommendationId, naoPeriodId);
-            return r;
-        }
-
-        // GET: odata/NAOUpdates?naoRecommendationId=1&naoPeriodId=5&getLastPeriodActionsTaken=
-        public string Get(int naoRecommendationId, int naoPeriodId, string getLastPeriodActionsTaken)
-        {
-            var actionsLastPeriod = db.NAOUpdateRepository.GetLastPeriodActionsTaken(naoRecommendationId, naoPeriodId);
-            return actionsLastPeriod;
-        }
-
-        // POST: odata/NAOUpdates
-        public IHttpActionResult Post(NAOUpdate naoUpdate)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var x = db.NAOUpdateRepository.Add(naoUpdate);
-            if (x == null) return Unauthorized();
-
-            db.SaveChanges();
-
-            return Created(x);
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+        _nAOUpdateRepository = nAOUpdateRepository;
     }
+
+
+    [EnableQuery]
+    [HttpGet("{id}")] 
+    public SingleResult<NAOUpdate> Get([FromODataUri] int key)
+    {
+        return SingleResult.Create(_nAOUpdateRepository.GetById(key));
+    }
+
+
+    [EnableQuery]
+    public IQueryable<NAOUpdate> Get()
+    {
+        return _nAOUpdateRepository.GetAll();
+    }
+
+    [ODataRoute("NAOUpdates?naoRecommendationId={naoRecommendationId}&naoPeriodId={naoPeriodId}&findCreate={findCreate}")]
+    public NAOUpdate Get(int naoRecommendationId, int naoPeriodId, bool findCreate)
+    {
+        var r = _nAOUpdateRepository.FindCreate(naoRecommendationId, naoPeriodId);
+        return r;
+    }
+
+    // GET: odata/NAOUpdates?naoRecommendationId=1&naoPeriodId=5&getLastPeriodActionsTaken=
+    [ODataRoute("NAOUpdates?naoRecommendationId={naoRecommendationId}&naoPeriodId={naoPeriodId}&getLastPeriodActionsTaken={getLastPeriodActionsTaken}")]
+    public string Get(int naoRecommendationId, int naoPeriodId, string getLastPeriodActionsTaken)
+    {
+        var actionsLastPeriod = _nAOUpdateRepository.GetLastPeriodActionsTaken(naoRecommendationId, naoPeriodId);
+        return actionsLastPeriod;
+    }
+
+    [HttpPost]
+    public IActionResult Post([FromBody] NAOUpdate nAOUpdate)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        _nAOUpdateRepository.Create(nAOUpdate);
+
+        return Created("NAOUpdates", nAOUpdate);
+    }
+
+
+
+
 }
+

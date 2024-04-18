@@ -1,117 +1,81 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using ControlAssuranceAPI.Models;
+﻿using CAT.Models;
+using CAT.Repo.Interface;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNet.OData;
+using Microsoft.AspNet.OData.Routing;
 
-namespace ControlAssuranceAPI.Controllers
+namespace CAT.Controllers;
+[Authorize]
+[Route("api/[controller]")]
+[ApiController]
+public class GoElementFeedbacksController : ControllerBase
 {
-    public class GoElementFeedbacksController : BaseController
+    private readonly IGoElementFeedbackRepository _goElementFeedbackRepository;
+    public GoElementFeedbacksController(IGoElementFeedbackRepository goElementFeedbackRepository)
     {
-        public GoElementFeedbacksController() : base() { }
-
-        public GoElementFeedbacksController(IControlAssuranceContext context) : base(context) { }
-
-        // GET: odata/GoElementFeedbacks
-        [EnableQuery]
-        public IQueryable<GoElementFeedback> Get()
-        {
-            return db.GoElementFeedbackRepository.GoElementFeedbacks;
-        }
-
-        // GET: odata/GoElementFeedbacks(1)
-        [EnableQuery]
-        public SingleResult<GoElementFeedback> Get([FromODataUri] int key)
-        {
-            return SingleResult.Create(db.GoElementFeedbackRepository.GoElementFeedbacks.Where(x => x.ID == key));
-        }
-
-        // POST: odata/GoElementFeedbacks
-        public IHttpActionResult Post(GoElementFeedback goElementFeedback)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var x = db.GoElementFeedbackRepository.Add(goElementFeedback);
-            if (x == null) return Unauthorized();
-
-            db.SaveChanges();
-
-            return Created(goElementFeedback);
-        }
-
-        // PATCH: odata/GoElementFeedbacks(1)
-        [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] int key, Delta<GoElementFeedback> patch)
-        {
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            GoElementFeedback goElementFeedback = db.GoElementFeedbackRepository.Find(key);
-            if (goElementFeedback == null)
-            {
-                return NotFound();
-            }
-
-            patch.Patch(goElementFeedback);
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!GoElementFeedbackExists(key))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return Updated(goElementFeedback);
-        }
-
-        // DELETE: odata/GoElementFeedbacks(1)
-        public IHttpActionResult Delete([FromODataUri] int key)
-        {
-            GoElementFeedback goElementFeedback = db.GoElementFeedbackRepository.Find(key);
-            if (goElementFeedback == null)
-            {
-                return NotFound();
-            }
-
-            var x = db.GoElementFeedbackRepository.Remove(goElementFeedback);
-            if (x == null) return Unauthorized();
-
-            db.SaveChanges();
-
-            return StatusCode(HttpStatusCode.NoContent);
-        }
-
-        private bool GoElementFeedbackExists(int key)
-        {
-            return db.GoElementFeedbackRepository.GoElementFeedbacks.Count(x => x.ID == key) > 0;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+        _goElementFeedbackRepository = goElementFeedbackRepository;
     }
+
+
+    [EnableQuery]
+    [HttpGet("{id}")] 
+    public SingleResult<GoElementFeedback> Get([FromODataUri] int key)
+    {
+        return SingleResult.Create(_goElementFeedbackRepository.GetById(key));
+    }
+
+
+    [EnableQuery]
+    public IQueryable<GoElementFeedback> Get()
+    {
+        return _goElementFeedbackRepository.GetAll();
+    }
+
+    [HttpPost]
+    public IActionResult Post([FromBody] GoElementFeedback goElementFeedback)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        _goElementFeedbackRepository.Create(goElementFeedback);
+
+        return Created("GoElementFeedbacks", goElementFeedback);
+    }
+
+    [HttpPut]
+    public IActionResult Put([FromODataUri] int key, [FromBody] GoElementFeedback goElementFeedback)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        if (key != goElementFeedback.ID)
+        {
+            return BadRequest();
+        }
+
+        _goElementFeedbackRepository.Update(goElementFeedback);
+
+        return NoContent();
+    }
+
+    [HttpDelete]
+    public IActionResult Delete([FromODataUri] int key)
+    {
+        var goElementFeedback = _goElementFeedbackRepository.GetById(key);
+        if (goElementFeedback is null)
+        {
+            return BadRequest();
+        }
+
+        _goElementFeedbackRepository.Delete(goElementFeedback.First());
+
+        return NoContent();
+    }
+
+
 }
+

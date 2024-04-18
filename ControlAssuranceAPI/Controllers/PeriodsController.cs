@@ -1,142 +1,91 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using ControlAssuranceAPI.Models;
+﻿using CAT.Models;
+using CAT.Repo.Interface;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNet.OData;
+using Microsoft.AspNet.OData.Routing;
 
-namespace ControlAssuranceAPI.Controllers
+namespace CAT.Controllers;
+[Authorize]
+[Route("api/[controller]")]
+[ApiController]
+public class PeriodsController : ControllerBase
 {
-    public class PeriodsController : BaseController
+    private readonly IPeriodRepository _periodRepository;
+    public PeriodsController(IPeriodRepository periodRepository)
     {
-        public PeriodsController() : base() { }
-
-        public PeriodsController(IControlAssuranceContext context) : base(context) { }
-
-        [EnableQuery]
-        public IQueryable<Period> Get()
-        {
-            //can do things like
-            //http://localhost:2861/odata/periods
-            //http://localhost:2861/odata/periods?$filter=id eq 1
-
-            return db.PeriodRepository.Periods;
-        }
-
-        // GET: odata/Periods(1)
-        [EnableQuery]
-        public SingleResult<Period> Get([FromODataUri] int key)
-        {
-            return SingleResult.Create(db.PeriodRepository.Periods.Where(p => p.ID == key));
-        }
-
-        // GET: odata/Periods(1)/Forms
-        [EnableQuery]
-        public IQueryable<Form> GetForms([FromODataUri] int key)
-        {
-            return db.PeriodRepository.Periods.Where(p => p.ID == key).SelectMany(p => p.Forms);
-        }
-
-        // POST: odata/Periods
-        public IHttpActionResult Post(Period period)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var x = db.PeriodRepository.Add(period);
-            if (x == null) return Unauthorized();
-
-            //db.SaveChanges();
-
-            return Created(period);
-        }
-
-        // PATCH: odata/Periods(1)
-        [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] int key, Delta<Period> patch)
-        {
-            //Validate(patch.GetEntity());
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            Period period = db.PeriodRepository.Find(key);
-            if (period == null)
-            {
-                return NotFound();
-            }
-
-
-            object periodStatus = "";
-            patch.TryGetPropertyValue("PeriodStatus", out periodStatus);
-            if(periodStatus.ToString() == "MAKE_CURRENT")
-            {
-                //special case when request comes to make a period as Current Period
-                period = db.PeriodRepository.MakeCurrentPeriod(period);
-            }
-            else
-            {
-                patch.Patch(period);
-
-                try
-                {
-                    db.SaveChanges();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PeriodExists(key))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-            }
-
-
-
-            return Updated(period);
-        }
-
-        // DELETE: odata/Periods(1)
-        public IHttpActionResult Delete([FromODataUri] int key)
-        {
-            Period period = db.PeriodRepository.Find(key);
-            if (period == null)
-            {
-                return NotFound();
-            }
-
-            var x = db.PeriodRepository.Remove(period);
-            if (x == null) return Unauthorized();
-
-            db.SaveChanges();
-
-            return StatusCode(HttpStatusCode.NoContent);
-        }
-
-
-        private bool PeriodExists(int key)
-        {
-            return db.PeriodRepository.Periods.Count(e => e.ID == key) > 0;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+        _periodRepository = periodRepository;
     }
+
+
+    [EnableQuery]
+    [HttpGet("{id}")] 
+    public SingleResult<Period> Get([FromODataUri] int key)
+    {
+        return SingleResult.Create(_periodRepository.GetById(key));
+    }
+
+    [EnableQuery]
+    [HttpGet]
+    public IQueryable<Period> Get()
+    {
+        return _periodRepository.GetAll();
+    }
+
+    //GET: odata/Periods(1)/Forms
+    [EnableQuery]
+    [HttpGet("{id}/Forms")]
+    public IQueryable<Form> GetForms([FromODataUri] int key)
+    {
+        return _periodRepository.GetForms(key);
+    }
+
+
+
+    [HttpPost]
+    public IActionResult Post([FromBody] Period period)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        _periodRepository.Create(period);
+
+        return Created("Periods", period);
+    }
+
+    [HttpPut]
+    public IActionResult Put([FromODataUri] int key, [FromBody] Period period)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        if (key != period.ID)
+        {
+            return BadRequest();
+        }
+
+        _periodRepository.Update(period);
+
+        return NoContent();
+    }
+
+    [HttpDelete]
+    public IActionResult Delete([FromODataUri] int key)
+    {
+        var period = _periodRepository.GetById(key);
+        if (period is null)
+        {
+            return BadRequest();
+        }
+
+        _periodRepository.Delete(period.First());
+
+        return NoContent();
+    }
+
+
 }
+

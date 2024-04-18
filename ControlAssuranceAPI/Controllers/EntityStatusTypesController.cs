@@ -1,31 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using ControlAssuranceAPI.Models;
+﻿using CAT.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNet.OData;
-namespace ControlAssuranceAPI.Controllers
+using CAT.Repo.Interface;
+
+namespace CAT.Controllers;
+[Authorize]
+[Route("api/[controller]")]
+[ApiController]
+public class EntityStatusTypesController : ControllerBase
 {
-    public class EntityStatusTypesController : BaseController
+    private readonly IEntityStatusTypeRepository _entityStatusTypeRepository;
+    public EntityStatusTypesController(IEntityStatusTypeRepository entityStatusTypeRepository)
     {
-        public EntityStatusTypesController() : base() { }
-
-        public EntityStatusTypesController(IControlAssuranceContext context) : base(context) { }
-
-        // GET: odata/EntityStatusTypes
-        [EnableQuery]
-        public IQueryable<EntityStatusType> Get()
-        {
-            return db.EntityStatusTypeRepository.EntityStatusTypes;
-        }
-        // GET: odata/EntityStatusTypes(1)
-        [EnableQuery]
-        public SingleResult<EntityStatusType> Get([FromODataUri] int key)
-        {
-            return SingleResult.Create(db.EntityStatusTypeRepository.EntityStatusTypes.Where(e => e.ID == key));
-        }
+        _entityStatusTypeRepository = entityStatusTypeRepository;
     }
+
+
+    [EnableQuery]
+    [HttpGet("{id}")] 
+    public SingleResult<EntityStatusType> Get([FromODataUri] int key)
+    {
+        return SingleResult.Create(_entityStatusTypeRepository.GetById(key));
+    }
+
+    [EnableQuery]
+    public IQueryable<EntityStatusType> Get()
+    {
+        return _entityStatusTypeRepository.GetAll();
+    }
+
+
 }
+

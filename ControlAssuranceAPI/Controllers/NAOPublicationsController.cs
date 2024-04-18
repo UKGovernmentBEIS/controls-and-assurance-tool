@@ -1,141 +1,104 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using ControlAssuranceAPI.Models;
+﻿using CAT.Models;
+using CAT.Repo.Interface;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNet.OData;
+using Microsoft.AspNet.OData.Routing;
 
-namespace ControlAssuranceAPI.Controllers
+namespace CAT.Controllers;
+[Authorize]
+[Route("api/[controller]")]
+[ApiController]
+public class NAOPublicationsController : ControllerBase
 {
-    public class NAOPublicationsController : BaseController
+    private readonly INAOPublicationRepository _nAOPublicationRepository;
+    public NAOPublicationsController(INAOPublicationRepository nAOPublicationRepository)
     {
-        public NAOPublicationsController() : base() { }
-
-        public NAOPublicationsController(IControlAssuranceContext context) : base(context) { }
-
-        // GET: odata/NAOPublications
-        [EnableQuery]
-        public IQueryable<NAOPublication> Get()
-        {
-            return db.NAOPublicationRepository.NAOPublications;
-        }
-
-        // GET: odata/NAOPublications(1)
-        [EnableQuery]
-        public SingleResult<NAOPublication> Get([FromODataUri] int key)
-        {
-            return SingleResult.Create(db.NAOPublicationRepository.NAOPublications.Where(x => x.ID == key));
-        }
-
-        // GET: /odata/NAOPublications?dgAreaId=1&incompleteOnly=true&justMine=false
-        public List<NAOPublicationView_Result> Get(int dgAreaId, bool incompleteOnly, bool justMine, bool isArchive)
-        {
-            return db.NAOPublicationRepository.GetPublications(dgAreaId, incompleteOnly, justMine, isArchive);
-        }
-
-        // GET: /odata/NAOPublications?naoPublicationId=1&getInfo=true
-        public NAOPublicationInfoView_Result Get(int naoPublicationId, bool getInfo)
-        {
-            var pInfo = db.NAOPublicationRepository.GetPublicationInfo(naoPublicationId);
-            return pInfo;
-        }
-
-        // GET: /odata/NAOPublications?getOverallUpdateStatus=true&dgAreaId=0&naoPeriodId=2&&archived=false
-        public string Get(bool getOverallUpdateStatus, int dgAreaId, int naoPeriodId, bool archived)
-        {
-            var res = db.NAOPublicationRepository.GetOverallPublicationsUpdateStatus(dgAreaId, naoPeriodId, archived);
-            return res;
-        }
-
-        // POST: odata/NAOPublications
-        public IHttpActionResult Post(NAOPublication naoPublication)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var x = db.NAOPublicationRepository.Add(naoPublication);
-            if (x == null) return Unauthorized();
-
-            return Created(x);
-        }
-
-        // PATCH: odata/NAOPublications(1)
-        [AcceptVerbs("PUT")]
-        public IHttpActionResult Put([FromODataUri] int key, NAOPublication nAOPublication)
-        {
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            db.NAOPublicationRepository.Update(nAOPublication);
-
-            return Updated(nAOPublication);
-        }
-
-        //// PATCH: odata/NAOPublications(1)
-        //[AcceptVerbs("PATCH", "MERGE")]
-        //public IHttpActionResult Patch([FromODataUri] int key, Delta<NAOPublication> patch)
-        //{
-
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
-
-        //    NAOPublication naoPublication = db.NAOPublicationRepository.Find(key);
-        //    if (naoPublication == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    patch.Patch(naoPublication);
-
-        //    try
-        //    {
-        //        db.SaveChanges();
-        //    }
-        //    catch (DbUpdateConcurrencyException)
-        //    {
-        //        if (!NAOPublicationExists(key))
-        //        {
-        //            return NotFound();
-        //        }
-        //        else
-        //        {
-        //            throw;
-        //        }
-        //    }
-
-        //    return Updated(naoPublication);
-        //}
-
-        // DELETE: odata/NAOPublications(1)
-        public IHttpActionResult Delete([FromODataUri] int key)
-        {
-            NAOPublication naoPublication = db.NAOPublicationRepository.Find(key);
-            if (naoPublication == null)
-            {
-                return NotFound();
-            }
-
-            var x = db.NAOPublicationRepository.Remove(naoPublication);
-            if (x == null) return Unauthorized();
-
-            db.SaveChanges();
-
-            return StatusCode(HttpStatusCode.NoContent);
-        }
-
-        private bool NAOPublicationExists(int key)
-        {
-            return db.NAOPublicationRepository.NAOPublications.Count(e => e.ID == key) > 0;
-        }
+        _nAOPublicationRepository = nAOPublicationRepository;
     }
+
+
+    [EnableQuery]
+    [HttpGet("{id}")] 
+    public SingleResult<NAOPublication> Get([FromODataUri] int key)
+    {
+        return SingleResult.Create(_nAOPublicationRepository.GetById(key));
+    }
+
+    [EnableQuery]
+    public IQueryable<NAOPublication> Get()
+    {
+        return _nAOPublicationRepository.GetAll();
+    }
+
+    // GET: /odata/NAOPublications?dgAreaId=1&incompleteOnly=true&justMine=false
+    [ODataRoute("NAOPublications?dgAreaId={dgAreaId}&incompleteOnly={incompleteOnly}&justMine={justMine}")]
+    public List<NAOPublicationView_Result> Get(int dgAreaId, bool incompleteOnly, bool justMine, bool isArchive)
+    {
+        return _nAOPublicationRepository.GetPublications(dgAreaId, incompleteOnly, justMine, isArchive);
+    }
+
+    // GET: /odata/NAOPublications?naoPublicationId=1&getInfo=true
+    [ODataRoute("NAOPublications?naoPublicationId={naoPublicationId}&getInfo={getInfo}")]
+    public NAOPublicationInfoView_Result Get(int naoPublicationId, bool getInfo)
+    {
+        var pInfo = _nAOPublicationRepository.GetPublicationInfo(naoPublicationId);
+        return pInfo;
+    }
+
+    // GET: /odata/NAOPublications?getOverallUpdateStatus=true&dgAreaId=0&naoPeriodId=2&&archived=false
+    [ODataRoute("NAOPublications?getOverallUpdateStatus={getOverallUpdateStatus}&dgAreaId={dgAreaId}&naoPeriodId={naoPeriodId}&archived={archived}")]
+    public string Get(bool getOverallUpdateStatus, int dgAreaId, int naoPeriodId, bool archived)
+    {
+        var res = _nAOPublicationRepository.GetOverallPublicationsUpdateStatus(dgAreaId, naoPeriodId, archived);
+        return res;
+    }
+
+
+    [HttpPost]
+    public IActionResult Post([FromBody] NAOPublication nAOPublication)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        _nAOPublicationRepository.Create(nAOPublication);
+
+        return Created("NAOPublications", nAOPublication);
+    }
+
+    [HttpPut]
+    public IActionResult Put([FromODataUri] int key, [FromBody] NAOPublication nAOPublication)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        if (key != nAOPublication.ID)
+        {
+            return BadRequest();
+        }
+
+        _nAOPublicationRepository.Update(nAOPublication);
+
+        return NoContent();
+    }
+
+    [HttpDelete]
+    public IActionResult Delete([FromODataUri] int key)
+    {
+        var nAOPublication = _nAOPublicationRepository.GetById(key);
+        if (nAOPublication is null)
+        {
+            return BadRequest();
+        }
+
+        _nAOPublicationRepository.Delete(nAOPublication.First());
+
+        return NoContent();
+    }
+
+
 }
+

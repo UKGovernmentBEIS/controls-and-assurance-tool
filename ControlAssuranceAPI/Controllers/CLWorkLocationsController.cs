@@ -1,126 +1,86 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using ControlAssuranceAPI.Models;
+﻿using CAT.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNet.OData;
+using CAT.Repo.Interface;
 
-namespace ControlAssuranceAPI.Controllers
+namespace CAT.Controllers;
+[Authorize]
+[Route("api/[controller]")]
+[ApiController]
+public class CLWorkLocationsController : ControllerBase
 {
-    public class CLWorkLocationsController : BaseController
+    private readonly ICLWorkLocationRepository _cLWorkLocationRepository;
+    public CLWorkLocationsController(ICLWorkLocationRepository cLWorkLocationRepository)
     {
-        public CLWorkLocationsController() : base() { }
-
-        public CLWorkLocationsController(IControlAssuranceContext context) : base(context) { }
-
-        // GET: odata/CLWorkLocations
-        [EnableQuery]
-        public IQueryable<CLWorkLocation> Get()
-        {
-            return db.CLWorkLocationRepository.CLWorkLocations;
-        }
-
-        // GET: odata/CLWorkLocations(1)
-        [EnableQuery]
-        public SingleResult<CLWorkLocation> Get([FromODataUri] int key)
-        {
-            return SingleResult.Create(db.CLWorkLocationRepository.CLWorkLocations.Where(x => x.ID == key));
-        }
-
-
-
-        // GET: odata/CLWorkLocations(1)/CLCases
-        [EnableQuery]
-        public IQueryable<CLCase> GetCLCases([FromODataUri] int key)
-        {
-            return db.CLWorkLocationRepository.CLWorkLocations.Where(d => d.ID == key).SelectMany(d => d.CLCases);
-        }
-
-        // POST: odata/CLWorkLocations
-        public IHttpActionResult Post(CLWorkLocation cLWorkLocation)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var x = db.CLWorkLocationRepository.Add(cLWorkLocation);
-            if (x == null) return Unauthorized();
-
-            db.SaveChanges();
-
-            return Created(cLWorkLocation);
-        }
-
-        // PATCH: odata/CLWorkLocations(1)
-        [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] int key, Delta<CLWorkLocation> patch)
-        {
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            CLWorkLocation cLWorkLocation = db.CLWorkLocationRepository.Find(key);
-            if (cLWorkLocation == null)
-            {
-                return NotFound();
-            }
-
-            patch.Patch(cLWorkLocation);
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CLWorkLocationExists(key))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return Updated(cLWorkLocation);
-        }
-
-        // DELETE: odata/CLWorkLocations(1)
-        public IHttpActionResult Delete([FromODataUri] int key)
-        {
-            CLWorkLocation cLWorkLocation = db.CLWorkLocationRepository.Find(key);
-            if (cLWorkLocation == null)
-            {
-                return NotFound();
-            }
-
-            var x = db.CLWorkLocationRepository.Remove(cLWorkLocation);
-            if (x == null) return Unauthorized();
-
-            db.SaveChanges();
-
-            return StatusCode(HttpStatusCode.NoContent);
-        }
-
-        private bool CLWorkLocationExists(int key)
-        {
-            return db.CLWorkLocationRepository.CLWorkLocations.Count(x => x.ID == key) > 0;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+        _cLWorkLocationRepository = cLWorkLocationRepository;
     }
+
+
+    [EnableQuery]
+    [HttpGet("{id}")] 
+    public SingleResult<CLWorkLocation> Get([FromODataUri] int key)
+    {
+        return SingleResult.Create(_cLWorkLocationRepository.GetById(key));
+    }
+
+    [EnableQuery]
+    public IQueryable<CLWorkLocation> Get()
+    {
+        return _cLWorkLocationRepository.GetAll();
+    }
+
+    // GET: odata/CLWorkLocations(1)/CLCases
+    [EnableQuery]
+    public IQueryable<CLCase> GetCLCases([FromODataUri] int key)
+    {
+        return _cLWorkLocationRepository.GetCLCases(key);
+    }
+
+    [HttpPost]
+    public IActionResult Post([FromBody] CLWorkLocation cLWorkLocation)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        _cLWorkLocationRepository.Create(cLWorkLocation);
+
+        return Created("CLWorkLocations", cLWorkLocation);
+    }
+
+    [HttpPut]
+    public IActionResult Put([FromODataUri] int key, [FromBody] CLWorkLocation cLWorkLocation)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        if (key != cLWorkLocation.ID)
+        {
+            return BadRequest();
+        }
+
+        _cLWorkLocationRepository.Update(cLWorkLocation);
+
+        return NoContent();
+    }
+
+    [HttpDelete]
+    public IActionResult Delete([FromODataUri] int key)
+    {
+        var cLWorkLocation = _cLWorkLocationRepository.GetById(key);
+        if (cLWorkLocation is null)
+        {
+            return BadRequest();
+        }
+
+        _cLWorkLocationRepository.Delete(cLWorkLocation.First());
+
+        return NoContent();
+    }
+
+
 }
+

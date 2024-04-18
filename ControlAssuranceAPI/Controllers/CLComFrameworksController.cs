@@ -1,126 +1,86 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using ControlAssuranceAPI.Models;
+﻿using CAT.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNet.OData;
+using CAT.Repo.Interface;
 
-namespace ControlAssuranceAPI.Controllers
+namespace CAT.Controllers;
+[Authorize]
+[Route("api/[controller]")]
+[ApiController]
+public class CLComFrameworksController : ControllerBase
 {
-    public class CLComFrameworksController : BaseController
+    private readonly ICLComFrameworkRepository _cLComFrameworkRepository;
+    public CLComFrameworksController(ICLComFrameworkRepository cLComFrameworkRepository)
     {
-        public CLComFrameworksController() : base() { }
-
-        public CLComFrameworksController(IControlAssuranceContext context) : base(context) { }
-
-        // GET: odata/CLComFrameworks
-        [EnableQuery]
-        public IQueryable<CLComFramework> Get()
-        {
-            return db.CLComFrameworkRepository.CLComFrameworks;
-        }
-
-        // GET: odata/CLComFrameworks(1)
-        [EnableQuery]
-        public SingleResult<CLComFramework> Get([FromODataUri] int key)
-        {
-            return SingleResult.Create(db.CLComFrameworkRepository.CLComFrameworks.Where(x => x.ID == key));
-        }
-
-
-
-        // GET: odata/CLComFrameworks(1)/CLCases
-        [EnableQuery]
-        public IQueryable<CLCase> GetCLCases([FromODataUri] int key)
-        {
-            return db.CLComFrameworkRepository.CLComFrameworks.Where(d => d.ID == key).SelectMany(d => d.CLCases);
-        }
-
-        // POST: odata/CLComFrameworks
-        public IHttpActionResult Post(CLComFramework cLComFramework)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var x = db.CLComFrameworkRepository.Add(cLComFramework);
-            if (x == null) return Unauthorized();
-
-            db.SaveChanges();
-
-            return Created(cLComFramework);
-        }
-
-        // PATCH: odata/CLComFrameworks(1)
-        [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] int key, Delta<CLComFramework> patch)
-        {
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            CLComFramework cLComFramework = db.CLComFrameworkRepository.Find(key);
-            if (cLComFramework == null)
-            {
-                return NotFound();
-            }
-
-            patch.Patch(cLComFramework);
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CLComFrameworkExists(key))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return Updated(cLComFramework);
-        }
-
-        // DELETE: odata/CLComFrameworks(1)
-        public IHttpActionResult Delete([FromODataUri] int key)
-        {
-            CLComFramework cLComFramework = db.CLComFrameworkRepository.Find(key);
-            if (cLComFramework == null)
-            {
-                return NotFound();
-            }
-
-            var x = db.CLComFrameworkRepository.Remove(cLComFramework);
-            if (x == null) return Unauthorized();
-
-            db.SaveChanges();
-
-            return StatusCode(HttpStatusCode.NoContent);
-        }
-
-        private bool CLComFrameworkExists(int key)
-        {
-            return db.CLComFrameworkRepository.CLComFrameworks.Count(x => x.ID == key) > 0;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+        _cLComFrameworkRepository = cLComFrameworkRepository;
     }
+
+
+    [EnableQuery]
+    [HttpGet("{id}")] 
+    public SingleResult<CLComFramework> Get([FromODataUri] int key)
+    {
+        return SingleResult.Create(_cLComFrameworkRepository.GetById(key));
+    }
+
+    [EnableQuery]
+    public IQueryable<CLComFramework> Get()
+    {
+        return _cLComFrameworkRepository.GetAll();
+    }
+
+    // GET: odata/CLComFrameworks(1)/CLCases
+    [EnableQuery]
+    public IQueryable<CLCase> GetCLCases([FromODataUri] int key)
+    {
+        return _cLComFrameworkRepository.GetCLCases(key);
+    }
+
+    [HttpPost]
+    public IActionResult Post([FromBody] CLComFramework cLComFramework)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        _cLComFrameworkRepository.Create(cLComFramework);
+
+        return Created("CLComFrameworks", cLComFramework);
+    }
+
+    [HttpPut]
+    public IActionResult Put([FromODataUri] int key, [FromBody] CLComFramework cLComFramework)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        if (key != cLComFramework.ID)
+        {
+            return BadRequest();
+        }
+
+        _cLComFrameworkRepository.Update(cLComFramework);
+
+        return NoContent();
+    }
+
+    [HttpDelete]
+    public IActionResult Delete([FromODataUri] int key)
+    {
+        var cLComFramework = _cLComFrameworkRepository.GetById(key);
+        if (cLComFramework is null)
+        {
+            return BadRequest();
+        }
+
+        _cLComFrameworkRepository.Delete(cLComFramework.First());
+
+        return NoContent();
+    }
+
+
 }
+

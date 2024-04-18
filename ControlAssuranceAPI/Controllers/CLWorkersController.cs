@@ -1,78 +1,88 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using ControlAssuranceAPI.Models;
+﻿using CAT.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNet.OData;
+using Microsoft.AspNet.OData.Routing;
+using CAT.Repo.Interface;
 
-namespace ControlAssuranceAPI.Controllers
+namespace CAT.Controllers;
+[Authorize]
+[Route("api/[controller]")]
+[ApiController]
+public class CLWorkersController : ControllerBase
 {
-    public class CLWorkersController : BaseController
+    private readonly ICLWorkerRepository _cLWorkerRepository;
+    public CLWorkersController(ICLWorkerRepository cLWorkerRepository)
     {
-        public CLWorkersController() : base() { }
-
-        public CLWorkersController(IControlAssuranceContext context) : base(context) { }
-
-        // GET: odata/CLWorkers
-        [EnableQuery]
-        public IQueryable<CLWorker> Get()
-        {
-            return db.CLWorkerRepository.CLWorkers;
-        }
-
-        // GET: odata/CLWorkers(1)
-        [EnableQuery]
-        public SingleResult<CLWorker> Get([FromODataUri] int key)
-        {
-            return SingleResult.Create(db.CLWorkerRepository.CLWorkers.Where(x => x.ID == key));
-        }
-
-        //GET: odata/CLWorkers?clWorkerId=1&createPdf=[pdftype]&spSiteUrl=[url]
-        public string Get(int clWorkerId, string createPdf, string spSiteUrl)
-        {
-            //return db.IAPActionRepository.GetActions(userIds, isArchive);
-            if(createPdf == "SDSPdf")
-            {
-                string msg = db.CLWorkerRepository.CreateSDSPdf(clWorkerId, spSiteUrl);
-                return msg;
-            }
-            else
-            {
-                string msg = db.CLWorkerRepository.CreateCasePdf(clWorkerId, spSiteUrl);
-                return msg;
-            }
-
-        }
-
-        //GET: odata/CLWorkers?clWorkerId=1&archive=true
-        public string Get(int clWorkerId, bool archive)
-        {
-            string msg = "";
-            if(archive == true)
-            {
-                db.CLWorkerRepository.Archive(clWorkerId);
-            }
-
-            return msg;
-
-        }
-
-        // PATCH: odata/CLWorkers(1)
-        [AcceptVerbs("PUT")]
-        public IHttpActionResult Put([FromODataUri] int key, CLWorker cLWorker)
-        {
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            db.CLWorkerRepository.Update(cLWorker);
-
-            return Updated(cLWorker);
-        }
+        _cLWorkerRepository = cLWorkerRepository;
     }
+
+
+    [EnableQuery]
+    [HttpGet("{id}")] 
+    public SingleResult<CLWorker> Get([FromODataUri] int key)
+    {
+        return SingleResult.Create(_cLWorkerRepository.GetById(key));
+    }
+
+
+    [EnableQuery]
+    public IQueryable<CLWorker> Get()
+    {
+        return _cLWorkerRepository.GetAll();
+    }
+
+    //GET: odata/CLWorkers?clWorkerId=1&createPdf=[pdftype]&spSiteUrl=[url]
+    [ODataRoute("CLWorkers?clWorkerId={clWorkerId}&createPdf={createPdf}&spSiteUrl={spSiteUrl}")]
+    public string Get(int clWorkerId, string createPdf, string spSiteUrl)
+    {
+        if (createPdf == "SDSPdf")
+        {
+            string msg = _cLWorkerRepository.CreateSDSPdf(clWorkerId, spSiteUrl);
+            return msg;
+        }
+        else
+        {
+            string msg = _cLWorkerRepository.CreateCasePdf(clWorkerId, spSiteUrl);
+            return msg;
+        }
+
+    }
+
+    //GET: odata/CLWorkers?clWorkerId=1&archive=true
+    [ODataRoute("CLWorkers?clWorkerId={clWorkerId}&archive={archive}")]
+    public string Get(int clWorkerId, bool archive)
+    {
+        string msg = "";
+        if (archive)
+        {
+            _cLWorkerRepository.Archive(clWorkerId);
+        }
+
+        return msg;
+
+    }
+
+    [HttpPut]
+    public IActionResult Put([FromODataUri] int key, [FromBody] CLWorker cLWorker)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        if (key != cLWorker.ID)
+        {
+            return BadRequest();
+        }
+
+        _cLWorkerRepository.Update(cLWorker);
+
+        return NoContent();
+    }
+
+
+
+
 }
+

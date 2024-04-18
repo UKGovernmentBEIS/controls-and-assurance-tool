@@ -1,31 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using ControlAssuranceAPI.Models;
-using Microsoft.AspNet.OData;
+﻿using CAT.Models;
+using CAT.Repo.Interface;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNet.OData.Routing;
 
-namespace ControlAssuranceAPI.Controllers
+
+namespace CAT.Controllers;
+[Authorize]
+[Route("api/[controller]")]
+[ApiController]
+public class DivisionStatsController : ControllerBase
 {
-    public class DivisionStatsController : BaseController
+    private readonly ISPDivisionStatRepository _sPDivisionStatRepository;
+    public DivisionStatsController(ISPDivisionStatRepository sPDivisionStatRepository)
     {
-        public DivisionStatsController() : base() { }
-
-        public DivisionStatsController(IControlAssuranceContext context) : base(context) { }
-
-        // GET: /odata/DivisionStats?periodId=1
-        public List<Models.SPDivisionStat_Result> Get(int periodId)
-        {
-            return db.SPDivisionStatRepository.GetDivisionStats(periodId);
-        }
-
-        // GET: /odata/DivisionStats?periodId=20&SPDivisionStat2=
-        public List<Models.SPDivisionStat2_Result> Get(int periodId, string SPDivisionStat2)
-        {
-            return db.SPDivisionStatRepository.GetDivisionStats2(periodId);
-        }
+        _sPDivisionStatRepository = sPDivisionStatRepository;
     }
+
+    // GET: /odata/DivisionStats?periodId=1
+    [ODataRoute("DivisionStats?periodId={periodId}")]
+    public List<Models.SPDivisionStat_Result> Get(int periodId)
+    {
+        return _sPDivisionStatRepository.GetDivisionStats(periodId);
+    }
+
+    // GET: /odata/DivisionStats?periodId=20&SPDivisionStat2=
+    [ODataRoute("DivisionStats?periodId={periodId}&SPDivisionStat2={SPDivisionStat2}")]
+    public List<Models.SPDivisionStat2_Result> Get(int periodId, string SPDivisionStat2)
+    {
+        return _sPDivisionStatRepository.GetDivisionStats2(periodId);
+    }
+
+
 }
+

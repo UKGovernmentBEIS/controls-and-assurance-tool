@@ -1,138 +1,80 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using ControlAssuranceAPI.Models;
+﻿using CAT.Models;
+using CAT.Repo.Interface;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNet.OData;
+using Microsoft.AspNet.OData.Routing;
 
-
-namespace ControlAssuranceAPI.Controllers
+namespace CAT.Controllers;
+[Authorize]
+[Route("api/[controller]")]
+[ApiController]
+public class NAOUpdateFeedbacksController : ControllerBase
 {
-    public class NAOUpdateFeedbacksController : BaseController
+    private readonly INAOUpdateFeedbackRepository _nAOUpdateFeedbackRepository;
+    public NAOUpdateFeedbacksController(INAOUpdateFeedbackRepository nAOUpdateFeedbackRepository)
     {
-        public NAOUpdateFeedbacksController() : base() { }
-
-        public NAOUpdateFeedbacksController(IControlAssuranceContext context) : base(context) { }
-
-        // GET: odata/NAOUpdateFeedbacks
-        [EnableQuery]
-        public IQueryable<NAOUpdateFeedback> Get()
-        {
-            return db.NAOUpdateFeedbackRepository.NAOUpdateFeedbacks;
-        }
-
-        // GET: odata/NAOUpdateFeedbacks(1)
-        [EnableQuery]
-        public SingleResult<NAOUpdateFeedback> Get([FromODataUri] int key)
-        {
-            return SingleResult.Create(db.NAOUpdateFeedbackRepository.NAOUpdateFeedbacks.Where(x => x.ID == key));
-        }
-
-        // POST: odata/NAOUpdateFeedbacks
-        public IHttpActionResult Post(NAOUpdateFeedback naoUpdateFeedback)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var x = db.NAOUpdateFeedbackRepository.Add(naoUpdateFeedback);
-            if (x == null) return Unauthorized();
-
-            db.SaveChanges();
-
-            return Created(naoUpdateFeedback);
-        }
-
-        // PATCH: odata/NAOUpdateFeedbacks(1)
-        [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] int key, Delta<NAOUpdateFeedback> patch)
-        {
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            NAOUpdateFeedback naoUpdateFeedback = db.NAOUpdateFeedbackRepository.Find(key);
-            if (naoUpdateFeedback == null)
-            {
-                return NotFound();
-            }
-
-            int updateId = naoUpdateFeedback.NAOUpdateId ?? 0;
-            if (updateId > 0)
-            {
-                var update = db.NAOUpdateRepository.Find(updateId);
-                if (update != null)
-                {
-                    if (update.NAOPeriod.PeriodStatus == "Archived Period")
-                    {
-                        object comment = "";
-                        patch.TryGetPropertyValue("Comment", out comment);
-                        if(comment.ToString().Contains("(Comment made after period was closed)") ==  false)
-                        {
-                            comment += " (Comment made after period was closed)";
-                            patch.TrySetPropertyValue("Comment", comment);
-                        }                        
-                    }
-                }
-            }
-
-            patch.Patch(naoUpdateFeedback);
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!NAOUpdateFeedbackExists(key))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return Updated(naoUpdateFeedback);
-        }
-
-        // DELETE: odata/NAOUpdateFeedbacks(1)
-        public IHttpActionResult Delete([FromODataUri] int key)
-        {
-            NAOUpdateFeedback naoUpdateFeedback = db.NAOUpdateFeedbackRepository.Find(key);
-            if (naoUpdateFeedback == null)
-            {
-                return NotFound();
-            }
-
-            var x = db.NAOUpdateFeedbackRepository.Remove(naoUpdateFeedback);
-            if (x == null) return Unauthorized();
-
-            db.SaveChanges();
-
-            return StatusCode(HttpStatusCode.NoContent);
-        }
-
-        private bool NAOUpdateFeedbackExists(int key)
-        {
-            return db.NAOUpdateFeedbackRepository.NAOUpdateFeedbacks.Count(x => x.ID == key) > 0;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
+        _nAOUpdateFeedbackRepository = nAOUpdateFeedbackRepository;
     }
+
+
+    [EnableQuery]
+    [HttpGet("{id}")] 
+    public SingleResult<NAOUpdateFeedback> Get([FromODataUri] int key)
+    {
+        return SingleResult.Create(_nAOUpdateFeedbackRepository.GetById(key));
+    }
+
+    [EnableQuery]
+    public IQueryable<NAOUpdateFeedback> Get()
+    {
+        return _nAOUpdateFeedbackRepository.GetAll();
+    }
+
+    [HttpPost]
+    public IActionResult Post([FromBody] NAOUpdateFeedback nAOUpdateFeedback)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        _nAOUpdateFeedbackRepository.Create(nAOUpdateFeedback);
+
+        return Created("NAOUpdateFeedbacks", nAOUpdateFeedback);
+    }
+
+    [HttpPut]
+    public IActionResult Put([FromODataUri] int key, [FromBody] NAOUpdateFeedback nAOUpdateFeedback)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        if (key != nAOUpdateFeedback.ID)
+        {
+            return BadRequest();
+        }
+
+        _nAOUpdateFeedbackRepository.Update(nAOUpdateFeedback);
+
+        return NoContent();
+    }
+
+    [HttpDelete]
+    public IActionResult Delete([FromODataUri] int key)
+    {
+        var nAOUpdateFeedback = _nAOUpdateFeedbackRepository.GetById(key);
+        if (nAOUpdateFeedback is null)
+        {
+            return BadRequest();
+        }
+
+        _nAOUpdateFeedbackRepository.Delete(nAOUpdateFeedback.First());
+
+        return NoContent();
+    }
+
+
 }
+

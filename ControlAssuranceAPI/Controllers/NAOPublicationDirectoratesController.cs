@@ -1,117 +1,80 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using ControlAssuranceAPI.Models;
+﻿using CAT.Models;
+using CAT.Repo.Interface;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNet.OData;
+using Microsoft.AspNet.OData.Routing;
 
-namespace ControlAssuranceAPI.Controllers
+namespace CAT.Controllers;
+[Authorize]
+[Route("api/[controller]")]
+[ApiController]
+public class NAOPublicationDirectoratesController : ControllerBase
 {
-    public class NAOPublicationDirectoratesController : BaseController
+    private readonly INAOPublicationDirectorateRepository _nAOPublicationDirectorateRepository;
+    public NAOPublicationDirectoratesController(INAOPublicationDirectorateRepository nAOPublicationDirectorateRepository)
     {
-        public NAOPublicationDirectoratesController() : base() { }
-
-        public NAOPublicationDirectoratesController(IControlAssuranceContext context) : base(context) { }
-
-        // GET: odata/NAOPublicationDirectorates
-        [EnableQuery]
-        public IQueryable<NAOPublicationDirectorate> Get()
-        {
-            return db.NAOPublicationDirectorateRepository.NAOPublicationDirectorates;
-        }
-
-        // GET: odata/NAOPublicationDirectorates(1)
-        [EnableQuery]
-        public SingleResult<NAOPublicationDirectorate> Get([FromODataUri] int key)
-        {
-            return SingleResult.Create(db.NAOPublicationDirectorateRepository.NAOPublicationDirectorates.Where(x => x.ID == key));
-        }
-
-        // POST: odata/NAOPublicationDirectorates
-        public IHttpActionResult Post(NAOPublicationDirectorate nAOPublicationDirectorate)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var x = db.NAOPublicationDirectorateRepository.Add(nAOPublicationDirectorate);
-            if (x == null) return Unauthorized();
-
-            db.SaveChanges();
-
-            return Created(nAOPublicationDirectorate);
-        }
-
-        // PATCH: odata/NAOPublicationDirectorates(1)
-        [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] int key, Delta<NAOPublicationDirectorate> patch)
-        {
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            NAOPublicationDirectorate nAOPublicationDirectorate = db.NAOPublicationDirectorateRepository.Find(key);
-            if (nAOPublicationDirectorate == null)
-            {
-                return NotFound();
-            }
-
-            patch.Patch(nAOPublicationDirectorate);
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!NAOPublicationDirectorateExists(key))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return Updated(nAOPublicationDirectorate);
-        }
-
-        // DELETE: odata/NAOPublicationDirectorates(1)
-        public IHttpActionResult Delete([FromODataUri] int key)
-        {
-            NAOPublicationDirectorate nAOPublicationDirectorate = db.NAOPublicationDirectorateRepository.Find(key);
-            if (nAOPublicationDirectorate == null)
-            {
-                return NotFound();
-            }
-
-            var x = db.NAOPublicationDirectorateRepository.Remove(nAOPublicationDirectorate);
-            if (x == null) return Unauthorized();
-
-            db.SaveChanges();
-
-            return StatusCode(HttpStatusCode.NoContent);
-        }
-
-        private bool NAOPublicationDirectorateExists(int key)
-        {
-            return db.NAOPublicationDirectorateRepository.NAOPublicationDirectorates.Count(x => x.ID == key) > 0;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+        _nAOPublicationDirectorateRepository = nAOPublicationDirectorateRepository;
     }
+
+
+    [EnableQuery]
+    [HttpGet("{id}")] 
+    public SingleResult<NAOPublicationDirectorate> Get([FromODataUri] int key)
+    {
+        return SingleResult.Create(_nAOPublicationDirectorateRepository.GetById(key));
+    }
+
+    [EnableQuery]
+    public IQueryable<NAOPublicationDirectorate> Get()
+    {
+        return _nAOPublicationDirectorateRepository.GetAll();
+    }
+
+    [HttpPost]
+    public IActionResult Post([FromBody] NAOPublicationDirectorate nAOPublicationDirectorate)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        _nAOPublicationDirectorateRepository.Create(nAOPublicationDirectorate);
+
+        return Created("NAOPublicationDirectorates", nAOPublicationDirectorate);
+    }
+
+    [HttpPut]
+    public IActionResult Put([FromODataUri] int key, [FromBody] NAOPublicationDirectorate nAOPublicationDirectorate)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        if (key != nAOPublicationDirectorate.ID)
+        {
+            return BadRequest();
+        }
+
+        _nAOPublicationDirectorateRepository.Update(nAOPublicationDirectorate);
+
+        return NoContent();
+    }
+
+    [HttpDelete]
+    public IActionResult Delete([FromODataUri] int key)
+    {
+        var nAOPublicationDirectorate = _nAOPublicationDirectorateRepository.GetById(key);
+        if (nAOPublicationDirectorate is null)
+        {
+            return BadRequest();
+        }
+
+        _nAOPublicationDirectorateRepository.Delete(nAOPublicationDirectorate.First());
+
+        return NoContent();
+    }
+
+
 }
+

@@ -1,36 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using ControlAssuranceAPI.Models;
+﻿using CAT.Models;
+using CAT.Repo.Interface;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNet.OData;
+using Microsoft.AspNet.OData.Routing;
 
-
-namespace ControlAssuranceAPI.Controllers
+namespace CAT.Controllers;
+[Authorize]
+[Route("api/[controller]")]
+[ApiController]
+public class NAORecStatusTypesController : ControllerBase
 {
-    public class NAORecStatusTypesController : BaseController
+    private readonly INAORecStatusTypeRepository _userRepository;
+    public NAORecStatusTypesController(INAORecStatusTypeRepository userRepository)
     {
-        public NAORecStatusTypesController() : base() { }
-
-        public NAORecStatusTypesController(IControlAssuranceContext context) : base(context) { }
-
-        // GET: odata/NAORecStatusTypes
-        [EnableQuery]
-        public IQueryable<NAORecStatusType> Get()
-        {
-            return db.NAORecStatusTypeRepository.NAORecStatusTypes;
-        }
-
-        // GET: odata/NAORecStatusTypes(1)
-        [EnableQuery]
-        public SingleResult<NAORecStatusType> Get([FromODataUri] int key)
-        {
-            return SingleResult.Create(db.NAORecStatusTypeRepository.NAORecStatusTypes.Where(x => x.ID == key));
-        }
-
-
+        _userRepository = userRepository;
     }
+
+
+    [EnableQuery]
+    [HttpGet("{id}")] 
+    public SingleResult<NAORecStatusType> Get([FromODataUri] int key)
+    {
+        return SingleResult.Create(_userRepository.GetById(key));
+    }
+
+
+    [EnableQuery]
+    public IQueryable<NAORecStatusType> Get()
+    {
+        return _userRepository.GetAll();
+    }
+
+
 }
+

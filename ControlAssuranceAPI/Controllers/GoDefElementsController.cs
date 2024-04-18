@@ -1,124 +1,88 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using ControlAssuranceAPI.Models;
+﻿using CAT.Models;
+using CAT.Repo.Interface;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNet.OData;
+using Microsoft.AspNet.OData.Routing;
 
-namespace ControlAssuranceAPI.Controllers
+namespace CAT.Controllers;
+[Authorize]
+[Route("api/[controller]")]
+[ApiController]
+public class GoDefElementsController : ControllerBase
 {
-    public class GoDefElementsController : BaseController
+    private readonly IGoDefElementRepository _goDefElementRepository;
+    public GoDefElementsController(IGoDefElementRepository goDefElementRepository)
     {
-        public GoDefElementsController() : base() { }
-
-        public GoDefElementsController(IControlAssuranceContext context) : base(context) { }
-
-        // GET: odata/GoDefElements
-        [EnableQuery]
-        public IQueryable<GoDefElement> Get()
-        {
-            return db.GoDefElementRepository.GoDefElements;
-        }
-
-        // GET: odata/GoDefElements(1)
-        [EnableQuery]
-        public SingleResult<GoDefElement> Get([FromODataUri] int key)
-        {
-
-            return SingleResult.Create(db.GoDefElementRepository.GoDefElements.Where(x => x.ID == key));
-        }
-
-        // GET: /odata/GoDefElements?goFormId=1&incompleteOnly=true&justMine=false
-        public List<SpecificAreaView_Result> Get(int goFormId, bool incompleteOnly, bool justMine)
-        {
-            return db.GoDefElementRepository.GetEvidenceSpecificAreas(goFormId, incompleteOnly, justMine);
-        }
-
-        // POST: odata/GoDefElements
-        public IHttpActionResult Post(GoDefElement goDefElement)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var x = db.GoDefElementRepository.Add(goDefElement);
-            if (x == null) return Unauthorized();
-
-            db.SaveChanges();
-
-            return Created(x);
-        }
-
-        // PATCH: odata/GoDefElements(1)
-        [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] int key, Delta<GoDefElement> patch)
-        {
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            GoDefElement goDefElement = db.GoDefElementRepository.Find(key);
-            if (goDefElement == null)
-            {
-                return NotFound();
-            }
-
-            patch.Patch(goDefElement);
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!GoDefElementExists(key))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return Updated(goDefElement);
-        }
-
-        // DELETE: odata/GoDefElements(1)
-        public IHttpActionResult Delete([FromODataUri] int key)
-        {
-            GoDefElement goDefElement = db.GoDefElementRepository.Find(key);
-            if (goDefElement == null)
-            {
-                return NotFound();
-            }
-
-            var x = db.GoDefElementRepository.Remove(goDefElement);
-            if (x == null) return Unauthorized();
-
-            db.SaveChanges();
-
-            return StatusCode(HttpStatusCode.NoContent);
-        }
-
-        private bool GoDefElementExists(int key)
-        {
-            return db.GoDefElementRepository.GoDefElements.Count(e => e.ID == key) > 0;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+        _goDefElementRepository = goDefElementRepository;
     }
+
+
+    [EnableQuery]
+    [HttpGet("{id}")] 
+    public SingleResult<GoDefElement> Get([FromODataUri] int key)
+    {
+        return SingleResult.Create(_goDefElementRepository.GetById(key));
+    }
+
+
+    [EnableQuery]
+    public IQueryable<GoDefElement> Get()
+    {
+        return _goDefElementRepository.GetAll();
+    }
+
+    // GET: /odata/GoDefElements?goFormId=1&incompleteOnly=true&justMine=false
+    [ODataRoute("GoDefElements?goFormId={goFormId}&incompleteOnly={incompleteOnly}&justMine={justMine}")]
+    public List<SpecificAreaView_Result> Get(int goFormId, bool incompleteOnly, bool justMine)
+    {
+        return _goDefElementRepository.GetEvidenceSpecificAreas(goFormId, incompleteOnly, justMine);
+    }
+
+    [HttpPost]
+    public IActionResult Post([FromBody] GoDefElement goDefElement)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        _goDefElementRepository.Create(goDefElement);
+
+        return Created("GoDefElements", goDefElement);
+    }
+
+    [HttpPut]
+    public IActionResult Put([FromODataUri] int key, [FromBody] GoDefElement goDefElement)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        if (key != goDefElement.ID)
+        {
+            return BadRequest();
+        }
+
+        _goDefElementRepository.Update(goDefElement);
+
+        return NoContent();
+    }
+
+    [HttpDelete]
+    public IActionResult Delete([FromODataUri] int key)
+    {
+        var goDefElement = _goDefElementRepository.GetById(key);
+        if (goDefElement is null)
+        {
+            return BadRequest();
+        }
+
+        _goDefElementRepository.Delete(goDefElement.First());
+
+        return NoContent();
+    }
+
+
 }
+

@@ -1,117 +1,80 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using ControlAssuranceAPI.Models;
+﻿using CAT.Models;
+using CAT.Repo.Interface;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNet.OData;
+using Microsoft.AspNet.OData.Routing;
 
-namespace ControlAssuranceAPI.Controllers
+namespace CAT.Controllers;
+[Authorize]
+[Route("api/[controller]")]
+[ApiController]
+public class NAOUpdateFeedbackTypesController : ControllerBase
 {
-    public class NAOUpdateFeedbackTypesController : BaseController
+    private readonly INAOUpdateFeedbackTypeRepository _nAOUpdateFeedbackTypeRepository;
+    public NAOUpdateFeedbackTypesController(INAOUpdateFeedbackTypeRepository nAOUpdateFeedbackTypeRepository)
     {
-        public NAOUpdateFeedbackTypesController() : base() { }
-
-        public NAOUpdateFeedbackTypesController(IControlAssuranceContext context) : base(context) { }
-
-        // GET: odata/NAOUpdateFeedbackTypes
-        [EnableQuery]
-        public IQueryable<NAOUpdateFeedbackType> Get()
-        {
-            return db.NAOUpdateFeedbackTypeRepository.NAOUpdateFeedbackTypes;
-        }
-
-        // GET: odata/NAOUpdateFeedbackTypes(1)
-        [EnableQuery]
-        public SingleResult<NAOUpdateFeedbackType> Get([FromODataUri] int key)
-        {
-            return SingleResult.Create(db.NAOUpdateFeedbackTypeRepository.NAOUpdateFeedbackTypes.Where(x => x.ID == key));
-        }
-
-        // POST: odata/NAOUpdateFeedbackTypes
-        public IHttpActionResult Post(NAOUpdateFeedbackType nAOUpdateFeedbackType)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var x = db.NAOUpdateFeedbackTypeRepository.Add(nAOUpdateFeedbackType);
-            if (x == null) return Unauthorized();
-
-            db.SaveChanges();
-
-            return Created(nAOUpdateFeedbackType);
-        }
-
-        // PATCH: odata/NAOUpdateFeedbackTypes(1)
-        [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] int key, Delta<NAOUpdateFeedbackType> patch)
-        {
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            NAOUpdateFeedbackType nAOUpdateFeedbackType = db.NAOUpdateFeedbackTypeRepository.Find(key);
-            if (nAOUpdateFeedbackType == null)
-            {
-                return NotFound();
-            }
-
-            patch.Patch(nAOUpdateFeedbackType);
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!NAOUpdateFeedbackTypeExists(key))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return Updated(nAOUpdateFeedbackType);
-        }
-
-        // DELETE: odata/NAOUpdateFeedbackTypes(1)
-        public IHttpActionResult Delete([FromODataUri] int key)
-        {
-            NAOUpdateFeedbackType nAOUpdateFeedbackType = db.NAOUpdateFeedbackTypeRepository.Find(key);
-            if (nAOUpdateFeedbackType == null)
-            {
-                return NotFound();
-            }
-
-            var x = db.NAOUpdateFeedbackTypeRepository.Remove(nAOUpdateFeedbackType);
-            if (x == null) return Unauthorized();
-
-            db.SaveChanges();
-
-            return StatusCode(HttpStatusCode.NoContent);
-        }
-
-        private bool NAOUpdateFeedbackTypeExists(int key)
-        {
-            return db.NAOUpdateFeedbackTypeRepository.NAOUpdateFeedbackTypes.Count(x => x.ID == key) > 0;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+        _nAOUpdateFeedbackTypeRepository = nAOUpdateFeedbackTypeRepository;
     }
+
+
+    [EnableQuery]
+    [HttpGet("{id}")] 
+    public SingleResult<NAOUpdateFeedbackType> Get([FromODataUri] int key)
+    {
+        return SingleResult.Create(_nAOUpdateFeedbackTypeRepository.GetById(key));
+    }
+
+    [EnableQuery]
+    public IQueryable<NAOUpdateFeedbackType> Get()
+    {
+        return _nAOUpdateFeedbackTypeRepository.GetAll();
+    }
+
+    [HttpPost]
+    public IActionResult Post([FromBody] NAOUpdateFeedbackType nAOUpdateFeedbackType)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        _nAOUpdateFeedbackTypeRepository.Create(nAOUpdateFeedbackType);
+
+        return Created("NAOUpdateFeedbackTypes", nAOUpdateFeedbackType);
+    }
+
+    [HttpPut]
+    public IActionResult Put([FromODataUri] int key, [FromBody] NAOUpdateFeedbackType nAOUpdateFeedbackType)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        if (key != nAOUpdateFeedbackType.ID)
+        {
+            return BadRequest();
+        }
+
+        _nAOUpdateFeedbackTypeRepository.Update(nAOUpdateFeedbackType);
+
+        return NoContent();
+    }
+
+    [HttpDelete]
+    public IActionResult Delete([FromODataUri] int key)
+    {
+        var nAOUpdateFeedbackType = _nAOUpdateFeedbackTypeRepository.GetById(key);
+        if (nAOUpdateFeedbackType is null)
+        {
+            return BadRequest();
+        }
+
+        _nAOUpdateFeedbackTypeRepository.Delete(nAOUpdateFeedbackType.First());
+
+        return NoContent();
+    }
+
+
 }
+

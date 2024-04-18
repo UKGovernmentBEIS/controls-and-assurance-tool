@@ -1,32 +1,20 @@
-﻿using ControlAssuranceAPI.Models;
-using ControlAssuranceAPI.Repositories;
-using Microsoft.OData.Edm;
+﻿using CAT.Models;
+using CAT.Repo;
+using CAT.Repo.Interface;
 using MigraDoc.DocumentObjectModel;
 using MigraDoc.DocumentObjectModel.Tables;
 using MigraDoc.Rendering;
-using PdfSharp.Fonts;
 using PdfSharp.Pdf;
 using PdfSharp.Pdf.IO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Web;
-using static ControlAssuranceAPI.Repositories.CLCaseRepository;
 
-namespace ControlAssuranceAPI.Libs
+namespace CAT.Libs
 {
     public class PdfLib
     {
 
-        public PdfLib()
-        {
-
-        }
-
         #region Gov
 
-        public void CreatetGovPdf(Models.GoForm goForm, Repositories.GoDefElementRepository goDER, string tempLocation, string outputPdfName, string spSiteUrl, string spAccessDetails)
+        public void CreatetGovPdf(Models.GoForm goForm, GoDefElementRepository goDER, string tempLocation, string outputPdfName, string spSiteUrl, string spAccessDetails)
         {
             SharepointLib sharepointLib = new SharepointLib(spSiteUrl, spAccessDetails);
             List<string> finalEvList = new List<string>();
@@ -34,12 +22,12 @@ namespace ControlAssuranceAPI.Libs
             //add first in list
             finalEvList.Add(firstPdfPath);
 
-            string dgArea = goForm.DirectorateGroup.Title;
-            DateTime periodStartDate = goForm.GoPeriod.PeriodStartDate.Value;
-            DateTime periodEndDate = goForm.GoPeriod.PeriodEndDate.Value;
-            string summaryRagRating = goForm.SummaryRagRating;
+            string dgArea = goForm?.DirectorateGroup?.Title ?? "";
+            DateTime? periodStartDate = goForm?.Period?.PeriodStartDate;
+            DateTime? periodEndDate = goForm?.Period?.PeriodEndDate;
+            string summaryRagRating = goForm?.SummaryRagRating ?? "";
             string summaryRagRatingLabel = goDER.getRatingLabel(summaryRagRating);
-            string summaryEvidenceStatement = goForm.SummaryEvidenceStatement?.ToString() ?? "";
+            string summaryEvidenceStatement = goForm?.SummaryEvidenceStatement?.ToString() ?? "";
 
 
 
@@ -50,38 +38,28 @@ namespace ControlAssuranceAPI.Libs
 
             Style heading1 = document.Styles.AddStyle("heading1", "normalStyle");
             heading1.Font.Size = 36;
-            //heading1.Font.Name = "Calibri (Body)";
 
             Style heading2 = document.Styles.AddStyle("heading2", "normalStyle");
             heading2.Font.Size = 20;
-            //heading2.Font.Name = "Calibri (Body)";
 
             Style heading3 = document.Styles.AddStyle("heading3", "normalStyle");
             heading3.Font.Size = 16;
-            //heading3.Font.Name = "Calibri (Body)";
 
             Style subHeading1 = document.Styles.AddStyle("subHeading1", "normalStyle");
             subHeading1.Font.Size = 14;
-            //subHeading1.Font.Underline = Underline.Single;
             subHeading1.Font.Bold = true;
-            //subHeading1.Font.Name = "Calibri (Body)";
 
             Style subHeading2 = document.Styles.AddStyle("subHeading2", "normalStyle");
             subHeading2.Font.Size = 12;
             subHeading2.Font.Bold = true;
             subHeading2.Font.Italic = true;
-            //subHeading2.Font.Name = "Calibri (Body)";
 
             Style subHeading3 = document.Styles.AddStyle("subHeading3", "normalStyle");
             subHeading3.Font.Size = 12;
             subHeading3.Font.Bold = true;
-            //subHeading3.Font.Name = "Calibri (Body)";
 
             Style normalTxt = document.Styles.AddStyle("normalTxt", "normalStyle");
             normalTxt.Font.Size = 12;
-            //normalTxt.Font.Name = "Calibri (Body)";
-
-
 
             //full actions table to be inserted at the end
 
@@ -90,10 +68,10 @@ namespace ControlAssuranceAPI.Libs
             fullActionstable.Borders.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(127, 127, 127);
             fullActionstable.Rows.LeftIndent = 0;
 
-            Column fullActionsColumn = fullActionstable.AddColumn("6cm");
-            fullActionsColumn = fullActionstable.AddColumn("2cm");
-            fullActionsColumn = fullActionstable.AddColumn("4cm");
-            fullActionsColumn = fullActionstable.AddColumn("4cm");
+            fullActionstable.AddColumn("6cm");
+            fullActionstable.AddColumn("2cm");
+            fullActionstable.AddColumn("4cm");
+            fullActionstable.AddColumn("4cm");
 
 
             // Create the header of the table
@@ -129,7 +107,7 @@ namespace ControlAssuranceAPI.Libs
 
             paragraph.AddLineBreak();
             paragraph.AddLineBreak();
-            string periodDatesStr = $"{this.GetDayWithSuffix(periodStartDate.Day)} {periodStartDate.ToString("MMMM yyyy")} to {this.GetDayWithSuffix(periodEndDate.Day)} {periodEndDate.ToString("MMMM yyyy")}";
+            string periodDatesStr = $"{GetDayWithSuffix(periodStartDate != null ? periodStartDate.Value.Day : 0)} {periodStartDate?.ToString("MMMM yyyy")} to {GetDayWithSuffix(periodEndDate != null ? periodEndDate.Value.Day : 0)} {periodEndDate?.ToString("MMMM yyyy")}";
             paragraph.AddFormattedText(periodDatesStr, "heading3");
 
             section.AddPageBreak();
@@ -154,45 +132,37 @@ namespace ControlAssuranceAPI.Libs
 
             //page 3 ... n (specific areas)
 
-            //int goElementIndex = 0;
             int goElementEvidenceIndexAcrossDGArea = 0;
             int goElementActionIndexAcrossDGArea = 0;
 
-
-            int totalGoElements = goForm.GoElements.Count();
-            foreach (var goElement in goForm.GoElements)
+            foreach (var goElement in goForm?.GoElements ?? Enumerable.Empty<GoElement>())
             {
-
-
                 Paragraph paragraphGoElement1 = section.AddParagraph();
 
-                paragraphGoElement1.AddFormattedText($"Specific Area Evidence: {goElement.GoDefElement.Title}", "heading2");
+                paragraphGoElement1.AddFormattedText($"Specific Area Evidence: {goElement?.GoDefElement?.Title}", "heading2");
                 paragraphGoElement1.AddLineBreak(); paragraphGoElement1.AddLineBreak(); paragraphGoElement1.AddLineBreak();
 
                 paragraphGoElement1.AddFormattedText("Rating", "subHeading1");
                 paragraphGoElement1.AddLineBreak(); paragraphGoElement1.AddLineBreak();
-                paragraphGoElement1.AddFormattedText($"Overall rating is {goDER.getRatingLabel(goElement.Rating)}.", "normalTxt");
+                paragraphGoElement1.AddFormattedText($"Overall rating is {goDER.getRatingLabel(goElement?.Rating ?? "" )}.", "normalTxt");
                 paragraphGoElement1.AddLineBreak(); paragraphGoElement1.AddLineBreak();
 
                 paragraphGoElement1.AddFormattedText("Statement", "subHeading1");
                 paragraphGoElement1.AddLineBreak(); paragraphGoElement1.AddLineBreak();
-                paragraphGoElement1.AddFormattedText(goElement.EvidenceStatement?.ToString() ?? "", "normalTxt");
+                paragraphGoElement1.AddFormattedText(goElement?.EvidenceStatement?.ToString() ?? "", "normalTxt");
                 paragraphGoElement1.AddLineBreak(); paragraphGoElement1.AddLineBreak();
 
 
                 //Evidence List
-                paragraphGoElement1.AddFormattedText($"Evidence for {goElement.GoDefElement.Title}", "subHeading1");
+                paragraphGoElement1.AddFormattedText($"Evidence for {goElement?.GoDefElement?.Title}", "subHeading1");
                 paragraphGoElement1.AddLineBreak(); paragraphGoElement1.AddLineBreak();
 
                 //table code
 
                 MigraDoc.DocumentObjectModel.Tables.Table table = section.AddTable();
 
-                //table.Style = "Table";
-                table.Borders.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(127, 127, 127); //TableBorder;
+                table.Borders.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(127, 127, 127);
                 table.Borders.Width = 0.25;
-                //table.Borders.Left.Width = 0.5;
-                //table.Borders.Right.Width = 0.5;
                 table.Rows.LeftIndent = 0;
 
                 // Before you can add a row, you must define the columns
@@ -217,42 +187,34 @@ namespace ControlAssuranceAPI.Libs
                 row.Format.Font.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(255, 255, 255);
 
                 row.Cells[0].AddParagraph("ID");
-                //row.Cells[0].Format.Font.Bold = false;
                 row.Cells[0].Format.Alignment = ParagraphAlignment.Left;
 
                 row.Cells[1].AddParagraph("Title");
-                //row.Cells[0].Format.Font.Bold = false;
                 row.Cells[1].Format.Alignment = ParagraphAlignment.Left;
-                //row.Cells[0].VerticalAlignment = VerticalAlignment.Bottom;
-                //row.Cells[0].MergeDown = 1;
                 row.Cells[2].AddParagraph("Additional Notes");
                 row.Cells[2].Format.Alignment = ParagraphAlignment.Left;
-                //row.Cells[1].MergeRight = 3;
                 row.Cells[3].AddParagraph("Uploaded By");
                 row.Cells[3].Format.Alignment = ParagraphAlignment.Left;
-                //row.Cells[2].VerticalAlignment = VerticalAlignment.Bottom;
-                //row.Cells[2].MergeDown = 1;
 
                 Paragraph paragraphGoElementEvs = section.AddParagraph();
-                //int goElementEvidenceIndex = 0;
-                foreach (var goElementEvidence in goElement.GoElementEvidences.Where(x => x.Title != null))
+                foreach (var goElementEvidence in goElement?.GoElementEvidences?.Where(x => x.Title != null) ?? Enumerable.Empty<GoElementEvidence>())
                 {
-                    //string evidenceSrNo = $"{goElementIndex + 1}-{goElementEvidenceIndex + 1}";
+                    if (goElementEvidence == null)
+                        continue;
+
                     string evidenceSrNo = $"{goElementEvidenceIndexAcrossDGArea + 1}";
-                    string evidenceSrNoWithGroup = $"{goElement.GoDefElement.Title} Evidence {evidenceSrNo}";
+                    string evidenceSrNoWithGroup = $"{goElement?.GoDefElement?.Title} Evidence {evidenceSrNo}";
 
                     row = table.AddRow();
                     row.Cells[0].AddParagraph(evidenceSrNo); //ID
                     row.Cells[1].AddParagraph(goElementEvidence.Details?.ToString() ?? ""); //Title
                     row.Cells[2].AddParagraph(goElementEvidence.AdditionalNotes?.ToString() ?? ""); //AdditionalNotes
-                    row.Cells[3].AddParagraph(goElementEvidence.User.Title?.ToString() ?? ""); //Uploaded By
+                    row.Cells[3].AddParagraph(goElementEvidence?.User?.Title?.ToString() ?? ""); //Uploaded By
 
 
                     //also create new pdf per evidence and save
-                    this.CreateGovEvidencePdf(sharepointLib, ref finalEvList, goElementEvidence, dgArea, evidenceSrNoWithGroup, tempLocation);
+                    CreateGovEvidencePdf(sharepointLib, ref finalEvList, goElementEvidence ?? new GoElementEvidence(), dgArea?? "", evidenceSrNoWithGroup, tempLocation);
 
-
-                    //goElementEvidenceIndex++;
                     goElementEvidenceIndexAcrossDGArea++;
                 }
                 paragraphGoElementEvs.AddLineBreak(); paragraphGoElementEvs.AddLineBreak();
@@ -262,7 +224,7 @@ namespace ControlAssuranceAPI.Libs
                 //Action Plan List
 
                 Paragraph paragraphGoElementActions = section.AddParagraph();
-                paragraphGoElementActions.AddFormattedText($"Action Plan for {goElement.GoDefElement.Title}", "subHeading1");
+                paragraphGoElementActions.AddFormattedText($"Action Plan for {goElement?.GoDefElement?.Title}", "subHeading1");
                 paragraphGoElementActions.AddLineBreak(); paragraphGoElementActions.AddLineBreak();
 
                 table = section.AddTable();
@@ -271,10 +233,10 @@ namespace ControlAssuranceAPI.Libs
                 table.Rows.LeftIndent = 0;
 
                 // Before you can add a row, you must define the columns
-                column = table.AddColumn("6cm");
-                column = table.AddColumn("2cm");
-                column = table.AddColumn("4cm");
-                column = table.AddColumn("4cm");
+                table.AddColumn("6cm");
+                table.AddColumn("2cm");
+                table.AddColumn("4cm");
+                table.AddColumn("4cm");
 
                 // Create the header of the table
                 row = table.AddRow();
@@ -289,18 +251,14 @@ namespace ControlAssuranceAPI.Libs
                 row.Cells[2].AddParagraph("Timescale");
                 row.Cells[3].AddParagraph("Owner");
 
-
-                //int goElementActionIndex = 0;
-                foreach (var goElementAction in goElement.GoElementActions)
+                foreach (var goElementAction in goElement?.GoElementActions ?? Enumerable.Empty<GoElementAction>())
                 {
-
-                    //string actionSrNo = $"{goElementIndex + 1}-{goElementActionIndex + 1}";
                     string actionSrNo = $"{goElementActionIndexAcrossDGArea + 1}";
 
                     row = table.AddRow();
                     row.Shading.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(207, 218, 233);
-                    row.Cells[0].AddParagraph($"{actionSrNo} {goElement.GoDefElement.Title}"); //ID
-                    row.Cells[1].AddParagraph(goElementAction.EntityPriority.Title?.ToString() ?? ""); //Priority
+                    row.Cells[0].AddParagraph($"{actionSrNo} {goElement?.GoDefElement?.Title}"); //ID
+                    row.Cells[1].AddParagraph(goElementAction.EntityPriority?.Title?.ToString() ?? ""); //Priority
                     row.Cells[2].AddParagraph(goElementAction.Timescale?.ToString() ?? ""); //Timescale
                     row.Cells[3].AddParagraph(goElementAction.Owner?.ToString() ?? ""); //Owner
 
@@ -321,31 +279,22 @@ namespace ControlAssuranceAPI.Libs
                     //full actions row
                     fullActionsRow = fullActionstable.AddRow();
                     fullActionsRow.Shading.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(207, 218, 233);
-                    fullActionsRow.Cells[0].AddParagraph($"{actionSrNo} {goElement.GoDefElement.Title}"); //ID
-                    fullActionsRow.Cells[1].AddParagraph(goElementAction.EntityPriority.Title?.ToString() ?? ""); //Priority
-                    fullActionsRow.Cells[2].AddParagraph(goElementAction.Timescale?.ToString() ?? ""); //Timescale
-                    fullActionsRow.Cells[3].AddParagraph(goElementAction.Owner?.ToString() ?? ""); //Owner
+                    fullActionsRow.Cells[0].AddParagraph($"{actionSrNo} {goElement?.GoDefElement?.Title}"); //ID
+                    fullActionsRow.Cells[1].AddParagraph(goElementAction?.EntityPriority?.Title?.ToString() ?? ""); //Priority
+                    fullActionsRow.Cells[2].AddParagraph(goElementAction?.Timescale?.ToString() ?? ""); //Timescale
+                    fullActionsRow.Cells[3].AddParagraph(goElementAction?.Owner?.ToString() ?? ""); //Owner
 
                     //2nd row with action+progress
                     Paragraph fullActinsRowp2ndRow = p2ndRow.Clone();
                     fullActionsRow = fullActionstable.AddRow();
                     fullActionsRow.Cells[0].MergeRight = 3;
                     fullActionsRow.Cells[0].Add(fullActinsRowp2ndRow);
-
-                    //goElementActionIndex++;
                     goElementActionIndexAcrossDGArea++;
                 }
 
-
-
-
-
-                //goElementIndex++;
                 section.AddPageBreak();
 
             }
-
-
 
             //full action plan list
             Paragraph paragraphFullActions = section.AddParagraph();
@@ -354,38 +303,23 @@ namespace ControlAssuranceAPI.Libs
 
             section.Add(fullActionstable);
 
-
-
-
-
-
-
-
             document.UseCmykColor = true;
             const bool unicode = false;
-            const PdfFontEmbedding embedding = PdfFontEmbedding.Always;
-            PdfDocumentRenderer pdfRenderer = new PdfDocumentRenderer(unicode, embedding);
+            PdfDocumentRenderer pdfRenderer = new PdfDocumentRenderer(unicode);
             pdfRenderer.Document = document;
             pdfRenderer.RenderDocument();
-
-
             pdfRenderer.PdfDocument.Save(firstPdfPath);
-
-
 
             //First pdf created, now merge all the files
             string outputPdfPath = System.IO.Path.Combine(tempLocation, outputPdfName);
-
-            this.MergePDFs(outputPdfPath, finalEvList);
-
+            MergePDFs(outputPdfPath, finalEvList);
             //then upload final out final to the sharepoint
             sharepointLib.UploadFinalReport1(outputPdfPath, outputPdfName);
 
         }
 
-        private void CreateGovEvidencePdf(SharepointLib sharepointLib, ref List<string> finalEvList, Models.GoElementEvidence goElementEvidence, string dgArea, string evidenceSrNoWithGroup, string tempLocation)
+        private static void CreateGovEvidencePdf(SharepointLib sharepointLib, ref List<string> finalEvList, Models.GoElementEvidence goElementEvidence, string dgArea, string evidenceSrNoWithGroup, string tempLocation)
         {
-
             Document document = new Document();
 
             Style normalStyle = document.Styles.AddStyle("normalStyle", "Normal");
@@ -393,40 +327,29 @@ namespace ControlAssuranceAPI.Libs
 
             Style coverDGArea = document.Styles.AddStyle("coverDGArea", "normalStyle");
             coverDGArea.Font.Size = 18;
-            //coverDGArea.Font.Name = "Calibri (Body)";
 
             Style coverEVNo = document.Styles.AddStyle("coverEVNo", "normalStyle");
             coverEVNo.Font.Size = 22;
-            //coverEVNo.Font.Name = "Calibri (Body)";
 
             Style coverEvDetails = document.Styles.AddStyle("coverEvDetails", "normalStyle");
             coverEvDetails.Font.Size = 14;
-            //coverEvDetails.Font.Name = "Calibri (Body)";
             coverEvDetails.Font.Italic = true;
 
             Style subHeading1 = document.Styles.AddStyle("subHeading1", "normalStyle");
             subHeading1.Font.Size = 14;
             subHeading1.Font.Underline = Underline.Single;
-            //subHeading1.Font.Name = "Calibri (Body)";
 
             Style subHeading2 = document.Styles.AddStyle("subHeading2", "normalStyle");
             subHeading2.Font.Size = 12;
             subHeading2.Font.Bold = true;
             subHeading2.Font.Italic = true;
-            //subHeading2.Font.Name = "Calibri (Body)";
 
             Style subHeading3 = document.Styles.AddStyle("subHeading3", "normalStyle");
             subHeading3.Font.Size = 12;
             subHeading3.Font.Bold = true;
-            //subHeading3.Font.Name = "Calibri (Body)";
 
             Style normalTxt = document.Styles.AddStyle("normalTxt", "normalStyle");
             normalTxt.Font.Size = 12;
-            //normalTxt.Font.Name = "Calibri (Body)";
-
-
-
-
 
             Section section = document.AddSection();
 
@@ -449,13 +372,10 @@ namespace ControlAssuranceAPI.Libs
                 section.AddPageBreak();
                 Paragraph paragraphLink = section.AddParagraph();
 
-
                 paragraphLink.AddFormattedText("Evidence Link", "subHeading3");
                 paragraphLink.AddLineBreak();
                 var h = paragraphLink.AddHyperlink(goElementEvidence.Title?.ToString() ?? "", HyperlinkType.Web);
                 h.AddFormattedText(goElementEvidence.Title?.ToString() ?? "");
-
-
             }
             else
             {
@@ -464,14 +384,11 @@ namespace ControlAssuranceAPI.Libs
                 {
                     sharepointLib.DownloadEvidence(goElementEvidence.Title, tempLocation);
                 }
-
             }
-
 
             document.UseCmykColor = true;
             const bool unicode = false;
-            const PdfFontEmbedding embedding = PdfFontEmbedding.Always;
-            PdfDocumentRenderer pdfRenderer = new PdfDocumentRenderer(unicode, embedding);
+            PdfDocumentRenderer pdfRenderer = new PdfDocumentRenderer(unicode);
             pdfRenderer.Document = document;
             pdfRenderer.RenderDocument();
 
@@ -489,22 +406,16 @@ namespace ControlAssuranceAPI.Libs
                 pdfRenderer.PdfDocument.Save(pdfPath1);
 
                 //now combile 2 files and save as with final evidence name
-                string pdfPath2 = System.IO.Path.Combine(tempLocation, goElementEvidence.Title);
+                string pdfPath2 = System.IO.Path.Combine(tempLocation, goElementEvidence?.Title ?? "");
 
-
-                //string []filesToMarge = { pdfPath1, pdfPath2 };
                 List<string> filesToMarge = new List<string> { pdfPath1, pdfPath2 };
 
-                string pdfPath = System.IO.Path.Combine(tempLocation, $"{goElementEvidence.ID}_Ev.pdf");
+                string pdfPath = System.IO.Path.Combine(tempLocation, $"{goElementEvidence?.ID}_Ev.pdf");
 
-                this.MergePDFs(pdfPath, filesToMarge);
+                MergePDFs(pdfPath, filesToMarge);
 
                 finalEvList.Add(pdfPath);
             }
-
-
-
-
         }
 
         #endregion Gov
@@ -514,12 +425,9 @@ namespace ControlAssuranceAPI.Libs
         public void CreatetNaoPdf(Models.NAOOutput naoOutput, NAOPublicationRepository nAOPublicationRepository, NAOPeriodRepository nAOPeriodRepository, string tempLocation, string outputPdfName, string spSiteUrl, string spAccessDetails)
         {
             SharepointLib sharepointLib = new SharepointLib(spSiteUrl, spAccessDetails);
-            //string firstPdfPath = System.IO.Path.Combine(tempLocation, "first.pdf");
 
-            string dgArea = naoOutput.DirectorateGroup.Title;
-
-            int dgAreaId = naoOutput.DirectorateGroupId.Value;
-
+            string dgArea = naoOutput?.DirectorateGroup?.Title ?? "";
+            int dgAreaId = naoOutput?.DirectorateGroupId ?? 0;
             var publications = nAOPublicationRepository.GetPublications(dgAreaId, false, false, false, true);
 
             Document document = new Document();
@@ -547,54 +455,41 @@ namespace ControlAssuranceAPI.Libs
 
             Style heading1 = document.Styles.AddStyle("heading1", "normalStyle");
             heading1.Font.Size = 48;
-            //heading1.Font.Name = "Calibri (Body)";
             heading1.Font.Color = Color.FromRgb(0, 126, 192);
 
             Style heading2 = document.Styles.AddStyle("heading2", "normalStyle");
             heading2.Font.Size = 26;
-            //heading2.Font.Name = "Calibri (Body)";
             heading2.Font.Color = Color.FromRgb(196, 89, 17);
 
             Style heading3 = document.Styles.AddStyle("heading3", "normalStyle");
             heading3.Font.Size = 14;
-            //heading3.Font.Name = "Calibri (Body)";
             heading3.Font.Color = Color.FromRgb(0, 0, 0);
 
             Style pubHeading = document.Styles.AddStyle("pubHeading", "normalStyle");
             pubHeading.Font.Size = 20;
-            //pubHeading.Font.Name = "Calibri Light (Headings)";
             pubHeading.Font.Bold = true;
             pubHeading.Font.Color = Color.FromRgb(0, 126, 192);
 
             Style recHeading = document.Styles.AddStyle("recHeading", "normalStyle");
             recHeading.Font.Size = 14;
-            //recHeading.Font.Name = "Calibri Light (Headings)";
             recHeading.Font.Bold = true;
             recHeading.Font.Color = Color.FromRgb(0, 126, 192);
 
             Style recSubHeading = document.Styles.AddStyle("recSubHeading", "normalStyle");
-            //recSubHeading.Font.Size = 14;
-            //recSubHeading.Font.Name = "Calibri (Body)";
             recSubHeading.Font.Bold = true;
             recSubHeading.Font.Color = Color.FromRgb(196, 89, 17);
 
-            Style normalTxt = document.Styles.AddStyle("normalTxt", "normalStyle");
-            //normalTxt.Font.Size = 11;
-            //normalTxt.Font.Name = "Calibri (Body)";
-
+            document.Styles.AddStyle("normalTxt", "normalStyle");
             Style normalTxtLink = document.Styles.AddStyle("normalTxtLink", "normalStyle");
-            //normalTxtLink.Font.Name = "Calibri (Body)";
             normalTxtLink.Font.Color = Color.FromRgb(0, 0, 255);
             normalTxtLink.Font.Underline = Underline.Single;
 
             Style normalItalicTxt = document.Styles.AddStyle("normalItalicTxt", "normalStyle");
-            //normalItalicTxt.Font.Size = 12;
-            //normalItalicTxt.Font.Name = "Calibri (Body)";
             normalItalicTxt.Font.Italic = true;
 
             #endregion styles
 
-            
+
 
             #region Page1(cover page)
 
@@ -612,28 +507,18 @@ namespace ControlAssuranceAPI.Libs
             paragraph.AddFormattedText("NAO/PAC Publication Updates", "heading2");
 
 
-            paragraph.AddLineBreak();paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak();
-            //string periodDatesStr = $"{this.GetDayWithSuffix(periodStartDate.Day)} {periodStartDate.ToString("MMMM yyyy")} to {this.GetDayWithSuffix(periodEndDate.Day)} {periodEndDate.ToString("MMMM yyyy")}";
-            //paragraph.AddFormattedText("Period", "heading3");
-            //paragraph.AddLineBreak();
-            //paragraph.AddFormattedText(periodDatesStr, "heading3");
+            paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak();
             paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak();
 
-            
-
             //list of publications
-
             MigraDoc.DocumentObjectModel.Tables.Table table = section.AddTable();
 
-            //table.Style = "Table";
-            table.Borders.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(127, 127, 127); //TableBorder;
+            table.Borders.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(127, 127, 127);
             table.Borders.Width = 0.25;
             table.LeftPadding = 10;
             table.RightPadding = 10;
             table.TopPadding = 5;
             table.BottomPadding = 5;
-            //table.Borders.Left.Width = 0.5;
-            //table.Borders.Right.Width = 0.5;
             table.Rows.LeftIndent = 0;
 
             // Before you can add a row, you must define the columns
@@ -645,16 +530,10 @@ namespace ControlAssuranceAPI.Libs
             Row row = table.AddRow();
             row.HeadingFormat = true;
             row.Format.Alignment = ParagraphAlignment.Left;
-            //row.Format.Font.Bold = true;
-
             row.Shading.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(0, 126, 192);
             row.Format.Font.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(255, 255, 255);
-
             row.Cells[0].AddParagraph("Publications");
             row.Cells[0].Format.Alignment = ParagraphAlignment.Left;
-
-
-
 
             foreach (var p in publications)
             {
@@ -674,7 +553,6 @@ namespace ControlAssuranceAPI.Libs
                     lastPeriodId = lastPeriod.ID;
                 }
 
-                //need page break before starting of any publication contents
                 section.AddPageBreak();
 
                 paragraph = section.AddParagraph();
@@ -682,10 +560,7 @@ namespace ControlAssuranceAPI.Libs
                 paragraph.AddLineBreak();
                 paragraph.AddFormattedText(p.Summary?.ToString() ?? "", "normalTxt");
 
-
-                //Links
-
-                if (string.IsNullOrEmpty(p.Links) == false)
+                if (!string.IsNullOrEmpty(p.Links))
                 {
                     paragraph.AddLineBreak();
                     paragraph.AddFormattedText("Links: ");
@@ -706,24 +581,19 @@ namespace ControlAssuranceAPI.Libs
                     }
                 }
 
-
-
                 paragraph.AddLineBreak(); paragraph.AddLineBreak();
                 paragraph.AddFormattedText($"Publication Type: {p.Type}", "normalTxt");
                 paragraph.AddLineBreak();
                 paragraph.AddFormattedText($"Publication Year: {p.Year?.ToString() ?? ""}", "normalTxt");
                 paragraph.AddLineBreak();
 
-
-
                 if (lastPeriodId > 0)
                 {
-                    paragraph.AddFormattedText($"Period: {lastPeriod.PeriodStartDate?.ToString("dd/MM/yyyy") ?? ""} to {lastPeriod.PeriodEndDate?.ToString("dd/MM/yyyy") ?? ""}", "normalTxt");
+                    paragraph.AddFormattedText($"Period: {lastPeriod?.PeriodStartDate?.ToString("dd/MM/yyyy") ?? ""} to {lastPeriod?.PeriodEndDate?.ToString("dd/MM/yyyy") ?? ""}", "normalTxt");
                     paragraph.AddLineBreak(); paragraph.AddLineBreak();
                 }
                 else
                 {
-                    //lastPeriodId=0
                     paragraph.AddFormattedText($"Period: {p.PeriodStart?.ToString() ?? ""} to {p.PeriodEnd?.ToString() ?? ""}", "normalTxt");
                     paragraph.AddLineBreak();
                     paragraph.AddFormattedText("This is the first period and is currently in progress. No updates are available.", "normalTxt");
@@ -732,9 +602,6 @@ namespace ControlAssuranceAPI.Libs
                     continue;
                 }
 
-
-
-                //var recs = nAOPublicationRepository.Find(p.ID).NAORecommendations;
                 //changing following cause we only want recs of last period ie which recs have updates for the last period and not get archived recs (NAORecStatusTypeId is 4)
                 var recs = nAOPublicationRepository.Find(p.ID).NAORecommendations.Where(x => x.NAOUpdates.Any(u => u.NAOPeriodId == lastPeriodId && u.NAORecStatusTypeId != 4));
 
@@ -756,26 +623,24 @@ namespace ControlAssuranceAPI.Libs
                 int percentClosed = 0;
                 try
                 {
-                    decimal a = (decimal)((decimal)closedRecs / (decimal)totalRecs);
+                    decimal a = closedRecs / totalRecs;
                     decimal b = Math.Round((a * 100));
                     percentClosed = (int)b;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    string m = ex.Message;
+                    //no action required
                 }
 
 
                 table = section.AddTable();
 
-                table.Borders.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(127, 127, 127); //TableBorder;
+                table.Borders.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(127, 127, 127);
                 table.Borders.Width = 0.25;
                 table.LeftPadding = 10;
                 table.RightPadding = 10;
                 table.TopPadding = 5;
                 table.BottomPadding = 5;
-                //table.Borders.Left.Width = 0.5;
-                //table.Borders.Right.Width = 0.5;
                 table.Rows.LeftIndent = 0;
 
                 // Before you can add a row, you must define the columns
@@ -799,7 +664,6 @@ namespace ControlAssuranceAPI.Libs
                 row = table.AddRow();
                 row.HeadingFormat = true;
                 row.Format.Alignment = ParagraphAlignment.Left;
-                //row.Format.Font.Bold = true;
 
                 row.Shading.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(0, 126, 192);
                 row.Format.Font.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(255, 255, 255);
@@ -815,9 +679,6 @@ namespace ControlAssuranceAPI.Libs
                 row.HeadingFormat = true;
                 row.Format.Alignment = ParagraphAlignment.Left;
 
-                //row.Shading.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(0, 126, 192);
-                //row.Format.Font.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(255, 255, 255);
-
                 row.Cells[0].AddParagraph($"{totalRecs}");
                 row.Cells[1].AddParagraph($"{openRecs}");
                 row.Cells[2].AddParagraph($"{closedRecs}");
@@ -827,10 +688,10 @@ namespace ControlAssuranceAPI.Libs
                 #endregion rec stats table
 
                 paragraph = section.AddParagraph();
-                
+
 
                 //recs loop to show each rec contents
-                foreach(var rec in recs)
+                foreach (var rec in recs)
                 {
                     paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak();
                     paragraph.AddFormattedText($"Recommendation: {rec.Title?.ToString() ?? ""}", "recHeading");
@@ -839,9 +700,9 @@ namespace ControlAssuranceAPI.Libs
                     paragraph.AddLineBreak();
 
                     var update = rec.NAOUpdates.FirstOrDefault(u => u.NAOPeriodId == lastPeriodId);
-                    string recStatus = update.NAORecStatusType.Title?.ToString() ?? "";
+                    string recStatus = update?.NAORecStatusType?.Title?.ToString() ?? "";
                     string orgTargetDate = rec.OriginalTargetDate?.ToString() ?? "";
-                    string targetDate = update.TargetDate?.ToString() ?? "";
+                    string targetDate = update?.TargetDate?.ToString() ?? "";
 
                     paragraph.AddFormattedText($"Recommendation Status: {recStatus}", "normalTxt");
                     paragraph.AddLineBreak();
@@ -864,12 +725,12 @@ namespace ControlAssuranceAPI.Libs
                     paragraph.AddLineBreak();
 
 
-                    paragraph.AddFormattedText($"{lastPeriod.PeriodStartDate.Value.ToString("dd/MM/yyyy")} to {lastPeriod.PeriodEndDate.Value.ToString("dd/MM/yyyy")}", "normalTxt");
+                    paragraph.AddFormattedText($"{lastPeriod?.PeriodStartDate?.ToString("dd/MM/yyyy")} to {lastPeriod?.PeriodEndDate?.ToString("dd/MM/yyyy")}", "normalTxt");
                     paragraph.AddLineBreak();
-                    paragraph.AddFormattedText($"{update.ActionsTaken?.ToString() ?? ""}", "normalTxt");
+                    paragraph.AddFormattedText($"{update?.ActionsTaken?.ToString() ?? ""}", "normalTxt");
 
                     //Links - Last Period
-                    if (string.IsNullOrEmpty(update.FurtherLinks) == false)
+                    if (!string.IsNullOrEmpty(update?.FurtherLinks))
                     {
 
                         paragraph.AddLineBreak();
@@ -895,7 +756,7 @@ namespace ControlAssuranceAPI.Libs
                     //comments
                     string commentsHeading = "";
                     int naoUpdateFeedbackTypeId = 0;
-                    if (p.Type.Contains("PAC"))
+                    if ((!string.IsNullOrEmpty(p.Type)) && p.Type.Contains("PAC"))
                     {
                         //PAC Comments
                         commentsHeading = "PAC Comments";
@@ -912,22 +773,18 @@ namespace ControlAssuranceAPI.Libs
                     paragraph.AddFormattedText(commentsHeading, "recSubHeading");
                     paragraph.AddLineBreak();
 
-                    var comments = update.NAOUpdateFeedbacks.Where(c => c.NAOUpdateFeedbackTypeId == naoUpdateFeedbackTypeId);
+                    var comments = update?.NAOUpdateFeedbacks.Where(c => c.NAOUpdateFeedbackTypeId == naoUpdateFeedbackTypeId);
 
-                    foreach(var comment in comments)
+                    if (comments != null)
                     {
-                        paragraph.AddFormattedText(comment.Comment?.ToString() ?? "", "normalTxt");
-                        paragraph.AddFormattedText($" Date: {comment.CommentDate.Value.ToString("dd MMM yyyy")} By: {comment.User.Title}", "normalItalicTxt");
-                        paragraph.AddLineBreak();
-                        //string commentTxt = $"{comment.Comment} Date: {comment.CommentDate.Value.ToString("dd MMM yyyy")} By: Tas";
+                        foreach (var comment in comments)
+                        {
+                            paragraph.AddFormattedText(comment.Comment?.ToString() ?? "", "normalTxt");
+                            paragraph.AddFormattedText($" Date: {comment?.CommentDate?.ToString("dd MMM yyyy")} By: {comment?.User?.Title}", "normalItalicTxt");
+                            paragraph.AddLineBreak();
+                        }
                     }
-
-
-
-
                 }
-
-
             }
 
 
@@ -935,15 +792,12 @@ namespace ControlAssuranceAPI.Libs
             //final creation steps
             document.UseCmykColor = true;
             const bool unicode = false;
-            const PdfFontEmbedding embedding = PdfFontEmbedding.Always;
-            PdfDocumentRenderer pdfRenderer = new PdfDocumentRenderer(unicode, embedding);
+            PdfDocumentRenderer pdfRenderer = new PdfDocumentRenderer(unicode);
             pdfRenderer.Document = document;
             pdfRenderer.RenderDocument();
 
-
             string outputPdfPath = System.IO.Path.Combine(tempLocation, outputPdfName);
             pdfRenderer.PdfDocument.Save(outputPdfPath);
-
 
             //then upload final out final to the sharepoint
             sharepointLib.UploadFinalReport1(outputPdfPath, outputPdfName);
@@ -957,7 +811,7 @@ namespace ControlAssuranceAPI.Libs
 
             List<int> lstPublicationIds = new List<int>();
             lstPublicationIds = publicationIds.Split(',').Select(int.Parse).ToList();
-            var publications = nAOPublicationRepository.NAOPublications.Where(x => lstPublicationIds.Contains(x.ID)).ToList();
+            var publications = nAOPublicationRepository.GetAll().Where(x => lstPublicationIds.Contains(x.ID)).ToList();
 
             Document document = new Document();
             Section section = document.AddSection();
@@ -984,49 +838,36 @@ namespace ControlAssuranceAPI.Libs
 
             Style heading1 = document.Styles.AddStyle("heading1", "normalStyle");
             heading1.Font.Size = 48;
-            //heading1.Font.Name = "Calibri (Body)";
             heading1.Font.Color = Color.FromRgb(0, 126, 192);
 
             Style heading2 = document.Styles.AddStyle("heading2", "normalStyle");
             heading2.Font.Size = 26;
-            //heading2.Font.Name = "Calibri (Body)";
             heading2.Font.Color = Color.FromRgb(196, 89, 17);
 
             Style heading3 = document.Styles.AddStyle("heading3", "normalStyle");
             heading3.Font.Size = 14;
-            //heading3.Font.Name = "Calibri (Body)";
             heading3.Font.Color = Color.FromRgb(0, 0, 0);
 
             Style pubHeading = document.Styles.AddStyle("pubHeading", "normalStyle");
             pubHeading.Font.Size = 20;
-            //pubHeading.Font.Name = "Calibri Light (Headings)";
             pubHeading.Font.Bold = true;
             pubHeading.Font.Color = Color.FromRgb(0, 126, 192);
 
             Style recHeading = document.Styles.AddStyle("recHeading", "normalStyle");
             recHeading.Font.Size = 14;
-            //recHeading.Font.Name = "Calibri Light (Headings)";
             recHeading.Font.Bold = true;
             recHeading.Font.Color = Color.FromRgb(0, 126, 192);
 
             Style recSubHeading = document.Styles.AddStyle("recSubHeading", "normalStyle");
-            //recSubHeading.Font.Size = 14;
-            //recSubHeading.Font.Name = "Calibri (Body)";
             recSubHeading.Font.Bold = true;
             recSubHeading.Font.Color = Color.FromRgb(196, 89, 17);
 
-            Style normalTxt = document.Styles.AddStyle("normalTxt", "normalStyle");
-            //normalTxt.Font.Size = 11;
-            //normalTxt.Font.Name = "Calibri (Body)";
-
+            document.Styles.AddStyle("normalTxt", "normalStyle");
             Style normalTxtLink = document.Styles.AddStyle("normalTxtLink", "normalStyle");
-            //normalTxtLink.Font.Name = "Calibri (Body)";
             normalTxtLink.Font.Color = Color.FromRgb(0, 0, 255);
             normalTxtLink.Font.Underline = Underline.Single;
 
             Style normalItalicTxt = document.Styles.AddStyle("normalItalicTxt", "normalStyle");
-            //normalItalicTxt.Font.Size = 12;
-            //normalItalicTxt.Font.Name = "Calibri (Body)";
             normalItalicTxt.Font.Italic = true;
 
             #endregion styles
@@ -1037,34 +878,26 @@ namespace ControlAssuranceAPI.Libs
             paragraph = section.AddParagraph();
             paragraph.Format.Alignment = ParagraphAlignment.Center;
 
-
             paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak();
             paragraph.AddFormattedText("NAO & PAC", "heading1");
-
 
             paragraph.AddLineBreak();
             paragraph.AddLineBreak();
             paragraph.AddFormattedText("Publication Updates", "heading2");
 
-
             paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak();
             paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak();
-
-
 
             //list of publications
 
             MigraDoc.DocumentObjectModel.Tables.Table table = section.AddTable();
 
-            //table.Style = "Table";
-            table.Borders.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(127, 127, 127); //TableBorder;
+            table.Borders.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(127, 127, 127);
             table.Borders.Width = 0.25;
             table.LeftPadding = 10;
             table.RightPadding = 10;
             table.TopPadding = 5;
             table.BottomPadding = 5;
-            //table.Borders.Left.Width = 0.5;
-            //table.Borders.Right.Width = 0.5;
             table.Rows.LeftIndent = 0;
 
             // Before you can add a row, you must define the columns
@@ -1082,7 +915,6 @@ namespace ControlAssuranceAPI.Libs
             Row row = table.AddRow();
             row.HeadingFormat = true;
             row.Format.Alignment = ParagraphAlignment.Left;
-            //row.Format.Font.Bold = true;
 
             row.Shading.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(0, 126, 192);
             row.Format.Font.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(255, 255, 255);
@@ -1096,32 +928,29 @@ namespace ControlAssuranceAPI.Libs
             row.Cells[2].AddParagraph("Directorate(s)");
             row.Cells[2].Format.Alignment = ParagraphAlignment.Left;
 
-
-
-
             foreach (var p in publications)
             {
                 //get DGAreas and Directorates for the publication
-                string dgAreas = "";
-                string directorates = "";
+                System.Text.StringBuilder sbDgAreas = new System.Text.StringBuilder();
+                System.Text.StringBuilder sbDirectorates = new System.Text.StringBuilder();
 
                 HashSet<DirectorateGroup> uniqueDgAreas = new HashSet<DirectorateGroup>();
-                foreach (var d in p.NAOPublicationDirectorates)
+                foreach (var d in p.NAOPublicationDirectorates.Select(pd => pd.Directorate))
                 {
-                    var dgArea = d.Directorate.DirectorateGroup;
-                    uniqueDgAreas.Add(dgArea);
+                    var dgArea = d?.DirectorateGroup;
+                    if (dgArea != null)
+                        uniqueDgAreas.Add(dgArea);
 
-                    directorates += d.Directorate.Title + ", ";
+                    sbDirectorates.Append(d?.Title + ", ");
                 }
 
                 foreach (var uniqueDgArea in uniqueDgAreas)
                 {
-                    dgAreas += uniqueDgArea.Title + ", ";
+                    sbDgAreas.Append(uniqueDgArea.Title + ", ");
                 }
 
-
-                dgAreas = dgAreas.Trim();
-                directorates = directorates.Trim();
+                string dgAreas = sbDgAreas.ToString().Trim();
+                string directorates = sbDirectorates.ToString().Trim();
                 if (dgAreas.Length > 0)
                 {
                     dgAreas = dgAreas.Substring(0, dgAreas.Length - 1);
@@ -1140,7 +969,7 @@ namespace ControlAssuranceAPI.Libs
             //next page, publications loop will start containing all info in publication + recs loop
             foreach (var p in publications)
             {
-                var lastPeriod = nAOPeriodRepository.GetLastPeriod(p.CurrentPeriodId.Value);
+                var lastPeriod = nAOPeriodRepository.GetLastPeriod(p.CurrentPeriodId ?? 0);
                 int lastPeriodId = 0;
                 if (lastPeriod != null)
                 {
@@ -1155,34 +984,31 @@ namespace ControlAssuranceAPI.Libs
                 paragraph.AddLineBreak();
 
                 //get DGAreas and Directorates for the publication
-                string dgAreas = "";
-                string directorates = "";
+                System.Text.StringBuilder sbDgAreas = new System.Text.StringBuilder();
+                System.Text.StringBuilder sbDirectorates = new System.Text.StringBuilder();
 
                 HashSet<DirectorateGroup> uniqueDgAreas = new HashSet<DirectorateGroup>();
-                foreach (var d in p.NAOPublicationDirectorates)
+                foreach (var d in p.NAOPublicationDirectorates.Select(pd => pd.Directorate))
                 {
-                    var dgArea = d.Directorate.DirectorateGroup;
-                    uniqueDgAreas.Add(dgArea);
+                    var dgArea = d?.DirectorateGroup;
+                    if(dgArea != null)
+                        uniqueDgAreas.Add(dgArea);
 
-                    directorates += d.Directorate.Title + ", ";
+                    sbDirectorates.Append(d?.Title + ", ");
                 }
 
                 foreach (var uniqueDgArea in uniqueDgAreas)
                 {
-                    dgAreas += uniqueDgArea.Title + ", ";
+                    sbDgAreas.Append(uniqueDgArea.Title + ", ");
                 }
 
-
-                dgAreas = dgAreas.Trim();
-                directorates = directorates.Trim();
+                string dgAreas = sbDgAreas.ToString().Trim();
+                string directorates = sbDirectorates.ToString().Trim();
                 if (dgAreas.Length > 0)
                 {
                     dgAreas = dgAreas.Substring(0, dgAreas.Length - 1);
                     directorates = directorates.Substring(0, directorates.Length - 1);
                 }
-
-
-
 
                 paragraph.AddFormattedText($"DG Area(s): {dgAreas}", "normalTxt");
                 paragraph.AddLineBreak();
@@ -1191,10 +1017,9 @@ namespace ControlAssuranceAPI.Libs
 
                 paragraph.AddFormattedText(p.PublicationSummary?.ToString() ?? "", "normalTxt");
 
-
                 //Links
 
-                if (string.IsNullOrEmpty(p.PublicationLink) == false)
+                if (!string.IsNullOrEmpty(p.PublicationLink))
                 {
                     paragraph.AddLineBreak();
                     paragraph.AddFormattedText("Links: ");
@@ -1214,26 +1039,20 @@ namespace ControlAssuranceAPI.Libs
 
                     }
                 }
-
-
-
                 paragraph.AddLineBreak(); paragraph.AddLineBreak();
-                paragraph.AddFormattedText($"Publication Type: {p.NAOType.Title}", "normalTxt");
+                paragraph.AddFormattedText($"Publication Type: {p?.NAOType?.Title}", "normalTxt");
                 paragraph.AddLineBreak();
-                paragraph.AddFormattedText($"Publication Year: {p.Year?.ToString() ?? ""}", "normalTxt");
+                paragraph.AddFormattedText($"Publication Year: {p?.Year?.ToString() ?? ""}", "normalTxt");
                 paragraph.AddLineBreak();
-
-
 
                 if (lastPeriodId > 0)
                 {
-                    paragraph.AddFormattedText($"Period: {lastPeriod.PeriodStartDate?.ToString("dd/MM/yyyy") ?? ""} to {lastPeriod.PeriodEndDate?.ToString("dd/MM/yyyy") ?? ""}", "normalTxt");
+                    paragraph.AddFormattedText($"Period: {lastPeriod?.PeriodStartDate?.ToString("dd/MM/yyyy") ?? ""} to {lastPeriod?.PeriodEndDate?.ToString("dd/MM/yyyy") ?? ""}", "normalTxt");
                     paragraph.AddLineBreak(); paragraph.AddLineBreak();
                 }
                 else
                 {
-                    //lastPeriodId=0
-                    paragraph.AddFormattedText($"Period: {p.CurrentPeriodStartDate?.ToString("dd/MM/yyyy") ?? ""} to {p.CurrentPeriodEndDate?.ToString("dd/MM/yyyy") ?? ""}", "normalTxt");
+                    paragraph.AddFormattedText($"Period: {p?.CurrentPeriodStartDate?.ToString("dd/MM/yyyy") ?? ""} to {p?.CurrentPeriodEndDate?.ToString("dd/MM/yyyy") ?? ""}", "normalTxt");
                     paragraph.AddLineBreak();
                     paragraph.AddFormattedText("This is the first period and is currently in progress. No updates are available.", "normalTxt");
                     paragraph.AddLineBreak(); paragraph.AddLineBreak();
@@ -1241,49 +1060,42 @@ namespace ControlAssuranceAPI.Libs
                     continue;
                 }
 
-
-                //var recs = nAOPublicationRepository.Find(p.ID).NAORecommendations;
                 //changing following cause we only want recs of last period ie which recs have updates for the last period and not get archived recs (NAORecStatusTypeId is 4)
-                var recs = nAOPublicationRepository.Find(p.ID).NAORecommendations.Where(x => x.NAOUpdates.Any(u => u.NAOPeriodId == lastPeriodId && u.NAORecStatusTypeId != 4));
+                var recs = nAOPublicationRepository?.Find(p?.ID ?? 0)?.NAORecommendations.Where(x => x.NAOUpdates.Any(u => u.NAOPeriodId == lastPeriodId && u.NAORecStatusTypeId != 4));
 
                 #region rec stats table
-
 
                 //rec stats table
                 //calculate stats
 
-                int totalRecs = recs.Count();
+                int totalRecs = recs != null ? recs.Count() : 0;
 
                 //calculations are for the last archived period
-                int openRecs = recs.Count(x => x.NAOUpdates.Any(u => u.NAORecStatusTypeId < 3));
-                int closedRecs = recs.Count(x => x.NAOUpdates.Any(u => u.NAORecStatusTypeId == 3));
+                int openRecs = recs != null ? recs.Count(x => x.NAOUpdates.Any(u => u.NAORecStatusTypeId < 3)) : 0;
+                int closedRecs = recs != null ? recs.Count(x => x.NAOUpdates.Any(u => u.NAORecStatusTypeId == 3)) : 0;
 
                 DateTime threeMonthsOlderDate = DateTime.Now.AddMonths(-3);
-                int closedRecsLast3Months = recs.Count(x => x.NAOUpdates.Any(u => u.NAORecStatusTypeId == 3 && u.ImplementationDate >= threeMonthsOlderDate));
+                int closedRecsLast3Months = recs != null ? recs.Count(x => x.NAOUpdates.Any(u => u.NAORecStatusTypeId == 3 && u.ImplementationDate >= threeMonthsOlderDate)) : 0;
 
                 int percentClosed = 0;
                 try
                 {
-                    decimal a = (decimal)((decimal)closedRecs / (decimal)totalRecs);
+                    decimal a = closedRecs / totalRecs;
                     decimal b = Math.Round((a * 100));
                     percentClosed = (int)b;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    string m = ex.Message;
+                    //no action required
                 }
 
-
                 table = section.AddTable();
-
-                table.Borders.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(127, 127, 127); //TableBorder;
+                table.Borders.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(127, 127, 127);
                 table.Borders.Width = 0.25;
                 table.LeftPadding = 10;
                 table.RightPadding = 10;
                 table.TopPadding = 5;
                 table.BottomPadding = 5;
-                //table.Borders.Left.Width = 0.5;
-                //table.Borders.Right.Width = 0.5;
                 table.Rows.LeftIndent = 0;
 
                 // Before you can add a row, you must define the columns
@@ -1307,8 +1119,6 @@ namespace ControlAssuranceAPI.Libs
                 row = table.AddRow();
                 row.HeadingFormat = true;
                 row.Format.Alignment = ParagraphAlignment.Left;
-                //row.Format.Font.Bold = true;
-
                 row.Shading.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(0, 126, 192);
                 row.Format.Font.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(255, 255, 255);
 
@@ -1322,9 +1132,6 @@ namespace ControlAssuranceAPI.Libs
                 row = table.AddRow();
                 row.HeadingFormat = true;
                 row.Format.Alignment = ParagraphAlignment.Left;
-
-                //row.Shading.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(0, 126, 192);
-                //row.Format.Font.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(255, 255, 255);
 
                 row.Cells[0].AddParagraph($"{totalRecs}");
                 row.Cells[1].AddParagraph($"{openRecs}");
@@ -1347,9 +1154,9 @@ namespace ControlAssuranceAPI.Libs
                     paragraph.AddLineBreak();
 
                     var update = rec.NAOUpdates.FirstOrDefault(u => u.NAOPeriodId == lastPeriodId);
-                    string recStatus = update.NAORecStatusType.Title?.ToString() ?? "";
+                    string recStatus = update?.NAORecStatusType?.Title?.ToString() ?? "";
                     string orgTargetDate = rec.OriginalTargetDate?.ToString() ?? "";
-                    string targetDate = update.TargetDate?.ToString() ?? "";
+                    string targetDate = update?.TargetDate?.ToString() ?? "";
 
                     paragraph.AddFormattedText($"Recommendation Status: {recStatus}", "normalTxt");
                     paragraph.AddLineBreak();
@@ -1372,14 +1179,13 @@ namespace ControlAssuranceAPI.Libs
                     paragraph.AddLineBreak();
 
 
-                    paragraph.AddFormattedText($"{lastPeriod.PeriodStartDate.Value.ToString("dd/MM/yyyy")} to {lastPeriod.PeriodEndDate.Value.ToString("dd/MM/yyyy")}", "normalTxt");
+                    paragraph.AddFormattedText($"{lastPeriod?.PeriodStartDate?.ToString("dd/MM/yyyy")} to {lastPeriod?.PeriodEndDate?.ToString("dd/MM/yyyy")}", "normalTxt");
                     paragraph.AddLineBreak();
-                    paragraph.AddFormattedText($"{update.ActionsTaken?.ToString() ?? ""}", "normalTxt");
+                    paragraph.AddFormattedText($"{update?.ActionsTaken?.ToString() ?? ""}", "normalTxt");
 
                     //Links - Last Period
-                    if (string.IsNullOrEmpty(update.FurtherLinks) == false)
+                    if (!string.IsNullOrEmpty(update?.FurtherLinks))
                     {
-
                         paragraph.AddLineBreak();
                         paragraph.AddFormattedText("Links: ");
                         var list1 = update.FurtherLinks.Trim().Split('>').ToList();
@@ -1399,11 +1205,10 @@ namespace ControlAssuranceAPI.Libs
                         }
                     }
 
-
                     //comments
                     string commentsHeading = "";
                     int naoUpdateFeedbackTypeId = 0;
-                    if (p.NAOType.Title.Contains("PAC"))
+                    if ((!string.IsNullOrEmpty(p?.NAOType?.Title)) && p.NAOType.Title.Contains("PAC"))
                     {
                         //PAC Comments
                         commentsHeading = "PAC Comments";
@@ -1420,45 +1225,27 @@ namespace ControlAssuranceAPI.Libs
                     paragraph.AddFormattedText(commentsHeading, "recSubHeading");
                     paragraph.AddLineBreak();
 
-                    var comments = update.NAOUpdateFeedbacks.Where(c => c.NAOUpdateFeedbackTypeId == naoUpdateFeedbackTypeId);
-
-                    foreach (var comment in comments)
+                    var comments = update?.NAOUpdateFeedbacks.Where(c => c.NAOUpdateFeedbackTypeId == naoUpdateFeedbackTypeId);
+                    if (comments != null)
                     {
-                        paragraph.AddFormattedText(comment.Comment?.ToString() ?? "", "normalTxt");
-                        paragraph.AddFormattedText($" Date: {comment.CommentDate.Value.ToString("dd MMM yyyy")} By: {comment.User.Title}", "normalItalicTxt");
-                        paragraph.AddLineBreak();
-                        //string commentTxt = $"{comment.Comment} Date: {comment.CommentDate.Value.ToString("dd MMM yyyy")} By: Tas";
+                        foreach (var comment in comments)
+                        {
+                            paragraph.AddFormattedText(comment.Comment?.ToString() ?? "", "normalTxt");
+                            paragraph.AddFormattedText($" Date: {comment?.CommentDate?.ToString("dd MMM yyyy")} By: {comment?.User?.Title}", "normalItalicTxt");
+                            paragraph.AddLineBreak();
+                        }
                     }
-
-
-
-
                 }
-
-
             }
-
-
-
-
-
-
-
-
-
 
             //final creation steps
             document.UseCmykColor = true;
             const bool unicode = false;
-            const PdfFontEmbedding embedding = PdfFontEmbedding.Always;
-            PdfDocumentRenderer pdfRenderer = new PdfDocumentRenderer(unicode, embedding);
+            PdfDocumentRenderer pdfRenderer = new PdfDocumentRenderer(unicode);
             pdfRenderer.Document = document;
             pdfRenderer.RenderDocument();
-
-
             string outputPdfPath = System.IO.Path.Combine(tempLocation, outputPdfName);
             pdfRenderer.PdfDocument.Save(outputPdfPath);
-
 
             //then upload final out final to the sharepoint
             sharepointLib.UploadFinalReport1(outputPdfPath, outputPdfName);
@@ -1467,10 +1254,8 @@ namespace ControlAssuranceAPI.Libs
 
         #endregion Nao
 
-
         #region CL
-
-        public void CreateCLSDSPdf(string dept, Models.CLWorker cLWorker, UserRepository userRepository, string tempLocation, string outputPdfName, string spSiteUrl, string spAccessDetails)
+        public void CreateCLSDSPdf(Models.CLWorker cLWorker, UserRepository userRepository, string tempLocation, string outputPdfName, string spSiteUrl, string spAccessDetails)
         {
             SharepointLib sharepointLib = new SharepointLib(spSiteUrl, spAccessDetails);
 
@@ -1494,13 +1279,8 @@ namespace ControlAssuranceAPI.Libs
             normalStyle.Font.Size = 11;
 
             Style rightTextStyle1 = document.Styles.AddStyle("rightTextStyle1", "normalStyle");
-            //rightTextStyle1.Font.Name = "calibri";
             rightTextStyle1.Font.Size = 16;
             rightTextStyle1.Font.Bold = true;
-            //rightTextStyle1.Font.Bold = true;
-            //rightTextStyle1.Font.Color = Color.FromRgb(255, 0, 0);
-            //rightTextStyle1.ParagraphFormat.Alignment = ParagraphAlignment.Right;
-            //rightTextStyle1.ParagraphFormat.SpaceAfter = new Unit(-18, UnitType.Point);
 
             Style boldItalic1 = document.Styles.AddStyle("boldItalic1", "normalStyle");
             boldItalic1.Font.Bold = true;
@@ -1533,12 +1313,12 @@ namespace ControlAssuranceAPI.Libs
             mainHeading.Font.Size = 20;
             mainHeading.Font.Bold = true;
 
-            Style normalTxt = document.Styles.AddStyle("normalTxt", "normalStyle");            
-            
-            Style normalTxtLink = document.Styles.AddStyle("normalTxtLink", "normalStyle");            
+            document.Styles.AddStyle("normalTxt", "normalStyle");
+
+            Style normalTxtLink = document.Styles.AddStyle("normalTxtLink", "normalStyle");
             normalTxtLink.Font.Color = Color.FromRgb(0, 0, 255);
             normalTxtLink.Font.Underline = Underline.Single;
-            
+
             Style normalItalicTxt = document.Styles.AddStyle("normalItalicTxt", "normalStyle");
             normalItalicTxt.Font.Italic = true;
 
@@ -1551,54 +1331,28 @@ namespace ControlAssuranceAPI.Libs
                 ContinuePreviousList = true,
                 ListType = ListType.BulletList3,
                 NumberPosition = 1,
-                
+
             };
 
-
             #endregion styles
-
-            string deptLine1 = "Business, Energy";
-            string deptLine2 = "& Industrial Strategy";
-            string addressLine1 = "1 Victoria St";
-            string addressLine2 = "London";
-            string addressLine3 = "SW1H 0ET";
-
-            if (dept == "DSIT")
-            {
-                deptLine1 = "Science, Innovation";
-                deptLine2 = "& Technology";
-
-                addressLine1 = "22-26 Whitehall";
-                addressLine2 = "London";
-                addressLine3 = "SW1A 2EG";
-            }
-            else if (dept == "DESNZ")
-            {
-                deptLine1 = "Energy Security ";
-                deptLine2 = "& Net Zero";
-
-                addressLine1 = "3-8 Whitehall Place";
-                addressLine2 = "London";
-                addressLine3 = "SW1A 2EG";
-            }
-
             paragraph = section.AddParagraph();
-
             paragraph.Format.Alignment = ParagraphAlignment.Right;
 
             paragraph.AddFormattedText("Department for", "rightTextStyle1");
             paragraph.AddLineBreak();
-            paragraph.AddFormattedText(deptLine1, "rightTextStyle1");
+            paragraph.AddFormattedText("Business, Energy", "rightTextStyle1");
             paragraph.AddLineBreak();
-            paragraph.AddFormattedText(deptLine2, "rightTextStyle1");
+            paragraph.AddFormattedText("& Industrial Strategy", "rightTextStyle1");
             paragraph.AddLineBreak();
             paragraph.AddLineBreak();
 
-            paragraph.AddFormattedText(addressLine1, "normalTxt");
+            paragraph.AddFormattedText("1 Victoria St", "normalTxt");
             paragraph.AddLineBreak();
-            paragraph.AddFormattedText(addressLine2, "normalTxt");
+            paragraph.AddFormattedText("Westminster", "normalTxt");
             paragraph.AddLineBreak();
-            paragraph.AddFormattedText(addressLine3, "normalTxt");
+            paragraph.AddFormattedText("London ", "normalTxt");
+            paragraph.AddLineBreak();
+            paragraph.AddFormattedText("SW1H 0ET ", "normalTxt");
             paragraph.AddLineBreak();
             paragraph.AddLineBreak();
 
@@ -1612,23 +1366,23 @@ namespace ControlAssuranceAPI.Libs
             paragraph.AddFormattedText($"Work Order number: {cLWorker.OnbWorkOrderNumber}", "normalTxt");
             paragraph.AddLineBreak();
 
-            string caseRef = $"{cLWorker.CLCase.CLComFramework?.Title ?? ""}{cLWorker.CLCase.CaseRef}";
-            if (CaseStages.GetStageNumber(cLWorker.Stage) >= CaseStages.Onboarding.Number && cLWorker.CLCase.ReqNumPositions > 1)
+            string caseRef = $"{cLWorker?.CLCase?.ComFramework?.Title ?? ""}{cLWorker?.CLCase?.CaseRef}";
+            if (CaseStages.GetStageNumber(cLWorker?.Stage ?? "") >= CaseStages.Onboarding.Number && cLWorker?.CLCase?.ReqNumPositions > 1)
             {
                 caseRef += $"/{cLWorker.CLCase.ReqNumPositions}/{cLWorker.WorkerNumber?.ToString() ?? ""}";
             }
             paragraph.AddFormattedText($"Case Ref: {caseRef}", "normalTxt");
             paragraph.AddLineBreak(); paragraph.AddLineBreak();
-            paragraph.AddFormattedText($"Contract/Extension Start Date: {cLWorker.OnbStartDate?.ToString("dd/MM/yyyy") ??""}", "normalTxt");
+            paragraph.AddFormattedText($"Contract/Extension Start Date: {cLWorker?.OnbStartDate?.ToString("dd/MM/yyyy") ?? ""}", "normalTxt");
             paragraph.AddLineBreak();
-            paragraph.AddFormattedText($"Contract End Date: {cLWorker.OnbEndDate?.ToString("dd/MM/yyyy") ?? ""}", "normalTxt");
+            paragraph.AddFormattedText($"Contract End Date: {cLWorker?.OnbEndDate?.ToString("dd/MM/yyyy") ?? ""}", "normalTxt");
             paragraph.AddLineBreak(); paragraph.AddLineBreak();
 
-            paragraph.AddFormattedText($"Agency: {cLWorker.CLCase.CLComFramework.Title?.ToString() ?? ""}", "normalTxt");
+            paragraph.AddFormattedText($"Agency: {cLWorker?.CLCase?.ComFramework?.Title?.ToString() ?? ""}", "normalTxt");
             paragraph.AddLineBreak(); paragraph.AddLineBreak();
 
             string hmUser = "";
-            hmUser = userRepository.Find(cLWorker.CLCase.ApplHMUserId.Value).Title;
+            hmUser = (cLWorker?.CLCase?.ApplHMUserId > 0) ? userRepository.Find(cLWorker.CLCase.ApplHMUserId.Value)?.Title ?? "" : "";
             paragraph.AddFormattedText($"Completed by: {hmUser}", "normalTxt");
             paragraph.AddLineBreak();
             paragraph.AddFormattedText("On behalf of: BEIS", "normalTxt");
@@ -1637,25 +1391,22 @@ namespace ControlAssuranceAPI.Libs
 
             paragraph.AddLineBreak(); paragraph.AddLineBreak(); paragraph.AddLineBreak();
 
-            string inside_outside = cLWorker.CLCase.FinIR35ScopeId == 1 ? "Inside" : "Outside";
-            string empployed_selfEmployed = cLWorker.CLCase.FinIR35ScopeId == 1 ? "Employed" : "Self-Employed";
+            string inside_outside = cLWorker?.CLCase?.FinIR35ScopeId == 1 ? "Inside" : "Outside";
+            string empployed_selfEmployed = cLWorker?.CLCase?.FinIR35ScopeId == 1 ? "Employed" : "Self-Employed";
             paragraph.AddFormattedText($"We have assessed that this engagement falls {inside_outside} of Intermediaries legislation (IR35) and you are therefore {empployed_selfEmployed} for tax purposes.", "normalTxt");
             paragraph.AddLineBreak(); paragraph.AddLineBreak();
-
-            
-
             paragraph.AddFormattedText($"This status determination was arrived at with the support of the HMRC Check Employment Status for Tax Tool, the output of which is attached.", "normalTxt");
             paragraph.AddLineBreak(); paragraph.AddLineBreak();
 
             paragraph.AddFormattedText($"If you wish to dispute the result of this determination, please contact:", "normalTxt");
             paragraph.AddLineBreak(); paragraph.AddLineBreak();
 
-            paragraph.AddFormattedText($"ics-contingentlabour@ics.gov.uk", "boldItalic1");
+            paragraph.AddFormattedText($"contingentlabour@beis.gov.uk", "boldItalic1");
             paragraph.AddLineBreak(); paragraph.AddLineBreak();
 
             paragraph.AddFormattedText($"Please note, you may only raise a dispute if you deliver your services through a limited company. Umbrella companies and PAYE workers have no right to open dispute.", "bold1");
             paragraph.AddLineBreak(); paragraph.AddLineBreak();
-            
+
             paragraph.AddFormattedText($"This status determination statement is provided in accordance with the requirements of Chapter 10, Part 2 of ITEPA 2003.", "normalTxt");
             paragraph.AddLineBreak();
             paragraph.AddLineBreak();
@@ -1671,7 +1422,7 @@ namespace ControlAssuranceAPI.Libs
             //need new paragraph now
             paragraph = section.AddParagraph();
 
-            
+
             paragraph.AddLineBreak();
             paragraph.AddFormattedText("Control & Direction:", "bold1");
             paragraph.AddLineBreak();
@@ -1743,49 +1494,32 @@ namespace ControlAssuranceAPI.Libs
             paragraph.AddLineBreak();
             section.AddParagraph("You are providing multiple contracts for multiple different clients and the call on your time from this engagement makes this practical, which is indicative of being in business / self-employment.", "BulletList");
 
-
-
-
-
-
-
-
-
             //final creation steps
             document.UseCmykColor = true;
             const bool unicode = false;
-            const PdfFontEmbedding embedding = PdfFontEmbedding.Always;
-            PdfDocumentRenderer pdfRenderer = new PdfDocumentRenderer(unicode, embedding);
+            PdfDocumentRenderer pdfRenderer = new PdfDocumentRenderer(unicode);
             pdfRenderer.Document = document;
             pdfRenderer.RenderDocument();
-
 
             string outputPdfPath = System.IO.Path.Combine(tempLocation, outputPdfName);
             pdfRenderer.PdfDocument.Save(outputPdfPath);
 
-
             //then upload final out final to the sharepoint
             string spLibListName = "CATFiles";
-            string spFolderUrl = $"CATFiles/ContingentLabourFiles/{cLWorker.CLCaseId}/";
+            string spFolderUrl = $"CATFiles/ContingentLabourFiles/{cLWorker?.CLCaseId}/";
             sharepointLib.UploadFinalReport1(outputPdfPath, outputPdfName, spFolderUrl, spLibListName);
         }
-
 
         public void CreateCLCasePdf(Models.CLWorker cLWorker, CLCaseEvidenceRepository cLCaseEvidenceRepository, UserRepository userRepository, string tempLocation, string outputPdfName, string spSiteUrl, string spAccessDetails)
         {
             SharepointLib sharepointLib = new SharepointLib(spSiteUrl, spAccessDetails);
 
             Document document = new Document();
-
-            //document.DefaultPageSetup.LeftMargin = "1.5cm";
-            //document.DefaultPageSetup.RightMargin = "1.5cm";
             Section section = document.AddSection();
 
             section.PageSetup = document.DefaultPageSetup.Clone();
             section.PageSetup.LeftMargin = "1.5cm";
             section.PageSetup.RightMargin = "1.5cm";
-
-            //var ss1 = document.DefaultPageSetup.LeftMargin;
 
             Paragraph paragraph = new Paragraph();
             paragraph.AddTab();
@@ -1804,13 +1538,8 @@ namespace ControlAssuranceAPI.Libs
             normalStyle.Font.Size = 11;
 
             Style rightTextStyle1 = document.Styles.AddStyle("rightTextStyle1", "normalStyle");
-            //rightTextStyle1.Font.Name = "calibri";
             rightTextStyle1.Font.Size = 16;
             rightTextStyle1.Font.Bold = true;
-            //rightTextStyle1.Font.Bold = true;
-            //rightTextStyle1.Font.Color = Color.FromRgb(255, 0, 0);
-            //rightTextStyle1.ParagraphFormat.Alignment = ParagraphAlignment.Right;
-            //rightTextStyle1.ParagraphFormat.SpaceAfter = new Unit(-18, UnitType.Point);
 
             Style boldItalic1 = document.Styles.AddStyle("boldItalic1", "normalStyle");
             boldItalic1.Font.Bold = true;
@@ -1835,8 +1564,6 @@ namespace ControlAssuranceAPI.Libs
             heading2.Font.Size = 26;
             heading2.Font.Color = Color.FromRgb(196, 89, 17);
 
-
-
             Style mainHeading = document.Styles.AddStyle("mainHeading", "normalStyle");
             mainHeading.Font.Size = 20;
             mainHeading.Font.Bold = true;
@@ -1847,8 +1574,7 @@ namespace ControlAssuranceAPI.Libs
             Style tblText = document.Styles.AddStyle("tblText", "normalStyle");
             tblText.Font.Size = 10;
 
-
-            Style normalTxt = document.Styles.AddStyle("normalTxt", "normalStyle");
+            document.Styles.AddStyle("normalTxt", "normalStyle");
 
             Style normalTxtLink = document.Styles.AddStyle("normalTxtLink", "normalStyle");
             normalTxtLink.Font.Color = Color.FromRgb(0, 0, 255);
@@ -1866,12 +1592,10 @@ namespace ControlAssuranceAPI.Libs
                 ContinuePreviousList = true,
                 ListType = ListType.BulletList3,
                 NumberPosition = 1,
-
             };
 
 
             #endregion styles
-
 
             #region content tables
 
@@ -1890,10 +1614,10 @@ namespace ControlAssuranceAPI.Libs
             MigraDoc.DocumentObjectModel.Tables.Table table = section.AddTable();
             SetTableStyle(ref table);
 
-            Column column = AddColumnInTable(ref table, "3.5cm", true);
-            column = AddColumnInTable(ref table, "5.5cm");
-            column = AddColumnInTable(ref table, "3.5cm", true);
-            column = AddColumnInTable(ref table, "5.5cm");
+            AddColumnInTable(ref table, "3.5cm", true);
+            AddColumnInTable(ref table, "5.5cm");
+            AddColumnInTable(ref table, "3.5cm", true);
+            AddColumnInTable(ref table, "5.5cm");
 
             Row row = table.AddRow();
             row.Format.Alignment = ParagraphAlignment.Left;
@@ -1903,10 +1627,10 @@ namespace ControlAssuranceAPI.Libs
             row.Cells[2].AddParagraph("Case Ref");
 
             string caseRef = "";
-            if (cLWorker.CLCase.CaseCreated == true)
+            if (cLWorker?.CLCase?.CaseCreated == true)
             {
-                caseRef = $"{cLWorker.CLCase.CLComFramework?.Title ?? ""}{cLWorker.CLCase.CaseRef}";
-                if (CaseStages.GetStageNumber(cLWorker.Stage) >= CaseStages.Onboarding.Number && cLWorker.CLCase.ReqNumPositions > 1)
+                caseRef = $"{cLWorker.CLCase.ComFramework?.Title ?? ""}{cLWorker.CLCase.CaseRef}";
+                if (CaseStages.GetStageNumber(cLWorker?.Stage ?? "") >= CaseStages.Onboarding.Number && cLWorker?.CLCase?.ReqNumPositions > 1)
                 {
                     caseRef += $"/{cLWorker.CLCase.ReqNumPositions}/{cLWorker.WorkerNumber?.ToString() ?? ""}";
                 }
@@ -1921,9 +1645,10 @@ namespace ControlAssuranceAPI.Libs
             //2nd row
             row = table.AddRow();
             row.Cells[0].AddParagraph("Created By");
-            row.Cells[1].AddParagraph(userRepository.Users.FirstOrDefault(x => x.ID == cLWorker.CLCase.CreatedById).Title);
+            int createdById = cLWorker?.CLCase?.CreatedById ?? 0;
+            row.Cells[1].AddParagraph(userRepository?.GetAll()?.FirstOrDefault(x => x.ID == createdById)?.Title);
             row.Cells[2].AddParagraph("Created On");
-            row.Cells[3].AddParagraph(cLWorker.CLCase.CreatedOn.Value.ToString("dd/MM/yyyy HH:mm"));
+            row.Cells[3].AddParagraph(cLWorker?.CLCase?.CreatedOn?.ToString("dd/MM/yyyy HH:mm"));
 
             #endregion Case Details
 
@@ -1941,18 +1666,17 @@ namespace ControlAssuranceAPI.Libs
 
             SetTableStyle(ref table);
 
-            column = AddColumnInTable(ref table, "3.5cm", true);
-            column = AddColumnInTable(ref table, "14.5cm");
+            AddColumnInTable(ref table, "3.5cm", true);
+            AddColumnInTable(ref table, "14.5cm");
 
 
             row = table.AddRow();
-            //row.Format.Alignment = ParagraphAlignment.Left;
             row.Cells[0].AddParagraph("Name of hiring manager");
 
             string applHMUser = "";
-            if (cLWorker.CLCase.ApplHMUserId != null)
+            if (cLWorker?.CLCase?.ApplHMUserId != null)
             {
-                applHMUser = userRepository.Users.FirstOrDefault(x => x.ID == cLWorker.CLCase.ApplHMUserId)?.Title ?? "";
+                applHMUser = userRepository?.GetAll().FirstOrDefault(x => x.ID == cLWorker.CLCase.ApplHMUserId)?.Title ?? "";
             }
 
             row.Cells[1].AddParagraph(applHMUser);
@@ -1961,11 +1685,16 @@ namespace ControlAssuranceAPI.Libs
             row.Cells[0].AddParagraph("Hiring team member");
 
             //hiring memebers
-            string hiringMembers = "";
-            foreach (var hm in cLWorker.CLCase.CLHiringMembers)
+            System.Text.StringBuilder sbHiringMembers = new System.Text.StringBuilder();
+            if(cLWorker?.CLCase?.CLHiringMembers != null)
             {
-                hiringMembers += $"{hm.User.Title}, ";
+                foreach (var hm in cLWorker.CLCase.CLHiringMembers)
+                {
+                    sbHiringMembers.Append($"{hm?.User?.Title}, ");
+                }
             }
+
+            string hiringMembers = sbHiringMembers.ToString();
             if (hiringMembers.Length > 0)
                 hiringMembers = hiringMembers.Substring(0, hiringMembers.Length - 2);
 
@@ -1988,51 +1717,50 @@ namespace ControlAssuranceAPI.Libs
 
             SetTableStyle(ref table);
 
-            column = AddColumnInTable(ref table, "3.5cm", true);
-            column = AddColumnInTable(ref table, "5.5cm");
-            column = AddColumnInTable(ref table, "3.5cm", true);
-            column = AddColumnInTable(ref table, "5.5cm");
-
+            AddColumnInTable(ref table, "3.5cm", true);
+            AddColumnInTable(ref table, "5.5cm");
+            AddColumnInTable(ref table, "3.5cm", true);
+            AddColumnInTable(ref table, "5.5cm");
 
             //1st row
             row = table.AddRow();
             row.Cells[0].AddParagraph("Title of vacancy");
-            row.Cells[1].AddParagraph(cLWorker.CLCase.ReqVacancyTitle?.ToString() ?? "");
+            row.Cells[1].AddParagraph(cLWorker?.CLCase?.ReqVacancyTitle?.ToString() ?? "");
             row.Cells[2].AddParagraph("Grade of vacancy");
-            row.Cells[3].AddParagraph(cLWorker.CLCase.CLStaffGrade?.Title ?? "");
+            row.Cells[3].AddParagraph(cLWorker?.CLCase?.CLStaffGrade?.Title ?? "");
 
             //2nd row
             row = table.AddRow();
             row.Cells[0].AddParagraph("Work proposal (what will they be doing? )");
             row.Cells[1].MergeRight = 2;
-            row.Cells[1].AddParagraph(cLWorker.CLCase.ReqWorkPurpose?.ToString() ?? "");
+            row.Cells[1].AddParagraph(cLWorker?.CLCase?.ReqWorkPurpose?.ToString() ?? "");
 
             //3rd row
             row = table.AddRow();
             row.Cells[0].AddParagraph("Cost Centre for this role");
-            row.Cells[1].AddParagraph(cLWorker.CLCase.ReqCostCentre?.ToString() ?? "");
+            row.Cells[1].AddParagraph(cLWorker?.CLCase?.ReqCostCentre?.ToString() ?? "");
             row.Cells[2].AddParagraph("Directorate this role will be in");
-            row.Cells[3].AddParagraph(cLWorker.CLCase.Directorate?.Title ?? "");
+            row.Cells[3].AddParagraph(cLWorker?.CLCase?.Directorate?.Title ?? "");
 
             //4th row
             row = table.AddRow();
             row.Cells[0].AddParagraph("Estimated start date");
-            row.Cells[1].AddParagraph(cLWorker.CLCase.ReqEstStartDate?.ToString("dd/MM/yyyy") ?? "");
+            row.Cells[1].AddParagraph(cLWorker?.CLCase?.ReqEstStartDate?.ToString("dd/MM/yyyy") ?? "");
             row.Cells[2].AddParagraph("Estimated end date");
-            row.Cells[3].AddParagraph(cLWorker.CLCase.ReqEstEndDate?.ToString("dd/MM/yyyy") ?? "");
+            row.Cells[3].AddParagraph(cLWorker?.CLCase?.ReqEstEndDate?.ToString("dd/MM/yyyy") ?? "");
 
             //5th row
             row = table.AddRow();
             row.Cells[0].AddParagraph("Professional Category");
-            row.Cells[1].AddParagraph(cLWorker.CLCase.CLProfessionalCat?.Title ?? "");
+            row.Cells[1].AddParagraph(cLWorker?.CLCase?.CLProfessionalCat?.Title ?? "");
             row.Cells[2].AddParagraph("Work location");
-            row.Cells[3].AddParagraph(cLWorker.CLCase.CLWorkLocation?.Title ?? "");
+            row.Cells[3].AddParagraph(cLWorker?.CLCase?.CLWorkLocation?.Title ?? "");
 
             //6th row
             row = table.AddRow();
             row.Cells[0].AddParagraph("Number of positions");
             row.Cells[1].MergeRight = 2;
-            row.Cells[1].AddParagraph(cLWorker.CLCase.ReqNumPositions?.ToString() ?? "");
+            row.Cells[1].AddParagraph(cLWorker?.CLCase?.ReqNumPositions?.ToString() ?? "");
 
             #endregion Requirement
 
@@ -2050,28 +1778,28 @@ namespace ControlAssuranceAPI.Libs
             table = section.AddTable();
             SetTableStyle(ref table);
 
-            column = AddColumnInTable(ref table, "3.5cm", true);
-            column = AddColumnInTable(ref table, "5.5cm");
-            column = AddColumnInTable(ref table, "3.5cm", true);
-            column = AddColumnInTable(ref table, "5.5cm");
+            AddColumnInTable(ref table, "3.5cm", true);
+            AddColumnInTable(ref table, "5.5cm");
+            AddColumnInTable(ref table, "3.5cm", true);
+            AddColumnInTable(ref table, "5.5cm");
 
             //1st row
             row = table.AddRow();
             row.Cells[0].AddParagraph("Framework");
-            row.Cells[1].AddParagraph(cLWorker.CLCase.CLComFramework?.Title ?? "");
+            row.Cells[1].AddParagraph(cLWorker?.CLCase?.ComFramework?.Title ?? "");
             row.Cells[2].AddParagraph("Confirm if you have a Fieldglass account");
-            row.Cells[3].AddParagraph(cLWorker.CLCase.ComPSRAccountId?.ToString() ?? "");
+            row.Cells[3].AddParagraph(cLWorker?.CLCase?.ComPSRAccountId?.ToString() ?? "");
 
             //2nd row
             row = table.AddRow();
             row.Cells[0].AddParagraph("Justification if not PSR");
             row.Cells[1].MergeRight = 2;
-            row.Cells[1].AddParagraph(cLWorker.CLCase.ComJustification?.ToString() ?? "");
+            row.Cells[1].AddParagraph(cLWorker?.CLCase?.ComJustification?.ToString() ?? "");
 
             #endregion Commercial
 
             #region Resourcing Justification
-           
+
             //Resourcing Justification
             paragraph = section.AddParagraph();
             paragraph.AddLineBreak();
@@ -2084,25 +1812,25 @@ namespace ControlAssuranceAPI.Libs
             table = section.AddTable();
             SetTableStyle(ref table);
 
-            column = AddColumnInTable(ref table, "3.5cm", true);
-            column = AddColumnInTable(ref table, "14.5cm");
+            AddColumnInTable(ref table, "3.5cm", true);
+            AddColumnInTable(ref table, "14.5cm");
 
 
             //1st row
             row = table.AddRow();
             row.Cells[0].AddParagraph("Alternative resourcing options");
-            row.Cells[1].AddParagraph(cLWorker.CLCase.JustAltOptions?.ToString() ?? "");
+            row.Cells[1].AddParagraph(cLWorker?.CLCase?.JustAltOptions?.ToString() ?? "");
 
             //2nd row
             row = table.AddRow();
             row.Cells[0].AddParagraph("Succession planning");
-            row.Cells[1].AddParagraph(cLWorker.CLCase.JustSuccessionPlanning?.ToString() ?? "");
+            row.Cells[1].AddParagraph(cLWorker?.CLCase?.JustSuccessionPlanning?.ToString() ?? "");
 
             #endregion Resourcing Justification
 
             #region Finance
 
-            
+
             //Finance
             paragraph = section.AddParagraph();
             paragraph.AddLineBreak();
@@ -2115,44 +1843,44 @@ namespace ControlAssuranceAPI.Libs
             table = section.AddTable();
             SetTableStyle(ref table);
 
-            column = AddColumnInTable(ref table, "3.5cm", true);
-            column = AddColumnInTable(ref table, "5.5cm");
-            column = AddColumnInTable(ref table, "3.5cm", true);
-            column = AddColumnInTable(ref table, "5.5cm");
+            AddColumnInTable(ref table, "3.5cm", true);
+            AddColumnInTable(ref table, "5.5cm");
+            AddColumnInTable(ref table, "3.5cm", true);
+            AddColumnInTable(ref table, "5.5cm");
 
 
             //1st row
             row = table.AddRow();
             row.Cells[0].AddParagraph("Expected daily rate including fee (excluding vat)");
-            row.Cells[1].AddParagraph(cLWorker.CLCase.FinMaxRate?.ToString() ?? "");
+            row.Cells[1].AddParagraph(cLWorker?.CLCase?.FinMaxRate?.ToString() ?? "");
             row.Cells[2].AddParagraph("Estimated cost");
-            row.Cells[3].AddParagraph(cLWorker.CLCase.FinEstCost?.ToString() ?? "");
+            row.Cells[3].AddParagraph(cLWorker?.CLCase?.FinEstCost?.ToString() ?? "");
 
             //2nd row
             row = table.AddRow();
             row.Cells[0].AddParagraph("Approach to agreeing rate");
             row.Cells[1].MergeRight = 2;
-            row.Cells[1].AddParagraph(cLWorker.CLCase.FinApproachAgreeingRate?.ToString() ?? "");
+            row.Cells[1].AddParagraph(cLWorker?.CLCase?.FinApproachAgreeingRate?.ToString() ?? "");
 
             //3rd row
             row = table.AddRow();
             row.Cells[0].AddParagraph("Confirm whether in-scope of IR35");
-            row.Cells[1].AddParagraph(cLWorker.CLCase.CLIR35Scope?.Title ?? "");
+            row.Cells[1].AddParagraph(cLWorker?.CLCase?.CLIR35Scope?.Title ?? "");
             row.Cells[2].AddParagraph("IR35 evidence");
 
-
-            var ir35Ev = cLCaseEvidenceRepository.CLCaseEvidences.FirstOrDefault(x => x.ParentId == cLWorker.CLCaseId && x.EvidenceType == "IR35" && x.RecordCreated == true);
+            int caseId = cLWorker?.CLCaseId ?? 0;
+            var ir35Ev = cLCaseEvidenceRepository.GetAll().FirstOrDefault(x => x.ParentId == caseId && x.EvidenceType == "IR35" && x.RecordCreated == true);
 
             string evCellText = "";
 
-            if(ir35Ev != null)
+            if (ir35Ev != null)
             {
                 if (ir35Ev.AttachmentType == "Link") evCellText = "Linked ";
                 else evCellText = "PDF ";
 
                 evCellText += "evidence available.";
             }
-            
+
 
             row.Cells[3].AddParagraph(evCellText);
 
@@ -2160,12 +1888,12 @@ namespace ControlAssuranceAPI.Libs
             row = table.AddRow();
             row.Cells[0].AddParagraph("Summary IR35 justification");
             row.Cells[1].MergeRight = 2;
-            row.Cells[1].AddParagraph(cLWorker.CLCase.FinSummaryIR35Just?.ToString() ?? "");
+            row.Cells[1].AddParagraph(cLWorker?.CLCase?.FinSummaryIR35Just?.ToString() ?? "");
 
             #endregion Finance
 
             #region Other
-            
+
             //Other
             paragraph = section.AddParagraph();
             paragraph.AddLineBreak();
@@ -2178,19 +1906,18 @@ namespace ControlAssuranceAPI.Libs
             table = section.AddTable();
             SetTableStyle(ref table);
 
-            column = AddColumnInTable(ref table, "3.5cm", true);
-            column = AddColumnInTable(ref table, "14.5cm");
-
+            AddColumnInTable(ref table, "3.5cm", true);
+            AddColumnInTable(ref table, "14.5cm");
 
             //1st row
             row = table.AddRow();
             row.Cells[0].AddParagraph("Any additional comments");
-            row.Cells[1].AddParagraph(cLWorker.CLCase.OtherComments?.ToString() ?? "");
+            row.Cells[1].AddParagraph(cLWorker?.CLCase?.OtherComments?.ToString() ?? "");
 
             #endregion Other
 
             #region Approvers
-            
+
             //Approvers
             paragraph = section.AddParagraph();
             paragraph.AddLineBreak();
@@ -2203,25 +1930,22 @@ namespace ControlAssuranceAPI.Libs
             table = section.AddTable();
             SetTableStyle(ref table);
 
-            column = AddColumnInTable(ref table, "3.5cm", true);
-            column = AddColumnInTable(ref table, "5.5cm");
-            column = AddColumnInTable(ref table, "3.5cm", true);
-            column = AddColumnInTable(ref table, "5.5cm");
+            AddColumnInTable(ref table, "3.5cm", true);
+            AddColumnInTable(ref table, "5.5cm");
+            AddColumnInTable(ref table, "3.5cm", true);
+            AddColumnInTable(ref table, "5.5cm");
 
             string bhUser = "";
-            if (cLWorker.CLCase.BHUserId != null)
-                bhUser = userRepository.Users.FirstOrDefault(x => x.ID == cLWorker.CLCase.BHUserId)?.Title ?? "";
+            if (cLWorker?.CLCase?.BHUserId != null)
+                bhUser = userRepository?.GetAll().FirstOrDefault(x => x.ID == cLWorker.CLCase.BHUserId)?.Title ?? "";
 
             string fbpUser = "";
-            if (cLWorker.CLCase.FBPUserId != null)
-                fbpUser = userRepository.Users.FirstOrDefault(x => x.ID == cLWorker.CLCase.FBPUserId)?.Title ?? "";
+            if (cLWorker?.CLCase?.FBPUserId != null)
+                fbpUser = userRepository?.GetAll().FirstOrDefault(x => x.ID == cLWorker.CLCase.FBPUserId)?.Title ?? "";
 
             string hrbpUser = "";
-            if (cLWorker.CLCase.HRBPUserId != null)
-                hrbpUser = userRepository.Users.FirstOrDefault(x => x.ID == cLWorker.CLCase.HRBPUserId)?.Title ?? "";
-
-
-
+            if (cLWorker?.CLCase?.HRBPUserId != null)
+                hrbpUser = userRepository?.GetAll().FirstOrDefault(x => x.ID == cLWorker.CLCase.HRBPUserId)?.Title ?? "";
 
             //1st row
             row = table.AddRow();
@@ -2239,7 +1963,7 @@ namespace ControlAssuranceAPI.Libs
             #endregion Approvers
 
             #region Budget Holder Approval Decision
-            
+
             //Budget Holder Approval Decision
             paragraph = section.AddParagraph();
             paragraph.AddLineBreak();
@@ -2252,28 +1976,27 @@ namespace ControlAssuranceAPI.Libs
             table = section.AddTable();
             SetTableStyle(ref table);
 
-            column = AddColumnInTable(ref table, "3.5cm", true);
-            column = AddColumnInTable(ref table, "5.5cm");
-            column = AddColumnInTable(ref table, "3.5cm", true);
-            column = AddColumnInTable(ref table, "5.5cm");
-
+            AddColumnInTable(ref table, "3.5cm", true);
+            AddColumnInTable(ref table, "5.5cm");
+            AddColumnInTable(ref table, "3.5cm", true);
+            AddColumnInTable(ref table, "5.5cm");
 
             //1st row
             row = table.AddRow();
             row.Cells[0].AddParagraph("Decision");
-            row.Cells[1].AddParagraph( GetApprovalDecision(cLWorker.CLCase.BHApprovalDecision) );
+            row.Cells[1].AddParagraph(GetApprovalDecision(cLWorker?.CLCase?.BHApprovalDecision ?? ""));
             row.Cells[2].AddParagraph("By/Date");
 
             string bhDecisionByAndDate = "";
-            if (cLWorker.CLCase.BHDecisionById != null)
-                bhDecisionByAndDate = userRepository.Users.FirstOrDefault(x => x.ID == cLWorker.CLCase.BHDecisionById)?.Title + ", " + cLWorker.CLCase.BHDecisionDate?.ToString("dd/MM/yyyy HH:mm") ?? "";
+            if (cLWorker?.CLCase?.BHDecisionById != null)
+                bhDecisionByAndDate = userRepository?.GetAll().FirstOrDefault(x => x.ID == cLWorker.CLCase.BHDecisionById)?.Title + ", " + cLWorker.CLCase.BHDecisionDate?.ToString("dd/MM/yyyy HH:mm") ?? "";
 
             row.Cells[3].AddParagraph(bhDecisionByAndDate);
 
             #endregion Budget Holder Approval Decision
 
             #region Finance Business Partner Approval Decision
-            
+
             //Finance Business Partner Approval Decision
             paragraph = section.AddParagraph();
             paragraph.AddLineBreak();
@@ -2286,28 +2009,27 @@ namespace ControlAssuranceAPI.Libs
             table = section.AddTable();
             SetTableStyle(ref table);
 
-            column = AddColumnInTable(ref table, "3.5cm", true);
-            column = AddColumnInTable(ref table, "5.5cm");
-            column = AddColumnInTable(ref table, "3.5cm", true);
-            column = AddColumnInTable(ref table, "5.5cm");
-
+            AddColumnInTable(ref table, "3.5cm", true);
+            AddColumnInTable(ref table, "5.5cm");
+            AddColumnInTable(ref table, "3.5cm", true);
+            AddColumnInTable(ref table, "5.5cm");
 
             //1st row
             row = table.AddRow();
             row.Cells[0].AddParagraph("Decision");
-            row.Cells[1].AddParagraph(GetApprovalDecision(cLWorker.CLCase.FBPApprovalDecision));
+            row.Cells[1].AddParagraph(GetApprovalDecision(cLWorker?.CLCase?.FBPApprovalDecision ?? ""));
             row.Cells[2].AddParagraph("By/Date");
 
             string fbpDecisionByAndDate = "";
-            if (cLWorker.CLCase.FBPDecisionById != null)
-                fbpDecisionByAndDate = userRepository.Users.FirstOrDefault(x => x.ID == cLWorker.CLCase.FBPDecisionById)?.Title + ", " + cLWorker.CLCase.FBPDecisionDate?.ToString("dd/MM/yyyy HH:mm") ?? "";
+            if (cLWorker?.CLCase?.FBPDecisionById != null)
+                fbpDecisionByAndDate = userRepository?.GetAll().FirstOrDefault(x => x.ID == cLWorker.CLCase.FBPDecisionById)?.Title + ", " + cLWorker.CLCase.FBPDecisionDate?.ToString("dd/MM/yyyy HH:mm") ?? "";
 
             row.Cells[3].AddParagraph(fbpDecisionByAndDate);
 
             #endregion Finance Business Partner Approval Decision
 
             #region HR Business Partner Approval Decision
-            
+
             //HR Business Partner Approval Decision
             paragraph = section.AddParagraph();
             paragraph.AddLineBreak();
@@ -2320,27 +2042,27 @@ namespace ControlAssuranceAPI.Libs
             table = section.AddTable();
             SetTableStyle(ref table);
 
-            column = AddColumnInTable(ref table, "3.5cm", true);
-            column = AddColumnInTable(ref table, "5.5cm");
-            column = AddColumnInTable(ref table, "3.5cm", true);
-            column = AddColumnInTable(ref table, "5.5cm");
+            AddColumnInTable(ref table, "3.5cm", true);
+            AddColumnInTable(ref table, "5.5cm");
+            AddColumnInTable(ref table, "3.5cm", true);
+            AddColumnInTable(ref table, "5.5cm");
 
             //1st row
             row = table.AddRow();
             row.Cells[0].AddParagraph("Decision");
-            row.Cells[1].AddParagraph(GetApprovalDecision(cLWorker.CLCase.HRBPApprovalDecision));
+            row.Cells[1].AddParagraph(GetApprovalDecision(cLWorker?.CLCase?.HRBPApprovalDecision ?? ""));
             row.Cells[2].AddParagraph("By/Date");
 
             string hrbpDecisionByAndDate = "";
-            if (cLWorker.CLCase.HRBPDecisionById != null)
-                hrbpDecisionByAndDate = userRepository.Users.FirstOrDefault(x => x.ID == cLWorker.CLCase.HRBPDecisionById)?.Title + ", " + cLWorker.CLCase.HRBPDecisionDate?.ToString("dd/MM/yyyy HH:mm") ?? "";
+            if (cLWorker?.CLCase?.HRBPDecisionById != null)
+                hrbpDecisionByAndDate = userRepository?.GetAll().FirstOrDefault(x => x.ID == cLWorker.CLCase.HRBPDecisionById)?.Title + ", " + cLWorker.CLCase.HRBPDecisionDate?.ToString("dd/MM/yyyy HH:mm") ?? "";
 
             row.Cells[3].AddParagraph(hrbpDecisionByAndDate);
 
             #endregion HR Business Partner Approval Decision
 
             #region Internal Controls Approval Decision
-            
+
             //Internal Controls Approval Decision
             paragraph = section.AddParagraph();
             paragraph.AddLineBreak();
@@ -2353,20 +2075,20 @@ namespace ControlAssuranceAPI.Libs
             table = section.AddTable();
             SetTableStyle(ref table);
 
-            column = AddColumnInTable(ref table, "3.5cm", true);
-            column = AddColumnInTable(ref table, "5.5cm");
-            column = AddColumnInTable(ref table, "3.5cm", true);
-            column = AddColumnInTable(ref table, "5.5cm");
+            AddColumnInTable(ref table, "3.5cm", true);
+            AddColumnInTable(ref table, "5.5cm");
+            AddColumnInTable(ref table, "3.5cm", true);
+            AddColumnInTable(ref table, "5.5cm");
 
             //1st row
             row = table.AddRow();
             row.Cells[0].AddParagraph("Decision");
-            row.Cells[1].AddParagraph(GetApprovalDecision(cLWorker.CLCase.CLApprovalDecision));
+            row.Cells[1].AddParagraph(GetApprovalDecision(cLWorker?.CLCase?.CLApprovalDecision ?? ""));
             row.Cells[2].AddParagraph("By/Date");
 
             string clDecisionByAndDate = "";
-            if (cLWorker.CLCase.CLDecisionById != null)
-                clDecisionByAndDate = userRepository.Users.FirstOrDefault(x => x.ID == cLWorker.CLCase.CLDecisionById)?.Title + ", " + cLWorker.CLCase.CLDecisionDate?.ToString("dd/MM/yyyy HH:mm") ?? "";
+            if (cLWorker?.CLCase?.CLDecisionById != null)
+                clDecisionByAndDate = userRepository?.GetAll().FirstOrDefault(x => x.ID == cLWorker.CLCase.CLDecisionById)?.Title + ", " + cLWorker.CLCase.CLDecisionDate?.ToString("dd/MM/yyyy HH:mm") ?? "";
 
             row.Cells[3].AddParagraph(clDecisionByAndDate);
 
@@ -2376,7 +2098,7 @@ namespace ControlAssuranceAPI.Libs
 
             //Onboarding
 
-            if ((CaseStages.GetStageNumber(cLWorker.Stage) >= CaseStages.Onboarding.Number))
+            if ((CaseStages.GetStageNumber(cLWorker?.Stage ?? "") >= CaseStages.Onboarding.Number))
             {
                 paragraph = section.AddParagraph();
                 paragraph.AddLineBreak();
@@ -2389,67 +2111,67 @@ namespace ControlAssuranceAPI.Libs
                 table = section.AddTable();
                 SetTableStyle(ref table);
 
-                column = AddColumnInTable(ref table, "3.5cm", true);
-                column = AddColumnInTable(ref table, "5.5cm");
-                column = AddColumnInTable(ref table, "3.5cm", true);
-                column = AddColumnInTable(ref table, "5.5cm");
+                AddColumnInTable(ref table, "3.5cm", true);
+                AddColumnInTable(ref table, "5.5cm");
+                AddColumnInTable(ref table, "3.5cm", true);
+                AddColumnInTable(ref table, "5.5cm");
 
                 //1st row
                 row = table.AddRow();
                 row.Cells[0].AddParagraph("Contractor gender");
-                row.Cells[1].AddParagraph(cLWorker.CLGender?.Title ?? "");
+                row.Cells[1].AddParagraph(cLWorker?.CLGender?.Title ?? "");
                 row.Cells[2].AddParagraph("Contractor title");
-                row.Cells[3].AddParagraph(cLWorker.PersonTitle?.Title ?? "");
+                row.Cells[3].AddParagraph(cLWorker?.PersonTitle?.Title ?? "");
 
                 //2nd row
                 row = table.AddRow();
                 row.Cells[0].AddParagraph("Contractor firstname");
-                row.Cells[1].AddParagraph(cLWorker.OnbContractorFirstname?.ToString() ?? "");
+                row.Cells[1].AddParagraph(cLWorker?.OnbContractorFirstname?.ToString() ?? "");
                 row.Cells[2].AddParagraph("Contractor surname");
-                row.Cells[3].AddParagraph(cLWorker.OnbContractorSurname?.ToString() ?? "");
+                row.Cells[3].AddParagraph(cLWorker?.OnbContractorSurname?.ToString() ?? "");
 
                 //3rd row
                 row = table.AddRow();
                 row.Cells[0].AddParagraph("Contractor date of birth");
-                row.Cells[1].AddParagraph(cLWorker.OnbContractorDob?.ToString("dd/MM/yyyy") ?? "");
+                row.Cells[1].AddParagraph(cLWorker?.OnbContractorDob?.ToString("dd/MM/yyyy") ?? "");
                 row.Cells[2].AddParagraph("Contractor NI Number");
-                row.Cells[3].AddParagraph(cLWorker.OnbContractorNINum?.ToString() ?? "");
+                row.Cells[3].AddParagraph(cLWorker?.OnbContractorNINum?.ToString() ?? "");
 
                 //4th row
                 row = table.AddRow();
                 row.Cells[0].AddParagraph("Contractor telephone (personal)");
-                row.Cells[1].AddParagraph(cLWorker.OnbContractorPhone?.ToString() ?? "");
+                row.Cells[1].AddParagraph(cLWorker?.OnbContractorPhone?.ToString() ?? "");
                 row.Cells[2].AddParagraph("Contractor email (personal)");
-                row.Cells[3].AddParagraph(cLWorker.OnbContractorEmail?.ToString() ?? "");
+                row.Cells[3].AddParagraph(cLWorker?.OnbContractorEmail?.ToString() ?? "");
 
                 //5th row
                 row = table.AddRow();
                 row.Cells[0].AddParagraph("Contractor home address (personal)");
-                row.Cells[1].AddParagraph(cLWorker.OnbContractorHomeAddress?.ToString() ?? "");
+                row.Cells[1].AddParagraph(cLWorker?.OnbContractorHomeAddress?.ToString() ?? "");
                 row.Cells[2].AddParagraph("Contractor post code (personal)");
-                row.Cells[3].AddParagraph(cLWorker.OnbContractorPostCode?.ToString() ?? "");
+                row.Cells[3].AddParagraph(cLWorker?.OnbContractorPostCode?.ToString() ?? "");
 
                 //6th row
                 row = table.AddRow();
                 row.Cells[0].AddParagraph("Start date");
-                row.Cells[1].AddParagraph(cLWorker.OnbStartDate?.ToString("dd/MM/yyyy") ?? "");
+                row.Cells[1].AddParagraph(cLWorker?.OnbStartDate?.ToString("dd/MM/yyyy") ?? "");
                 row.Cells[2].AddParagraph("End date");
-                row.Cells[3].AddParagraph(cLWorker.OnbEndDate?.ToString("dd/MM/yyyy") ?? "");
+                row.Cells[3].AddParagraph(cLWorker?.OnbEndDate?.ToString("dd/MM/yyyy") ?? "");
 
                 //7th row
                 row = table.AddRow();
                 row.Cells[0].AddParagraph("Daily rate (including fee) agreed");
-                row.Cells[1].AddParagraph(cLWorker.OnbDayRate?.ToString() ?? "");
+                row.Cells[1].AddParagraph(cLWorker?.OnbDayRate?.ToString() ?? "");
                 row.Cells[2].AddParagraph("Purchase order number");
-                row.Cells[3].AddParagraph(cLWorker.PurchaseOrderNum?.ToString() ?? "");
+                row.Cells[3].AddParagraph(cLWorker?.PurchaseOrderNum?.ToString() ?? "");
 
                 //8th row
                 row = table.AddRow();
                 row.Cells[0].AddParagraph("Security clearance");
-                row.Cells[1].AddParagraph(cLWorker.CLSecurityClearance?.Title ?? "");
+                row.Cells[1].AddParagraph(cLWorker?.CLSecurityClearance?.Title ?? "");
                 row.Cells[2].AddParagraph("Security checks confirmation evidence");
-
-                var contractorSecurityCheckEv = cLCaseEvidenceRepository.CLCaseEvidences.FirstOrDefault(x => x.ParentId == cLWorker.ID && x.EvidenceType == "ContractorSecurityCheck" && x.RecordCreated == true);
+                int workerId = cLWorker?.ID ?? 0;
+                var contractorSecurityCheckEv = cLCaseEvidenceRepository.GetAll().FirstOrDefault(x => x.ParentId == workerId && x.EvidenceType == "ContractorSecurityCheck" && x.RecordCreated == true);
                 string contractorSecurityCheckEvCellText = "";
 
                 if (contractorSecurityCheckEv != null)
@@ -2468,13 +2190,13 @@ namespace ControlAssuranceAPI.Libs
                 row.Cells[1].MergeRight = 2;
 
                 string workDays = "";
-                if (cLWorker.OnbWorkingDayMon == true) workDays += "Monday, ";
-                if (cLWorker.OnbWorkingDayTue == true) workDays += "Tuesday, ";
-                if (cLWorker.OnbWorkingDayWed == true) workDays += "Wednesday, ";
-                if (cLWorker.OnbWorkingDayThu == true) workDays += "Thursday, ";
-                if (cLWorker.OnbWorkingDayFri == true) workDays += "Friday, ";
-                if (cLWorker.OnbWorkingDaySat == true) workDays += "Saturday, ";
-                if (cLWorker.OnbWorkingDaySun == true) workDays += "Sunday, ";
+                if (cLWorker?.OnbWorkingDayMon == true) workDays += "Monday, ";
+                if (cLWorker?.OnbWorkingDayTue == true) workDays += "Tuesday, ";
+                if (cLWorker?.OnbWorkingDayWed == true) workDays += "Wednesday, ";
+                if (cLWorker?.OnbWorkingDayThu == true) workDays += "Thursday, ";
+                if (cLWorker?.OnbWorkingDayFri == true) workDays += "Friday, ";
+                if (cLWorker?.OnbWorkingDaySat == true) workDays += "Saturday, ";
+                if (cLWorker?.OnbWorkingDaySun == true) workDays += "Sunday, ";
 
                 if (workDays.Length > 0)
                     workDays = workDays.Substring(0, workDays.Length - 2);
@@ -2485,28 +2207,28 @@ namespace ControlAssuranceAPI.Libs
                 row = table.AddRow();
                 row.Cells[0].AddParagraph("Declaration of conflict of interest");
                 row.Cells[1].MergeRight = 2;
-                row.Cells[1].AddParagraph(cLWorker.CLDeclarationConflict?.Title ?? "");
+                row.Cells[1].AddParagraph(cLWorker?.CLDeclarationConflict?.Title ?? "");
 
                 //11th row
                 row = table.AddRow();
                 row.Cells[0].AddParagraph("Name of Line Manager");
-                row.Cells[1].AddParagraph(cLWorker.OnbLineManagerUserId != null ? userRepository.Users.FirstOrDefault(x => x.ID == cLWorker.OnbLineManagerUserId)?.Title ?? "" : "");
+                row.Cells[1].AddParagraph(cLWorker?.OnbLineManagerUserId != null ? userRepository?.GetAll().FirstOrDefault(x => x.ID == cLWorker.OnbLineManagerUserId)?.Title ?? "" : "");
                 row.Cells[2].AddParagraph("Line Manager grade");
-                row.Cells[3].AddParagraph(cLWorker.CLStaffGrade?.Title ?? "");
+                row.Cells[3].AddParagraph(cLWorker?.CLStaffGrade?.Title ?? "");
 
                 //12th row
                 row = table.AddRow();
                 row.Cells[0].AddParagraph("Line Manager Employee Number");
-                row.Cells[1].AddParagraph(cLWorker.OnbLineManagerEmployeeNum?.ToString() ?? "");
+                row.Cells[1].AddParagraph(cLWorker?.OnbLineManagerEmployeeNum?.ToString() ?? "");
                 row.Cells[2].AddParagraph("Line Manager telephone number");
-                row.Cells[3].AddParagraph(cLWorker.OnbLineManagerPhone?.ToString() ?? "");
+                row.Cells[3].AddParagraph(cLWorker?.OnbLineManagerPhone?.ToString() ?? "");
 
                 //13th row
                 row = table.AddRow();
                 row.Cells[0].AddParagraph("Work Order Number");
-                row.Cells[1].AddParagraph(cLWorker.OnbWorkOrderNumber?.ToString() ?? "");
+                row.Cells[1].AddParagraph(cLWorker?.OnbWorkOrderNumber?.ToString() ?? "");
                 row.Cells[2].AddParagraph("Recruiters email");
-                row.Cells[3].AddParagraph(cLWorker.OnbRecruitersEmail?.ToString() ?? "");
+                row.Cells[3].AddParagraph(cLWorker?.OnbRecruitersEmail?.ToString() ?? "");
             }
 
 
@@ -2517,7 +2239,7 @@ namespace ControlAssuranceAPI.Libs
 
             //Engaged
 
-            if ((CaseStages.GetStageNumber(cLWorker.Stage) >= CaseStages.Engaged.Number))
+            if ((CaseStages.GetStageNumber(cLWorker?.Stage ?? "") >= CaseStages.Engaged.Number))
             {
                 paragraph = section.AddParagraph();
                 paragraph.AddLineBreak();
@@ -2530,79 +2252,79 @@ namespace ControlAssuranceAPI.Libs
                 table = section.AddTable();
                 SetTableStyle(ref table);
 
-                column = AddColumnInTable(ref table, "3.5cm", true);
-                column = AddColumnInTable(ref table, "5.5cm");
-                column = AddColumnInTable(ref table, "3.5cm", true);
-                column = AddColumnInTable(ref table, "5.5cm");
+                AddColumnInTable(ref table, "3.5cm", true);
+                AddColumnInTable(ref table, "5.5cm");
+                AddColumnInTable(ref table, "3.5cm", true);
+                AddColumnInTable(ref table, "5.5cm");
 
                 //1st row
                 row = table.AddRow();
                 row.Cells[0].AddParagraph("Security clearance checked by");
-                row.Cells[1].AddParagraph(cLWorker.BPSSCheckedById != null ? userRepository.Users.FirstOrDefault(x => x.ID == cLWorker.BPSSCheckedById)?.Title ?? "" : "");
+                row.Cells[1].AddParagraph(cLWorker?.BPSSCheckedById != null ? userRepository?.GetAll().FirstOrDefault(x => x.ID == cLWorker.BPSSCheckedById)?.Title ?? "" : "");
                 row.Cells[2].AddParagraph("Security clearance checked on");
-                row.Cells[3].AddParagraph(cLWorker.BPSSCheckedOn?.ToString("dd/MM/yyyy") ?? "");
+                row.Cells[3].AddParagraph(cLWorker?.BPSSCheckedOn?.ToString("dd/MM/yyyy") ?? "");
 
                 //2nd row
                 row = table.AddRow();
                 row.Cells[0].AddParagraph("PO checked by");
-                row.Cells[1].AddParagraph(cLWorker.POCheckedById != null ? userRepository.Users.FirstOrDefault(x => x.ID == cLWorker.POCheckedById)?.Title ?? "" : "");
+                row.Cells[1].AddParagraph(cLWorker?.POCheckedById != null ? userRepository?.GetAll().FirstOrDefault(x => x.ID == cLWorker.POCheckedById)?.Title ?? "" : "");
                 row.Cells[2].AddParagraph("PO checked on");
-                row.Cells[3].AddParagraph(cLWorker.POCheckedOn?.ToString("dd/MM/yyyy") ?? "");
+                row.Cells[3].AddParagraph(cLWorker?.POCheckedOn?.ToString("dd/MM/yyyy") ?? "");
 
                 //3rd row
                 row = table.AddRow();
                 row.Cells[0].AddParagraph("PO Number");
-                row.Cells[1].AddParagraph(cLWorker.EngPONumber?.ToString() ?? "");
+                row.Cells[1].AddParagraph(cLWorker?.EngPONumber?.ToString() ?? "");
                 row.Cells[2].AddParagraph("PO Note");
-                row.Cells[3].AddParagraph(cLWorker.EngPONote?.ToString() ?? "");
+                row.Cells[3].AddParagraph(cLWorker?.EngPONote?.ToString() ?? "");
 
                 //4th row
                 row = table.AddRow();
                 row.Cells[0].AddParagraph("IT checked by");
-                row.Cells[1].AddParagraph(cLWorker.ITCheckedById != null ? userRepository.Users.FirstOrDefault(x => x.ID == cLWorker.ITCheckedById)?.Title ?? "" : "");
+                row.Cells[1].AddParagraph(cLWorker?.ITCheckedById != null ? userRepository?.GetAll().FirstOrDefault(x => x.ID == cLWorker.ITCheckedById)?.Title ?? "" : "");
                 row.Cells[2].AddParagraph("IT checked on");
-                row.Cells[3].AddParagraph(cLWorker.ITCheckedOn?.ToString("dd/MM/yyyy") ?? "");
+                row.Cells[3].AddParagraph(cLWorker?.ITCheckedOn?.ToString("dd/MM/yyyy") ?? "");
 
                 //5th row
                 row = table.AddRow();
                 row.Cells[0].AddParagraph("IT System Reference");
-                row.Cells[1].AddParagraph(cLWorker.ITSystemRef?.ToString() ?? "");
+                row.Cells[1].AddParagraph(cLWorker?.ITSystemRef?.ToString() ?? "");
                 row.Cells[2].AddParagraph("IT System notes");
-                row.Cells[3].AddParagraph(cLWorker.ITSystemNotes?.ToString() ?? "");
+                row.Cells[3].AddParagraph(cLWorker?.ITSystemNotes?.ToString() ?? "");
 
                 //6th row
                 row = table.AddRow();
                 row.Cells[0].AddParagraph("UKSBS/Oracle checked by");
-                row.Cells[1].AddParagraph(cLWorker.UKSBSCheckedById != null ? userRepository.Users.FirstOrDefault(x => x.ID == cLWorker.UKSBSCheckedById)?.Title ?? "" : "");
+                row.Cells[1].AddParagraph(cLWorker?.UKSBSCheckedById != null ? userRepository?.GetAll().FirstOrDefault(x => x.ID == cLWorker.UKSBSCheckedById)?.Title ?? "" : "");
                 row.Cells[2].AddParagraph("UKSBS/Oracle checked on");
-                row.Cells[3].AddParagraph(cLWorker.UKSBSCheckedOn?.ToString("dd/MM/yyyy") ?? "");
+                row.Cells[3].AddParagraph(cLWorker?.UKSBSCheckedOn?.ToString("dd/MM/yyyy") ?? "");
 
                 //7th row
                 row = table.AddRow();
                 row.Cells[0].AddParagraph("UKSBS Reference");
-                row.Cells[1].AddParagraph(cLWorker.UKSBSRef?.ToString() ?? "");
+                row.Cells[1].AddParagraph(cLWorker?.UKSBSRef?.ToString() ?? "");
                 row.Cells[2].AddParagraph("UKSBS notes");
-                row.Cells[3].AddParagraph(cLWorker.UKSBSNotes?.ToString() ?? "");
+                row.Cells[3].AddParagraph(cLWorker?.UKSBSNotes?.ToString() ?? "");
 
                 //8th row
                 row = table.AddRow();
                 row.Cells[0].AddParagraph("Pass checked by");
-                row.Cells[1].AddParagraph(cLWorker.PassCheckedById != null ? userRepository.Users.FirstOrDefault(x => x.ID == cLWorker.PassCheckedById)?.Title ?? "" : "");
+                row.Cells[1].AddParagraph(cLWorker?.PassCheckedById != null ? userRepository?.GetAll().FirstOrDefault(x => x.ID == cLWorker.PassCheckedById)?.Title ?? "" : "");
                 row.Cells[2].AddParagraph("Pass checked on");
-                row.Cells[3].AddParagraph(cLWorker.PassCheckedOn?.ToString("dd/MM/yyyy") ?? "");
+                row.Cells[3].AddParagraph(cLWorker?.PassCheckedOn?.ToString("dd/MM/yyyy") ?? "");
 
                 //9th row
                 row = table.AddRow();
                 row.Cells[0].AddParagraph("SDS checked by");
-                row.Cells[1].AddParagraph(cLWorker.SDSCheckedById != null ? userRepository.Users.FirstOrDefault(x => x.ID == cLWorker.SDSCheckedById)?.Title ?? "" : "");
+                row.Cells[1].AddParagraph(cLWorker?.SDSCheckedById != null ? userRepository?.GetAll().FirstOrDefault(x => x.ID == cLWorker.SDSCheckedById)?.Title ?? "" : "");
                 row.Cells[2].AddParagraph("SDS checked on");
-                row.Cells[3].AddParagraph(cLWorker.SDSCheckedOn?.ToString("dd/MM/yyyy") ?? "");
+                row.Cells[3].AddParagraph(cLWorker?.SDSCheckedOn?.ToString("dd/MM/yyyy") ?? "");
 
                 //10th row
                 row = table.AddRow();
                 row.Cells[0].AddParagraph("SDS notes");
                 row.Cells[1].MergeRight = 2;
-                row.Cells[1].AddParagraph(cLWorker.SDSNotes?.ToString() ?? "");
+                row.Cells[1].AddParagraph(cLWorker?.SDSNotes?.ToString() ?? "");
             }
 
 
@@ -2612,7 +2334,7 @@ namespace ControlAssuranceAPI.Libs
 
             //Leaving
 
-            if ((CaseStages.GetStageNumber(cLWorker.Stage) >= CaseStages.Leaving.Number))
+            if ((CaseStages.GetStageNumber(cLWorker?.Stage ?? "") >= CaseStages.Leaving.Number))
             {
                 paragraph = section.AddParagraph();
                 paragraph.AddLineBreak();
@@ -2625,60 +2347,59 @@ namespace ControlAssuranceAPI.Libs
                 table = section.AddTable();
                 SetTableStyle(ref table);
 
-                column = AddColumnInTable(ref table, "3.5cm", true);
-                column = AddColumnInTable(ref table, "5.5cm");
-                column = AddColumnInTable(ref table, "3.5cm", true);
-                column = AddColumnInTable(ref table, "5.5cm");
+                AddColumnInTable(ref table, "3.5cm", true);
+                AddColumnInTable(ref table, "5.5cm");
+                AddColumnInTable(ref table, "3.5cm", true);
+                AddColumnInTable(ref table, "5.5cm");
 
                 //1st row
                 row = table.AddRow();
                 row.Cells[0].AddParagraph("End Date");
                 row.Cells[1].MergeRight = 2;
-                row.Cells[1].AddParagraph(cLWorker.LeEndDate?.ToString("dd/MM/yyyy") ?? "");
+                row.Cells[1].AddParagraph(cLWorker?.LeEndDate?.ToString("dd/MM/yyyy") ?? "");
 
                 //2nd row
                 row = table.AddRow();
                 row.Cells[0].AddParagraph("Contractor telephone (personal)");
-                row.Cells[1].AddParagraph(cLWorker.LeContractorPhone?.ToString() ?? "");
+                row.Cells[1].AddParagraph(cLWorker?.LeContractorPhone?.ToString() ?? "");
                 row.Cells[2].AddParagraph("Contractor email (personal)");
-                row.Cells[3].AddParagraph(cLWorker.LeContractorEmail?.ToString() ?? "");
+                row.Cells[3].AddParagraph(cLWorker?.LeContractorEmail?.ToString() ?? "");
 
                 //3rd row
                 row = table.AddRow();
                 row.Cells[0].AddParagraph("Contractor home address (personal)");
-                row.Cells[1].AddParagraph(cLWorker.LeContractorHomeAddress?.ToString() ?? "");
+                row.Cells[1].AddParagraph(cLWorker?.LeContractorHomeAddress?.ToString() ?? "");
                 row.Cells[2].AddParagraph("Contractor post code (personal)");
-                row.Cells[3].AddParagraph(cLWorker.LeContractorPostCode?.ToString() ?? "");
+                row.Cells[3].AddParagraph(cLWorker?.LeContractorPostCode?.ToString() ?? "");
 
                 //4th row
                 row = table.AddRow();
                 row.Cells[0].AddParagraph("Contractor details above checked by");
-                row.Cells[1].AddParagraph(cLWorker.LeContractorDetailsCheckedById != null ? userRepository.Users.FirstOrDefault(x => x.ID == cLWorker.LeContractorDetailsCheckedById)?.Title ?? "" : "");
+                row.Cells[1].AddParagraph(cLWorker?.LeContractorDetailsCheckedById != null ? userRepository?.GetAll().FirstOrDefault(x => x.ID == cLWorker.LeContractorDetailsCheckedById)?.Title ?? "" : "");
                 row.Cells[2].AddParagraph("Contractor details above checked on");
-                row.Cells[3].AddParagraph(cLWorker.LeContractorDetailsCheckedOn?.ToString("dd/MM/yyyy") ?? "");
+                row.Cells[3].AddParagraph(cLWorker?.LeContractorDetailsCheckedOn?.ToString("dd/MM/yyyy") ?? "");
 
                 //5th row
                 row = table.AddRow();
                 row.Cells[0].AddParagraph("IT checked by");
-                row.Cells[1].AddParagraph(cLWorker.LeITCheckedById != null ? userRepository.Users.FirstOrDefault(x => x.ID == cLWorker.LeITCheckedById)?.Title ?? "" : "");
+                row.Cells[1].AddParagraph(cLWorker?.LeITCheckedById != null ? userRepository?.GetAll().FirstOrDefault(x => x.ID == cLWorker.LeITCheckedById)?.Title ?? "" : "");
                 row.Cells[2].AddParagraph("IT checked on");
-                row.Cells[3].AddParagraph(cLWorker.LeITCheckedOn?.ToString("dd/MM/yyyy") ?? "");
+                row.Cells[3].AddParagraph(cLWorker?.LeITCheckedOn?.ToString("dd/MM/yyyy") ?? "");
 
                 //6th row
                 row = table.AddRow();
                 row.Cells[0].AddParagraph("UKSBS/Oracle checked by");
-                row.Cells[1].AddParagraph(cLWorker.LeUKSBSCheckedById != null ? userRepository.Users.FirstOrDefault(x => x.ID == cLWorker.LeUKSBSCheckedById)?.Title ?? "" : "");
+                row.Cells[1].AddParagraph(cLWorker?.LeUKSBSCheckedById != null ? userRepository?.GetAll().FirstOrDefault(x => x.ID == cLWorker.LeUKSBSCheckedById)?.Title ?? "" : "");
                 row.Cells[2].AddParagraph("UKSBS/Oracle checked on");
-                row.Cells[3].AddParagraph(cLWorker.LeUKSBSCheckedOn?.ToString("dd/MM/yyyy") ?? "");
+                row.Cells[3].AddParagraph(cLWorker?.LeUKSBSCheckedOn?.ToString("dd/MM/yyyy") ?? "");
 
                 //7th row
                 row = table.AddRow();
                 row.Cells[0].AddParagraph("Pass checked by");
-                row.Cells[1].AddParagraph(cLWorker.LePassCheckedById != null ? userRepository.Users.FirstOrDefault(x => x.ID == cLWorker.LePassCheckedById)?.Title ?? "" : "");
+                row.Cells[1].AddParagraph(cLWorker?.LePassCheckedById != null ? userRepository?.GetAll().FirstOrDefault(x => x.ID == cLWorker.LePassCheckedById)?.Title ?? "" : "");
                 row.Cells[2].AddParagraph("Pass checked on");
-                row.Cells[3].AddParagraph(cLWorker.LePassCheckedOn?.ToString("dd/MM/yyyy") ?? "");
+                row.Cells[3].AddParagraph(cLWorker?.LePassCheckedOn?.ToString("dd/MM/yyyy") ?? "");
             }
-
 
             #endregion Leaving
 
@@ -2696,23 +2417,22 @@ namespace ControlAssuranceAPI.Libs
 
             SetTableStyle(ref table);
 
-            column = AddColumnInTable(ref table, "3cm");
-            column = AddColumnInTable(ref table, "3cm");
-            column = AddColumnInTable(ref table, "3cm");
-            column = AddColumnInTable(ref table, "9cm");
+            AddColumnInTable(ref table, "3cm");
+            AddColumnInTable(ref table, "3cm");
+            AddColumnInTable(ref table, "3cm");
+            AddColumnInTable(ref table, "9cm");
 
 
             row = table.AddRow();
             row.Style = "bold1";
-            //row.Format.Alignment = ParagraphAlignment.Left;
-            row.Cells[0].AddParagraph("Date");            
+            row.Cells[0].AddParagraph("Date");
             row.Cells[1].AddParagraph("By");
             row.Cells[2].AddParagraph("Reference");
             row.Cells[3].AddParagraph("Details");
 
-            var generalComments = cLCaseEvidenceRepository.GetEvidences(cLWorker.CLCaseId.Value, cLWorker.ID);
+            var generalComments = cLCaseEvidenceRepository.GetEvidences(cLWorker?.CLCaseId ?? 0, cLWorker?.ID ?? 0);
 
-            foreach(var iteComment in generalComments)
+            foreach (var iteComment in generalComments)
             {
                 row = table.AddRow();
                 row.Cells[0].AddParagraph(iteComment.DateAdded);
@@ -2721,34 +2441,23 @@ namespace ControlAssuranceAPI.Libs
                 row.Cells[3].AddParagraph(iteComment.Details);
             }
 
-
-
             #endregion Case Discussion, General Comments
 
-
-
-
             #endregion content tables
-
-
 
             //final creation steps
             document.UseCmykColor = true;
             const bool unicode = false;
-            const PdfFontEmbedding embedding = PdfFontEmbedding.Always;
-            PdfDocumentRenderer pdfRenderer = new PdfDocumentRenderer(unicode, embedding);
+            PdfDocumentRenderer pdfRenderer = new PdfDocumentRenderer(unicode);
             pdfRenderer.Document = document;
             pdfRenderer.RenderDocument();
-
-
             string outputPdfPath = System.IO.Path.Combine(tempLocation, outputPdfName);
             pdfRenderer.PdfDocument.Save(outputPdfPath);
-
-            document = null;
+            document.SetNull();
 
             //then upload final out final to the sharepoint
             string spLibListName = "CATFiles";
-            string spFolderUrl = $"CATFiles/ContingentLabourFiles/{cLWorker.CLCaseId}/";
+            string spFolderUrl = $"CATFiles/ContingentLabourFiles/{cLWorker?.CLCaseId}/";
             sharepointLib.UploadFinalReport1(outputPdfPath, outputPdfName, spFolderUrl, spLibListName);
 
 
@@ -2758,31 +2467,27 @@ namespace ControlAssuranceAPI.Libs
             {
                 tbl.Style = "tblText";
 
-                tbl.Borders.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(127, 127, 127); //TableBorder;
+                tbl.Borders.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(127, 127, 127);
                 tbl.Borders.Width = 0.25;
-                tbl.LeftPadding = 3; //10;
-                tbl.RightPadding = 3; //10;
-                tbl.TopPadding = 3; //5;
-                tbl.BottomPadding = 3; //5;
-                //tbl.Borders.Left.Width = 0.5;
-                //tbl.Borders.Right.Width = 0.5;
+                tbl.LeftPadding = 3;
+                tbl.RightPadding = 3;
+                tbl.TopPadding = 3;
+                tbl.BottomPadding = 3;
                 tbl.Rows.LeftIndent = 0;
             }
 
-            Column AddColumnInTable(ref Table tbl, string colSize, bool labelCol = false)
+            void AddColumnInTable(ref Table tbl, string colSize, bool labelCol = false)
             {
                 Column col = tbl.AddColumn(colSize);
-                if(labelCol)
+                if (labelCol)
                     col.Shading.Color = MigraDoc.DocumentObjectModel.Color.FromRgb(229, 229, 229);
                 col.Format.Alignment = ParagraphAlignment.Left;
-
-                return col;
             }
 
             string GetApprovalDecision(string decision)
             {
                 string ret = "Decision not made yet"; //default value
-                if(string.IsNullOrEmpty(decision) == false)
+                if (!string.IsNullOrEmpty(decision))
                 {
                     decision = decision.Trim();
                     if (decision == "Approve")
@@ -2799,43 +2504,9 @@ namespace ControlAssuranceAPI.Libs
 
         #endregion CL
 
-
-        #region Test PDF
-        public void CreateTestPdf(string tempLocation, string outputPdfName)
-        {
-            //Libs.PdfFontResolver.Apply(); // Ensures it's only applied once
-
-            Document document = new Document();
-            Section section = document.AddSection();
-            Paragraph paragraph = section.AddParagraph();
-            paragraph.Format.Font.Color = MigraDoc.DocumentObjectModel.Color.FromCmyk(100, 30, 20, 50);
-
-            Style normalStyle = document.Styles.AddStyle("normalStyle", "Normal");
-            normalStyle.Font.Name = "calibri";
-
-            Style style1 = document.Styles.AddStyle("style1", "normalStyle");
-            style1.Font.Size = 30;
-            paragraph.AddLineBreak();
-            paragraph.AddFormattedText("Corporate Services", "style1");
-            paragraph.Format.Alignment = ParagraphAlignment.Center;
-
-            document.UseCmykColor = true;
-            const bool unicode = false;
-            const PdfFontEmbedding embedding = PdfFontEmbedding.Always;
-            PdfDocumentRenderer pdfRenderer = new PdfDocumentRenderer(unicode, embedding);
-            pdfRenderer.Document = document;
-            pdfRenderer.RenderDocument();
-
-            string outputPdfPath = System.IO.Path.Combine(tempLocation, outputPdfName);
-            pdfRenderer.PdfDocument.Save(outputPdfPath);
-
-        }
-
-        #endregion
-
         #region Util methods
 
-        private void MergePDFs(string targetPath, List<string> pdfs)
+        private static void MergePDFs(string targetPath, List<string> pdfs)
         {
             using (PdfDocument targetDoc = new PdfDocument())
             {
@@ -2853,8 +2524,7 @@ namespace ControlAssuranceAPI.Libs
             }
         }
 
-
-        private string GetDayWithSuffix(int day)
+        private static string GetDayWithSuffix(int day)
         {
             switch (day)
             {
@@ -2874,8 +2544,5 @@ namespace ControlAssuranceAPI.Libs
         }
 
         #endregion Util methods
-
     }
-
-
 }

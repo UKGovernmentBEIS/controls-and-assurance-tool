@@ -1,117 +1,81 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using ControlAssuranceAPI.Models;
+﻿using CAT.Models;
+using CAT.Repo.Interface;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNet.OData;
+using Microsoft.AspNet.OData.Routing;
 
-namespace ControlAssuranceAPI.Controllers
+namespace CAT.Controllers;
+[Authorize]
+[Route("api/[controller]")]
+[ApiController]
+public class GoAssignmentsController : ControllerBase
 {
-    public class GoAssignmentsController : BaseController
+    private readonly IGoAssignmentRepository _goAssignmentRepository;
+    public GoAssignmentsController(IGoAssignmentRepository goAssignmentRepository)
     {
-        public GoAssignmentsController() : base() { }
-
-        public GoAssignmentsController(IControlAssuranceContext context) : base(context) { }
-
-        // GET: odata/GoAssignments
-        [EnableQuery]
-        public IQueryable<GoAssignment> Get()
-        {
-            return db.GoAssignmentRepository.GoAssignments;
-        }
-
-        // GET: odata/GoAssignments(1)
-        [EnableQuery]
-        public SingleResult<GoAssignment> Get([FromODataUri] int key)
-        {
-            return SingleResult.Create(db.GoAssignmentRepository.GoAssignments.Where(x => x.ID == key));
-        }
-
-        // POST: odata/GoAssignments
-        public IHttpActionResult Post(GoAssignment goAssignment)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var x = db.GoAssignmentRepository.Add(goAssignment);
-            if (x == null) return Unauthorized();
-
-            db.SaveChanges();
-
-            return Created(goAssignment);
-        }
-
-        // PATCH: odata/GoAssignments(1)
-        [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] int key, Delta<GoAssignment> patch)
-        {
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            GoAssignment goAssignment = db.GoAssignmentRepository.Find(key);
-            if (goAssignment == null)
-            {
-                return NotFound();
-            }
-
-            patch.Patch(goAssignment);
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!GoAssignmentExists(key))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return Updated(goAssignment);
-        }
-
-        // DELETE: odata/GoAssignments(1)
-        public IHttpActionResult Delete([FromODataUri] int key)
-        {
-            GoAssignment goAssignment = db.GoAssignmentRepository.Find(key);
-            if (goAssignment == null)
-            {
-                return NotFound();
-            }
-
-            var x = db.GoAssignmentRepository.Remove(goAssignment);
-            if (x == null) return Unauthorized();
-
-            db.SaveChanges();
-
-            return StatusCode(HttpStatusCode.NoContent);
-        }
-
-        private bool GoAssignmentExists(int key)
-        {
-            return db.GoAssignmentRepository.GoAssignments.Count(x => x.ID == key) > 0;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+        _goAssignmentRepository = goAssignmentRepository;
     }
+
+
+    [EnableQuery]
+    [HttpGet("{id}")] 
+    public SingleResult<GoAssignment> Get([FromODataUri] int key)
+    {
+        return SingleResult.Create(_goAssignmentRepository.GetById(key));
+    }
+
+
+    [EnableQuery]
+    public IQueryable<GoAssignment> Get()
+    {
+        return _goAssignmentRepository.GetAll();
+    }
+
+    [HttpPost]
+    public IActionResult Post([FromBody] GoAssignment goAssignment)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        _goAssignmentRepository.Create(goAssignment);
+
+        return Created("GoAssignments", goAssignment);
+    }
+
+    [HttpPut]
+    public IActionResult Put([FromODataUri] int key, [FromBody] GoAssignment goAssignment)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        if (key != goAssignment.ID)
+        {
+            return BadRequest();
+        }
+
+        _goAssignmentRepository.Update(goAssignment);
+
+        return NoContent();
+    }
+
+    [HttpDelete]
+    public IActionResult Delete([FromODataUri] int key)
+    {
+        var goAssignment = _goAssignmentRepository.GetById(key);
+        if (goAssignment is null)
+        {
+            return BadRequest();
+        }
+
+        _goAssignmentRepository.Delete(goAssignment.First());
+
+        return NoContent();
+    }
+
+
 }
+

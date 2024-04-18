@@ -1,33 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using ControlAssuranceAPI.Models;
+﻿using CAT.Models;
+using CAT.Repo.Interface;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNet.OData;
+using Microsoft.AspNet.OData.Routing;
 
-namespace ControlAssuranceAPI.Controllers
+namespace CAT.Controllers;
+[Authorize]
+[Route("api/[controller]")]
+[ApiController]
+public class NAOUpdateStatusTypesController : ControllerBase
 {
-    public class NAOUpdateStatusTypesController : BaseController
+    private readonly INAOUpdateStatusTypeRepository _userRepository;
+    public NAOUpdateStatusTypesController(INAOUpdateStatusTypeRepository userRepository)
     {
-        public NAOUpdateStatusTypesController() : base() { }
-
-        public NAOUpdateStatusTypesController(IControlAssuranceContext context) : base(context) { }
-
-        // GET: odata/NAOUpdateStatusTypes
-        [EnableQuery]
-        public IQueryable<NAOUpdateStatusType> Get()
-        {
-            return db.NAOUpdateStatusTypeRepository.NAOUpdateStatusTypes;
-        }
-
-        // GET: odata/NAOUpdateStatusTypes(1)
-        [EnableQuery]
-        public SingleResult<NAOUpdateStatusType> Get([FromODataUri] int key)
-        {
-            return SingleResult.Create(db.NAOUpdateStatusTypeRepository.NAOUpdateStatusTypes.Where(x => x.ID == key));
-        }
+        _userRepository = userRepository;
     }
+
+
+    [EnableQuery]
+    [HttpGet("{id}")] 
+    public SingleResult<NAOUpdateStatusType> Get([FromODataUri] int key)
+    {
+        return SingleResult.Create(_userRepository.GetById(key));
+    }
+
+    [EnableQuery]
+    public IQueryable<NAOUpdateStatusType> Get()
+    {
+        return _userRepository.GetAll();
+    }
+
+
 }
+

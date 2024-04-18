@@ -1,127 +1,91 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using ControlAssuranceAPI.Models;
+﻿using CAT.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNet.OData;
+using Microsoft.AspNet.OData.Routing;
+using CAT.Repo.Interface;
 
-namespace ControlAssuranceAPI.Controllers
+namespace CAT.Controllers;
+[Authorize]
+[Route("api/[controller]")]
+[ApiController]
+public class IAPDefFormsController : ControllerBase
 {
-    public class IAPDefFormsController : BaseController
+    private readonly IIAPDefFormRepository _iAPDefFormRepository;
+    private readonly ILogRepository _logRepository;
+    public IAPDefFormsController(IIAPDefFormRepository iAPDefFormRepository, ILogRepository logRepository)
     {
-        public IAPDefFormsController() : base() { }
-
-        public IAPDefFormsController(IControlAssuranceContext context) : base(context) { }
-
-        [EnableQuery]
-        public IQueryable<IAPDefForm> Get()
-        {
-
-            return db.IAPDefFormRepository.IAPDefForms;
-        }
-
-        // GET: odata/IAPDefForms(1)
-        [EnableQuery]
-        public SingleResult<IAPDefForm> Get([FromODataUri] int key)
-        {
-            return SingleResult.Create(db.IAPDefFormRepository.IAPDefForms.Where(x => x.ID == key));
-        }
-
-        //GET: odata/IAPDefForms?welcomeAccess=
-        [EnableQuery]
-        public string Get(string welcomeAccess)
-        {
-            db.LogRepository.Write(title: "Launched IAP welcome page", category: Repositories.LogRepository.LogCategory.Security);
-            return "";
-        }
-
-        // POST: odata/IAPDefForms
-        public IHttpActionResult Post(IAPDefForm iapDefForm)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var x = db.IAPDefFormRepository.Add(iapDefForm);
-            if (x == null) return Unauthorized();
-
-            db.SaveChanges();
-
-            return Created(x);
-        }
-
-        // PATCH: odata/IAPDefForms(1)
-        [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] int key, Delta<IAPDefForm> patch)
-        {
-            //Validate(patch.GetEntity());
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            IAPDefForm defForm = db.IAPDefFormRepository.Find(key);
-            if (defForm == null)
-            {
-                return NotFound();
-            }
-
-            patch.Patch(defForm);
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!IAPDefFormExists(key))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return Updated(defForm);
-        }
-
-
-        // DELETE: odata/IAPDefForms(1)
-        public IHttpActionResult Delete([FromODataUri] int key)
-        {
-            IAPDefForm iapDefForm = db.IAPDefFormRepository.Find(key);
-            if (iapDefForm == null)
-            {
-                return NotFound();
-            }
-
-            var x = db.IAPDefFormRepository.Remove(iapDefForm);
-            if (x == null) return Unauthorized();
-
-            db.SaveChanges();
-
-            return StatusCode(HttpStatusCode.NoContent);
-        }
-
-        private bool IAPDefFormExists(int key)
-        {
-            return db.IAPDefFormRepository.IAPDefForms.Count(e => e.ID == key) > 0;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+        _iAPDefFormRepository = iAPDefFormRepository;
+        _logRepository = logRepository;
     }
+
+
+    [EnableQuery]
+    [HttpGet("{id}")] 
+    public SingleResult<IAPDefForm> Get([FromODataUri] int key)
+    {
+        return SingleResult.Create(_iAPDefFormRepository.GetById(key));
+    }
+
+    [EnableQuery]
+    public IQueryable<IAPDefForm> Get()
+    {
+        return _iAPDefFormRepository.GetAll();
+    }
+
+    //GET: odata/IAPDefForms?welcomeAccess=
+    [ODataRoute("IAPDefForms?welcomeAccess={welcomeAccess}")]
+    [EnableQuery]
+    public string Get(string welcomeAccess)
+    {
+        _logRepository.Write(title: "Launched IAP welcome page", category: LogCategory.Security);
+        return "";
+    }
+
+    [HttpPost]
+    public IActionResult Post([FromBody] IAPDefForm iAPDefForm)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        _iAPDefFormRepository.Add(iAPDefForm);
+
+        return Created("IAPDefForms", iAPDefForm);
+    }
+
+    [HttpPut]
+    public IActionResult Put([FromODataUri] int key, [FromBody] IAPDefForm iAPDefForm)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        if (key != iAPDefForm.ID)
+        {
+            return BadRequest();
+        }
+
+        _iAPDefFormRepository.Update(iAPDefForm);
+
+        return NoContent();
+    }
+
+    [HttpDelete]
+    public IActionResult Delete([FromODataUri] int key)
+    {
+        var iAPDefForm = _iAPDefFormRepository.GetById(key);
+        if (iAPDefForm is null)
+        {
+            return BadRequest();
+        }
+
+        _iAPDefFormRepository.Delete(iAPDefForm.First());
+
+        return NoContent();
+    }
+
+
 }
+

@@ -1,33 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using ControlAssuranceAPI.Models;
+﻿using CAT.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNet.OData;
+using Microsoft.AspNet.OData.Routing;
+using CAT.Repo.Interface;
 
-namespace ControlAssuranceAPI.Controllers
+namespace CAT.Controllers;
+[Authorize]
+[Route("api/[controller]")]
+[ApiController]
+public class IAPTypesController : ControllerBase
 {
-    public class IAPTypesController : BaseController
+    private readonly IIAPTypeRepository _iAPTypeRepository;
+    public IAPTypesController(IIAPTypeRepository iAPTypeRepository)
     {
-        public IAPTypesController() : base() { }
-
-        public IAPTypesController(IControlAssuranceContext context) : base(context) { }
-
-        // GET: odata/IAPTypes
-        [EnableQuery]
-        public IQueryable<IAPType> Get()
-        {
-            return db.IAPTypeRepository.IAPTypes;
-        }
-
-        // GET: odata/IAPTypes(1)
-        [EnableQuery]
-        public SingleResult<IAPType> Get([FromODataUri] int key)
-        {
-            return SingleResult.Create(db.IAPTypeRepository.IAPTypes.Where(x => x.ID == key));
-        }
+        _iAPTypeRepository = iAPTypeRepository;
     }
+
+
+    [EnableQuery]
+    [HttpGet("{id}")] 
+    public SingleResult<IAPType> Get([FromODataUri] int key)
+    {
+        return SingleResult.Create(_iAPTypeRepository.GetById(key));
+    }
+
+    [EnableQuery]
+    public IQueryable<IAPType> Get()
+    {
+        return _iAPTypeRepository.GetAll();
+    }
+
+
+
 }
+
