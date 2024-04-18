@@ -46,13 +46,21 @@ public class GIAAImportsController : ControllerBase
         {
             return BadRequest(ModelState);
         }
-        _gIAAImportRepository.ProcessImportXML(gIAAImport);
+
+        if (!string.IsNullOrEmpty(gIAAImport?.XMLContents))
+        {
+            // Replace the DOCTYPE declaration to prevent XXE attacks
+            string sanitizedXml = gIAAImport.XMLContents.Replace("<!DOCTYPE", "<!DOCTYPE removed>");
+            gIAAImport.XMLContents = sanitizedXml;
+            _gIAAImportRepository.ProcessImportXML(gIAAImport);
+        }
+        else
+        {
+            return BadRequest("XMLContents is missing or empty.");
+        }
 
         return Created("GIAAImports", gIAAImport);
     }
-
-   
-
 
 }
 
