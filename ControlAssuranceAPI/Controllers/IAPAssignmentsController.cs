@@ -1,123 +1,88 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using ControlAssuranceAPI.Models;
+﻿using CAT.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNet.OData;
+using Microsoft.AspNet.OData.Routing;
+using CAT.Repo.Interface;
 
-namespace ControlAssuranceAPI.Controllers
+namespace CAT.Controllers;
+[Authorize]
+[Route("api/[controller]")]
+[ApiController]
+public class IAPAssignmentsController : ControllerBase
 {
-    public class IAPAssignmentsController : BaseController
+    private readonly IIAPAssignmentRepository _iAPAssignmentRepository;
+    public IAPAssignmentsController(IIAPAssignmentRepository iAPAssignmentRepository)
     {
-        public IAPAssignmentsController() : base() { }
-
-        public IAPAssignmentsController(IControlAssuranceContext context) : base(context) { }
-
-        // GET: odata/IAPAssignments
-        [EnableQuery]
-        public IQueryable<IAPAssignment> Get()
-        {
-            return db.IAPAssignmentRepository.IAPAssignments;
-        }
-
-        // GET: odata/IAPAssignments(1)
-        [EnableQuery]
-        public SingleResult<IAPAssignment> Get([FromODataUri] int key)
-        {
-            return SingleResult.Create(db.IAPAssignmentRepository.IAPAssignments.Where(x => x.ID == key));
-        }
-
-        // GET: /odata/IAPAssignments?parentIAPActionId=1&getAllAssignmentsForParentAction=
-        public List<IAPAssignment> Get(int parentIAPActionId, string getAllAssignmentsForParentAction)
-        {
-            return db.IAPAssignmentRepository.GetAllAssignmentsForParentAction(parentIAPActionId);
-        }
-
-        // POST: odata/IAPAssignments
-        public IHttpActionResult Post(IAPAssignment iapAssignment)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var x = db.IAPAssignmentRepository.Add(iapAssignment);
-            if (x == null) return Unauthorized();
-
-            db.SaveChanges();
-
-            return Created(iapAssignment);
-        }
-
-        // PATCH: odata/IAPAssignments(1)
-        [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] int key, Delta<IAPAssignment> patch)
-        {
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            IAPAssignment iapAssignment = db.IAPAssignmentRepository.Find(key);
-            if (iapAssignment == null)
-            {
-                return NotFound();
-            }
-
-            patch.Patch(iapAssignment);
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!IAPAssignmentExists(key))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return Updated(iapAssignment);
-        }
-
-        // DELETE: odata/IAPAssignments(1)
-        public IHttpActionResult Delete([FromODataUri] int key)
-        {
-            IAPAssignment iapAssignment = db.IAPAssignmentRepository.Find(key);
-            if (iapAssignment == null)
-            {
-                return NotFound();
-            }
-
-            var x = db.IAPAssignmentRepository.Remove(iapAssignment);
-            if (x == null) return Unauthorized();
-
-            db.SaveChanges();
-
-            return StatusCode(HttpStatusCode.NoContent);
-        }
-
-        private bool IAPAssignmentExists(int key)
-        {
-            return db.IAPAssignmentRepository.IAPAssignments.Count(x => x.ID == key) > 0;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+        _iAPAssignmentRepository = iAPAssignmentRepository;
     }
+
+
+    [EnableQuery]
+    [HttpGet("{id}")] 
+    public SingleResult<IAPAssignment> Get([FromODataUri] int key)
+    {
+        return SingleResult.Create(_iAPAssignmentRepository.GetById(key));
+    }
+
+    [EnableQuery]
+    public IQueryable<IAPAssignment> Get()
+    {
+        return _iAPAssignmentRepository.GetAll();
+    }
+
+    // GET: /odata/IAPAssignments?parentIAPActionId=1&getAllAssignmentsForParentAction=
+    [ODataRoute("IAPAssignments?parentIAPActionId={parentIAPActionId}&getAllAssignmentsForParentAction={getAllAssignmentsForParentAction}")]
+    public List<IAPAssignment> Get(int parentIAPActionId, string getAllAssignmentsForParentAction)
+    {
+        return _iAPAssignmentRepository.GetAllAssignmentsForParentAction(parentIAPActionId);
+    }
+
+
+    [HttpPost]
+    public IActionResult Post([FromBody] IAPAssignment iAPAssignment)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        _iAPAssignmentRepository.Create(iAPAssignment);
+
+        return Created("IAPAssignments", iAPAssignment);
+    }
+
+    [HttpPut]
+    public IActionResult Put([FromODataUri] int key, [FromBody] IAPAssignment iAPAssignment)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        if (key != iAPAssignment.ID)
+        {
+            return BadRequest();
+        }
+
+        _iAPAssignmentRepository.Update(iAPAssignment);
+
+        return NoContent();
+    }
+
+    [HttpDelete]
+    public IActionResult Delete([FromODataUri] int key)
+    {
+        var iAPAssignment = _iAPAssignmentRepository.GetById(key);
+        if (iAPAssignment is null)
+        {
+            return BadRequest();
+        }
+
+        _iAPAssignmentRepository.Delete(iAPAssignment.First());
+
+        return NoContent();
+    }
+
+
 }
+

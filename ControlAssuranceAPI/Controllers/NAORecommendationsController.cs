@@ -1,115 +1,85 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using ControlAssuranceAPI.Models;
+﻿using CAT.Models;
+using CAT.Repo.Interface;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNet.OData;
+using Microsoft.AspNet.OData.Routing;
 
-namespace ControlAssuranceAPI.Controllers
+namespace CAT.Controllers;
+[Authorize]
+[Route("api/[controller]")]
+[ApiController]
+public class NAORecommendationsController : ControllerBase
 {
-    public class NAORecommendationsController : BaseController
+    private readonly INAORecommendationRepository _nAORecommendationRepository;
+    private readonly INAOUpdateRepository _nAOUpdateRepository;
+    public NAORecommendationsController(INAORecommendationRepository nAORecommendationRepository, INAOUpdateRepository nAOUpdateRepository)
     {
-        public NAORecommendationsController() : base() { }
-
-        public NAORecommendationsController(IControlAssuranceContext context) : base(context) { }
-
-        // GET: odata/NAORecommendations
-        [EnableQuery]
-        public IQueryable<NAORecommendation> Get()
-        {
-            return db.NAORecommendationRepository.NAORecommendations;
-        }
-
-        // GET: odata/NAORecommendations(1)
-        [EnableQuery]
-        public SingleResult<NAORecommendation> Get([FromODataUri] int key)
-        {
-            return SingleResult.Create(db.NAORecommendationRepository.NAORecommendations.Where(x => x.ID == key));
-        }
-
-        // GET: /odata/NAORecommendations?naoPublicationId=1&naoPeriodId=2&incompleteOnly=true&justMine=false
-        public List<NAORecommendationView_Result> Get(int naoPublicationId, int naoPeriodId, bool incompleteOnly, bool justMine)
-        {
-            return db.NAORecommendationRepository.GetRecommendations(naoPublicationId, naoPeriodId, incompleteOnly, justMine);
-        }
-
-        //GET: odata/NAORecommendations?updateTargetDateAndRecStatus=&naoRecommendationId=1&naoPeriodId=2&targetDate=aug&naoRecStatusTypeId=1
-        [EnableQuery]
-        public string Get(string updateTargetDateAndRecStatus, int naoRecommendationId, int naoPeriodId, string targetDate, int naoRecStatusTypeId)
-        {
-            db.NAOUpdateRepository.UpdateTargetDateAndRecStatus(naoRecommendationId, naoPeriodId, targetDate, naoRecStatusTypeId);
-            return "";
-        }
-
-
-        // POST: odata/NAORecommendations
-        public IHttpActionResult Post(NAORecommendation naoRecommendation)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var x = db.NAORecommendationRepository.Add(naoRecommendation);
-            if (x == null) return Unauthorized();
-
-            db.SaveChanges();
-
-            return Created(x);
-        }
-
-        // PATCH: odata/NAORecommendations(1)
-        [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] int key, Delta<NAORecommendation> patch)
-        {
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            NAORecommendation naoRecommendation = db.NAORecommendationRepository.Find(key);
-            if (naoRecommendation == null)
-            {
-                return NotFound();
-            }
-
-            patch.Patch(naoRecommendation);
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!NAORecommendationExists(key))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return Updated(naoRecommendation);
-        }
-
-        private bool NAORecommendationExists(int key)
-        {
-            return db.NAORecommendationRepository.NAORecommendations.Count(e => e.ID == key) > 0;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+        _nAORecommendationRepository = nAORecommendationRepository;
+        _nAOUpdateRepository = nAOUpdateRepository;
     }
+
+
+    [EnableQuery]
+    [HttpGet("{id}")] 
+    public SingleResult<NAORecommendation> Get([FromODataUri] int key)
+    {
+        return SingleResult.Create(_nAORecommendationRepository.GetById(key));
+    }
+
+    [EnableQuery]
+    public IQueryable<NAORecommendation> Get()
+    {
+        return _nAORecommendationRepository.GetAll();
+    }
+
+    // GET: /odata/NAORecommendations?naoPublicationId=1&naoPeriodId=2&incompleteOnly=true&justMine=false
+    [ODataRoute("NAORecommendations?naoPublicationId={naoPublicationId}&naoPeriodId={naoPeriodId}&incompleteOnly={incompleteOnly}&justMine={justMine}")]
+    public List<NAORecommendationView_Result> Get(int naoPublicationId, int naoPeriodId, bool incompleteOnly, bool justMine)
+    {
+        return _nAORecommendationRepository.GetRecommendations(naoPublicationId, naoPeriodId, incompleteOnly, justMine);
+    }
+
+    //GET: odata/NAORecommendations?updateTargetDateAndRecStatus=&naoRecommendationId=1&naoPeriodId=2&targetDate=aug&naoRecStatusTypeId=1
+    [ODataRoute("NAORecommendations?updateTargetDateAndRecStatus={updateTargetDateAndRecStatus}&naoRecommendationId={naoRecommendationId}&naoPeriodId={naoPeriodId}&targetDate={targetDate}&naoRecStatusTypeId={naoRecStatusTypeId}")]
+    [EnableQuery]
+    public string Get(string updateTargetDateAndRecStatus, int naoRecommendationId, int naoPeriodId, string targetDate, int naoRecStatusTypeId)
+    {
+        _nAOUpdateRepository.UpdateTargetDateAndRecStatus(naoRecommendationId, naoPeriodId, targetDate, naoRecStatusTypeId);
+        return "";
+    }
+
+    [HttpPost]
+    public IActionResult Post([FromBody] NAORecommendation nAORecommendation)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        _nAORecommendationRepository.Create(nAORecommendation);
+
+        return Created("NAORecommendations", nAORecommendation);
+    }
+
+    [HttpPut]
+    public IActionResult Put([FromODataUri] int key, [FromBody] NAORecommendation nAORecommendation)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        if (key != nAORecommendation.ID)
+        {
+            return BadRequest();
+        }
+
+        _nAORecommendationRepository.Update(nAORecommendation);
+
+        return NoContent();
+    }
+
+
+
 }
+

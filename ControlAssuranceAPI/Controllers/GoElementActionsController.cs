@@ -1,118 +1,81 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using ControlAssuranceAPI.Models;
+﻿using CAT.Models;
+using CAT.Repo.Interface;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNet.OData;
+using Microsoft.AspNet.OData.Routing;
 
-
-namespace ControlAssuranceAPI.Controllers
+namespace CAT.Controllers;
+[Authorize]
+[Route("api/[controller]")]
+[ApiController]
+public class GoElementActionsController : ControllerBase
 {
-    public class GoElementActionsController : BaseController
+    private readonly IGoElementActionRepository _goElementActionRepository;
+    public GoElementActionsController(IGoElementActionRepository goElementActionRepository)
     {
-        public GoElementActionsController() : base() { }
-
-        public GoElementActionsController(IControlAssuranceContext context) : base(context) { }
-
-        // GET: odata/GoElementActions
-        [EnableQuery]
-        public IQueryable<GoElementAction> Get()
-        {
-            return db.GoElementActionRepository.GoElementActions;
-        }
-
-        // GET: odata/GoElementActions(1)
-        [EnableQuery]
-        public SingleResult<GoElementAction> Get([FromODataUri] int key)
-        {
-            return SingleResult.Create(db.GoElementActionRepository.GoElementActions.Where(x => x.ID == key));
-        }
-
-        // POST: odata/GoElementActions
-        public IHttpActionResult Post(GoElementAction goElementAction)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var x = db.GoElementActionRepository.Add(goElementAction);
-            if (x == null) return Unauthorized();
-
-            db.SaveChanges();
-
-            return Created(goElementAction);
-        }
-
-        // PATCH: odata/GoElementActions(1)
-        [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] int key, Delta<GoElementAction> patch)
-        {
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            GoElementAction goElementAction = db.GoElementActionRepository.Find(key);
-            if (goElementAction == null)
-            {
-                return NotFound();
-            }
-
-            patch.Patch(goElementAction);
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!GoElementActionExists(key))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return Updated(goElementAction);
-        }
-
-        // DELETE: odata/GoElementActions(1)
-        public IHttpActionResult Delete([FromODataUri] int key)
-        {
-            GoElementAction goElementAction = db.GoElementActionRepository.Find(key);
-            if (goElementAction == null)
-            {
-                return NotFound();
-            }
-
-            var x = db.GoElementActionRepository.Remove(goElementAction);
-            if (x == null) return Unauthorized();
-
-            db.SaveChanges();
-
-            return StatusCode(HttpStatusCode.NoContent);
-        }
-
-        private bool GoElementActionExists(int key)
-        {
-            return db.GoElementActionRepository.GoElementActions.Count(x => x.ID == key) > 0;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+        _goElementActionRepository = goElementActionRepository;
     }
+
+
+    [EnableQuery]
+    [HttpGet("{id}")] 
+    public SingleResult<GoElementAction> Get([FromODataUri] int key)
+    {
+        return SingleResult.Create(_goElementActionRepository.GetById(key));
+    }
+
+
+    [EnableQuery]
+    public IQueryable<GoElementAction> Get()
+    {
+        return _goElementActionRepository.GetAll();
+    }
+
+    [HttpPost]
+    public IActionResult Post([FromBody] GoElementAction goElementAction)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        _goElementActionRepository.Create(goElementAction);
+
+        return Created("GoElementActions", goElementAction);
+    }
+
+    [HttpPut]
+    public IActionResult Put([FromODataUri] int key, [FromBody] GoElementAction goElementAction)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        if (key != goElementAction.ID)
+        {
+            return BadRequest();
+        }
+
+        _goElementActionRepository.Update(goElementAction);
+
+        return NoContent();
+    }
+
+    [HttpDelete]
+    public IActionResult Delete([FromODataUri] int key)
+    {
+        var goElementAction = _goElementActionRepository.GetById(key);
+        if (goElementAction is null)
+        {
+            return BadRequest();
+        }
+
+        _goElementActionRepository.Delete(goElementAction.First());
+
+        return NoContent();
+    }
+
+
 }
+

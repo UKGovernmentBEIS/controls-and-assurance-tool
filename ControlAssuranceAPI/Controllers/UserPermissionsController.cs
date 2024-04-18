@@ -1,130 +1,87 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using ControlAssuranceAPI.Models;
+﻿using CAT.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNet.OData;
+using CAT.Repo.Interface;
+using Microsoft.AspNet.OData.Routing;
 
-namespace ControlAssuranceAPI.Controllers
+namespace CAT.Controllers;
+[Authorize]
+[Route("api/[controller]")]
+[ApiController]
+public class UserPermissionsController : ControllerBase
 {
-    public class UserPermissionsController : BaseController
+    private readonly IUserPermissionRepository _userPermissionRepository;
+    public UserPermissionsController(IUserPermissionRepository userPermissionRepository)
     {
-        public UserPermissionsController() : base() { }
-
-        public UserPermissionsController(IControlAssuranceContext context) : base(context) { }
-
-        [EnableQuery]
-        public IQueryable<UserPermission> Get()
-        {
-            //can do things like
-            //http://localhost:2861/odata/UserPermissions
-            //http://localhost:2861/odata/UserPermissions?$filter=status eq 'ok'
-            //http://localhost:2861/odata/UserPermissions?$filter=Price lt 11
-            //http://localhost:2861/odata/UserPermissions?$orderby=UserPermissionId desc
-
-            return db.UserPermissionRepository.UserPermissions;
-        }
-
-        // GET: /odata/UserPermissions?key=1&currentUser=&checkEditDelPermission=true
-        public bool Get(int key, string currentUser, bool checkEditDelPermission)
-        {
-            return db.UserPermissionRepository.CheckEditDelPermission(key);
-        }
-
-        // GET: odata/UserPermissions(1)
-        [EnableQuery]
-        public SingleResult<UserPermission> Get([FromODataUri] int key)
-        {
-            return SingleResult.Create(db.UserPermissionRepository.UserPermissions.Where(UserPermission => UserPermission.ID == key));
-        }
-
-        // POST: odata/UserPermissions
-        public IHttpActionResult Post(UserPermission userPermission)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var x = db.UserPermissionRepository.Add(userPermission);
-            if (x == null) return Unauthorized();
-
-            db.SaveChanges();
-
-            return Created(userPermission);
-        }
-
-        // PATCH: odata/UserPermissions(1)
-        [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] int key, Delta<UserPermission> patch)
-        {
-            //Validate(patch.GetEntity());
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            UserPermission userPermission = db.UserPermissionRepository.Find(key);
-            if (userPermission == null)
-            {
-                return NotFound();
-            }
-
-            patch.Patch(userPermission);
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UserPermissionExists(key))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return Updated(userPermission);
-        }
-
-        // DELETE: odata/UserPermissions(1)
-        public IHttpActionResult Delete([FromODataUri] int key)
-        {
-            UserPermission userPermission = db.UserPermissionRepository.Find(key);
-            if (userPermission == null)
-            {
-                return NotFound();
-            }
-
-            var x = db.UserPermissionRepository.Remove(userPermission);
-            if (x == null) return Unauthorized();
-
-            db.SaveChanges();
-
-            return StatusCode(HttpStatusCode.NoContent);
-        }
-
-
-        private bool UserPermissionExists(int key)
-        {
-            return db.UserPermissionRepository.UserPermissions.Count(e => e.ID == key) > 0;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+        _userPermissionRepository = userPermissionRepository;
     }
+
+    // GET: /odata/UserPermissions?key=1&currentUser=&checkEditDelPermission=true
+    [ODataRoute("UserPermissions?key={key}&currentUser={currentUser}&checkEditDelPermission={checkEditDelPermission}")]
+    public bool Get(int key, string currentUser, bool checkEditDelPermission)
+    {
+        return _userPermissionRepository.CheckEditDelPermission(key);
+    }
+
+    [EnableQuery]
+    [HttpGet("{id}")] 
+    public SingleResult<UserPermission> Get([FromODataUri] int key)
+    {
+        return SingleResult.Create(_userPermissionRepository.GetById(key));
+    }
+
+
+    [EnableQuery]
+    public IQueryable<UserPermission> Get()
+    {
+        return _userPermissionRepository.GetAll();
+    }
+
+    [HttpPost]
+    public IActionResult Post([FromBody] UserPermission userPermission)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        _userPermissionRepository.Create(userPermission);
+
+        return Created("UserPermissions", userPermission);
+    }
+
+    [HttpPut]
+    public IActionResult Put([FromODataUri] int key, [FromBody] UserPermission userPermission)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        if (key != userPermission.ID)
+        {
+            return BadRequest();
+        }
+
+        _userPermissionRepository.Update(userPermission);
+
+        return NoContent();
+    }
+
+    [HttpDelete]
+    public IActionResult Delete([FromODataUri] int key)
+    {
+        var userPermission = _userPermissionRepository.GetById(key);
+        if (userPermission is null)
+        {
+            return BadRequest();
+        }
+
+        _userPermissionRepository.Delete(userPermission.First());
+
+        return NoContent();
+    }
+
+
 }
+

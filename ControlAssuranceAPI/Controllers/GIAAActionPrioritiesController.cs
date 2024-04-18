@@ -1,33 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using ControlAssuranceAPI.Models;
+﻿using CAT.Models;
+using CAT.Repo.Interface;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNet.OData;
 
-namespace ControlAssuranceAPI.Controllers
+namespace CAT.Controllers;
+[Authorize]
+[Route("api/[controller]")]
+[ApiController]
+public class GIAAActionPrioritiesController : ControllerBase
 {
-    public class GIAAActionPrioritiesController : BaseController
+    private readonly IGIAAActionPriorityRepository _gIAAActionPriorityRepository;
+    public GIAAActionPrioritiesController(IGIAAActionPriorityRepository gIAAActionPriorityRepository )
     {
-        public GIAAActionPrioritiesController() : base() { }
-
-        public GIAAActionPrioritiesController(IControlAssuranceContext context) : base(context) { }
-
-        // GET: odata/GIAAActionPriorities
-        [EnableQuery]
-        public IQueryable<GIAAActionPriority> Get()
-        {
-            return db.GIAAActionPriorityRepository.GIAAActionPriorities;
-        }
-
-        // GET: odata/GIAAActionPriorities(1)
-        [EnableQuery]
-        public SingleResult<GIAAActionPriority> Get([FromODataUri] int key)
-        {
-            return SingleResult.Create(db.GIAAActionPriorityRepository.GIAAActionPriorities.Where(x => x.ID == key));
-        }
+        _gIAAActionPriorityRepository = gIAAActionPriorityRepository;
     }
+
+
+    [EnableQuery]
+    [HttpGet("{id}")] 
+    public SingleResult<GIAAActionPriority> Get([FromODataUri] int key)
+    {
+        return SingleResult.Create(_gIAAActionPriorityRepository.GetById(key));
+    }
+
+    [EnableQuery]
+    public IQueryable<GIAAActionPriority> Get()
+    {
+        return _gIAAActionPriorityRepository.GetAll();
+    }
+
+
+
+
 }
+

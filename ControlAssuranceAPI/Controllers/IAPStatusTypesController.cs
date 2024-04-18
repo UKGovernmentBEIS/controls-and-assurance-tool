@@ -1,33 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using ControlAssuranceAPI.Models;
+﻿using CAT.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNet.OData;
+using Microsoft.AspNet.OData.Routing;
+using CAT.Repo.Interface;
 
-namespace ControlAssuranceAPI.Controllers
+namespace CAT.Controllers;
+[Authorize]
+[Route("api/[controller]")]
+[ApiController]
+public class IAPStatusTypesController : ControllerBase
 {
-    public class IAPStatusTypesController : BaseController
+    private readonly IIAPStatusTypeRepository _iAPStatusTypeRepository;
+    public IAPStatusTypesController(IIAPStatusTypeRepository iAPStatusTypeRepository)
     {
-        public IAPStatusTypesController() : base() { }
-
-        public IAPStatusTypesController(IControlAssuranceContext context) : base(context) { }
-
-        // GET: odata/IAPStatusTypes
-        [EnableQuery]
-        public IQueryable<IAPStatusType> Get()
-        {
-            return db.IAPStatusTypeRepository.IAPStatusTypes;
-        }
-
-        // GET: odata/IAPStatusTypes(1)
-        [EnableQuery]
-        public SingleResult<IAPStatusType> Get([FromODataUri] int key)
-        {
-            return SingleResult.Create(db.IAPStatusTypeRepository.IAPStatusTypes.Where(x => x.ID == key));
-        }
+        _iAPStatusTypeRepository = iAPStatusTypeRepository;
     }
+
+
+    [EnableQuery]
+    [HttpGet("{id}")] 
+    public SingleResult<IAPStatusType> Get([FromODataUri] int key)
+    {
+        return SingleResult.Create(_iAPStatusTypeRepository.GetById(key));
+    }
+
+    [EnableQuery]
+    public IQueryable<IAPStatusType> Get()
+    {
+        return _iAPStatusTypeRepository.GetAll();
+    }
+
+
+
 }
+

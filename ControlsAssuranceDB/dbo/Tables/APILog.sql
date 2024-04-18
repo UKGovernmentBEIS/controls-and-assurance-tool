@@ -1,6 +1,0 @@
-﻿CREATE TABLE [dbo].[APILog] (
-    [ID]    BIGINT         IDENTITY (1, 1) NOT NULL,
-    [Title] NVARCHAR (MAX) NULL,
-    CONSTRAINT [PK_APILog] PRIMARY KEY CLUSTERED ([ID] ASC)
-);
-

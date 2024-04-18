@@ -1,130 +1,86 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using ControlAssuranceAPI.Models;
+﻿using CAT.Models;
+using CAT.Repo.Interface;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNet.OData;
 
-namespace ControlAssuranceAPI.Controllers
+namespace CAT.Controllers;
+[Authorize]
+[Route("api/[controller]")]
+[ApiController]
+public class CLIR35ScopesController : ControllerBase
 {
-    public class CLIR35ScopesController : BaseController
+    private readonly ICLIR35ScopeRepository _cLIR35ScopeRepository;
+    public CLIR35ScopesController(ICLIR35ScopeRepository cLIR35ScopeRepository)
     {
-        public CLIR35ScopesController() : base() { }
-
-        public CLIR35ScopesController(IControlAssuranceContext context) : base(context) { }
-
-        // GET: odata/CLIR35Scopes
-        [EnableQuery]
-        public IQueryable<CLIR35Scope> Get()
-        {
-            return db.CLIR35ScopeRepository.CLIR35Scopes;
-        }
-
-        // GET: odata/CLIR35Scopes(1)
-        [EnableQuery]
-        public SingleResult<CLIR35Scope> Get([FromODataUri] int key)
-        {
-            return SingleResult.Create(db.CLIR35ScopeRepository.CLIR35Scopes.Where(x => x.ID == key));
-        }
-
-
-
-
-
-
-
-        // GET: odata/CLIR35Scopes(1)/CLCases
-        [EnableQuery]
-        public IQueryable<CLCase> GetCLCases([FromODataUri] int key)
-        {
-            return db.CLIR35ScopeRepository.CLIR35Scopes.Where(d => d.ID == key).SelectMany(d => d.CLCases);
-        }
-
-        // POST: odata/CLIR35Scopes
-        public IHttpActionResult Post(CLIR35Scope cLIR35Scope)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var x = db.CLIR35ScopeRepository.Add(cLIR35Scope);
-            if (x == null) return Unauthorized();
-
-            db.SaveChanges();
-
-            return Created(cLIR35Scope);
-        }
-
-        // PATCH: odata/CLIR35Scopes(1)
-        [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] int key, Delta<CLIR35Scope> patch)
-        {
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            CLIR35Scope cLIR35Scope = db.CLIR35ScopeRepository.Find(key);
-            if (cLIR35Scope == null)
-            {
-                return NotFound();
-            }
-
-            patch.Patch(cLIR35Scope);
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CLIR35ScopeExists(key))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return Updated(cLIR35Scope);
-        }
-
-        // DELETE: odata/CLIR35Scopes(1)
-        public IHttpActionResult Delete([FromODataUri] int key)
-        {
-            CLIR35Scope cLIR35Scope = db.CLIR35ScopeRepository.Find(key);
-            if (cLIR35Scope == null)
-            {
-                return NotFound();
-            }
-
-            var x = db.CLIR35ScopeRepository.Remove(cLIR35Scope);
-            if (x == null) return Unauthorized();
-
-            db.SaveChanges();
-
-            return StatusCode(HttpStatusCode.NoContent);
-        }
-
-        private bool CLIR35ScopeExists(int key)
-        {
-            return db.CLIR35ScopeRepository.CLIR35Scopes.Count(x => x.ID == key) > 0;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+        _cLIR35ScopeRepository = cLIR35ScopeRepository;
     }
+
+
+    [EnableQuery]
+    [HttpGet("{id}")] 
+    public SingleResult<CLIR35Scope> Get([FromODataUri] int key)
+    {
+        return SingleResult.Create(_cLIR35ScopeRepository.GetById(key));
+    }
+
+    [EnableQuery]
+    public IQueryable<CLIR35Scope> Get()
+    {
+        return _cLIR35ScopeRepository.GetAll();
+    }
+
+    // GET: odata/CLIR35Scopes(1)/CLCases
+    [EnableQuery]
+    public IQueryable<CLCase> GetCLCases([FromODataUri] int key)
+    {
+        return _cLIR35ScopeRepository.GetCLCases(key);
+    }
+
+    [HttpPost]
+    public IActionResult Post([FromBody] CLIR35Scope cLIR35Scope)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        _cLIR35ScopeRepository.Create(cLIR35Scope);
+
+        return Created("CLIR35Scopes", cLIR35Scope);
+    }
+
+    [HttpPut]
+    public IActionResult Put([FromODataUri] int key, [FromBody] CLIR35Scope cLIR35Scope)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        if (key != cLIR35Scope.ID)
+        {
+            return BadRequest();
+        }
+
+        _cLIR35ScopeRepository.Update(cLIR35Scope);
+
+        return NoContent();
+    }
+
+    [HttpDelete]
+    public IActionResult Delete([FromODataUri] int key)
+    {
+        var cLIR35Scope = _cLIR35ScopeRepository.GetById(key);
+        if (cLIR35Scope is null)
+        {
+            return BadRequest();
+        }
+
+        _cLIR35ScopeRepository.Delete(cLIR35Scope.First());
+
+        return NoContent();
+    }
+
+
 }
+

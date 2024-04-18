@@ -1,118 +1,79 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using ControlAssuranceAPI.Models;
+﻿using CAT.Models;
+using CAT.Repo.Interface;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNet.OData;
 
-
-namespace ControlAssuranceAPI.Controllers
+namespace CAT.Controllers;
+[Authorize]
+[Route("api/[controller]")]
+[ApiController]
+public class GIAAActionOwnersController : ControllerBase
 {
-    public class GIAAActionOwnersController : BaseController
+    private readonly IGIAAActionOwnerRepository _gIAAActionOwnerRepository;
+    public GIAAActionOwnersController(IGIAAActionOwnerRepository gIAAActionOwnerRepository)
     {
-        public GIAAActionOwnersController() : base() { }
-
-        public GIAAActionOwnersController(IControlAssuranceContext context) : base(context) { }
-
-        // GET: odata/GIAAActionOwners
-        [EnableQuery]
-        public IQueryable<GIAAActionOwner> Get()
-        {
-            return db.GIAAActionOwnerRepository.GIAAActionOwners;
-        }
-
-        // GET: odata/GIAAActionOwners(1)
-        [EnableQuery]
-        public SingleResult<GIAAActionOwner> Get([FromODataUri] int key)
-        {
-            return SingleResult.Create(db.GIAAActionOwnerRepository.GIAAActionOwners.Where(x => x.ID == key));
-        }
-
-        // POST: odata/GIAAActionOwners
-        public IHttpActionResult Post(GIAAActionOwner giaaActionOwner)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var x = db.GIAAActionOwnerRepository.Add(giaaActionOwner);
-            if (x == null) return Unauthorized();
-
-            db.SaveChanges();
-
-            return Created(giaaActionOwner);
-        }
-
-        // PATCH: odata/GIAAActionOwners(1)
-        [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] int key, Delta<GIAAActionOwner> patch)
-        {
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            GIAAActionOwner giaaActionOwner = db.GIAAActionOwnerRepository.Find(key);
-            if (giaaActionOwner == null)
-            {
-                return NotFound();
-            }
-
-            patch.Patch(giaaActionOwner);
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!GIAAActionOwnerExists(key))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return Updated(giaaActionOwner);
-        }
-
-        // DELETE: odata/GIAAActionOwners(1)
-        public IHttpActionResult Delete([FromODataUri] int key)
-        {
-            GIAAActionOwner giaaActionOwner = db.GIAAActionOwnerRepository.Find(key);
-            if (giaaActionOwner == null)
-            {
-                return NotFound();
-            }
-
-            var x = db.GIAAActionOwnerRepository.Remove(giaaActionOwner);
-            if (x == null) return Unauthorized();
-
-            db.SaveChanges();
-
-            return StatusCode(HttpStatusCode.NoContent);
-        }
-
-        private bool GIAAActionOwnerExists(int key)
-        {
-            return db.GIAAActionOwnerRepository.GIAAActionOwners.Count(x => x.ID == key) > 0;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+        _gIAAActionOwnerRepository = gIAAActionOwnerRepository;
     }
+
+
+    [EnableQuery]
+    [HttpGet("{id}")] 
+    public SingleResult<GIAAActionOwner> Get([FromODataUri] int key)
+    {
+        return SingleResult.Create(_gIAAActionOwnerRepository.GetById(key));
+    }
+
+    [EnableQuery]
+    public IQueryable<GIAAActionOwner> Get()
+    {
+        return _gIAAActionOwnerRepository.GetAll();
+    }
+
+    [HttpPost]
+    public IActionResult Post([FromBody] GIAAActionOwner gIAAActionOwner)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        _gIAAActionOwnerRepository.Create(gIAAActionOwner);
+
+        return Created("GIAAActionOwners", gIAAActionOwner);
+    }
+
+    [HttpPut]
+    public IActionResult Put([FromODataUri] int key, [FromBody] GIAAActionOwner gIAAActionOwner)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        if (key != gIAAActionOwner.ID)
+        {
+            return BadRequest();
+        }
+
+        _gIAAActionOwnerRepository.Update(gIAAActionOwner);
+
+        return NoContent();
+    }
+
+    [HttpDelete]
+    public IActionResult Delete([FromODataUri] int key)
+    {
+        var gIAAActionOwner = _gIAAActionOwnerRepository.GetById(key);
+        if (gIAAActionOwner is null)
+        {
+            return BadRequest();
+        }
+
+        _gIAAActionOwnerRepository.Delete(gIAAActionOwner.First());
+
+        return NoContent();
+    }
+
+
 }
+

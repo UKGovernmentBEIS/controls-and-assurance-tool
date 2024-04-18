@@ -1,31 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using ControlAssuranceAPI.Models;
-using Microsoft.AspNet.OData;
+﻿using CAT.Models;
+using CAT.Repo.Interface;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNet.OData.Routing;
 
-namespace ControlAssuranceAPI.Controllers
+
+namespace CAT.Controllers;
+[Authorize]
+[Route("api/[controller]")]
+[ApiController]
+public class DGAreaStatsController : ControllerBase
 {
-    public class DGAreaStatsController : BaseController
+    private readonly ISPDGAreaStatRepository _sPDGAreaStatRepository;
+    public DGAreaStatsController(ISPDGAreaStatRepository sPDGAreaStatRepository)
     {
-        public DGAreaStatsController() : base() { }
-
-        public DGAreaStatsController(IControlAssuranceContext context) : base(context) { }
-
-        // GET: /odata/DGAreaStats?periodId=1
-        public List<Models.SPDGAreaStat_Result> Get(int periodId)
-        {
-            return db.SPDGAreaStatRepository.GetDGAreaStats(periodId);
-        }
-
-        // GET: /odata/DGAreaStats?periodId=20&SPDGAreaStat2=
-        public List<Models.SPDGAreaStat2_Result> Get(int periodId, string SPDGAreaStat2)
-        {
-            return db.SPDGAreaStatRepository.GetDGAreaStats2(periodId);
-        }
+        _sPDGAreaStatRepository = sPDGAreaStatRepository;
     }
+
+    // GET: /odata/DGAreaStats?periodId=1
+    [ODataRoute("DGAreaStats?periodId={periodId}")]
+    public List<SPDGAreaStat_Result> Get(int periodId)
+    {
+        return _sPDGAreaStatRepository.GetDGAreaStats(periodId);
+    }
+
+    // GET: /odata/DGAreaStats?periodId=20&SPDGAreaStat2=
+    [ODataRoute("DGAreaStats?periodId={periodId}&SPDGAreaStat2={SPDGAreaStat2}")]
+    public List<SPDGAreaStat2_Result> Get(int periodId, string SPDGAreaStat2)
+    {
+        return _sPDGAreaStatRepository.GetDGAreaStats2(periodId);
+    }
+
+
 }
+

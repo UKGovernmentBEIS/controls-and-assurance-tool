@@ -1,120 +1,82 @@
-﻿using ControlAssuranceAPI.Models;
+﻿using CAT.Models;
+using CAT.Repo.Interface;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNet.OData;
-using System;
-using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
+using Microsoft.AspNet.OData.Routing;
 
-
-namespace ControlAssuranceAPI.Controllers
+namespace CAT.Controllers;
+[Authorize]
+[Route("api/[controller]")]
+[ApiController]
+public class NAOUpdateEvidencesController : ControllerBase
 {
-    public class NAOUpdateEvidencesController : BaseController
+    private readonly INAOUpdateEvidenceRepository _nAOUpdateEvidenceRepository;
+    public NAOUpdateEvidencesController(INAOUpdateEvidenceRepository nAOUpdateEvidenceRepository)
     {
-        public NAOUpdateEvidencesController() : base() { }
-
-        public NAOUpdateEvidencesController(IControlAssuranceContext context) : base(context) { }
-
-        [EnableQuery]
-        public IQueryable<NAOUpdateEvidence> Get()
-        {
-            return db.NAOUpdateEvidenceRepository.NAOUpdateEvidences;
-        }
-
-        // GET: odata/NAOUpdateEvidences(1)
-        [EnableQuery]
-        public SingleResult<NAOUpdateEvidence> Get([FromODataUri] int key)
-        {
-            return SingleResult.Create(db.NAOUpdateEvidenceRepository.NAOUpdateEvidences.Where(x => x.ID == key));
-        }
-
-        // POST: odata/NAOUpdateEvidences
-        public IHttpActionResult Post(NAOUpdateEvidence naoUpdateEvidence)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var x = db.NAOUpdateEvidenceRepository.Add(naoUpdateEvidence);
-            if (x == null) return Unauthorized();
-
-            db.SaveChanges();
-
-            return Created(x);
-        }
-
-        // PATCH: odata/NAOUpdateEvidences(1)
-        [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] int key, Delta<NAOUpdateEvidence> patch)
-        {
-            //Validate(patch.GetEntity());
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            NAOUpdateEvidence naoUpdateEvidence = db.NAOUpdateEvidenceRepository.Find(key);
-            if (naoUpdateEvidence == null)
-            {
-                return NotFound();
-            }
-
-            patch.TrySetPropertyValue("DateUploaded", DateTime.Now);
-
-            patch.Patch(naoUpdateEvidence);
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!NAOUpdateEvidenceExists(key))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return Updated(naoUpdateEvidence);
-        }
-
-        // DELETE: odata/NAOUpdateEvidences(1)
-        public IHttpActionResult Delete([FromODataUri] int key)
-        {
-            NAOUpdateEvidence naoUpdateEvidence = db.NAOUpdateEvidenceRepository.Find(key);
-            if (naoUpdateEvidence == null)
-            {
-                return NotFound();
-            }
-
-            var x = db.NAOUpdateEvidenceRepository.Remove(naoUpdateEvidence);
-            if (x == null) return Unauthorized();
-
-            db.SaveChanges();
-
-            return StatusCode(HttpStatusCode.NoContent);
-        }
-
-        private bool NAOUpdateEvidenceExists(int key)
-        {
-            return db.NAOUpdateEvidenceRepository.NAOUpdateEvidences.Count(e => e.ID == key) > 0;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+        _nAOUpdateEvidenceRepository = nAOUpdateEvidenceRepository;
     }
+
+
+    [EnableQuery]
+    [HttpGet("{id}")] 
+    public SingleResult<NAOUpdateEvidence> Get([FromODataUri] int key)
+    {
+        return SingleResult.Create(_nAOUpdateEvidenceRepository.GetById(key));
+    }
+
+
+    [EnableQuery]
+    public IQueryable<NAOUpdateEvidence> Get()
+    {
+        return _nAOUpdateEvidenceRepository.GetAll();
+    }
+
+
+    [HttpPost]
+    public IActionResult Post([FromBody] NAOUpdateEvidence nAOUpdateEvidence)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        _nAOUpdateEvidenceRepository.Create(nAOUpdateEvidence);
+
+        return Created("NAOUpdateEvidences", nAOUpdateEvidence);
+    }
+
+    [HttpPut]
+    public IActionResult Put([FromODataUri] int key, [FromBody] NAOUpdateEvidence nAOUpdateEvidence)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        if (key != nAOUpdateEvidence.ID)
+        {
+            return BadRequest();
+        }
+
+        _nAOUpdateEvidenceRepository.Update(nAOUpdateEvidence);
+
+        return NoContent();
+    }
+
+    [HttpDelete]
+    public IActionResult Delete([FromODataUri] int key)
+    {
+        var nAOUpdateEvidence = _nAOUpdateEvidenceRepository.GetById(key);
+        if (nAOUpdateEvidence is null)
+        {
+            return BadRequest();
+        }
+
+        _nAOUpdateEvidenceRepository.Delete(nAOUpdateEvidence.First());
+
+        return NoContent();
+    }
+
+
 }
+

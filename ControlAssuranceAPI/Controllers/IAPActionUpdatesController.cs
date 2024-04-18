@@ -1,118 +1,87 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using ControlAssuranceAPI.Models;
+﻿using CAT.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNet.OData;
+using Microsoft.AspNet.OData.Routing;
+using CAT.Repo.Interface;
 
-namespace ControlAssuranceAPI.Controllers
+namespace CAT.Controllers;
+[Authorize]
+[Route("api/[controller]")]
+[ApiController]
+public class IAPActionUpdatesController : ControllerBase
 {
-    public class IAPActionUpdatesController : BaseController
+    private readonly IIAPActionUpdateRepository _iAPActionUpdateRepository;
+    public IAPActionUpdatesController(IIAPActionUpdateRepository iAPActionUpdateRepository)
     {
-        public IAPActionUpdatesController() : base() { }
-
-        public IAPActionUpdatesController(IControlAssuranceContext context) : base(context) { }
-
-        [EnableQuery]
-        public IQueryable<IAPActionUpdate> Get()
-        {
-            return db.IAPActionUpdateRepository.IAPActionUpdates;
-        }
-
-        // GET: odata/IAPActionUpdates(1)
-        [EnableQuery]
-        public SingleResult<IAPActionUpdate> Get([FromODataUri] int key)
-        {
-            return SingleResult.Create(db.IAPActionUpdateRepository.IAPActionUpdates.Where(x => x.ID == key));
-        }
-
-        // GET: /odata/IAPActionUpdates?iapUpdateId=1&dataForUpdatesList=
-        public List<IAPActionUpdateView_Result> Get(int iapUpdateId, string dataForUpdatesList)
-        {
-            return db.IAPActionUpdateRepository.GetActionUpdates(iapUpdateId);
-        }
-
-        // POST: odata/IAPActionUpdates
-        public IHttpActionResult Post(IAPActionUpdate iAPActionUpdate)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var x = db.IAPActionUpdateRepository.Add(iAPActionUpdate);
-            if (x == null) return Unauthorized();
-
-            //db.SaveChanges();
-
-            return Created(x);
-        }
-
-        // DELETE: odata/IAPActionUpdates(1)
-        public IHttpActionResult Delete([FromODataUri] int key)
-        {
-            IAPActionUpdate iAPActionUpdate = db.IAPActionUpdateRepository.Find(key);
-            if (iAPActionUpdate == null)
-            {
-                return NotFound();
-            }
-
-            var x = db.IAPActionUpdateRepository.Remove(iAPActionUpdate);
-            if (x == null) return Unauthorized();
-
-            db.SaveChanges();
-
-            return StatusCode(HttpStatusCode.NoContent);
-        }
-
-
-        // PATCH: odata/IAPActionUpdates(1)
-        [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] int key, Delta<IAPActionUpdate> patch)
-        {
-            //Validate(patch.GetEntity());
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            IAPActionUpdate iAPActionUpdate = db.IAPActionUpdateRepository.Find(key);
-            if (iAPActionUpdate == null)
-            {
-                return NotFound();
-            }
-
-            //patch.TrySetPropertyValue("DateUploaded", DateTime.Now);
-
-            patch.TrySetPropertyValue("UpdateDate", DateTime.Now);
-            patch.Patch(iAPActionUpdate);
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!IAPActionUpdateExists(key))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return Updated(iAPActionUpdate);
-        }
-
-        private bool IAPActionUpdateExists(int key)
-        {
-            return db.IAPActionUpdateRepository.IAPActionUpdates.Count(e => e.ID == key) > 0;
-        }
+        _iAPActionUpdateRepository = iAPActionUpdateRepository;
     }
+
+
+    [EnableQuery]
+    [HttpGet("{id}")] 
+    public SingleResult<IAPActionUpdate> Get([FromODataUri] int key)
+    {
+        return SingleResult.Create(_iAPActionUpdateRepository.GetById(key));
+    }
+
+    [EnableQuery]
+    public IQueryable<IAPActionUpdate> Get()
+    {
+        return _iAPActionUpdateRepository.GetAll();
+    }
+
+    // GET: /odata/IAPActionUpdates?iapUpdateId=1&dataForUpdatesList=
+    [ODataRoute("IAPActionUpdates?iapUpdateId={iapUpdateId}&dataForUpdatesList={dataForUpdatesList}")]
+    public List<IAPActionUpdateView_Result> Get(int iapUpdateId, string dataForUpdatesList)
+    {
+        return _iAPActionUpdateRepository.GetActionUpdates(iapUpdateId);
+    }
+
+    [HttpPost]
+    public IActionResult Post([FromBody] IAPActionUpdate iAPActionUpdate)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        _iAPActionUpdateRepository.Create(iAPActionUpdate);
+
+        return Created("IAPActionUpdates", iAPActionUpdate);
+    }
+
+    [HttpPut]
+    public IActionResult Put([FromODataUri] int key, [FromBody] IAPActionUpdate iAPActionUpdate)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        if (key != iAPActionUpdate.ID)
+        {
+            return BadRequest();
+        }
+
+        _iAPActionUpdateRepository.Update(iAPActionUpdate);
+
+        return NoContent();
+    }
+
+    [HttpDelete]
+    public IActionResult Delete([FromODataUri] int key)
+    {
+        var iAPActionUpdate = _iAPActionUpdateRepository.GetById(key);
+        if (iAPActionUpdate is null)
+        {
+            return BadRequest();
+        }
+
+        _iAPActionUpdateRepository.Delete(iAPActionUpdate.First());
+
+        return NoContent();
+    }
+
+
 }
+

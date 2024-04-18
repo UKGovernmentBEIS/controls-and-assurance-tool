@@ -1,126 +1,58 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Web;
-using Microsoft.SharePoint.Client;
+﻿using Microsoft.SharePoint.Client;
 using System.Security;
+using CAT.Libs.SP;
 
-using ClientOM = Microsoft.SharePoint.Client;
-
-using Newtonsoft.Json;
-using Google.Apis.Auth.OAuth2;
-using Microsoft.IdentityModel.Clients.ActiveDirectory;
-
-namespace ControlAssuranceAPI.Libs
+namespace CAT.Libs
 {
     public class SharepointLib
     {
         public ClientContext clientContext { get; set; }
-        //private string LibraryUrl = "Shared Documents/MiscFiles/";
 
-        private string ServerSiteUrl = "";// not using this, its passed from sp //"https://beisdigitalsvc.sharepoint.com/sites/ControlsAndAssuranceToolDev/";
-        private string UserName = "";
+        private readonly string ServerSiteUrl = "";// not using this, its passed from sp
+        private readonly string UserName = "";
         private string Password = "";
-
-
-
-
-        private Web WebClient { get; set; }
 
         public SharepointLib(string spSiteUrl, string spAccessDetails)
         {
             this.ServerSiteUrl = spSiteUrl;
-
-            UserName = spAccessDetails.Substring(0, spAccessDetails.IndexOf("/"));
-            Password = spAccessDetails.Substring(spAccessDetails.IndexOf("/") + 1);
-
-
             this.Connect();
-
-
         }
-        public void Context_ExecutingWebRequest(object sender, WebRequestEventArgs e)
+        private void Connect()
         {
-            //e.WebRequestExecutor.RequestHeaders["Authorization"] = "Bearer " + GetAccessToken();
-            e.WebRequestExecutor.RequestHeaders["Authorization"] = "Bearer " + HelperMethods.AccessToken;
+            //help https://learn.microsoft.com/en-us/sharepoint/dev/sp-add-ins/using-csom-for-dotnet-standard
 
-        }
-        //public string GetAccessToken()
-        //{
-        //    //https://stackoverflow.com/questions/58800178/get-sharepoint-list-data-from-outside-sharepoint-online-using-c-sharp?rq=1
-        //    try
-        //    {
-        //        #region Get Access token for Azure AD access              
-        //        var client = new RestClient("https://accounts.accesscontrol.windows.net/" + "65f001db-6210-493d-acda-2251c3d224ca" + "/tokens/OAuth/2");
-        //        var request = new RestRequest(Method.POST);
-        //        request.AddParameter("grant_type", "client_credentials");
-        //        request.AddParameter("client_id", "1aa8fc44-056e-4567-a8f1-2ae9fef2ba37");
-        //        //request.AddParameter("client_secret", "ClientSecret");
-        //        //request.AddParameter("resource", "00000003-0000-0ff1-ce00-000000000000/SharePointSite@TenantID");
-        //        IRestResponse restClientResponse = client.Execute(request);
-        //        var DeserializeObject = JsonConvert.DeserializeObject<BearerToken>(restClientResponse.Content.ToString());
-        //        string accessToken = DeserializeObject.AccessToken;
-        //        #endregion           
-
-        //        return accessToken;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw ex;
-        //    }
-        //}
-        public void Connect()
-        {
-            try
+            Uri site = new Uri(ServerSiteUrl);
+            string user = UserName;
+            var securePassword = new SecureString();
+            foreach (char c in Password)
             {
-                using (clientContext = new ClientContext(ServerSiteUrl))
-                {
-                    //clientContext.AuthenticationMode = ClientAuthenticationMode.Anonymous;
-                    //clientContext.FormDigestHandlingEnabled = false;
-                    //clientContext.ExecutingWebRequest += Context_ExecutingWebRequest;
-                    var securePassword = new SecureString();
-                    foreach (char c in Password)
-                    {
-                        securePassword.AppendChar(c);
-                    }
-
-                    clientContext.Credentials = new SharePointOnlineCredentials(UserName, securePassword);
-
-
-                    //var cr = new System.Net.NetworkCredential();
-                    //HttpContext.Current.User.Identity.
-                    WebClient = clientContext.Web;
-                }
+                securePassword.AppendChar(c);
             }
-            catch (Exception ex)
-            {
-                throw (ex);
-            }
+
+            var authenticationManager = new AuthenticationManager();
+            this.clientContext = authenticationManager.GetContext(site, user, securePassword);
         }
-
-
-
-
 
         public void DownloadEvidence(string fileName, string downloadLoction)
         {
             try
             {
-
-                string libraryUrl = "Shared Documents/Evidence/";
-                var file = WebClient.GetFileByUrl(libraryUrl + fileName);
+                Microsoft.SharePoint.Client.File file = clientContext.Web.GetFileByUrl($"Shared Documents/Evidence/{fileName}");
                 clientContext.Load(file);
                 clientContext.ExecuteQuery();
-                if (clientContext.HasPendingRequest)
-                    clientContext.ExecuteQuery();
 
-                FileInformation fileInfo = ClientOM.File.OpenBinaryDirect(clientContext, file.ServerRelativeUrl);
+                Microsoft.SharePoint.Client.ClientResult<Stream> mstream = file.OpenBinaryStream();
                 clientContext.ExecuteQuery();
-
                 var filePath = System.IO.Path.Combine(downloadLoction, file.Name);
-                using (var fileStream = new System.IO.FileStream(filePath, System.IO.FileMode.Create))
+
+                using (System.IO.StreamReader sr = new System.IO.StreamReader(mstream.Value))
                 {
-                    fileInfo.Stream.CopyTo(fileStream);
+                    using (var fileStream = new System.IO.FileStream(filePath, System.IO.FileMode.Create))
+                    {
+                        sr.BaseStream.Seek(0, System.IO.SeekOrigin.Begin);
+                        sr.BaseStream.CopyTo(fileStream);
+                        fileStream.Close();
+                    }
                 }
 
             }
@@ -130,15 +62,12 @@ namespace ControlAssuranceAPI.Libs
             }
         }
 
-
-
-        public Microsoft.SharePoint.Client.File UploadFinalReport1(string filePathToUpload, string uniqueFileName, string spFolderUrl="Shared Documents/Report/", string spLibListName= "Documents")
+        public Microsoft.SharePoint.Client.File UploadFinalReport1(string filePathToUpload, string uniqueFileName, string spFolderUrl = "Shared Documents/Report/", string spLibListName = "Documents")
         {
 
             int fileChunkSizeInMB = 3;
             ClientContext ctx = this.clientContext;
             string fileName = filePathToUpload;
-            //string spFolderUrl = "Shared Documents/Report/";
 
             // Each sliced upload requires a unique ID.
             Guid uploadId = Guid.NewGuid();
@@ -173,7 +102,6 @@ namespace ControlAssuranceAPI.Libs
                 {
                     FileCreationInformation fileInfo = new FileCreationInformation();
                     fileInfo.ContentStream = fs;
-                    //fileInfo.Url = uniqueFileName;
                     fileInfo.Url = ServerSiteUrl + spFolderUrl + uniqueFileName;
                     fileInfo.Overwrite = true;
                     uploadFile = docs.RootFolder.Files.Add(fileInfo);
@@ -223,7 +151,6 @@ namespace ControlAssuranceAPI.Libs
                                     // Add an empty file.
                                     FileCreationInformation fileInfo = new FileCreationInformation();
                                     fileInfo.ContentStream = contentStream;
-                                    //fileInfo.Url = uniqueFileName;
                                     fileInfo.Url = ServerSiteUrl + spFolderUrl + uniqueFileName;
                                     fileInfo.Overwrite = true;
                                     uploadFile = docs.RootFolder.Files.Add(fileInfo);
@@ -269,7 +196,7 @@ namespace ControlAssuranceAPI.Libs
                                     }
                                 }
                             }
-                        } // while ((bytesRead = br.Read(buffer, 0, buffer.Length)) > 0)
+                        }
                     }
                 }
                 finally
@@ -282,263 +209,6 @@ namespace ControlAssuranceAPI.Libs
             }
 
             return null;
-        }
-
-
-
-        #region Commented
-
-        //public string UploadMultiFiles(HttpRequestBase Request, HttpServerUtilityBase Server)
-        //{
-        //    try
-        //    {
-        //        HttpPostedFileBase file = null;
-        //        for (int f = 0; f < Request.Files.Count; f++)
-        //        {
-        //            file = Request.Files[f] as HttpPostedFileBase;
-
-        //            string[] SubFolders = LibraryUrl.Split('/');
-        //            string filename = System.IO.Path.GetFileName(file.FileName);
-        //            var path = System.IO.Path.Combine(Server.MapPath("~/App_Data/uploads"), filename);
-        //            file.SaveAs(path);
-
-        //            clientContext.Load(WebClient, website => website.Lists, website => website.ServerRelativeUrl);
-        //            clientContext.ExecuteQuery();
-
-        //            //https://somecompany.sharepoint.com/sites/ITVillahermosa/Shared Documents/
-        //            List documentsList = clientContext.Web.Lists.GetByTitle("Documents"); //Shared Documents -> Documents
-        //            clientContext.Load(documentsList, i => i.RootFolder.Folders, i => i.RootFolder);
-        //            clientContext.ExecuteQuery();
-
-        //            string SubFolderName = SubFolders[1];//Get SubFolder 'Invoice'
-        //            var folderToBindTo = documentsList.RootFolder.Folders;
-        //            var folderToUpload = folderToBindTo.Where(i => i.Name == SubFolderName).First();
-
-        //            var fileCreationInformation = new FileCreationInformation();
-        //            //Assign to content byte[] i.e. documentStream
-        //            fileCreationInformation.Content = System.IO.File.ReadAllBytes(path);
-        //            //Allow owerwrite of document
-        //            fileCreationInformation.Overwrite = true;
-        //            //Upload URL
-        //            fileCreationInformation.Url = ServerSiteUrl + LibraryUrl + filename;
-
-        //            Microsoft.SharePoint.Client.File uploadFile = documentsList.RootFolder.Files.Add(fileCreationInformation);
-
-        //            //Update the metadata for a field having name "DocType"
-        //            uploadFile.ListItemAllFields["Title"] = "UploadedCSOM";
-
-        //            uploadFile.ListItemAllFields.Update();
-        //            clientContext.ExecuteQuery();
-        //        }
-
-        //        return "";
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw (ex);
-        //    }
-        //}
-
-        //public string UploadAFile()
-        //{
-        //    try
-        //    {
-
-        //        System.IO.File.Move(@"c:\local\temp\6_BEISImage.jpg", @"c:\local\temp\UploadedImage.jpg");
-
-        //        string path = @"c:\local\temp\UploadedImage.jpg";
-        //        string filename = "UploadedImage.jpg";
-
-
-        //        ////https://somecompany.sharepoint.com/sites/ITVillahermosa/Shared Documents/
-        //        List documentsList = clientContext.Web.Lists.GetByTitle("Documents"); //Shared Documents -> Documents
-
-        //        var folderToUpload = WebClient.GetFolderByServerRelativeUrl(this.LibraryUrl);
-
-        //        var fileCreationInformation = new FileCreationInformation();
-        //        //Assign to content byte[] i.e. documentStream
-        //        fileCreationInformation.Content = System.IO.File.ReadAllBytes(path);
-        //        //Allow owerwrite of document
-        //        fileCreationInformation.Overwrite = true;
-        //        //Upload URL
-        //        fileCreationInformation.Url = ServerSiteUrl + LibraryUrl + filename;
-
-        //        Microsoft.SharePoint.Client.File uploadFile = documentsList.RootFolder.Files.Add(fileCreationInformation);
-
-        //        //Update the metadata for a field having name "DocType"
-        //        uploadFile.ListItemAllFields["Title"] = "UploadedCSOM";
-
-        //        uploadFile.ListItemAllFields.Update();
-        //        clientContext.ExecuteQuery();
-
-        //        return "Uploaded " + filename;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw (ex);
-        //    }
-        //}
-
-
-        //public string DownloadFiles()
-        //{
-        //    try
-        //    {
-        //        string tempLocation = @"c:\local\temp\";
-        //        System.IO.DirectoryInfo di = new DirectoryInfo(tempLocation);
-        //        foreach (FileInfo file in di.GetFiles())
-        //        {
-        //            //file.Delete();
-        //        }
-
-        //        FileCollection files = WebClient.GetFolderByServerRelativeUrl(this.LibraryUrl).Files;
-        //        clientContext.Load(files);
-        //        clientContext.ExecuteQuery();
-
-        //        if (clientContext.HasPendingRequest)
-        //            clientContext.ExecuteQuery();
-
-        //        int numFiles = 0;
-
-        //        foreach (ClientOM.File file in files)
-        //        {
-        //            ++numFiles;
-        //            FileInformation fileInfo = ClientOM.File.OpenBinaryDirect(clientContext, file.ServerRelativeUrl);
-        //            clientContext.ExecuteQuery();
-
-        //            var filePath = tempLocation + file.Name;
-        //            using (var fileStream = new System.IO.FileStream(filePath, System.IO.FileMode.Create))
-        //            {
-        //                fileInfo.Stream.CopyTo(fileStream);
-        //            }
-        //        }
-
-        //        return numFiles.ToString();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw (ex);
-        //    }
-        //}
-
-        //public string DownloadFilesAndUpload()
-        //{
-        //    string tempFolder = @"c:\local\temp\";
-        //    string guid = System.Guid.NewGuid().ToString();
-        //    string tempLocation = System.IO.Path.Combine(tempFolder, guid);
-
-        //    try
-        //    {
-        //        System.IO.Directory.CreateDirectory(tempLocation);
-
-        //        //System.IO.DirectoryInfo di = new DirectoryInfo(tempLocation);
-        //        //foreach (FileInfo file in di.GetFiles())
-        //        //{
-        //        //    //file.Delete();
-        //        //}
-
-        //        //Download all files
-
-        //        FileCollection files = WebClient.GetFolderByServerRelativeUrl(this.LibraryUrl).Files;
-        //        clientContext.Load(files);
-        //        clientContext.ExecuteQuery();
-
-        //        if (clientContext.HasPendingRequest)
-        //            clientContext.ExecuteQuery();
-
-        //        int numFiles = 0;
-
-        //        foreach (ClientOM.File file in files)
-        //        {
-        //            ++numFiles;
-        //            FileInformation fileInfo = ClientOM.File.OpenBinaryDirect(clientContext, file.ServerRelativeUrl);
-        //            clientContext.ExecuteQuery();
-
-        //            var filePath = System.IO.Path.Combine(tempLocation, file.Name);
-        //            using (var fileStream = new System.IO.FileStream(filePath, System.IO.FileMode.Create))
-        //            {
-        //                fileInfo.Stream.CopyTo(fileStream);
-        //            }
-        //        }
-
-
-
-        //        //Upload a File
-
-        //        //System.IO.File.Move(@"c:\local\temp\6_BEISImage.jpg", @"c:\local\temp\UploadedImage.jpg");
-
-        //        System.IO.File.Move(System.IO.Path.Combine(tempLocation, "6_BEISImage.jpg"), System.IO.Path.Combine(tempLocation, "UploadedImage.jpg"));
-
-        //        //string path = @"c:\local\temp\UploadedImage.jpg";
-        //        string path = System.IO.Path.Combine(tempLocation, "UploadedImage.jpg");
-        //        string filename = "UploadedImage.jpg";
-
-
-        //        ////https://somecompany.sharepoint.com/sites/ITVillahermosa/Shared Documents/
-        //        List documentsList = clientContext.Web.Lists.GetByTitle("Documents"); //Shared Documents -> Documents
-
-        //        var folderToUpload = WebClient.GetFolderByServerRelativeUrl(this.LibraryUrl);
-
-        //        var fileCreationInformation = new FileCreationInformation();
-        //        //Assign to content byte[] i.e. documentStream
-        //        fileCreationInformation.Content = System.IO.File.ReadAllBytes(path);
-        //        //Allow owerwrite of document
-        //        fileCreationInformation.Overwrite = true;
-        //        //Upload URL
-        //        fileCreationInformation.Url = ServerSiteUrl + LibraryUrl + filename;
-
-        //        Microsoft.SharePoint.Client.File uploadFile = documentsList.RootFolder.Files.Add(fileCreationInformation);
-
-        //        //Update the metadata for a field having name "DocType"
-        //        uploadFile.ListItemAllFields["Title"] = "UploadedCSOM";
-
-        //        uploadFile.ListItemAllFields.Update();
-        //        clientContext.ExecuteQuery();
-
-        //        //delete temp folder which we created earlier
-        //        System.IO.Directory.Delete(tempLocation, true);
-
-        //        return "Uploaded " + filename;
-
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw (ex);
-        //    }
-
-
-        //}
-
-        //public void UploadFinalReport1(string filePathToUpload, string fileName)
-        //{
-        //    string libraryUrl = "Shared Documents/Report/";
-        //    List documentsList = clientContext.Web.Lists.GetByTitle("Documents"); //Shared Documents -> Documents
-
-        //    var folderToUpload = WebClient.GetFolderByServerRelativeUrl(libraryUrl);
-
-        //    var fileCreationInformation = new FileCreationInformation();
-        //    //Assign to content byte[] i.e. documentStream
-        //    fileCreationInformation.Content = System.IO.File.ReadAllBytes(filePathToUpload);
-        //    //Allow owerwrite of document
-        //    fileCreationInformation.Overwrite = true;
-        //    //Upload URL
-        //    fileCreationInformation.Url = ServerSiteUrl + libraryUrl + fileName;
-
-        //    Microsoft.SharePoint.Client.File uploadFile = documentsList.RootFolder.Files.Add(fileCreationInformation);
-
-        //    //Update the metadata for a field having name "DocType"
-        //    //uploadFile.ListItemAllFields["Title"] = "UploadedCSOM";
-
-        //    //uploadFile.ListItemAllFields.Update();
-        //    clientContext.ExecuteQuery();
-
-        //    //delete temp folder which we created earlier
-        //    //System.IO.Directory.Delete(tempLocation, true);
-
-
-
-        //}
-        #endregion Commented
+        } 
     }
 }

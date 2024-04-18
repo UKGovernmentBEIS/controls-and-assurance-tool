@@ -1,47 +1,38 @@
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Web;
+﻿namespace CAT;
 
-namespace ControlAssuranceAPI
+public static class HelperMethods
 {
-    public class HelperMethods
+    public static int GetPercentage(int value, int total)
     {
-        protected static string DomainFixFind = ConfigurationManager.AppSettings["DomainFixFind"];
-        protected static string DomainFixReplace = ConfigurationManager.AppSettings["DomainFixReplace"];
-
-        public static string AccessToken = "";
-
-        public static string HackUsername(string username)
+        int percent = 0;
+        try
         {
-            return username.Replace(DomainFixFind, DomainFixReplace);
-            //return username;
+            decimal a = value / (decimal)total;
+            decimal b = Math.Round((a * 100));
+            percent = (int)b;
+        }
+        catch 
+        { /* no action required */ }
+
+        return percent;
+    }
+
+    public static DateTime? DateToMidDayDate(DateTime? date)
+    {
+        DateTime? retDate = null;
+        if (date != null)
+        {
+            retDate = new DateTime(date.Value.Year, date.Value.Month, date.Value.Day, 12, 0, 0);
         }
 
-        public static int GetPercentage(int value, int total)
-        {
-            int percent = 0;
-            try
-            {
-                decimal a = (decimal)((decimal)value / (decimal)total);
-                decimal b = Math.Round((a * 100));
-                percent = (int)b;
-            }
-            catch { }
+        return retDate;
+    }
 
-            return percent;
-        }
+    public static string ToEmptyIfNull(this string? value)
+    {
+        if (value == null)
+            return String.Empty;
 
-        public static DateTime? DateToMidDayDate(DateTime? date)
-        {
-            DateTime? retDate = null;
-            if (date != null)
-            {
-                retDate = new DateTime(date.Value.Year, date.Value.Month, date.Value.Day, 12, 0, 0);
-            }
-
-            return retDate;
-        }
+        return value;
     }
 }

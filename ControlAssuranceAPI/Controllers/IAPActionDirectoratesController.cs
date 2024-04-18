@@ -1,117 +1,80 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using ControlAssuranceAPI.Models;
+﻿using CAT.Models;
+using CAT.Repo.Interface;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNet.OData;
+using Microsoft.AspNet.OData.Routing;
 
-namespace ControlAssuranceAPI.Controllers
+namespace CAT.Controllers;
+[Authorize]
+[Route("api/[controller]")]
+[ApiController]
+public class IAPActionDirectoratesController : ControllerBase
 {
-    public class IAPActionDirectoratesController : BaseController
+    private readonly IIAPActionDirectorateRepository _iAPActionDirectorateRepository;
+    public IAPActionDirectoratesController(IIAPActionDirectorateRepository iAPActionDirectorateRepository)
     {
-        public IAPActionDirectoratesController() : base() { }
-
-        public IAPActionDirectoratesController(IControlAssuranceContext context) : base(context) { }
-
-        // GET: odata/IAPActionDirectorates
-        [EnableQuery]
-        public IQueryable<IAPActionDirectorate> Get()
-        {
-            return db.IAPActionDirectorateRepository.IAPActionDirectorates;
-        }
-
-        // GET: odata/IAPActionDirectorates(1)
-        [EnableQuery]
-        public SingleResult<IAPActionDirectorate> Get([FromODataUri] int key)
-        {
-            return SingleResult.Create(db.IAPActionDirectorateRepository.IAPActionDirectorates.Where(x => x.ID == key));
-        }
-
-        // POST: odata/IAPActionDirectorates
-        public IHttpActionResult Post(IAPActionDirectorate nAOPublicationDirectorate)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var x = db.IAPActionDirectorateRepository.Add(nAOPublicationDirectorate);
-            if (x == null) return Unauthorized();
-
-            db.SaveChanges();
-
-            return Created(nAOPublicationDirectorate);
-        }
-
-        // PATCH: odata/IAPActionDirectorates(1)
-        [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] int key, Delta<IAPActionDirectorate> patch)
-        {
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            IAPActionDirectorate nAOPublicationDirectorate = db.IAPActionDirectorateRepository.Find(key);
-            if (nAOPublicationDirectorate == null)
-            {
-                return NotFound();
-            }
-
-            patch.Patch(nAOPublicationDirectorate);
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!IAPActionDirectorateExists(key))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return Updated(nAOPublicationDirectorate);
-        }
-
-        // DELETE: odata/IAPActionDirectorates(1)
-        public IHttpActionResult Delete([FromODataUri] int key)
-        {
-            IAPActionDirectorate nAOPublicationDirectorate = db.IAPActionDirectorateRepository.Find(key);
-            if (nAOPublicationDirectorate == null)
-            {
-                return NotFound();
-            }
-
-            var x = db.IAPActionDirectorateRepository.Remove(nAOPublicationDirectorate);
-            if (x == null) return Unauthorized();
-
-            db.SaveChanges();
-
-            return StatusCode(HttpStatusCode.NoContent);
-        }
-
-        private bool IAPActionDirectorateExists(int key)
-        {
-            return db.IAPActionDirectorateRepository.IAPActionDirectorates.Count(x => x.ID == key) > 0;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+        _iAPActionDirectorateRepository = iAPActionDirectorateRepository;
     }
+
+
+    [EnableQuery]
+    [HttpGet("{id}")] 
+    public SingleResult<IAPActionDirectorate> Get([FromODataUri] int key)
+    {
+        return SingleResult.Create(_iAPActionDirectorateRepository.GetById(key));
+    }
+
+    [EnableQuery]
+    public IQueryable<IAPActionDirectorate> Get()
+    {
+        return _iAPActionDirectorateRepository.GetAll();
+    }
+
+    [HttpPost]
+    public IActionResult Post([FromBody] IAPActionDirectorate iAPActionDirectorate)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        _iAPActionDirectorateRepository.Create(iAPActionDirectorate);
+
+        return Created("IAPActionDirectorates", iAPActionDirectorate);
+    }
+
+    [HttpPut]
+    public IActionResult Put([FromODataUri] int key, [FromBody] IAPActionDirectorate iAPActionDirectorate)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        if (key != iAPActionDirectorate.ID)
+        {
+            return BadRequest();
+        }
+
+        _iAPActionDirectorateRepository.Update(iAPActionDirectorate);
+
+        return NoContent();
+    }
+
+    [HttpDelete]
+    public IActionResult Delete([FromODataUri] int key)
+    {
+        var iAPActionDirectorate = _iAPActionDirectorateRepository.GetById(key);
+        if (iAPActionDirectorate is null)
+        {
+            return BadRequest();
+        }
+
+        _iAPActionDirectorateRepository.Delete(iAPActionDirectorate.First());
+
+        return NoContent();
+    }
+
+
 }
+

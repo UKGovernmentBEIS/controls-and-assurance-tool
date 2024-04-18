@@ -1,50 +1,49 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using ControlAssuranceAPI.Models;
+﻿using CAT.Models;
+using CAT.Repo.Interface;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNet.OData;
 
-namespace ControlAssuranceAPI.Controllers
+namespace CAT.Controllers;
+[Authorize]
+[Route("api/[controller]")]
+[ApiController]
+public class AvailableExportsController : ControllerBase
 {
-    public class AvailableExportsController : BaseController
+    private readonly IAvailableExportRepository _availableExportRepository;
+    public AvailableExportsController(IAvailableExportRepository availableExportRepository)
     {
-        public AvailableExportsController() : base() { }
-
-        public AvailableExportsController(IControlAssuranceContext context) : base(context) { }
-
-        // GET: odata/AvailableExports
-        [EnableQuery]
-        public IQueryable<AvailableExport> Get()
-        {
-            return db.AvailableExportRepository.AvailableExports;
-        }
-
-        // GET: odata/AvailableExports(1)
-        [EnableQuery]
-        public SingleResult<AvailableExport> Get([FromODataUri] int key)
-        {
-            return SingleResult.Create(db.AvailableExportRepository.AvailableExports.Where(x => x.ID == key));
-        }
-
-        // DELETE: odata/AvailableExports(1)
-        public IHttpActionResult Delete([FromODataUri] int key)
-        {
-            AvailableExport availableExport = db.AvailableExportRepository.Find(key);
-            if (availableExport == null)
-            {
-                return NotFound();
-            }
-
-            var x = db.AvailableExportRepository.Remove(availableExport);
-            if (x == null) return Unauthorized();
-
-            db.SaveChanges();
-
-            return StatusCode(HttpStatusCode.NoContent);
-        }
+        _availableExportRepository = availableExportRepository;
     }
+
+
+    [EnableQuery]
+    [HttpGet("{id}")] 
+    public SingleResult<AvailableExport> Get([FromODataUri] int key)
+    {
+        return SingleResult.Create(_availableExportRepository.GetById(key));
+    }
+
+    [EnableQuery]
+    public IQueryable<AvailableExport> Get()
+    {
+        return _availableExportRepository.GetAll();
+    }
+
+    [HttpDelete]
+    public IActionResult Delete([FromODataUri] int key)
+    {
+        var user = _availableExportRepository.GetById(key);
+        if (user is null)
+        {
+            return BadRequest();
+        }
+
+        _availableExportRepository.Delete(user.First());
+
+        return NoContent();
+    }
+
+
 }
+

@@ -1,128 +1,86 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using ControlAssuranceAPI.Models;
+﻿using CAT.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNet.OData;
+using CAT.Repo.Interface;
 
-namespace ControlAssuranceAPI.Controllers
+namespace CAT.Controllers;
+[Authorize]
+[Route("api/[controller]")]
+[ApiController]
+public class CLGendersController : ControllerBase
 {
-    public class CLGendersController : BaseController
+    private readonly ICLGenderRepository _cLGenderRepository;
+    public CLGendersController(ICLGenderRepository cLGenderRepository)
     {
-        public CLGendersController() : base() { }
-
-        public CLGendersController(IControlAssuranceContext context) : base(context) { }
-
-        // GET: odata/CLGenders
-        [EnableQuery]
-        public IQueryable<CLGender> Get()
-        {
-            return db.CLGenderRepository.CLGenders;
-        }
-
-        // GET: odata/CLGenders(1)
-        [EnableQuery]
-        public SingleResult<CLGender> Get([FromODataUri] int key)
-        {
-            return SingleResult.Create(db.CLGenderRepository.CLGenders.Where(x => x.ID == key));
-        }
-
-
-
-
-
-        // GET: odata/CLGenders(1)/CLWorkers
-        [EnableQuery]
-        public IQueryable<CLWorker> GetCLWorkers([FromODataUri] int key)
-        {
-            return db.CLGenderRepository.CLGenders.Where(d => d.ID == key).SelectMany(d => d.CLWorkers);
-        }
-
-        // POST: odata/CLGenders
-        public IHttpActionResult Post(CLGender cLGender)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var x = db.CLGenderRepository.Add(cLGender);
-            if (x == null) return Unauthorized();
-
-            db.SaveChanges();
-
-            return Created(cLGender);
-        }
-
-        // PATCH: odata/CLGenders(1)
-        [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] int key, Delta<CLGender> patch)
-        {
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            CLGender cLGender = db.CLGenderRepository.Find(key);
-            if (cLGender == null)
-            {
-                return NotFound();
-            }
-
-            patch.Patch(cLGender);
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CLGenderExists(key))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return Updated(cLGender);
-        }
-
-        // DELETE: odata/CLGenders(1)
-        public IHttpActionResult Delete([FromODataUri] int key)
-        {
-            CLGender cLGender = db.CLGenderRepository.Find(key);
-            if (cLGender == null)
-            {
-                return NotFound();
-            }
-
-            var x = db.CLGenderRepository.Remove(cLGender);
-            if (x == null) return Unauthorized();
-
-            db.SaveChanges();
-
-            return StatusCode(HttpStatusCode.NoContent);
-        }
-
-        private bool CLGenderExists(int key)
-        {
-            return db.CLGenderRepository.CLGenders.Count(x => x.ID == key) > 0;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+        _cLGenderRepository = cLGenderRepository;
     }
+
+
+    [EnableQuery]
+    [HttpGet("{id}")] 
+    public SingleResult<CLGender> Get([FromODataUri] int key)
+    {
+        return SingleResult.Create(_cLGenderRepository.GetById(key));
+    }
+
+    [EnableQuery]
+    public IQueryable<CLGender> Get()
+    {
+        return _cLGenderRepository.GetAll();
+    }
+    
+    // GET: odata/CLGenders(1)/CLWorkers
+    [EnableQuery]
+    public IQueryable<CLWorker> GetCLWorkers([FromODataUri] int key)
+    {
+        return _cLGenderRepository.GetCLWorkers(key);
+    }
+
+    [HttpPost]
+    public IActionResult Post([FromBody] CLGender cLGender)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        _cLGenderRepository.Create(cLGender);
+
+        return Created("CLGenders", cLGender);
+    }
+
+    [HttpPut]
+    public IActionResult Put([FromODataUri] int key, [FromBody] CLGender cLGender)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        if (key != cLGender.ID)
+        {
+            return BadRequest();
+        }
+
+        _cLGenderRepository.Update(cLGender);
+
+        return NoContent();
+    }
+
+    [HttpDelete]
+    public IActionResult Delete([FromODataUri] int key)
+    {
+        var cLGender = _cLGenderRepository.GetById(key);
+        if (cLGender is null)
+        {
+            return BadRequest();
+        }
+
+        _cLGenderRepository.Delete(cLGender.First());
+
+        return NoContent();
+    }
+
+
 }
+

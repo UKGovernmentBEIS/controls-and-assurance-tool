@@ -1,33 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using ControlAssuranceAPI.Models;
+﻿using CAT.Models;
+using CAT.Repo.Interface;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNet.OData;
 
-namespace ControlAssuranceAPI.Controllers
+namespace CAT.Controllers;
+[Authorize]
+[Route("api/[controller]")]
+[ApiController]
+public class GIAAActionStatusTypesController : ControllerBase
 {
-    public class GIAAActionStatusTypesController : BaseController
+    private readonly IGIAAActionStatusTypeRepository _gIAAActionStatusTypeRepository;
+    public GIAAActionStatusTypesController(IGIAAActionStatusTypeRepository gIAAActionStatusTypeRepository)
     {
-        public GIAAActionStatusTypesController() : base() { }
-
-        public GIAAActionStatusTypesController(IControlAssuranceContext context) : base(context) { }
-
-        // GET: odata/GIAAActionStatusTypes
-        [EnableQuery]
-        public IQueryable<GIAAActionStatusType> Get()
-        {
-            return db.GIAAActionStatusTypeRepository.GIAAActionStatusTypes;
-        }
-
-        // GET: odata/GIAAActionStatusTypes(1)
-        [EnableQuery]
-        public SingleResult<GIAAActionStatusType> Get([FromODataUri] int key)
-        {
-            return SingleResult.Create(db.GIAAActionStatusTypeRepository.GIAAActionStatusTypes.Where(x => x.ID == key));
-        }
+        _gIAAActionStatusTypeRepository = gIAAActionStatusTypeRepository;
     }
+
+
+    [EnableQuery]
+    [HttpGet("{id}")] 
+    public SingleResult<GIAAActionStatusType> Get([FromODataUri] int key)
+    {
+        return SingleResult.Create(_gIAAActionStatusTypeRepository.GetById(key));
+    }
+
+    [EnableQuery]
+    public IQueryable<GIAAActionStatusType> Get()
+    {
+        return _gIAAActionStatusTypeRepository.GetAll();
+    }
+
+
+
+
 }
+
