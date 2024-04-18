@@ -25,7 +25,8 @@
     "office-ui-fabric-react": "7.156.0",
     "react": "16.9.0",
     "react-dom": "16.9.0",
-    "react-router-dom": "^5.2.0"
+    "react-router-dom": "^5.2.0",
+    "ansi-regex": "^6.0.1"
   },
   "devDependencies": {
     "@microsoft/rush-stack-compiler-3.9": "0.4.37",
