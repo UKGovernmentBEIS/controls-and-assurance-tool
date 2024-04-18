@@ -1,0 +1,18 @@
+
+
+// .inlineflex { :global .ms-ChoiceField{
+//     display: inline-block;
+//     margin-right: 10pt;    
+//     margin-left: 0pt;
+//     margin-bottom: 25px;
+//  } }
+
+.inlineflex .ms-ChoiceField{
+    display: inline-block;
+    margin-right: 10pt;    
+    margin-bottom: 25px;
+ }
+
+ .ms-TagItem {
+    max-width: 600px!important;
+}

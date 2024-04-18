@@ -1,0 +1,55 @@
+// @import '~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss';
+@import "~office-ui-fabric-react/dist/sass/_References.scss";
+@import '../styles/cr.module';
+
+.ragIndicator {
+    .indicator {
+        text-align: center;
+        font-weight: bold;
+        padding: 3px 9px;
+        //text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        float: right;
+    }
+
+    .red {
+        background-color: Red;
+        color: White;
+    }
+
+    .amberRed {
+        background: repeating-linear-gradient(45deg, #FF0000, #FF0000 2px, #FFBF00 2px, #FFBF00 4px);
+        color: White;
+    }
+
+    .amber {
+        background-color: rgb(255, 191, 1);
+        color: rgb(29, 17, 12);
+    }
+
+    .amberGreen {
+        background: repeating-linear-gradient(135deg, #FFBF00, #FFBF00 2px, #007F00 2px, #007F00 4px);
+        color: White;
+    }
+
+    .green {
+        background-color: rgb(1, 127, 1);
+        color: White;
+    }
+
+    .grey {
+        background-color: rgb(166, 166, 166);
+        color: White;
+    }
+
+    .gray2 {
+        background-color: rgb(127, 127, 127);
+        color: White;
+    }
+
+    .blue {
+        background-color: $ms-color-blue;
+        color: White;
+    }
+}

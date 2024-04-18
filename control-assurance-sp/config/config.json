@@ -1,0 +1,261 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "car-updates-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/carUpdates/CarUpdatesWebPart.js",
+          "manifest": "./src/webparts/carUpdates/CarUpdatesWebPart.manifest.json"
+        }
+      ]
+    },
+    "user-management-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/userManagement/UserManagementWebPart.js",
+          "manifest": "./src/webparts/userManagement/UserManagementWebPart.manifest.json"
+        }
+      ]
+    },
+    "org-management-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/orgManagement/OrgManagementWebPart.js",
+          "manifest": "./src/webparts/orgManagement/OrgManagementWebPart.manifest.json"
+        }
+      ]
+    },
+    "properties-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/properties/PropertiesWebPart.js",
+          "manifest": "./src/webparts/properties/PropertiesWebPart.manifest.json"
+        }
+      ]
+    },
+    "org-report-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/orgReport/OrgReportWebPart.js",
+          "manifest": "./src/webparts/orgReport/OrgReportWebPart.manifest.json"
+        }
+      ]
+    },
+    "welcome-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/welcome/WelcomeWebPart.js",
+          "manifest": "./src/webparts/welcome/WelcomeWebPart.manifest.json"
+        }
+      ]
+    },
+    "app-home-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/appHome/AppHomeWebPart.js",
+          "manifest": "./src/webparts/appHome/AppHomeWebPart.manifest.json"
+        }
+      ]
+    },
+    "go-welcome-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/goWelcome/GoWelcomeWebPart.js",
+          "manifest": "./src/webparts/goWelcome/GoWelcomeWebPart.manifest.json"
+        }
+      ]
+    },
+    "go-updates-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/goUpdates/GoUpdatesWebPart.js",
+          "manifest": "./src/webparts/goUpdates/GoUpdatesWebPart.manifest.json"
+        }
+      ]
+    },
+    "go-properties-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/goProperties/GoPropertiesWebPart.js",
+          "manifest": "./src/webparts/goProperties/GoPropertiesWebPart.manifest.json"
+        }
+      ]
+    },
+    "go-report-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/goReport/GoReportWebPart.js",
+          "manifest": "./src/webparts/goReport/GoReportWebPart.manifest.json"
+        }
+      ]
+    },
+    "app-settings-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/appSettings/AppSettingsWebPart.js",
+          "manifest": "./src/webparts/appSettings/AppSettingsWebPart.manifest.json"
+        }
+      ]
+    },
+    "nao-updates-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/naoUpdates/NaoUpdatesWebPart.js",
+          "manifest": "./src/webparts/naoUpdates/NaoUpdatesWebPart.manifest.json"
+        }
+      ]
+    },
+    "nao-welcome-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/naoWelcome/NaoWelcomeWebPart.js",
+          "manifest": "./src/webparts/naoWelcome/NaoWelcomeWebPart.manifest.json"
+        }
+      ]
+    },
+    "giaa-welcome-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/giaaWelcome/GiaaWelcomeWebPart.js",
+          "manifest": "./src/webparts/giaaWelcome/GiaaWelcomeWebPart.manifest.json"
+        }
+      ]
+    },
+    "giaa-updates-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/giaaUpdates/GiaaUpdatesWebPart.js",
+          "manifest": "./src/webparts/giaaUpdates/GiaaUpdatesWebPart.manifest.json"
+        }
+      ]
+    },
+    "iap-welcome-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/iapWelcome/IapWelcomeWebPart.js",
+          "manifest": "./src/webparts/iapWelcome/IapWelcomeWebPart.manifest.json"
+        }
+      ]
+    },
+    "iap-updates-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/iapUpdates/IapUpdatesWebPart.js",
+          "manifest": "./src/webparts/iapUpdates/IapUpdatesWebPart.manifest.json"
+        }
+      ]
+    },
+    "nao-report-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/naoReport/NaoReportWebPart.js",
+          "manifest": "./src/webparts/naoReport/NaoReportWebPart.manifest.json"
+        }
+      ]
+    },
+    "nao-settings-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/naoSettings/NaoSettingsWebPart.js",
+          "manifest": "./src/webparts/naoSettings/NaoSettingsWebPart.manifest.json"
+        }
+      ]
+    },
+    "iap-report-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/iapReport/IapReportWebPart.js",
+          "manifest": "./src/webparts/iapReport/IapReportWebPart.manifest.json"
+        }
+      ]
+    },
+    "giaa-report-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/giaaReport/GiaaReportWebPart.js",
+          "manifest": "./src/webparts/giaaReport/GiaaReportWebPart.manifest.json"
+        }
+      ]
+    },
+    "giaa-properties-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/giaaProperties/GiaaPropertiesWebPart.js",
+          "manifest": "./src/webparts/giaaProperties/GiaaPropertiesWebPart.manifest.json"
+        }
+      ]
+    },
+    "iap-properties-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/iapProperties/IapPropertiesWebPart.js",
+          "manifest": "./src/webparts/iapProperties/IapPropertiesWebPart.manifest.json"
+        }
+      ]
+    },
+    "cl-welcome-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/clWelcome/ClWelcomeWebPart.js",
+          "manifest": "./src/webparts/clWelcome/ClWelcomeWebPart.manifest.json"
+        }
+      ]
+    },
+    "cl-properties-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/clProperties/ClPropertiesWebPart.js",
+          "manifest": "./src/webparts/clProperties/ClPropertiesWebPart.manifest.json"
+        }
+      ]
+    },
+    "cl-report-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/clReport/ClReportWebPart.js",
+          "manifest": "./src/webparts/clReport/ClReportWebPart.manifest.json"
+        }
+      ]
+    },
+    "cl-updates-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/clUpdates/ClUpdatesWebPart.js",
+          "manifest": "./src/webparts/clUpdates/ClUpdatesWebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "CarUpdatesWebPartStrings": "lib/webparts/carUpdates/loc/{locale}.js",
+    "UserManagementWebPartStrings": "lib/webparts/userManagement/loc/{locale}.js",
+    "OrgManagementWebPartStrings": "lib/webparts/orgManagement/loc/{locale}.js",
+    "PropertiesWebPartStrings": "lib/webparts/properties/loc/{locale}.js",
+    "OrgReportWebPartStrings": "lib/webparts/orgReport/loc/{locale}.js",
+    "WelcomeWebPartStrings": "lib/webparts/welcome/loc/{locale}.js",
+    "AppHomeWebPartStrings": "lib/webparts/appHome/loc/{locale}.js",
+    "GoWelcomeWebPartStrings": "lib/webparts/goWelcome/loc/{locale}.js",
+    "GoUpdatesWebPartStrings": "lib/webparts/goUpdates/loc/{locale}.js",
+    "GoPropertiesWebPartStrings": "lib/webparts/goProperties/loc/{locale}.js",
+    "GoReportWebPartStrings": "lib/webparts/goReport/loc/{locale}.js",
+    "AppSettingsWebPartStrings": "lib/webparts/appSettings/loc/{locale}.js",
+    "NaoUpdatesWebPartStrings": "lib/webparts/naoUpdates/loc/{locale}.js",
+    "NaoWelcomeWebPartStrings": "lib/webparts/naoWelcome/loc/{locale}.js",
+    "GiaaWelcomeWebPartStrings": "lib/webparts/giaaWelcome/loc/{locale}.js",
+    "GiaaUpdatesWebPartStrings": "lib/webparts/giaaUpdates/loc/{locale}.js",
+    "IapWelcomeWebPartStrings": "lib/webparts/iapWelcome/loc/{locale}.js",
+    "IapUpdatesWebPartStrings": "lib/webparts/iapUpdates/loc/{locale}.js",
+    "NaoReportWebPartStrings": "lib/webparts/naoReport/loc/{locale}.js",
+    "NaoSettingsWebPartStrings": "lib/webparts/naoSettings/loc/{locale}.js",
+    "IapReportWebPartStrings": "lib/webparts/iapReport/loc/{locale}.js",
+    "GiaaReportWebPartStrings": "lib/webparts/giaaReport/loc/{locale}.js",
+    "GiaaPropertiesWebPartStrings": "lib/webparts/giaaProperties/loc/{locale}.js",
+    "IapPropertiesWebPartStrings": "lib/webparts/iapProperties/loc/{locale}.js",
+    "ClWelcomeWebPartStrings": "lib/webparts/clWelcome/loc/{locale}.js",
+    "ClPropertiesWebPartStrings": "lib/webparts/clProperties/loc/{locale}.js",
+    "ClReportWebPartStrings": "lib/webparts/clReport/loc/{locale}.js",
+    "ClUpdatesWebPartStrings": "lib/webparts/clUpdates/loc/{locale}.js"
+  }
+}
